@@ -1,4 +1,4 @@
-{% load i18n static matches cookielaw_tags %}
+{% load i18n static matches cookielaw_tags token_format %}
 
 <header>
 
@@ -69,7 +69,7 @@
       <!-- CLAIMABLE AMOUNT -->
       <!-- IF :  proof_of_receive and total_claimable_gtc != 0 -->
       {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False %}
-        <span class="claimable"><a href="/quadraticlands/mission">CLAIM {{ total_claimable_gtc | floatformat:2 }} GTC</a></span>
+        <span class="claimable"><a href="/quadraticlands/mission">CLAIM {{ total_claimable_gtc | token_format }} GTC</a></span>
       {% endif %}
 
       <div id="noproviderIcon">

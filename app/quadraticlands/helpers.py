@@ -143,15 +143,15 @@ def set_mission_status(request):
         if mission_name == 'proof_of_knowledge':
             mission_status.proof_of_knowledge = True
             mission_status.save()
-    
+
         if mission_name == 'proof_of_use':
             mission_status.proof_of_use = True
             mission_status.save()
-       
+
         if mission_name == 'proof_of_receive':
             mission_status.proof_of_receive = True
             mission_status.save()
-               
+
         resp = {'mission_status_set': 'true'}
         return JsonResponse(resp, status=200)
 
@@ -222,7 +222,7 @@ def vote(request):
         logger.info(f'QuadLands: There was an error getting vote post data from user: {e}')
         resp = {'vote_save': 'error 1'}
         return JsonResponse(resp, status=400)
-   
+
     # write to DB
     try:
         voted = QLVote.objects.create(profile=profile, signature=sig, vote=full_vote_msg['message'], full_msg=full_vote_msg)

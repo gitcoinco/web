@@ -1,4 +1,4 @@
-{% load static %}
+{% load static token_format %}
 
 
 {% if playable %}
@@ -32,8 +32,7 @@
           {% if tokens %}
             <div class="card-badge gtc-token">
               {% include "quadraticlands/_inlinesvg/gtctoken.svg" %}
-              <span>+ {{tokens}}</span>
-            </div>
+            </div>                 
           {% endif %}
 
         </div>
