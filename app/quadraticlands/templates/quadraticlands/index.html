@@ -24,7 +24,8 @@
 
   <div class="content pushdown">
     <h1><span>With the launch of GTC, we are embarking on our second chapter: to build a DAO of DAOs, funding the future of the open web.</span></h1>
-    <a href="/quadraticlands/mission" class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+    <a href="{% url 'social:begin' 'github' %}?next={{request.scheme}}://{{request.get_host}}/quadraticlands/mission"
+    class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
       data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">Get started</a>
   </div>
 </section>
