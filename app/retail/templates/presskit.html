@@ -27,16 +27,19 @@
       {% include 'shared/tag_manager_2.html' %}
       <div class="header">
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
-        {% include 'shared/nav.html' %} {% include 'shared/minihero.html' with h1='Press Kit' %}
+        {% include 'shared/nav.html' %}
       </div>
       <div class="presskit">
-        <section class="presskit_section py-5">
+        <section class="presskit_section py-5 bg-light-purple">
           <div class="container">
             <div class="row my-5">
-              <h2 class="col-12 my-3">{% trans "Gitcoin Press Kit" %}</h2>
-              <div class="col-sm-12 col-md-12">
+              <h2 class="col-12 my-3 h2-default">{% trans "Gitcoin Press Kit" %}</h2>
+              <div class="col-sm-12 col-md-6">
                 <p>{% trans "Thank you for your interest in using the Gitcoin brand assets. We created these guidelines to manage and protect the value of the brand. By using any of the Gitcoin brand assets, you expressly consent to respect these guidelines." %}</p>
                 <p>{% trans "If your use case is not covered below we’re happy to help answer any questions about the Gitcoin brand or other products within our brand, please contact " %} <a href="mailto:founders@gitcoin.co">Gitcoin Core</a>.</p>
+              </div>
+              <div class="col-sm-12 col-md-6 mt-sm-5 mt-md-n5 ">
+                <img class="presskit_hero_svg mt-sm5 mt-md-n5" src="{% static "v2/images/presskit/illustrations/presskit-illus-hero.svg" %}" class="p-5">
               </div>
             </div>
           </div>
