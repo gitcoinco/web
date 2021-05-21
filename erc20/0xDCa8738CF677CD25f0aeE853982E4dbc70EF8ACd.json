@@ -1,0 +1,28 @@
+{
+  "symbol": "CZ",
+  "address": "0xDCa8738CF677CD25f0aeE853982E4dbc70EF8ACd",
+  "overview":{
+    "en": "CZ (cjzvipe), CZ is the real value-driven digital currency! CZ is pushing the advancement and development of the innovations, technology development, entrepreneurship investment and value finance etc... Value-Driven",
+    "zh": "财经钻CZ（CJZVIPE），真正的价值币！推动创新、科技、创业投资、价值型财经等等的进步和发展，价值型驱动！"
+  },
+  "email": "kefu@cjz.vip",
+  "website": "https://www.cjz.vip/",
+  "english whitepaper": "https://www.cjz.vip/uploads/927612.pdf",
+  "chinese whitepaper": "https://www.cjz.vip/uploads/868369.pdf",
+  "gas limit": "60000",
+  "official announcement": "https://www.cjz.vip/179048763.html",
+  "state": "NORMAL",
+  "exchange": {
+    "ZG exchange": "https://www.zg6.com/exchange/737/CZ/USDT",
+    "WBF exchange": "https://www.wbfex.live/trade/CZ_USDT",
+    "uniswap exchange":"https://app.uniswap.org/#/swap"
+  },
+  "media": {
+    "财经钻": "https://www.cjz.vip/100003179.html",
+    "金色财经": "https://www.jinse.com/news/blockchain/895376.html",
+    "火星财经": "https://news.huoxing24.com/20201025174329498525.html"
+  },
+  "links": {
+    "twitter": "https://twitter.com/cjzvipe"
+  }
+}
