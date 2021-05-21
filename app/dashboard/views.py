@@ -303,8 +303,16 @@ def create_new_interest_helper(bounty, user, issue_message):
 @csrf_exempt
 def gh_login(request):
     """Attempt to redirect the user to Github for authentication."""
-    return redirect('social:begin', backend='github')
 
+    if not request.GET.get('next'):
+        return redirect('social:begin', backend='github')
+
+    login_redirect = redirect('social:begin', backend='github')
+    redirect_url = f'?next={request.scheme}://{request.get_host()}{request.GET.get("next")}'
+
+    redirect_url = login_redirect.url + redirect_url
+
+    return redirect(redirect_url, backend='github')
 
 @csrf_exempt
 def gh_org_login(request):
