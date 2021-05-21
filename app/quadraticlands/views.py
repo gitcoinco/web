@@ -18,23 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-import json
 import logging
-import os
 
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db import connection
-from django.http import Http404, JsonResponse
-from django.shortcuts import redirect, render
+from django.http import JsonResponse
 from django.template.response import TemplateResponse
-from django.templatetags.static import static
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from quadraticlands.helpers import (
-    get_FAQ, get_initial_dist, get_initial_dist_breakdown, get_mission_status, get_stewards,
+    get_coupon_code, get_FAQ, get_initial_dist, get_initial_dist_breakdown, get_mission_status, get_stewards,
 )
 from ratelimit.decorators import ratelimit
 
@@ -67,6 +60,7 @@ def base_auth(request, base):
     return TemplateResponse(request, f'quadraticlands/{base}.html', context)
 
 
+@login_required
 def mission_index(request):
     '''render quadraticlands/mission/index.html'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
@@ -222,6 +216,31 @@ def mission_postcard_svg(request):
 
         response = HttpResponse(output, content_type='image/svg+xml')
         return response
+
+
+@login_required
+@ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
+def mission_lore(request):
+    from perftools.models import JSONStore
+    data = JSONStore.objects.get(view='QLLORE', key='QLLORE').data
+    MOLOCH_COMIC_LINK = data['MOLOCH_COMIC_LINK']
+    QL_SONG_LINK = data['QL_SONG_LINK']
+    params = {
+        'MOLOCH_COMIC_LINK': MOLOCH_COMIC_LINK,
+        'QL_SONG_LINK': QL_SONG_LINK,
+    }
+    return TemplateResponse(request, f'quadraticlands/mission/lore/index.html', params)
+
+
+@login_required
+@ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
+def mission_schwag(request):
+
+    context = {
+        'coupon_code': get_coupon_code(request)
+    }
+
+    return TemplateResponse(request, f'quadraticlands/mission/schwag/index.html', context)
 
 
 def handler403(request, exception=None):
