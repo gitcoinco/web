@@ -1,0 +1,13 @@
+{
+  "symbol": "IGA",
+  "address": "0xF0A95500f3aC1b2d70E1D8dFa7CD2D863aFb6069",
+  "overview":{
+        "zh": "IGA币打通与各大交易所币币交易的通道，可以自由兑换，实现在IAL一个平台注册就置换N个交易币兑，省去注册，交易，变现等众多麻烦体验。IAL平台在初期阶段采取钱包挖矿的技术币生币，让长期持有屯币的用户真正享受囤住币，持币翻百倍不是梦的目标。由于IGA币价值稳定，同时具备交易所平台币支付特性，拥有实体背书落地应用价值，IGA币成长空间稳步前进。",
+        "en": "IGA currency opens up the channel for currency transactions with major exchanges, and can be freely exchanged. It is possible to exchange N transaction currency exchanges when registering on the IAL platform, eliminating the need for registration, trading, and realizing many troublesome experiences. IAL In the initial stage, the platform adopts the technology of wallet mining to generate coins, so that long-term holders of coins can really enjoy hoarding coins. It is not a dream goal to hold coins to double. Because the value of IGA coins is stable, it also has exchange platform currency payments. Features, with the application value of physical endorsement, IGA coin growth space is steadily advancing"
+    },
+  "email": "contact@iga.exchange",
+  "website": "https://iga.exchange",
+  "whitepaper": "https://iga.exchange/igawhitepaper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-07-14"
+}
