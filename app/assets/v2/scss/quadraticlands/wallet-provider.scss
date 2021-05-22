@@ -24,6 +24,10 @@
     }
   }
 
+  .selected-account {
+    display: none;
+  }
+
   div.header {
     display: grid;
     grid-template-columns: auto 32px;
