@@ -3388,6 +3388,7 @@ class Profile(SuperModel):
             import random
             try:
                 wallpapers = load_files_in_directory('wallpapers')
+                wallpapers = [image for image in wallpapers if image[0:5] == '2021_']
                 self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
             except Exception as e:
                 # fix for travis, which has no static dir

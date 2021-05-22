@@ -2168,6 +2168,9 @@ def quickstart(request):
 def load_banners(request):
     """Load profile banners"""
     images = load_files_in_directory('wallpapers')
+    show_only_2021_banners = request.GET.get('all', '0') == '0'
+    if show_only_2021_banners:
+        images = [image for image in images if image[0:5] == '2021_']
     response = {
         'status': 200,
         'banners': images
