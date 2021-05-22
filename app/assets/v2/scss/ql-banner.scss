@@ -77,13 +77,13 @@ body:not(.navbar-menu-open) .sticky-nav {
   top: 160px;
 }
 
-.spin {
-  animation: spin 0.5s 2 linear;
+.spin-3d {
+  animation: spin-3d 0.5s 2 linear;
   -webkit-transform-style: preserve-3d;
   -webkit-perspective: 1000px;
 }
 
-@keyframes spin{
+@keyframes spin-3d {
   0%{
     transform: rotateY(0deg);
   }

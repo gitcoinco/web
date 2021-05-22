@@ -65,10 +65,10 @@ const bannerInnerRow = document.querySelector('#ql-banner-inner .row');
 
 // spin the coin
 const spinCoin = () => {
-  bannerCoin.classList.remove('spin');
+  bannerCoin.classList.remove('spin-3d');
   // trigger reflow
   void bannerCoin.offsetWidth;
-  bannerCoin.classList.add('spin');
+  bannerCoin.classList.add('spin-3d');
 };
 
 // move between low and high based on percent travelled
