@@ -63,7 +63,7 @@ def send_tip(request):
 
 def request_money(request):
     """"""
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         username = request.POST.get('username', '').strip('@')
         token_name = request.POST.get('tokenName')
         amount = request.POST.get('amount')
@@ -71,6 +71,7 @@ def request_money(request):
         network = request.POST.get('network')
         address = request.POST.get('address')
         profiles = Profile.objects.filter(handle=username.lower())
+        requester_profile = request.user.profile
 
         if network != 'ETH':
             token_name = ''
@@ -88,9 +89,9 @@ def request_money(request):
             }
             fund_request = FundRequest.objects.create(**kwargs)
             if network == 'ETH':
-                if not profile.preferred_payout_address:
-                    profile.preferred_payout_address = address
-                    profile.save() #save preferred payout addr
+                if not requester_profile.preferred_payout_address:
+                    requester_profile.preferred_payout_address = address
+                    requester_profile.save() #save preferred payout addr
             messages.success(request, f'Stay tuned, {profile.handle} has been notified by email.')
         else:
             messages.error(request, f'The user {username} doesn\'t exists.')
