@@ -38,6 +38,7 @@ async function walletInterface() {
     // get proposal states from GovernorAlpha
     let proposal_states = await proposalState();
     const stats_on_chain = document.getElementById('stats-on-chain');
+
     stats_on_chain.innerHTML = proposal_states.Active;
     if (proposal_states.Active >= 1) {
       stats_on_chain.classList.add('aqua');
