@@ -2070,11 +2070,12 @@ def fund_request_email(request, to_emails, is_new=False):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            from_email = settings.CONTACT_EMAIL
+            from_email = request.requester.email
+            from_name = f"@{request.requester.handle} on Gitcoin.co"
             html, text = render_request_amount_email(to_email, request, is_new)
 
             if not should_suppress_notification_email(to_email, 'tip'):
-                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+                send_mail(from_email, to_email, subject, text, html, from_name=from_name, categories=['transactional', func_name()])
         finally:
             translation.activate(cur_language)
 
