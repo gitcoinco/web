@@ -35,8 +35,8 @@
             <div class="row my-5">
               <h2 class="col-12 my-3 h2-default">{% trans "Gitcoin Press Kit" %}</h2>
               <div class="col-sm-12 col-md-6">
-                <p>{% trans "Thank you for your interest in using the Gitcoin brand assets. We created these guidelines to manage and protect the value of the brand. By using any of the Gitcoin brand assets, you expressly consent to respect these guidelines." %}</p>
-                <p>{% trans "If your use case is not covered below we’re happy to help answer any questions about the Gitcoin brand or other products within our brand, please contact " %} <a href="mailto:founders@gitcoin.co">Gitcoin Core</a>.</p>
+                <p class="font-bigger-1 text-grey-400 font-weight-300 line-height-3">{% trans "Thank you for your interest in using the Gitcoin brand assets. We created these guidelines to manage and protect the value of the brand. By using any of the Gitcoin brand assets, you expressly consent to respect these guidelines." %}</p>
+                <p class="font-bigger-1 text-grey-400 font-weight-300 line-height-3">{% trans "If your use case is not covered below we’re happy to help answer any questions about the Gitcoin brand or other products within our brand, please contact " %} <a href="mailto:founders@gitcoin.co">Gitcoin Core</a>.</p>
               </div>
               <div class="col-sm-12 col-md-6 mt-sm-5 mt-md-n5 ">
                 <img class="presskit_hero_svg mt-sm5 mt-md-n5" src="{% static "v2/images/presskit/illustrations/presskit-illus-hero.svg" %}" class="p-5">
@@ -44,12 +44,12 @@
             </div>
           </div>
         </section>
+        {% include 'presskit/resources.html' %}
         {% include 'presskit/logo.html' %}
         {% include 'presskit/usage.html' %}
         {% include 'presskit/colors.html' %}
         {% include 'presskit/illustrations.html' %}
-        {% include 'presskit/resources.html' %}
-
+        
       </div>
 
       {% include 'shared/footer.html' %}

@@ -18,41 +18,47 @@
 <section class="presskit_section py-5 bg-dark-purple">
   <div class="container presskit__resources">
     <div class="row my-5">
-      <h2 class="col-12 my-3 h2-inverse">{% trans "Resources" %}</h2>
-      <div class="col-lg-6 mb-lg-0 mb-3">
+      <h2 class="col-12 my-5 h2-inverse">{% trans "Build and Fund the Open Web Together" %}</h2>
+      <div class="col-md-6 col-sm-12 mb-lg-0 mb-3">
+        <div class="card border-light py-3 my-2 my-md-0">
+          <div class="row">
+            <div class="col-md-8 col-sm-12 px-3">
+              <div class="card-block px-3">
+                <h4 class="body-large text-center pt-md-5 pt-sm-0">{% trans "About Gitcoin" %}</h4>
+              </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center">
+              <img class="resource_svg" src="{% static "v2/images/presskit/illustrations/presskit-illus-04.svg" %}">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 mt-5 padding-zero">
+          <ul class="list-group list-group-flush">
+          <li><a class="list-group-item presskit-link py-1" target="_blank" rel="noopener noreferrer" href="https://gitcoin.co/blog/gitcoin-year-in-review/">Gitcoin Year in Review - Gitcoin's Blog</a></li>
+          <li><a class="list-group-item presskit-link py-1" target="_blank" rel="noopener noreferrer" href="https://vitalik.ca/general/2021/03/23/legitimacy.html">The Most Important Scarce Resource is Legitimacy</a></li>
+          <li><a class="list-group-item presskit-link py-1" target="_blank" rel="noopener noreferrer" href="https://notes.andymatuschak.org/z6d3zr35eY2KeyrBAXQbsZ8cTTyTCdxWaBmcC">Quadratic Funding of Public Goods</a></li>
+          </ul>
+        </div>
+
+      </div>
+    <div class="col-md-6 col-sm-12">
       <div class="card border-light py-3 my-2 my-md-0">
         <div class="row">
-          <div class="col-md-4 d-flex justify-content-center">
-            <img class="presskit_svg p-3" src="{% static "v2/images/presskit/github.svg" %}">
-          </div>
-          <div class="col-md-8 px-3">
-            <div class="card-block px-3 text-center text-md-left">
-              <h4 class="card-title text-center text-md-left">{% trans "GitHub Repo" %}</h4>
-              <p class="card-text"><a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/creative/">https://github.com/gitcoinco/creative</a></p>
-              <a class="my-3 font-weight-bold btn btn-primary" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/creative">{% trans "View repository" %}</a>
-              |
-              <a class="my-3 font-weight-bold btn btn-primary" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/creative/archive/master.zip">{%trans "Download repository" %}</a>
+          <div class="col-md-8 col-sm-12 px-3">
+            <div class="card-block px-3">
+              <h4 class="body-large text-center pt-md-5 pt-sm-0">{% trans "Our Mission" %}</h4>
             </div>
+          </div>
+          <div class="col-md-4 d-flex justify-content-center">
+            <img class="resource_svg mt-3" src="{% static "v2/images/presskit/illustrations/presskit-illus-05.svg" %}">
           </div>
         </div>
       </div>
     </div>
-    <div class="col-lg-6">
-      <div class="card border-light py-3 my-2 my-md-0">
-        <div class="row">
-          <div class="col-md-4 d-flex justify-content-center">
-            <img class="figma_svg p-3" src="{% static "v2/images/presskit/figma.svg" %}">
-          </div>
-          <div class="col-md-8 px-3">
-            <div class="card-block px-3 text-center text-md-left">
-              <h4 class="card-title text-center text-md-left">{% trans "Gitcoin Press Kit .fig" %}</h4>
-              <p class="card-text">{% trans "Gitcoin Press Kit Figma .fig file" %}</p>
-              <a class="my-3 font-weight-bold btn btn-primary" href= "{% static "v2/images/presskit/Gitcoin_Press_Kit.fig" %}">Download Gitcoin_Press_Kit.fig</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  
+    
+  
   </div>
   </div>
 </section>

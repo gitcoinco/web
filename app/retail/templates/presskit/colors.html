@@ -20,12 +20,12 @@
     <div class="row">
       <h2 class="col-12 mb-3 h2-default">{% trans "Colors" %}</h2>
       <div class="col-12 mb-3">
-        <p>Here are Gitcoin's brand colors.  As you can see, we like bright, neon colors. :)</p>
+        <p class="font-bigger-1 text-grey-400 font-weight-300 line-height-3">Here are Gitcoin's brand colors.  As you can see, we like bright, neon colors. :)</p>
       </div>
       <div class="col-12 mt-lg-0 mt-3">
         <div class="row">
           {% for colorName, colorHex, colorRGB, colorHSL in brand_colors %}
-          <div class="col-md-6 col-lg-3 mb-5">
+          <div class="col-md-3 col-sm-12 mb-5">
             <div class="card color-card border-light h-100">
               <div class="card-header" style="background-color: {{ colorHex }};">
               </div>
