@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       let balance = await getTokenBalances(gtc_address());
 
+      token.style.display = 'block';
       token_balance.innerHTML = balance.balance.toFixed(2);
       token_symbol.innerHTML = balance.symbol;
     } catch (e) {
