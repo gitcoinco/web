@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   setInterval(function() {
     if (!selectedAccount) {
-      if (!web3Modal.show) {
+      if (!web3Modal || !web3Modal.show) {
         onConnect();
       }
     }
