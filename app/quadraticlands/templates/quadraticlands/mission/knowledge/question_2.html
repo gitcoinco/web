@@ -26,45 +26,51 @@
         <h1>What can GTC be used for?</h1>
       </div>
 
-      <div class="reply">
+      <form action="/quadraticlands/mission/knowledge/question/2/process" method="POST">
 
-        <a href="/quadraticlands/mission/knowledge/question/2/wrong"
-          data-kinetics-attraction
-          data-kinetics-attraction-chance=".3"
-          data-kinetics-attraction-force="1"
-          data-kinetics-attraction-grow="0.5"
-        >
-          <div>Manage a Treasury</div>
-        </a>
+        {% csrf_token %}
 
-        <a href="/quadraticlands/mission/knowledge/question/2/wrong"
-          data-kinetics-attraction
-          data-kinetics-attraction-chance=".3"
-          data-kinetics-attraction-force="1"
-          data-kinetics-attraction-grow="0.5"
-        >
-          <div>Govern Grants Rounds</div>
-        </a>
+        <div class="reply">
 
-        <a href="/quadraticlands/mission/knowledge/question/2/wrong"
-          data-kinetics-attraction
-          data-kinetics-attraction-chance=".3"
-          data-kinetics-attraction-force="1"
-          data-kinetics-attraction-grow="0.5"
-        >
-          <div>Settle Disputes</div>
-        </a>
+          <button name="answer" type="submit" value="1"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>Manage a treasury</div>
+          </button>
 
-        <a href="/quadraticlands/mission/knowledge/question/2/right"
-          data-kinetics-attraction
-          data-kinetics-attraction-chance=".3"
-          data-kinetics-attraction-force="1"
-          data-kinetics-attraction-grow="0.5"
-        >
-          <div>All Of The Above</div>
-        </a>
+          <button name="answer" type="submit" value="2"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>Govern Grants Rounds</div>
+          </button>
 
-      </div>
+          <button name="answer" type="submit" value="3"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>Settle Disputes</div>
+          </button>
+
+          <button name="answer" type="submit" value="4"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>All of the above</div>
+          </button>
+
+        </div>
+
+      </form>
 
     </div>
 

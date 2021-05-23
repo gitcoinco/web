@@ -23,8 +23,12 @@ import logging
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_POST
 
 from quadraticlands.decorators import is_staff_or_ql_tester
 from quadraticlands.helpers import (
@@ -136,6 +140,20 @@ def workstream_base(request, stream_name):
 
 @is_staff_or_ql_tester
 @login_required
+@require_POST
+@csrf_protect
+def mission_process(request, mission_name, question_num):
+    answer = request.POST.get('answer')
+    if mission_name == 'knowledge' and question_num == '1' and answer == '2':
+        return redirect(reverse('quadraticlands:mission_answer', args=(mission_name, question_num, 'right')))
+    elif mission_name == 'knowledge' and question_num == '2' and answer == '4':
+        return redirect(reverse('quadraticlands:mission_answer', args=(mission_name, question_num, 'right')))
+    else:
+        return redirect(reverse('quadraticlands:mission_answer', args=(mission_name, question_num, 'wrong')))
+
+
+@is_staff_or_ql_tester
+@login_required
 def mission_postcard(request):
     '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
     attrs = {
@@ -154,6 +172,7 @@ def mission_postcard(request):
 @ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
 def mission_postcard_svg(request):
     import xml.etree.ElementTree as ET
+
     from django.http import HttpResponse
 
     width = 100
