@@ -29,6 +29,7 @@ import hashlib
 import hmac
 import json
 import logging
+import random
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -359,6 +360,12 @@ def get_stewards():
             }
             # add to dict
             steward_dict[str(s.profile)] = steward
+
+        # randomize order of stewards
+        steward_list = list(steward_dict.items())
+        random.shuffle(steward_list)
+        steward_dict = dict(steward_list)
+
         # one more dict for easy interation on UI
         full_stewards['stewards'] = steward_dict
         return full_stewards
