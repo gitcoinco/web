@@ -25,6 +25,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import redirect
 
 from quadraticlands.decorators import is_staff_or_ql_tester
 from quadraticlands.helpers import (
@@ -79,8 +80,12 @@ def mission_base(request, mission_name):
     '''used to handle quadraticlands/<mission_name>'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
+    if mission_name == 'use' and game_status["proof_of_knowledge"] == False:
+        return redirect('/quadraticlands/mission')
+    if mission_name == 'receive': 
+        if game_status["proof_of_knowledge"] == False or game_status["proof_of_use"] == False:
+            return redirect('/quadraticlands/mission')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
-
 
 @is_staff_or_ql_tester
 @login_required
@@ -99,6 +104,9 @@ def mission_state(request, mission_name, mission_state):
     context.update(game_status)
     if mission_state == 'delegate':
         context.update(get_stewards())
+    if mission_state == 'claim':
+        if game_status['proof_of_knowledge'] == False or game_status["proof_of_use"] == False:
+            return redirect('/quadraticlands/mission')
     if mission_state == 'claim':
         context.update(get_initial_dist_breakdown(request))
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)

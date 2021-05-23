@@ -183,7 +183,7 @@ def get_initial_dist_breakdown(request):
 
     try:
         initial_dist = InitialTokenDistribution.objects.get(profile=profile).distribution
-        logger.info(f'initial dist: {initial_dist}')
+        # logger.info(f'initial dist: {initial_dist}')
         context = {
             'active_user': int(initial_dist["active_user"]) / 10**18,
             'kernel': int(initial_dist["kernel"]) / 10**18,
