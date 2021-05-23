@@ -24,29 +24,35 @@
 				<h1>What is the mission of Gitcoin?</h1>
 			</div>
 
-			<div class="reply">
+      <form action="/quadraticlands/mission/knowledge/question/1/process" method="POST">
 
-				<a href="/quadraticlands/mission/knowledge/question/1/wrong" data-kinetics-attraction
-					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
-					<div>Create jobs for digital creatives</div>
-				</a>
+        {% csrf_token %}
 
-				<a href="/quadraticlands/mission/knowledge/question/1/right" data-kinetics-attraction
-					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
-					<div>Build & fund the open web</div>
-				</a>
+        <div class="reply">
 
-				<a href="/quadraticlands/mission/knowledge/question/1/wrong" data-kinetics-attraction
-					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
-					<div>Build only the Ethereum Ecosystem</div>
-				</a>
+          <button name="answer" type="submit" value="1" data-kinetics-attraction
+            data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+            <div>Create jobs for digital creatives</div>
+          </button>
 
-				<a href="/quadraticlands/mission/knowledge/question/1/wrong" data-kinetics-attraction
-					data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
-					<div>Reinvent Silicon Valley</div>
-				</a>
+          <button name="answer" type="submit" value="2" data-kinetics-attraction
+            data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+            <div>Build & fund the open web</div>
+          </button>
 
-			</div>
+          <button name="answer" type="submit" value="3" data-kinetics-attraction
+            data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+            <div>Build only the Ethereum Ecosystem</div>
+          </button>
+
+          <button name="answer" type="submit" value="4" data-kinetics-attraction
+            data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1" data-kinetics-attraction-grow="0.5">
+            <div>Reinvent Silicon Valley</div>
+          </button>
+
+        </div>
+
+      </form>
 
 		</div>
 

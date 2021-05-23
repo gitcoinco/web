@@ -23,8 +23,8 @@ from django.urls import path, re_path
 from quadraticlands.helpers import claim, set_mission_status, vote
 from quadraticlands.views import (
     base, base_auth, dashboard_index, handler400, handler403, handler404, handler500, index, mission_answer,
-    mission_base, mission_index, mission_lore, mission_postcard, mission_postcard_svg, mission_question, mission_schwag,
-    mission_state, workstream_base, workstream_index,
+    mission_base, mission_index, mission_lore, mission_postcard, mission_postcard_svg, mission_process,
+    mission_question, mission_schwag, mission_state, workstream_base, workstream_index,
 )
 
 app_name = 'quadraticlands'
@@ -38,14 +38,20 @@ urlpatterns = [
     re_path(r'^(?P<base>about|faq)/?$', base, name='quadraticlands_base'),
     re_path(r'^(?P<base>|dashboard|stewards)/?$', base_auth, name='quadraticlands_auth_base'),
 
+    # workstreams
     re_path(r'^workstream/(?P<stream_name>publicgoods|sybil|decentralization|labs)/?$', workstream_base, name='workstream_base'),
     re_path(r'^workstream/?$', workstream_index, name='workstream'),
 
     # mission
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/?$', mission_base, name='mission_base'),
     re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/(?P<mission_state>intro|outro|claim|snapshot|vote|delegationmode|delegate)/?$', mission_state, name='mission_state'),
-    re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/question/(?P<question_num>1|2)/?$', mission_question, name='mission_question'),
-    re_path(r'^mission/(?P<mission_name>knowledge|receive|use)/question/(?P<question_num>1|2)/(?P<answer>right|wrong|timeout)/?$', mission_answer, name='mission_answer'),
+
+    # knowledge quiz
+    re_path(r'^mission/(?P<mission_name>knowledge)/question/(?P<question_num>1|2)/?$', mission_question, name='mission_question'),
+    re_path(r'^mission/(?P<mission_name>knowledge)/question/(?P<question_num>1|2)/process/?$', mission_process, name='mission_process'),
+    re_path(r'^mission/(?P<mission_name>knowledge)/question/(?P<question_num>1|2)/(?P<answer>right|wrong|timeout)/?$', mission_answer, name='mission_answer'),
+
+    # misc
     re_path(r'^mission/?$', mission_index, name='mission'),
     re_path(r'^mission/postcard$', mission_postcard, name='mission_postcard'),
     re_path(r'^mission/postcard/svg$', mission_postcard_svg, name='mission_postcard_svg'),

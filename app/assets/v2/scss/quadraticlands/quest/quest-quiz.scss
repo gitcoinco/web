@@ -14,11 +14,14 @@
     margin: 0em 3em;
     user-select: none;
 
-    a {
+    button {
       background-color: var(--purple_light);
-      height: 100px;
+      border: none;
       cursor: pointer;
-      display: grid;
+      display: inline;
+      font-family: 'Poppins', sans-serif;
+      font-size: unset;
+      height: 100px;
       padding: 0.5em;
       text-decoration: none;
 
