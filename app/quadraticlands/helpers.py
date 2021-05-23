@@ -78,7 +78,7 @@ def get_profile_from_username(request):
     return profile
 
 @require_http_methods(["GET"])
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='300/m', method=ratelimit.ALL, block=True) #
 def get_mission_status(request):
     '''Retrieve mission status/state from the DB'''
     if request.user.is_authenticated:
@@ -117,7 +117,7 @@ def get_mission_status(request):
 
 @require_http_methods(["POST"])
 @login_required
-@ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def set_mission_status(request):
     '''When a mission is completed, the UI will POST here to flip game state completed True for a given mission'''
     if request.user.is_authenticated:
