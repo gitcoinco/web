@@ -579,13 +579,7 @@ def mission(request):
 
 
 def jobs(request):
-    job_listings = Job.objects.filter(active=True)
-    context = {
-        'active': 'jobs',
-        'title': 'Jobs',
-        'job_listings': job_listings
-    }
-    return TemplateResponse(request, 'jobs.html', context)
+    return redirect('https://angel.co/company/gitcoin/jobs')
 
 
 def avatar(request):
@@ -1278,6 +1272,10 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def support(request):
+    return redirect('https://support.gitcoin.co/')
 
 
 @cached_view(timeout=60)

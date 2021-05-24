@@ -394,11 +394,6 @@
                       <i class="fal fa-analytics gc-menu-icon"></i>{% trans "Results" %}
                     </a>
                   </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'products' %}">
-                      <i class="fal fa-inventory gc-menu-icon"></i>{% trans "Products" %}
-                    </a>
-                  </li>
                 </ul>
 
                 <ul class="col-6 list-unstyled pl-0">
@@ -414,8 +409,8 @@
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="/wiki">
-                      <i class="fab fa-wikipedia-w gc-menu-icon"></i>{% trans "Wiki" %}
+                    <a class="dropdown-item" href="{% url "support" %}">
+                      <i class="fal fa-ticket-alt gc-menu-icon"></i>{% trans "Support" %}
                     </a>
                   </li>
                 </ul>
