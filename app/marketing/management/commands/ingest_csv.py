@@ -20,6 +20,9 @@ import warnings
 import csv
 
 show_debug = False
+remove_staff_from_dist = True
+contractor_staff = ['nopslip', 'solexplorer', 'leonerichsen']
+
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
@@ -72,8 +75,11 @@ class Command(BaseCommand):
                             profile = Profile.objects.get(handle=handle.lower())
                             profile_id = profile.pk
                             if profile and hasattr(profile, 'user') and profile.user.is_staff:
-                                profile_id = profile.pk * -1
-                                num_staff_total += amount
+                                if profile.handle not in contractor_staff:
+                                    profile_id = profile.pk * -1
+                                    num_staff_total += amount
+                                    if remove_staff_from_dist and not show_debug:
+                                        continue
 
                         except:
                             handle = 'not_found'
