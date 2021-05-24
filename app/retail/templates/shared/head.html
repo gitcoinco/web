@@ -37,11 +37,9 @@
   {% endbundle %}
 {% endif %}
 
-{% comment %}
-  {% bundle css file ql_banner %}
-    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/ql-banner.scss" %} />
-  {% endbundle %}
-{% endcomment %}
+{% bundle css file ql_banner %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/ql-banner.scss" %} />
+{% endbundle %}
 
 {% bundle css file components %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery.select2.min.scss" %} />
