@@ -1,0 +1,19 @@
+{
+    "symbol": "HGC",
+    "address": "0x374C960857c9A9EcD39b47FCC420277271e46568",
+    "overview": {
+        "en": "HGC is the first blockchain platform in the world to share idle bandwidth, assist network service providers to effectively allocate network resources, and encourage individuals and enterprises to deploy more nodes to join HGC network to provide data transmission services for other nodes. People can now make full use of unused idle bandwidth capacity, and will not have any impact on the network needed by individuals and enterprises! It's a very passive income - effortless! In short - you're essentially contributing network bandwidth to get HGC token incentives. Meanwhile, HGC blockchain network has been used by researchers from e-commerce, advertising and network consulting companies. These companies extract advice from the Internet for market research, advertising fraud prevention, brand protection, pricing intelligence, travel fare aggregation and SEO monitoring services. At the same time, HGC innovatively introduces the elastic neural network mechanism, which can freely and intelligently control the idle resources of the network, so as to ensure that both the supplier and the demander of the bandwidth can reach an optimal balance in the process of network data transmission.",
+        "zh": "HGC 是全球第一个通过共享闲置带宽，协助网络服务商有效分配网络资源、 鼓励个人及企业部署更多的节点加入 HGC 网络为其他节点提供数据传输服务 的区块链平台。人们现在可以充分利用未使用的闲置带宽容量，并且不会对个人 和企业所需要的网络造成任何影响！这是一笔非常被动的收入-毫不费力！简而言之您实质上是贡献网络带宽，从而获得 HGC 代币激励。同时，HGC 区块链网络已被电子商务，广告和网络咨询公司的研究人员所使用。这些公司从 网络上提取咨询，以进行市场研究，广告欺诈预防，品牌保护，定价情报，旅行 票价汇总和 SEO 监控服务。同时，HGC 创新引入弹性神经网络机制，可以自由，智能化的调控网络闲置 资源，从而确保网络数据传输过程中带宽的供给方和需求方都能达到一个最佳的 平衡。"
+    },
+    "website": "https://honeygainchain.co/",
+    "whitepaper": "https://honeygainchain.co/HGC_white_paper.pdf",
+    "published_on": "2021-05-17",
+    "initial_price": {
+        "ETH": "0.00041 ETH",
+        "BTC": "0.000026 BTC"
+    },
+    "links": {
+        "telegram": "https://t.me/hgcnetwork",
+        "twitter": "https://twitter.com/NetworkHgc"
+    }
+}
