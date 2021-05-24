@@ -1,0 +1,18 @@
+{
+    "symbol": "BTC2x-FLI",
+    "address": "0x0B498ff89709d3838a063f1dFA463091F9801c2b",
+    "overview":{
+    "en": "BTC2x-FLI is a DEX-tradable, fully-collateralized ERC20 enabling traders to automate a target leveraged exposure to BTC in a fully decentralized manner, based on the FLI methodology following the success of ETH2x-FLI.",
+    "zh": "BTC2x-FLI令牌提供了一种简单而无缝的方式来获得长期的ETH风险敞口。"
+    },
+    "website": "https://defipulse.com/",
+    "whitepaper": "https://pulseinc.medium.com/introducing-the-flexible-leverage-index-5ec90f2381ce",
+    "state": "NORMAL",
+    "published_on": "2021-05-11",
+    "links": {
+      "blog": "https://defipulse.com/blog/",
+      "twitter": "https://twitter.com/defipulse",
+      "telegram": "https://t.me/defipulse",
+      "discord": "https://discord.gg/Jbv7tWu"
+    }
+}
