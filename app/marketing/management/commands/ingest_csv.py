@@ -19,9 +19,10 @@ import time
 import warnings
 import csv
 
-show_debug = False
+show_debug = True
 remove_staff_from_dist = True
 contractor_staff = ['nopslip', 'solexplorer', 'leonerichsen']
+non_staff_but_treat_as_staff = ['wendy111']
 
 from django.core.management.base import BaseCommand
 
@@ -74,7 +75,12 @@ class Command(BaseCommand):
                         try:
                             profile = Profile.objects.get(handle=handle.lower())
                             profile_id = profile.pk
+                            treat_as_staff = False
                             if profile and hasattr(profile, 'user') and profile.user.is_staff:
+                                treat_as_staff = True
+                            if profile.handle in non_staff_but_treat_as_staff:
+                                treat_as_staff = True
+                            if treat_as_staff:
                                 if profile.handle not in contractor_staff:
                                     profile_id = profile.pk * -1
                                     num_staff_total += amount
