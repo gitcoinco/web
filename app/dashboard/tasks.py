@@ -294,6 +294,7 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
     :param view_type:
     :return:
     """
+    print(pks, content_type, user_id, view_type)
     individual_storage = False # TODO: Change back to true IFF we figure out how to manage storage of this table
     user = None
     if user_id:
