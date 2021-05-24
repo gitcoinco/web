@@ -151,7 +151,7 @@ function updateInterface(status) {
 function submit() {
 
   const primaryType = 'CastVote';
-  const domain = { name: 'GTCVote', chainId: 4, verifyingContract: '0xc00e94Cb662C3520282E6f5717214004A7f26888' };
+  const domain = { name: 'GTCVote', chainId: 1, verifyingContract: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' };
 
   types = build_types();
   message = build_message();
