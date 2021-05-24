@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     has_claimed.then(function(claim_result) {
       if (claim_result) {
-        window.location = "/quadraticlands/mission/receive/outro"; 
+        window.location = '/quadraticlands/mission/receive/outro';
       }
     });
     var textarea_delegate_address = document.getElementById('delegate_address');
