@@ -248,13 +248,13 @@ async function onConnect() {
   if (provider.on) {
     // Subscribe to accounts change
     provider.on('accountsChanged', (accounts) => {
-      console.log('accountsChanged')
+      console.log('accountsChanged');
       fetchAccountData(provider);
     });
 
     // Subscribe to chainId change
     provider.on('chainChanged', (chainId) => {
-      console.log('chainChanged')
+      console.log('chainChanged');
       fetchAccountData(provider);
     });
   }
