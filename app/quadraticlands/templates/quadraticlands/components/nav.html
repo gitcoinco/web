@@ -58,6 +58,12 @@
       </a>
     </div>
 
+
+    <div>
+      
+
+    </div>
+
     <!-- default wallet button / wallet status
     what TRIGGER another div to pop up (components/wallet-provider.html) -->
     <div id="nav-wallet" data-kinetics-attraction data-kinetics-attraction-chance=".2"
@@ -66,9 +72,10 @@
       <!-- NETWORK -->
       <span id="web3network" class="web3network hide"></span>
 
+ 
       <!-- CLAIMABLE AMOUNT -->
-      <!-- IF :  proof_of_receive and total_claimable_gtc != 0 -->
-      {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False %}
+      <!-- IF :  user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False -->
+      {% IF :  user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False  %}
         <span class="claimable"><a href="/quadraticlands/mission">CLAIM {{ total_claimable_gtc | token_format }} GTC</a></span>
       {% endif %}
 
