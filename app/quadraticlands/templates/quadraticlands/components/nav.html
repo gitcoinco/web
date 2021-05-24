@@ -75,7 +75,7 @@
  
       <!-- CLAIMABLE AMOUNT -->
       <!-- IF :  user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False -->
-      {% IF :  user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False  %}
+      {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False  %}
         <span class="claimable"><a href="/quadraticlands/mission">CLAIM {{ total_claimable_gtc | token_format }} GTC</a></span>
       {% endif %}
 
