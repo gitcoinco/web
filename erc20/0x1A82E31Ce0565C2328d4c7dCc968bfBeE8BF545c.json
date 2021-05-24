@@ -1,0 +1,22 @@
+{
+  "symbol": "SPOC",
+  "address": "0x1A82E31Ce0565C2328d4c7dCc968bfBeE8BF545c",
+  "overview":{
+        "en": "SporeOcean is the next-generation decentralized financial network developed on the basis of Substrate. SporeOcean attempts to adopt the distinctions of DeFi and NFT to chain and scale the real-world asset, empower a series of innovative encrypted financial products so as to open the gate for traditional finance, thus allow new capital to flow into the WEB 3.0 crypto ecosystem.",
+        "zh": "SporeOcean是基于Substrate开发的下一代去中化金融网络。 SporeOcean希望利用DeFi、NFT的特点，将真实世界资产上链规模化，赋能一系列创新加密金融产品为传统金融打开闸门，让新的资本涌入WEB 3.0加密生态系统。"
+  },
+  "email": "",
+  "website": "https://www.sporeocean.com/",
+  "whitepaper": "https://www.sporeocean.com/static/SporeOcean.pdf",
+  "state": "NORMAL",
+  "links": {
+    "blog": "",
+    "twitter": "",
+    "telegram": "",
+    "github": "",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}
