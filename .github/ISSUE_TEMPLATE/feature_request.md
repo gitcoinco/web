@@ -11,7 +11,7 @@ assignees: ''
 Hello Gitcoiner!
 
 Please use the template below for feature requests for Gitcoin.
-If it is general support you need, reach out to us on [Discord](https://discord.com/invite/83BK5z55yB)
+If it is general support you need, reach out to us on [Discord](https://discord.gg/gitcoin)
 
 -->
 
