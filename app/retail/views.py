@@ -1026,7 +1026,7 @@ def grant_redir(request):
 
 
 def help(request):
-    return redirect('/wiki/')
+    return redirect('/support/')
 
 
 def verified(request):
@@ -1149,19 +1149,19 @@ def wallpaper(request):
 
 
 def help_dev(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_pilot(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_repo(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_faq(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def browser_extension_chrome(request):
