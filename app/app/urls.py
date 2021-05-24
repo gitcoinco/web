@@ -62,7 +62,6 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
-    path('wiki/', include('wiki.urls')),
 
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
@@ -817,8 +816,6 @@ urlpatterns = [
     url(r'^api/v0.1/bounty_mentor/', dashboard.views.bounty_mentor, name='bounty_mentor'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 
-    # wiki
-    path('wiki/notifications/', include('django_nyt.urls')),
 ]
 
 if settings.ENABLE_SILK:
@@ -835,19 +832,6 @@ if settings.DEBUG:
         re_path(r'^404/$', retail.views.handler404, name='404'),
         re_path(r'^500/$', retail.views.handler500, name='500'),
     ]
-
-urlpatterns += [
-    re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
-        dashboard.views.profile,
-        name='profile_min'
-    ),
-    re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
-        dashboard.views.profile,
-        name='profile_min'
-    ),
-]
 
 if settings.DEBUG:
     import debug_toolbar
