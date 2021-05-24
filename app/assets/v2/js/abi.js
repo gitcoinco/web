@@ -122,9 +122,9 @@ var token_distributor_address = function() {
   }
   switch (document.web3network) {
     case 'mainnet':
-      return '';
+      return '0xDE3e5a990bCE7fC60a6f017e7c4a95fc4939299E';
     case 'ropsten':
-      throw '0xDE3e5a990bCE7fC60a6f017e7c4a95fc4939299E';
+      throw 'this network is not supported for TokenDistributor gitcoin';
     case 'kovan':
       throw 'this network is not supported for TokenDistributor gitcoin';
     case 'rinkeby':
