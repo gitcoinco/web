@@ -58,9 +58,14 @@ class Command(BaseCommand):
                         tokens = float(row[2].replace(",",'').strip())
                         amount = int(round(tokens, round_to) * 10 ** decimals)
                         amount = amount - (amount % 10 ** 9) # handle floating arithmetic
+                        
                         # TODO: if delphi updates their spreadsheet remove this
                         if file == 'Intermediary Worksheet - KERNEL.csv':
                             amount = amount * 33.33333
+                        # handle invalid user ids
+                        if 'anonusergitcoin' in handle:
+                            handle = 'not_found'
+
                         outer_amount += amount
                         profile_id = -1
                         try:
