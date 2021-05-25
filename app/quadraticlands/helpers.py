@@ -118,7 +118,7 @@ def get_mission_status(request):
 
 @require_http_methods(["POST"])
 @login_required
-@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
+#@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def set_mission_status(request):
     '''When a mission is completed, the UI will POST here to flip game state completed True for a given mission'''
     if request.user.is_authenticated:
