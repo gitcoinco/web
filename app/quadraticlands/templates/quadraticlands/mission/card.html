@@ -1,0 +1,44 @@
+{% load static token_format %}
+
+
+{% if playable %}
+  <a href="{{url}}" {% if external %} target="_blank" {% endif %} data-kinetics-attraction
+    data-kinetics-attraction-chance="0.5" data-kinetics-attraction-force="1.5" data-kinetics-attraction-grow="2">
+{% endif %}
+
+    <div class="card {% if locked %}locked{% endif %} {% if playable %}playable{% endif %} {% if done %}done{% endif %}">
+      <div class="card-image">
+        <img loading="lazy" src='{% static "v2/images/quadraticlands/mission" %}/{{svg}}' />
+      </div>
+      <div class="card-body">
+        <div class="card-text">
+          <div class="card-title">{{name}}</div>
+          <div class="card-subtitle {% if playable %} active {% endif %}">
+            {{message}}
+  
+            {% if pending %}
+              <span class="additional-info">
+                ({{completed_missions}}/3 completed)
+              </span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-badges">
+
+          {% if done %}
+            <div class="card-badge done">{% include "quadraticlands/_inlinesvg/done.svg" %}</div>
+          {% endif %}
+
+          {% if tokens %}
+            <div class="card-badge gtc-token">
+              {% include "quadraticlands/_inlinesvg/gtctoken.svg" %}
+            </div>                 
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+{% if playable %}
+  </a>
+{% endif %}

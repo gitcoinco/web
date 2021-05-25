@@ -1,0 +1,26 @@
+#flashMessageContainer {
+  z-index: 10000;
+  position: fixed;
+  top: 1em;
+  right: 1em;
+
+  width: 300px;
+
+  div {
+    display: block;
+    background-color: var(--aqua_light);
+    color: var(--space);
+    line-height: 1.3em;
+    margin-bottom: 0.5em;
+
+    padding: 0.5em 1em;
+
+    font-size: 75%;
+    font-family: "Space Mono", monospace;
+    font-weight: 400;
+
+    transition: all 1s linear;
+
+    animation: colorcycle 1s ease-in-out infinite;
+  }
+}

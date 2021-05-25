@@ -579,13 +579,7 @@ def mission(request):
 
 
 def jobs(request):
-    job_listings = Job.objects.filter(active=True)
-    context = {
-        'active': 'jobs',
-        'title': 'Jobs',
-        'job_listings': job_listings
-    }
-    return TemplateResponse(request, 'jobs.html', context)
+    return redirect('https://angel.co/company/gitcoin/jobs')
 
 
 def avatar(request):
@@ -635,7 +629,7 @@ def products(request):
             'name': 'Discord',
             'heading': _("Reach your favorite Gitcoiner's in realtime.."),
             'description': _("Gitcoin Chat is hosted on Discord, and is an option to connect with your favorite Gitcoiners in realtime."),
-            'link': 'https://discord.gg/jWUzf7b8Yr',
+            'link': 'https://discord.gg/gitcoin',
             'img': static('v2/images/products/chat.png'),
             'logo': static('v2/images/helmet.svg'),
             'service_level': '',
@@ -1032,7 +1026,7 @@ def grant_redir(request):
 
 
 def help(request):
-    return redirect('/wiki/')
+    return redirect('/support/')
 
 
 def verified(request):
@@ -1188,19 +1182,19 @@ def wallpaper(request):
 
 
 def help_dev(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_pilot(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_repo(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_faq(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def browser_extension_chrome(request):
@@ -1278,7 +1272,7 @@ def twitter(request):
 
 
 def discord(request):
-    return redirect('https://discord.gg/jWUzf7b8Yr')
+    return redirect('https://discord.gg/gitcoin')
 
 
 def telegram(request):
@@ -1311,6 +1305,10 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def support(request):
+    return redirect('https://support.gitcoin.co/')
 
 
 @cached_view(timeout=60)

@@ -41,7 +41,7 @@ message. That signature is used to generate a private key, and each transfer the
 signatures&mdash;one from this private key, and as an additional security measure, one more from
 your regular web3 wallet. This is great from a security perspective, but not so great from a UX
 perspective. Requiring one signature for each transfer can be a pain if you want to send a lot of
-transfers, so you'd be doing a lot of clicking when checking out with large carts. 
+transfers, so you'd be doing a lot of clicking when checking out with large carts.
 
 To remedy this, we ask you to login to a "Gitcoin zkSync" account. This generates an L1 account
 that the Gitcoin frontend can use to sign transactions directly. The private key to this account is
@@ -53,7 +53,7 @@ there is no additional security risk.
 ### Checkout Flow
 
 Based on the items in your cart, we check your zkSync balances to see if you already have enough
-funds on zkSync to complete checkout. 
+funds on zkSync to complete checkout.
 
 If you do, the checkout flow is as follows:
 
@@ -76,7 +76,7 @@ If you do not have enough funds in your zkSync account to complete checkout, the
 2. Confirm one transaction for each required ERC20 approval (~25k–50k gas)
 3. Confirm one transaction to deposit funds into zkSync (~180k–200k gas)
 
-If you are only donating with one token, step 3 calls the deposit function directly on the 
+If you are only donating with one token, step 3 calls the deposit function directly on the
 [zkSync contract](https://etherscan.io/address/0xabea9132b05a70803a4e85094fd0e1800777fbef). If you
 are donating with multiple tokens, step 3 uses our
 [Batch ZkSync Deposit Contract](https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BatchZkSyncDeposit.sol)
@@ -174,5 +174,5 @@ For more information on the subminer for grants, checkout
 
 - https://github.com/gitcoinco/web/issues/2424
 - https://github.com/gitcoinco/web/pull/3055
-  https://discord.com/invite/83BK5z55yB
+  https://discord.gg/gitcoin
 - http://1337alliance.com
