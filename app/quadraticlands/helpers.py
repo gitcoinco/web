@@ -237,7 +237,7 @@ def vote(request):
     return JsonResponse(resp, status=200)
 
 @require_http_methods(["POST"])
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+# @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 @login_required
 def claim(request):
     '''
