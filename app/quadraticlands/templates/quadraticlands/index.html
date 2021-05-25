@@ -45,7 +45,7 @@
       <p class="no-margin">GTC is a governance token with no economic value.
         <br>
         <br>
-       GTC governs GitcoinDAO, where we work to decentralize grants, manage disputes, and govern the treasury.  With your help, we’re accelerating <a href=/results>progress</a> towards the <a href=/mission>mission of building & funding digital public goods</a> and decentralizing from web2 to web3. Let’s see what this thing can do.
+       GTC governs Gitcoin, where we work to decentralize grants, manage disputes, and govern the treasury.  With your help, we’re accelerating <a href=/results>progress</a> towards the <a href=/mission>mission of building & funding digital public goods</a> and decentralizing from web2 to web3. Let’s see what this thing can do.
       <BR><BR>
       GTC is deployed on the Ethereum mainnet at <a href=https://etherscan.io/address/0xde30da39c46104798bb5aa3fe8b9e0e1f348163f target="_blank">0xde30da39c46104798bb5aa3fe8b9e0e1f348163f</a>.
       </p>
@@ -126,7 +126,7 @@
       <h1>Welcome to the Quadratic Lands</h1>
       <p>Complete your first mission, “Proof of Knowledge,” to git your distribution of GTC.</p>
       <div style="margin-top:1.5em;">
-        <a href="/quadraticlands/mission" class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        <a href="{% url 'social:begin' 'github' %}?next={{request.scheme}}://{{request.get_host}}/quadraticlands/mission" class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
           data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">Get Started</a>
       </div>
     </div>

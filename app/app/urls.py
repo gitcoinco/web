@@ -62,7 +62,6 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
-    path('wiki/', include('wiki.urls')),
 
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
@@ -454,7 +453,7 @@ urlpatterns = [
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
-    re_path(r'^labs/?', dashboard.views.labs, name='labs'),
+    re_path(r'^labs/?$', dashboard.views.labs, name='labs'),
 
     # gas views
     url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
@@ -493,16 +492,16 @@ urlpatterns = [
     re_path(r'^learn/?$', retail.views.jtbd_learn, name='jtbd_learn'),
     re_path(r'^connect/?$', retail.views.jtbd_connect, name='jtbd_connect'),
     re_path(r'^fund/?$', retail.views.jtbd_fund, name='jtbd_fund'),
-    re_path(r'^about/?', retail.views.about, name='about'),
-    re_path(r'^mission/?', retail.views.mission, name='mission'),
-    re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
-    re_path(r'^products/?', retail.views.products, name='products'),
+    re_path(r'^about/?$', retail.views.about, name='about'),
+    re_path(r'^mission/?$', retail.views.mission, name='mission'),
+    re_path(r'^jobs/?$', retail.views.jobs, name='jobs'),
+    re_path(r'^products/?$', retail.views.products, name='products'),
     re_path(r'^landing/avatar/?', retail.views.avatar, name='avatar_landing'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
-    re_path(r'^results/?', retail.views.results, name='results'),
-    re_path(r'^activity/?', retail.views.activity, name='activity'),
-    re_path(r'^townsquare/?', townsquare.views.town_square, name='townsquare'),
+    re_path(r'^results/?$', retail.views.results, name='results'),
+    re_path(r'^activity/?$', retail.views.activity, name='activity'),
+    re_path(r'^townsquare/?$', townsquare.views.town_square, name='townsquare'),
     re_path(r'^$', retail.views.index, name='index'),
     re_path(r'^styleguide/components/?', retail.views.styleguide_components, name='styleguide_components'),
     path('action/<int:offer_id>/<slug:offer_slug>/go', townsquare.views.offer_go, name='townsquare_offer_go'),
@@ -519,7 +518,7 @@ urlpatterns = [
     url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
     url(r'^help/portal/?', retail.views.portal, name='portal'),
     url(r'^help/pilot/?', retail.views.help_pilot, name='help_pilot'),
-    url(r'^help/?', retail.views.help, name='help'),
+    url(r'^help/?$', retail.views.help, name='help'),
     url(r'^docs/onboard/?', retail.views.onboard, name='onboard_doc'),
     url(r'^extension/chrome/?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox/?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
@@ -532,35 +531,37 @@ urlpatterns = [
     path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
 
     # basic redirect retail views
-    re_path(r'^press/?', retail.views.presskit, name='press'),
-    re_path(r'^presskit/?', retail.views.presskit, name='presskit'),
-    re_path(r'^verified/?', retail.views.verified, name='verified'),
-    re_path(r'^community/?', retail.views.community, name='community'),
-    re_path(r'^slack/?', retail.views.slack, name='slack'),
-    re_path(r'^blog/?', retail.views.blog, name='blog'),
-    re_path(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
-    re_path(r'^itunes/?', retail.views.itunes, name='itunes'),
-    re_path(r'^podcast/?', retail.views.podcast, name='podcast'),
-    re_path(r'^casestudy/?', retail.views.casestudy, name='casestudy'),
-    re_path(r'^casestudies/?', retail.views.casestudy, name='casestudies'),
-    re_path(r'^schwag/?', retail.views.schwag, name='schwag'),
-    re_path(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
-    re_path(r'^reddit/?', retail.views.reddit, name='reddit'),
-    re_path(r'^calendar/?', retail.views.calendar, name='calendar'),
-    re_path(r'^livestream/?', retail.views.calendar, name='livestream'),
-    re_path(r'^feedback/?', retail.views.feedback, name='feedback'),
-    re_path(r'^telegram/?', retail.views.telegram, name='telegram'),
-    re_path(r'^twitter/?', retail.views.twitter, name='twitter'),
-    re_path(r'^discord/?', retail.views.discord, name='discord'),
-    re_path(r'^wallpaper/?', retail.views.wallpaper, name='wallpaper'),
-    re_path(r'^wallpapers/?', retail.views.wallpaper, name='wallpapers'),
-    re_path(r'^gitter/?', retail.views.gitter, name='gitter'),
-    re_path(r'^refer/?', retail.views.refer, name='refer'),
-    re_path(r'^fb/?', retail.views.fb, name='fb'),
-    re_path(r'^medium/?', retail.views.medium, name='medium'),
-    re_path(r'^github/?', retail.views.github, name='github'),
-    re_path(r'^youtube/?', retail.views.youtube, name='youtube'),
-    re_path(r'^web3$/?', retail.views.web3, name='web3'),
+    re_path(r'^press/?$', retail.views.presskit, name='press'),
+    re_path(r'^presskit/?$', retail.views.presskit, name='presskit'),
+    re_path(r'^verified/?$', retail.views.verified, name='verified'),
+    re_path(r'^community/?$', retail.views.community, name='community'),
+    re_path(r'^slack/?$', retail.views.slack, name='slack'),
+    re_path(r'^blog/?$', retail.views.blog, name='blog'),
+    re_path(r'^submittoken/?$', retail.views.newtoken, name='newtoken'),
+    re_path(r'^itunes/?$', retail.views.itunes, name='itunes'),
+    re_path(r'^podcast/?$', retail.views.podcast, name='podcast'),
+    re_path(r'^casestudy/?$', retail.views.casestudy, name='casestudy'),
+    re_path(r'^casestudies/?$', retail.views.casestudy, name='casestudies'),
+    re_path(r'^schwag/?$', retail.views.schwag, name='schwag'),
+    re_path(r'^btctalk/?$', retail.views.btctalk, name='btctalk'),
+    re_path(r'^reddit/?$', retail.views.reddit, name='reddit'),
+    re_path(r'^calendar/?$', retail.views.calendar, name='calendar'),
+    re_path(r'^livestream/?$', retail.views.calendar, name='livestream'),
+    re_path(r'^feedback/?$', retail.views.feedback, name='feedback'),
+    re_path(r'^telegram/?$', retail.views.telegram, name='telegram'),
+    re_path(r'^twitter/?$', retail.views.twitter, name='twitter'),
+    re_path(r'^discord/?$', retail.views.discord, name='discord'),
+    re_path(r'^wallpaper/?$', retail.views.wallpaper, name='wallpaper'),
+    re_path(r'^wallpapers/?$', retail.views.wallpaper, name='wallpapers'),
+    re_path(r'^gitter/?$', retail.views.gitter, name='gitter'),
+    re_path(r'^refer/?$', retail.views.refer, name='refer'),
+    re_path(r'^fb/?$', retail.views.fb, name='fb'),
+    re_path(r'^medium/?$', retail.views.medium, name='medium'),
+    re_path(r'^github/?$', retail.views.github, name='github'),
+    re_path(r'^youtube/?$', retail.views.youtube, name='youtube'),
+    re_path(r'^web3/?$', retail.views.web3, name='web3'),
+    re_path(r'^support/?$', retail.views.support, name='support'),
+
 
     # increase funding limit
     re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
@@ -770,7 +771,7 @@ urlpatterns = [
     re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
     url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
-    # quadratic lands 
+    # quadratic lands
     path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
     re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
     re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
@@ -815,24 +816,10 @@ urlpatterns = [
     url(r'^api/v0.1/bounty_mentor/', dashboard.views.bounty_mentor, name='bounty_mentor'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 
-    # wiki
-    path('wiki/notifications/', include('django_nyt.urls')),
 ]
 
 if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
-
-if not settings.AWS_STORAGE_BUCKET_NAME:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# If running in DEBUG, expose the error handling pages.
-if settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^400/$', retail.views.handler400, name='400'),
-        re_path(r'^403/$', retail.views.handler403, name='403'),
-        re_path(r'^404/$', retail.views.handler404, name='404'),
-        re_path(r'^500/$', retail.views.handler500, name='500'),
-    ]
 
 urlpatterns += [
     re_path(
@@ -846,6 +833,18 @@ urlpatterns += [
         name='profile_min'
     ),
 ]
+
+if not settings.AWS_STORAGE_BUCKET_NAME:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# If running in DEBUG, expose the error handling pages.
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^400/$', retail.views.handler400, name='400'),
+        re_path(r'^403/$', retail.views.handler403, name='403'),
+        re_path(r'^404/$', retail.views.handler404, name='404'),
+        re_path(r'^500/$', retail.views.handler500, name='500'),
+    ]
 
 if settings.DEBUG:
     import debug_toolbar

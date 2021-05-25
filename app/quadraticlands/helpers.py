@@ -111,7 +111,8 @@ def get_mission_status(request):
         "id" : False,
         "proof_of_use" : False,
         "proof_of_knowledge" : False,
-        "proof_of_receive" : False
+        "proof_of_receive" : False,
+        "completed_missions": 0
     }
     return no_game_state
 

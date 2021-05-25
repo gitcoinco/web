@@ -139,7 +139,6 @@
                     </div>
                   </a>
 
-                  {% comment %}
                   <a class="dropdown-item text-grey-500 px-3 py-0" href="{% url "quadraticlands:quadraticlands" %}">
                     <div class="row">
                       <div class="col align-self-center" style="max-width: 3.25rem;">
@@ -155,7 +154,6 @@
                       </div>
                     </div>
                   </a>
-                  {% endcomment %}
 
                 </div>
               </div>
@@ -357,7 +355,7 @@
                 </div>
               </a>
 
-              <a class="dropdown-item text-grey-500 px-3 py-0" href="https://discord.com/invite/83BK5z55yB">
+              <a class="dropdown-item text-grey-500 px-3 py-0" href="https://discord.gg/gitcoin">
                 <div class="row py-3">
                   <div class="col align-self-center" style="max-width: 3.25rem;">
                     <svg width="32" height="36" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -394,14 +392,9 @@
                       <i class="fal fa-analytics gc-menu-icon"></i>{% trans "Results" %}
                     </a>
                   </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'products' %}">
-                      <i class="fal fa-inventory gc-menu-icon"></i>{% trans "Products" %}
-                    </a>
-                  </li>
                 </ul>
 
-                <ul class="col-6 list-unstyled pl-0">
+                <ul class="col-6 list-unstyled pl-0 mb-0">
 
                   <li>
                     <a class="dropdown-item" href="{% url "blog" %}">
@@ -414,8 +407,8 @@
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="/wiki">
-                      <i class="fab fa-wikipedia-w gc-menu-icon"></i>{% trans "Wiki" %}
+                    <a class="dropdown-item" href="{% url "support" %}">
+                      <i class="fal fa-ticket-alt gc-menu-icon"></i>{% trans "Support" %}
                     </a>
                   </li>
                 </ul>

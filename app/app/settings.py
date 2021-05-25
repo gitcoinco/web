@@ -21,19 +21,17 @@ import json
 import os
 import socket
 import subprocess
+import warnings
 
 from django.utils.translation import gettext_noop
 
 import environ
 import raven
 import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.celery import CeleryIntegration
-
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
-
-import warnings
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
 
