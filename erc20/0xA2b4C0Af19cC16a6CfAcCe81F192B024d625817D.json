@@ -1,0 +1,23 @@
+{
+  "symbol": "KISHU",
+  "address": "0xA2b4C0Af19cC16a6CfAcCe81F192B024d625817D",
+  "overview":{
+        "en": "Kishu Inu (KISHU) is a community-focused, decentralized cryptocurrency with instant rewards for holders.",
+        "zh": "Kishu Inu（KISHU）是一种以社区为中心的分散式加密货币，可为持有人提供即时奖励。"
+  },
+  "email": "",
+  "website": "https://kishu.com/",
+  "whitepaper": "https://kishu.com/whitepaper/KishuInuWhitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-04-17",
+  "initial_price":{
+        
+  },
+  "links": {
+    "twitter": "https://twitter.com/inukishu",
+    "telegram": "https://t.me/kishuinucommunity",
+    "github": "https://github.com/Kishu-Inu/Kishu-Inu-Contracts",
+    "reddit": "https://www.reddit.com/r/KishuInu/",
+    "medium": "https://medium.com/coinmonks/kishu-inu-token-everything-about-it-798dc0ae6a43"
+  }
+}
