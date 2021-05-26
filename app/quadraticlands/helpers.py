@@ -191,7 +191,7 @@ def get_initial_dist_breakdown(request):
             'GMV': int(initial_dist["GMV"]) / 10**18
         }
     except Exception as e: # if user doesn't have a token claim record in DB
-        logger.error(f'QuadLands: Error getting initial dist: {e}')
+        # logger.error(f'QuadLands: Error getting initial dist: {e}')
         context = {
             'active_user': 0,
             'kernel': 0,
