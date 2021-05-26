@@ -1,0 +1,20 @@
+{
+  "symbol": "GTC",
+  "address": "0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F",
+  "overview":{
+        "en": "GTC is a governance token of Gitcoin. GTC can be used for governance voting and treasury governance for Gitcoin DAO",
+        "zh": "GTC 是 Gitcoin 的治理代币。GTC 可用于 Gitcoin DAO 的投票治理与财库管理。"
+  },
+  "email": "founders@gitcoin.co",
+  "website": "https://gitcoin.co/quadraticlands/",
+  "whitepaper": "",
+  "state": "NORMAL",
+  "published_on": "2020-05-26",
+  "links": {
+    "blog": "https://gitcoin.co/blog/",
+    "twitter": "https://twitter.com/gitcoin",
+    "github": "https://github.com/gitcoinco/web",
+    "facebook": "https://www.facebook.com/GetGitcoin/",
+    "reddit": "https://www.reddit.com/r/gitcoincommunity"
+  }
+}
