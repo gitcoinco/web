@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   delegate_input.addEventListener('input', () => {
     delegate_button.classList.add('disabled');
     // check if this address is a valid address
-    if (web3.utils.toChecksumAddress(delegate_input.value)) {
+    if (web3.utils && web3.utils.toChecksumAddress(delegate_input.value)) {
       delegate_button.classList.remove('disabled');
     }
   });
