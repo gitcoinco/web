@@ -61,13 +61,13 @@ faqs = [
         'question': 'Where does governance happen?',
         'answer': '''<p><li><a href='http://Discord.gg/gitcoin'>Discord</a> is for chatting with your peers and building soft consensus on your ideas. </li>
 <li><a href='https://gov.gitcoin.co/'>Gov.gitcoin.co</a> is where governance proposals and discussion happens.</li>
-<li><a href='https://snapshot.org/#/gitcoin'>Snapshot</a> is used for off-chain voting and discussion.</li>
+<li><a href='https://snapshot.org/#/gitcoindao.eth'>Snapshot</a> is used for off-chain voting and discussion.</li>
 <li><a href='https://www.withtally.com/governance/gitcoin'>Tally</a> is used for on-chain voting.</li></p>'''
     },
     {
         'position': '9',
         'question': 'How do I get involved in governance?',
-        'answer': '''Join <a href='http://Discord.gg/gitcoin'>Discord</a> to engage with the community. If you have tokens, delegate them to a community Steward or to yourself if you wish to participate as a Steward. Discuss governance proposals on <a href='https://gov.gitcoin.co/'>gov.gitcoin.co</a>,  or vote on Snapshot <a href='https://snapshot.org/#/gitcoin'>Snapshot</a>, or <a href='https://www.withtally.com/governance/gitcoin'>Tally</a>.'''
+        'answer': '''Join <a href='http://Discord.gg/gitcoin'>Discord</a> to engage with the community. If you have tokens, delegate them to a community Steward or to yourself if you wish to participate as a Steward. Discuss governance proposals on <a href='https://gov.gitcoin.co/'>gov.gitcoin.co</a>,  or vote on Snapshot <a href='https://snapshot.org/#/gitcoindao.eth'>Snapshot</a>, or <a href='https://www.withtally.com/governance/gitcoin'>Tally</a>.'''
     },
     {
         'position': '10',
