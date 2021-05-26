@@ -1,0 +1,25 @@
+{
+  "symbol": "CART",
+  "address": "0x5C8C8D560048F34E5f7f8ad71f2f81a89DBd273e",
+  "overview":{
+        "en": "CryptoArt.Ai is well-known decentralized NFT crypto digital art trading platform in Asia, which based on ERC721 protocol, integrate NFT creation, sale, auction, collection and transfer.",
+        "zh": "CryptoArt.Ai是亚洲知名去中心化NFT加密数字艺术品交易平台，其交易量位居亚洲榜首，基于以太坊ERC-721协议，集NFT生成、销售、拍卖、收藏、转让为一体。"
+  },
+  "email": "Support@cryptoart.ai",
+  "website": "https://cryptoart.ai",
+  "whitepaper": "https://file.cryptoart.ai/whitepaper/CryptoArt.Ai_white_paper_en.pdf",
+  "whitepaper_cn": "https://file.cryptoart.ai/whitepaper/CryptoArt.Ai_white_paper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2021-04-07",
+  "links": {
+    "blog": "https://cryptoart.ai",
+    "twitter": "https://twitter.com/CryptoArt_Ai",
+    "telegram": "https://t.me/cryptoartai",
+    "github": "https://cryptoart.ai",
+    "facebook": "https://cryptoart.ai",
+    "reddit": "https://cryptoart.ai",
+    "slack": "https://cryptoart.ai",
+    "medium": "https://cryptoart.ai",
+    "instagram": "https://cryptoart.ai"
+  }
+}
