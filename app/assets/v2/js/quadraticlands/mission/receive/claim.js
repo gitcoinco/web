@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // bann & forward zerotoken-claimers
   let total_claimable_gtc = document.getElementById('total_claimable_gtc');
-  if (total_claimable_gtc.dataset.total_claimable_gtc == 0) { updateInterface('zerotokens'); }
+
+  if (total_claimable_gtc.dataset.total_claimable_gtc == 0) {
+    updateInterface('zerotokens');
+  }
 
   window.addEventListener('dataWalletReady', function(e) {
 
@@ -370,7 +373,6 @@ function updateInterface(status = 'init', transactionHash = '') {
     });
 
   }
-
 
 
 }
