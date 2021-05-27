@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   updateInterface('init');
 
+  // bann & forward zerotoken-claimers
+  let total_claimable_gtc = document.getElementById('total_claimable_gtc');
+
+  if (total_claimable_gtc.dataset.total_claimable_gtc == 0) {
+    updateInterface('zerotokens');
+  }
+
   window.addEventListener('dataWalletReady', function(e) {
 
     // show selectedAccount in textarea claim_address
@@ -192,6 +199,7 @@ function updateInterface(status = 'init', transactionHash = '') {
   const view_claimed = document.getElementById('claimed');
   const view_error = document.getElementById('error');
   const esms_down = document.getElementById('esms_down');
+  const zerotokens = document.getElementById('zerotokens');
 
   const blockExplorerName = 'Etherscan';
 
@@ -212,6 +220,7 @@ function updateInterface(status = 'init', transactionHash = '') {
     view_claimed.classList.add('hide');
     view_error.classList.add('hide');
     esms_down.classList.add('hide');
+    zerotokens.classList.add('hide');
 
     // dynamic bottom bar
     divClaimButton.classList.remove('hide');
@@ -236,6 +245,7 @@ function updateInterface(status = 'init', transactionHash = '') {
     view_claimed.classList.add('hide');
     esms_down.classList.add('hide');
     view_error.classList.add('hide');
+    zerotokens.classList.add('hide');
 
     // dynamic bottom bar
     divClaimButton.classList.add('hide');
@@ -269,6 +279,7 @@ function updateInterface(status = 'init', transactionHash = '') {
     view_claimed.classList.remove('hide');
     esms_down.classList.add('hide');
     view_error.classList.add('hide');
+    zerotokens.classList.add('hide');
 
     // dynamic bottom bar
     divClaimButton.classList.add('hide');
@@ -293,6 +304,7 @@ function updateInterface(status = 'init', transactionHash = '') {
     view_claimed.classList.add('hide');
     esms_down.classList.add('hide');
     view_error.classList.remove('hide');
+    zerotokens.classList.add('hide');
 
     // dynamic bottom bar
     divClaimButton.classList.add('hide');
@@ -318,6 +330,7 @@ function updateInterface(status = 'init', transactionHash = '') {
     view_claimed.classList.add('hide');
     view_error.classList.add('hide');
     esms_down.classList.remove('hide');
+    zerotokens.classList.add('hide');
 
     // dynamic bottom bar
     divClaimButton.classList.add('hide');
@@ -335,4 +348,31 @@ function updateInterface(status = 'init', transactionHash = '') {
     // notification
     flashMessage('Error', 5000);
   }
+
+
+  if (status == 'zerotokens') {
+    // switch view to
+    view_claim.classList.add('hide');
+    view_claiming.classList.add('hide');
+    view_claimed.classList.add('hide');
+    view_error.classList.add('hide');
+    esms_down.classList.add('hide');
+    zerotokens.classList.remove('hide');
+
+    // dynamic bottom bar
+    divClaimButton.classList.add('hide');
+    divClaimingSpinner.classList.add('hide');
+    divClaimedButton.classList.add('hide');
+
+    // particles
+    window.kinetics.set({
+      particles: {
+        sizes: { min: 5, max: 10 }, rotate: { speed: 3 },
+        mode: { type: 'space', boundery: 'endless', speed: '10' }
+      }
+    });
+
+  }
+
+
 }

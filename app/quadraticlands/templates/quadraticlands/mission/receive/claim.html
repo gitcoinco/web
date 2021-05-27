@@ -5,6 +5,11 @@
 <!-- hide footer, header as this is a fullscreen experience -->
 {% include 'quadraticlands/components/fullscreen.html' %}
 
+
+<!--  total_claimable_gtc available in jscript via data-atributes -->
+<div id="total_claimable_gtc" class="hide" data-total_claimable_gtc="{{total_claimable_gtc}}"></div>
+
+
 <section class="quest">
 
   <!-- view : claim -->
@@ -95,6 +100,20 @@
       </div>
     </div>
   </main>
+
+  <!-- view : error - zerotokens -->
+  <main id="zerotokens" class="hide">
+    <div class="quest-claim">
+      <div class="error glass">
+        <h3>Error</h3>
+        <p>There are no GTC associated with your account. Earn GTC by getting active on <a target="_blank" href="https://gov.gitcoin.co">gov.gitcoin.co</a></p>
+        <a class="btn" href="/quadraticlands/mission/receive/outro" data-kinetics-attraction
+          data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1"
+          data-kinetics-attraction-size="200">Continue</a>
+      </div>
+    </div>
+  </main>
+
 
   <!-- timer / separator -->
   <div class="seperator"></div>

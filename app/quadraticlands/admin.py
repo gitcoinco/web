@@ -7,19 +7,19 @@ from quadraticlands.models import (
 
 class InitialTokenDistributionAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
-    search_fields = ['profile']
+    search_fields = ['profile__handle']
     list_display = ['id', 'profile', 'claim_total']
 
 
 class MissionStatusAdmin(admin.ModelAdmin):
-    search_fields = ['profile']
+    search_fields = ['profile__handle']
     list_display = ['id', 'profile', 'proof_of_use', 'proof_of_receive', 'proof_of_knowledge']
     raw_id_fields = ['profile']
 
 
 class GTCStewardAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
-    search_fields = ['profile']
+    search_fields = ['profile__handle']
     list_display = ['id', 'profile', 'real_name', 'profile_link']
 
 
@@ -34,7 +34,7 @@ class QLVoteAdmin(admin.ModelAdmin):
 
 class SchwagCouponAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
-    search_fields = ['profile', 'coupon_code', 'discount_type']
+    search_fields = ['profile__handle', 'coupon_code', 'discount_type']
     list_display = ['id', 'discount_type', 'coupon_code', 'profile']
 
 

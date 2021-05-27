@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // this is JUST to SHOW AND HIDE the div "#wallet-provider"
   // nothing more nothing less !!!!
 
-  const navWallet = document.getElementById('nav-wallet');
+  const navbarDropdownWallet = document.getElementById('navbarDropdownWallet');
   const walletProvider = document.getElementById('wallet-provider');
   const closeWalletProvider = document.getElementById('close-wallet-provider');
 
-  if (navWallet) {
-    navWallet.addEventListener('click', () => {
+  if (navbarDropdownWallet) {
+    navbarDropdownWallet.addEventListener('click', () => {
       walletProvider.classList.toggle('active');
     });
 
