@@ -2017,12 +2017,20 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
     * Add additional filters.</p>
 <p>Returns:
     QuerySet: The Grant queryset.</p>
-<h3 id="grants.router.GrantViewSet.report_real">report_real</h3>
+<h3 id="grants.router.GrantViewSet.contributions_rec_report">contributions_rec_report</h3>
 
-<pre><code class="python">GrantViewSet.report_real(self, request)
+<pre><code class="python">GrantViewSet.contributions_rec_report(self, request)
 </code></pre>
 
-<p>Generate Grants report for an ethereum address</p>
+<p>Genrate Grantee Report for an Grant
+URL: api/v0.1/grants/contributions_rec_report/?id=<grant-id>&amp;format=json</p>
+<h3 id="grants.router.GrantViewSet.contributions_sent_report">contributions_sent_report</h3>
+
+<pre><code class="python">GrantViewSet.contributions_sent_report(self, request)
+</code></pre>
+
+<p>Generate report for grant contributions made by an address
+URL: api/v0.1/grants/contributions_sent_report/?address=<address>&amp;format=json</p>
                 
                   
                 
