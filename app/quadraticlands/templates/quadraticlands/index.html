@@ -1,0 +1,147 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n bundle %}
+
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Gitcoin Quadratic Lands" />
+<meta name="twitter:description"
+  content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web." />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- HERO IMAGE -->
+
+<section class="hero" data-kinetics-mode data-kinetics-mode-type="party" data-kinetics-mode-speed="2">
+  <div class="background" style="z-index: -5555">
+    <!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+    {% include "quadraticlands/_inlinesvg/town.svg" %}
+  </div>
+
+  <div class="content pushdown">
+    <h1><span>With the launch of GTC, we are embarking on our second chapter: to build a DAO of DAOs, funding the future of the open web.</span></h1>
+    <a href="{% url 'social:begin' 'github' %}?next={{request.scheme}}://{{request.get_host}}/quadraticlands/mission"
+    class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+      data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">Get started</a>
+  </div>
+</section>
+
+
+
+<!-- TOKEN -->
+<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="2">
+  <section class="grid reverse">
+    <figure>
+      <img loading="lazy" src="{% static "v2/images/quadraticlands/landing/token.svg" %}" />
+    </figure>
+
+    <div>
+      <h3><span>#</span>GTC</h3>
+      <h1>Gitcoin’s token is here</h1>
+      <p class="no-margin">GTC is a governance token with no economic value.
+        <br>
+        <br>
+       GTC governs Gitcoin, where we work to decentralize grants, manage disputes, and govern the treasury.  With your help, we’re accelerating <a href=/results>progress</a> towards the <a href=/mission>mission of building & funding digital public goods</a> and decentralizing from web2 to web3. Let’s see what this thing can do.
+      <BR><BR>
+      GTC is deployed on the Ethereum mainnet at <a href=https://etherscan.io/address/0xde30da39c46104798bb5aa3fe8b9e0e1f348163f target="_blank">0xde30da39c46104798bb5aa3fe8b9e0e1f348163f</a>.
+      </p>
+    </div>
+  </section>
+</article>
+
+
+
+
+<!-- GOVERNANCE -->
+<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="2">
+  <section class="grid">
+
+    <figure class="laptop-cover tablet-cover phone-cover ">
+
+      <img loading="lazy" src="{% static "v2/images/quadraticlands/landing/governance.svg" %}" />
+    </figure>
+
+    <div>
+      <h3><span>#</span>Governance</h3>
+      <h1>We’re in this together</h1>
+      <p class="no-margin">We believe that Gitcoin’s future is a community-centric, self-governing DAO that generates funding for public goods. GTC is the first step on our path towards <a href="https://gov.gitcoin.co/t/workstream-suggestion-decentralize-gitcoin/180">progressive decentralization</a> of Gitcoin. Each voice in the community has the power to shape our future. </p>
+    </div>
+
+  </section>
+</article>
+
+
+
+<!-- PORTAL -->
+<article>
+  <section class="grid reverse">
+
+    <figure>
+      <img loading="lazy" src="{% static "v2/images/quadraticlands/landing/quadratic.svg" %}" />
+    </figure>
+
+    <div>
+      <h3><span>#</span>Quadratic Voting</h3>
+      <h1>Where you’ll always have a voice</h1>
+      <p class="no-margin">Quadratic Funding (QF) is the mathematically optimal way to fund public goods in a democratic community because it prohibits whales and central power brokers from controlling the ecosystem. This distributes power back to each community member. 
+        <br>
+        <br>
+      Similarly, Quadratic Voting (QV) is an optimal mechanism for democratic governance. Implementing QV for governance is a <a href="https://gov.gitcoin.co">proposed milestone</a> on Gitcoin’s decentralization timeline.</p>
+    </div>
+
+  </section>
+</article>
+
+
+
+<!-- INFORMATION AGE -->
+<article data-kinetics-mode data-kinetics-mode-type="wind-from-right" data-kinetics-mode-speed="7">
+  <section id="unicorn" class="grid">
+
+    <figure class="floating" data-kinetics-attraction data-kinetics-attraction-chance=".5"
+      data-kinetics-attraction-force="1.6" data-kinetics-attraction-grow="7">
+      <img loading="lazy" src="{% static "v2/images/quadraticlands/landing/uni.svg" %}" />
+    </figure>
+
+    <div>
+      <h3><span>#</span>Information Age</h3>
+      <h1>Powering Public Goods in the Information Age</h1>
+      <p class="no-margin">Open Source Software is a public good. Its funding is one of the information age’s most critical, yet unsolved <a href="https://newsletter.banklesshq.com/p/know-thy-enemy-coordination-failures" target="blank">coordination problems</a>. It is in Gitcoin's DNA to build & fund the open web, and we are committed to solving this problem. We aspire to demonstrate a sustainable & decentralized model for building public goods.</p>
+    </div>
+
+  </section>
+</article>
+
+
+
+<!-- MISSION -->
+<article class="gap">
+  <section class="column centered">
+    <div>
+      <h3><span>#</span>Earn your first Tokens</h3>
+      <h1>Welcome to the Quadratic Lands</h1>
+      <p>Complete your first mission, “Proof of Knowledge,” to git your distribution of GTC.</p>
+      <div style="margin-top:1.5em;">
+        <a href="{% url 'social:begin' 'github' %}?next={{request.scheme}}://{{request.get_host}}/quadraticlands/mission" class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+          data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">Get Started</a>
+      </div>
+    </div>
+  </section>
+</article>
+
+
+<!-- end wind -->
+<div data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="2"></div>
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+<script src="{% static "v2/js/quadraticlands/index.js" %}"></script>
+
+{% endblock %}

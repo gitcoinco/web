@@ -2,12 +2,55 @@
   color: #4a4a4a;
 }
 
-.presskit .presskit_section:nth-of-type(even) {
-  background-color: #f9f9f9;
+.presskit-link {
+  color: #ffffff;
 }
 
-.presskit h2 {
-  color: #43484d;
+.presskit-link:hover {
+  color: #02E2AC;
+  text-decoration: none;
+}
+
+.padding-zero {
+  padding: 0;
+}
+
+.list-group {
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.list-group-item {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #8C65F7;
+}
+
+.h2-default {
+  color: #212529;
+}
+
+.h2-inverse {
+  color: #ffffff;
+}
+
+.body-large {
+  color:#5932C4;
+  font-size: 2rem;
+  font-family: "Libre Franklin", sans-serif;
+}
+
+.bg-light-purple {
+  background-color: #F5F2FF;
+}
+
+.bg-dark-purple {
+  background-color: #5932C4;
+}
+
+.no-border {
+  border: none;
 }
 
 .color-card > .card-header {
@@ -37,8 +80,45 @@
   font-size: 80%;
 }
 
+.presskit_hero_svg{
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 20rem;
+}
+
 .presskit_svg {
   width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 15rem;
+  padding: 2rem;
+}
+
+.resource_svg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 20rem;
+}
+
+.satellite_svg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 25rem;
+}
+
+.spaceship_svg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 18rem;
+  padding: 2rem;
+}
+
+.figma_svg {
+  width: 75%;
   height: auto;
   object-fit: contain;
   max-height: 15rem;

@@ -1,0 +1,61 @@
+.btn {
+  margin: 0;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+  margin-bottom: 1rem;
+
+  display: inline-block;
+  padding: 0.66rem 1.66em;
+  font-size: 100%;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  line-height: 1.5em;
+
+  background-color: var(--pink_light);
+  color: var(--space);
+
+  user-select: none;
+  border-radius: 4px;
+
+  &:hover {
+    animation: colorcycle 1s ease-in-out infinite;
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: none;
+    color: var(--space);
+  }
+}
+
+/* sizes */
+
+.btn.sm {
+  padding: 0.3rem 1em;
+  font-size: 80%;
+}
+
+/* colors */
+
+.btn.disabled {
+  background-color: var(--smoke);
+  cursor: default;
+  &:hover {
+    animation: initial;
+  }
+}
+
+.btn.purple {
+  background-color: var(--purple_light);
+}
+
+.btn.aqua {
+  background-color: var(--aqua_light);
+}
+
+.btn.twitter {
+  background-color: var(--twitter);
+}

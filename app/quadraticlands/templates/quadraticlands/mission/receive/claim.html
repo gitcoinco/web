@@ -1,0 +1,178 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n token_format %}
+
+{% block 'content' %}
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+<!--  total_claimable_gtc available in jscript via data-atributes -->
+<div id="total_claimable_gtc" class="hide" data-total_claimable_gtc="{{total_claimable_gtc}}"></div>
+
+
+<section class="quest">
+
+  <!-- view : claim -->
+  <main id="claim" class="hide">
+    <div class="quest-claim">
+      <div class="claim glass">
+        <h3>Token Distribution</h3>
+
+        <!-- claim and delegate address -->
+        <div class="addresses">
+
+          <div class="claim_address">
+            <p>Send Tokens to</p>
+            <div>
+              <textarea id="claim_address" name="claim_address" readonly></textarea>
+            </div>
+
+          </div>
+
+          <div class="delegate_address">
+            <p>Delegation Address</p>
+            <div>
+              <textarea id="delegate_address" name="delegate_address"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- details why you get X tokens -->
+        <div id="claimListing" class="grid">
+          <span class="description">Active User</span><span class="token">+{{ active_user | floatformat:2 }}</span>
+          <span class="description">Kernel</span><span class="token">+{{ kernel | floatformat:2 }}</span>
+          <span class="description">GMV</span><span class="token">+{{ GMV | floatformat:2 }}</span>
+        </div>
+
+        <!-- sum of this X tokens -->
+        <div id="claimListingTotal" class="grid total">
+          <span class="description">Total</span><span class="token">+ {{ total_claimable_gtc | token_format }}
+            GTC</span>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- view : claiming -->
+  <main id="claiming" class="hide">
+    <div class="quest-claim">
+      <div class="claiming glass" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1" data-kinetics-attraction-grow="3">
+        <h3>Claiming <span>(Pending)</span></h3>
+        <figure><img src="{% static "v2/images/quadraticlands/landing/uni.svg" %}" /></figure>
+        <h1>+{{ total_claimable_gtc | token_format }} GTC</h1>
+        <p>Your governance tokens are on the way. <span id="transaction_link_pending"></span></p>
+      </div>
+    </div>
+  </main>
+
+  <!-- view : claimed -->
+  <main id="claimed" class="hide">
+    <div class="quest-claim">
+      <div class="claimed glass" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1" data-kinetics-attraction-grow="3">
+        <h3>Claimed</h3>
+        <figure><img loading="lazy" src="{% static "v2/images/quadraticlands/landing/uni.svg" %}" /></figure>
+        <h1>+{{ total_claimable_gtc | token_format }} GTC</h1>
+        <p>You successfully claimed your GTC tokens. <span id="transaction_link_success"></span></p>
+      </div>
+    </div>
+  </main>
+
+  <!-- view : error -->
+  <main id="error" class="hide">
+    <div class="quest-claim">
+      <div class="error glass">
+        <h3>Error</h3>
+        <p>We're sorry, we were not able to process your claim. Please check <span id="transaction_link_error"></span> for more info, try again, and/or ask for help in <a target="_blank" href="https://discord.gg/gitcoin">discord</a>.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- view : esms_down -->
+  <main id="esms_down" class="hide">
+    <div class="quest-claim">
+      <div class="error glass">
+        <h3>Error</h3>
+        <p>We're sorry, but your claim request could not be processed. Please contact us in <a
+            target="_blank" href="https://discord.gg/gitcoin">Discord</a> if you need help.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- view : error - zerotokens -->
+  <main id="zerotokens" class="hide">
+    <div class="quest-claim">
+      <div class="error glass">
+        <h3>Error</h3>
+        <p>There are no GTC associated with your account. Earn GTC by getting active on <a target="_blank" href="https://gov.gitcoin.co">gov.gitcoin.co</a></p>
+        <a class="btn" href="/quadraticlands/mission/receive/outro" data-kinetics-attraction
+          data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1"
+          data-kinetics-attraction-size="200">Continue</a>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- timer / separator -->
+  <div class="seperator"></div>
+
+  <!-- bottom navigation -->
+  <nav class="glass">
+
+    <div class="left">
+      <a href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">Exit</a>
+    </div>
+
+    <div class="center">
+      Proof of Receive
+    </div>
+
+    <div class="right">
+
+      <!-- a div to appear when claim:status claim -->
+      <div id="divClaimButton" class="hide">
+        {% if request.user and not request.user.is_impersonate %}
+          <a id="beginClaim" class="btn" href="#" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">Claim</a>
+          {% csrf_token %}
+        {% endif %}
+      </div>
+
+      <!-- a div to appear when claim:status claiming -->
+      <div id="divClaimingSpinner" class="hide">
+        {% include "quadraticlands/_inlinesvg/spinner.svg" %}
+      </div>
+
+      <!-- a div to appear when claim:status claimed -->
+      <div id="divClaimedButton" class="hide">
+        <a class="btn" href="/quadraticlands/mission/receive/outro" data-kinetics-attraction
+          data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1"
+          data-kinetics-attraction-size="200">Continue</a>
+      </div>
+    </div>
+  </nav>
+</section>
+
+{{ profile_id |json_script:"user_id" }}
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- set is_impersonate into window -->
+<script>
+  const is_impersonate = {% if request.user and request.user.is_impersonate %}true{% else %}false{% endif %};
+</script>
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/mission/receive/kinetics_claim.js" %}"></script>
+
+<!-- force web3modal to popup automatically when no provider selected-->
+<script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
+
+<!-- claim logic -->
+<script src="{% static "v2/js/quadraticlands/mission/receive/claim.js" %}"></script>
+
+{% endblock %}

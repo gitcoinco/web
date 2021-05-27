@@ -1,0 +1,41 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<!-- headline-->
+<section class="column centered">
+  <h1>Dashboard</h1>
+</section>
+
+
+<!--dashboard 2 column grid that include sub templates-->
+<section class="dashboard">
+
+  <!-- Wallet -->
+  {% include 'quadraticlands/dashboard/wallet.html' %}
+
+  <!-- Delegation -->
+  {% include 'quadraticlands/dashboard/governance.html' %}
+
+  <!-- Mission -->
+  {% include 'quadraticlands/dashboard/mission.html' %}
+
+  <!-- Active Proposals -->
+  {% include 'quadraticlands/dashboard/proposals.html' %}
+
+</section>
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+<!-- force web3modal to popup automatically when no provider selected-->
+<script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
+{% endblock %}
+
+

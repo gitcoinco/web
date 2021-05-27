@@ -17,31 +17,23 @@
 {% load i18n static %}
 <section class="presskit_section py-5">
   <div class="container">
-    <div class="row my-5">
-      <h2 class="col-12 my-3">{% trans "Logo" %}</h2>
-      <div class="col-lg-4 mb-3">
-        <p>{% blocktrans %} Gitcoin is a mission and value-oriented distributed movement intended to drive change and grow open source. The Gitcoin logo may be used per the following guidelines.{% endblocktrans %}</p>
-        <p>{% blocktrans %}Do not alter the Gitcoin logo or mark in any way, including changing the colors, angle, or dimension.{% endblocktrans %}</p>
-        <p>{% blocktrans %}Ensure that the Gitcoin mark and logo type stands out from surrounding text or is legible.{% endblocktrans %}</p>
+    <div class="row my-5 mb-5">
+      <h2 class="col-12 my-3 h2-default">{% trans "Logo" %}</h2>
+      <div class="col-md-6 col-sm-12 mb-3">
+        <p class="font-bigger-1 text-grey-400 font-weight-300 line-height-3">{% blocktrans %} Our mission is to build and fund digital public goods
+          We empower communities of builders to connect and work together to create the future of the open web. The Gitcoin logo may be user per the following guidelines.{% endblocktrans %}</p>
       </div>
-      <div class="col-md-6 col-lg-4 mb-3 mb-md-0">
-        <div class="card text-center p-3 h-100">
+      <div class="col-md-6 col-sm-12 mb-3 mb-md-0 mt-sm-5 mt-md-n5">
+        <div class="card text-center p-3 h-100 bg-light-purple no-border">
           <div class="card-body d-flex flex-column">
-            <img class="presskit_svg" src="{% static "v2/images/presskit/GitCoinLogo.svg" %}" class="p-5">
-            <a class="my-3 font-weight-bold mt-auto" href="{% static "v2/images/presskit/GitCoinLogo.svg" %}">{% trans "Download Logo" %}</a>
-            <a class="my-1 font-weight-bold mt-auto" href="{% static "v2/images/presskit/logos.zip" %}">{% trans "Download all Logos" %}</a>
+            <img class="presskit_svg" src="{% static "v2/images/presskit/logotype.svg" %}" class="p-5">
+            <a class="my-3 font-weight-bold mt-auto btn btn-primary" href="{% static "v2/images/presskit/Gitcoin_Logos.zip" %}">{% trans "Download Gitcoin Logos" %}</a>
+            <a class="my-3 font-weight-bold mt-auto btn btn-primary" href="{% static "v2/images/presskit/Gitcoin_Products.zip" %}">{% trans "Download All Product Logos" %}</a>
+            <a class="my-3 font-weight-bold mt-auto btn btn-primary" href="{% static "v2/images/presskit/gtc_token.zip" %}">{% trans "Download GTC Token Logos" %}</a>
           </div>
         </div>
       </div>
-      <div class="col-md-6 col-lg-4 mb-3 mb-md-0">
-        <div class="card text-center p-3 h-100">
-          <div class="card-body d-flex flex-column">
-            <img class="presskit_svg" src="{% static "v2/images/presskit/GitcoinLogoText.svg" %}" class="p-5">
-            <a class="my-3 font-weight-bold mt-auto" href="{% static "v2/images/presskit/GitcoinLogoText.svg" %}">{% trans "Download Logo" %}</a>
-            <a class="my-1 font-weight-bold mt-auto" href="{% static "v2/images/presskit/logos.zip" %}">{% trans "Download all Logos" %}</a>
-        </div>
-        </div>
-      </div>
     </div>
+    <hr class="mt-5">
   </div>
 </section>

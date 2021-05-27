@@ -1,0 +1,112 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'content' %}
+
+<section class="introduction">
+  <h1>Empower a<br>Gitcoin Steward</h1>
+  <p>Select a Gitcoin Steward to empower with your voting rights. Don’t worry, you still hold on to your GTC.</p>
+</section>
+
+<section class="stewards">
+
+  <div class="wrapper">
+
+    {% for key, steward in stewards.items %}
+
+      <div class="steward-card {% if selected %} selected {% endif %}" data-kinetics-attraction
+        data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">
+
+        <div class="steward">
+          <figure>
+            {% if steward.custom_steward_img %}
+              <img src="{{ steward.custom_steward_img.url }}">
+            {% else %}
+              <img src="/dynamic/avatar/{{ steward.profile }}">
+            {% endif %}
+          </figure>
+          <div class="text">
+            <div class="name">{{ steward.real_name | safe }}</div>
+            <div class="description">{{ steward.profile_link | safe }}</div>
+            <div class="selected">will be your delegate</div>
+          </div>
+        </div>
+
+        <div class="steward-details">
+          <div class="wrapper">
+            <a class="btn" target="_blank" href="{{ steward.bio | safe }}">Info's</a>
+            <a class="btn purple button-steward-select" data-address="{{ steward.gtc_address | safe }}">Delegate</a>
+          </div>
+        </div>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>
+
+
+<!-- hidden address of a senator -->
+<input id="delegate_address" type="text" value="" class="hide">
+
+<section class="quest">
+  <main>
+    <div class="wrapper scrollable">
+
+      <section class="introduction">
+        <h1><span class="aqua">- or -</span><br>delegate to any address</h1>
+        <p>Find other community members in the <a target="_blank" href="https://gov.gitcoin.co">discourse forum</a>, and delegate your voting power to their Ethereum address.</p>
+        <p>If you want to claim your tokens to a cold wallet / hardware wallet, you can delegate the voting power of this cold wallet to another hot wallet by pasting this hot wallet’s ethereum address here.</p>
+      </section>
+
+      <div class="quest-delegateaddress">
+        <input id="custom_delegate_address" type="text" value="" placeholder="Paste an Ethereum Address">
+      </div>
+
+    </div>
+  </main>
+
+  <!-- timer / seperator -->
+  <div class="seperator">
+  </div>
+
+  <!-- bottom navigation -->
+  <nav class="glass">
+
+    <div class="left">
+      <a href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1.1" data-kinetics-attraction-size="200">Exit</a>
+    </div>
+
+    <div class="center">
+      Proof of Use
+    </div>
+
+    <!-- button status -->
+    <div class="right">
+
+      <!-- continue -->
+      <div>
+        <a id="btn_continue" class="btn hide" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+          data-kinetics-attraction-force="1.1" data-kinetics-attraction-size="200">Continue</a>
+      </div>
+
+    </div>
+
+  </nav>
+
+</section>
+
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+<!-- delegation logic -->
+<script src="{% static "v2/js/quadraticlands/mission/use/delegate.js" %}"></script>
+
+{% endblock %}

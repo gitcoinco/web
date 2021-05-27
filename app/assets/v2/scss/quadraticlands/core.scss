@@ -1,0 +1,54 @@
+:root {
+  /* purple with shades : 20%white, 20%black */
+  --purple_light: #8c65f7;
+  --purple: #6f3ff5;
+  --purple_dark: #5932c4;
+
+  /* pink with shades : 20%white, 20%black */
+  --pink_light: #f579a6;
+  --pink: #f35890;
+  --pink_dark: #d44d6e;
+
+  /* aqua with shades : 20%white, 20%black */
+  --aqua_light: #5bf1cd;
+  --aqua: #02e2ac;
+  --aqua_dark: #11bc92;
+
+  --blue: #3e00ff;
+
+  /* space with shades : 15%pink, 5%white, 5%white only, space 22hex transparent */
+  --space: #0e0333;
+  --space_pink: #301041; /*+15%pink*/
+  --space_light: #1a103d; /*+5%white*/
+  --space_light_alpha: rgba(255, 255, 255, 0.05); /*5%white only*/
+  --space_glass: #0e033322; /*space 22opacity (in hex) - arround 35% transparent*/
+  --space_glass_firefox: #0e0333dd; /*firefox not support blur so i need another glass color*/
+
+  /* greys */
+  --white: #ffffff;
+  --stone: #9b95b0; /* default text grey */
+  --smoke: #3b3058; /* seperator lines darkish grey */
+
+  /* other brand colors */
+  --twitter: #1da1f2;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+img {
+  display: block;
+  width: 100%;
+}
+
+body {
+  background-color: var(--space);
+  color: var(--stone);
+}
+
+html {
+  scroll-behavior: smooth;
+}

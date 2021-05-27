@@ -117,22 +117,19 @@ const is_valid_address = (address) => {
           return false;
         }
         return true;
-      }
-
-      if (token_name == 'FIL') {
+      } else if (token_name == 'FIL') {
         if (!address.toLowerCase().startsWith('fil')) {
           return false;
         }
         return true;
-      }
-
-      if (token_name == 'ZIL') {
+      } else if (token_name == 'ZIL') {
         if (!address.toLowerCase().startsWith('zil')) {
           return false;
         }
         return true;
       }
-      break;
+
+      return true;
 
     default:
       return true;

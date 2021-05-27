@@ -1,0 +1,81 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+<section class="quest">
+
+  <!-- select delegation mode -->
+  <main>
+
+    <div class="wrapper">
+
+      <div class="quest-delegationmode glass">
+
+        <div class="delegation-toggle">
+          <div class="label">Delegation Mode</div>
+          <div id="mode_toggle" data-mode="enabled" class="toggle enabled" data-kinetics-attraction
+            data-kinetics-attraction-chance=".5" data-kinetics-attraction-force="1.6" data-kinetics-attraction-grow="1">
+            <div class="enabled">Enabled</div>
+            <div class="circle"></div>
+            <div class="disabled">Disabled</div>
+          </div>
+        </div>
+
+        <p id="explain_text">11111 I prefer to delegate my voting power to a Gitcoin Steward who will be active and represent my views. You can always change this in your dashboard settings.</p>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- timer / seperator -->
+  <div class="seperator">
+  </div>
+
+  <!-- bottom navigation -->
+  <nav class="glass">
+
+    <div class="left">
+      <a href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">Exit</a>
+    </div>
+
+    <div class="center">
+      Proof of Use
+    </div>
+
+    <!-- button status -->
+    <div class="right">
+
+      <!-- intro - start voting process -->
+      <div>
+        <a id="btn_continue" class="btn" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+          data-kinetics-attraction-force="1" data-kinetics-attraction-size="200">Continue</a>
+      </div>
+
+    </div>
+
+  </nav>
+</section>
+
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/mission/use/kinetics_delegatemode.js" %}"></script>
+
+<!-- force web3modal to popup automatically when no provider selected-->
+<script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
+
+<!-- delegate views -->
+<script src="{% static "v2/js/quadraticlands/mission/use/delegatemode.js" %}"></script>
+
+{% endblock %}

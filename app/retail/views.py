@@ -579,13 +579,7 @@ def mission(request):
 
 
 def jobs(request):
-    job_listings = Job.objects.filter(active=True)
-    context = {
-        'active': 'jobs',
-        'title': 'Jobs',
-        'job_listings': job_listings
-    }
-    return TemplateResponse(request, 'jobs.html', context)
+    return redirect('https://angel.co/company/gitcoin/jobs')
 
 
 def avatar(request):
@@ -635,7 +629,7 @@ def products(request):
             'name': 'Discord',
             'heading': _("Reach your favorite Gitcoiner's in realtime.."),
             'description': _("Gitcoin Chat is hosted on Discord, and is an option to connect with your favorite Gitcoiners in realtime."),
-            'link': 'https://discord.gg/jWUzf7b8Yr',
+            'link': 'https://discord.gg/gitcoin',
             'img': static('v2/images/products/chat.png'),
             'logo': static('v2/images/helmet.svg'),
             'service_level': '',
@@ -1032,7 +1026,7 @@ def grant_redir(request):
 
 
 def help(request):
-    return redirect('/wiki/')
+    return redirect('/support/')
 
 
 def verified(request):
@@ -1051,45 +1045,78 @@ def presskit(request):
 
     brand_colors = [
         (
-            "Cosmic Teal",
-            "#25e899",
-            "37, 232, 153"
-        ),
-        (
-            "Dark Cosmic Teal",
-            "#0fce7c",
-            "15, 206, 124"
-        ),
-        (
-            "Milky Way Blue",
-            "#15003e",
-            "21, 0, 62"
-        ),
-        (
-            "Stardust Yellow",
-            "#FFCE08",
-            "255,206, 8"
-        ),
-        (
-            "Polaris Blue",
+            "Violet",
             "#6F3FF5",
-            "62, 0, 255"
+            "11, 63, 245",
+            "256, 90, 60"
         ),
         (
-            "Vinus Purple",
-            "#8E2ABE",
-            "142, 42, 190"
+            "Teal",
+            "#02E2AC",
+            "2, 226, 172",
+            "166, 98, 45"
         ),
         (
-            "Regulus Red",
-            "#F9006C",
-            "249, 0, 108"
+            "Pink",
+            "#F3587D",
+            "243, 88, 125",
+            "346, 87, 65"
         ),
         (
-            "Star White",
-            "#FFFFFF",
-            "23, 244, 238"
+            "Yellow",
+            "#FFCC00",
+            "255, 204, 0",
+            "48, 100, 50"
         ),
+        (
+            "Light Violet",
+            "#8C65F7",
+            "140, 101, 247",
+            "256, 90, 68"
+        ),
+        (
+            "Light Teal",
+            "#5BF1CD",
+            "91, 241, 205",
+            "166, 84, 65"
+        ),
+        (
+            "Light Pink",
+            "#F579A6",
+            "245, 121, 166",
+            "338, 86, 72"
+        ),
+        (
+            "Light Yellow",
+            "#FFDB4C",
+            "255, 219, 76",
+            "48, 100, 65"
+        ),
+        (
+            "Dark Violet",
+            "#5932C4",
+            "89, 50, 196",
+            "256, 59, 48"
+        ),
+        (
+            "Dark Teal",
+            "#11BC92",
+            "17, 188, 146",
+            "165, 83, 40"
+        ),
+        (
+            "Dark Pink",
+            "#D44D6E",
+            "212, 77, 110",
+            "345, 61, 57"
+        ),
+        (
+            "Dark Yellow",
+            "#E1B815",
+            "255, 184, 21",
+            "48, 83, 48"
+        ),
+        
     ]
 
     context = {
@@ -1155,19 +1182,19 @@ def wallpaper(request):
 
 
 def help_dev(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_pilot(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_repo(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_faq(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def browser_extension_chrome(request):
@@ -1245,7 +1272,7 @@ def twitter(request):
 
 
 def discord(request):
-    return redirect('https://discord.gg/jWUzf7b8Yr')
+    return redirect('https://discord.gg/gitcoin')
 
 
 def telegram(request):
@@ -1278,6 +1305,10 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def support(request):
+    return redirect('https://support.gitcoin.co/')
 
 
 @cached_view(timeout=60)
