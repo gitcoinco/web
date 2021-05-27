@@ -97,7 +97,10 @@ class GrantViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     @ratelimit(key='ip', rate='5/s')
     def contributions_rec_report(self, request):
-        """Genrate Grantee Report for an Grant"""
+        """
+            Genrate Grantee Report for an Grant
+            URL: api/v0.1/grants/contributions_rec_report/?id=<grant-id>&format=json
+        """
 
         results_limit = 30
 
@@ -136,9 +139,9 @@ class GrantViewSet(viewsets.ModelViewSet):
                     'error': 'to_timestamp is is not in the format YYYY-MM-DD'
                 })
 
-        if (to_timestamp - from_timestamp).days > 32:
+        if (to_timestamp - from_timestamp).days > 31:
             return Response({
-                'error': 'timeperiod should be less than 32 days'
+                'error': 'timeperiod should be less than 31 days'
             })
 
         try:
@@ -184,7 +187,10 @@ class GrantViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     @ratelimit(key='ip', rate='5/s')
     def contributions_sent_report(self, request):
-        """Generate report for grant contributions made by an address"""
+        """
+            Generate report for grant contributions made by an address
+            URL: api/v0.1/grants/contributions_sent_report/?address=<address>&format=json
+        """
 
         donor_serializer = DonorSerializer
         results_limit = 30
@@ -225,9 +231,9 @@ class GrantViewSet(viewsets.ModelViewSet):
                     'error': 'to_timestamp is is not in the format YYYY-MM-DD'
                 })
 
-        if (to_timestamp - from_timestamp).days > 32:
+        if (to_timestamp - from_timestamp).days > 31:
             return Response({
-                'error': 'timeperiod should be less than 32 days'
+                'error': 'timeperiod should be less than 31 days'
             })
 
         # Filter Contributions made by given address
