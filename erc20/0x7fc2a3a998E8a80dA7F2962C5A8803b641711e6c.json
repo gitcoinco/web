@@ -1,0 +1,28 @@
+{
+  "symbol": "EPARA",
+  "address": "0x7fc2a3a998E8a80dA7F2962C5A8803b641711e6c",
+  "overview":{
+        "en": "EPARA is a digital token issued on the Ethereum network and maintains a 1:1 exchange relationship with Para coins. E-PARA can be used in both ecosystems of Ethereum and Paralism at the same time.",
+        "zh": "EPARA是Paralism在以太坊发行的ERC20代币，和Paralism的基础货币PARA保持1比1的锚定兑换关系，EPARA可以同时在以太坊和Paralism生态中的应用使用。"
+  },
+  "email": "epara@paralism.com",
+  "website": "https://www.paralism.com/",
+  "whitepaper": "https://www.paralism.com/blog/paralism-commercial-white-paper/",
+  "state": "NORMAL",
+  "published_on": "2021-05-25",
+  "initial_price":{
+        "ETH":"0.000000365 ETH",
+        "USD":"0.001 USD",
+        "BTC":"0.0000000259 BTC"
+  },
+  "links": {
+    "blog": "https://www.paralism.com/blog/",
+    "twitter": "https://twitter.com/ParaPlatform",
+    "telegram": "https://t.me/Paralism_Info",
+    "github": "https://github.com/paralism",
+    "facebook": "https://www.facebook.com/Paralism",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}
