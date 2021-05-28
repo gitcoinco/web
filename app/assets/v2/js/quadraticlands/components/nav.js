@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // the edgecase of user logout / gets disconnected
 
   setInterval(() => {
-    if (!selectedAccount) {
+    if (typeof selectedAccount == "undefined" || !selectedAccount) {
       showNoprovider();
     }
   }, 2000);
