@@ -571,8 +571,8 @@ urlpatterns = [
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
     # token distribution event
-    re_path(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
-    re_path(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
+    # re_path(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
+    # re_path(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
     # faucet views
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
