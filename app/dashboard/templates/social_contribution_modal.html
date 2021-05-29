@@ -38,7 +38,7 @@
               <div class="center-block mt-5 text-right w-75">
                 <p class="font-body text-left">{% trans "Help friends and colleagues find new and interesting work!" %}</p>
                 <textarea class="w-100 form__input" id="shareText">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{invite_url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
-                <button class="button button__small button--primary" data-copyclipboard="#shareText">Copy Text</button>
+                <button class="btn btn-primary btn-sm" data-copyclipboard="#shareText">Copy Text</button>
               </div>
 
               <div class="center-block w-75 my-5 {% if not user.is_authenticated %}d-none{% endif %}">
@@ -48,7 +48,7 @@
                   </select>
                 </div>
                 <div class="text-right mt-2">
-                  <button class="button button__small button--primary" id="sendInvites">Send Invite</button>
+                  <button class="btn btn-primary btn-sm" id="sendInvites">Send Invite</button>
                 </div>
               </div>
               <div class="w-75 w-75 center-block mt-2">

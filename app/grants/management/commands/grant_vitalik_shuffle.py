@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant subminer management command.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -54,8 +54,10 @@ class Command(BaseCommand):
     help = 'grant weighted shuffle'
 
     def handle(self, *args, **options):
+        min_weight = 1
+        max_weight = 5000
 
-        active_clr_rounds =  GrantCLR.objects.filter(is_active=True)
+        active_clr_rounds = GrantCLR.objects.filter(is_active=True)
         if active_clr_rounds.count() == 0:
             return
 
@@ -68,7 +70,13 @@ class Command(BaseCommand):
 
         # get grants, and apply weighted shuffle rank to them
         grants = Grant.objects.filter(clr_prediction_curve__0__1__isnull=False, is_clr_active=True).order_by('pk')
-        weighted_list = [(grant, int(max(1, grant.clr_prediction_curve[0][1]))) for grant in grants]
+        weighted_list = []
+        for grant in grants:
+            try:
+                weight = int(max(min_weight, min(max_weight, grant.clr_prediction_curve[0][1])))
+                weighted_list.append([grant, weight])
+            except Exception as e:
+                print(e)
         og_weighted_list = weighted_list.copy()
         ws = weighted_shuffle(weighted_list)
         counter = 0
@@ -77,6 +85,7 @@ class Command(BaseCommand):
         for ele in ws:
             grant_idx = custom_index(og_weighted_list, ele)
             grant = grants[grant_idx]
+            grant.random_shuffle = random.randint(0, 99999999)
             grant.weighted_shuffle = counter
             grant.save()
             counter+=1

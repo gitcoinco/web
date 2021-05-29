@@ -1,42 +1,47 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2019 Gitcoin Core
+Copyright (C) 2019 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
-<p>hi {{to_email}},</p>
+<div id="content-body">
+    <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
+    <p>hi {{to_email}},</p>
 
-<img src="{{from_profile.avatar_url}}" style="width: 10%;"/>
-<h3>@{{from_profile.handle}} {% trans "invited you to work on a bounty" %}</h3><hr>
-<div>
-    <p>{{msg}}</p>
-    <a class="button" href="{{ invite_url }}">{% trans "View Bounty" %}</a>
-    <br><br>
-</div>
-<hr>
-
-{% if kudos_invite %}
+    <img src="{{from_profile.avatar_url}}" style="width: 10%;" />
+    <h3 style="text-transform: none;">@{{from_profile.handle}} {% trans "invited you to work on a bounty" %}</h3>
+    <hr style="margin-left: 0;">
     <div>
-        <h3>If you accept the invite... you can get a special Kudos from @{{from_profile.handle}} for working on this bounty!</h3>
-        <img src="https://gitcoin.co/dynamic/kudos/1055/pika_bot" style="width: 10%; z-index: 2; position: relative;" />
-        <img src="https://gitcoin.co/dynamic/kudos/1057/saber_bot" style="width: 10%; margin-left: -40px;"/>
+        <p>{{msg}}</p>
+        <a class="button" href="{{ invite_url }}?{{ utm_tracking }}">{% trans "View Bounty" %}</a>
         <br><br>
     </div>
-{% endif %}
+    <hr style="margin-left: 0;">
 
+    {% if not kudos_invite %}
+    <div>
+        <h3 style="text-transform: none;">If you accept the invite... you can get a special Kudos from
+            @{{from_profile.handle}} for working on this bounty!</h3>
+        <img src="https://gitcoin.co/dynamic/kudos/1055/pika_bot" style="width: 10%; z-index: 2; position: relative;" />
+        <img src="https://gitcoin.co/dynamic/kudos/1057/saber_bot" style="width: 10%; margin-left: -20px;" />
+        <br><br>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

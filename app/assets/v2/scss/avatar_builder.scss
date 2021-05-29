@@ -1,0 +1,254 @@
+
+#avatar-builder {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+}
+
+#avatar-builder__sections {
+  text-align: left;
+  list-style-type: square;
+  list-style-position: inside;
+  padding-left: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 100%;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+#avatar-builder__sections li {
+  width: 10rem;
+  padding: 5px;
+  color: #15003e;
+  text-decoration: none;
+}
+
+#avatar-builder__sections li.open {
+  text-decoration: underline;
+}
+
+#avatar-builder__sections li.complete {
+  list-style-image: url(static('v2/images/check-dark.svg'));
+}
+
+#avatar-builder__editor {
+  flex-grow: 0;
+}
+
+#section-title {
+  flex-basis: 100%;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.section-title__content {
+  display: none;
+}
+
+.section-title__content.open {
+  display: unset;
+}
+
+
+#avatar-preview {
+  width: 250px;
+  height: 256px;
+  background-color: #D8D8D8;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.preview-section {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.options-section {
+  height: min-content;
+  overflow: scroll;
+  display: none !important;
+  justify-content: center;
+}
+
+.options-section.open {
+  display: flex !important;
+}
+
+button.avatar-option {
+  border: none;
+  width: 80px;
+  height: 80px;
+  background-color: #D8E7FF;
+  margin: 0 0 8px 8px;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.paid div {
+  background-color: #C8D7EF;
+}
+.not_paid div {
+  background-color: #D4EFC8;
+}
+.avatar-option div, #avatar-preview div {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.avatar-option::after {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+
+
+.avatar-option:hover {
+  border: 2px solid #00BB61;
+}
+
+.avatar-option:hover::before {
+  position: absolute;
+  content: '';
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #00BB61;
+  opacity: .2;
+  z-index: 10;
+}
+
+.avatar-option:hover::after {
+  content: '+';
+  background-color: #00BB61;
+  z-index: 11;
+}
+
+.avatar-option.selected:hover::before {
+  display: none;
+}
+
+.avatar-option.selected::after {
+  content: url(static('v2/images/check.svg'));
+  background-color: #150069;
+}
+
+.optional .avatar-option.selected:hover {
+  border-color: #FFA400 !important;
+}
+
+.optional .avatar-option.selected:hover::before {
+  display: unset;
+  background-color: #FFA400;
+}
+
+.optional .avatar-option.selected:hover::after {
+  background-color: #FFA400;
+  content: '-';
+}
+
+.color-option {
+  width: 100%;
+  height: 100%;
+}
+
+#avatar-builder__actions {
+  text-align: right;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+#color-picker {
+  text-align: center;
+  display: flex;
+  line-height: 1;
+}
+
+.options-Background__option {
+  height: 28px;
+  border: 1px solid #C4C4C4;
+  cursor: pointer;
+  flex-grow: 1;
+}
+
+.selected, .avatar-option:active, .options-Background__option:active {
+  border: 2px solid #150069 !important;
+}
+
+
+.avatar-option.payment_required.not_paid div::before {
+  content: attr(data-cost);
+  font-size: 10px;
+  float: right;
+}
+.avatar-option.payment_required.paid div::before {
+  content: "✅";
+  font-size: 10px;
+  float: right;
+}
+.avatar-option.payment_required.not_paid:hover div::before {
+  color: black !important;
+  font-weight: bold;
+}
+
+
+@media (min-width: 500px) {
+
+  #avatar-builder {
+    flex-wrap: nowrap !important;
+  }
+
+  #avatar-builder__sections {
+    display: block;
+    flex-basis: 170px;
+  }
+}
+
+@media (min-width: 845px) {
+
+  #avatar-area {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    max-width: 534px;
+  }
+
+  #section-title {
+    text-align: left;
+  }
+
+  .options-section {
+    overflow: auto;
+    max-height: 264px;
+    justify-content: flex-start;
+  }
+
+  #color-picker {
+    text-align: left;
+  }
+}
+
+

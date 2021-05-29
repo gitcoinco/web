@@ -761,7 +761,7 @@ const show_interest_modal = () => {
         let msg = issueMessage.val().trim();
 
         if (!msg || msg.length < 30) {
-          _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
+          _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'danger');
           return false;
         }
 
@@ -882,13 +882,13 @@ const showGithubSync = function(result) {
           function(result) {
             const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
 
-            _alert({ message: alertMsg }, 'error');
+            _alert({ message: alertMsg }, 'danger');
           }
         );
       }).fail(function(result) {
         const alertMsg = result && result.responseJSON ? result.responseJSON.error : gettext('Failed to sync issue. Please reload the page and try again.');
 
-        _alert({ message: alertMsg }, 'error');
+        _alert({ message: alertMsg }, 'danger');
       });
     });
   }
@@ -1419,7 +1419,7 @@ var pull_bounty_from_api = function() {
     }
   }).fail(function(result) {
     console.log(result);
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
     $('#primary_view').css('display', 'none');
   }).always(function() {
     $('.loading').css('display', 'none');
@@ -1650,7 +1650,7 @@ const show_invite_users = () => {
         <div class="invite-user">
           <img class="avatar" src="/dynamic/avatar/${users}" />
           <p class="mt-4">
-            <a target="_blank" class="btn btn-gc-blue shadow-none py-2 px-4" href="/users?invite=${user}&current-bounty=${bountyId}">
+            <a target="_blank" class="btn btn-primary py-2 px-4" href="/users?invite=${user}&current-bounty=${bountyId}">
               Yes, invite to one of my bounties
             </a>
           </p>
@@ -1672,7 +1672,7 @@ const show_invite_users = () => {
                 ${user}
               </a>
             </p>
-            <a target="_blank" class="btn btn-gc-blue shadow-none px-4 font-body font-weight-semibold" href="/users?invite=${user}&current-bounty=${bountyId}"">
+            <a target="_blank" class="btn btn-primary px-4 font-body font-weight-semibold" href="/users?invite=${user}&current-bounty=${bountyId}"">
               Invite
             </a>
           </div>`;

@@ -1,0 +1,84 @@
+.plan {
+  border-radius: 3px;
+  transition: box-shadow .25s ease-out,border-color .25s ease-out;
+  box-shadow: 0 0 0 1px rgba(56,60,67,.05), 0 1px 3px 0 rgba(56,60,67,.15);
+}
+
+.plan:hover {
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(56,60,67,.07), 0 8px 14px 1px rgba(56,60,67,.15);
+}
+
+.plan-header h3,
+.plan-header h2  {
+  color: #4A4A4A;
+}
+
+.plan-header h2 span.month,
+.plan-header p {
+  font-size: 1rem;
+  color: #9B9B9B
+}
+
+.plan-header h2 {
+  font-size: 2rem;
+}
+
+.discount {
+  color: limegreen;
+  font-weight: 600;
+}
+
+.features {
+  max-width: 12rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.features-available i {
+  color: #05B66A;
+}
+
+.features-available a {
+  text-decoration: none;
+  color: #4A90E2;
+}
+
+.features-available-na {
+  color: #cacaca;
+}
+
+.ribbon {
+  height: 100px;
+  width: 125px;
+  overflow: hidden;
+  position: absolute;
+}
+
+.ribbon span {
+  position: absolute;
+  display: block;
+  width: 201px;
+  padding: 3px 0;
+  background-color: #6F3FF5;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0,0,0,.2);
+  text-align: center;
+}
+
+.ribbon-top-right {
+  top: 0px;
+  right: 15px;
+}
+
+.ribbon-top-right span {
+  left: -18px;
+  top: 28px;
+  transform: rotate(45deg);
+}
+
+@media (max-width: 576px) {
+  .plan-info {
+    text-align: center !important;
+  }
+}

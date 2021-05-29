@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import datetime
 import json
 import logging
 import re
@@ -39,6 +40,7 @@ from django.utils import timezone
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
@@ -48,8 +50,9 @@ from dashboard.models import (
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
+from grants.models import Grant
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
-from marketing.models import Alumni, Job, LeaderboardRank
+from marketing.models import Alumni, EmailInventory, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
@@ -77,9 +80,31 @@ def get_activities(tech_stack=None, num_activities=15):
 
 def index(request):
     context = {
+        'title': 'Build and Fund the Open Web Together',
+        'card_title': 'Gitcoin - Build and Fund the Open Web Together',
+        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
-    return TemplateResponse(request, 'home/index2020.html', context)
 
+    try:
+        data = JSONStore.objects.get(view='results').data
+        data_results = {
+            'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
+            'human_universe_total_usd': f"${round(data['universe_total_usd'] / 1000000, 1)}m" if data['universe_total_usd'] else 0,
+            'mau': data['mau'] if data['mau'] else 0,
+            'bounties_gmv': data['bounties_gmv'] if data['bounties_gmv'] else 0
+        }
+    except:
+        data_results = {
+            'universe_total_usd': 18874053.680999957,
+            'human_universe_total_usd': "$18.9m",
+            'mau': 161205.0,
+            'bounties_gmv': '3.43m'
+        }
+    context.update(data_results)
+
+    return TemplateResponse(request, 'home/index2021.html', context)
 
 def index_old(request):
     products = [
@@ -453,164 +478,86 @@ def robotstxt(request):
 
 
 def about(request):
-    core_team = [
-        (
-            "Kevin Owocki",
-            "All the things",
-            "owocki",
-            "owocki",
-            "The Community",
-            "Avocado Toast",
-            "kevin",
-            "Summoner of Bots",
-            "owocki",
-            True
-        ),
-        (
-            "Joe Lubin",
-            "Consensys",
-            "",
-            "",
-            "Meshiness",
-            "",
-            "joe",
-            "Harbringer of Decentralization",
-            "ethereumJoseph",
-            True
-        ),
-        (
-            "Alisa March",
-            "User Experience Design",
-            "PixelantDesign",
-            "pixelant",
-            "Tips",
-            "Apple Cider Doughnuts",
-            "alisa",
-            "Pixel Mage",
-            "pixelant",
-            True
-        ),
-        (
-            "Vivek Singh",
-            "Community Buidl-er",
-            "vs77bb",
-            "vivek-singh-b5a4b675",
-            "Gitcoin Requests",
-            "Tangerine Gelato",
-            "vivek",
-            "Campfire StoryTeller",
-            "vsinghdothings",
-            True
-        ),
-        (
-            "Aditya Anand M C",
-            "Engineering",
-            "thelostone-mc",
-            "aditya-anand-m-c-95855b65",
-            "The Community",
-            "Cocktail Samosa",
-            "aditya",
-            "Block Welder",
-            "thelostone_mc",
-            True
-        ),
-        (
-            "Scott Moore",
-            "Biz Dev",
-            "ceresstation",
-            "scott-moore-a2970075",
-            "Issue Explorer",
-            "Teriyaki Chicken",
-            "scott",
-            "Phase Shifter",
-            "notscottmoore",
-            True
-        ),
-        (
-            "Octavio Amuchástegui",
-            "Front End Dev",
-            "octavioamu",
-            "octavioamu",
-            "The Community",
-            "Homemade italian pasta",
-            "octavio",
-            "Bugs Breeder",
-            "octavioamu",
-            True
-        ),
-        (
-            "Frank Chen",
-            "Data & Product",
-            "frankchen07",
-            "frankchen07",
-            "Kudos!",
-            "Crispy pork belly",
-            "frank",
-            "Hashed Scout",
-            "",
-            True
-        ),
-        (
-            "Dan Lipert",
-            "Engineering",
-            "danlipert",
-            "danlipert",
-            "EIP 1337",
-            "Tantan Ramen",
-            "dan",
-            "Blockchain Artificer",
-            "dan_lipert",
-            True
-        ),
-        (
-            "Connor O'Day",
-            "DevRel",
-            "connoroday",
-            "connoroday",
-            "the lols",
-            "Robertas Pizza",
-            "connor",
-            "Druid of The Chain",
-            "connoroday0",
-            True
-        ),
-        (
-            "gitcoinbot",
-            "beep boop bop",
-            "gitcoinbot",
-            None,
-            "everything that's automated",
-            "bits",
-            "gitcoinbot",
-            "Loveable Companion",
-            "",
-            False
-        )
 
-    ]
-    exclude_community = ['kziemiane', 'owocki', 'mbeacom']
-    community_members = [
-    ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, product='all', leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
-    for lr in leadeboardranks:
-        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
-        community_members.append(package)
+    data_about = JSONStore.objects.get(view='about', key='general').data
 
-    alumnis = [
-    ]
-    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco').cache():
-        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
-        alumnis.append(package)
+    try:
+        kernel = JSONStore.objects.get(view='about', key='kernel').data
+
+    except JSONStore.DoesNotExist:
+        kernel = [{
+            "img": "harshricha.jpg",
+            "name": "Harsh & Richa",
+            "position": "Founders",
+            "company": "EPNS"
+        },
+        {
+            "img": "tomgreenaway.jpg",
+            "name": "Tom Greenaway",
+            "position": "Senior Dev Advocate",
+            "company": "Google"
+        },
+        {
+            "img": "sparrowread.jpg",
+            "name": "Sparrow Read",
+            "position": "Cofounder",
+            "company": "DADA, WOCA"
+        },
+        {
+            "img": "colinfortuner.jpg",
+            "name": "Colin Fortuner",
+            "position": "Indie Game Developer",
+            "company": "ex-Twitch"
+        },
+        {
+            "img": "shreyashariharan.jpg",
+            "name": "Shreyas Hariharan",
+            "position": "Founder",
+            "company": "Llama Community"
+        },
+        {
+            "img": "ramanshalupau.jpg",
+            "name": "Raman Shalupau",
+            "position": "Founder",
+            "company": "CryptoJobList"
+        },
+        {
+            "img": "omergoldberg.jpg",
+            "name": "Omer Goldberg",
+            "position": "Founder",
+            "company": "devclass.io, ex-Instagram"
+        },
+        {
+            "img": "kristiehuang.jpg",
+            "name": "Kristie Huang ",
+            "position": "Member",
+            "company": "Pantera Capital, she256"
+        }]
 
     context = {
-        'core_team': core_team,
-        'community_members': community_members,
-        'alumni': alumnis,
-        'total_alumnis': str(Alumni.objects.count()),
-        'active': 'about',
-        'title': 'About',
-        'is_outside': True,
+        'title': 'Gitcoin - Support open web development.',
+        'card_title': 'Gitcoin - Support open web development.',
+        'card_desc': "We are the community of builders, creators, and protocols at the center of the open web.",
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
+        'data': data_about if data_about else None,
+        'kernel': kernel if kernel else None,
     }
+
+    try:
+        data = JSONStore.objects.get(view='results').data
+        data_results = {
+            'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
+            'mau': data['mau'] if data['mau'] else 0,
+            'num_grants': data['num_grants'] if data['num_grants'] else 0
+        }
+    except:
+        data_results = {
+            'universe_total_usd': 18874053.680999957,
+            'mau': 161205.0,
+            'num_grants': 1606,
+        }
+    context.update(data_results)
     return TemplateResponse(request, 'about.html', context)
 
 
@@ -620,44 +567,19 @@ def mission(request):
     context = {
         'is_outside': True,
         'active': 'mission',
-        'card_type': 'summary_large_image',
         'avatar_width': 2614,
         'avatar_height': 1286,
-        'title': 'Mission',
-        'card_title': _('Gitcoin is a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
-        'avatar_url': static('v2/images/mission.png'),
+        'title': 'Gitcoin - Support open web development.',
+        'card_title': _('Gitcoin - Support open web development.'),
+        'card_desc': _('We empower open source builders.'),
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
     return TemplateResponse(request, 'mission.html', context)
 
 
 def jobs(request):
-    job_listings = Job.objects.filter(active=True)
-    context = {
-        'active': 'jobs',
-        'title': 'Jobs',
-        'job_listings': job_listings
-    }
-    return TemplateResponse(request, 'jobs.html', context)
-
-
-def vision(request):
-    """Render the Vision response."""
-    videoLinks = [
-        'https://www.youtube.com/embed/wo0KkSH-6eg',
-        'https://www.youtube.com/embed/nZTVMEh9k5U',
-        'https://www.youtube.com/embed/F2yeOFlRE0E'
-    ]
-    context = {
-        'is_outside': True,
-        'active': 'vision',
-        'avatar_url': static('v2/images/vision/triangle.jpg'),
-        'title': 'Vision',
-        'videoLinks': videoLinks,
-        'card_title': _("Gitcoin's Vision for a Web3 World"),
-        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
-    }
-    return TemplateResponse(request, 'vision.html', context)
+    return redirect('https://angel.co/company/gitcoin/jobs')
 
 
 def avatar(request):
@@ -704,10 +626,10 @@ def products(request):
             'traction': '100s of posts per day',
         },
         {
-            'name': 'Chat',
+            'name': 'Discord',
             'heading': _("Reach your favorite Gitcoiner's in realtime.."),
-            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
-            'link': 'https://gitcoin.co/chat/landing',
+            'description': _("Gitcoin Chat is hosted on Discord, and is an option to connect with your favorite Gitcoiners in realtime."),
+            'link': 'https://discord.gg/gitcoin',
             'img': static('v2/images/products/chat.png'),
             'logo': static('v2/images/helmet.svg'),
             'service_level': '',
@@ -717,7 +639,7 @@ def products(request):
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
-            'link': 'https://hackathons.gitcoin.co',
+            'link': 'https://gitcoin.co/hackathons',
             'img': static('v2/images/products/graphics-hackathons.png'),
             'logo': static('v2/images/top-bar/hackathons-symbol-neg.svg'),
             'service_level': 'Full Service',
@@ -758,11 +680,11 @@ def products(request):
         },
         {
             'name': 'kernel',
-            'heading': _("Accelerate your web3 entrepenurial career."),
+            'heading': _("Accelerate your web3 entrepreneurial career."),
             'description': _("An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies."),
             'link': 'https://kernel.community/',
             'img': static('v2/images/products/graphics-Codefund.svg'),
-            'logo': static('landingpage/kernel.svg'),
+            'logo': static('v2/images/top-bar/kernel-symbol-neg.svg'),
             'service_level': 'Full Service',
             'traction': '100s of top devs',
         },
@@ -828,8 +750,11 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 def get_specific_activities(what, trending_only, user, after_pk, request=None):
+    only_profile_cards = ['mint_ptoken', 'edit_price_ptoken', 'accept_redemption_ptoken',
+                          'denies_redemption_ptoken', 'incoming_redemption_ptoken', 'buy_ptoken']
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
+    activities = activities.exclude(activity_type__in=only_profile_cards)
     view_count_threshold = 10
 
     is_auth = user and user.is_authenticated
@@ -889,7 +814,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     elif 'activity:' in what:
         view_count_threshold = 0
         pk = what.split(':')[1]
-        activities = Activity.objects.filter(pk=pk)
+        activities = Activity.objects.filter(pk=pk) if pk and pk.isdigit() else Activity.objects.none()
         if request:
             page = int(request.GET.get('page', 1))
             if page > 1:
@@ -938,9 +863,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
 def activity(request):
     """Render the Activity response."""
     page_size = 7
-    page = int(request.GET.get('page', 1))
+    page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
-    trending_only = int(request.GET.get('trending_only', 0))
+    trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     # store last seen
@@ -997,7 +922,7 @@ def create_status_update(request):
         attach_token_name = request.POST.get('attachTokenName', '')
         tx_id = request.POST.get('attachTxId', '')
 
-        if request.user.is_authenticated and request.user.profile.is_blocked:
+        if request.user.is_authenticated and (request.user.profile.is_blocked or request.user.profile.shadowbanned):
             response['status'] = 200
             response['message'] = 'Status updated!'
             return JsonResponse(response, status=400)
@@ -1079,8 +1004,12 @@ def create_status_update(request):
             mention_email(activity, to_emails)
 
             if kwargs['activity_type'] == 'wall_post':
-                if 'Email Grant Funders' in activity.metadata.get('ask'):
-                    grant_update_email_task.delay(activity.pk)
+                if activity.grant and activity.grant.is_on_team(request.user.profile):
+                    grant = activity.grant
+                    grant.last_update = timezone.now()
+                    grant.save()
+                    if 'Email Grant Funders' in activity.metadata.get('ask'):
+                        grant_update_email_task.delay(activity.pk)
                 else:
                     wall_post_email(activity)
 
@@ -1097,7 +1026,7 @@ def grant_redir(request):
 
 
 def help(request):
-    return redirect('/wiki/')
+    return redirect('/support/')
 
 
 def verified(request):
@@ -1116,45 +1045,78 @@ def presskit(request):
 
     brand_colors = [
         (
-            "Cosmic Teal",
-            "#25e899",
-            "37, 232, 153"
+            "Violet",
+            "#6F3FF5",
+            "11, 63, 245",
+            "256, 90, 60"
         ),
         (
-            "Dark Cosmic Teal",
-            "#0fce7c",
-            "15, 206, 124"
+            "Teal",
+            "#02E2AC",
+            "2, 226, 172",
+            "166, 98, 45"
         ),
         (
-            "Milky Way Blue",
-            "#15003e",
-            "21, 0, 62"
+            "Pink",
+            "#F3587D",
+            "243, 88, 125",
+            "346, 87, 65"
         ),
         (
-            "Stardust Yellow",
-            "#FFCE08",
-            "255,206, 8"
+            "Yellow",
+            "#FFCC00",
+            "255, 204, 0",
+            "48, 100, 50"
         ),
         (
-            "Polaris Blue",
-            "#3E00FF",
-            "62, 0, 255"
+            "Light Violet",
+            "#8C65F7",
+            "140, 101, 247",
+            "256, 90, 68"
         ),
         (
-            "Vinus Purple",
-            "#8E2ABE",
-            "142, 42, 190"
+            "Light Teal",
+            "#5BF1CD",
+            "91, 241, 205",
+            "166, 84, 65"
         ),
         (
-            "Regulus Red",
-            "#F9006C",
-            "249, 0, 108"
+            "Light Pink",
+            "#F579A6",
+            "245, 121, 166",
+            "338, 86, 72"
         ),
         (
-            "Star White",
-            "#FFFFFF",
-            "23, 244, 238"
+            "Light Yellow",
+            "#FFDB4C",
+            "255, 219, 76",
+            "48, 100, 65"
         ),
+        (
+            "Dark Violet",
+            "#5932C4",
+            "89, 50, 196",
+            "256, 59, 48"
+        ),
+        (
+            "Dark Teal",
+            "#11BC92",
+            "17, 188, 146",
+            "165, 83, 40"
+        ),
+        (
+            "Dark Pink",
+            "#D44D6E",
+            "212, 77, 110",
+            "345, 61, 57"
+        ),
+        (
+            "Dark Yellow",
+            "#E1B815",
+            "255, 184, 21",
+            "48, 83, 48"
+        ),
+        
     ]
 
     context = {
@@ -1200,7 +1162,7 @@ def portal(request):
 
 
 def community(request):
-    return redirect('https://github.com/gitcoinco/community')
+    return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
 
 
 def onboard(request):
@@ -1220,19 +1182,19 @@ def wallpaper(request):
 
 
 def help_dev(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_pilot(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_repo(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_faq(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def browser_extension_chrome(request):
@@ -1256,30 +1218,7 @@ def schwag(request):
 
 
 def slack(request):
-    context = {
-        'active': 'slack',
-        'msg': None,
-        'nav': 'home',
-    }
-
-    if request.POST:
-        email = request.POST.get('email')
-        context['msg'] = _('You must provide an email address')
-        if email:
-            context['msg'] = _('Your invite has been sent.')
-            context['success'] = True
-            try:
-                validate_email(email)
-                get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
-                response = invite_to_slack(email, True)
-
-                if not response.get('ok'):
-                    context['msg'] = response.get('error', _('Unknown error'))
-                context['success'] = False
-            except ValidationError:
-                context['msg'] = _('Invalid email')
-
-    return TemplateResponse(request, 'slack.html', context)
+    return discord(request)
 
 
 @csrf_exempt
@@ -1325,12 +1264,15 @@ def reddit(request):
 def blog(request):
     return redirect('https://gitcoin.co/blog')
 
-def livestream(request):
-    return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
-
+def calendar(request):
+    return redirect('https://calendar.google.com/calendar/embed?src=7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com')
 
 def twitter(request):
     return redirect('http://twitter.com/gitcoin')
+
+
+def discord(request):
+    return redirect('https://discord.gg/gitcoin')
 
 
 def telegram(request):
@@ -1365,6 +1307,11 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
+def support(request):
+    return redirect('https://support.gitcoin.co/')
+
+
+@cached_view(timeout=60)
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1374,6 +1321,7 @@ def tokens(request):
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
 
+@cached_view(timeout=60)
 def json_tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1399,6 +1347,7 @@ def json_tokens(request):
     # return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
     # return JsonResponse(json.loads(json.dumps(list(context), default=str)), safe=False)
     return JsonResponse(json.loads(json.dumps(token_json)), safe=False)
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -1464,9 +1413,10 @@ def tribes_home(request):
 
     return TemplateResponse(request, 'tribes/landing.html', context)
 
+
 def admin_index(request):
     from dashboard.utils import get_all_urls # avoid circular import
-    urls = get_all_urls()
+    urls = get_all_urls() # source of truth is the app; email_info data just augments it
     search_str = '_administration/email'
     def clean_url(url):
         url = "".join(url)
@@ -1475,8 +1425,82 @@ def admin_index(request):
         return url
     urls = [clean_url(url) for url in urls]
     urls = [url for url in urls if search_str in url]
+    urls_dict = {}
+    for url in urls:
+        key = url.replace('_administration/email','')
+        urls_dict[key] = ()
+    email_info = EmailInventory.objects.all()
+    for val in email_info:
+        key = val.path
+        urls_dict[key] = val
+    del urls_dict['/']
     context = {
-        'urls': urls,
+        'urls': urls_dict,
     }
 
     return TemplateResponse(request, 'admin_index.html', context)
+
+
+def styleguide_components(request):
+    if settings.ENV == 'prod':
+        raise Http404
+    else:
+        context = {}
+        return TemplateResponse(request, 'styleguide_components.html', context)
+
+
+def jtbd_template(request, template, title, card_title, card_desc):
+    data = JSONStore.objects.filter(view='jtbd', key=template).first().data
+    context = {
+        'title': _(title),
+        'card_title': _(card_title),
+        'card_desc': _(card_desc),
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
+    }
+    context.update(data)
+    return TemplateResponse(request, 'jtbd/' + template + '.html', context)
+
+
+@require_http_methods(["GET",])
+def jtbd_earn(request):
+    return jtbd_template(
+        request,
+        'earn',
+        'Earn',
+        'Gitcoin - Build the open internet.',
+        'Earn a living building open source projects that matter.'
+    )
+
+
+@require_http_methods(["GET",])
+def jtbd_learn(request):
+    return jtbd_template(
+        request,
+        'learn',
+        'Learn',
+        'Gitcoin - Learn open source development.',
+        'Learn how to build open source projects that matter.'
+    )
+
+
+@require_http_methods(["GET",])
+def jtbd_connect(request):
+    return jtbd_template(
+        request,
+        'connect',
+        'Connect',
+        'Gitcoin - A community of open web builders.',
+        'Connect and build with top open source developers.'
+    )
+
+
+@require_http_methods(["GET",])
+def jtbd_fund(request):
+    return jtbd_template(
+        request,
+        'fund',
+        'Fund',
+        'Gitcoin - Support open web development.',
+        'Fund open source projects that make the most difference.'
+    )

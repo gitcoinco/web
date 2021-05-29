@@ -15,207 +15,210 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
-    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
+    {% bundle css file dashboard_index %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+    {% endbundle %}
   </head>
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="header sticky-top dash">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% if type != 'hackathon' %}
-        {% include 'shared/nav.html' %}
-      {% else %}
-        {% include 'shared/nav_hackathons.html' %}
-      {% endif %}
-    </div>
-    {% if hackathon %}
-      <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
-
-      <style>
-
-        .hackathon-banner {
-          background: {% firstof hackathon.background_color or 'white' %};
-          color: {% firstof hackathon.text_color or 'black' %};
-          height: 225px;
-          {% if hackathon.banner %}
-            background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
-          {% endif %}
-        }
-
-        .hackathon-text {
-            color: white;
-        }
-        .hackathon-title {
-            font-size: 1.4rem;
-        }
-        .hackathon-countdown {
-            font-size: 1rem;
-        }
-        {% if hackathon  %}
-        .bounty_row {
-          background-color: white;
-          margin-bottom: 15px;
-          border-radius: 4px;
-        }
+      <div class="header sticky-top sticky-nav dash">
+        {% if type != 'hackathon' %}
+          {% include 'shared/nav.html' %}
+        {% else %}
+          {% include 'shared/nav_hackathons.html' %}
         {% endif %}
-      </style>
+      </div>
+      {% if hackathon %}
+        {% bundle css file dashboard_explorer %}
+          <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/explorer.scss" %} />
+        {% endbundle %}
+        <style>
 
-      {% if is_staff %}
-        <div class="alpha-warning font-caption mb-0">
-          <span class="font-weight-bold">Staff only</span>
-          <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
-        </div>
-      {% endif %}
-      <div id="{{ hackathon.identifier }}" class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
-        <div class="offset-2 hackathon-text pl-4">
-          <div class="">
-            <p class="hackathon-title title font-weight-bold mb-0">GITCOIN VIRTUAL HACKATHON</p>
-          </div>
-          <p class="mb-1">
-            {% if hackathon.end_date|timeuntil >= "1 min" %}
-              <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
+          .hackathon-banner {
+            background: {% firstof hackathon.background_color or 'white' %};
+            color: {% firstof hackathon.text_color or 'black' %};
+            height: 225px;
+            {% if hackathon.banner %}
+              background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
             {% endif %}
+          }
+
+          .hackathon-text {
+              color: white;
+          }
+          .hackathon-title {
+              font-size: 1.4rem;
+          }
+          .hackathon-countdown {
+              font-size: 1rem;
+          }
+          {% if hackathon  %}
+          .bounty_row {
+            background-color: white;
+            margin-bottom: 15px;
+            border-radius: 4px;
+          }
+          {% endif %}
+        </style>
+
+        {% if is_staff %}
+          <div class="alpha-warning font-caption mb-0">
+            <span class="font-weight-bold">Staff only</span>
+            <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+          </div>
+        {% endif %}
+        <div id="{{ hackathon.identifier }}" class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
+          <div class="offset-2 hackathon-text pl-4">
+            <div class="">
+              <p class="hackathon-title title font-weight-bold mb-0">GITCOIN VIRTUAL HACKATHON</p>
+            </div>
+            <p class="mb-1">
+              {% if hackathon.end_date|timeuntil >= "1 min" %}
+                <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+        <div class="offset-2 navigation">
+            {% if hackathon.town_square_link %}
+              <a href="/{{hackathon.town_square_link}}" class="btn ml-2 mr-4 active">
+                Prizes (98)
+              </a>
+            {% endif %}
+            {% if hackathon.town_square_link %}
+              <a href="/{{hackathon.town_square_link}}" class="btn mr-4">
+                SW3 Town Square
+              </a>
+            {% endif %}
+
+            {% if hackathon.quest_link %}
+              <a href="{{hackathon.quest_link}}" class="btn mr-4">
+              Participants (134)
+            </a>
+            {% endif %}
+            {% if hackathon.show_results %}
+              <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn mr-4">
+              Projects (57)
+              </a>
+            {% endif %}
+            {% if hackathon.end_date|timesince <= "1 min" %}
+              <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn mr-3">Guide</a>
+            {% endif %}
+          </div>
+
+      {% else %}
+        {% include 'dashboard/ftux.html' %}
+      {% endif %}
+      <div id="dashboard-content" class="container-fluid no-gutter">
+        <div class="row">
+          {% if hackathon %}
+            <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
+              {% include 'dashboard/sidebar_search_hackathon.html' %}
+            </div>
+            <div class="col-10 col-lg-8 col-xl-10 body px-4 px-lg-0 pr-lg-5 hackathon-explorer">
+              <div class="container-fluid p-2" id="bounties">
+                <div id="dashboard-title" class="hidden">
+                  {% include 'shared/search_bar.html' %}
+                </div>
+          {% else %}
+            <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
+              {% include 'dashboard/sidebar_search.html' %}
+            </div>
+
+            <div class="col-12 col-lg-9 col-xl-10 body px-4 px-lg-0">
+              <div class="container-fluid py-2" id="bounties">
+                <div id="dashboard-title" class="hidden">
+                  <div class="my-3 mx-3">
+                    <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
+                  </div>
+                  {% include 'shared/search_bar.html' %}
+                </div>
+          {% endif %}
+            <div class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+            </div>
+            <div class="row nonefound mx-auto" style="display:none;">
+              {% if hackathon %}
+                <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                <p>
+                  <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
+                </p>
+                {% include 'shared/hackathon_sponsors.html' %}
+
+              {% else %}
+                <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                <h3>{% trans "No results found." %}</h3>
+                <p>{% trans "Request an organisation to fund an issue" %}</p>
+                <div class="mt-3">
+                  <a class="btn btn-primary py-2" role="button" href="/requests">
+                    {% trans "REQUEST BOUNTY" %}
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+            {% include 'dashboard/featured_bounties.html' %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div id="onboard-footer" class="row hidden font-body position-absolute">
+        <div class="col-12">
+          <p>{% trans "Want to Fund an issue ? " %}
+            <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
           </p>
         </div>
       </div>
-      <div class="offset-2 navigation">
-          {% if hackathon.town_square_link %}
-            <a href="/{{hackathon.town_square_link}}" class="btn ml-2 mr-4 active">
-              Prizes (98)
-            </a>
-          {% endif %}
-          {% if hackathon.town_square_link %}
-            <a href="/{{hackathon.town_square_link}}" class="btn mr-4">
-              SW3 Town Square
-            </a>
-          {% endif %}
+      {% include 'shared/result.html' %}
+      {% include 'shared/featured_bounty_cards.html' %}
 
-          {% if hackathon.quest_link %}
-            <a href="{{hackathon.quest_link}}" class="btn mr-4">
-            Participants (134)
-          </a>
-          {% endif %}
-          {% if hackathon.show_results %}
-            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn mr-4">
-            Projects (57)
-            </a>
-          {% endif %}
-          {% if hackathon.end_date|timesince <= "1 min" %}
-            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn mr-3">Guide</a>
-          {% endif %}
-        </div>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer.html' %}
+      {% include 'shared/footer_scripts.html' %}
 
-    {% else %}
-      {% include 'dashboard/ftux.html' %}
-    {% endif %}
-    <div id="dashboard-content" class="container-fluid no-gutter">
-      <div class="row">
+
+
+      <script>
+        $('[data-toggle="popover"]').popover()
+
+        $('body').popover({
+          selector: '.bounty_row',
+          html: true,
+          trigger: 'hover',
+          placement: 'auto',
+          template: `<div class="popover popover-bounty" role="tooltip">
+                      <div class="arrow"></div>
+                      <div class="popover-body p-0"></div>
+                      <h3 class="popover-header"></h3>
+                    </div>`
+        });
+
         {% if hackathon %}
-          <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
-            {% include 'dashboard/sidebar_search_hackathon.html' %}
-          </div>
-          <div class="col-10 col-lg-8 col-xl-10 body px-4 px-lg-0 pr-lg-5 hackathon-explorer">
-            <div class="container-fluid p-2" id="bounties">
-              <div id="dashboard-title" class="hidden">
-                {% include 'shared/search_bar.html' %}
-              </div>
-        {% else %}
-          <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
-            {% include 'dashboard/sidebar_search.html' %}
-          </div>
-
-          <div class="col-12 col-lg-9 col-xl-10 body px-4 px-lg-0">
-            <div class="container-fluid py-2" id="bounties">
-              <div id="dashboard-title" class="hidden">
-                <div class="my-3 mx-3">
-                  <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
-                </div>
-                {% include 'shared/search_bar.html' %}
-              </div>
+          document.hackathon = "{{ hackathon.slug | safe }}";
+          if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
         {% endif %}
-          <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
-          </div>
-          <div class="row nonefound mx-auto" style="display:none;">
-            {% if hackathon %}
-              <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
-              <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-              <p>
-                <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
-              </p>
-              {% include 'shared/hackathon_sponsors.html' %}
-
-            {% else %}
-              <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-              <h3>{% trans "No results found." %}</h3>
-              <p>{% trans "Request an organisation to fund an issue" %}</p>
-              <div class="mt-3">
-                <a class="button button--primary py-2 font-weight-semibold" role="button" href="/requests">
-                  {% trans "REQUEST BOUNTY" %}
-                </a>
-              </div>
-            {% endif %}
-          </div>
-          {% include 'dashboard/featured_bounties.html' %}
-
-        </div>
-      </div>
+      </script>
+      <script src="/dynamic/js/tokens_dynamic.js"></script>
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+      <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
+      <script>
+        document.keywords = {{keywords | safe}};
+      </script>
     </div>
-  </div>
-  <div class="row bottom_notification font-caption">
-    {{footer_msg|safe}}
-  </div>
-
-    <div id="onboard-footer" class="row hidden font-body">
-      <div class="col-12">
-        <p>{% trans "Want to Fund an issue ? " %}
-          <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
-        </p>
-      </div>
-    </div>
-    {% include 'shared/result.html' %}
-    {% include 'shared/featured_bounty_cards.html' %}
-
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-
-
-    <script>
-      $('[data-toggle="popover"]').popover()
-
-      $('body').popover({
-        selector: '.bounty_row',
-        html: true,
-        trigger: 'hover',
-        placement: 'auto',
-        template: `<div class="popover popover-bounty" role="tooltip">
-                    <div class="arrow"></div>
-                    <div class="popover-body p-0"></div>
-                    <h3 class="popover-header"></h3>
-                  </div>`
-      });
-
-      {% if hackathon %}
-        document.hackathon = "{{ hackathon.slug | safe }}";
-        if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
-      {% endif %}
-    </script>
-    <script src="/dynamic/js/tokens_dynamic.js"></script>
-    <script src="{% static "v2/js/tokens.js" %}"></script>
-    <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
-    <script>
-      document.keywords = {{keywords | safe}};
-    </script>
   </body>
 </html>

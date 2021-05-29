@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,8 +15,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% load i18n static bundle %}
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 {% block coltype %}colMS{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 {% block breadcrumbs %}{% endblock %}
@@ -26,9 +30,9 @@
 <a href="..">&lt; back</a>
 <br>
 <style>
-.dashboard #content{
+  .dashboard #content{
     width: 100%;
-}
+  }
 </style>
 <a class="" href="{{filter_params}}&filter=">{% trans "All" %}</a> |
 <a class="" href="{{filter_params}}&filter=Activity">{% trans "Activity" %}</a> |

@@ -30,11 +30,11 @@
             <p class="font-subheader">{{ slide.subtitle }}</p>
             <div>
               {% if slide.type == 'contributor' %}
-                <a class="button button--primary" href="{% url "onboard" "contributor" %}">Get Started</a>
+                <a class="btn btn-primary" href="{% url "onboard" "contributor" %}">Get Started</a>
               {% else %}
-                <a class="button button--primary" href="{% url "onboard" "funder" %}">Get Started</a>
+                <a class="btn btn-primary" href="{% url "onboard" "funder" %}">Get Started</a>
               {% endif %}
-              <a class="button button--primary btn-green ml-sm-2" href="{{ slide.more }}">Learn More</a>
+              <a class="btn btn-outline-dark ml-lg-2" href="{{ slide.more }}">Learn More</a>
             </div>
           </div>
 

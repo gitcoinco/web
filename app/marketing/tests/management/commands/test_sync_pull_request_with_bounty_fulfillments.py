@@ -83,11 +83,6 @@ class TestSyncPullRequestWithBountyFulfillments(TestCase):
         mock.patch('marketing.management.commands.sync_pull_request_with_bounty_fulfillments.get_gh_issue_state', lambda x, y, z: 'closed').start()
         mock.patch('marketing.management.commands.sync_pull_request_with_bounty_fulfillments.get_interested_actions', lambda x, y: GitHubTestAPI().get_interested_actions()).start()
 
-        with open(settings.BASE_DIR + '/assets/v2/css/lib/typography.css') as f:
-            mocked_requests.get.return_value.ok = True
-            mocked_requests.get.return_value.text = f.read()
-            mocked_requests.get.return_value.body = f.read()
+        marketing.management.commands.sync_pull_request_with_bounty_fulfillments.Command().handle(live=False)
 
-            marketing.management.commands.sync_pull_request_with_bounty_fulfillments.Command().handle(live=False)
-
-            assert BountyFulfillment.objects.last().funder_last_notified_on >= start_time
+        assert BountyFulfillment.objects.last().funder_last_notified_on >= start_time

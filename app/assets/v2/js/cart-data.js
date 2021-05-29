@@ -1,10 +1,15 @@
-class CartData {
+this.CartData = class CartData {
 
   static hasItems() {
     return this.loadCart().length > 0;
   }
 
+  static length() {
+    return this.loadCart().length;
+  }
+
   static cartContainsGrantWithId(grantId) {
+    grantId = String(grantId);
     const cart = this.loadCart();
     const idList = cart.map(grant => {
       return grant.grant_id;
@@ -14,8 +19,9 @@ class CartData {
   }
 
   static share_url(title) {
-    const donations = this.loadCart();
-    let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
+    const checkedOut = this.loadCheckedOut();
+    const donations = (checkedOut.length > 0 ? checkedOut : this.loadCart());
+    let bulk_add_cart = `${window.location.host}/grants/cart/bulk-add/`;
 
     let network = document.web3network;
 
@@ -79,7 +85,63 @@ class CartData {
 
     grantData.uuid = get_UUID();
 
-    if (acceptsAllTokens || 'DAI' == accptedTokenName) {
+    if (grantData.tenants.includes('ZCASH')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.01;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ZEC';
+      }
+    } else if (grantData.tenants.includes('CELO')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'CELO';
+      }
+    } else if (grantData.tenants.includes('ZIL')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ZIL';
+      }
+    } else if (grantData.tenants.includes('HARMONY')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'ONE';
+      }
+    } else if (grantData.tenants.includes('BINANCE')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'BNB';
+      }
+    } else if (grantData.tenants.includes('POLKADOT')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'DOT';
+      }
+    } else if (grantData.tenants.includes('KUSAMA')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 1;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'KSM';
+      }
+    } else if (grantData.tenants.includes('RSK')) {
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.0001;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'RBTC';
+      }
+    } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       if (!grantData.grant_donation_amount) {
         grantData.grant_donation_amount = 5;
       }
@@ -93,6 +155,9 @@ class CartData {
       grantData.grant_donation_currency = 'ETH';
     }
 
+    grantData.payment_status = 'waiting';
+    grantData.txnid = null;
+
     grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 0;
 
@@ -105,11 +170,13 @@ class CartData {
       fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
         action: 'ADD_ITEM',
         metadata: JSON.stringify(cartList)
-      }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+      }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
     }
   }
 
   static removeIdFromCart(grantId) {
+    grantId = String(grantId);
+
     let cartList = this.loadCart();
 
     const newList = cartList.filter(grant => grant.grant_id !== grantId);
@@ -117,7 +184,7 @@ class CartData {
     fetchData(`/grants/${grantId}/activity`, 'POST', {
       action: 'REMOVE_ITEM',
       metadata: JSON.stringify(newList)
-    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
     this.setCart(newList);
   }
@@ -152,7 +219,7 @@ class CartData {
       action: 'CLEAR_CART',
       metadata: JSON.stringify(cartList),
       bulk: true
-    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
     localStorage.setItem('grants_cart', JSON.stringify([]));
     applyCartMenuStyles();
@@ -178,4 +245,28 @@ class CartData {
     localStorage.setItem('grants_cart', JSON.stringify(list));
     applyCartMenuStyles();
   }
-}
+
+  static loadCheckedOut() {
+    const checkedOutList = localStorage.getItem('contributions_were_successful');
+
+    if (!checkedOutList) {
+      return [];
+    }
+
+    const parsedCheckout = JSON.parse(checkedOutList);
+
+    if (!Array.isArray(parsedCheckout)) {
+      return [];
+    }
+
+    return parsedCheckout;
+  }
+
+  static setCheckedOut(list) {
+    localStorage.setItem('contributions_were_successful', JSON.stringify(list));
+  }
+
+  static clearCheckedOut() {
+    localStorage.removeItem('contributions_were_successful');
+  }
+};

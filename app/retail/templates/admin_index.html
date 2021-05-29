@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,15 +22,169 @@
 {% block content %}
 
 <div>
-  {% for url in urls %}
-    <li>
-      <a href="/{{url}}">
-        {{url}}
-      </a>
-    </li>
-  {% endfor %}
+  <table>
+    <tr>
+      <th colspan="2">
+        Links
+      </th>
+      <th>
+        X
+      </th>
+      <th colspan="5">
+        Metadata
+      </th>
+      <th colspan="9">
+        Stats
+      </th>
+    </tr>
+    <tr class="row">
+      <th>
+        Learn More
+      </th>
+      <th>
+        Edit Metadata
+      </th>
+      <th>
+        Email
+      </th>
+      <th>
+        Why do we send it?
+      </th>
+      <th>
+        Cadence
+      </th>
+      <th>
+        Product
+      </th>
+      <th>
+        Era
+      </th>
+      <th>
+        Comment
+      </th>
+      <th>
+        Sent 1d
+      </th>
+      <th>
+        Opens 1d
+      </th>
+      <th>
+        Clicks 1d
+      </th>
+      <th>
+        Sent 7d
+      </th>
+      <th>
+        Opens 7d
+      </th>
+      <th>
+        Clicks 7d
+      </th>
+      <th>
+        Sent 30d
+      </th>
+      <th>
+        Opens 30d
+      </th>
+      <th>
+        Clicks 30d
+      </th>
+    </tr>
+    {% for url, val in urls.items %}
+      <tr class="row">
+        <td>
+          {% if val.url %}
+          <a href="{{val.url}}">
+              Learn More
+          </a>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{{val.admin_url}}">Edit Metadata</a>
+        </td>
+        <td>
+        <a href="/_administration/email{{url}}" style="font-weight:bold;">
+          {{url}}
+        </a>
+        </td>
+        <td>
+          <div style="max-width: 100px; max-height: 50px; overflow: scroll; font-size: 10px; display: block;">
+          {{val.reason}}
+          </div>
+        </td>
+        <td>
+          {{val.type}}
+        </td>
+        <td>
+          {{val.product}}
+        </td>
+        <td>
+          {{val.era}}
+        </td>
+        <td>
+          <div style="max-width: 100px; max-height: 50px; overflow: scroll; font-size: 10px; display: block;">
+          {{val.comment}}
+          </div>
+        </td>
+        <td>
+          {{val.stats.1d.delivered}}
+        </td>
+        <td>
+          {{val.stats.1d.open}}
+        </td>
+        <td>
+          {{val.stats.1d.click}}
+        </td>
+        <td>
+          {{val.stats.7d.delivered}}
+        </td>
+        <td>
+          {{val.stats.7d.open}}
+        </td>
+        <td>
+          {{val.stats.7d.click}}
+        </td>
+        <td>
+          {{val.stats.30d.delivered}}
+        </td>
+        <td>
+          {{val.stats.30d.open}}
+        </td>
+        <td>
+          {{val.stats.30d.click}}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
 
 </div>
+
+<style type="text/css">
+table, th, td {
+    border: 1px solid black;
+}
+th {
+    cursor: pointer;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+$('th').click(function(){
+    var table = $(this).parents('table').eq(0)
+    var rows = table.find('tr.row:gt(0)').toArray().sort(comparer($(this).index()))
+    this.asc = !this.asc
+    if (!this.asc){rows = rows.reverse()}
+    for (var i = 0; i < rows.length; i++){table.append(rows[i])}
+})
+function comparer(index) {
+    return function(a, b) {
+        var valA = getCellValue(a, index), valB = getCellValue(b, index)
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+}
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+</script>
 
 {% endblock %}
 

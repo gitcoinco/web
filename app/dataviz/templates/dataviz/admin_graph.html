@@ -1,26 +1,30 @@
 {% extends "admin/base_site.html" %}
 {% load humanize %}
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+  Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 
-{% load i18n admin_static static %}
+{% load i18n admin_static static bundle %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -33,34 +37,34 @@
 
 {% block content %}
   <head>
-    <meta charset="utf-8">
-    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
-    <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
-    <style>
-    .colMS{
-        margin-right: 0px;
-    }
-    .link {
-      stroke: #aaa;
-    }
+  <meta charset="utf-8">
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
+  <style>
+  .colMS{
+    margin-right: 0px;
+  }
+  .link {
+    stroke: #aaa;
+  }
 
-    .node text {
-    stroke:#333;
-    cursor:pointer;
-    font-size: 10px;
-    }
+  .node text {
+  stroke:#333;
+  cursor:pointer;
+  font-size: 10px;
+  }
 
-    .node circle{
-    stroke:#fff;
-    stroke-width:3px;
-    }
+  .node circle{
+  stroke:#fff;
+  stroke-width:3px;
+  }
 
 rect {
   fill: none;
   pointer-events: all;
 }
 
-    </style>
+  </style>
   </head>
 
 
@@ -75,68 +79,68 @@ rect {
 <input type="button" value="Auto mode" onclick="grow_over_time()">
 
 <div style="text-align: center; width: 100%;">
-    <h2>Date</h2>
+  <h2>Date</h2>
 </div>
 <script>
 var getColor =function (d) {
 //if(d.avatar){
-//    return "white";
+//  return "white";
 //}
 if(d.type =='source'){
-    return "#1f77b4";
+  return "#1f77b4";
 }
 if(d.type =='target_accepted'){
-    return "#333333";
+  return "#333333";
 }
 if(d.type =='independent'){
-    return "#eeeeee";
+  return "#eeeeee";
 }
 if(d.type =='target'){
-    return "#000000";
+  return "#000000";
 }
 return d.type =='source' ?  ( d.type =='independent' ? "#ffffff" : '#1f77b4') : '#000000';
 }
 
 var grow_over_time = function(){
-    setInterval(function(){
-        var val = $('#myRange').val();
-        var new_val = parseInt(val) + 24 * 3600 * 2; // 2 days at a time
-        $('#myRange').val(new_val);
-        console.log(new_val);
-        load_data();
-    }, 1200)
+  setInterval(function(){
+    var val = $('#myRange').val();
+    var new_val = parseInt(val) + 24 * 3600 * 2; // 2 days at a time
+    $('#myRange').val(new_val);
+    console.log(new_val);
+    load_data();
+  }, 1200)
 }
 
 
 $('#myRange').change(function(){
-    load_data();
+  load_data();
 });
 
 var width = $(window).width(),
-    height = $(window).height()
+  height = $(window).height()
 
 
 var fill = d3.scale.category20();
 
 var force = d3.layout.force()
-    .size([width, height])
-    .nodes([]) // initialize with a single node
-    .linkDistance(100)
-    .charge(-250)
-    .on("tick", tick);
+  .size([width, height])
+  .nodes([]) // initialize with a single node
+  .linkDistance(100)
+  .charge(-250)
+  .on("tick", tick);
 
 var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+  .attr("width", width)
+  .attr("height", height);
 
 svg.append("rect")
-    .attr("width", width)
-    .attr("height", height);
+  .attr("width", width)
+  .attr("height", height);
 
 var nodes = force.nodes(),
-    links = force.links(),
-    node = svg.selectAll(".node"),
-    link = svg.selectAll(".link");
+  links = force.links(),
+  node = svg.selectAll(".node"),
+  link = svg.selectAll(".link");
 
 restart();
 
@@ -145,76 +149,76 @@ $('h2').html(new Date(comp_value * 1000).toISOString().slice(0,10));
 
 var url = document.location.href + '?&data=1&format=json';
 d3.json(url, function(json) {
-    for(var i in json.nodes){
-        var node = json.nodes[i];
-        nodes.push(node);
-    }
-    restart()
+  for(var i in json.nodes){
+    var node = json.nodes[i];
+    nodes.push(node);
+  }
+  restart()
 });
 
 var load_data = function(){
-    d3.json(url, function(json) {
-    var comp_value = $('#myRange').val();
-    $('h2').html(new Date(comp_value * 1000).toISOString().slice(0,10));
+  d3.json(url, function(json) {
+  var comp_value = $('#myRange').val();
+  $('h2').html(new Date(comp_value * 1000).toISOString().slice(0,10));
 
-      for(var i in json.links){
-        var link = json.links[i];
-        if(parseInt(link.created) < parseInt(comp_value)){
-            if(links.indexOf(link) == -1){
-                links.push(link);
-            }
-        }
+    for(var i in json.links){
+    var link = json.links[i];
+    if(parseInt(link.created) < parseInt(comp_value)){
+      if(links.indexOf(link) == -1){
+        links.push(link);
       }
-      restart();
+    }
+    }
+    restart();
 
-    });
+  });
 };
 
 
 function tick() {
   link.attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
+    .attr("y1", function(d) { return d.source.y; })
+    .attr("x2", function(d) { return d.target.x; })
+    .attr("y2", function(d) { return d.target.y; });
 
-    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+  node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 }
 
 function restart() {
   node = node.data(nodes);
 
   node.enter().insert("g", ".cursor")
-      .attr("class", "node")
-      .attr("r", 5)
-      .attr("fill", getColor)
-      .call(force.drag);
+    .attr("class", "node")
+    .attr("r", 5)
+    .attr("fill", getColor)
+    .call(force.drag);
 
   node.exit()
-      .remove();
+    .remove();
 
 
  node.append("circle")
-      .attr("r", function(d) { return d.value * 2; });
+    .attr("r", function(d) { return d.value * 2; });
 
  node.append("text")
-      .attr("dx", 12)
-      .attr("dy", ".35em")
-      .text(function(d) { console.log(d.name); return d.name });
+    .attr("dx", 12)
+    .attr("dy", ".35em")
+    .text(function(d) { console.log(d.name); return d.name });
 
 node.append("image")
-      .attr("xlink:href", function(d) { return d.avatar; })
-      .attr("x", function(d) { return d.value * -3/2.0; })
-      .attr("y", function(d) { return d.value * -3/2.0; })
-      .attr("width", function(d) { return d.value * 3; })
-      .attr("height", function(d) { return d.value * 3; });
+    .attr("xlink:href", function(d) { return d.avatar; })
+    .attr("x", function(d) { return d.value * -3/2.0; })
+    .attr("y", function(d) { return d.value * -3/2.0; })
+    .attr("width", function(d) { return d.value * 3; })
+    .attr("height", function(d) { return d.value * 3; });
 
 
   link = link.data(links);
 
   link.enter().insert("line", ".node")
-      .attr("class", "link");
+    .attr("class", "link");
   link.exit()
-      .remove();
+    .remove();
 
   force.start();
 }

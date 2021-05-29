@@ -1,7 +1,7 @@
 {% load humanize static i18n %}
 {% if current_match_round %}
   <div class="clr_container mt-2">
-    <div class="townsquare_block-header text-left mb-1 accordion active" data-target="miniclr">
+    <div class="townsquare_block-header text-left mb-1 accordion collapsed" data-toggle="collapse" data-target="#miniclr">
       <strong>#{{current_match_round.number}}</strong> MINI CLR Distribution <strong>${{current_match_round.amount|floatformat:0}}</strong>
       <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" target="_blank">
         <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3 font-caption text-left"title="
@@ -41,7 +41,7 @@
         ></i>
       </a>
     </div>
-    <div id="miniclr" class="panel-active">
+    <div id="miniclr" class="collapse">
       <div id="payout_estimate" class="font-italic mb-2 grey">
         Payout <span class="clr_match_countdown_timer m-0" data-time="{{current_match_round.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
       </div>
@@ -107,13 +107,13 @@
                 <span style="color:#17a2b8;">${{mli.match_amount}} matched</span>
               </span>
               {% if not mli.following %}
-                <a class="btn btn-gc-blue btn-sm follow_button float-right mr-2 font-smaller-6 font-weight-bold px-3 position-relative"
+                <a class="btn btn-primary btn-sm follow_button float-right mr-2 font-smaller-6 px-3 position-relative"
                   data-jointribe='{{mli.handle}}' href="#"
                 >
                   Follow
                 </a>
               {% else %}
-                <div class="btn btn-outline-green mr-2 font-smaller-6 font-weight-bold float-right px-2 position-relative">
+                <div class="btn btn-outline-secondary mr-2 font-smaller-6 float-right px-2 position-relative">
                   Following
                 </div>
               {% endif %}

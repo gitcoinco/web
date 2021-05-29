@@ -1,7 +1,7 @@
       {% if offers_by_category.top.offers %}
       <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
         <div class="row top_offers pb-2">
-          <div class="container py-0 ">
+          <div class="container-fluid py-0 ">
             <div class="my-1">
 
               <div class="row mx-md-3">
@@ -25,7 +25,7 @@
                       <p class="font-body">{{nb.desc}}</p>
                       <div class="float-right">
                         <span class="tag">{{nb.amount}}</span>
-                        <a class="btn btn-gc-blue btn-sm font-smaller-6 font-weight-bold text-uppercase" href="{{nb.go_url}}">VIEW</a>
+                        <a class="btn btn-primary btn-sm font-smaller-6 font-weight-bold text-uppercase" href="{{nb.go_url}}">VIEW</a>
                       </div>
                     </div>
 

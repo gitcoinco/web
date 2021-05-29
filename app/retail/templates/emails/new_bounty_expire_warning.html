@@ -1,80 +1,81 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
 {% load i18n humanize static %}
 
 {% block content %}
 
-<h1>{% trans "Your Funded Bounty is Expiring" %}</h1>
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
+  <h1>{% trans "Your Funded Bounty is Expiring" %}</h1>
 
 
-<p style="color: #4A4A4A;">
-  {% if is_owner %}
-    {% blocktrans %}Heads up! The funded issue that you posted (below) is expiring in {{ num }} {{ unit }}.{% endblocktrans %}
-  {% else %}
-    {% blocktrans %}Heads up! The funded issue that you fulfilled (below) is expiring in {{ num }} {{ unit }}.{% endblocktrans %}
-  {% endif %}
+  <p>
+    {% if is_owner %}
+    Heads up! The funded issue that you posted (below) is expiring in {{ num }} {{ unit }}.
+    {% else %}
+    Heads up! The funded issue that you fulfilled (below) is expiring in {{ num }} {{ unit }}.
+    {% endif %}
 
-  <br>
-  <br>
-  <img src="{% static "v2/images/expiring_clock.png"%}" style="padding: 20px 0;">
-  <br>
-  <br>
-  {% if is_owner %}
-  <a class="button button--primary" href="{{ bounty.absolute_url }}">{% trans "Extend Expiration Date" %}</a>
-  {% if bounty.status == 'submitted' %}
+    <br>
+    <br>
+    {% if is_owner %}
+    <a class="button" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "Extend Expiration Date" %}</a>
+    {% if bounty.status == 'submitted' %}
     <br>
     <br>
     {% trans "There is a currently pending claim against this funded issue. Please make sure you process them!" %}
-  {% endif %}
-
-  <br>
-  <br>
-  {% trans "After a funded issue has expired, a contributor is still able to submit work and you will still be able to accept work." %}
-  <br>
-  <br>
-  {% trans "You can also cancel the bounty on the issue details page if needed." %}
-
-  <br>
-  <br>
-  <br>
-  {% blocktrans %}If you have any questions, feel free to reach out {% endblocktrans %}<a href="{% url 'slack' %}">{% blocktrans %}on slack{% endblocktrans %}</a>.
-
-  {% else %}
-
-    {% blocktrans %}Why don't you leave a comment <a href="{{ bounty.github_url }}">on github</a> and let the bounty owner know that you'd like to wrap this up soon? :){% endblocktrans %}
+    {% endif %}
 
     <br>
     <br>
-    {% blocktrans %}If you have any problems, feel free to reach out {% endblocktrans %}<a href="{% url 'slack' %}">{% blocktrans %}on slack{% endblocktrans %}</a>.
+    {% trans "After a funded issue has expired, a contributor is still able to submit work and you will still be able to accept work." %}
+    <br>
+    <br>
+    {% trans "You can also cancel the bounty on the issue details page if needed." %}
+
+    <br>
+    <br>
+    <br>
+    {% blocktrans %}If you have any questions, feel free to reach out {% endblocktrans %}<a
+      href="{% url 'slack' %}?{{ utm_tracking }}">{% blocktrans %}on slack{% endblocktrans %}</a>.
+
+    {% else %}
+
+    {% blocktrans %}Why don't you leave a comment <a href="{{ bounty.github_url }}?{{ utm_tracking }}">on github</a> and
+    let the bounty owner know that you'd like to wrap this up soon? :){% endblocktrans %}
+
+    <br>
+    <br>
+    {% blocktrans %}If you have any problems, feel free to reach out {% endblocktrans %}<a
+      href="{% url 'slack' %}?{{ utm_tracking }}">{% blocktrans %}on slack{% endblocktrans %}</a>.
 
 
-  {% endif %}
+    {% endif %}
+
+    <br>
+  <h1>{% trans "Funded Issue Details" %}</h1>
+  </p>
 
   <br>
-  <h5>{% trans "Funded Issue Details" %}</h5>
-</p>
 
-<br>
+  {% include 'emails/bounty.html' with bounty=bounty %}
 
-{% include 'emails/bounty.html' with bounty=bounty %}
-
-<p>
-{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
-</p>
+</div>
 
 {% endblock %}

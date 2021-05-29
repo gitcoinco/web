@@ -6,7 +6,6 @@ from dashboard.models import Activity, Bounty, HackathonEvent, HackathonProject,
 from grants.models import Grant
 from kudos.models import Token
 from quests.models import Quest
-from wiki.models import Article
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
@@ -19,7 +18,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
             'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'labs', 'results',
             'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties', 'quests_index', 'newquest',
-            'products', 'chat', 'avatar_landing'
+            'products', 'avatar_landing'
         ]
 
     def location(self, item):
@@ -194,20 +193,7 @@ class ActivitySitemap(Sitemap):
         return '/' + item.relative_url
 
 
-class ArticleSitemap(Sitemap):
-    changefreq = "weekly"
-    priority = 0.6
-    limit = 5000
-
-    def items(self):
-        return Article.objects.all()
-
-    def location(self, item):
-        return item.get_absolute_url()
-
-
 sitemaps = {
-    'article': ArticleSitemap,
     'grants': GrantsSitemap,
     'hackathons': HackathonEventSiteMap,
     'projects': HackathonProjectSiteMap,

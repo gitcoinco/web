@@ -1,10 +1,10 @@
 <div class="townsquare_nav-list">
   <div class="feed-container my-3">
-    <div class="townsquare_block-header accordion active" data-target="feeds" >
+    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#feeds" >
       Feeds
     </div>
-    <div class="panel-active">
-      <ul id=feeds class="nav d-inline-block font-body">
+    <div>
+      <ul id=feeds class="nav d-inline-block font-body py-2 collapse">
         {% for this_tab in tabs %}
           {% include 'townsquare/shared/thistab.html' %}
         {% endfor %}
@@ -14,29 +14,29 @@
 
   <hr>
 
-  <div class="hacktathon-feed-container my-3">
-    {% if hackathon_tabs|length %}
-      <div class="townsquare_block-header mt-2 accordion active" data-target="hackathons">
+  {% if hackathon_tabs|length %}
+    <div class="hacktathon-feed-container my-3">
+      <div class="townsquare_block-header mt-2 accordion collapsed" data-toggle="collapse" data-target="#hackathons">
         Hackathons
       </div>
-      <div class="panel-active">
-        <ul id=hackathons class="nav d-inline-block font-caption panel-active">
+      <div>
+        <ul id=hackathons class="nav d-inline-block font-caption py-2 collapse">
           {% for this_tab in hackathon_tabs %}
             {% include 'townsquare/shared/thistab.html' %}
           {% endfor %}
         </ul>
       </div>
-    {% endif %}
-  </div>
+    </div>
 
-  <hr>
+    <hr>
+  {% endif %}
 
   <div class="filter-feed-container my-3">
-    <div class="townsquare_block-header accordion active" data-target="filter">
+    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#filter">
       Filter
     </div>
-    <div class="panel-active">
-      <ul id=filter class="nav d-inline-block font-caption">
+    <div>
+      <ul id=filter class="nav d-inline-block font-caption py-2 collapse">
         {% for tag in tags %}
           {% include 'townsquare/shared/tag.html' %}
         {% endfor %}
@@ -47,11 +47,11 @@
   <hr>
 
   <div class="my-tribes-container my-3 tribe">
-    <div class="townsquare_block-header accordion active tribe" data-target="tribes">
+    <div class="townsquare_block-header accordion tribe collapsed" data-toggle="collapse" data-target="#tribes">
       My Tribes
     </div>
-    <div id="tribes" class="panel-active">
-      <ul class="nav d-inline-block font-caption">
+    <div id="tribes" class="collapse">
+      <ul class="nav d-inline-block font-caption py-2">
         {% for tribe in following_tribes %}
           <li class="nav-item">
             <a data-toggle="tooltip" title="@{{tribe.title}}'s Tribe" class="nav-link nav-line" href="/{{ tribe.title }}">
@@ -73,14 +73,15 @@
     </div>
   </div>
 
+
   <hr>
 
   <div class="suggested-tribes-container my-3 tribe">
-    <div class="townsquare_block-header accordion active" data-target="suggested-tribes">
+    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#suggested-tribes">
       Suggested Tribes
     </div>
-    <div id="suggested-tribes" class="panel-active">
-      <ul class="nav d-inline-block font-body col-sm-9 col-lg-9 pr-2" style="padding-right: 0">
+    <div id="suggested-tribes" class="mb-0 collapse">
+      <ul class="nav d-inline-block font-body col-sm-9 col-lg-9 pr-2 py-2" style="padding-right: 0">
         {% for tribe in suggested_tribes %}
           <li class="nav-item d-flex justify-content-between align-items-center my-1">
             <a style="max-width: 70%;" href="/profile/{{ tribe.title }}" class="d-flex nav-link nav-line pr-0 mr-0">
@@ -91,7 +92,7 @@
               </span>
             </a>
             <div>
-              <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="{{ tribe.title }}">
+              <a class="follow_tribe btn btn-sm btn-outline-primary font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="{{ tribe.title }}">
                 Follow
               </a>
               <button data-ignore-tribe="{{ tribe.title }}" class="font-smaller-6 px-0 remove-tribe btn btn-link"><i class="fa fa-times"></i></button>

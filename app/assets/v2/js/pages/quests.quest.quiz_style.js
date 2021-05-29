@@ -51,7 +51,7 @@ var start_quiz = async function() {
       await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
       await toggle_character_class($('#enemy'), [ 'harm', '' ]);
     }
-    
+
     var question_level_seconds_to_respond = response['question']['seconds_to_respond'];
     var prefix = '(' + question_number + '/' + question_count + ') - ';
     var question = prefix + response['question']['question'];
@@ -179,11 +179,13 @@ var advance_to_state = async function(new_state) {
     typeWriter();
     await wait_for_typewriter();
 
-    var kudos_reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
+    var reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
 
-    new_html = $('#desc').html() + kudos_reward_html;
+    if (document.reward_tip['token']) {
+      reward_html = " <BR><BR> If you're successful in this quest, you'll earn <strong>" + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>';
+    }
 
-    $('#desc').html(new_html);
+    $('#desc').html($('#desc').html() + reward_html);
 
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(1000);
@@ -234,13 +236,9 @@ var advance_to_state = async function(new_state) {
     document.typewriter_txt = text;
     document.typewriter_speed = 50;
     typeWriter();
-
     await $('#desc').removeClass('hidden').fadeIn();
     await wait_for_typewriter();
-    new_html = $('#desc').html() + html;
-
-    $('#desc').html(new_html);
-
+    $('#desc').html($('#desc').html() + html);
     await sleep(100);
     await $('#cta_button a').html('Got It 🤙');
     await $('#cta_button').removeClass('hidden').fadeIn();
@@ -300,8 +298,12 @@ var winner = async function(prize_url) {
   var span = '<span style="display:block; font-weight: bold; font-size: 24px;">🏆Quest Prize🏅</span>';
 
   start_music_midi('secret-discovery');
+  if (document.reward_tip['token_amount']) {
+    $('#desc').html('<strong>' + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>');
+  } else {
+    $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
+  }
 
-  $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
   $('.prize').fadeOut();
   await sleep(500);
   $('#desc').removeClass('hidden');
@@ -340,7 +342,6 @@ var start_quest = function() {
 };
 
 $(document).ready(function() {
-
   var size_background = function() {
     var buffer = 50;
 
@@ -386,5 +387,5 @@ $(document).ready(function() {
   if (document.quest) {
     start_quest();
   }
-  
+
 });

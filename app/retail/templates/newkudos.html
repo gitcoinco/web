@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,9 +15,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% block body %}
-<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
+{% bundle css file onepagesubmit %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
+{% endbundle %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-5 pb-4">
@@ -117,7 +119,7 @@
           </div>
           <div class="terms_container pt-2">
             {% if is_staff %}
-            <div class="form__checkbox">
+            <div class="form__checkbox alpha-warning">
               <input name='mint_and_sync' id='mint_and_sync' type="checkbox" value=1 />
                 <label class="form__label" for=mint_and_sync>{% trans "ADMIN ONLY - mint+sync this kudos immediately" %}
               </label>
@@ -139,13 +141,13 @@
           </div>
 
           {% csrf_token %}
-          <input class='button button--primary joinslack mt-2' type='submit' name='submit' value="Submit Token">
+          <input class='btn btn-primary joinslack mt-2' type='submit' name='submit' value="Submit Token">
         </form>
-        {% endblock %}
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
 {% block scripts %}
 <!-- jQuery -->
 <script src="{% static "v2/js/pages/newkudos.js" %}"></script>

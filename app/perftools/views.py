@@ -18,6 +18,9 @@ def sitemap(request, section=None, template_name='sitemap.xml', mimetype='applic
 @csrf_exempt
 def blocknative(request):
     from economy.models import TXUpdate
+    if not request.body:
+        from dashboard.views import profile
+        return profile(request, 'blocknative')
     body = json.loads(request.body)
     if body['apiKey'] == settings.BLOCKNATIVE_API:
         txu = TXUpdate.objects.create(body=body)

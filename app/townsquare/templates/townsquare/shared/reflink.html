@@ -1,7 +1,7 @@
 {% if REFER_LINK %}
-  <div class="mb-4">
-    <div class="townsquare_block-header text-left mb-1" data-target="reflink_container">
-      <strong>Ref A Friend!</strong>
+  <div>
+    <div class="townsquare_block-header accordion my-1 collapsed" data-toggle="collapse" data-target="#reflink_container">
+      Refer a friend!
       <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
         <p class='text-left font-weight-bold'> Gitcoin is better with friends!</p>
         <p class='text-left'>Do you have a coworker, classmate, or friend that would benefit from access to Gitcoin's products?  Send them this reflink to get them onboarded.</p>
@@ -10,10 +10,10 @@
         <p class='mb-0 text-left'>2. If your friends sign up to Gitcoin using your reflink, their account will be attached to yours.</p>
         <p class='text-left'>3. You will earn credit for their Quests, and access to special limited edition goodies - like exclusive Gitcoin Actions, Gitcoin Kudos, or other unannounced (but exciting) rewards.</p>
       "></i>
-      <h2></h2>
     </div>
-    <div id="reflink_container">
+    <div id="reflink_container" class="mt-3 mb-4 collapse">
       <input id="reflink" type="text" value="{{REFER_LINK}}" class="w-100 copy_me py-2 rounded pl-3 font-caption text-mode-color" readonly="readonly">
     </div>
   </div>
+  <hr>
 {% endif %}

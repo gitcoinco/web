@@ -1,29 +1,66 @@
 {% load i18n static humanize grants_extra %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards_pic.html' %}
+  </head>
+  <body>
+    {% for grant in grants %}
+    {% endfor %}
 
-{% include 'shared/head.html' with slim=1 %}
-{% include 'shared/cards_pic.html' %}
+    <script>
+      const grantsDetails= [
+            {% for grant in grants %}
+                {% if not forloop.first %},{% endif %}
+                {
+                  grant_id: "{{ grant.id }}",
+                  grant_slug: "{{ grant.obj.slug }}",
+                  grant_url: "{{ grant.obj.url }}",
+                  grant_title: "{{ grant.obj.title |escapejs}}",
+                  grant_contract_version: "{{ grant.obj.contract_version }}",
+                  grant_contract_address: "{{ grant.obj.contract_address }}",
+                  grant_token_symbol: "{{ grant.obj.token_symbol }}",
+                  grant_admin_address: "{{ grant.obj.admin_address }}",
+                  zcash_payout_address: "{{ grant.obj.zcash_payout_address }}",
+                  celo_payout_address: "{{ grant.obj.celo_payout_address }}",
+                  zil_payout_address: "{{ grant.obj.zil_payout_address }}",
+                  harmony_payout_address: "{{ grant.obj.harmony_payout_address }}",
+                  polkadot_payout_address: "{{ grant.obj.polkadot_payout_address }}",
+                  kusama_payout_address: "{{ grant.obj.kusama_payout_address }}",
+                  binance_payout_address: "{{ grant.obj.binance_payout_address }}",
+                  rsk_payout_address: "{{ grant.obj.rsk_payout_address }}",
+                  grant_token_address: "{{ grant.obj.token_address }}",
+                  grant_logo: {% if grant.logo and grant.logo.url %}"{{ grant.obj.logo.url }}"{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} "{% static grant_logo|addstr:id|add:'.png' %}" {% endwith %} {% endif %},
+                  grant_clr_prediction_curve: "{{ grant.obj.clr_prediction_curve }}",
+                  grant_image_css: "{{ grant.obj.image_css }}",
+                  tenants: {{ grant.obj.tenants |safe }},
+                  is_clr_eligible: {{grant.obj.is_clr_eligible|yesno:"true,false"}},
+                  grant_donation_amount: "{{ grant.amount }}",
+                  grant_donation_currency: "{{ grant.token.symbol }}",
+                  token_local_id: "{{ grant.token.id }}",
+                  clr_round_num: "{{ grant.obj.clr_round_num }}"
+                }
+            {% endfor %}
+            ]
+    </script>
 
-{% for grant in grants %}
-  <form class="js-addDetailToCart-form">
-     {% include 'grants/shared/hidden_inputs.html' with amount=grant.amount token=grant.token grant=grant.obj %}
-  </form>
-{% endfor %}
 
-    {% include 'shared/footer_scripts.html' %}
-  <script src="{% static "v2/js/grants/funding.js" %}"></script>
-  <script src="/dynamic/js/tokens_dynamic.js"></script>
-  <script src="{% static "v2/js/tokens.js" %}"></script>
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/grants/funding.js" %}"></script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
 
-<script>
-$(document).ready(function() {
+    <script>
+    $(document).ready(function() {
+      grantsDetails.forEach(function(grant) {
+        CartData.addToCart(grant);
+      });
 
-    $('.js-addDetailToCart-form').each(function() {
-
-        const formData = objectifySerialized($(this).serializeArray());
-        CartData.addToCart(formData);
+      setTimeout(function(){
+          document.location.href = "/grants/cart";
+      }, 1000);
     });
-    setTimeout(function(){
-        document.location.href = "/grants/cart";
-    }, 50);
-});
-</script>
+    </script>
+  </body>
+</html>

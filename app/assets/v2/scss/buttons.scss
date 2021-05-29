@@ -1,0 +1,311 @@
+/*
+	https://developer.mozilla.org/en/docs/Web/CSS/box-shadow
+	box-shadow: [inset?] [top] [left] [blur] [size] [color];
+
+	Tips:
+	- We're setting all the blurs to 0 since we want a solid fill.
+	- Add the inset keyword so the box-shadow is on the inside of the element
+	- Animating the inset shadow on hover looks like the element is filling in from whatever side you specify ([top] and [left] accept negative values to become [bottom] and [right])
+	- Multiple shadows can be stacked
+	- If you're animating multiple shadows, be sure to keep the same number of shadows so the animation is smooth. Otherwise, you'll get something choppy.
+*/
+
+.fill {
+  --color: #a972cb;
+  --hover: #cb72aa;
+}
+
+.fill:hover,
+.fill:focus {
+  box-shadow: inset 0 0 0 2em var(--hover);
+}
+
+.pulseButton {
+  --color: #ef6eae;
+  --hover: #ef8f6e;
+}
+
+.pulseClick,
+.pulseButton:hover,
+.pulseButton:focus {
+  -webkit-animation: pulse 1s;
+  animation: pulseButton 1s;
+  box-shadow: 0 0 0 2em rgba(255, 255, 255, 0);
+}
+
+.close {
+  --color: #ff7f82;
+  --hover: #ffdc7f;
+}
+
+.raise {
+  --color: #000;
+  --hover: #000;
+}
+
+.raise:hover,
+.raise:focus {
+  box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+  -webkit-transform: translateY(-0.25em);
+  transform: translateY(-0.25em);
+}
+
+.up {
+  --color: #e4cb58;
+  --hover: #94e458;
+}
+
+.up:hover,
+.up:focus {
+  box-shadow: inset 0 -3.25em 0 0 var(--hover);
+}
+
+.offset {
+  --color: #19bc8b;
+  --hover: #1973bc;
+  box-shadow: 0.3em 0.3em 0 0 var(--color), inset 0.3em 0.3em 0 0 var(--color);
+}
+
+.offset:hover,
+.offset:focus {
+  box-shadow: 0 0 0 0 var(--hover), inset 6em 3.5em 0 0 var(--hover);
+}
+
+button {
+  color: var(--color);
+  -webkit-transition: 0.25s;
+  transition: 0.25s;
+}
+
+button:hover,
+button:focus {
+  outline: none;
+}
+
+@-webkit-keyframes pulseButton {
+  0% {
+    box-shadow: 0 0 0 0 var(--hover);
+  }
+}
+
+@keyframes pulseButton {
+  0% {
+    box-shadow: 0 0 0 0 var(--hover);
+  }
+}
+
+.btn {
+  border-radius: 3px;
+}
+
+.btn-gc-blue,
+.btn-gc-green,
+.btn-gc-dark-green,
+.btn-gc-purple,
+.btn-gc-pink {
+  color: white;
+}
+
+
+.btn-gc-dark-green {
+  background-color: var(--gc-dark-green);
+}
+
+.btn-gc-dark-green:hover {
+  background-color: var(--gc-green);
+}
+
+.btn-gc-blue {
+  background-color: var(--gc-blue);
+}
+
+.btn-gc-blue:hover {
+  background-color: var(--gc-blue-hover);
+  color: white;
+}
+
+.btn-gc-outline-red {
+  border-color: #dc3545;
+  color: #dc3545;
+  background: none;
+}
+
+.btn-gc-outline-red:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+  background: none;
+}
+
+.btn-outline-gc-blue {
+  border-color: var(--gc-blue);
+  color: var(--gc-blue);
+}
+
+.btn-outline-gc-blue:hover {
+  background-color: var(--gc-blue);
+  color: white;
+}
+
+.btn-outline-white {
+  border-color: #ffffff;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.btn-outline-white:hover {
+  background: #ffffff;
+  color: #3f00ff;
+}
+
+.btn-gc-green {
+  background-color: var(--gc-green);
+}
+
+.btn-gc-green:hover {
+  background-color: var(--gc-green-hover);
+  color: white;
+}
+
+.btn-outline-gc-green {
+  border-color: var(--gc-green);
+  color: var(--gc-green);
+}
+
+.btn-outline-gc-green:hover {
+  background-color: var(--gc-green);
+  color: white;
+}
+
+.btn-outline-gc-green.btn-outline-gc-grey {
+  border-color: var(--text-dark);
+}
+
+.btn-outline-gc-green.btn-outline-gc-grey:hover {
+  border-color: var(--gc-green--hover);
+}
+
+.btn-gc-purple {
+  background-color: var(--gc-purple);
+}
+
+.btn-outline-black {
+  border: 1px solid #000;
+  background: white;
+  color: #000;
+}
+
+.btn-outline-green {
+  border: 1px solid var(--gc-green);
+  background: white;
+  color: var(--gc-green);
+}
+
+.btn-outline-green:hover {
+  border: 1px solid var(--gc-green);
+  background: var(--gc-green);
+  color: #fff;
+}
+
+.btn-gc-purple:hover {
+  background-color: var(--gc-purple-hover);
+  color: white;
+}
+
+.btn-outline-gc-purple {
+  border-color: var(--gc-purple);
+  color: var(--gc-purple);
+}
+
+.btn-outline-gc-purple:hover {
+  background-color: var(--gc-purple);
+  color: white;
+}
+
+.btn-gc-pink {
+  background-color: var(--gc-pink);
+}
+
+.btn-gc-pink:hover {
+  background-color: var(--gc-pink-hover);
+}
+
+/* Icons in buttons */
+.btn > svg:first-child {
+  margin-right: .5rem;
+}
+
+#metamask_connect {
+  background: none;
+  color: white;
+  border: 2px solid white;
+  border-radius: 4px;
+}
+
+.btn.btn-circle {
+  border-radius: 50px;
+  line-height: 2em;
+}
+
+.btn.btn-social:hover {
+  color: white;
+  filter: saturate(3);
+}
+
+.btn-twitter {
+  color: white;
+  background-color: #1DA1F2;
+}
+
+.btn-facebook {
+  color: white;
+  background-color: #4267B2;
+}
+
+.btn-email {
+  color: white;
+  background-color: #F24283;
+}
+
+.btn-metamask {
+  background: #FF7F00;
+  color: white;
+}
+
+.btn-metamask:hover {
+  color: white;
+  background: #E17000;
+}
+
+.btn-lg-padding {
+  padding: 0.6rem 2rem;
+}
+
+.btn-radio {
+  border: 1px solid #D3D3D3;
+  min-height: 40px;
+}
+
+.btn-radio.active {
+  border-color: #6F3FF5;
+}
+
+.btn-radio i {
+  color: var(--button-radio-icon-color);
+}
+
+.badge-greylight {
+  background-color: #F3F3F3;
+  color: #666666;
+  font-weight: 600;
+}
+
+.btn-gc-grey {
+  color: #171717;
+  background-color: #EEE;
+}
+
+.btn-gc-grey:not(:disabled):not(.disabled).active {
+  color: white;
+  background-color: #6f3ef5;
+  border-color: #6F3FF5;
+}

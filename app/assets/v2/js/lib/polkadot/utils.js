@@ -141,3 +141,10 @@ polkadot_utils.transferViaExtension = async(amount, to_address, from_address) =>
     });
   });
 };
+
+/**
+ * Checks to see if polkadot web3 is injected
+ */
+polkadot_utils.isWeb3Injected = () => {
+  return polkadot_extension_dapp.isWeb3Injected;
+}

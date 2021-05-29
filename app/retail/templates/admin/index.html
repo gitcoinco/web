@@ -1,25 +1,27 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+  Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see
+  <http://www.gnu.org/licenses/>.
 {% endcomment %}
-
-{% load i18n static %}
-
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% load i18n static bundle %}
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -28,122 +30,131 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-<div id="content-main">
+  <div id="content-main">
 
-{% if app_list %}
-    {% for app in app_list %}
+    {% if app_list %}
+      {% for app in app_list %}
         <div class="app-{{ app.app_label }} module">
-        <table>
-        <caption>
-            <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
-        </caption>
-        {% for model in app.models %}
+          <table>
+            <caption>
+              <a href="{{ app.app_url }}" class="section"
+                title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">{{ app.name }}</a>
+            </caption>
+            {% for model in app.models %}
             <tr class="model-{{ model.object_name|lower }}">
-            {% if model.admin_url %}
+              {% if model.admin_url %}
                 <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
-            {% else %}
+              {% else %}
                 <th scope="row">{{ model.name }}</th>
-            {% endif %}
+              {% endif %}
 
-            {% if model.add_url %}
+              {% if model.add_url %}
                 <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
-            {% else %}
+              {% else %}
                 <td>&nbsp;</td>
-            {% endif %}
+              {% endif %}
 
-            {% if model.admin_url %}
+              {% if model.admin_url %}
                 <td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></td>
-            {% else %}
+              {% else %}
                 <td>&nbsp;</td>
-            {% endif %}
+              {% endif %}
             </tr>
-        {% endfor %}
-        </table>
+            {% endfor %}
+          </table>
         </div>
-    {% endfor %}
-{% else %}
-    <p>{% trans "You don't have permission to edit anything." %}</p>
-{% endif %}
-</div>
+      {% endfor %}
+    {% else %}
+      <p>{% trans "You don't have permission to edit anything." %}</p>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block sidebar %}
 
 <div id="content-related">
-    <div class="module" id="-some-custom-links">
-        <h2>{% trans 'Analytics' %}</h2>
-        <ul>
-            <a href="{% url 'stats' %}">KPI Dashboard</a>
-        </ul>
-        <ul>
-            <a href="{% url 'cohort' %}">Cohort Analysis</a>
-        </ul>
-        <ul>
-            <a href="{% url 'funnel' %}">Funnel Analysis</a>
-        </ul>
-        <ul>
-            <a href="{% url 'viz_index' %}">Analytics Playground</a>
-        </ul>
-        <ul>
-            <a href="{% url 'mesh_network_viz' %}">Mesh Network</a>
-        </ul>
-        <h2>{% trans 'Debugging Tasks' %}</h2>
+  <div class="module" id="-some-custom-links">
+    <h2>{% trans 'Analytics' %}</h2>
+    <ul>
+      <a href="{% url 'stats' %}">KPI Dashboard</a>
+    </ul>
+    <ul>
+      <a href="{% url 'cohort' %}">Cohort Analysis</a>
+    </ul>
+    <ul>
+      <a href="{% url 'funnel' %}">Funnel Analysis</a>
+    </ul>
+    <ul>
+      <a href="{% url 'viz_index' %}">Analytics Playground</a>
+    </ul>
+    <ul>
+      <a href="{% url 'mesh_network_viz' %}">Mesh Network</a>
+    </ul>
+    <h2>{% trans 'Debugging Tasks' %}</h2>
 
-        <ul>
-            <a href="{% url 'impersonate-list' %}">{% trans 'Impersonate Users' %}<a/>
-        </ul>
-        <ul>
-            Grants: <a href="/_administrationgrants/contribution/?tx_cleared=f">Uncleared TXNS<a/> | <a href="/_administrationgrants/contribution/?success=f">Failed TXNS<a/>
-        </ul>
+    <ul>
+      <a href="{% url 'impersonate-list' %}">{% trans 'Impersonate Users' %}<a />
+    </ul>
+    <ul>
+      Grants: <a href="/_administrationgrants/contribution/?tx_cleared=f">Uncleared TXNS<a /> | <a href="/_administrationgrants/contribution/?success=f">Failed TXNS<a />
+    </ul>
 
-        <h2>{% trans 'Administrative Tasks' %}</h2>
+    <h2>{% trans 'Administrative Tasks' %}</h2>
 
-        <ul>
-            <a href="/_administration/email/">Preview Emails</a>
-        </ul>
+    <ul>
+      <a href="/_administration/email/">Email Inventory</a>
+    </ul>
 
-        <ul>
-            <a href="/_administrationfaucet/faucetrequest/?fulfilled=f&rejected=f">Process Faucet Requests</a>
-        </ul>
-        <ul>
-            <a href="/_administration/bulkDM/">Send a Bulk DM</a>
-        </ul>
-        <ul>
-            <a href="/_administrationeconomy/token/">Process ERC20 Token Requests</a>
-        </ul>
-        <ul>
-            <a href="/_administrationkudos/tokenrequest/?approved=f&rejection_reason=">Process Kudos Token Requests</a>
-        </ul>
+    <ul>
+      <a href="/_administration/bulkDM/">Send a Bulk DM</a>
+    </ul>
+    <ul>
+      <a href="/_administration/bulkemail/">Send a Bulk Email</a>
+    </ul>
+    <ul>
+      <a href="/_administrationeconomy/token/">Process ERC20 Token Requests</a>
+    </ul>
+    <ul>
+      <a href="/_administrationkudos/tokenrequest/?approved=f&rejection_reason=">Process Kudos Token Requests</a>
+    </ul>
+    <ul>
+      <a href="/_administrationfaucet/faucetrequest/?fulfilled=f&rejected=f">Process Faucet Requests</a>
+    </ul>
+  </div>
 
-    </div>
 
-
-    <div class="module" id="recent-actions-module">
-        <h2>{% trans 'Recent Actions' %}</h2>
-        <h3>{% trans 'My Actions' %}</h3>
-            {% load log %}
-            {% get_admin_log 10 as admin_log for_user user %}
-            {% if not admin_log %}
-            <p>{% trans 'None available' %}</p>
-            {% else %}
-            <ul class="actionlist">
-            {% for entry in admin_log %}
-            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
-                {% if entry.is_deletion or not entry.get_admin_url %}
-                    {{ entry.object_repr }}
-                {% else %}
-                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-                {% endif %}
-                <br/>
-                {% if entry.content_type %}
-                    <span class="mini quiet">{% filter capfirst %}{{ entry.content_type }}{% endfilter %}</span>
-                {% else %}
-                    <span class="mini quiet">{% trans 'Unknown content' %}</span>
-                {% endif %}
-            </li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-    </div>
+  <div class="module" id="recent-actions-module">
+    <h2>{% trans 'Recent Actions' %}</h2>
+    <h3>{% trans 'My Actions' %}</h3>
+    {% load log %}
+    {% get_admin_log 10 as admin_log for_user user %}
+    {% if not admin_log %}
+      <p>{% trans 'None available' %}</p>
+    {% else %}
+      <ul class="actionlist">
+        {% for entry in admin_log %}
+        <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+          {% if entry.is_deletion or not entry.get_admin_url %}
+            {{ entry.object_repr }}
+          {% else %}
+            <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+          {% endif %}
+          <br />
+          {% if entry.content_type %}
+            <span class="mini quiet">{% filter capfirst %}{{ entry.content_type }}{% endfilter %}</span>
+          {% else %}
+            <span class="mini quiet">{% trans 'Unknown content' %}</span>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
+
+<style type="text/css">
+  #onboard-modal {
+    display: none;
+  }
+</style>

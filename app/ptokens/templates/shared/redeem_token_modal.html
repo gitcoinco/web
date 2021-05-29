@@ -1,0 +1,60 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="modal fade g-modal" id="redeemTokenModal" tabindex="-1" role="dialog" aria-labelledby="redeem_ptoken_modalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 576px;" role="document">
+    <div class="modal-content p-4">
+      <div class="modal-header border-0">
+        <h5 class="font-weight-semibold text-center w-100">Redeem {{ ptoken.token_symbol }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="ptokenRedeemForm" class="modal-body">
+        <div id="ptokenRedeemAmountDiv" class="d-flex align-items-baseline justify-content-between">
+          <label class="font-caption font-weight-semibold letter-spacing text-black-60 text-uppercase" for="ptokenRedeemAmount">{% trans 'Amount:' %}</label>
+          <div class="w-75">
+            <input name='ptokenRedeemAmount' id="ptokenRedeemAmount" class="form__input" type="text" placeholder="10 {{ ptoken.token_symbol }}"/>
+            <br>
+            <span class="text-muted font-smaller-6">You have <span id="available-ptokens">{{ available_to_redeem|default:0 }}</span> {{ ptoken.token_symbol }}</span>
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+        <div id="ptokenRedeemDescriptionDiv" class="mt-2">
+          <label class="font-caption font-weight-semibold letter-spacing text-black-60 text-uppercase" for="ptokenRedeemCost">{% trans 'Description:' %}</label>
+          <textarea name='ptokenRedeemDescriptionDiv' id="ptokenRedeemDescription" class="form__input"></textarea>
+          <div class="invalid-feedback">
+            Please describe what you would like to redeem the token for
+          </div>
+        </div>
+        <div class="form-check mt-3 mb-5">
+          <input class="form-check-input" name='ptokenRedeemTerms' id='ptokenRedeemTerms' type="checkbox" required/>
+          <small class="form-check-label" id="TOSText" for=ptokenRedeemTerms>{% trans "I have read, understand, and agree to the " %}<a href="{% url "_terms" %}">{% trans "Terms of Service" %}</a>
+          </small>
+          <div class="invalid-feedback">
+            You must agree to the terms before submitting.
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn btn-lg btn-primary mb-3 px-5" id="submit_redeem_token">Submit</button>
+          <br>
+          <button type="button" class="btn btn-lg btn-outline-primary px-5" data-dismiss="modal" aria-label="Close">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

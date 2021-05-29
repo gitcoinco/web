@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
-{% load humanize i18n static %}
+{% load humanize i18n static bundle %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -16,8 +16,11 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
-
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} cohort{% endblock %}
@@ -83,8 +86,9 @@
     <meta charset="utf-8"/>
     <script src="//d3js.org/d3.v3.js"></script>
     <script src="{% static "v2/js/lib/jquery.js" %}"></script>
-    <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
-    <link rel="stylesheet" href="{% static "v2/js/dataviz/heatmap.css" %}">
+    {% bundle css file dataviz_heatmap %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dataviz/heatmap.scss" %} />
+    {% endbundle %}
   </head>
   <body class="g-font-muli">
     <a href="..">&lt; back</a>

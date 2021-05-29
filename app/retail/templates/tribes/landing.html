@@ -14,208 +14,211 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
   <head>
     <meta name="title" content="Gitcoin Tribes">
     <meta name="description" content="Build relationships and meaningful projects while forming an open source tribe.">
-    <link rel="stylesheet" href="{% static "v2/css/retail/plans.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/retail/tribes_landing.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
+    {% bundle css file tribes_landing %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/retail/plans.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/retail/tribes_landing.scss" %}>
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/home.scss" %}>
+    {% endbundle %}
     {% include 'shared/cards_pic.html' %}
   </head>
   <body class="tribes-landing g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'home/nav.html' %}
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
 
-    <div class="container-fluid banner header text-white">
-      <div class="row">
-        <div class="col-12 col-md-9 col-xl-6  mx-auto pt-2">
-          <h2 class="text-center font-weight-bold banner__h2 mt-md-5 pt-5">
-            Build meaningful relationships with top
-              developers and work on awesome projects in
-              an <span class="gc-text-green">open source tribe</span>.
-          </h2>
+      <div class="container-fluid banner header text-white">
+        <div class="row">
+          <div class="col-12 col-md-9 col-xl-6  mx-auto pt-2">
+            <h2 class="text-center font-weight-bold banner__h2 mt-md-5 pt-5">
+              Build meaningful relationships with top
+                developers and work on awesome projects in
+                an <span class="gc-text-green">open source tribe</span>.
+            </h2>
 
-          <div class="buttons text-center mt-5">
-            <a id="fund-issue" href="https://hackathons.gitcoin.co/contact/" class="btn button--primary shadow-none py-2 px-4 text-white font-weight-semibold ml-3" >
-              Get started
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="row justify-content-center">
-        <div class="col-8 text-center">
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION: HOW IT WORKS -->
-    <div class="container how-it-works">
-      <div class="row py-5">
-        <div class="col-12 text-center" >
-          <h1 class="text-center mb-5 py-4">
-            <span class="pb-2 title font-weight-bold">How It Works</span>
-          </h1>
-          <div class="row">
-            <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="left">
-              <img height="120" src="{% static 'v2/images/tribes/landing/new-idea.svg' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
-              <p class="text-capitalize font-title font-weight-bold my-3">Sponsor hackathons & foster new ideas</p>
-            </div>
-            <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
-              <img height="120" src="{% static 'v2/images/tribes/landing/host-workshop.png' %}" class="mw-100 mt-5 mx-auto" alt="Host workshops and meet great developers">
-              <p class="text-capitalize font-title font-weight-bold my-3">Host workshops and meet great developers</p>
-            </div>
-            <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
-              <img height="120" src="{% static 'v2/images/tribes/landing/grow-tribe.png' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
-              <p class="text-capitalize font-title font-weight-bold my-3">Build great stuff and grow your tribe</p>
+            <div class="btn text-center mt-5">
+              <a id="fund-issue" href="mailto:sales@gitcoin.co" class="btn btn-primary py-2 px-4 ml-3" >
+                Get started
+              </a>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="container-fluid py-5 mt-5 landing__newsletter bg-light">
-      {% include 'shared/newsletter.html' %}
-    </div>
-
-    <!-- SECTION : WHY TRIBES -->
-    <div class="col-12 why-section py-5">
-      <h1 class="text-center mb-5 py-4">
-        <span class="pb-2 title font-weight-bold">Why Tribes</span>
-      </h1>
-      <img class="square-1 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
-
-      <img class="square-2 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
-
-      <div class="row col-lg-8 mx-auto mt-5 py-5 reasons">
-
-        {% for reason in reasons %}
-          <div class="col-12 col-md-4 mb-4 pb-2 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
-            <img class="zoom-on-hover" src="{{ reason.img }}" alt="{{ reason.title }}">
-            <p class="font-weight-bold mt-2 mb-1 font-title-lg">{{ reason.title }}</p>
-            <p class="font-header">{{ reason.info }}</p>
+        <div class="row justify-content-center">
+          <div class="col-8 text-center">
           </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- SECTION : TOP TRIBES -->
-    <div class="row bg-white text-black justify-content-center mb-5 mt-5">
-      <div class="row col-lg-10 text-center tribes-section mt-5 pt-5 mx-2 mx-md-auto">
-        <div class="col-12">
-          <h1 class="text-center mb-5 py-4">
-            <span class="pb-2 title font-weight-bold">Top Tribes</span>
-          </h1>
-        </div>
-
-        {% for tribe in tribes %}
-          <div class="col-6 col-sm-4 col-md-3 mb-3">
-            <a href="/profile/{{tribe.name}}/tribe">
-              <img src="/dynamic/avatar/{{ tribe.handle }}" alt="{{ tribe.name }}" class="mx-2 mx-md-5 my-3 rounded-circle zoom-on-hover"/>
-            </a>
-            <h4 class="font-weight-bold pt-0 mb-0 font-title text-capitalize">{{ tribe.name }}</h4>
-            <span class="font-body">
-              <i class="fas fa-user mr-1 font-caption position-relative"></i> {{ tribe.follower_count|default:0 }} members
-            </span>
-          </div>
-        {% endfor %}
-        <div class="text-center w-100 my-5">
-          <a class="button button--primary font-weight-semibold py-2 px-4" href="{% url "tribes_directory" %}">EXPLORE TRIBES</a>
         </div>
       </div>
-    </div>
 
-    <!-- SECTION : TESTIMONIALS -->
-    <div class="testimonials overflow-auto mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
-      {% for testimonial in testimonials %}
-        <div class="testimonial-card flex-shrink-0 my-5 mx-3 d-block d-inline-block text-center">
-          <div class="overlap-line">
-            {% if testimonial.photo %}
-            <img class="testimonial-avatar" src="{{ testimonial.photo }}" alt="">
-            {% endif %}
-            <img class="testimonial-avatar" src="{{ testimonial.org_photo }}" alt="">
-          </div>
-          <div>
-            <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
-            <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
-          </div>
-          <p class="card-description m-5 text-center">{{ testimonial.text }}</p>
-        </div>
-      {% endfor %}
-    </div>
-
-    <!-- SECTION : PRESS -->
-    <div id="press" class="press">
-      <div class="container py-5 press-mobile">
-        <div class="row text-center">
-          <div class="col-12 text-center mb-2">
-            <h2 class="font-bigger-4 mb-3">{% trans "What are people saying?" %}</h2>
-          </div>
-          {% for article in press %}
-            <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static article.img %}" alt="{{ article.alt }}">
+      <!-- SECTION: HOW IT WORKS -->
+      <div class="container how-it-works">
+        <div class="row py-5">
+          <div class="col-12 text-center" >
+            <h1 class="text-center mb-5 py-4">
+              <span class="pb-2 title font-weight-bold">How It Works</span>
+            </h1>
+            <div class="row">
+              <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+                <img height="120" src="{% static 'v2/images/tribes/landing/new-idea.svg' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
+                <p class="text-capitalize font-title font-weight-bold my-3">Sponsor hackathons & foster new ideas</p>
               </div>
-            </a>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION : KNOW US -->
-    <div id="know_us" class="know_us">
-      <div class="container py-5">
-        <div class="row">
-          <div class="col-12 text-center mb-2">
-            <h2 class="font-bigger-4 mb-3">{% trans "Get to know us better" %}</h2>
-          </div>
-          {% for item in know_us %}
-            <div class="col-12 col-md-4 text-center">
-              <a class="btn button__home button__outline" href="{{ item.link }}">
-                {{ item.text }}
-                <i class="fas fa-chevron-right"></i>
-              </a>
+              <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
+                <img height="120" src="{% static 'v2/images/tribes/landing/host-workshop.png' %}" class="mw-100 mt-5 mx-auto" alt="Host workshops and meet great developers">
+                <p class="text-capitalize font-title font-weight-bold my-3">Host workshops and meet great developers</p>
+              </div>
+              <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
+                <img height="120" src="{% static 'v2/images/tribes/landing/grow-tribe.png' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
+                <p class="text-capitalize font-title font-weight-bold my-3">Build great stuff and grow your tribe</p>
+              </div>
             </div>
-          {% endfor %}
-          <div class="col-12 text-center">
-            <a class="btn button__home py-2 button__blue text-center" href="/townsquare">
-              {% trans "Explore Gitcoin" %}
-            </a>
-            <a class="btn button__home py-2 button__blue text-center" href="mailto:founders@gitcoin.co">
-              {% trans "Get in touch" %}
-            </a>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- SECTION : ARTICLES -->
-    <div id="articles" class="articles text-center">
-      <div class="container py-5">
-        <div class="row">
-          <div class="col-12 text-center mb-4">
-            <h2 class="font-bigger-4 mb-3">{% trans "Gitcoin on Medium" %}</h2>
-          </div>
-          {% for article in articles %}
-            <div class="col-12 col-md-6">
-              <a class="article" href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
-                <img src="{{ article.img }}" alt="{{ article.alt }}">
-                <h3 class="mt-3 mb-0">{{ article.title }}</h3>
-                <p class="font-weight-semibold">{{ article.description }}</p>
-              </a>
+      <div class="container-fluid py-5 mt-5 landing__newsletter bg-light">
+        {% include 'shared/newsletter.html' %}
+      </div>
+
+      <!-- SECTION : WHY TRIBES -->
+      <div class="col-12 why-section py-5">
+        <h1 class="text-center mb-5 py-4">
+          <span class="pb-2 title font-weight-bold">Why Tribes</span>
+        </h1>
+        <img class="square-1 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
+
+        <img class="square-2 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
+
+        <div class="row col-lg-8 mx-auto mt-5 py-5 reasons">
+
+          {% for reason in reasons %}
+            <div class="col-12 col-md-4 mb-4 pb-2 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
+              <img class="zoom-on-hover" src="{{ reason.img }}" alt="{{ reason.title }}">
+              <p class="font-weight-bold mt-2 mb-1 font-title-lg">{{ reason.title }}</p>
+              <p class="font-header">{{ reason.info }}</p>
             </div>
           {% endfor %}
         </div>
       </div>
-    </div>
 
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
+      <!-- SECTION : TOP TRIBES -->
+      <div class="row bg-white text-black justify-content-center mb-5 mt-5">
+        <div class="row col-lg-10 text-center tribes-section mt-5 pt-5 mx-2 mx-md-auto">
+          <div class="col-12">
+            <h1 class="text-center mb-5 py-4">
+              <span class="pb-2 title font-weight-bold">Top Tribes</span>
+            </h1>
+          </div>
+
+          {% for tribe in tribes %}
+            <div class="col-6 col-sm-4 col-md-3 mb-3">
+              <a href="/profile/{{tribe.name}}/tribe">
+                <img src="/dynamic/avatar/{{ tribe.handle }}" alt="{{ tribe.name }}" class="mx-2 mx-md-5 my-3 rounded-circle zoom-on-hover"/>
+              </a>
+              <h4 class="font-weight-bold pt-0 mb-0 font-title text-capitalize">{{ tribe.name }}</h4>
+              <span class="font-body">
+                <i class="fas fa-user mr-1 font-caption position-relative"></i> {{ tribe.follower_count|default:0 }} members
+              </span>
+            </div>
+          {% endfor %}
+          <div class="text-center w-100 my-5">
+            <a class="btn btn-primary py-2 px-4" href="{% url "tribes_directory" %}">EXPLORE TRIBES</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION : TESTIMONIALS -->
+      <div class="testimonials overflow-auto mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
+        {% for testimonial in testimonials %}
+          <div class="testimonial-card flex-shrink-0 my-5 mx-3 d-block d-inline-block text-center">
+            <div class="overlap-line">
+              {% if testimonial.photo %}
+              <img class="testimonial-avatar" src="{{ testimonial.photo }}" alt="">
+              {% endif %}
+              <img class="testimonial-avatar" src="{{ testimonial.org_photo }}" alt="">
+            </div>
+            <div>
+              <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
+              <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
+            </div>
+            <p class="card-description m-5 text-center">{{ testimonial.text }}</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- SECTION : PRESS -->
+      <div id="press" class="press">
+        <div class="container py-5 press-mobile">
+          <div class="row text-center">
+            <div class="col-12 text-center mb-2">
+              <h2 class="font-bigger-4 mb-3">{% trans "What are people saying?" %}</h2>
+            </div>
+            {% for article in press %}
+              <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
+                <div class="explain-img-wrapper">
+                  <img src="{% static article.img %}" alt="{{ article.alt }}">
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION : KNOW US -->
+      <div id="know_us" class="know_us">
+        <div class="container py-5">
+          <div class="row">
+            <div class="col-12 text-center mb-2">
+              <h2 class="font-bigger-4 mb-3">{% trans "Get to know us better" %}</h2>
+            </div>
+            {% for item in know_us %}
+              <div class="col-12 col-md-4 text-center">
+                <a class="btn btn-outline-primary" href="{{ item.link }}">
+                  {{ item.text }}
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </div>
+            {% endfor %}
+            <div class="col-12 text-center">
+              <a class="btn btn-primary py-2 text-center" href="/townsquare">
+                {% trans "Explore Gitcoin" %}
+              </a>
+              <a class="btn btn-primary py-2 text-center" href="mailto:support@gitcoin.co">
+                {% trans "Get in touch" %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION : ARTICLES -->
+      <div id="articles" class="articles text-center">
+        <div class="container py-5">
+          <div class="row">
+            <div class="col-12 text-center mb-4">
+              <h2 class="font-bigger-4 mb-3">{% trans "Gitcoin on Medium" %}</h2>
+            </div>
+            {% for article in articles %}
+              <div class="col-12 col-md-6">
+                <a class="article" href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
+                  <img src="{{ article.img }}" alt="{{ article.alt }}">
+                  <h3 class="mt-3 mb-0">{{ article.title }}</h3>
+                  <p class="font-weight-semibold">{{ article.description }}</p>
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
+    </div>
   </body>
 </html>

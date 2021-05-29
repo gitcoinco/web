@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -26,6 +26,13 @@
       {% trans "TRANSACTIONS" %}
       <span class="nav-badge">({{ activity_count }})</span>
     </button>
+
+    {% if is_staff and grant.metadata.related %}
+    <button type="button" id="nav-related" href="{{grant.url}}?tab=related" class="section-tab {% if tab == "related" %} active {% endif %}">
+      {% trans "RELATED GRANTS" %}
+      <span class="nav-badge">({{ grant.metadata.related | length }})</span>
+    </button>
+    {% endif %}
 
     {% if is_team_member %}
     <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
@@ -60,6 +67,19 @@
      
     </div>
     {% endif %}
+
+    {% if tab == "related" %}
+    <div id="section-nav-related" class="tab-section active">
+      {% for ele in grant.related_grants %}
+        <div id="" class="">
+          {{ele.1}} contributors of this grant also funded <a href="{{ele.0.url}}">{{ele.0.title}}</a>
+        </div>
+      {% endfor %}
+     
+    </div>
+    {% endif %}
+
+
 
     {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
@@ -99,6 +119,20 @@
 
     {% if tab == "transactions" %}
       <div id="section-nav-transactions">
+        {% if is_team_member %}
+        <div class="float-right">
+          {% if is_owner %}
+          <a href="/settings/account#financials">
+          Export Transactions (OWNER ONLY)
+          </a> |
+          {% endif %}
+
+          <a href="/grants/contributions/grant{{grant.pk}}.json">
+          All Contributor Addresses for this Grant (TEAM ONLY)
+        </div>
+        <br class="break">
+        {% endif %}
+
         {% if not subscriptions and not cancelled_subscriptions and not contributions %}
           <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
         {% else %}
@@ -265,7 +299,11 @@
                     {{ele.created_on|date:"Y/m/d"}}
                   </td>
                   <td>
-                    {{ele.data.impressions}}
+                    {% if ele.data.impressions > 0 %}
+                      {{ele.data.impressions}}
+                    {% else %}
+                      0
+                    {% endif %}
                   </td>
                   <td>
                     {{ele.data.in_cart}}
@@ -278,14 +316,6 @@
               </table>
               {% endif %}
 
-              <p class="sub-title font-weight-semibold font-caption mt-4 mb-1 pt-1">Contribution History (in USD)</p>
-              <div class="chart_container__content">
-                <div id="grant_chart"></div>
-              </div>
-              <div class="grant-status-list">
-                <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
-                <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
-              </div>
             </div>
           </div>
           <script>
@@ -299,7 +329,9 @@
     <div id="section-nav-contributors">
       <div class="grant__stakeholders-list d-flex flex-wrap">
         {% for contribution in contributors %}
-          {% if contribution.subscription %}
+          {% if contribution.anonymous %}
+            {% trans  'Anonymous' as handle %}
+          {% elif contribution.subscription %}
             {% trans  contribution.subscription.contributor_profile.handle  as handle %}
           {% else %}
             {% trans  contribution.profile.handle  as handle %}

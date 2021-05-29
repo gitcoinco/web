@@ -10,7 +10,16 @@
     ></textarea>
     <input type="hidden" name="what" value="{{what}}:{{whatid}}">
     <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
-    <div class="status-menu position-absolute d-flex flex-wrap" style="width: 3.6em; right: 0; top: 0px;">
+    <div class="d-block float-right">
+      <small class="d-block">Press SHIFT + ENTER to send</small>
+      <div class="d-flex justify-content-end w-100">
+        <button class="btn btn-primary mt-3 mt-md-2" id="btn_post" disabled="true">
+          Post
+        </button>
+      </div>
+    </div>
+
+    <div class="status-menu position-absolute d-flex flex-wrap" style="width: 3.8em; right: 0; top: 0px;">
       <button id="emoji-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0;"><i class="far fa-fw fa-smile"></i></button>
       {% if is_alpha_tester %}
       <button id="background-button" style="bottom: 3.5em; right: 0em; flex:1;" class="btn btn-sm p-1"><i class="fas fa-paint-roller" data-toggle="tooltip" title="" data-original-title="Add a background to post"></i></button>
@@ -38,10 +47,10 @@
     <div class="d-none" id="bg-selector">
     </div>
   </div>
-  <div class="btn-group-toggle text-center text-md-left activity_type_selector" {% if not suppress_data_toggle %} data-toggle="buttons" {%endif%}>
+  <div class="btn-group-toggle text-left activity_type_selector" {% if not suppress_data_toggle %} data-toggle="buttons" {%endif%}>
     {% if tags %}
       {% for tag in tags %}
-        <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip"  title="{{tag.2}}" >
+        <label class="btn btn-radio mr-2 mb-1 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip"  title="{{tag.2}}" >
           <input type="checkbox" name="" value="{{tag.0}}" autocomplete="off">
           <i class="fas fa-{{tag.1}} mr-2"></i>
         {{tag.0}}
@@ -51,17 +60,12 @@
     {% if options %}
       {% for option in options %}
         <input id={{option.1}} type="checkbox" name="activity_type" value="{{option.0}}" autocomplete="off">
-        <label class="mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip" title="{{option.2}}" for='{{option.1}}' >
+        <label class="mr-2 mb-1 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip" title="{{option.2}}" for='{{option.1}}' >
           <i class="fas fa-{{option.1}} mr-2"></i>
         {{option.0}}
         </label>
       {% endfor %}
     {% endif %}
-    <div class="text-right mb-2">
-      <button class="btn btn-gc-blue font-smaller-7 font-weight-bold" id="btn_post" disabled="true">
-        POST
-      </button>
-    </div>
   </div>
   <div id="attach-dropdown" class="attach text-left mt-4" style="display: none">
       <div class="row">

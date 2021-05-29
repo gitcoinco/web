@@ -1,0 +1,82 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n bundle %}
+{% bundle css file kudos_styles %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+{% endbundle %}
+
+<h3 id='faq' class="text-center my-5">FAQ</h3>
+
+<div class="accordion-group gc-accordion mb-5" id="accordion-faq">
+
+  <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-faq" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
+    <span class="accordion-title">
+      {% trans "What are time tokens?" %}
+    </span>
+  </h5>
+  <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-faq">
+    <p>Time tokens are ERC20 tokens tied to different Gitcoin users. They represent a claim over listed uses like time, work and feedback. Each time token is unique, and different tokens may be redeemed for specific uses.</p>
+  </div>
+
+  <h5 class="accordion collapsed" id="headingTwo" data-parent="#accordion-faq" data-toggle="collapse" data-target="#collapseTwo" aria-controls="collapseTwo">
+    <span class="accordion-title">
+      What can I use a time token for?
+    </span>
+  </h5>
+  <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-faq">
+    <p>Gitcoin time tokens are tied to time. One token will always equal one hour of time and it’s up to you to determine how you’d like that time to be spent. The important thing to note is that time tokens should represent your strengths. The more detail you can provide over what someone can expect, the more likely they are to purchase your tokens for future work.</p>
+  </div>
+
+  <h5 class="accordion collapsed" id="headingThree" data-parent="#accordion-faq" data-toggle="collapse" data-target="#collapseThree" aria-controls="collapseThree">
+    <span class="accordion-title">
+      What happens when I create a token?
+    </span>
+  </h5>
+  <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseThree" aria-labelledby="headingThree" data-parent="#accordion-faq">
+    <p>Each token utilizes a unique smart contract for issuance and redemption. Upon creation, users will be able to send DAI directly to the contract in exchange for your tokens at the predetermined rate. You will receive that DAI directly to your connected web3 wallet.</p>
+  </div>
+
+  <h5 class="accordion collapsed" id="headingFour" data-parent="#accordion-faq" data-toggle="collapse" data-target="#collapseFour" aria-controls="collapseFour">
+    <span class="accordion-title">
+      Where can I manage my tokens?
+    </span>
+  </h5>
+  <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseFour" aria-labelledby="headingFour" data-parent="#accordion-faq">
+    <p>Creators can actively manage all things Time Token via the Dashboard under the Time Token tab. Assuming you’ve already created a token, you’ll see a buttom to “Edit” your token’s price and to mint new tokens.</p>
+  </div>
+
+  <h5 class="accordion collapsed" id="headingFive" data-parent="#accordion-faq" data-toggle="collapse" data-target="#collapseFive" aria-controls="collapseFive">
+    <span class="accordion-title">
+      Do I have to accept an incoming request?
+    </span>
+  </h5>
+  <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseFive" aria-labelledby="headingFive" data-parent="#accordion-faq">
+    <p>You are entitled to only accept requests which you see fit. Please note that denying too many requests is likely to affect your reputation, so please provide the redeemer with detailed feedback as to why their request did not meet your standards so that they can revise their request to better suit your skills.</p>
+  </div>
+
+  <h5 class="accordion collapsed" id="headingSix" data-parent="#accordion-faq" data-toggle="collapse" data-target="#collapseSix" aria-controls="collapseSix">
+    <span class="accordion-title">
+      What happens when I accept a request?
+    </span>
+  </h5>
+  <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseSix" aria-labelledby="headingSix" data-parent="#accordion-faq">
+    <p>Upon accepting a request, it is up to the redeemer to mark the task as completed. Upon the task being marked as complete, time tokens are transferred out of their possession and back to your time token contract.</p>
+  </div>
+
+</div>
+
+<script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>

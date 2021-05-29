@@ -1,0 +1,60 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="modal fade g-modal" id="buyTokenModal" tabindex="-1" role="dialog" aria-labelledby="buy_ptoken_modalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-4">
+      <div class="modal-header border-0">
+        <h5 class="w-100 text-center font-weight-bold">Buy {{ ptoken.token_symbol }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="ptokenBuyForm" class="modal-body">
+        <div id="ptokenAmountDiv" class="d-flex align-items-baseline justify-content-between">
+          <label class="font-caption font-weight-semibold letter-spacing text-black-60 text-uppercase" for="ptokenAmount">{% trans 'Amount:' %}</label>
+          <div class="w-75">
+            <input name='ptokenAmount' id="ptokenAmount" class="form__input" type="text" placeholder="10 {{ ptoken.token_symbol }}" required/>
+            <br>
+            <div class="invalid-feedback">
+              Please enter a number between 0 and {{ ptoken.total_available }}
+            </div>
+          </div>
+        </div>
+        <div id="ptokenCostDiv" class="d-flex align-items-baseline justify-content-between mt-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="ptokenCost">{% trans 'Cost:' %}</label>
+          <div class="w-75">
+            <p class="text-muted" id="ptokenCost">0 DAI</p>
+          </div>
+        </div>
+        <div class="form-check mt-3 mb-5">
+          <input class="form-check-input" name='ptokenTerms' id='ptokenTerms' type="checkbox" required/>
+          <small class="form-check-label" id="TOSText" for=ptokenTerms>{% trans "I have read, understand, and agree to the " %}<a href="{% url "_terms" %}">{% trans "Terms of Service" %}</a>
+          </small>
+          <div class="invalid-feedback">
+            You must agree to the terms before submitting.
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn btn-lg btn-primary mb-3 px-5" id="submit_buy_token">Submit</button>
+          <br>
+          <button type="button" class="btn btn-lg btn-outline-primary px-5" id="close_buy_token" data-dismiss="modal" aria-label="Close">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

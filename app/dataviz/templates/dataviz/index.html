@@ -18,9 +18,13 @@
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 

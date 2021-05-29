@@ -1,0 +1,7 @@
+{% load i18n %}
+
+Redemption Request Cancelled
+
+📥 @{{ redeem.canceller.handle }} cancelled your request to redeem {{ redeem.total }} {{ ptoken.token_symbol }}
+
+{{ redeem.reason }}

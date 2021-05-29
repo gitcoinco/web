@@ -15,158 +15,160 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+    {% bundle css file submit_bounty %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+    {% endbundle %}
   </head>
 
   <body class="interior {{active}} g-font-muli" style="background-color: #FFFFFF;">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
-    </div>
-    <div class="container-fluid submit_bounty_content">
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-          {% include 'shared/connect_metamask.html' %}
-        </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav.html' %}
       </div>
-      {% include 'shared/success_container.html' %}
-      <div class="row content">
-        <div class="col-12">
-          <div class="row font-smaller-2" id="form_container">
-            <div id="robot_error" class="hidden">
-              <img src="{% static "v2/images/prime.png" %}">
-            </div>
+      <div class="container-fluid submit_bounty_content">
+        <div class="row no-gutters metamask-banner">
+          <div class="col-12">
+            {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
+            {% include 'shared/no_metamask_error.html' %}
+            {% include 'shared/zero_balance_error.html' %}
+            {% include 'shared/unlock_metamask.html' %}
+            {% include 'shared/connect_metamask.html' %}
+          </div>
+        </div>
+        {% include 'shared/success_container.html' %}
+        <div class="row content">
+          <div class="col-12">
+            <div class="row font-smaller-2" id="form_container">
+              <div id="robot_error" class="hidden">
+                <img src="{% static "v2/images/prime.png" %}">
+              </div>
 
-            <input type="hidden" name="standardBountiesId" value="{{bounty.standard_bounties_id}}">
-            <input type="hidden" name="bountyOwnerAddress" value="{{bounty.bounty_owner_address}}">
-            <input type="hidden" name="valueInToken" value="{{bounty.value_in_token}}">
-            <input type="hidden" name="isOpen" value="{{bounty.is_open}}">
+              <input type="hidden" name="standardBountiesId" value="{{bounty.standard_bounties_id}}">
+              <input type="hidden" name="bountyOwnerAddress" value="{{bounty.bounty_owner_address}}">
+              <input type="hidden" name="valueInToken" value="{{bounty.value_in_token}}">
+              <input type="hidden" name="isOpen" value="{{bounty.is_open}}">
 
-            <div class="col-lg-7 col-sm-12 my-5 pt-5" id="primary_form">
-              <div id="primary_subform">
-                <div class="bg-white rounded p-5">
-                  <h1 class="text-center title">{% trans "Increase Bounty" %}</h1>
-                  <p class="text-center font-bigger-1 text-black-60">Contribute funds to increase the reward for this bounty!</p>
+              <div class="col-lg-7 col-sm-12 my-5 pt-5" id="primary_form">
+                <div id="primary_subform">
+                  <div class="bg-white rounded p-5">
+                    <h1 class="text-center title">{% trans "Increase Bounty" %}</h1>
+                    <p class="text-center font-bigger-1 text-black-60">Contribute funds to increase the reward for this bounty!</p>
 
-                  {% include 'shared/bounty_actions_hidden_vars.html' %}
-                  <div class="mt-4">
-                    <label class="form__label mb-0" for=issueURL>Title</label>
-                    <p class="font-subheader">{{ bounty.title }}</p>
-                  </div>
-                  <div>
-                    <label class="form__label mb-0" for=issueURL>Issue URL</label>
-                    <p class="font-subheader" id="issueURL">{{ bounty.github_url }}</p>
-                  </div>
-                  <div class="mt-2">
-                    <div class="form__flex-group">
-                      <div class="form__amount-wrapper">
-                        <label class="form__label" for="amount">Amount</label>
-                        <input name='amount' id='amount' value='0.01' min="0.01" step="0.0001" class="form__input" type="number" placeholder="Amount" />
-                      </div>
-                      <div class="form__group-item font-body">
-                        <label class="form__label" for="token">Token</label>
-                        <div class="form__select2">
-                          <select name='denomination' id='token' data-token-address='{{bounty.token_address}}' disabled></select>
-                        </div>
-                      </div>
+                    {% include 'shared/bounty_actions_hidden_vars.html' %}
+                    <div class="mt-4">
+                      <label class="form__label mb-0" for=issueURL>Title</label>
+                      <p class="font-subheader">{{ bounty.title }}</p>
                     </div>
-                    <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
-                  </div>
-                  {% if FEE_PERCENTAGE != 0 %}
-                    <div id="fee-section" class="mt-4">
-                      <h5 class="font-subheader">{% trans "No Surprises" %}</h5>
-                      <div class="row">
-                        <div class="col-12 col-sm-9 mt-3 font-body">
-                          <p>
-                            {% blocktrans %}
-                            Simply pay the bounty amount ( plus a standard
-                            <span class="fee-percentage font-weight-bold">10</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
-                            This covers our costs for finding quality contributors to join our platform so that you get the best work.
-                            If your business requires additional assistance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
-                            {% endblocktrans %}
-                          </p>
+                    <div>
+                      <label class="form__label mb-0" for=issueURL>Issue URL</label>
+                      <p class="font-subheader" id="issueURL">{{ bounty.github_url }}</p>
+                    </div>
+                    <div class="mt-2">
+                      <div class="form__flex-group">
+                        <div class="form__amount-wrapper">
+                          <label class="form__label" for="amount">Amount</label>
+                          <input name='amount' id='amount' value='0.01' min="0.01" step="0.0001" class="form__input" type="number" placeholder="Amount" />
                         </div>
-                        <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
-                          <div class="fee-circle text-center">
-                            <p class="font-title mb-0"><span id="fee-amount">0</span> <span id="fee-token">{{ bounty.token_name }}</span></p>
-                            <p class="font-body font-weight-semibold">
-                              (<span class="fee-percentage">10</span>%)
-                            </p>
+                        <div class="form__group-item font-body">
+                          <label class="form__label" for="token">Token</label>
+                          <div class="form__select2">
+                            <select name='denomination' id='token' data-token-address='{{bounty.token_address}}' disabled></select>
                           </div>
                         </div>
                       </div>
+                      <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                     </div>
-                  {% endif %}
+                    {% if FEE_PERCENTAGE != 0 %}
+                      <div id="fee-section" class="mt-4">
+                        <h5 class="font-subheader">{% trans "No Surprises" %}</h5>
+                        <div class="row">
+                          <div class="col-12 col-sm-9 mt-3 font-body">
+                            <p>
+                              {% blocktrans %}
+                              Simply pay the bounty amount ( plus a standard
+                              <span class="fee-percentage font-weight-bold">10</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
+                              This covers our costs for finding quality contributors to join our platform so that you get the best work.
+                              If your business requires additional assistance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
+                              {% endblocktrans %}
+                            </p>
+                          </div>
+                          <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
+                            <div class="fee-circle text-center">
+                              <p class="font-title mb-0"><span id="fee-amount">0</span> <span id="fee-token">{{ bounty.token_name }}</span></p>
+                              <p class="font-body font-weight-semibold">
+                                (<span class="fee-percentage">10</span>%)
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
 
-                  <div class="w-100 terms_container mb-3" style="padding-top:5px;">
-                    <div class="form__checkbox">
-                      <input name='terms' id='terms' type="checkbox" value=1 required />
-                      <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="bg-white my-3 px-5 rounded">
-                  <div id="total-section" class="row mt-3 py-3">
-                    <div class="col-md-3 col-lg-2 my-auto">
-                      <h5 class="text-uppercase h3 font-weight-bold mb-0">{% trans "Total"%}</h5>
-                    </div>
-                    <div class="col-md-9 col-lg-10 my-auto">
-                      <p class="mb-1 text-uppercase text-black-50 font-body">{% trans "Payment Due" %}</p>
-                      <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block"></span>
-                      <p class="font-caption text-black-50 mb-1">
-                        ( Increased Bounty Amount <span id="summary-bounty-amount" class="font-weight-bold">0</span>
-                        <span id="summary-bounty-token" class="font-weight-bold">{{ bounty.token_name }}</span> +
-
-                        {% if FEE_PERCENTAGE == 0 %}
-                          + <span class="font-weight-bold">No Fees</span>
-                        {% else %}
-                          +
-                          <span id="summary-fee-amount" class="font-weight-bold">0</span>
-                          <span id="summary-fee-token" class="font-weight-bold">{{ bounty.token_name }}</span>
-                        {% endif %}
-                        Gitcoin Platform Fee )
-                      </p>
-                      <p class="font-caption mb-0">
-                        You will have to approve
-                        <span id="confirmation" class="font-weight-bold">
-                          {% if FEE_PERCENTAGE == 0 %} 1 web3 wallet confirmation. {% else %} 2 web3 wallet confirmations.{% endif %}
-                        </span>
-                      </p>
+                    <div class="w-100 terms_container mb-3" style="padding-top:5px;">
+                      <div class="form__checkbox">
+                        <input name='terms' id='terms' type="checkbox" value=1 required />
+                        <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="pb-5 text-center">
-                  <button class="font-subheader btn btn-gc-blue btn-lg mb-3 px-5 btn-lg-padding" type="submit" id="increaseFunding">Increase Funding</button>
-                  <p class="font-caption blue">
-                    Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.
-                    <a class="text-reset underline" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Learn more here.</a>
-                  </p>
+                  <div class="bg-white my-3 px-5 rounded">
+                    <div id="total-section" class="row mt-3 py-3">
+                      <div class="col-md-3 col-lg-2 my-auto">
+                        <h5 class="text-uppercase h3 font-weight-bold mb-0">{% trans "Total"%}</h5>
+                      </div>
+                      <div class="col-md-9 col-lg-10 my-auto">
+                        <p class="mb-1 text-uppercase text-black-50 font-body">{% trans "Payment Due" %}</p>
+                        <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block"></span>
+                        <p class="font-caption text-black-50 mb-1">
+                          ( Increased Bounty Amount <span id="summary-bounty-amount" class="font-weight-bold">0</span>
+                          <span id="summary-bounty-token" class="font-weight-bold">{{ bounty.token_name }}</span> +
+
+                          {% if FEE_PERCENTAGE == 0 %}
+                            + <span class="font-weight-bold">No Fees</span>
+                          {% else %}
+                            +
+                            <span id="summary-fee-amount" class="font-weight-bold">0</span>
+                            <span id="summary-fee-token" class="font-weight-bold">{{ bounty.token_name }}</span>
+                          {% endif %}
+                          Gitcoin Platform Fee )
+                        </p>
+                        <p class="font-caption mb-0">
+                          You will have to approve
+                          <span id="confirmation" class="font-weight-bold">
+                            {% if FEE_PERCENTAGE == 0 %} 1 web3 wallet confirmation. {% else %} 2 web3 wallet confirmations.{% endif %}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="pb-5 text-center">
+                    <button class="font-subheader btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" type="submit" id="increaseFunding">Increase Funding</button>
+                    <p class="font-caption blue">
+                      Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.
+                      <a class="text-reset underline" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Learn more here.</a>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-
 
   </body>
 
@@ -175,7 +177,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     document.is_funder_github_user_same = {{ is_funder }};
     document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
     {% if expired_coupon %}
-      _alert({ message: 'This coupon has expired.' }, 'error');
+      _alert({ message: 'This coupon has expired.' }, 'danger');
     {% endif %}
   </script>
 

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,113 +23,116 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Products | Gitcoin">
     <meta name="description" content="Gitcoin is a mission and value-oriented distributed movement aimed to drive change and grow open source.">
-    <link rel="stylesheet" href="{% static "v2/css/products.css" %}" />
+    {% bundle css file products %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/products.scss" %} />
+    {% endbundle %}
   </head>
 
   <body class="{{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header">
-      {% include 'home/nav.html' %}
-    </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <div class="header">
+        {% include 'home/nav.html' %}
+      </div>
 
-    <div class="intro container-fluid py-5" style="background:  url('/static/v2/images/quests/backs/back{{back}}.jpeg'); background-size: cover;">
-      <div class="row justify-content-center">
-        <div class="d-flex flex-column align-items-center ">
-          <img class="img-fluid px-3 px-md-0 mb-3 "
-            src="/static/v2/images/products/{{img}}" alt="Grow open source">
-          <div style="background-color: rgba(255, 255, 255, 0.3); padding: 10px; border-radius: 10px; width: 120%; text-align: center;">
-            <span class="intro-header">
-              {% trans "Grow Open Source" %}
-            </span>
-            <BR>
-            <span class="intro-sub-header">
-              {% trans "At Gitcoin, we build products that allow for better" %}<br>
-              {% trans "incentivized collaboration in the realm of open source software" %}
-            </span>
+      <div class="intro container-fluid py-5" style="background:  url('/static/v2/images/quests/backs/back{{back}}.jpeg'); background-size: cover;">
+        <div class="row justify-content-center">
+          <div class="d-flex flex-column align-items-center ">
+            <img class="img-fluid px-3 px-md-0 mb-3 "
+              src="/static/v2/images/products/{{img}}" alt="Grow open source">
+            <div style="background-color: rgba(255, 255, 255, 0.3); padding: 10px; border-radius: 10px; width: 120%; text-align: center;">
+              <span class="intro-header">
+                {% trans "Grow Open Source" %}
+              </span>
+              <BR>
+              <span class="intro-sub-header">
+                {% trans "At Gitcoin, we build products that allow for better" %}<br>
+                {% trans "incentivized collaboration in the realm of open source software" %}
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    {% for product in products %}
-      <div class="{{ product.name }} container-fluid px-0 py-5">
-        <div class="row py-3 py-md-0">
-          {% if forloop.counter|divisibleby:2 %}
-            <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
-              <span class="g-font-futura mb-2 product-name d-flex align-items-center">
-                <img src="{{ product.logo }}" alt="{{ product.name }}-logo" height="40" class="{{ product.name }}-logo">
-                &nbsp &nbsp {{ product.name|upper }}
-              </span>
-              <span class=" mb-2 product-heading">{{ product.heading }}</span>
-              <span class="mb-4 product-desc">{{ product.description }}</span>
-              {% if product.link %}
-                <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
-                  {% trans "Get Started" %}
-                </a>
-              {% endif %}
-              <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="white underline">See Results</a></span>
-            </div>
-            <div class="col-md-6 py-md-5 py-2 align-self-center">
-              <img class="img-fluid float-right pl-3 pl-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
-            </div>
-          {% else %}
-            <div class="col-md-6 py-md-5 py-2 align-self-center">
-              <img class="img-fluid mx-auto d-block px-3 px-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
-            </div>
-            <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
-              <span class="g-font-futura mb-2 product-name d-flex align-items-center">
-                <img src="{{ product.logo }}" alt="{{ product.name }}-logo" height="40" class="{{ product.name }}-logo">
-                &nbsp &nbsp {{ product.name|upper }}
-              </span>
-              <span class="mb-2 product-heading">{{ product.heading }}</span>
-              <span class="mb-4 product-desc">{{ product.description }}</span>
-              {% if product.link %}
-                <a href="{{ product.link }}"  class="button button-{{ product.name }} text-center display-5">
-                  {% trans "Get Started" %}
-                </a>
-              {% endif %}
-              <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="white underline">See Results</a></span>
-            </div>
-          {% endif %}
+      {% for product in products %}
+        <div class="{{ product.name }} container-fluid px-0 py-5">
+          <div class="row py-3 py-md-0 mr-0 ml-0">
+            {% if forloop.counter|divisibleby:2 %}
+              <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
+                <span class="g-font-futura mb-2 product-name d-flex align-items-center">
+                  <img src="{{ product.logo }}" alt="{{ product.name }}-logo" height="40" class="{{ product.name }}-logo">
+                  &nbsp &nbsp {{ product.name|upper }}
+                </span>
+                <span class=" mb-2 product-heading">{{ product.heading }}</span>
+                <span class="mb-4 product-desc">{{ product.description }}</span>
+                {% if product.link %}
+                  <a href="{{ product.link }}"  class="btn btn-lg button-{{ product.name }} text-center display-5">
+                    {% trans "Get Started" %}
+                  </a>
+                {% endif %}
+                <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="{% if product.name != 'Discord' %}white {% endif %}underline">See Results</a></span>
+              </div>
+              <div class="col-md-6 py-md-5 py-2 align-self-center">
+                <img class="img-fluid float-right pl-3 pl-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
+              </div>
+            {% else %}
+              <div class="col-md-6 py-md-5 py-2 align-self-center">
+                <img class="img-fluid mx-auto d-block px-3 px-md-0" src="{{ product.img }}" alt="{{ product.name }}-image">
+              </div>
+              <div class="d-flex flex-column col-md-6 product-left py-md-5 py-2 align-self-center">
+                <span class="g-font-futura mb-2 product-name d-flex align-items-center">
+                  <img src="{{ product.logo }}" alt="{{ product.name }}-logo" height="40" class="{{ product.name }}-logo">
+                  &nbsp &nbsp {{ product.name|upper }}
+                </span>
+                <span class="mb-2 product-heading">{{ product.heading }}</span>
+                <span class="mb-4 product-desc">{{ product.description }}</span>
+                {% if product.link %}
+                  <a href="{{ product.link }}"  class="btn btn-lg button-{{ product.name }} text-center display-5">
+                    {% trans "Get Started" %}
+                  </a>
+                {% endif %}
+                <span class="mb-4 mt-2 ml-1 product-traction"><i class="fas fa-chart-bar"></i> {{ product.traction }} | <a href="/results" class="{% if product.name != 'Discord' %}white {% endif %}underline">See Results</a></span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="intro container-fluid">
+        <div class="row py-3 py-md-0 mr-0 ml-0">
+          <div class="col-12 text-center">
+            <h2 class="text-center pt-3 my-4">
+              {% trans "Optimizing the OSS Lifecycle" %}
+            </h2>
+            <p class="font-title text-center my-2">
+              {% trans "Each of our products helps optimize the OSS Lifecycle so that things can look more like this." %}
+            </p>
+          </div>
+          <div class="col-12 offset-md-3 col-md-6">
+            <img class="img-fluid my-4" width="800" src="{% static 'v2/images/products/oss_cycle_with_gitcoin.svg' %}" alt="OSS Cycle with Gitcoin">
+          </div>
+          <div class="col-12 text-center mb-5">
+            <p class="product-desc text-center my-2">
+              {% trans "Interested in working with us?" %}
+            </p>
+            <p>
+              <a href="{% url 'jobs' %}" class="btn btn-primary py-3 text-center m-2">
+                {% trans "Check our Jobs Page" %}
+              </a>
+              <a href="mailto:founders@gitcoin.co" class="btn btn-primary py-3 text-center m-2">
+                {% trans "Contact Us" %}
+              </a>
+              <a href="{% url 'mission' %}" class="btn btn-primary py-3 text-center m-2">
+                {% trans "About the mission" %}
+              </a>
+            </p>
+          </div>
         </div>
       </div>
-    {% endfor %}
-
-    <div class="intro container-fluid">
-      <div class="row py-3 py-md-0">
-        <div class="col-12 text-center">
-          <h2 class="text-center pt-3 my-4">
-            {% trans "Optimizing the OSS Lifecycle" %}
-          </h2>
-          <p class="font-title text-center my-2">
-            {% trans "Each of our products helps optimize the OSS Lifecycle so that things can look more like this." %}
-          </p>
-        </div>
-        <div class="col-12 offset-md-3 col-md-6">
-          <img class="img-fluid my-4" width="800" src="{% static 'v2/images/products/oss_cycle_with_gitcoin.svg' %}" alt="OSS Cycle with Gitcoin">
-        </div>
-        <div class="col-12 text-center mb-5">
-          <p class="product-desc text-center my-2">
-            {% trans "Interested in working with us?" %}
-          </p>
-          <p>
-            <a href="{% url 'jobs' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
-              {% trans "Check our Jobs Page" %}
-            </a>
-            <a href="mailto:founders@gitcoin.co" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
-              {% trans "Contact Us" %}
-            </a>
-            <a href="{% url 'mission' %}" class="btn btn-gc-blue py-3 shadow-none font-weight-bold text-center m-2">
-              {% trans "About the mission" %}
-            </a>
-          </p>
-        </div>
-      </div>
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
     </div>
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-
   </body>
 </html>

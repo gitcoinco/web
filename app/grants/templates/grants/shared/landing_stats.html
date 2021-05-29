@@ -20,9 +20,13 @@
 
       <div class="container-fluid pt-3 pb-1 grants-results">
         <div class="container">
-          {% for round_type in round_types %}
-            <a href="/grants/getstats/?category={{round_type}}" style="" class=" {% if selected_category == round_type  or not selected_category and round_type == 'tech' %}font-weight:bold{% endif %}">
-              {{round_type|title}} Round Stats
+          {% for ele in round_types %}
+            <a href="/grants/getstats/?category={{ele.name}}" style="" class=" {% if selected_category == ele.name  or not selected_category and ele.name == 'tech' %}font-weight:bold{% endif %}">
+              {{ele.name|title}}
+              {% for clr in ele.clrs %}
+                <!-- ({{clr.start_date|date:'Y-m-d'}} - {{clr.end_date|date:'Y-m-d'}}) -->
+              {% endfor %} 
+              Grants
             </a>
           {% endfor %}
             {{category}}

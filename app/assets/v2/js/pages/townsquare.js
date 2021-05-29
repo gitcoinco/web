@@ -1,5 +1,38 @@
 $(document).ready(function() {
 
+  let resizeTimeout = null;
+
+  const collapseAccordions = function() {
+    const window_width = $('body').width();
+
+    $('.townsquare_block-header').each(function(e) {
+      const target_id = $(this).data('target');
+      const item = localStorage.getItem(target_id.replace(/^#/, ''));
+
+      // if we're heading into md breakpoint then close the accordions
+      // if we're heading out of md breakpoint then open any closed accordions that should be open
+      if (window_width <= breakpoint_lg && item && item !== 'false' && !$(this).hasClass('collapsed')) {
+        // tigger collapse but don't save the state change
+        $(this).trigger('click', true);
+      } else if (window_width > breakpoint_lg && item && item !== 'false' && $(this).hasClass('collapsed')) {
+        // tigger expand but don't save the state change
+        $(this).trigger('click', true);
+      }
+    });
+    if (window_width > breakpoint_md) {
+      $('#mobile_nav_toggle li a').removeClass('active');
+      $('.feed_container,.actions_container').removeClass('hidden');
+    }
+  };
+
+  // debounce the resize event
+  window.addEventListener('resize', function() {
+    // clear the timeout
+    clearTimeout(resizeTimeout);
+    // start timing for event "completion"
+    resizeTimeout = setTimeout(collapseAccordions, 30);
+  });
+
   $('body').on('click', '#mobile_nav_toggle li a', function(e) {
     $('#mobile_nav_toggle li a').removeClass('active');
     $(this).addClass('active');
@@ -24,7 +57,7 @@ $(document).ready(function() {
 
   // effects when an offer is clicked upon
   $('body').on('click', '.offer a', function(e) {
-    var speed = 500;
+    const speed = 500;
 
     $(this).addClass('clicked');
     $(this).find('#ribbon').effect('puff', speed, function() {
@@ -32,7 +65,7 @@ $(document).ready(function() {
     });
   });
 
-  var get_redir_location = function(tab) {
+  const get_redir_location = function(tab) {
     let trending = $('#trending').is(':checked') ? 1 : 0;
     let personal = $('#personal').is(':checked') ? 1 : 0;
 
@@ -47,12 +80,12 @@ $(document).ready(function() {
   });
 
   // collapse menu items
-  $('body').on('click', '.townsquare_block-header', function(e) {
-    let target_id = $(this).data('target');
+  $('body').on('click', '.townsquare_block-header', function(e, triggered) {
+    const target_id = $(this).data('target');
 
-    $('#' + target_id).toggleClass('hidden');
-    $(this).toggleClass('closed');
-    localStorage.setItem(target_id, $(this).hasClass('closed'));
+    if (!triggered) {
+      localStorage.setItem(target_id.replace(/^#/, ''), $(this).hasClass('collapsed'));
+    }
   });
 
   $('body').on('click', '#trending', function(e) {
@@ -81,8 +114,8 @@ $(document).ready(function() {
   $('body').on('change', '#receive_daily_offers_in_inbox', function(e) {
     _alert('Your email subscription preferences have been updated', 'success', 2000);
 
-    var url = '/api/v0.1/emailsettings/';
-    var params = {
+    const url = '/api/v0.1/emailsettings/';
+    const params = {
       'new_bounty_notifications': $(this).is(':checked'),
       'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
     };
@@ -135,16 +168,24 @@ $(document).ready(function() {
 
   loadImages();
 
-  var load_dressing = function() {
-    var url = document.location.href;
+  const load_dressing = function() {
+    let url = document.location.href.replace('#', '');
 
     url = url + (url.indexOf('?') == -1 ? '?' : '&') + 'dressing=1';
+    console.log('url is', url);
     $.get(url, function(response) {
 
       // load content
       $('#right_sidebar').html($(response).find('#right_sidebar').html());
       $('#left_sidebar').html($(response).find('#left_sidebar').html());
       $('#top_bar').html($(response).find('#top_bar').html());
+
+      if (document.contxt.github_handle) {
+        appOnboard.profileWidget();
+      } else if (document.getElementById('profile-completion')) {
+        document.getElementById('profile-completion').parentElement.remove();
+      }
+
       // bind more actions
       joinTribe();
       const hide_promo = localStorage.getItem('hide_promo');
@@ -152,13 +193,15 @@ $(document).ready(function() {
       if (!hide_promo) {
         $('.promo').removeClass('hidden');
       }
-
       $('.townsquare_block-header').each(function() {
-        let target_id = $(this).data('target');
-        var item = localStorage.getItem(target_id);
+        const target_id = $(this).data('target');
+        const item = localStorage.getItem(target_id.replace(/^#/, ''));
 
-        if (item == 'true') {
-          $(this).click();
+        if ($('body').width() > breakpoint_lg) {
+          if (item && item == 'true') {
+            $(this).removeClass('collapsed');
+            $(target_id).addClass('show');
+          }
         }
       });
     });

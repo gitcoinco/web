@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not,see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize i18n static %}
+{% load humanize i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,29 +22,33 @@
     <meta name="description" content="See open source development in real-time with the Gitcoin Activity Feed.">
     <link rel="canonical" href="{% url 'activity' %}">
     {% include 'shared/head.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+    {% bundle css file activity %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+    {% endbundle %}
   </head>
 
   <body class="{{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header">
-      {% include 'home/nav.html' %}
-      {% include 'shared/minihero.html' with h1='Activity Feed' position_h1_below_logo=1 %}
-    </div>
-
-    <div class="container">
-      <div class="col-12 col-md-10 col-lg-8 mx-auto">
-        {% include 'shared/activity_container.html' with supress_infinite_more_link_hidden=1 %}
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <div class="header">
+        {% include 'home/nav.html' %}
+        {% include 'shared/minihero.html' with h1='Activity Feed' position_h1_below_logo=1 %}
       </div>
-    </div>
 
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    
-    {% include 'shared/activity_scripts.html' %}
+      <div class="container">
+        <div class="col-12 col-md-10 col-lg-8 mx-auto">
+          {% include 'shared/activity_container.html' with supress_infinite_more_link_hidden=1 %}
+        </div>
+      </div>
+
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+
+      {% include 'shared/activity_scripts.html' %}
+    </div>
   </body>
 </html>

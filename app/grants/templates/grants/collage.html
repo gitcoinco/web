@@ -1,0 +1,19 @@
+{% load static bundle %}
+
+<style type="text/css">
+  img{
+  }
+</style>
+<div class="Collage effect-parent">
+{% for url in urls %}
+  {% if url.0 %}
+  <img src={{url.0}} data-scale="{{url.1}}">
+  {% endif %}
+{% endfor %}
+
+</div>
+
+
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+<script src="{% static "v2/js/lib/collage.js" %}"></script>
+

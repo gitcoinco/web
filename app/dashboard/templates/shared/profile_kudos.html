@@ -56,7 +56,7 @@
     </div>
     <div class="row justify-content-center">
       {% if kudos_count > 8 %}
-      <button id="" data-request="mykudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
+      <button id="" data-request="mykudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-primary mb-5 load-more">See More Kudos</button>
       {% endif %}
     </div>
     {% if not kudos %}
@@ -66,7 +66,7 @@
         <img class="img-fluid hidden-desktop" src="{% static "v2/images/kudos/assets/empty-kudos.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
         <img class="img-fluid hidden-mobile" src="{% static "v2/images/kudos/assets/empty-kudos-desktop.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
       </div>
-      <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
+      <a href="{% url 'kudos_about' %}" class="btn btn-primary mb-5">More About Kudos</a>
     </div>
     {% endif %}
   </div>
@@ -77,7 +77,7 @@
     </div>
     <div class="row justify-content-center">
       {% if sent_kudos_count > 8 %}
-      <button id="" data-request="sentkudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
+      <button id="" data-request="sentkudos" data-handle="{{profile.handle}}" data-page="2" class="btn btn-primary mb-5 load-more">See More Kudos</button>
       {% endif %}
     </div>
     {% if not sent_kudos %}
@@ -87,7 +87,7 @@
         <img class="img-fluid hidden-desktop" src="{% static "v2/images/kudos/assets/empty-kudos.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
         <img class="img-fluid hidden-mobile" src="{% static "v2/images/kudos/assets/empty-kudos-desktop.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
       </div>
-      <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
+      <a href="{% url 'kudos_about' %}" class="btn btn-primary mb-5">More About Kudos</a>
     </div>
     {% endif %}
   </div>

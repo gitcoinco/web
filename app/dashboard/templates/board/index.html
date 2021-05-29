@@ -15,51 +15,82 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static add_url_schema avatar_tags %}
+{% load i18n static add_url_schema avatar_tags bundle %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/vue-loader.css" %} />
-
-    <link rel="stylesheet" href="{% static "v2/css/board.css" %}" />
-
+    {% bundle css file board %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vue-loader.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/board.scss" %} />
+    {% endbundle %}
   </head>
   <body class="{{ active }} bg-lightblue g-font-muli" >
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'shared/nav.html' %}
-    <div id="gc-board" v-cloak>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+      <div id="gc-board" v-cloak>
 
-      <div class="container">
-        <nav class="mx-3 mt-5">
-          <div class="nav nav-tabs" id="myTab" role="tablist">
-            <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
-            <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
-          </div>
-        </nav>
+        <div class="container">
+          <nav class="mx-3 mt-5">
+            <div class="nav nav-tabs" id="myTab" role="tablist">
+              <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
+              <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
+              {% if is_staff %}
+              <a class="nav-item nav-link nav-line alpha-warning" id="ptokens-tab" data-toggle="tab" href="#nav-ptokens" role="tab" aria-controls="ptokens" aria-selected="true" @click="checkData('personal-tokens')">Time Tokens</a>
+              {% endif %}
+            </div>
+          </nav>
+        </div>
+        <div class="tab-content" id="nav-tabContent">
+          {% include 'board/funder.html' %}
+          {% include 'board/contributor.html' %}
+          {% if is_staff %}
+            {% include 'board/ptokens.html' %}
+          {% endif %}
+        </div>
       </div>
-      <div class="tab-content" id="nav-tabContent">
-        {% include 'board/funder.html' %}
-        {% include 'board/contributor.html' %}
-      </div>
-
-    </div>
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with slim=1 %}
-    {% if keywords %}
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      <script src="/dynamic/js/tokens_dynamic.js"></script>
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+      {% if keywords %}
+        <script>
+          document.skills = {{keywords | safe}}
+        </script>
+      {% endif %}
+      <script src="{% static "v2/js/vue-components.js" %}"></script>
       <script>
-        document.skills = {{keywords | safe}}
+        document.has_ptoken_auth = {{ has_ptoken_auth|yesno:"true,false"}};
+        document.user_has_token = {{ ptoken|yesno:"true,false" }};
+        {% if ptoken %}
+        document.ptoken = {
+          id: {{ ptoken.id }},
+          name: "{{ ptoken.token_name }}",
+          symbol: "{{ ptoken.token_symbol}} ",
+          price: parseFloat("{{ ptoken.value }}"),
+          supply: parseFloat("{{ ptoken.total_minted }}"),
+          address: "{{ ptoken.token_address }}",
+          available: parseFloat("{{ ptoken.available_supply }}"),
+          purchases: parseFloat("{{ ptoken.total_purchases }}"),
+          redemptions: parseFloat("{{ ptoken.total_redemptions }}"),
+          tx_status: "{{ ptoken.tx_status }}"
+        }
+        document.current_ptoken_address = "{{ ptoken.token_address }}";
+        {% else  %}
+          document.ptoken = {}
+        {% endif %}
       </script>
-    {% endif %}
-    <script src="{% static "v2/js/board.js" %}"></script>
-    <script>
-      $('body').bootstrapTooltip({
-        selector: '[data-toggle="tooltip"]'
-      });
-    </script>
-
+      <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
+      <script src="{% static "v2/js/board.js" %}"></script>
+      <script>
+        $('body').bootstrapTooltip({
+          selector: '[data-toggle="tooltip"]'
+        });
+      </script>
+    </div>
   </body>
 </html>

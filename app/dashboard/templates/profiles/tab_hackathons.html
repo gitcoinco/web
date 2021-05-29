@@ -66,7 +66,12 @@
         {% endif %}
       </div>
       <div class="card-body">
-        <h5 class="card-title text-uppercase"><a href="{% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}" target="_blank" class="font-weight-bold card-subtitle">{{ project.name }}</a></h5>
+        <h5 class="card-title text-uppercase"><a href="
+         {% if project.name %}
+            {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
+          {% else %}
+            {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
+          {% endif %}" target="_blank" class="font-weight-bold card-subtitle">{{ project.name }}</a></h5>
         <div class="my-2">
           <b class="text-muted">Project Summary</b>
           <p>

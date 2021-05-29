@@ -1,4 +1,4 @@
-/* eslint-disable no-loop-func */
+/* eslint-disable no-loop-func, no-prototype-builtins */
 (function($) {
 
   $('body').on('click', '.btn', function(e) {
@@ -585,7 +585,7 @@
       }
     }).fail(function() {
       if (explorer.bounties_request.readyState !== 0)
-        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'danger');
     }).always(function() {
       $('.loading').css('display', 'none');
       addPopover();
@@ -607,7 +607,7 @@
       }
     }).fail(function() {
       if (explorer.bounties_request.readyState !== 0)
-        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'danger');
     }).always(function() {
       $('.loading').css('display', 'none');
       addPopover();
@@ -911,6 +911,9 @@
             case 3:
               newPathName = 'participants';
               break;
+            case 4:
+              newPathName = 'events';
+              break;
             case 5:
               newPathName = 'showcase';
               break;
@@ -923,28 +926,6 @@
 
         }
       },
-      computed: {
-        isSponsor: () => {
-          let vm = this;
-
-          if (document.contxt.is_staff) {
-            return true;
-          }
-
-          for (let i = 0; i < vm.hackathonSponsors.length; i++) {
-            if (vm.hackathonSponsors[i].org_name === document.contxt.github_handle) {
-              return true;
-            }
-          }
-
-          for (let i = 0; i < vm.prizeFounders.length; i++) {
-            if (vm.prizeFounders[i] === document.contxt.github_handle) {
-              return true;
-            }
-          }
-          return false;
-        }
-      },
       data: () => ({
         is_registered: document.is_registered,
         activePanel: document.activePanel,
@@ -952,7 +933,6 @@
         hackathonSponsors: document.hackathonSponsors,
         prizeFounders: document.prizeFounders,
         hackathonProjects: [],
-        chatURL: document.chatURL,
         hackHasEnded: document.displayShowcase,
         isSponsor: document.is_sponsor
       })

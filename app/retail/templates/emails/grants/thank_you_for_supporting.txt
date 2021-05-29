@@ -2,18 +2,22 @@
 
 {% trans "Gitcoin Heart Robot" %}
 
-{% trans "Thank you for supporting" %} {{ grant.title }}
+{% for grant_with_subscription in grants_with_subscription %}
+{% with subscription=grant_with_subscription.subscription grant=grant_with_subscription.grant %}
+{% trans "Thank you for supporting" %} {{ subscription.grant.title }}
 
 {% trans "The world of open source is a better place because of you." %}
 
-{{ grant.description }}
+{{ subscription.grant.description }}
 
-{% trans "You have agreed to give" %}
+{% trans "You have contributed" %}
 
-{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} {% trans "per" %} {{ subscription.frequency }} {{ subscription.frequency_unit }}
+{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
 
-{% trans "You can see the transaction on Etherscan" %} at
-{% if subscription.network == 'mainnet' %}
+{% trans "You can view the transaction" %} at
+{% if subscription.token_symbol == 'ZEC' %}
+  {% url 'grants:details' grant.id grant.slug %}
+{% elif subscription.network == 'mainnet' %}
   http://etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
 {% else %}
   http://{{ grant.network }}.etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
@@ -22,3 +26,5 @@
 {% trans "View Updates" %}
 
 {% trans "If you ever need to you can cancel your support" %} {% trans "here." %}
+{% endwith %}
+{% endfor %}

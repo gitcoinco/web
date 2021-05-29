@@ -13,10 +13,6 @@ def get_polkadot_txn_status(txnid, token_name):
     if not txnid:
         return None
 
-    response = {
-        'status': 'pending'
-    }
-
     try:
         response = { 'status': 'pending' }
 
@@ -29,9 +25,9 @@ def get_polkadot_txn_status(txnid, token_name):
         #     status = subscan_response.get('data').get('extrinsic').get('success')
 
         if token_name == 'DOT':
-            polkascan_url = f'https://explorer-31.polkascan.io/polkadot/api/v1/extrinsic/{txnid}'
+            polkascan_url = f'https://explorer-32.polkascan.io/api/v1/polkadot/extrinsic/{txnid}'
         elif token_name == 'KSM':
-            polkascan_url = f'https://explorer-31.polkascan.io/kusama/api/v1/extrinsic/{txnid}'
+            polkascan_url = f'https://explorer-32.polkascan.io/api/v1/kusama/extrinsic/{txnid}'
 
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0. 2272.118 Safari/537.36.'}
         polkascan_response = requests.get(polkascan_url, headers=headers).json()
@@ -54,12 +50,13 @@ def sync_polkadot_payout(fulfillment):
     if fulfillment.payout_tx_id:
         txn_status = get_polkadot_txn_status(fulfillment.payout_tx_id, fulfillment.token_name)
         if txn_status:
-            if txn_status.get('status') == 'done':
+            status_description = txn_status.get('status')
+            if status_description == 'done':
                 fulfillment.payout_status = 'done'
                 fulfillment.accepted_on = timezone.now()
                 fulfillment.accepted = True
+                fulfillment.save()
                 record_payout_activity(fulfillment)
-            elif txn_status.get('status') == 'expired':
+            elif status_description == 'expired':
                 fulfillment.payout_status = 'expired'
-
-        fulfillment.save()
+                fulfillment.save()

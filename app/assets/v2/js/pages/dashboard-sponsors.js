@@ -7,34 +7,13 @@
         this.retrieveSponsorPrizes();
       },
       methods: {
-        chatWindow: function(channel) {
-          let vm = this;
-          const url = `${vm.chatURL}/hackathons/channels/${channel}`;
-
-          window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
-        },
-        markWinner: function($event, project, prizeIndex) {
+        markWinner: function($event, project) {
           let vm = this;
           const url = '/api/v0.1/hackathon_project/set_winner/';
           const markWinner = fetchData(url, 'POST', {
             project_id: project.pk,
             winner: $event ? 1 : 0
           }, {'X-CSRFToken': vm.csrf});
-
-          vm.prizes[prizeIndex].submissions.forEach((submission, submissionIndex) => {
-            if (submission.pk !== project.pk && submission.winner) {
-              console.log(submission.pk);
-              console.log(project.pk);
-              const unmarkPreviousWinner = fetchData(url, 'POST', {
-                project_id: submission.pk,
-                winner: 0
-              }, {'X-CSRFToken': vm.csrf});
-
-              $.when(unmarkPreviousWinner).then(() => {
-                vm.$set(vm.prizes[prizeIndex].submissions[submissionIndex], 'winner', false);
-              });
-            }
-          });
 
           $.when(markWinner).then(response => {
             if (response.message) {
@@ -158,7 +137,6 @@
         hackathonSponsors: document.hackathonSponsors,
         userOrg: document.userOrg,
         hackathonProjects: [],
-        chatURL: document.chatURL || 'https://chat.gitcoin.co/',
         prizes: [],
         comments: [],
         csrf: $("input[name='csrfmiddlewaretoken']").val() || ''

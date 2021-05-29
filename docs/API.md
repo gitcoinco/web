@@ -1,6 +1,45 @@
 # HTTPS API
 
-Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. The API is live at https://gitcoin.co/api/v0.1
+## Grants API
+
+* Get a full list of grants at `https://gitcoin.co/grants/grants.json`
+* Get a list of contributors to each Gitcoin Grants Round at `https://gitcoin.co/grants/v1/api/export_addresses/roundX.json` where X is the round number, (1-7 supported as of Oct 2020)
+* Get a list of contributors to a Gitcoin Grant at `https://gitcoin.co/grants/v1/api/export_addresses/grantX.json` where X is the ID of the grant.  You must be authenticated as a team member of the grant to access the data.
+* Get a list of contributors to a Gitcoin Grant at a specififc round `https://gitcoin.co/grants/v1/api/export_addresses/grantX_roundY.json` where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.
+* We've got an `https://gitcoin.co/grants/v1/api/export_addresses/all.json` endpoint available for those who'd like to just get all addresses that've ever funded a Gitcoin Grant.
+* We've also put together a list of all grants on the platform, and the addresses you can contribute to them at, at https://gitcoin.co/grants/grants.json
+* Get a list of contributor social info (handle, picture, anonymized, comment) for a Gitcoin Grant at a specific round `https://gitcoin.co/grants/v1/api/export_info/grantX_roundY.json` where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.
+
+These APIs are purposefully minimalistic, as we are trying very hard to limit the scope of the data retrieval methods in order to support narrow use cases. 
+*NOTE: These APIs returns live data, with a small cache infront. This means, the data may be up to an hour stale, but will refresh as the cache is recreated.*
+
+Click through to try them below:
+* https://gitcoin.co/grants/v1/api/export_addresses/round7.json
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12.json
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
+* https://gitcoin.co/grants/v1/api/export_addresses/all.json
+* https://gitcoin.co/grants/grants.json
+* https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json
+
+NOTE: Gitcoin respects user privacy, and gives users the option to opt out of including their addresses in these exports.   Update your preferences at `https://gitcoin.co/settings/privacy` at anytime.
+
+### Authentication
+
+These API calls require you to be authenticated as a team member of a grant:
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12.json
+* https://gitcoin.co/grants/v1/api/export_addresses/grant12_round_7.json
+* https://gitcoin.co/grants/v1/api/export_info/grant12_round7.json
+
+Authentication on Gitcoin is primary centric around our user model, which (for now) is dependant upon Github.  If you are accessing the data programmatically, you may not be able to handle the Github authentication cycle, and for that reason we have begun providing limited access to this data via an API Key / Secret model.  Here's how it works.
+
+1. Access any API which requires authorization via the standard authentication flow in browser.
+2. You will be issued credentials, which you can find in the response: `body.meta.api_key`.
+3. You may now access the API using the API credentials at `URL?_key=YOUR_KEY&_secret=YOUR_SECRET`.
+
+## Generalized API
+
+Gitcoin provides a simple read-only HTTPS API to access data. The API is live at https://gitcoin.co/api/v0.1
+
 
 ### Datatypes
 
@@ -123,7 +162,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
 
 The grants endpoint provides a listing of grants and all it's information. There is one endpoint that access grants:
 
-- `https://gitcoin.co/api/v0.1/grants/` - Returns a list of grants
+- `https://gitcoin.co/api/v0.1/grants/?limit=10` - Returns a list of grants
 
 #### Fields
 
@@ -165,7 +204,7 @@ The grants endpoint provides a listing of grants and all it's information. There
 
 **Filters**
 
-You can filter the data returned from the API by providing these keys as URL parameters `title`, `description`, `keyword`, `grant_type` and `pk` that takes an ID and returns a single grant.
+You can filter the data returned from the API by providing these keys as URL parameters `title`, `admin_address`, `description`, `keyword`, `grant_type` and `pk` that takes an ID and returns a single grant.  You can also add a `limit` parameter to limit the results (typically for performance reasons).
 
 
 #### Example Request
@@ -239,6 +278,8 @@ You can filter the data returned from the API by providing these keys as URL par
 ```
 
 # WEB3 API
+
+## Note: this API is now in the process of being deprecated, as since going cross-chain, Gitcoin no longer uses standardbounties as the base layer of it's bounties experience.  This API will still  be useful for legacy bounties which are posted to standcard bounties.
 
 You may interact with the HTTPS API as follows
 

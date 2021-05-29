@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -35,16 +35,11 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
-        # web3 modal
-        web3_modal_pending_fulfillments = pending_fulfillments.filter(payout_type='web3_modal')
-        if web3_modal_pending_fulfillments:
-            for fulfillment in web3_modal_pending_fulfillments.all():
-                sync_payout(fulfillment)
-
-        # polkadot extension
-        polkadot_pending_fulfillments = pending_fulfillments.filter(payout_type='polkadot_ext')
-        if polkadot_pending_fulfillments:
-            for fulfillment in polkadot_pending_fulfillments.all():
+        # Extensions
+        ext_payout_types= ['web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext']
+        for ext_payout_type in ext_payout_types:
+            ext_pending_fulfillments = pending_fulfillments.filter(payout_type=ext_payout_type)
+            for fulfillment in ext_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
 
@@ -53,7 +48,7 @@ class Command(BaseCommand):
         if qr_pending_fulfillments:
             # Auto expire pending transactions
             timeout_period = timezone.now() - timedelta(minutes=20)
-            qr_pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
+            qr_pending_fulfillments.filter(modified_on__lt=timeout_period).update(payout_status='expired')
 
             fulfillments = qr_pending_fulfillments.filter(payout_status='pending')
             for fulfillment in fulfillments.all():

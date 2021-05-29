@@ -15,196 +15,218 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% bundle css file bounty_fullfill %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+    {% endbundle %}
   </head>
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
-    </div>
-    <div class="container-fluid px-0 submit_bounty_content">
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_issue_error.html' with page='fulfill_bounty' %}
-          {% if is_bounties_network %}
-            {% include 'shared/no_metamask_error.html' %}
-            {% include 'shared/zero_balance_error.html' %}
-            {% include 'shared/unlock_metamask.html' %}
-            {% include 'shared/connect_metamask.html' %}
-          {% endif %}
-        </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav.html' %}
       </div>
-      <div class="row">
-        <div class="col-12">
-          <div id="form_container">
-            <div class="row d-flex justify-content-center my-5">
-              <div id="robot_error" class="hidden">
-                <img src="{% static "v2/images/prime.png" %}" alt="Prime">
-              </div>
-              <div id="primary_form" class="col-12 col-lg-6">
-                <div class="media-body align-self-center">
-                  <h4 class="text-center mb-4">{% trans "Submit Work" %}</h4>
+      <div class="container-fluid px-0 submit_bounty_content">
+        <div class="row no-gutters metamask-banner">
+          <div class="col-12">
+            {% include 'shared/no_issue_error.html' with page='fulfill_bounty' %}
+            {% if is_bounties_network %}
+              {% include 'shared/no_metamask_error.html' %}
+              {% include 'shared/zero_balance_error.html' %}
+              {% include 'shared/unlock_metamask.html' %}
+              {% include 'shared/connect_metamask.html' %}
+            {% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div id="form_container">
+              <div class="row d-flex justify-content-center my-5">
+                <div id="robot_error" class="hidden">
+                  <img src="{% static "v2/images/prime.png" %}" alt="Prime">
                 </div>
-
-                <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
-                  <div>
-                    <p class="font-caption font-weight-semibold">
-                      <a class="link" href="{{ bounty.url }}">
-                        <i class="fas fa-chevron-left mr-2"></i>
-                        {% trans "Back to Bounty" %}
-                      </a>
-                    </p>
-                    <label class="form__label mb-0" for="issueURL">{% trans "Issue URL" %}</label>
-                    <input required name='issueURL' id="issueURL" class="form__input border-0 font-subheader px-lg-0"
-                      type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}"
-                    />
+                <div id="primary_form" class="col-12 col-lg-6">
+                  <div class="media-body align-self-center">
+                    <h4 class="text-center mb-4">{% trans "Submit Work" %}</h4>
                   </div>
 
-                  <div class="mt-2 github-username">
-                    <label class="form__label mb-0" for="githubUsername">{% trans "Github Username" %}</label>
-                    <input name='githubUsername' id='githubUsername' class="form__input border-0 font-body pt-0 px-lg-0" type="text"
-                      readonly placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}"
-                    />
-                  </div>
-
-                  <div class="mt-2">
-                    <label class="form__label" for="githubPRLink">{% trans "Project Link" %}</label>
-                    <input name='githubPRLink' id='githubPRLink' class="form__input font-body" type="text"
-                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM" value=""
-                      required
-                    />
-                  </div>
-
-                  {% if prize_projects %}
-                    <div class="mt-2">
-                      <label class="form__label" for="projectId">{% trans "Select the submitting project" %}</label>
-                      <select name='projectId' id='projectId' class="form__input w-100 js-select2 font-body" required>
-                        {% for project in prize_projects %}
-                          <option value="{{ project.id }}">{{ project.id }} - {{ project.name }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
-                  {% endif %}
-
-                  {% if bounty.web3_type == 'fiat' %}
-                    <div class="mt-2">
-                      <label class="form__label" for="fulfiller_identifier">{% trans "Paypal Account" %}</label>
-                      <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
-                        title="Paypal Account to which bounty will be sent upon being accepted">
-                      </i>
-                      <input name='fulfiller_identifier' id='fulfiller_identifier' class="form__input font-body" type="email" required/>
-                    </div>
-                  {% else %}
-
-                    <div class="mt-2">
-                      <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
-                      {% if is_bounties_network or bounty.web3_type == 'web3_modal' %}
-                        <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
-                          [ sync with web3 wallet ]
-                        </span>
-                      {% endif %}
-                      <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
-                        title="Address to which bounty will be sent upon being accepted">
-                      </i>
-                      <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="0x0000000000000"/>
-                    </div>
-                  {% endif %}
-
-                  <div class="mt-2 row">
-                    <div class="col-12">
-                      <label class="form__label" for="hoursWorked">{% trans "Hours Worked" %}</label>
-                      <input name='hoursWorked' id='hoursWorked' class="form__input font-body" type="number" placeholder="1 (feel free to approximate)"
-                        value="" min="0" step="0.1"
+                  <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                    <input type="hidden" name="bountyPk" id="bountyPk" value="{{bounty.pk}}">
+                    <div>
+                      <p class="font-caption font-weight-semibold">
+                        <a class="link" href="{{ bounty.url }}">
+                          <i class="fas fa-chevron-left mr-2"></i>
+                          {% trans "Back to Bounty" %}
+                        </a>
+                      </p>
+                      <label class="form__label mb-0" for="issueURL">{% trans "Issue URL" %}</label>
+                      <input required name='issueURL' id="issueURL" class="form__input border-0 font-subheader px-lg-0"
+                        type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}"
                       />
                     </div>
 
-                    <div class="col-12">
-                      {% if show_information_publicly_checkbox %}
-                        {% include "shared/show_information_publicly.html" with id="show_email_publicly" %}
-                      {% endif %}
+                    <div class="mt-2 github-username">
+                      <label class="form__label mb-0" for="githubUsername">{% trans "Github Username" %}</label>
+                      <input name='githubUsername' id='githubUsername' class="form__input border-0 font-body pt-0 px-lg-0" type="text"
+                        readonly placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}"
+                      />
                     </div>
-                  </div>
 
-                  {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' label="Rate this funder"%}
-
-
-                  {% if is_bounties_network %}
-                    {% include 'shared/bounty_actions_hidden_vars.html' %}
-                  {% endif %}
-
-                  <div class="mt-2 terms_container">
-                    <div class="form__checkbox">
-                      <input name='terms' required id='terms' type="checkbox" value=1 required />
-                      <label class="form__label" for="terms">{% url "terms" as termsurl %}
-                        {% blocktrans %}
-                          I have read, understand, and agree to, the
-                          <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
-                        {% endblocktrans %}
-                      </label>
+                    <div class="mt-2">
+                      <label class="form__label" for="githubPRLink">{% trans "Project Link" %}</label>
+                      <input name='githubPRLink' id='githubPRLink' class="form__input font-body" type="text"
+                        placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM" value=""
+                        required
+                      />
                     </div>
-                  </div>
-                  {% if bounty.web3_type != 'fiat' %}
-                    <div class="terms_container">
+
+                    {% if prize_projects %}
+                      <div class="mt-2">
+                        <label class="form__label" for="projectId">{% trans "Select the submitting project" %}</label>
+                        <select name='projectId' id='projectId' class="form__input w-100 js-select2 font-body" required>
+                          {% for project in prize_projects %}
+                            <option value="{{ project.id }}">{{ project.id }} - {{ project.name }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="mt-2">
+                        <label class="form__label" for="videoDemoLink">{% trans "Video demo Link" %}</label>
+                        <input name='videoDemoLink' id='videoDemoLink' class="form__input font-body" type="text"
+                          placeholder="https://youtu.be/DJartWzDn0E" value=""
+                        />
+                      </div>
+
+                    {% elif bounty.event %}
+                      <div class="mt-2">
+                        <label class="form__label" for="projectId">{% trans "Please create your project:" %}</label>
+                        <button type="button" onclick="projectModal({{bounty.pk}})" class="btn btn-sm btn-success d-block">Add project</button>
+                      </div>
+                    {% endif %}
+
+                    {% if bounty.web3_type == 'fiat' %}
+                      <div class="mt-2">
+                        <label class="form__label" for="fulfiller_identifier">{% trans "Paypal Account" %}</label>
+                        <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
+                          title="Paypal Account to which bounty will be sent upon being accepted">
+                        </i>
+                        <input name='fulfiller_identifier' id='fulfiller_identifier' class="form__input font-body" type="email" required/>
+                      </div>
+                    {% else %}
+
+                      <div id="payoutAddress-container" class="mt-2">
+                        <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
+                        {% if is_bounties_network or bounty.web3_type == 'web3_modal' %}
+                          <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
+                            [ sync with web3 wallet ]
+                          </span>
+                        {% endif %}
+                        <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
+                          title="Address to which bounty will be sent upon being accepted">
+                        </i>
+                        <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Enter {{ bounty.token_name }} Wallet Address"/>
+
+                        <div class="text-danger hidden">
+                          Enter a valid {{ bounty.token_name }} address
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    <div class="mt-2 row">
+                      <div class="col-12">
+                        <label class="form__label" for="hoursWorked">{% trans "Hours Worked" %}</label>
+                        <input name='hoursWorked' id='hoursWorked' class="form__input font-body" type="number" placeholder="1 (feel free to approximate)" value="" min="0" step="0.1" required/>
+                      </div>
+
+                      <div class="col-12">
+                        {% if show_information_publicly_checkbox %}
+                          {% include "shared/show_information_publicly.html" with id="show_email_publicly" %}
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' label="Rate this funder"%}
+
+
+                    {% if is_bounties_network %}
+                      {% include 'shared/bounty_actions_hidden_vars.html' %}
+                    {% endif %}
+
+                    <div class="mt-2 terms_container">
                       <div class="form__checkbox">
-                        <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                        <label class="form__label" for=blockchain_tos>
+                        <input name='terms' required id='terms' type="checkbox" value=1 required />
+                        <label class="form__label" for="terms">{% url "terms" as termsurl %}
                           {% blocktrans %}
-                            I understand that this information is being submitted to a public, immutable, blockchain.
-                            No one, including Gitcoin Core, will be able to take my funds or change this information.
+                            I have read, understand, and agree to, the
+                            <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
                           {% endblocktrans %}
                         </label>
                       </div>
                     </div>
-                  {% endif %}
+                    {% if bounty.web3_type != 'fiat' %}
+                      <div class="terms_container">
+                        <div class="form__checkbox">
+                          <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                          <label class="form__label" for=blockchain_tos>
+                            {% blocktrans %}
+                              I understand that this information is being submitted to a public, immutable, blockchain.
+                              No one, including Gitcoin Core, will be able to take my funds or change this information.
+                            {% endblocktrans %}
+                          </label>
+                        </div>
+                      </div>
+                    {% endif %}
 
-                  <div class="my-2 pb-5 text-center">
-                    <button class="mb-3 w-100 button button--primary js-submit" role="button">{% trans "Submit Work" %}</button>
-                  </div>
-                </form>
+                    <div class="my-2 pb-5 text-center">
+                      <button type="submit" class="mb-3 w-100 btn btn-primary js-submit" role="button">{% trans "Submit Work" %}</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <script>
+        const web3_type = '{{ bounty.web3_type }}';
+        const token_name = '{{ bounty.token_name }}';
+        const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
+      </script>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
+
+      {% include 'shared/current_profile.html' %}
     </div>
-
     <script>
-      const web3_type = '{{ bounty.web3_type }}';
-      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
-    </script>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
+      $('[data-toggle="popover"]').popover()
+      $('[data-toggle="tooltip"]').bootstrapTooltip();
+      let bountyChainId;
+      let eventTag;
+      let standardBountyId;
+      {% if bounty.event %}
+        standardBountyId = {{bounty.standard_bounties_id}};
+        eventTag = '{{ bounty.event.slug }}';
+      {% endif %}
+      bountyChainId = '{{bounty.metadata.chain_id}}'
 
-  </body>
-
-  <script>
-    $('[data-toggle="popover"]').popover()
-    $('[data-toggle="tooltip"]').bootstrapTooltip();
-    let eventTag;
-    let standardBountyId;
-    {% if bounty.event %}
-      standardBountyId = {{bounty.standard_bounties_id}};
-      eventTag = '{{ bounty.event.slug }}';
-    {% endif %}
-
-    $(document).ready(function() {
-      $('.js-select2').each(function() {
-        $(this).select2({
-          minimumResultsForSearch: Infinity
+      $(document).ready(function() {
+        $('.js-select2').each(function() {
+          $(this).select2({
+            minimumResultsForSearch: Infinity
+          });
         });
-      });
-    })
-  </script>
+      })
+    </script>
+    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    <script src="{% static "v2/js/user-search.js" %}"></script>
 
   {% if is_bounties_network %}
     <script src="{% static "v2/js/abi.js" %}"></script>
@@ -219,5 +241,6 @@
   {% endif %}
   <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/pages/fulfill_bounty/index.js" %}"></script>
+</body>
 
 </html>

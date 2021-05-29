@@ -16,14 +16,16 @@
 
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
-<nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
-  <a class="d-none d-md-block mr-2 mb-1" href="{% url 'index' %}">
-    {% include 'shared/helmet-white-animated.html' %}
+<nav class="navbar navbar-expand-md navbar-light bg-white p-0 px-md-1 w-100">
+  <a class="d-none d-md-block mr-2 mb-1 ml-2" href="{% url 'index' %}">
+    {% include 'shared/helmet-purple-animated.html' %}
   </a>
-  <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand ml-2 py-0" href="{% url 'kudos_marketplace' %}">
-    <!-- <img class="mw-100 logo-static" src="{% static 'v2/images/top-bar/kudos-neg.svg' %}" alt="kudos" height="35"> -->
-    {% include 'shared/svg-embed/h35px_kudos.svg' %}
+  <i class="black font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
+  <a class="navbar-brand sticky-top py-0 mr-0 bg-white my-md-auto" href="{% url 'kudos_marketplace' %}">
+    <span id="logo_kudos" style="width: 150px;" class="my-auto overflow-hidden d-block p-1 pl-2">
+      <!-- <img class="mw-100 logo-static" src="{% static 'v2/images/top-bar/kudos-neg.svg' %}" alt="kudos" height="35"> -->
+      {% include 'shared/svg-embed/h35px_kudos.svg' %}
+    </span>
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <button id="wallet-button" class="navbar-network ml-xl-5 py-1 px-2 hidden btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

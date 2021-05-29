@@ -1,0 +1,87 @@
+{% load date_fromisoformat timesince_fromisoformat %}
+<div class="row my-4">
+  {% if events|length %}
+  <div class="container custom-container">
+  <div class="row">
+  {% for event in events %}
+      <style>
+        #{{event.slug}} .card-header {
+          background: {{ event.background_color }};
+        }
+      </style>
+
+      <div class="col-xs-12 col-md-9 col-lg-8 col-xl-6 mx-auto hackathon-list {{ event.type }} {% if event.type != default_tab %}hidden{% endif %}">
+
+        <div class="card flex-row flex-wrap mb-5" id="{{ event.slug }}">
+
+          <div class="card-header text-center col-12 col-sm-4 px-0">
+            <a href="{% url 'hackathon' event.slug %}">
+            {% if event.logo %}
+              <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ event.logo }}" alt="Hackathon logo" />
+            {% else %}
+              <div class="hackathon-card-logo text-center px-3 font-caption">
+                {{ event.name }}
+              </div>
+            {% endif %}
+            </a>
+          </div>
+          <div class="card-body col-12 col-sm-8 {% if left_align_cards %}text-left{% endif %}">
+            <h5 class="font-subheader font-weight-semibold">
+              <a href="{% url 'hackathon' event.slug %}" class="text-black {% if force_color %}no-pink{% endif %}" rel="noopener noreferrer">
+                {{ event.name }}
+              </a>
+            </h5>
+
+            <div class="font-smaller-2 {% if left_align_cards %}text-left{% endif %}">
+              <span class>From</span>
+              <time class="font-weight-bold" datetime="{{ event.start_date|date_fromisoformat:'c' }}">{{ event.start_date|date_fromisoformat:"m/d/Y" }}</time>
+              <span>To</span>
+              <time class="font-weight-bold" datetime="{{ event.end_date|date_fromisoformat:'c' }}">{{ event.end_date|date_fromisoformat:"m/d/Y" }}</time>
+            </div>
+            <div class="mt-3 font-smaller-2 hackathon-summary {% if left_align_cards %}text-left{% endif %}">
+              <p>{{ event.summary }}</p>
+            </div>
+            {% if event.sponsor_profiles|length %}
+              <div class="mt-3 font-smaller-2">
+                <span class="pr-1">Sponsored by</span>
+                {% for sponsor in event.sponsor_profiles %}
+                  <a href="{{ sponsor.absolute_url }}" target="_blank"><img class="rounded-circle" style="width:21px;" src="{{ sponsor.avatar_url }}" /></a>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="mt-3 hackathon-actions">
+              {% if event.end_date|timesince_fromisoformat <= "1 min" %}
+                <a href="{% url 'hackathon_onboard' event.slug %}" class="btn {% if force_color %}no-pink{% endif %} btn-primary font-caption px-3 mb-2">
+                  <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
+                  Join
+                </a>
+              {% endif %}
+              {% if event.display_showcase %}
+              <a href="{% url 'hackathon_showcase_proxy' event.slug %}" class="btn {% if force_color %}no-pink{% endif %} btn-primary font-caption px-3 mb-2">
+                <i class="fas fa-star d-none d-sm-inline" style="font-size:6.5px;position:relative;top:0.2rem;left:0.2rem;"></i>
+                <i class="fas fa-star mr-1 d-none d-sm-inline"></i>
+                Showcase
+              </a>
+              {% endif %}
+              {% if event.start_date|timesince_fromisoformat >= "1 min" and event.end_date|timesince_fromisoformat <= "1 min"%}
+                <a href="{% url 'hackathon_prizes' event.slug %}" class="btn {% if force_color %}no-pink{% endif %} btn-outline-primary font-caption px-3 mb-2">
+                  <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
+                  Prizes
+                </a>
+              {% endif %}
+              {% if event.show_results %}
+                <a href="{% url 'hackathon_projects' event.slug %}" class="btn {% if force_color %}no-pink{% endif %} btn-outline-primary font-caption px-3 mb-2">
+                  <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
+                  Projects
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+  {% endfor %}
+  </div>
+  </div>
+  {% endif %}
+</div>

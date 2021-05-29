@@ -112,7 +112,8 @@ def presave_comment(sender, instance, **kwargs):
 def postsave_comment(sender, instance, created, **kwargs):
     from townsquare.tasks import send_comment_email
     if created:
-        send_comment_email.delay(instance.pk)
+        if not instance.is_edited:
+            send_comment_email.delay(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):
@@ -215,6 +216,7 @@ class Announcement(SuperModel):
         ('header', 'header'),
         ('footer', 'footer'),
         ('founders_note_daily_email', 'founders_note_daily_email'),
+        ('grants', 'grants'),
     ]
     key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)

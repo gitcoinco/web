@@ -10,7 +10,10 @@
 {% for gamefeed in game.feed.all %}{{gamefeed.message}}
 {% endfor %}
 </textarea><br/>
+    <span class="avatar">
+      <a href="/{{github_handle}}"><img src="/dynamic/avatar/{{github_handle}}"/></a>
+    </span>
     <input id="chat-message-input" type="text" size="100"/><br/>
-    <input id="chat-message-submit" type="button" value="Send"/>
+    <input class="btn md" id="chat-message-submit" type="button" value="Send"/>
 </body>
 </html>

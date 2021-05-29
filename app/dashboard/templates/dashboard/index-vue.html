@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,17 +26,20 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/featured-bounties.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/users.css" %}' />
-    <link rel="stylesheet" href='{% static "v2/css/rating.css" %}' />
-    <link rel="stylesheet" href='{% static "v2/css/scroll-carousel.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/town_square.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/hackathons/explorer.css" %}'/>
-    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
+    {% bundle css file dashboard_index_vue %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/explorer.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-vue-hackathon.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboarding_v2.scss" %} />
+    {% endbundle %}
 
     <style type="text/css">
       .hackathon-logo {
@@ -91,777 +94,733 @@
           grid-template-columns: repeat(2, 1fr);
         }
       }
+
     </style>
       {% include 'shared/fbpixel.html' %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header sticky-top dash">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav_hackathons.html' %}
-    </div>
-    {% if is_staff %}
-    <div class="alpha-warning font-caption mb-0">
-      <span class="font-weight-bold">Staff only</span>
-      <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
-    </div>
-    {% endif %}
+      <div class="header sticky-top sticky-nav dash">
+        {% include 'shared/nav_hackathons.html' %}
+      </div>
+      {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+      </div>
+      {% endif %}
 
-    <div id="dashboard-content" class="container-fluid no-gutter" style="min-height:600px;">
-        <div id="dashboard-vue-app" class="row" v-cloak>
-          <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
-            <div class="offset-xl-2 col-lg-10 col-12 hackathon-text pl-4">
-              <div class="mt-5">
-                <p class="hackathon-title title font-weight-bold mb-0">[[ hackathonObj.name ]]</p>
-              </div>
-              <p class="mb-1">
-                {% if hackathon.start_date|timesince <= "1 min" %}
-                  <small class="hackathon-countdown text-uppercase">Starts in {{hackathon.start_date | timeuntil}}</small>
-                {% elif hackathon.end_date|timeuntil >= "1 min" %}
-                  <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
-                {% else %}
-                  <small class="hackathon-countdown text-uppercase">Hackathon Over</small>
-                {% endif %}
-              </p>
-              <a href="{% url "sponsors-dashboard" hackathon.slug %}" v-if="isSponsor" class="btn btn-gc-blue float-right mr-5">Sponsor dashboard</a>
-            </div>
-          </div>
-          <div class="col-12 col-xl-10 body hackathon-explorer">
-            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
-              <template v-slot:tabs-start>
-                <div class="hack-logo-wrapper d-none d-xl-block">
-                  <div class="mb-1 hackathon-logo">
-                    <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
-                    <b-img-lazy v-else-if="hackathonObj.logo" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
-                    <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
-                  </div>
+      <div id="dashboard-content" class="container-fluid no-gutter" style="min-height:600px;">
+          <div id="dashboard-vue-app" class="row" v-cloak>
+            <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
+              <div class="offset-xl-2 col-lg-10 col-12 hackathon-text pl-4">
+                <div class="mt-5">
+                  <p class="hackathon-title title font-weight-bold mb-0">[[ hackathonObj.name ]]</p>
                 </div>
-              </template>
-              <b-tab class="col-12" title-item-class="navigation">
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Prizes" %}
-                    <span class="nav-badge d-none d-sm-inline">({{prize_count}})</span>
-                  </div>
-                </template>
-                <div id="prizes" class="row">
-                  <div class="col-12 col-md-2 d-lg-block" style="background: #F2F6F9; margin-left:2%">
-
-                    <div class="ml-md-4 invisible" id="sidebar_container">
-                      {% include 'dashboard/sidebar_search_hackathon.html' %}
+                <p class="mb-1">
+                  {% if hackathon.start_date|timesince <= "1 min" %}
+                    <small class="hackathon-countdown text-uppercase">Starts in {{hackathon.start_date | timeuntil}}</small>
+                  {% elif hackathon.end_date|timeuntil >= "1 min" %}
+                    <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
+                  {% else %}
+                    <small class="hackathon-countdown text-uppercase">Hackathon Over</small>
+                  {% endif %}
+                </p>
+                <a href="{% url "sponsors-dashboard" hackathon.slug %}" v-if="isSponsor" class="btn btn-primary float-right mr-5">Sponsor dashboard</a>
+              </div>
+            </div>
+            <div class="col-12 col-xl-10 body hackathon-explorer">
+              <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
+                <template v-slot:tabs-start>
+                  <div class="hack-logo-wrapper d-none d-xl-block">
+                    <div class="mb-1 hackathon-logo">
+                      <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
+                      <b-img-lazy v-else-if="hackathonObj.logo" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
+                      <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
                     </div>
                   </div>
-                  <div class="col-12 col-md-9 p-2 ml-md-4">
-                    {% if not hackathon_not_started %}
-                    <div class="px-2" id="bounties">
-                      <div id="dashboard-title" class="hidden">
-                        {% include 'shared/search_bar.html' %}
+                </template>
+                <b-tab class="col-12" title-item-class="navigation">
+                  <template v-slot:title>
+                    <div class="mt-4">
+                      {% trans "Prizes" %}
+                      <span class="nav-badge d-none d-sm-inline">({{prize_count}})</span>
+                    </div>
+                  </template>
+                  <div id="prizes" class="row">
+                    <div class="col-12 col-md-2 d-lg-block" style="background: #F2F6F9; margin-left:2%">
+
+                      <div class="ml-md-4 invisible" id="sidebar_container">
+                        {% include 'dashboard/sidebar_search_hackathon.html' %}
                       </div>
-                      {% include 'dashboard/featured_bounties.html' %}
-                      </div>
-                      <div class="row loading justify-content-center align-items-center loading_img">
-                        <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
-                      </div>
-                      <div class="row nonefound mx-auto" style="display:none;">
+                    </div>
+                    <div class="col-12 col-md-9 p-2 ml-md-4">
+                      {% if not hackathon_not_started %}
+                      <div class="px-2" id="bounties">
+                        <div id="dashboard-title" class="hidden">
+                          {% include 'shared/search_bar.html' %}
+                        </div>
+                        {% include 'dashboard/featured_bounties.html' %}
+                        </div>
+                        <div class="row loading justify-content-center align-items-center loading_img">
+                          <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+                        </div>
+                        <div class="row nonefound mx-auto" style="display:none;">
+                            <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                            <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                              <div>
+                                <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
+                                <b-button variant="primary" class="btn" @click="activePanel = 1">Townsquare</b-button>
+                              </div>
+                            {% include 'shared/hackathon_sponsors.html' %}
+
+                        </div>
+                      {% else %}
+                        <div class="text-center mx-auto">
                           <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
                           <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                            <div>
-                              <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
-                              <b-button class="btn btn-gc-blue" @click="activePanel = 1">Townsquare</b-button>
-                            </div>
-                          {% include 'shared/hackathon_sponsors.html' %}
 
-                      </div>
-                    {% else %}
-                      <div class="text-center mx-auto">
-                        <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
-                        <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-
-                        {% if hackathon.quest_link %}
-                          <p>Explore Web3 and be prepared via sponsors Quests</p>
-                          <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                        {% else %}
-                          <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                          <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                        {% endif %}
-                      </div>
-
-                      {% include 'shared/hackathon_sponsors.html' %}
-                    {% endif %}
-                  </div>
-                </div>
-              </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Townsquare" %}
-                  </div>
-                </template>
-                  <div v-if="hackathonObj.name === 'APOLLO' || hackathonObj.name === 'filecoin'"><iframe style="border: 0; box-shadow: none; width: 100%; height: 80vh;" src="https://gitcoin.circle.so/c/meet-and-greet"></iframe></div>
-                  <div v-else class="ml-md-4 townsquare_header">
-                  <div class="row">
-                    <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
-                      <a href="{% url 'hackathon_ts' hackathon.slug %}" class="btn gc-text-blue">
-                        {% trans "all" %}
-                      </a>
-                      <a href="{{ url  }}?filter=intro" class="btn gc-text-blue">
-                        {% trans "#intros" %}
-                      </a>
-                      <div class="col-12 subheading left-ribbon font-body">
-                        {% trans "Hackathon Sponsors" %}
-                      </div>
-                      <div class="col-12 options" id="list-townsquare-orgs">
-                        {% for org in orgs %}
-                          <div class="">
-                            <label class="filter-label townsquare-org-filter">
-                              <a href="?filter=tribe:{{org.org_name}}"><img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}</a>
-                            </label>
-                          </div>
-                        {% endfor %}
-                      </div>
-                    </div>
-                    <div class="feed_container col-12 col-lg-8">
-                      <div class="feed_container_child">
-                        {% csrf_token %}
-                        {% include 'townsquare/shared/shareactivity.html' %}
-
-                        <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
-                          <span id=activity_subheader>
-                            <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
-                            <br>
-                            <span>
-                              {{card_desc}}
-                            </span>
-                          </span>
-                          {% include 'shared/activity_container.html' %}
+                          {% if hackathon.quest_link %}
+                            <p>Explore Web3 and be prepared via sponsors Quests</p>
+                            <a class="btn btn-primary" href="{{hackathon.quest_link}}">Explore Quests</a>
+                          {% else %}
+                            <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                            <a class="btn btn-primary" href="{% url 'quests_index' %}">Explore Quests</a>
+                          {% endif %}
                         </div>
-                      </div>
-                    </div>
-                    <div class="actions_container col-12 col-md-2 offset-1">
+
+                        {% include 'shared/hackathon_sponsors.html' %}
+                      {% endif %}
                     </div>
                   </div>
-                </div>
-              </b-tab>
-              <b-tab class="col-12" title-item-class="navigation" lazy>
-                  <template v-slot:title>
-                    <div class="mt-4">
-                      {% trans "Projects" %}
-                      <span class="nav-badge d-none d-sm-inline">({{projects_count}})</span>
-                    </div>
-                  </template>
-                  <project-directory inline-template user-id={{ user.profile.id | safe }}>
-                    <div class="ml-4">
-                      <div class="sidebar-container flex-column flex-lg-row">
-                        <transition name="fade">
-                          <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
-                            <div class="pb-4 border-bottom form-group">
-                              <div class="d-flex flex-grow-1" id="search_projects">
-                                <form class="form-inline my-2 flex-fill justify-content-center">
-                                  <div class="input-group w-100 pt-0">
-                                    <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                                    <div class="input-group-append">
-                                      <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
-                            </div>
-                            <div class="pb-4 border-bottom form-group">
-                              {% if is_staff %}
-                                <b-form-checkbox value="winners" v-model="params.filters" name="winners" switch>
-                                  Winners
-                                </b-form-checkbox>
-                                <b-form-checkbox value="submitted" v-model="params.filters" name="submitted" switch>
-                                  Have Submitted
-                                </b-form-checkbox>
-                              {% endif %}
-                              <b-form-checkbox value="lfm" v-model="params.filters" name="lfm" switch>
-                                Looking for Members
-                              </b-form-checkbox>
-                            </div>
-                            <div class="pb-4 border-bottom form-group">
-                              <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
-                              <div id="project_sponsors" class="form__select2">
-                                <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
-                                  <option value="" selected="true">All</option>
-                                  <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
-                                    [[ option.display_name ]]
-                                  </option>
-                                </select2>
-                              </div>
-                            </div>
-                            <div class="g-multiselect pb-4 border-bottom form-group">
-                              <label for="skills" class="font-weight-bold">Member Skills</label>
-                              <div class="form__select2">
-                                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                                  <option disabled value="0">Select one</option>
-                                </select2>
-                              </div>
-                            </div>
-
-
-                            <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                            <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                              <span class="font-weight-bold">[[ numProjects ]]</span> projects found
-                            </p>
-                          </nav>
-                        </transition>
-                        <div class="container pt-4" @scroll.passive="onScroll($event)">
-                        <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-                        <div class="mt-4">
-                        <div v-if="noResults" class="text-center">
-                          <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
-                          <p class="mt-4 font-weight-bold mb-0">No projects found</p>
-                          <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                        </div>
-                        <div v-if="userProjects.length > 0">
-                          <h1 class="font-title title ml-2">
-                            My Projects
-                          </h1>
-                          <div class="project-grid ml-2">
-                            <project-card v-for="project in userProjects" v-bind:project="project" v-bind:edit="true" :key="project.id"/>
-                          </div>
-                          <h1 class="font-title title ml-2 mt-4">
-                            All Projects
-                          </h1>
-                        </div>
-                        <div class="project-grid ml-2">
-                          <project-card {% if is_staff %} v-bind:is_staff="true" {% endif %} v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
-                        </div>
-                          <loading-screen v-if="isLoading"></loading-screen>
-                      </div>
-                    </div>
-                      </div>
-                    </div>
-                  </project-directory>
                 </b-tab>
-              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
+                <b-tab class="col-12" title-item-class="navigation">
                   <template v-slot:title>
                     <div class="mt-4">
-                      {% trans "Participants" %}
-                      <span class="nav-badge d-none d-sm-inline">({{hacker_count}})</span>
+                      {% trans "Townsquare" %}
                     </div>
                   </template>
-                  <user-directory :disabled="!is_registered"  inline-template>
-                    <div class="ml-4">
-                      <div class="sidebar-container flex-column flex-lg-row">
-                        <transition name="fade">
-                          <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
-                            <div class="pb-4 border-bottom form-group">
-                              <div class="d-flex flex-grow-1" id="search">
-                                <form class="form-inline my-2 flex-fill justify-content-center">
-                                  <div class="input-group w-100">
-                                    <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                                    <div class="input-group-append">
-                                      <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
+                  <div v-if="hackathonObj.use_circle"><iframe style="border: 0; box-shadow: none; width: 100%; height: 80vh;" src="https://gitcoin.circle.so/"></iframe></div>
+                    <div v-else class="ml-md-4 townsquare_header">
+                    <div class="row">
+                      <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
+                        <a href="{% url 'hackathon_ts' hackathon.slug %}" class="btn gc-text-blue">
+                          {% trans "all" %}
+                        </a>
+                        <a href="{{ url  }}?filter=intro" class="btn gc-text-blue">
+                          {% trans "#intros" %}
+                        </a>
+                        <div class="col-12 subheading left-ribbon font-body">
+                          {% trans "Hackathon Sponsors" %}
+                        </div>
+                        <div class="col-12 options" id="list-townsquare-orgs">
+                          {% for org in orgs %}
+                            <div class="">
+                              <label class="filter-label townsquare-org-filter">
+                                <a href="?filter=tribe:{{org.org_name}}"><img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}</a>
+                              </label>
                             </div>
-                            <div class="pb-4 border-bottom form-group">
-                              <label for="persona" class="font-weight-bold">Persona</label>
-                              <div class="form__select2">
-                                <select2 v-model="params.persona" data-minimum-results-for-search="Infinity" class="form-control">
-                                  <option value="" selected="true">All</option>
-                                  <option value="funder">Funder</option>
-                                  <option value="coder">Coder</option>
-                                </select2>
-                              </div>
-                            </div>
-                            <div  v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
-                              <label for="skills" class="font-weight-bold">Skills</label>
-                              <div class="form__select2">
-                                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                                  <option disabled value="0">Select one</option>
-                                </select2>
-                              </div>
-                            </div>
-                            <div v-if="persona != 'tribe'" class="pb-4 border-bottom form-group">
-                              <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
-                              <div class="form__select2">
-                                <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
-                                  <option value="" selected="true">All</option>
-                                  <option value="0,5">0,5</option>
-                                  <option value="5,10">5,10</option>
-                                  <option value="10,15">10,15</option>
-                                  <option value="15,20">15,20</option>
-                                </select2>
-                              </div>
-                            </div>
-                            <div v-if="persona != 'tribe'" class="pb-2 border-bottom form-group">
-                              <div class="w-100 p-2">
-                                <fieldset class="">
-                                  <label for="" class="font-weight-bold">Star Rating</label>
-                                  <div class="rating font-smaller-4">
-                                    <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
-                                    <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
-                                    <input type="radio" id="rating-3" name="rating" value="3" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
-                                    <input type="radio" id="rating-2" name="rating" value="2" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
-                                    <input type="radio" id="rating-1" name="rating" value="1" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
-                                  </div>
-                                </fieldset>
-                              </div>
-                            </div>
-                            <div v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
-                              <label for="organisations" class="font-weight-bold">Tribe</label>
-                              <div class="font-smaller">
-                                <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
-                              </div>
-                            </div>
-                            <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
-                            {% if is_staff %}
-                              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                                <span class="font-weight-bold">[[ numUsers ]]</span> users found
-                              </p>
-                              <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
-                                Invite all to bounty
-                              </button>
-                            {% endif %}
-                          </nav>
-                        </transition>
-                        <div class="container pt-4" @scroll.passive="onScroll($event)">
-                          <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-                          <div class="py-5 mt-4">
-                            <div v-if="noResults" class="text-center">
-                              <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
-                              <p class="mt-4 font-weight-bold mb-0">No users found</p>
-                              <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
-                            </div>
-                            <div class="grid-4">
-                              <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
-                                <div class="d-flex flex-column py-1 bg-lightblue">
-                                  <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
-                                  <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
-                                    <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
-                                      <i class="fab fa-ethereum mr-2"></i>
-                                      Fund Bounty
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
-                                      <i class="fas fa-user mr-2"></i>
-                                      View profile
-                                    </a>
-                                  </div>
-                                  <a :href="`/profile/${ user.handle }`" class="mx-auto">
-                                    <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
-                                  </a>
-                                  <h5 class="text-center card-user_name">
-                                    [[ user.name || user.handle ]]
-                                    <span v-if="user.verification">
-                                      <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
-                                    </span>
-                                  </h5>
-                                  <a :href="`/profile/${ user.handle }`" v-bind:data-usercard="[[ user.handle ]]" class="text-center d-block">
-                                    @[[ user.handle ]]
-                                  </a>
-                                  <div v-if="!user.is_org" class="card-user_stars text-center my-2">
-                                    <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
-                                    ([[ user.avg_rating.total_rating ]] ratings)
-                                  </div>
-                                  <template v-if="user.is_org">
-                                    <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
-                                    </div>
-                                    <div class="text-left">
-                                      <p class="mb-0">
-                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
-                                        <b>[[ user.follower_count ]]</b> followers
-                                      </p>
-                                      <p class="mb-0">
-                                        <i class="fas fa-trophy font-smaller-4 mr-1"></i>
-                                        <b>[[ user.count_bounties_on_repo ]]</b> Bounties Funded
-                                        (<b>[[ user.sum_eth_on_repos ]] ETH</b>)
-                                      </p>
-                                    </div>
-                                  </template>
+                          {% endfor %}
+                        </div>
+                      </div>
+                      <div class="feed_container col-12 col-lg-8">
+                        <div class="feed_container_child">
+                          {% csrf_token %}
+                          {% include 'townsquare/shared/shareactivity.html' %}
 
-                                  <!-- User : Funder / Contributor-->
-                                  <template v-else>
-                                    <div v-if="user.keywords" class="text-center mt-1">
-                                      <template v-for="keyword in user.keywords.slice(0,4)">
-                                        <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
-                                      </template>
-                                    </div>
-
-                                    <div class="text-center my-1 font-smaller-1">
-                                      <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
-                                        <i class="fab fa-github"></i>
-                                      </a>
-                                      <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
-                                        <i class="fas fa-home"></i>
-                                      </a>
-                                      <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
-                                        <i class="fab fa-linkedin-in"></i>
-                                      </a>
-                                      <a @click="chatWindow('@' + user.handle);" href="javascript:" v-if="user.chat_id">
-                                        <i class="fas fa-comment-dots"></i>
-                                      </a>
-                                    </div>
-                                    <div class="text-center" id="job_status" v-if="user.show_job_status">
-                                      <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
-                                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
-                                      </a>
-                                    </div>
-                                    <div class="text-left">
-                                      <p class="mb-0">
-                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
-                                        <b>[[ user.follower_count ]]</b> followers
-                                      </p>
-                                      <p v-if="!isFunder" class="mb-0">
-                                        <b>[[ user.work_done ]]</b> bounties completed
-                                      </p>
-                                    </div>
-                                  </template>
-                                </div>
-                                <div class="card-body d-flex flex-column justify-content-between">
-                                  <!-- TRIBE -->
-                                  <div class="text-center my-3" v-if="user.looking_team_members">
-                                      <i class="fas fa-users gc-text-blue font-bigger-3"></i><br>
-                                      <span class="font-body">Looking for team members</span>
-                                  </div>
-                                  <div class="text-center my-3" v-if="user.looking_project">
-                                      <i class="far fa-lightbulb gc-text-blue font-bigger-3"></i><br>
-                                      <span class="font-body">Looking for a project</span>
-                                  </div>
-                                  <div class="text-center mt-2">
-                                    <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" @click="chatWindow(user.handle, $event);">
-                                      <i class="fas fa-comment-dots mr-2"></i> Chat
-                                    </b-button>
-                                  </div>
-
-                                </div>
-                              </div>
-                            </div>
-                            <loading-screen v-if="isLoading"></loading-screen>
+                          <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                            <span id=activity_subheader>
+                              <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+                              <br>
+                              <span>
+                                {{card_desc}}
+                              </span>
+                            </span>
+                            {% include 'shared/activity_container.html' %}
                           </div>
                         </div>
-                        <modal ref="user-modal" id="userModal">
-                          <div slot="header" v-if="userSelected.handle">
-                            <div class="d-flex flex-column align-items-center">
-                              <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
-                              <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
-                              <span>[[ userSelected.name ]]</span>
-                              <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
-                                [[ userSelected.handle ]]
-                              </a>
+                      </div>
+                      <div class="actions_container col-12 col-md-2 offset-1">
+                      </div>
+                    </div>
+                  </div>
+                </b-tab>
+                <b-tab class="col-12" title-item-class="navigation" lazy>
+                    <template v-slot:title>
+                      <div class="mt-4">
+                        {% trans "Projects" %}
+                        <span class="nav-badge d-none d-sm-inline">({{projects_count}})</span>
+                      </div>
+                    </template>
+                    <project-directory inline-template user-id={{ user.profile.id | safe }}>
+                      <div class="ml-4">
+                        <div class="sidebar-container flex-column flex-lg-row">
+                          <transition name="fade">
+                            <nav v-show="showFilters" class="sidebar flex-fill pr-4 pl-1" role="navigation">
+                              <div class="pb-4 border-bottom form-group">
+                                <div class="d-flex flex-grow-1" id="search_projects">
+                                  <form class="form-inline my-2 flex-fill justify-content-center">
+                                    <div class="input-group w-100 pt-0">
+                                      <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                      <div class="input-group-append">
+                                        <button type="submit" class="btn input-group-text text-primary bg-white border-left-0" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                              <div class="pb-4 border-bottom form-group">
+                                {% if is_staff %}
+                                  <b-form-checkbox value="winners" v-model="params.filters" name="winners" switch>
+                                    Winners
+                                  </b-form-checkbox>
+                                  <b-form-checkbox value="submitted" v-model="params.filters" name="submitted" switch>
+                                    Have Submitted
+                                  </b-form-checkbox>
+                                {% endif %}
+                                <b-form-checkbox value="lfm" v-model="params.filters" name="lfm" switch>
+                                  Looking for Members
+                                </b-form-checkbox>
+                                <b-form-checkbox value="grants" v-model="params.filters" name="grants" switch>
+                                  Grants
+                                </b-form-checkbox>
+                              </div>
+                              <div class="pb-4 border-bottom form-group">
+                                <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
+                                <div id="project_sponsors" class="form__select2">
+                                  <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
+                                    <option value="" selected="true">All</option>
+                                    <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
+                                      [[ option.display_name ]]
+                                    </option>
+                                  </select2>
+                                </div>
+                              </div>
+                              <div class="g-multiselect pb-4 border-bottom form-group">
+                                <label for="skills" class="font-weight-bold">Member Skills</label>
+                                <div class="form__select2">
+                                  <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                                    <option disabled value="0">Select one</option>
+                                  </select2>
+                                </div>
+                              </div>
+                              <button class="btn text-primary text-primary-hover hover-underline font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+                              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                                <span class="font-weight-bold">[[ numProjects ]]</span> projects found
+                              </p>
+                            </nav>
+                          </transition>
+                          <div class="container py-4" @scroll.passive="onScroll($event)">
+                          <button v-if="!hideFilterButton" class="btn text-primary text-primary-hover hover-underline font-smaller-1 font-weight-semibold mb-5" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                          <div class="mt-4">
+                          <div v-if="noResults" class="text-center">
+                            <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                            <p class="mt-4 font-weight-bold mb-0">No projects found</p>
+                            <button class="btn text-primary text-primary-hover hover-underline" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+                          </div>
+                          <div v-if="userProjects.length > 0">
+                            <h1 class="font-title title ml-2">
+                              My Projects
+                            </h1>
+                            <div class="project-grid ml-2">
+                              <project-card v-for="project in userProjects" v-bind:project="project" v-bind:edit="true" :key="project.id"/>
+                            </div>
+                            <h1 class="font-title title ml-2 mt-4">
+                              All Projects
+                            </h1>
+                          </div>
+                          <div class="project-grid ml-2">
+                            <project-card {% if is_staff %} v-bind:is_staff="true" {% endif %} v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
+                          </div>
+                            <loading-screen v-if="isLoading"></loading-screen>
+                        </div>
+                      </div>
+                        </div>
+                      </div>
+                    </project-directory>
+                  </b-tab>
+                <b-tab class="col-12" title-item-class="navigation" lazy>
+                    <template v-slot:title>
+                      <div class="mt-4">
+                        {% trans "Participants" %}
+                        <span class="nav-badge d-none d-sm-inline">({{hacker_count}})</span>
+                      </div>
+                    </template>
+                    <user-directory inline-template>
+                      <div class="ml-4">
+                        <div class="sidebar-container flex-column flex-lg-row">
+                          <transition name="fade">
+                            <nav v-show="showFilters" class="sidebar flex-fill pr-4 pl-1" role="navigation">
+                              <div class="pb-4 border-bottom form-group">
+                                <div class="d-flex flex-grow-1" id="search">
+                                  <form class="form-inline my-2 flex-fill justify-content-center">
+                                    <div class="input-group w-100">
+                                      <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                      <div class="input-group-append">
+                                        <button type="submit" class="btn input-group-text text-primary bg-white border-left-0" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                              <div class="pb-4 border-bottom form-group">
+                                <label for="persona" class="font-weight-bold">Persona</label>
+                                <div class="form__select2">
+                                  <select2 v-model="params.persona" data-minimum-results-for-search="Infinity" class="form-control">
+                                    <option value="" selected="true">All</option>
+                                    <option value="funder">Funder</option>
+                                    <option value="coder">Coder</option>
+                                  </select2>
+                                </div>
+                              </div>
+                              <div  v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
+                                <label for="skills" class="font-weight-bold">Skills</label>
+                                <div class="form__select2">
+                                  <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                                    <option disabled value="0">Select one</option>
+                                  </select2>
+                                </div>
+                              </div>
+                              <div v-if="persona != 'tribe'" class="pb-4 border-bottom form-group">
+                                <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
+                                <div class="form__select2">
+                                  <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
+                                    <option value="" selected="true">All</option>
+                                    <option value="0,5">0,5</option>
+                                    <option value="5,10">5,10</option>
+                                    <option value="10,15">10,15</option>
+                                    <option value="15,20">15,20</option>
+                                  </select2>
+                                </div>
+                              </div>
+                              <div v-if="persona != 'tribe'" class="pb-2 border-bottom form-group">
+                                <div class="w-100 p-2">
+                                  <fieldset class="">
+                                    <label for="" class="font-weight-bold">Star Rating</label>
+                                    <div class="rating font-smaller-4">
+                                      <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
+                                      <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
+                                      <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
+                                      <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
+                                      <input type="radio" id="rating-3" name="rating" value="3" v-model="params.rating" />
+                                      <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
+                                      <input type="radio" id="rating-2" name="rating" value="2" v-model="params.rating" />
+                                      <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
+                                      <input type="radio" id="rating-1" name="rating" value="1" v-model="params.rating" />
+                                      <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
+                                    </div>
+                                  </fieldset>
+                                </div>
+                              </div>
+                              <div v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
+                                <label for="organisations" class="font-weight-bold">Tribe</label>
+                                <div class="font-smaller">
+                                  <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+                                </div>
+                              </div>
+                              <button class="btn text-primary text-primary-hover hover-underline font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
+                              {% if is_staff %}
+                                <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 alpha-warning">
+                                  <span class="font-weight-bold">[[ numUsers ]]</span> users found
+                                </p>
+                                <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-primary ml-2" id="bulk-invite-modal">
+                                  Invite all to bounty
+                                </button>
+                              {% endif %}
+                            </nav>
+                          </transition>
+                          <div class="container pt-4" @scroll.passive="onScroll($event)">
+                            <button v-if="!hideFilterButton" class="btn text-primary text-primary-hover hover-underline font-smaller-1 font-weight-semibold mb-5" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                            <div>
+                              <div v-if="noResults" class="text-center py-5 mt-4">
+                                <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                                <p class="mt-4 font-weight-bold mb-0">No users found</p>
+                                <button class="btn text-primary text-primary-hover hover-underline" @click="params = {}; searchUsers()">Reset Filters</button>
+                              </div>
+                              <div>
+                                {% include 'dashboard/components/participant-card.html' %}
+                              </div>
+                              <loading-screen class="py-5 mt-4" v-if="isLoading"></loading-screen>
                             </div>
                           </div>
-                          <div slot="body" v-if="userSelected.handle">
-                            <div v-if="funderBounties.length">
-                              <div class="my-2 text-center">
-                                <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
+                          <modal ref="user-modal" id="userModal">
+                            <div slot="header" v-if="userSelected.handle">
+                              <div class="d-flex flex-column align-items-center">
+                                <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
+                                <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
+                                <span>[[ userSelected.name ]]</span>
+                                <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
+                                  [[ userSelected.handle ]]
+                                </a>
                               </div>
-                              <div class="bounties-box">
-                                <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
-                                  <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
-                                  <p class="line-clamp font-smaller-2 my-0 mx-2">
-                                    [[ bounty.title ]]
-                                  </p>
-                                  <div class="ml-auto flex-shrink-0">
-                                    <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
-                                    <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+                            </div>
+                            <div slot="body" v-if="userSelected.handle">
+                              <div v-if="funderBounties.length">
+                                <div class="my-2 text-center">
+                                  <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
+                                </div>
+                                <div class="bounties-box">
+                                  <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-primary': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                                    <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
+                                    <p class="line-clamp font-smaller-2 my-0 mx-2">
+                                      [[ bounty.title ]]
+                                    </p>
+                                    <div class="ml-auto flex-shrink-0">
+                                      <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                                      <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div v-else class="text-center font-subheader mt-4">
-                              <p class="font-weight-semibold">You've got NO open bounties</p>
-                              <p class="font-body">
-                                <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
-                                to invite [[ userSelected.handle ]]
-                              </p>
-                            </div>
-                          </div>
-                          <div slot="footer" class="d-flex align-items-center flex-fill">
-                            <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
-                            <div class="ml-auto">
-                              <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-                              <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
-                            </div>
-                          </div>
-                        </modal>
-                        {% if is_staff %}
-                        <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
-                            <div slot="header">
-                              <div class="d-flex flex-column align-items-center">
-                                <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
-                              </div>
-                            </div>
-                            <div slot="body">
-                              <div class="form-group">
-                                <label class="font-weight-semibold">Github Issue URL</label>
-                                <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
-                              </div>
-                              <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
-                              <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
-                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
-                                [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
-                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
-                                [[issueDetails.issue_description_text]]
-                              </div>
-                              <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
-                              <div class="alert-warning p-3" v-if="errorIssueDetails">
-                                [[errorIssueDetails]]
+                              <div v-else class="text-center font-subheader mt-4">
+                                <p class="font-weight-semibold">You've got NO open bounties</p>
+                                <p class="font-body">
+                                  <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
+                                  to invite [[ userSelected.handle ]]
+                                </p>
                               </div>
                             </div>
                             <div slot="footer" class="d-flex align-items-center flex-fill">
+                              <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
                               <div class="ml-auto">
-                                <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-                                <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                                <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                                <button  v-if="funderBounties.length" class="btn btn-primary" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
                               </div>
                             </div>
                           </modal>
-                        {% endif %}
-                      </div>
-                    </div>
-                  </user-directory>
-                </b-tab>
-              <b-tab class="col-12" title-item-class="navigation" v-if="hackHasEnded">
-                <template v-slot:title>
-                    <div class="mt-4">
-                      {% trans "Showcase" %}
-                    </div>
-                </template>
-                <div id="showcase">
-                  <showcase inline-template>
-                    <div style="background-color: white; padding: 5%;" class="container">
-                      <div class="d-flex mt-4 justify-content-center position-relative ">
-                        <h2 class="text-center font-weight-bold">Hackathon Showcase</h2>
-                        <button style="right: 0" class="position-absolute btn btn-gc-blue" @click="saveShowcase" v-if="is_staff && isEditing">Save Changes</button>
-                        <button style="right: 0" class="position-absolute btn btn-gc-blue" @click="isEditing=true" v-if="is_staff && !isEditing">Edit</button>
-                      </div>
-                    <div class="col-12 mt-4 mb-4 col-md-offset-2 dark-section d-flex justify-content-around">
-                      <div class="d-flex justify-content-center align-items-center flex-column">
-                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.sponsor_profiles.length]]</p>
-                        <p class="mb-3">Sponsors</p>
-                      </div>
-                      <div class="d-flex justify-content-center align-items-center flex-column">
-                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.prizes]]</p>
-                        <p class="mb-3">Bounties</p>
-                      </div>
-                      <div class="d-flex justify-content-center align-items-center flex-column">
-                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.winners]]</p>
-                        <p class="mb-3">Winners</p>
-                      </div>
-                      <div class="d-flex justify-content-center align-items-center flex-column">
-                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[ prizes ]]</p>
-                        <p class="mb-3">Prizes</p>
-                      </div>
-                    </div>
-                      <div class="d-flex justify-content-center font-body mt-5">
-                        <textarea class="mb-4 form-control" v-model="showcase.content" name="content" id="" cols="80" rows="10"  v-if="isEditing">[[showcase.content]]</textarea>
-                        <p :inner-html.prop="showcase.content | markdownit" v-if="!isEditing"></p>
-                      </div>
-                      <div>
-                      <h3 class="font-weight-bold">The hack in numbers</h3>
-                      <div>
-                        <h4 class="font-bigger-1 font-weight-bold">Sponsors</h4>
-                        <div class="sponsor-grid mt-4">
-                          <div class="d-flex flex-column justify-content-center align-items-center" v-for="sponsor in hackathon.sponsor_profiles">
-                            <img :src="`https://gitcoin.co/dynamic/avatar/${sponsor.handle}`" height="100" :alt="`${sponsor.handle} logo`">
-                            <span class="font-body mt-2">[[sponsor.handle]]</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <h4 class="font-bigger-1 font-weight-bold">#HackGoals</h4>
-                        <div class="sponsor-grid mt-4">
-                          <div class="d-flex justify-content-center align-items-center flex-column">
-                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.prizes]]</p>
-                            <p class="mb-3">Bounties</p>
-                          </div>
-                          <div class="d-flex justify-content-center align-items-center flex-column">
-                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4" v-if="!isEditing">[[ showcase.prizes ]]</p>
-                            <input class="form__input" type="text" v-model="showcase.prizes" v-if="isEditing">
-                            <p class="mb-3">Prizes</p>
-                          </div>
-                          <div class="d-flex justify-content-center align-items-center flex-column">
-                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.sponsor_profiles.length]]</p>
-                            <p class="mb-3">Coders Hacking</p>
-                          </div>
-                          <div class="d-flex justify-content-center align-items-center flex-column">
-                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.winners]]</p>
-                            <p class="mb-3">Bounty winners</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="spotlight">
-                        <h4 class="font-bigger-1 font-weight-bold mb-sm-3">Hacking Spotlights</h4>
-                        <div v-for="(spotlight, index) in spotlights">
-                          <div class="d-md-flex pt-2" v-if="!isEditing">
-                            <div class="col-12 col-md-3 my-3 text-center" style="margin-top: auto !important; margin-bottom: auto !important;">
-                              <div class="d-flex text-center mb-3 justify-content-center align-items-center">
-                                <img :src="`https://gitcoin.co/dynamic/avatar/${getSponsor(spotlight.sponsor).org_name}`" height="32" :alt="`${spotlight.sponsor.handle} Logo`">
-                                <p class="ml-2 my-0 font-bigger-1 font-weight-bold">[[ getSponsor(spotlight.sponsor).display_name ]]</p>
+                          {% if is_staff %}
+                          <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
+                              <div slot="header">
+                                <div class="d-flex flex-column align-items-center">
+                                  <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
+                                </div>
                               </div>
-                              <b-button variant="outline-primary" @click="followTribe(spotlight.sponsor, $event)"
-                                  v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm', 'px-4']"
-                              >
-                                [[ getSponsor(spotlight.sponsor).followed ? "following" : "follow" ]]
-                              </b-button>
+                              <div slot="body">
+                                <div class="form-group">
+                                  <label class="font-weight-semibold">Github Issue URL</label>
+                                  <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
+                                </div>
+                                <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
+                                <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
+                                  <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
+                                  [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
+                                  <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
+                                  [[issueDetails.issue_description_text]]
+                                </div>
+                                <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
+                                <div class="alert-warning p-3" v-if="errorIssueDetails">
+                                  [[errorIssueDetails]]
+                                </div>
+                              </div>
+                              <div slot="footer" class="d-flex align-items-center flex-fill">
+                                <div class="ml-auto">
+                                  <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                                  <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-primary" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                                </div>
+                              </div>
+                            </modal>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </user-directory>
+                  </b-tab>
+                <b-tab class="col-12" title-item-class="navigation" v-if="hackathonObj.calendar_id">
+                  <template v-slot:title>
+                      <div class="mt-4">
+                        {% trans "Events" %}
+                      </div>
+                  </template>
+                  <div id="events">
+                    <events inline-template>
+                      <div style="background-color: white; padding: 5%;" class="container">
+                        <div>
+                          <h1 class="font-bigger-4 font-weight-bold">Events Schedule</h1>
+                          {% if is_staff %}
+                            <a href="https://www.addevent.com/calendars/{{ hackathon.calendar_id }}/event/new" class="btn btn-lg gc-border-blue ">Add event</a>
+                          {% endif %}
+                          <hr style="color: black; height: 3px">
+                          <div class="d-flex justify-content-between my-5" v-for="event in events">
+                            <div class="d-flex col-8">
+                              <div>
+                                <img src="{% static 'v2/images/hackathon/formation.svg' %}" alt="" v-if="eventTag(event) == 'formation'">
+                                <img src="{% static 'v2/images/hackathon/pitch.svg' %}" alt="" v-if="eventTag(event) == 'pitch'">
+                                <img src="{% static 'v2/images/hackathon/check.svg' %}" alt="" v-if="eventTag(event) == 'check'">
+                                <img src="{% static 'v2/images/hackathon/workshop.svg' %}" alt="" v-if="eventTag(event) == 'workshop'">
+                                <img src="{% static 'v2/images/hackathon/office.svg' %}" alt="" v-if="eventTag(event) == 'office'">
+                                <img src="{% static 'v2/images/hackathon/demo.svg' %}" alt="" v-if="eventTag(event) == 'demo'">
+                              </div>
+                              <div class="ml-4">
+                                <p class="m-0" v-if="eventTag(event) == 'formation'" style="color: #1BD389">Team formation</p>
+                                <p class="m-0" v-if="eventTag(event) == 'pitch'" style="color: #FF00B8">Pitch Day</p>
+                                <p class="m-0" v-if="eventTag(event) == 'check'" style="color: #00DACD">Mid hack Check-In</p>
+                                <p class="m-0" v-if="eventTag(event) == 'office'" style="color: #0090FF">Sponsor Office Hours</p>
+                                <p class="m-0" v-if="eventTag(event) == 'workshop'" style="color: #D9AE00">Workshop</p>
+                                <p class="m-0" v-if="eventTag(event) == 'demo'" style="color: #8948FF">Demo Day</p>
+                                <p class="m-0 font-weight-bold">[[formatDate(event)]]</p>
+                                <h3 class="font-title"><b>[[event.title]]</b> [[ event.organizer ? `with ${event.organizer}` : '']]</h3>
+                                <p class="m-0" v-html="event.description" class="font-body"></p>
+                              </div>
                             </div>
-                            <p class="col-12 col-md-8 mt-sm-3 mt-sm-3 " :inner-html.prop="spotlight.content | markdownit" v-if="!isEditing"></p>
-                          </div>
-
-                          <div class="d-flex" v-if="isEditing">
-                            <div class="d-flex col-12 col-md-3 flex-column align-items-baseline">
-                            <select class="form-control" v-model="spotlight.sponsor">
-                              <option v-for="sponsor in sponsors" :value="sponsor.org_name">
-                                <span>[[sponsor.org_name]]</span>
-                              </option>
-                            </select>
-                            <button class="btn btn-link text-highlight-pink mt-2" @click="removeSpotlight(index)">- Remove Spotlight</button>
+                            <div>
+                              <div title="Add to Calendar" class="addeventatc">
+                                  Add to Calendar
+                                  <span class="start">[[event.date_start]] [[event.date_start_time]]</span>
+                                  <span class="end">[[event.date_end]] [[event.date_end_time]]</span>
+                                  <span class="timezone">[[event.timezone]]</span>
+                                  <span class="title">[[event.title]]</span>
+                                  <span class="description">[[event.description]]</span>
+                                  <span class="location">[[event.location]]</span>
+                              </div>
                             </div>
-                            <textarea class="d-flex col-12 ml-md-3 col-md-8 form-control mb-4" v-model="spotlight.content" name="content" id="" cols="90" rows="8"></textarea>
                           </div>
                         </div>
                       </div>
-                      <button class="btn btn-link text-darkblue mt-4" @click="addSpotlight()" v-if="isEditing">+ Add Spotlight</button>
-                    </div>
-                      <div class="winners mt-5">
-                      <h4 class="font-bigger-1 font-weight-bold mb-3">[[hackathon.name]] Wall of Fame</h4>
-                      <div class="d-flex flex-wrap mt-3">
-                        <div class="col-12 col-md-4 text-center mt-3">
-                          <div v-if="top[0].handle || isEditing">
-                            <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[0].handle}`" alt="">
-                            <span class="text-muted d-block mt-2"  v-if="!isEditing">[[ top[0].name ]]</span>
-                            <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[0].name" v-else>
-                            <span class="font-weight-semibold d-block gc-text-blue mt-1"  v-if="!isEditing">@[[ top[0].handle ]]</span>
-                            <input class="form-control mt-2 " placeholder="@josm" type="text" v-model="top[0].handle" v-else>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-4 text-center mt-3">
-                          <div  v-if="top[1].handle || isEditing">
-                            <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[1].handle}`" alt="">
-                            <span class="text-muted d-block mt-2"  v-if="!isEditing">[[ top[1].name ]]</span>
-                            <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[1].name" v-else>
-                            <span class="font-weight-semibold d-block gc-text-blue mt-1" v-if="!isEditing">@[[ top[1].handle ]]</span>
-                            <input class="form-control mt-2" placeholder="@josm"  type="text" v-model="top[1].handle" v-else>
-                          </div>
-                        </div>
-                        <div class="col-12 col-md-4 text-center mt-3">
-                          <div  v-if="top[2].handle || isEditing">
-                            <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[2].handle}`" alt="">
-                            <span class="d-block mt-2 text-muted"  v-if="!isEditing">[[ top[2].name ]]</span>
-                            <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[2].name" v-else>
-                            <span class="font-weight-semibold d-block gc-text-blue mt-2" v-if="!isEditing">@[[ top[2].handle ]]</span>
-                            <input class="form-control mt-2" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
-                            <input class="form-control" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-                  </showcase>
-                </div>
-
-              </b-tab>
-              <template v-slot:tabs-end  v-if="!hackHasEnded">
-                <li role="presentation" class="nav-item navigation">
-                  <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
-                    <div class="mt-4">Guide</div>
-                  </a>
-                </li>
-              </template>
-            </b-tabs>
-          </div>
-          <div class="d-none d-xl-block col-xl-2">
-            <div id="sponsor_sidebar" class="font-body">
-              <div class="sponsor-top"></div>
-              <sponsor-tribes-widget v-if="hackathonSponsors.length > 0" inline-template>
-                <div class="p-xl-2 p-4">
-                  <div class="offset-1 subheading left-ribbon">
-                    {% trans "Sponsor Tribes" %}
+                    </events>
                   </div>
-                  <ul class="list-unstyled">
-                    <b-media v-for="(sponsor, index) in tribesData" :key="index" tag="li"  class="rounded my-4 ml-4" vertical-align="center">
-                      <template v-slot:aside>
-                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-3 tribes-logo"></b-avatar>
-                      </template>
-                      <div>
-                        <a class="mb-1 font-body font-weight-semibold w-50" :href="`/profile/${sponsor.org_name}`">
-                          [[ sponsor.display_name ]]
-                        </a>
-                        <ul class="list-unstyled font-caption mb-1">
-                          <li><i class="fas fa-fw fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
-                          <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
-                        </ul>
-                        <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)"
-                          v-bind:class="[sponsor.followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm', 'font-smaller-5', 'font-weight-semibold']"
-                        >
-                          [[ sponsor.followed ? "following" : "follow" ]]
-                        </b-button>
+                </b-tab>
+                <b-tab class="col-12" title-item-class="navigation" v-if="hackHasEnded">
+                  <template v-slot:title>
+                      <div class="mt-4">
+                        {% trans "Showcase" %}
                       </div>
-                    </b-media>
-                  </ul>
-                </div>
-              </sponsor-tribes-widget>
+                  </template>
+                  <div id="showcase">
+                    <showcase inline-template>
+                      <div style="background-color: white; padding: 5%;" class="container">
+                        <div class="d-flex mt-4 justify-content-center position-relative ">
+                          <h2 class="text-center font-weight-bold">Hackathon Showcase</h2>
+                          <button style="right: 0" class="position-absolute btn btn-primary" @click="saveShowcase" v-if="is_staff && isEditing">Save Changes</button>
+                          <button style="right: 0" class="position-absolute btn btn-primary" @click="isEditing=true" v-if="is_staff && !isEditing">Edit</button>
+                        </div>
+                      <div class="col-12 mt-4 mb-4 col-md-offset-2 dark-section d-flex justify-content-around">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                          <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.sponsor_profiles.length]]</p>
+                          <p class="mb-3">Sponsors</p>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                          <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.prizes]]</p>
+                          <p class="mb-3">Bounties</p>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                          <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.winners]]</p>
+                          <p class="mb-3">Winners</p>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                          <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[ prizes ]]</p>
+                          <p class="mb-3">Prizes</p>
+                        </div>
+                      </div>
+                        <div class="d-flex justify-content-center font-body mt-5">
+                          <textarea class="mb-4 form-control" v-model="showcase.content" name="content" id="" cols="80" rows="10"  v-if="isEditing">[[showcase.content]]</textarea>
+                          <p :inner-html.prop="showcase.content | markdownit" v-if="!isEditing"></p>
+                        </div>
+                        <div>
+                        <h3 class="font-weight-bold">The hack in numbers</h3>
+                        <div>
+                          <h4 class="font-bigger-1 font-weight-bold">Sponsors</h4>
+                          <div class="sponsor-grid mt-4">
+                            <div class="d-flex flex-column justify-content-center align-items-center" v-for="sponsor in hackathon.sponsor_profiles">
+                              <img :src="`https://gitcoin.co/dynamic/avatar/${sponsor.handle}`" height="100" :alt="`${sponsor.handle} logo`">
+                              <span class="font-body mt-2">[[sponsor.handle]]</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 class="font-bigger-1 font-weight-bold">#HackGoals</h4>
+                          <div class="sponsor-grid mt-4">
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                              <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.prizes]]</p>
+                              <p class="mb-3">Bounties</p>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                              <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4" v-if="!isEditing">[[ showcase.prizes ]]</p>
+                              <input class="form__input" type="text" v-model="showcase.prizes" v-if="isEditing">
+                              <p class="mb-3">Prizes</p>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                              <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.sponsor_profiles.length]]</p>
+                              <p class="mb-3">Coders Hacking</p>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center flex-column">
+                              <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.winners]]</p>
+                              <p class="mb-3">Bounty winners</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="spotlight">
+                          <h4 class="font-bigger-1 font-weight-bold mb-sm-3">Hacking Spotlights</h4>
+                          <div v-for="(spotlight, index) in spotlights">
+                            <div class="d-md-flex pt-2" v-if="!isEditing">
+                              <div class="col-12 col-md-3 my-3 text-center" style="margin-top: auto !important; margin-bottom: auto !important;">
+                                <div class="d-flex text-center mb-3 justify-content-center align-items-center">
+                                  <img :src="`https://gitcoin.co/dynamic/avatar/${getSponsor(spotlight.sponsor).org_name}`" height="32" :alt="`${spotlight.sponsor.handle} Logo`">
+                                  <p class="ml-2 my-0 font-bigger-1 font-weight-bold">[[ getSponsor(spotlight.sponsor).display_name ]]</p>
+                                </div>
+                                <b-button variant="outline-primary" @click="followTribe(spotlight.sponsor, $event)"
+                                    v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-success' : 'btn-primary', 'btn-sm', 'px-4']"
+                                >
+                                  [[ getSponsor(spotlight.sponsor).followed ? "following" : "follow" ]]
+                                </b-button>
+                              </div>
+                              <p class="col-12 col-md-8 mt-sm-3 mt-sm-3 " :inner-html.prop="spotlight.content | markdownit" v-if="!isEditing"></p>
+                            </div>
+
+                            <div class="d-flex" v-if="isEditing">
+                              <div class="d-flex col-12 col-md-3 flex-column align-items-baseline">
+                              <select class="form-control" v-model="spotlight.sponsor">
+                                <option v-for="sponsor in sponsors" :value="sponsor.org_name">
+                                  <span>[[sponsor.org_name]]</span>
+                                </option>
+                              </select>
+                              <button class="btn btn-link text-highlight-pink mt-2" @click="removeSpotlight(index)">- Remove Spotlight</button>
+                              </div>
+                              <textarea class="d-flex col-12 ml-md-3 col-md-8 form-control mb-4" v-model="spotlight.content" name="content" id="" cols="90" rows="8"></textarea>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="btn btn-link text-darkblue mt-4" @click="addSpotlight()" v-if="isEditing">+ Add Spotlight</button>
+                      </div>
+                        <div class="winners mt-5">
+                        <h4 class="font-bigger-1 font-weight-bold mb-3">[[hackathon.name]] Wall of Fame</h4>
+                        <div class="d-flex flex-wrap mt-3">
+                          <div class="col-12 col-md-4 text-center mt-3">
+                            <div v-if="top[0].handle || isEditing">
+                              <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[0].handle}`" alt="">
+                              <span class="text-muted d-block mt-2"  v-if="!isEditing">[[ top[0].name ]]</span>
+                              <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[0].name" v-else>
+                              <span class="font-weight-semibold d-block gc-text-blue mt-1"  v-if="!isEditing">@[[ top[0].handle ]]</span>
+                              <input class="form-control mt-2 " placeholder="@josm" type="text" v-model="top[0].handle" v-else>
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-4 text-center mt-3">
+                            <div  v-if="top[1].handle || isEditing">
+                              <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[1].handle}`" alt="">
+                              <span class="text-muted d-block mt-2"  v-if="!isEditing">[[ top[1].name ]]</span>
+                              <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[1].name" v-else>
+                              <span class="font-weight-semibold d-block gc-text-blue mt-1" v-if="!isEditing">@[[ top[1].handle ]]</span>
+                              <input class="form-control mt-2" placeholder="@josm"  type="text" v-model="top[1].handle" v-else>
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-4 text-center mt-3">
+                            <div  v-if="top[2].handle || isEditing">
+                              <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[2].handle}`" alt="">
+                              <span class="d-block mt-2 text-muted"  v-if="!isEditing">[[ top[2].name ]]</span>
+                              <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[2].name" v-else>
+                              <span class="font-weight-semibold d-block gc-text-blue mt-2" v-if="!isEditing">@[[ top[2].handle ]]</span>
+                              <input class="form-control mt-2" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
+                              <input class="form-control" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                    </showcase>
+                  </div>
+
+                </b-tab>
+                <template v-slot:tabs-end  v-if="!hackHasEnded">
+                  <li role="presentation" class="nav-item navigation">
+                    <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
+                      <div class="mt-4">Guide</div>
+                    </a>
+                  </li>
+                </template>
+              </b-tabs>
+            </div>
+            <div class="d-none d-xl-block col-xl-2">
+              <div id="sponsor_sidebar" class="font-body">
+                <div class="sponsor-top"></div>
+                <sponsor-tribes-widget v-if="hackathonSponsors.length > 0" inline-template>
+                  <div class="p-xl-2 p-4">
+                    <div class="offset-1 subheading left-ribbon">
+                      {% trans "Sponsor Tribes" %}
+                    </div>
+                    <ul class="list-unstyled">
+                      <b-media v-for="(sponsor, index) in tribesData" :key="index" tag="li"  class="rounded my-4 ml-4" vertical-align="center">
+                        <template v-slot:aside>
+                          <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-3 tribes-logo"></b-avatar>
+                        </template>
+                        <div>
+                          <a class="mb-1 font-body font-weight-semibold w-50" :href="`/profile/${sponsor.org_name}`">
+                            [[ sponsor.display_name ]]
+                          </a>
+                          <ul class="list-unstyled font-caption mb-1">
+                            <li><i class="fas fa-fw fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
+                            <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
+                          </ul>
+                          <b-button variant="noop" @click="followTribe(sponsor.org_name, $event)"
+                            v-bind:class="[sponsor.followed ? 'btn-success' : 'btn-primary', 'btn-sm', 'font-smaller-5']"
+                          >
+                            [[ sponsor.followed ? "following" : "follow" ]]
+                          </b-button>
+                        </div>
+                      </b-media>
+                    </ul>
+                  </div>
+                </sponsor-tribes-widget>
+              </div>
             </div>
           </div>
         </div>
+
+      <div id="onboard-footer" class="row hidden font-body">
+        <div class="col-12">
+          <p>{% trans "Want to Fund an issue ?" %}
+            <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
+          </p>
+        </div>
       </div>
-    <div class="row bottom_notification font-caption">
-      {{footer_msg|safe}}
+
+      {% include 'shared/result.html' %}
+      {% include 'shared/featured_bounty_cards.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
+      <!-- hackathon modal temparilly disabled  -->
+      <!-- {% include "dashboard/hackathon/onboarding_v2.html"%} -->
+      <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
+      <script type="text/x-template" id="select2-template">
+        <select>
+          <slot></slot>
+        </select>
+      </script>
+      <script src='{% static "v2/js/lib/markdown-it.js" %}'></script>
+      {{orgs|json_script:"sponsor-list"}}
+      {{hackathon_obj|json_script:"hackathon-object"}}
+      {{prize_founders|json_script:"prize-founders"}}
+      <script>
+        $('body').bootstrapTooltip({
+          selector: '[data-toggle="tooltip"]'
+        });
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        document.current_tab = 'hackathon:{{hackathon.id | safe}}';
+        document.keywords = {{ keywords | safe }};
+        document.is_registered = {{ is_registered | safe }};
+        document.hackathon = "{{ hackathon.slug | safe }}";
+        document.hackathon_id = "{{ hackathon.id | safe }}";
+        document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
+        document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
+        document.prizeFounders = JSON.parse(document.getElementById('prize-founders').textContent);
+        document.activePanel = parseInt({{panel | safe}});
+        document.displayShowcase = {{hackathon.display_showcase|yesno:"true,false" }};
+        document.is_sponsor = {{ is_sponsor|yesno:"true,false" }}
+
+        if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
+      </script>
+      <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
+      {% include 'shared/activity_scripts.html' %}
+      <script src='{% static "v2/js/status.js" %}'></script>
+      <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
+      <script src='{% static "v2/js/users.js" %}'></script>
+      <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
+      {% include 'shared/current_profile.html' %}
+      <script src='{% static "v2/js/user-search.js" %}'></script>
+      {% if can_manage or is_staff %}
+      <script src='{% static "v2/js/user-search.js" %}'></script>
+      {% endif %}
     </div>
-
-    <div id="onboard-footer" class="row hidden font-body">
-      <div class="col-12">
-        <p>{% trans "Want to Fund an issue ?" %}
-          <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
-        </p>
-      </div>
-    </div>
-
-    {% include 'shared/result.html' %}
-    {% include 'shared/featured_bounty_cards.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    <script type="text/x-template" id="select2-template">
-      <select>
-        <slot></slot>
-      </select>
-    </script>
-    <script src='{% static "v2/js/lib/markdown-it.js" %}'></script>
-    {{orgs|json_script:"sponsor-list"}}
-    {{hackathon_obj|json_script:"hackathon-object"}}
-    {{prize_founders|json_script:"prize-founders"}}
-    <script>
-      $('body').bootstrapTooltip({
-        selector: '[data-toggle="tooltip"]'
-      });
-      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-      document.current_tab = 'hackathon:{{hackathon.id | safe}}';
-      document.keywords = {{ keywords | safe }};
-      document.is_registered = {{ is_registered | safe }};
-      document.hackathon = "{{ hackathon.slug | safe }}";
-      document.hackathon_id = "{{ hackathon.id | safe }}";
-      document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
-      document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
-      document.prizeFounders = JSON.parse(document.getElementById('prize-founders').textContent);
-      document.activePanel = parseInt({{panel | safe}});
-      document.chatURL = "{{ chat_url | safe}}";
-      document.displayShowcase = {{hackathon.display_showcase|yesno:"true,false" }};
-      document.is_sponsor = {{ is_sponsor|yesno:"true,false" }}
-
-      if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
-    </script>
-    <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
-    {% include 'shared/activity_scripts.html' %}
-    <script src='{% static "v2/js/status.js" %}'></script>
-    <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
-    <script src='{% static "v2/js/users.js" %}'></script>
-    <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
-    {% include 'shared/current_profile.html' %}
-    <script src='{% static "v2/js/user-search.js" %}'></script>
-    {% if can_manage or is_staff %}
-    <script src='{% static "v2/js/user-search.js" %}'></script>
-    {% endif %}
   </body>
 </html>

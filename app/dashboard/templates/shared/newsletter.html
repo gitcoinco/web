@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,8 +14,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-<link rel="stylesheet" href="{% static "v2/css/newsletter.css" %}">
+{% load i18n static bundle %}
+{% bundle css file newsletter %}
+  <link rel="stylesheet" href="{% static "v2/scss/newsletter.scss" %}">
+{% endbundle %}
 <div class="row newsletter text-center" id="newsletterGroup">
   <div class="col-12">
     <h4 class="col-12 font-title font-weight-bold py-1" id="newsletter-title">
@@ -28,45 +30,71 @@
     <span class="mr-2">
       I want to
     </span>
-    <nav class="nav justify-content-center d-inline-flex btn-group btn-group-sm my-3" id="myTab" role="tablist">
-      <a class="nav-link active btn btn-gc-grey py-2 px-3" id="funderForm-tab" data-toggle="tab" href="#funderForm" role="tab" aria-controls="funderForm" aria-selected="true">fund bounties</a>
-      <a class="nav-link btn btn-gc-grey py-2 px-3" id="hunterForm-tab" data-toggle="tab" href="#hunterForm" role="tab" aria-controls="hunterForm" aria-selected="false">work on bounties</a>
+    <nav class="nav nav-pills nav-fill d-inline-flex btn-group btn-group-sm my-3 bg-light rounded" id="myTab" role="tablist">
+      <a class="nav-link active btn py-2 px-3 hover-underline" id="mauticform_wrapper_fundernewsletter-tab" data-toggle="tab" href="#mauticform_wrapper_fundernewsletter" role="tab" aria-controls="mauticform_wrapper_fundernewsletter" aria-selected="true">fund bounties</a>
+      <a class="nav-link btn py-2 px-3 hover-underline" id="mauticform_wrapper_hunternewsletter-tab" data-toggle="tab" href="#mauticform_wrapper_hunternewsletter" role="tab" aria-controls="mauticform_wrapper_hunternewsletter" aria-selected="false">work on bounties</a>
     </nav>
     <div class="tab-content" id="myTabContent">
       <!-- funders newsletter -->
-      <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=fbf50d06d9"
-        method="post" id="funderForm" class="col-12 validate tab-pane fade show active" name="mc-embedded-subscribe-form" target="_blank" role="tabpanel" aria-labelledby="funderForm-tab">
-        {% if not hide_newsletter_caption %}
-          <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
-        {% endif %}
-        <div class="col-12 pt-3">
-          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-funder" type="submit" class="button font-weight-bold button--primary subscribe py-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
-        </div>
-        {% if not hide_newsletter_consent %}
-          <span style="display: block; margin-top: 3px; font-size: 10px;">
-            {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
-          </span>
-        {% endif %}
-      </form>
+      <div id="mauticform_wrapper_fundernewsletter" class="mauticform_wrapper col-12 validate tab-pane fade show active" role="tabpanel" aria-labelledby="mauticform_wrapper_fundernewsletter-tab">
+        <form autocomplete="false" role="form" method="post" action="https://engage.gitcoin.co/form/submit?formId=6" id="mauticform_fundernewsletter" data-mautic-form="fundernewsletter" enctype="multipart/form-data">
+          <div class="mauticform-innerform col-12">
+            <div class="mauticform-page-wrapper mauticform-page-1 col-6 pt-3 input-group m-auto d-flex flex-nowrap" data-mautic-form-page="1">
+              <div id="mauticform_fundernewsletter_email" data-validate="email" data-validation-type="email" class="mauticform-row mauticform-email mauticform-field-1 mauticform-required input-group-prepend flex-fill input-group">
+                {% if not hide_newsletter_caption %}
+                  <label id="mauticform_label_fundernewsletter_email" for="mauticform_input_fundernewsletter_email" class="mauticform-label">({% trans "Emails once a week max, & we never sell your data" %})</label>
+                {% endif %}
+                <input id="mauticform_input_fundernewsletter_email" name="mauticform[email]" value="" placeholder="Enter your email" class="mauticform-input form-control" type="email">
+                <span class="mauticform-errormsg mt-5 position-absolute" style="display: none;">Please fill the email input.</span>
+              </div>
+              <div id="mauticform_fundernewsletter_submit" class="mauticform-row mauticform-button-wrapper mauticform-field-2 input-group-append flex-shrink-0">
+                  <button type="submit" name="mauticform[submit]" id="mauticform_input_fundernewsletter_submit" value="" class="mauticform-button btn btn-primary"><i class="far fa-envelope mr-2"></i> Subscribe</button>
+              </div>
+            </div>
+          </div>
+          <div class="mauticform-error" id="mauticform_fundernewsletter_error"></div>
+          <div class="mauticform-message" id="mauticform_fundernewsletter_message"></div>
+          <input type="hidden" name="mauticform[formId]" id="mauticform_fundernewsletter_id" value="6">
+          <input type="hidden" name="mauticform[return]" id="mauticform_fundernewsletter_return" value="">
+          <input type="hidden" name="mauticform[formName]" id="mauticform_fundernewsletter_name" value="fundernewsletter">
+          {% if not hide_newsletter_consent %}
+            <span style="display: block; margin-top: 3px; font-size: 10px;">
+              {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
+            </span>
+          {% endif %}
+        </form>
+      </div>
 
       <!-- hunters newsletter -->
-      <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=d870d1315e"
-        method="post" id="hunterForm" class="col-12 validate tab-pane fade"
-        name="mc-embedded-subscribe-form" target="_blank" role="tabpanel" aria-labelledby="hunterForm-tab">
-        {% if not hide_newsletter_caption %}
-          <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
-        {% endif %}
-        <div class="col-12 pt-3">
-          <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-hunter" type="submit" class="button font-weight-bold button--primary subscribe ml-lg-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
-        </div>
-        {% if not hide_newsletter_consent %}
-          <span style="display: block; margin-top: 3px; font-size: 10px;">
-            {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
-          </span>
-        {% endif %}
-      </form>
+      <div id="mauticform_wrapper_hunternewsletter" class="mauticform_wrapper col-12 validate tab-pane fade" role="tabpanel" aria-labelledby="mauticform_wrapper_hunternewsletter-tab">
+        <form autocomplete="false" role="form" method="post" action="https://engage.gitcoin.co/form/submit?formId=5" id="mauticform_hunternewsletter" data-mautic-form="hunternewsletter" enctype="multipart/form-data">
+          <div class="mauticform-innerform col-12">
+            <div class="mauticform-page-wrapper mauticform-page-1 col-6 pt-3 input-group m-auto d-flex flex-nowrap" data-mautic-form-page="1">
+              <div id="mauticform_hunternewsletter_email" data-validate="email" data-validation-type="email" class="mauticform-row mauticform-email mauticform-field-1 mauticform-required input-group-prepend flex-fill input-group">
+                {% if not hide_newsletter_caption %}
+                  <label id="mauticform_label_hunternewsletter_email" for="mauticform_input_hunternewsletter_email" class="mauticform-label">({% trans "Emails once a week max, & we never sell your data" %})</label>
+                {% endif %}
+                <input id="mauticform_input_hunternewsletter_email" name="mauticform[email]" value="" placeholder="Enter your email" class="mauticform-input form-control" type="email">
+                <span class="mauticform-errormsg mt-5 position-absolute" style="display: none;">Please fill the email input.</span>
+              </div>
+              <div id="mauticform_hunternewsletter_submit" class="mauticform-row mauticform-button-wrapper mauticform-field-2 input-group-append flex-shrink-0">
+                  <button type="submit" name="mauticform[submit]" id="mauticform_input_hunternewsletter_submit" value="" class="mauticform-button btn btn-primary"><i class="far fa-envelope mr-2"></i> Subscribe</button>
+              </div>
+            </div>
+          </div>
+          <div class="mauticform-error" id="mauticform_hunternewsletter_error"></div>
+          <div class="mauticform-message" id="mauticform_hunternewsletter_message"></div>
+          <input type="hidden" name="mauticform[formId]" id="mauticform_hunternewsletter_id" value="5">
+          <input type="hidden" name="mauticform[return]" id="mauticform_hunternewsletter_return" value="">
+          <input type="hidden" name="mauticform[formName]" id="mauticform_hunternewsletter_name" value="hunternewsletter">
+          {% if not hide_newsletter_consent %}
+            <span style="display: block; margin-top: 3px; font-size: 10px;">
+              {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
+            </span>
+          {% endif %}
+        </form>
+      </div>
+
     </div>
   </div>
 

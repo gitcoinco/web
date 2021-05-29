@@ -1,25 +1,32 @@
-{% load static %}
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+<article>
+<section class="column">
+
 <h1>Quadratic Diplomacy</h1>
 
-<link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" as="style">
 <link rel="stylesheet" href="{% static "v2/css/governance/diplomacy.css" %}" as="style">
 
-<div id="call">
-
-  <div id="meet">
-  </div>
-</div>
-
-
+<div id="game_container">
+  <h2 style="margin-bottom: 0px;">{{game.title}}</h2>
 <div id=gameboard>
   <script type="text/javascript">
     document.game_config = {{game_config_json|safe}};
   </script>
 </div>
-<h2>My Credit Allocation Usage: <span id="usage">0</span>/<span id="allocation">{{game_config.allocation}}</h2>
 
+<h2>GTC Allocation: <span id="usage">0</span>/<span id="allocation">{{game_config.allocation}}</h2>
+
+</div>
+
+<h2 style="color: #5bf1cd;">Trollbox</h2>
 {% include "chat/room.html" %}
+
+</article>
+</section>
 
 <script type="text/javascript">
   document.contxt = {{ json_context|safe }};
@@ -28,3 +35,5 @@
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 <script src="{% static 'v2/js/pages/governance-diplomacy.js' %}"></script>
 <script src="{% static 'v2/js/pages/governance-chat.js' %}"></script>
+
+{% endblock %}

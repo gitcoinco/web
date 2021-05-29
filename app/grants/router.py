@@ -53,11 +53,19 @@ class GrantViewSet(viewsets.ModelViewSet):
 
         # Filter by title.
         if 'title' in param_keys:
-            queryset = queryset.filter(title_iexact=self.request.query_params.get('title'))
+            queryset = queryset.filter(title__iexact=self.request.query_params.get('title'))
+
+        # Filter by pk.
+        if 'pk' in param_keys:
+            queryset = queryset.filter(pk=self.request.query_params.get('pk'))
+
+        # Filter by admin_address.
+        if 'admin_address' in param_keys:
+            queryset = queryset.filter(admin_address__iexact=self.request.query_params.get('admin_address'))
 
         # Filter by description.
         if 'description' in param_keys:
-            queryset = queryset.filter(description_iexact=self.request.query_params.get('description'))
+            queryset = queryset.filter(description__iexact=self.request.query_params.get('description'))
 
         # Filter by keyword.
         if 'keyword' in param_keys:
@@ -65,12 +73,27 @@ class GrantViewSet(viewsets.ModelViewSet):
 
         # Filter by grant_type.
         if 'grant_type' in param_keys:
-            queryset = queryset.filter(grant_type=self.request.query_params.get('grant_type'))
+            queryset = queryset.filter(grant_type__name=self.request.query_params.get('grant_type'))
+
+        max_limit = 100
+        limit = str(self.request.GET.get('limit', max_limit))
+        offset = str(self.request.GET.get('offset', '0'))
+        if not limit.isnumeric() or int(limit) > max_limit:
+            limit = max_limit
+        if not offset.isnumeric() or int(offset) < 0:
+            offset = 0
+        offset = int(offset)
+        limit = int(limit)
+        queryset = queryset[offset:(offset+limit)]
 
         return queryset
 
     @action(detail=False)
     def report(self, request):
+        return Response({'error': 'reports temporarily offline'})
+
+    @action(detail=False)
+    def report_real(self, request):
         """Generate Grants report for an ethereum address"""
 
         grants_queryset = Grant.objects.all()

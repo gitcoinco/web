@@ -1,43 +1,48 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 
 {% endcomment %}
 {% load i18n humanize %}
 {% load static %}
 
 {% block content %}
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
 
-<h1>{% trans "24 Hrs to Approve" %}</h1>
-<div style="text-align: left! important">
-  <p>
-    {% trans "Hello" %},
-  </p>
-  <p>
-    {% trans "Good news!" %} <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "would like to work on "%}<a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "Please review and approve" %} <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "by clicking approve below." %}
-  </p>
-  <br>
-  {% include 'emails/bounty.html' with bounty=bounty action='custom' action_copy='Approve Worker' action_url=approve_worker_url action2_url=reject_worker_url action2_copy='Reject Worker' action2='custom' %}
-  <p>
-    {% trans "As a reminder, after 24 hours any contributor will be auto-approved and can automatically submit a PR against your issue." %}
-  </p>
-  <p>
-    {% blocktrans %}
-    - Gitcoin Team
-    {% endblocktrans %}
-  </p>
+  <h1>{% trans "24 Hrs to Approve" %}</h1>
+  <div style="text-align: left! important">
+    <p>
+      {% trans "Hello" %},
+    </p>
+    <p>
+      {% trans "Good news!" %} <a href="{{interest.profile.url}}?{{ utm_tracking }}">@{{interest.profile.handle}}</a> {% trans "would like to work on "%}<a href="{{bounty.url}}?{{ utm_tracking }}">{% trans "this bounty" %}</a>. {% trans "Please review and approve" %} <a
+        href="{{interest.profile.url}}?{{ utm_tracking }}">@{{interest.profile.handle}}</a> {% trans "by clicking approve below." %}
+    </p>
+    <br>
+    {% include 'emails/bounty.html' with bounty=bounty action='custom' action_copy='Approve Worker' action_url=approve_worker_url action2_url=reject_worker_url action2_copy='Reject Worker' action2='custom' %}
+    <p>
+      {% trans "As a reminder, after 24 hours any contributor will be auto-approved and can automatically submit a PR against your issue." %}
+    </p>
+    <p>
+      {% blocktrans %}
+      - Gitcoin Team
+      {% endblocktrans %}
+    </p>
+  </div>
 </div>
 {% endblock %}

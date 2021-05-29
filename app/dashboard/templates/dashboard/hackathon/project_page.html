@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,93 +15,192 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static avatar_tags add_url_schema email_obfuscator humanize %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator humanize bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/dashboard-hackathon.css" %}>
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    {% bundle css file dashboard_hackathon_project %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/plyr.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+    {% endbundle %}
 
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
     <style>
+      .plyr--video .plyr__controls {
+        z-index: 2 !important;
+      }
+
       div.nav-tabs {
         background: none !important;
       }
 
-      .project-title:hover {
-        color: var(--gc-black);
+      #hackathon-project-app {
+        margin-top: -14px !important;
+      }
+
+      .bg-gc-blue {
+        background-color: var(--gc-black);
+        color: white;
+      }
+
+      .project-title:hover, .link-white:hover {
+        color: #FAFAFA;
+      }
+
+      .project-title, .link-white {
+        color: white;
+      }
+
+      .button-white {
+        color: white !important;
+        border-color: white !important;
+      }
+
+      .button-white {
+        color: white !important;
+        border-color: white !important;
+      }
+
+      .button-white:hover {
+        background-color: var(--gc-blue) !important;
+        border-color: white !important;
+      }
+
+      .project-title {
+        font-size: var(--fs-title-xl);
+
+      }
+
+      .project__logo {
+        background-color: #ffffff;
+        height: 110px;
+        width: 110px;
+      }
+
+      .btn-sm {
+        font-size: .675rem;
+      }
+
+      .project__actions--mobile {
+        display: none;
+      }
+
+      .tag-list .tag-list__item {
+        background: #E8F0FA;
+        padding: 4px;
+        border-radius: 2px;
+        font-size: 11px;
+        color: #6487AE;
+        display: inline-block;
+        margin-bottom: 2px;
+        margin-left: 15px;
+        margin-top: 2px;
       }
 
       @media (max-width: 420px) {
+        #project-details {
+          overflow: hidden;
+        }
+
+        .project__logo {
+          height: 50px;
+          width: 50px;
+        }
+
+        .project-title {
+          font-size: var(--fs-header);
+          margin-bottom: 10px !important;
+        }
+
+        .project__url {
+          font-size: 12px;
+        }
+
+        .btn-sm {
+         font-size: .775rem;
+        }
+
+        .project__actions {
+          display: none;
+        }
+
+        .project__actions--mobile {
+          display: block;
+          margin-left: 15px;
+        }
+
         .activity_detail {
           margin-top: 0 !important;
           margin-left: 25px !important;
         }
+
         .avatar {
           margin-left: 0 !important;
           margin-right: 0 !important;
+        }
+
+        .project__action--admin {
+          margin-left: 15px !important;
+          max-width: 55%;
+          font-size: .775rem;
         }
       }
 
     </style>
   </head>
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header sticky-top dash">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav_hackathons.html' %}
-    </div>
-
-    {% if is_staff %}
-      <div class="alpha-warning font-caption mb-0">
-        <span class="font-weight-bold">Staff only</span>
-        <a style="color:white;" href="{{project.admin_url}}">{% trans "View Admin" %}</a>
+      <div class="header sticky-top sticky-nav dash">
+        {% include 'shared/nav_hackathons.html' %}
       </div>
-    {% endif %}
-    <div id="hackathon-project-app" class="px-md-5" style="background-color: #FBFBFB" v-cloak>
-      <div class="row">
-        <div id="project-details" class="col-12 pr-0 ">
-          {% if is_member %}
-            <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-lg float-right mt-5 mr-5 px-5 py-3 font-subheader"><i class="fa fa-pencil mr-2"></i> Edit project</button>
-          {% endif %}
-          <div class="row">
-            <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
-              {% include 'project/detail/info.html' %}
-            </div>
+
+      {% if is_staff %}
+        <div class="alpha-warning font-caption mb-0">
+          <span class="font-weight-bold">Staff only</span>
+          <a style="color:white;" href="{{project.admin_url}}">{% trans "View Admin" %}</a>
+        </div>
+      {% endif %}
+      <div id="hackathon-project-app" style="background-color: #FBFBFB" v-cloak>
+        <div id="project-details" class="pr-0 ">
+          <div class="px-md-0">
+            {% include 'project/detail/info.html' %}
           </div>
         </div>
       </div>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
+
+      {% include 'shared/current_profile.html' %}
+      {{hackathon_obj|json_script:"hackathon-object"}}
+      {{project_obj|json_script:"project-object"}}
+      {{currentProfile|json_script:"current-profile"}}
+
+      <script src="{% static "v2/js/lib/plyr.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/vue-plyr.min.js" %}"></script>
+      <script src="{% static "v2/js/pages/project-page.js" %}"></script>
+      {% include 'shared/activity_scripts.html' %}
+      <script src="{% static "v2/js/status.js" %}"></script>
+      <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
+
+      <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+      <script>
+          $('[data-toggle="tooltip"]').bootstrapTooltip();
+          document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
+          document.projectObj = JSON.parse(document.getElementById('project-object').textContent);
+          document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
+          document.tab = {{ tab }};
+      </script>
+      <script src="{% static "v2/js/user-search.js" %}"></script>
     </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 vue=True %}
-    {% include 'shared/footer.html' %}
-
-    {% include 'shared/current_profile.html' %}
-    {{hackathon_obj|json_script:"hackathon-object"}}
-    {{project_obj|json_script:"project-object"}}
-    {{currentProfile|json_script:"current-profile"}}
-
-    <script src="{% static "v2/js/pages/project-page.js" %}"></script>
-    {% include 'shared/activity_scripts.html' %}
-    <script src="{% static "v2/js/status.js" %}"></script>
-    <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
-
-    <script src="{% static "v2/js/pages/tabs.js" %}"></script>
-    <script>
-        $('[data-toggle="tooltip"]').bootstrapTooltip();
-        document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
-        document.projectObj = JSON.parse(document.getElementById('project-object').textContent);
-        document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
-        document.tab = {{ tab }};
-    </script>
-    <script src="{% static "v2/js/user-search.js" %}"></script>
-
   </body>
 </html>

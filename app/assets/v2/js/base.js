@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
+
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
     var elementBottom = elementTop + $(this).outerHeight();
@@ -103,7 +104,11 @@ $(document).ready(function() {
       });
   };
 
+  if (document.visitorId) {
+    Cookies.set('visitorId', document.visitorId);
+  }
   record_campaign_to_cookie();
+
 
   if (!$('.header > .minihero').length && $('.header > .navbar').length) {
     $('.header').css('overflow', 'visible');
@@ -128,30 +133,10 @@ $(document).ready(function() {
     Cookies.set('last_github_auth_mutation', timestamp);
   });
 
-
-  // preload hover image
-  var url = $('#logo').data('hover');
-
-  $.get(url, function() {
-    // …
-  });
-
-  $('#logo').mouseover(function(e) {
-    $(this).attr('old-src', $(this).attr('src'));
-    var new_src = $(this).data('hover');
-
-    $(this).attr('src', new_src);
-    e.preventDefault();
-  });
-
-  $('#logo').mouseleave(function(e) {
-    $(this).attr('src', $(this).attr('old-src'));
-  });
   if (!$.fn.collapse) {
     $('.navbar-toggler').on('click', function() {
       var toggle = $(this).attr('aria-expanded');
 
-      console.log(toggle);
       $('.navbar-collapse').toggleClass('show');
       if (toggle === 'false') {
         $(this).attr('aria-expanded', 'true');
@@ -162,19 +147,21 @@ $(document).ready(function() {
     });
   }
 
+  // control display of #top_nav_notification
+  var $top_nav_notif = $('#top_nav_notification');
   var top_nav_salt = document.nav_salt;
   var remove_top_row = function() {
-    $('#top_nav_notification').parents('.row').remove();
+    $top_nav_notif.parents('.row').remove();
     localStorage['top_nav_notification_remove_' + top_nav_salt] = true;
   };
 
-  if (localStorage['top_nav_notification_remove_' + top_nav_salt]) {
+  // display (if it holds a message and hasn't been closed) or remove #top_nav_notification
+  if (top_nav_salt == 0 || localStorage['top_nav_notification_remove_' + top_nav_salt]) {
     remove_top_row();
+  } else {
+    $top_nav_notif.parents('.row').removeClass('d-none');
   }
-  if (top_nav_salt == 0) {
-    remove_top_row();
-  }
-  $('#top_nav_notification').click(remove_top_row);
+  $top_nav_notif.click(remove_top_row);
 
   // pulse animation on click
   $('.pulseClick').on('click', (event) => {
@@ -220,7 +207,7 @@ $(document).ready(function() {
         $(this).parents('.offer_container').addClass('animate').removeClass('empty');
         $(this).removeAttr('data-time');
 
-        // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
+        // let btn = `<a class="btn btn-block btn-primary btn-sm mt-2" href="${timeUrl}">View Action</a>`;
         // return $(this).parent().next().html(btn);
         return $(this).parent().append('<div>Refresh to view offer!</div>');
       }
@@ -238,32 +225,17 @@ $(document).ready(function() {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
-
-  $('body').on('click', '.accordion', event => {
-    const element = $(event.target);
-    const panel = element[0].nextElementSibling;
-
-    if (panel) {
-      if (element.hasClass('active')) {
-        panel.style.maxHeight = 0;
-        panel.style.marginBottom = 0 + 'px';
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + 'px';
-        panel.style.marginBottom = 10 + 'px';
-      }
-    }
-    element.toggleClass('active');
-  });
   attach_close_button();
 });
 
-const attach_close_button = function() {
+
+this.attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
-    $('.alert').each(function(index) {
+    $('.alert').not('.alert-static').each(function(index) {
       if (index == 0) $(this).css('top', 0);
       else {
-        let new_top = (index * 66) + 'px';
+        let new_top = (index * 70) + 'px';
 
         $(this).css('top', new_top);
       }
@@ -271,31 +243,31 @@ const attach_close_button = function() {
   });
 };
 
-const closeButton = function(msg) {
+this.closeButton = function(msg) {
   var html = (msg['closeButton'] === false ? '' : '<span class="closebtn" >&times;</span>');
 
   return html;
 };
 
-const alertMessage = function(msg) {
+this.alertMessage = function(msg) {
   var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
 
   return html;
 };
 
-const _alert = function(msg, _class, remove_after_ms) {
+this._alert = function(msg, _class, remove_after_ms) {
   if (typeof msg == 'string') {
     msg = {
       'message': msg
     };
   }
-  var numAlertsAlready = $('.alert:visible').length;
-  var top = numAlertsAlready * 44;
+  var numAlertsAlready = $('body > .alert:visible').length;
+  var top = numAlertsAlready * 70;
   var id = 'msg_' + parseInt(Math.random() * 10 ** 10);
 
   var html = function() {
     return (
-      `<div id="${id}" class="alert ${_class} g-font-muli" style="top: ${top}px">
+      `<div id="${id}" class="alert alert-fixed bs-alert alert-${_class} d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -322,7 +294,7 @@ const _alert = function(msg, _class, remove_after_ms) {
 
 };
 
-var show_persona_modal = function(e) {
+this.show_persona_modal = function(e) {
   const content = $.parseHTML(
     `<div id="persona_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
@@ -340,8 +312,8 @@ var show_persona_modal = function(e) {
             <p class="mb-0">${gettext('Let us know so we could optimize the <br>best experience for you!')}</p>
           </div>
           <div class="col-12 my-4 text-center">
-            <button type="button" class="btn btn-gc-blue px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
-            <button type="button" class="btn btn-gc-blue px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
+            <button type="button" class="btn btn-primary px-5 mb-2 mx-2" data-persona="persona_is_funder">I'm a Funder</button>
+            <button type="button" class="btn btn-primary px-5 mx-2" data-persona="persona_is_hunter">I'm a Contributor</button>
           </div>
         </div>
       </div>
@@ -351,26 +323,25 @@ var show_persona_modal = function(e) {
   $('#persona_modal').bootstrapModal('show');
 };
 
-if (
-  document.contxt.github_handle &&
-  !document.contxt.persona_is_funder &&
-  !document.contxt.persona_is_hunter
-) {
-  show_persona_modal();
-}
+this.popOnboard = function(step) {
+  if (step) {
+    appOnboard.step = step;
+  }
+  appOnboard.$refs['onboard-modal'].openModal();
+};
 
 $('body').on('click', '[data-persona]', function(e) {
   sendPersonal($(this).data('persona'));
 });
 
-const sendPersonal = (persona) => {
+this.sendPersonal = (persona) => {
   let postPersona = fetchData('/api/v0.1/choose_persona/', 'POST',
     {persona, 'access_token': document.contxt.access_token}
   );
 
   $.when(postPersona).then((response, status, statusCode) => {
     if (statusCode.status != 200) {
-      return _alert(response.msg, 'error');
+      return _alert(response.msg, 'danger');
     }
     $('#persona_modal').bootstrapModal('hide');
 
@@ -411,7 +382,7 @@ const sendPersonal = (persona) => {
 };
 
 
-const gitcoinUpdates = () => {
+this.gitcoinUpdates = () => {
   const urlUpdates = `https://api.github.com/repos/gitcoinco/web/issues/5057?access_token=${document.contxt.access_token}`;
 
   const getUpdates = fetchData (urlUpdates, 'GET');
@@ -435,7 +406,7 @@ const gitcoinUpdates = () => {
               ${response.body}
             </div>
             <div class="col-12 my-4 d-flex justify-content-around">
-              <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Close</button>
             </div>
           </div>
         </div>
@@ -451,27 +422,23 @@ const gitcoinUpdates = () => {
   });
 
 };
-// carousel/collabs/... inside menu
 
-$(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
-  e.stopPropagation();
-});
-
-function applyCartMenuStyles() {
+this.applyCartMenuStyles = function() {
   let dot = $('#cart-notification-dot');
 
   if (CartData.hasItems()) {
     dot.addClass('notification__dot_active');
+    dot.text(CartData.length());
   } else {
     dot.removeClass('notification__dot_active');
     if (document.location.href.indexOf('/grants') == -1) {
       $('#cart-nav').addClass('hidden');
     }
   }
-}
+};
 
 // Turn form data pulled form page into a JS object
-function objectifySerialized(data) {
+this.objectifySerialized = function(data) {
   let objectData = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -481,4 +448,4 @@ function objectifySerialized(data) {
   }
 
   return objectData;
-}
+};

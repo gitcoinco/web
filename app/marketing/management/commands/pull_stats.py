@@ -45,7 +45,6 @@ class Command(BaseCommand):
             stats.chrome_ext_users,
             stats.firefox_ext_users,
             stats.slack_users,
-            stats.chat_users,
             stats.slack_users_active,
             stats.twitter_followers,
             stats.bounties,

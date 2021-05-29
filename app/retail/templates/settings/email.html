@@ -19,7 +19,8 @@
   <div class="form-group">
     <h5>{% trans "Email Preferences" %}</h5>
     <label class="form__label" for="email">{% trans "Email address" %}</label>
-    <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{{ es.email }}" required>
+    <input readonly="readonly" type="email" name="email" class="form__input" placeholder='you@somewhere' value="{{ es.email }}" required>
+    <small id="emailHelp" class="form__input-help"><a href="https://github.com/settings/profile">{% trans "To change your email on Gitcoin, please edit on github." %}</a></small>
     <small id="emailHelp" class="form__input-help">{% trans "We will never sell your email to anyone, and will only share your contact information with your permission." %}</small>
   </div>
   <div class="form-group">
@@ -34,12 +35,38 @@
     {% endfor %}
   </div>
   {% csrf_token %}
-  <input class='button button--primary' type='submit' name='submit' value="Save">
+  <input class='btn btn-primary' type='submit' name='submit' value="Save">
 </form>
 {% endblock %}
 
 {% block scripts %}
 <script>
+
+  function changePreferences() {
+    const mauticObj = {
+      email:  document.contxt.email,
+      github_handle: document.contxt.github_handle
+    };
+    const newValues = $('#email-settings input.priv_checkbox').serializeArray()
+    let emailPref = {
+      'new_bounty_notifications':true,
+      'welcome_mail':true,
+      'roundup':true,
+      'important_product_updates':true,
+      'general':true,
+      'quarterly':true,
+      'grant_recontribute':true,
+    }
+
+    newValues.forEach((val) => {
+      return emailPref[val.name]= !Boolean(val.value)
+    })
+
+    Object.assign(mauticObj, emailPref)
+
+    mt('send', 'pageview', mauticObj);
+  }
+
   $(document).ready(function(){
     // select / deselect all
     $('#select_all').on('click', function(e) {
@@ -69,6 +96,10 @@
 
     Cookies.set('last_language_change', timestamp);
   });
+
+  $('#email-settings').on('submit', function(e) {
+    changePreferences();
+  })
 
 </script>
 {{ block.super }}

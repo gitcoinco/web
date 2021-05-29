@@ -29,7 +29,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         w3 = get_web3('mainnet')
-        monitored_accounts = [settings.KUDOS_OWNER_ACCOUNT, settings.GRANTS_OWNER_ACCOUNT]
+        monitored_accounts = [settings.KUDOS_OWNER_ACCOUNT]
         for account in monitored_accounts:
             balance_eth_threshold = 0.1
             if account == settings.KUDOS_OWNER_ACCOUNT:

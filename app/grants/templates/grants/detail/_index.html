@@ -1,0 +1,504 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load static humanize i18n grants_extra bundle %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards_pic.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
+    {% bundle css file _grant_details %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
+    {% endbundle %}
+    <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
+
+  </head>
+
+  <body class="interior {{ active }} grant g-font-muli">
+    <div class="content__main min-vh-100 d-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash px-0">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'grants/nav.html' %}
+      </div>
+      {% if is_staff %}
+        <div class="alpha-warning font-caption mb-0">
+          <span class="font-weight-bold">Staff only</span>
+          <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
+        </div>
+      {% endif %}
+      <div id="gc-grant-detail"  v-cloak>
+
+        <b-skeleton-wrapper :loading="loading">
+          <template #loading>
+            <b-row class="mb-4">
+              <b-col>
+                <b-skeleton-img no-aspect height="290px"></b-skeleton-img>
+              </b-col>
+            </b-row>
+            <b-container>
+              <b-row>
+                <img src="/static/v2/images/loading_v2.gif" style="max-width: 200px; max-height: 200px; margin: -300px auto 0px;">
+              </b-row>
+              <b-row>
+                <b-col cols="9">
+                  <b-skeleton width="45%" class="mb-3"></b-skeleton>
+                  <b-skeleton width="100%" height="33px" class="mb-2"></b-skeleton>
+                  <b-skeleton width="65%" class="mb-2"></b-skeleton>
+                  <b-skeleton width="55%" class="mb-2 mt-3"></b-skeleton>
+                  <b-skeleton width="45%" class="mb-2"></b-skeleton>
+                </b-col>
+                <b-col cols="3">
+                  <b-row class="mt-3 mb-5">
+                    <b-skeleton-img no-aspect height="250px"></b-skeleton-img>
+                  </b-row>
+                </b-col>
+              </b-row>
+            </b-container>
+          </template>
+        </b-skeleton-wrapper>
+        <div v-if="grant">
+          <grant-details :grant="grant" v-if="grant?.id">
+            <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
+            <div class="container mb-3">
+              <a :href="backLink.url" class="font-body"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
+            </div>
+          </grant-details>
+
+          <div class="container grid grid-template-sidebar-row" ref="grant-tabs">
+            <div class="grant-data">
+              <b-tabs content-class="mt-3" v-model="tabSelected" >
+                <b-tab :title-link-class="'nav-line'">
+                  <template v-slot:title>Activity</template>
+                  <h3 class="pt-2">
+                    {% trans "Recent Activity" %}
+                  </h3>
+                  {% if is_team_member %}
+                    {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+                  {% else %}
+                    {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+                  {% endif %}
+                  <div id="activities" class="activity_stream container px-0" style="clear: both;">
+                    {% include 'shared/activity_container.html' with pinned=False %}
+                  </div>
+                </b-tab>
+
+                <!-- Contributions -->
+                <b-tab :title-link-class="'nav-line'" lazy @click="fetchTransactions">
+                  <template v-slot:title>Contributions</template>
+                  <h3 class="pt-2 pb-3">
+                    {% trans "Latest Contributions" %}
+                  </h3>
+                  <h5 class="mb-5 text-muted" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h5>
+                  <div class="px-0" v-if="transactions.grantTransactions?.length && !loadingTx">
+                    <div class="mb-5 pb-2 px-0 mx-sm-0">
+                      <div class="col-12 px-0">
+                        <div id="contributions">
+                          <!-- <div class="align-items-center d-flex float-right" style="margin-top: 28px;">
+                            <a class="pr-2">View All</a>
+                            <svg width="19" height="8" viewBox="0 0 19 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.3536 4.35355C18.5488 4.15829 18.5488 3.84171 18.3536 3.64645L15.1716 0.464465C14.9763 0.269203 14.6597 0.269203 14.4645 0.464465C14.2692 0.659727 14.2692 0.976309 14.4645 1.17157L17.2929 4L14.4645 6.82843C14.2692 7.02369 14.2692 7.34027 14.4645 7.53553C14.6597 7.73079 14.9763 7.73079 15.1716 7.53553L18.3536 4.35355ZM4.37114e-08 4.5L18 4.5L18 3.5L-4.37114e-08 3.5L4.37114e-08 4.5Z" fill="#6F3FF5"></path></svg>
+                          </div> -->
+                          {% if is_team_member %}
+                            <div class="font-body text-right mb-3">
+                              {% if is_owner %}
+                                <a href="/settings/account#financials" target="_blank">
+                                  Export Transactions (OWNER ONLY)
+                                </a> |
+                              {% endif %}
+
+                              <a href="/grants/v1/api/export_addresses/grant{{grant.pk}}.json" target="_blank">
+                                All Contributor Addresses for this Grant (TEAM ONLY)
+                              </a>
+                            </div>
+                          {% endif %}
+                          <div class="container py-3" v-for="transaction in transactions.grantTransactions">
+                            <div class="row transaction-history">
+                              <div class="col">
+                                <div class="row">
+                                  <div class="d-flex mr-2">
+                                    <a :href="`/profile/${transaction.subscription.contributor_profile}`" v-if="!transaction.anonymous">
+                                      <b-img-lazy class="rounded-circle bg-light mr-2" width="40" height="40" :src="`/dynamic/avatar/${ transaction.subscription.contributor_profile }`"></b-img-lazy>
+                                    </a>
+                                  </div>
+                                  <div class="col">
+                                    <div class="row">
+                                      <a :href="`/profile/${transaction.subscription.contributor_profile}`" v-if="!transaction.anonymous">[[transaction.subscription.contributor_profile]]</a>
+                                    </div>
+                                    <div class="row">
+                                      <time :datetime="transaction.created_on" v-b-tooltip.hover.top="transaction.created_on" class="mr-3 text-grey-400">[[transaction.created_on | moment]]</time>
+                                      <a :href="`/_administrationgrants/contribution/${transaction.id}/change/`" target="_blank" v-if="isStaff">
+                                        <i class="fas fa-external-link-alt"></i>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col">
+                                <div class="row justify-content-end text-secondary" >
+                                  <span v-b-tooltip.hover.top="transaction.subscription.amount_per_period">
+                                    [[transaction.subscription.amount_per_period | formatNumberWithDecimal ]]
+                                    [[transaction.subscription.token_symbol]]
+                                  </span>
+                                </div>
+                                <div class="row justify-content-end text-secondary">
+                                  <span v-b-tooltip.hover.top="transaction.subscription.amount_per_period_usdt">
+                                    [[transaction.subscription.amount_per_period_usdt | formatNumberWithDecimal ]] USD
+                                  </span>
+                                  <span v-if="!transaction.success">
+                                    - (Failed)
+                                  </span>
+                                  <span v-else-if="!transaction.tx_cleared">
+                                    - (Pending)&nbsp;
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row pt-2" v-if="transaction.subscription.comments">
+                              <div class="rounded w-100 py-3 px-2" style="background: rgba(0, 0, 0, 0.03); margin-left: 55px;">
+                                [[transaction.subscription.comments]]
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <b-skeleton-wrapper :loading="loadingTx">
+                    <template #loading>
+                      <b-row class="mb-3">
+                        <b-col cols="12">
+                          <b-skeleton width="50%" height="35px"></b-skeleton>
+                        </b-col>
+                      </b-row>
+                      <b-row class="mb-3" v-for="index in 2" :key="index">
+                        <b-col cols="12">
+                          <b-row>
+                            <b-col cols="6">
+                              <b-skeleton width="80%" height="25px" class="col mb-2"></b-skeleton>
+                            </b-col>
+                            <b-col cols="6">
+                              <b-skeleton width="40%" height="25px" class="col mb-2 ml-auto"></b-skeleton>
+                            </b-col>
+                          </b-row>
+                        </b-col>
+                        <b-col cols="12">
+                          <b-skeleton width="100%" height="30px" class="mb-2"></b-skeleton>
+                        </b-col>
+                      </b-row>
+                    </template>
+                  </b-skeleton-wrapper>
+
+                  <div class="text-center" v-if="transactions.grantTransactions?.length && !loadingTx">
+                    <button class="btn btn-outline-primary btn-sm mt-n4 mb-4" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
+                  </div>
+                </b-tab>
+
+                <b-tab :title-link-class="'nav-line'" lazy @click="fetchRelated">
+                  <template v-slot:title>Related Grants <span class="nav-badge">([[grant?.metadata?.related?.length || 0]])</span></template>
+                  <h3 class="pt-2 pb-3">
+                    {% trans "Related Grants" %}
+                  </h3>
+                  <h5 class="mb-5 text-muted" v-if="!relatedGrants.length && !loadingRelated">{% trans "No related grants!" %}</h5>
+                  <!-- Related grants -->
+                  <div class="pb-5" v-if="relatedGrants.length && !loadingRelated">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="relgrant in relatedGrants">
+                          <a class="text-decoration-none" :href="relgrant.details_url">
+                            <div class="card">
+                              <b-img-lazy :src="relgrant.logo_url" class="card-img-top" :alt="relgrant.title"></b-img-lazy>
+                              <div class="card-body">
+                                <h5 class="card-title">[[relgrant.title]]</h5>
+                                <p class="card-text">[[relgrant.description | truncate(150)]]</p>
+                                <div class="d-flex">
+                                  <div v-for="member in relgrant.team_members" :key="member.pk">
+                                    <b-img-lazy class="rounded-circle bg-white" width="40" height="40" :src="`/dynamic/avatar/${member.fields.handle}`" alt="member.fields.handle"></b-img-lazy>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <b-skeleton-wrapper :loading="loadingRelated">
+                    <template #loading>
+                        <b-row class="mb-3">
+                          <b-col cols="12" md="6" xl="4" v-for="index in 3" :key="index" class="mb-3">
+                            <b-card img-top no-body>
+                              <b-skeleton-img card-img="top" ></b-skeleton-img>
+                              <b-card-body>
+                                <b-skeleton width="85%"></b-skeleton>
+                                <b-skeleton width="55%"></b-skeleton>
+                                <b-skeleton width="70%"></b-skeleton>
+                                <b-skeleton type="avatar"></b-skeleton>
+                              </b-card-body>
+                            </b-card>
+                          </b-col>
+                        </b-row>
+                    </template>
+                  </b-skeleton-wrapper>
+
+                  <div class="text-center">
+                    <button class="btn btn-outline-primary btn-sm mt-n4 mb-4" v-if="relatedGrantsIds.length && relatedGrantsHasNext" @click="fetchRelated()" :disabled="loadingRelated">Load more</button>
+                  </div>
+                </b-tab>
+
+                {% if is_staff %}
+                <b-tab :title-link-class="'nav-line'" @click="tabChange('sybil_profile')">
+                  <template v-slot:title>Sybil Profile</template>
+
+
+                    <h4>Grant Sybil Profile</h4>
+
+                    <hr>
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                    SybilScore ™️: {{ grant.sybil_score }}
+                    <br>
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                    RiskScore ™️: {{ grant.weighted_risk_score }}
+                    <pre>
+
+                    A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+                    - Account Metadata
+                    - Suspicious Interactions
+                    - Grant Flags Reports
+                    - BrightID Trust Score (coming soon)
+                    - KYC (maybe coming soon)
+                    - MACI (maybe coming soon)
+
+                    a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
+                    </pre>
+                    <div id="section-nav-sybil">
+                      {% for ele in sybil_profiles%}
+                      <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+                      <table>
+                        <tr>
+                          <td>
+                            Index
+                          </td>
+                          <td>
+                            Contributors
+                          </td>
+                          <td>
+                            Contributors (pct)
+                          </td>
+                          <td>
+                            Contributions/Contributor
+                          </td>
+                          <td>
+                            Profiles
+                          </td>
+                        </tr>
+                      {% for sp in ele.1.0 %}
+                        <tr style="border-top: 1px solid grey;">
+                          <td>
+                            {% if '0x' in sp.0 %}
+                            <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+                            {% else %}
+                            {{sp.0}}
+                            {% endif %}
+                          </td>
+                          <td>
+                            {{sp.1}}
+                          </td>
+                          <td>
+                            {{sp.5}}%
+                          </td>
+                          <td>
+                            {{sp.3|floatformat:2}}
+                          </td>
+                          <td>
+                            <div style="max-height: 50px; overflow: scroll;">
+                              {% for this_profile in sp.4 %}
+                                    <a href="/{{this_profile}}">
+                                      {% if forloop.counter < 20 %}
+                                        <b-img-lazy class="rounded-circle bg-white" width="30" height="30" src="/dynamic/avatar/{{this_profile}}"></b-img-lazy>
+                                      {% endif %}
+                                      @{{this_profile}}
+                                    </a>
+                              {% endfor %}
+                            </div>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      </table>
+                        <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+
+
+                      {% endfor %}
+                    </div>
+                </b-tab>
+                {% endif %}
+                {% if is_team_member or is_staff  %}
+                <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
+                  <template v-slot:title>Stats</template>
+                  {% if tab == 'stats' %}
+                    <div id=grant_stats_graph class="content-block content-block--white">
+                      <div class="container">
+                        <iframe src="https://metabase.gitcoin.co/public/question/336dd009-0b96-4733-85a7-336b3447dc16?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
+                        <iframe src="https://metabase.gitcoin.co/public/question/c7dd0ded-7c39-47a3-a0d2-38627d9849b5?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
+                      </div>
+                    </div>
+                  {% endif %}
+                </b-tab>
+                {% endif %}
+
+              </b-tabs>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticky add/remove cart and contribution details -->
+        <div class="bg-white border-grey border-top-2 bottom-0 p-4 position-sticky text-center w-100 d-block d-md-none">
+
+          <!-- Contribution details -->
+          <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && (index == 1 || index == 3)" :class="`text-center w-100 pb-2 ${grant.clr_round_num && grant.is_clr_eligible ? 'mb-3' : 'd-none'}`">
+            <span>$[[prediction[0] ]] contribution</span>
+            <span class="text-secondary">receives <b>$[[prediction[2] || 0 | round]] match</b></span>
+          </div>
+
+          <!-- Add/remove from cart -->
+          <template v-if="grant.link_to_new_grant">
+            <a :href="grant.link_to_new_grant" class="btn btn-primary btn-block py-3">Visit the active grant to fund</a>
+          </template>
+          <template v-else-if="!grant.active">
+            <button type="button" class="btn btn-primary btn-block py-3" disabled>
+              {% trans "This Grant Is Not Active" %}
+            </button>
+          </template>
+          <template v-else>
+            <button class="btn btn-outline-danger btn-block py-3" @click="removeFromCart()" v-if="grant.isInCart">Remove From Cart</button>
+            <button class="btn btn-primary btn-block py-3" @click="addToCart()" v-else >Add to Cart</button>
+          </template>
+
+        </div>
+
+        <!-- Side-cart -->
+        <div id="side-cart" class="grant-side-cart pb-md-0 pt-md-0 px-0 border-top-2 border-grey mt-n1 mt-md-0" style="display: none;">
+          {% include 'grants/detail/side-cart.html' %}
+        </div>
+
+      </div>
+      {% include 'grants/detail/template-grant-details.html' %}
+
+      {% include 'shared/footer.html' %}
+      {% include 'shared/current_profile.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'grants/shared/shared_scripts.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+      <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+      <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+      <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
+
+      {{verification_tweet|json_script:"verification_tweet"}}
+      {{user_code|json_script:"user_code"}}
+      <script>
+        var grantDetails = {
+          grant_id: "{{ grant.id }}"
+        };
+        var user_code = JSON.parse(document.getElementById('user_code').textContent);
+        var verification_tweet = JSON.parse(document.getElementById('verification_tweet').textContent);
+
+      </script>
+
+      {% include 'shared/activity_scripts.html' %}
+      <script src="{% static "v2/js/status.js" %}"></script>
+
+      <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
+      <script src="{% static "v2/js/grants/_detail.js" %}"></script>
+      <script src="{% static "v2/js/grants/funding.js" %}"></script>
+      {% if is_team_member %}
+        <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
+        {% if tab == 'stats' %}
+          <script src="https://www.gstatic.com/charts/loader.js"></script>
+          <script src="{% static "v2/js/grants/stats.js" %}"></script>
+          <script>
+            const max_graph = {{max_graph}};
+            const history = {{history|safe}};
+          </script>
+        {% endif %}
+      {% endif %}
+
+      {% if is_staff %}
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
+        <script>
+          var ctx;
+          var checkExist = setInterval(function() {
+            if ($('myChart{{forloop.counter0}}').length) {
+              ctx = document.getElementById('myChart{{forloop.counter0}}').getContext('2d');
+              runGraph();
+              clearInterval(checkExist);
+            }
+          }, 100);
+          function runGraph() {
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [{% for sp in ele.1.0 %}{{sp.0}}, {%endfor%}],
+                    datasets: [{
+                        label: 'Contributors by Sybil Score',
+                        data: [{% for sp in ele.1.0 %}{{sp.1}}, {%endfor%}],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: 'Contributors by Sybil Category',
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+          }
+        </script>
+      {% endif %}
+
+    </div>
+  </body>

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,18 +14,32 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize %}{% if action == 'custom' %}
+{% load i18n humanize %}
+
+{% if action == 'custom' %}
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ action_url }}">{{ action_copy }}</a>
+    {% if not approve_worker_url %}
+      <a class="button" href="{{ action_url }}?{{ utm_tracking }}">{{ action_copy }}</a>
+    {% else %}
+      <a class="button" href="{{ action_url }}&{{ utm_tracking }}">{{ action_copy }}</a>
+    {% endif %}
   </div>
+{% elif prize %}
+<div style="margin-bottom: 1em; margin-top: 2em;">
+  <a class="button large" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "View Prize" %}</a>
+</div>
 {% else %}
-  <div style="margin-bottom: 1em; margin-top: 1em;">
-    <a class="button" href="{{ bounty.absolute_url }}">{% trans "View on Gitcoin.co" %}</a>
+  <div style="margin-bottom: 1em; margin-top: 2em;">
+    {% if featured %}
+      <a class="button" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "View on Gitcoin.co" %}</a>
+    {% else %}
+      <a class="button" href="{{ bounty.absolute_url }}?{{ utm_tracking }}">{% trans "View on Gitcoin.co" %}</a>
+    {% endif %}
   </div>
 {% endif %}
 {% if action2 == 'custom' %}
-  <hr>
+  <hr style="margin-left: 0;">
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ action2_url }}">{{ action2_copy }}</a>
+    <a class="button" href="{{ action2_url }}?{{ utm_tracking }}">{{ action2_copy }}</a>
   </div>
 {% endif %}

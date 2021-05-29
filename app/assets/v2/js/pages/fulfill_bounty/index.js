@@ -1,19 +1,21 @@
 /* eslint-disable no-console */
-needWalletConnection();
+if (bountyChainId !== '58') {
+  needWalletConnection();
 
-const fetchFromWeb3Wallet = () => {
-  if (!provider) {
-    onConnect();
-  }
-  $('#payoutAddress').val(selectedAccount);
-  $('#payoutAddress').attr('readonly', true);
+  const fetchFromWeb3Wallet = () => {
+    if (!provider) {
+      onConnect();
+    }
+    $('#payoutAddress').val(selectedAccount);
+    $('#payoutAddress').attr('readonly', true);
+  };
+
+  window.addEventListener('dataWalletReady', function(e) {
+    if (is_bounties_network || web3_type === 'web3_modal') {
+      fetchFromWeb3Wallet();
+    }
+  }, false);
 }
-
-window.addEventListener('dataWalletReady', function(e) {
-  if (is_bounties_network || web3_type === 'web3_modal') {
-    fetchFromWeb3Wallet();
-  }
-}, false);
 
 window.onload = function() {
 
@@ -39,12 +41,16 @@ window.onload = function() {
       let data = {};
 
       if (typeof ga !== 'undefined') {
-        ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter')
+        ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter');
       }
-
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+
+      if (eventTag && !data.projectId) {
+        unloading_button($('.js-submit'));
+        return _alert('Please add a project first', 'danger');
+      }
 
       if (is_bounties_network) {
         ethFulfillBounty(data);
@@ -54,4 +60,3 @@ window.onload = function() {
     }
   });
 };
-

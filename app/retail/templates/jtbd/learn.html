@@ -1,0 +1,399 @@
+{% comment %}
+Copyright (C) 2019 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not,see
+<http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static bundle date_fromisoformat %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards_pic.html' %}
+
+  {% bundle css file jtbd %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
+  {% endbundle %}
+</head>
+
+<body>
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+
+    <div class="header">
+      {% include 'home/nav.html' %}
+    </div>
+
+    <div class="container pt-5">
+
+      <div class="row mt-5">
+        <div class="col-12 col-md-8">
+          <h1 class="mb-4 line-height-2">
+            Learn how to build the decentralized web.
+          </h1>
+          <p class="text-wrap mb-5 text-grey-400 font-bigger-2">
+            No experience, no worries! Work hands-on with top leaders in blockchain to level up your development skills.
+          </p>
+          <div class="row mt-5 mx-0">
+            <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5 scroll-to-ready" href="#ready-to-learn">
+              I'm ready to learn
+            </a>
+          </div>
+        </div>
+        <div class="d-none d-md-inline col-md-4 m-auto">
+          <svg viewBox="0 0 410 322" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M112.648 191.431H82.3853V221.682H112.648V191.431Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.8804 221.558L112.606 191.431" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.3853 191.431L112.607 221.682" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.648 161.18H82.3853V191.431H112.648V161.18Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.8804 191.348L112.606 161.18" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.3853 161.18L112.607 191.431" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.648 130.846H82.3853V161.097H112.648V130.846Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.8804 160.973L112.606 130.846" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.3853 130.846L112.607 161.056" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.648 100.471H82.3853V130.722H112.648V100.471Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.8804 130.598L112.606 100.471" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.3853 100.471L112.607 130.722" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.648 70.1367H82.3853V100.388H112.648V70.1367Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.8804 100.264L112.606 70.1367" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.3853 70.1367L112.607 100.347" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.648 39.7627H82.3853V70.0138H112.648V39.7627Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.8804 69.89L112.606 39.7627" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.3853 39.7627L112.607 70.0138" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.607 39.6388H82.3853L90.6012 9.3877H104.391L112.607 39.6388Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.9634 39.3912L104.391 9.3877" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M90.6011 9.3877L112.607 39.6388" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.614 252.4V222.148H82.3511V252.4H112.614Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M82.4678 222.631L112.607 252.387" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M112.606 222.136L82.3848 252.387" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M158.723 252.387H1.01074V273.517H158.723V252.387Z" fill="white" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M42.0487 101.173H6.50146V108.602H42.0487V101.173Z" fill="#8C65F7" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M1 236.867L1 251.683H158.712V236.867H1Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M26.897 236.828V251.685" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M52.7832 236.828V251.685" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M78.6694 236.828V251.685" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M117.52 236.828V251.685" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M138 236.828V251.685" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M126.231 98.1182H6.50146V100.966H126.231V98.1182Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M127.676 98.1182H82.3853V101.172H127.676V98.1182Z" fill="#D7FFF4" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M98.9821 2.74316H95.6792V9.38768H98.9821V2.74316Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M172.141 80.826L154.305 68.9814L142.498 86.8102L172.141 80.826Z" stroke="#11BC92" stroke-miterlimit="10"/>
+            <path d="M201.784 74.8426L183.948 62.998L172.141 80.8268L201.784 74.8426Z" stroke="#11BC92" stroke-miterlimit="10"/>
+            <path d="M231.428 68.8582L213.592 57.0137L201.784 74.8424L231.428 68.8582Z" stroke="#11BC92" stroke-miterlimit="10"/>
+            <path d="M261.071 62.8739L243.235 51.0293L231.427 68.8581L261.071 62.8739Z" stroke="#11BC92" stroke-miterlimit="10"/>
+            <path d="M290.136 56.9723L272.342 45.1689L260.493 62.9564L290.136 56.9723Z" stroke="#11BC92" stroke-miterlimit="10"/>
+            <path d="M142.497 86.8104L124.662 74.9658L112.854 92.7946L142.497 86.8104Z" stroke="#11BC92" stroke-miterlimit="10"/>
+            <path d="M124.662 74.9659L272.5 45" stroke="#11BC92" stroke-miterlimit="10"/>
+            <path d="M82.8809 69.8896L272.5 45" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M289.024 57V133.639" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M289.024 139.912C290.757 139.912 292.162 138.507 292.162 136.775C292.162 135.043 290.757 133.639 289.024 133.639C287.292 133.639 285.887 135.043 285.887 136.775C285.887 138.507 287.292 139.912 289.024 139.912Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M284.73 148.414C285.432 150.106 287.084 151.303 288.983 151.303C291.543 151.303 293.607 149.239 293.607 146.681C293.607 144.122 291.543 142.058 288.983 142.058V139.871" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M289.024 151.303L327.379 166.82" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M289.024 151.303L251 166.82" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M327.379 166.82H251V203.51H327.379V166.82Z" fill="#8C65F7" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M338 241H271V277H338V241Z" fill="white" stroke="#6F3FF5" stroke-miterlimit="10"/>
+            <path d="M289.024 151.55V203.509" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M132.588 91.1435C132.588 91.8864 131.969 92.4641 131.267 92.4641H98.4862C97.743 92.4641 97.165 91.8451 97.165 91.1435V66.8353C97.165 66.0924 97.7843 65.5146 98.4862 65.5146H106.95C110.129 65.5146 113.184 66.0924 115.991 67.1655C119.418 68.4448 122.515 70.4671 125.074 73.0258C129.286 77.2354 132.01 82.8482 132.506 89.1213C132.547 89.8228 132.588 90.4832 132.588 91.1435Z" fill="#5BF1CD" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M132.589 90.7305H97.1245V97.6226H132.589V90.7305Z" fill="#D7FFF4" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M104.928 78.1025H98.6108V83.8804H104.928V78.1025Z" fill="white" stroke="#02E2AC" stroke-width="0.5" stroke-miterlimit="10"/>
+            <path d="M104.928 71.375H98.6108V77.1528H104.928V71.375Z" fill="white" stroke="#02E2AC" stroke-width="0.5" stroke-miterlimit="10"/>
+            <path d="M132.507 89.1623H106.001V65.5557H106.909C110.088 65.5557 113.143 66.1334 115.951 67.2065C119.378 68.4859 122.474 70.5081 125.034 73.0669C129.286 77.2352 132.011 82.8892 132.507 89.1623Z" fill="#D7FFF4" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M98.0742 4.22852L200.711 53.9179" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M199.968 56.2702C201.267 56.2702 202.321 55.217 202.321 53.9178C202.321 52.6186 201.267 51.5654 199.968 51.5654C198.668 51.5654 197.614 52.6186 197.614 53.9178C197.614 55.217 198.668 56.2702 199.968 56.2702Z" fill="#5BF1CD" stroke="#02E2AC" stroke-width="1.1" stroke-miterlimit="10"/>
+            <path d="M199.968 54.9087C200.515 54.9087 200.959 54.4652 200.959 53.9182C200.959 53.3712 200.515 52.9277 199.968 52.9277C199.421 52.9277 198.977 53.3712 198.977 53.9182C198.977 54.4652 199.421 54.9087 199.968 54.9087Z" fill="#02E2AC"/>
+            <path d="M272.353 46.7048C273.1 46.7048 273.706 46.0993 273.706 45.3524C273.706 44.6055 273.1 44 272.353 44C271.606 44 271 44.6055 271 45.3524C271 46.0993 271.606 46.7048 272.353 46.7048Z" fill="#5BF1CD" stroke="#02E2AC" stroke-width="1.1" stroke-miterlimit="10"/>
+            <path d="M272.353 45.9221C272.668 45.9221 272.923 45.6671 272.923 45.3526C272.923 45.0381 272.668 44.7832 272.353 44.7832C272.039 44.7832 271.784 45.0381 271.784 45.3526C271.784 45.6671 272.039 45.9221 272.353 45.9221Z" fill="#02E2AC"/>
+            <path d="M97.1246 4.22852L42.0903 101.172" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M32 109L32.5942 205" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M45 205H20V234H45V205Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M45 229H20V234H45V229Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M97.3533 5.70481C98.653 5.70481 99.7066 4.6516 99.7066 3.35241C99.7066 2.05321 98.653 1 97.3533 1C96.0536 1 95 2.05321 95 3.35241C95 4.6516 96.0536 5.70481 97.3533 5.70481Z" fill="#5BF1CD" stroke="#02E2AC" stroke-width="1.1" stroke-miterlimit="10"/>
+            <path d="M97.3537 4.34327C97.9009 4.34327 98.3445 3.89982 98.3445 3.35279C98.3445 2.80576 97.9009 2.3623 97.3537 2.3623C96.8064 2.3623 96.3628 2.80576 96.3628 3.35279C96.3628 3.89982 96.8064 4.34327 97.3537 4.34327Z" fill="#02E2AC"/>
+            <path d="M248.495 277.259H202V312.926H248.495V277.259Z" fill="white" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M271.424 277.259H248.495V312.926H271.424V277.259Z" fill="#CAFFF0" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M338.938 277.259H292.443V312.926H338.938V277.259Z" fill="white" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M362.505 277.259H338.938V312.926H362.505V277.259Z" fill="#CAFFF0" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M385.434 277.259H338.938V312.926H385.434V277.259Z" fill="white" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M409 277.259H385.434V312.926H409V277.259Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M227.477 268.342H210.917V277.259H227.477V268.342Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M257.412 268.342H241.489V277.259H257.412V268.342Z" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M227.477 277.259H233.846V268.342H227.477V277.259Z" fill="#CAFFF0" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M257.412 277.259H263.781V268.342H257.412V277.259Z" fill="#CAFFF0" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M364.415 268.342H347.855V277.259H364.415V268.342Z" fill="white" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M394.351 268.342H378.428V277.259H394.351V268.342Z" fill="white" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M364.415 277.259H370.785V268.342H364.415V277.259Z" fill="#CAFFF0" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M394.35 277.259H400.72V268.342H394.35V277.259Z" fill="#CAFFF0" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M307.729 241.591H292.443V277.259H307.729V241.591Z" fill="#CAFFF0" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M338 241H292V277H338V241Z" fill="white" stroke="#8C65F7" stroke-miterlimit="10"/>
+            <path d="M309.003 231.674H298.175V240.591H309.003V231.674Z" fill="white" stroke="#8C65F7" stroke-miterlimit="10"/>
+            <path d="M328.748 231.674H317.92V240.591H328.748V231.674Z" fill="white" stroke="#8C65F7" stroke-miterlimit="10"/>
+            <path d="M309.003 240.591H313.461V231.674H309.003V240.591Z" fill="#8C65F7" stroke="#6F3FF5" stroke-miterlimit="10"/>
+            <path d="M328.748 240.591H333.206V231.674H328.748V240.591Z" fill="#8C65F7" stroke="#6F3FF5" stroke-miterlimit="10"/>
+            <path d="M388.618 251.782C391.08 251.782 393.077 249.928 393.077 247.642C393.077 245.355 391.08 243.502 388.618 243.502C386.156 243.502 384.16 245.355 384.16 247.642C384.16 249.928 386.156 251.782 388.618 251.782Z" fill="#E0FFF2" stroke="#02E2AC" stroke-miterlimit="10"/>
+            <path d="M210.096 304.849C210.012 304.849 209.938 304.826 209.872 304.78C209.807 304.725 209.765 304.661 209.746 304.588L207.014 295.357C207.005 295.339 207 295.311 207 295.275C207 295.201 207.028 295.137 207.084 295.082C207.14 295.027 207.21 295 207.294 295H208.387C208.471 295 208.546 295.027 208.611 295.082C208.677 295.128 208.719 295.188 208.737 295.261L210.825 302.321L212.828 295.261C212.847 295.188 212.889 295.128 212.955 295.082C213.02 295.027 213.095 295 213.179 295H214.272C214.356 295 214.43 295.027 214.496 295.082C214.561 295.128 214.603 295.188 214.622 295.261L216.709 302.321L218.713 295.261C218.732 295.188 218.774 295.128 218.839 295.082C218.904 295.027 218.979 295 219.063 295H220.212C220.315 295 220.389 295.037 220.436 295.11C220.492 295.183 220.506 295.266 220.478 295.357L217.676 304.588C217.657 304.67 217.611 304.734 217.536 304.78C217.471 304.826 217.396 304.849 217.312 304.849H215.981C215.897 304.849 215.822 304.826 215.757 304.78C215.691 304.725 215.649 304.661 215.631 304.588L213.725 297.912L211.792 304.588C211.773 304.67 211.726 304.734 211.652 304.78C211.586 304.826 211.511 304.849 211.427 304.849H210.096Z" fill="#5BF1CD"/>
+            <path d="M222.748 304.821C222.579 304.821 222.435 304.766 222.313 304.657C222.201 304.538 222.145 304.396 222.145 304.231V295.591C222.145 295.426 222.201 295.288 222.313 295.179C222.435 295.06 222.579 295 222.748 295H227.525C227.609 295 227.679 295.027 227.735 295.082C227.791 295.137 227.819 295.206 227.819 295.288V296.319C227.819 296.401 227.791 296.47 227.735 296.525C227.679 296.58 227.609 296.607 227.525 296.607H223.854V298.942H226.586C226.67 298.942 226.741 298.97 226.797 299.025C226.853 299.08 226.881 299.148 226.881 299.231V300.206C226.881 300.288 226.853 300.357 226.797 300.412C226.741 300.467 226.67 300.495 226.586 300.495H223.854V303.214H227.525C227.609 303.214 227.679 303.242 227.735 303.297C227.791 303.352 227.819 303.42 227.819 303.503V304.533C227.819 304.615 227.791 304.684 227.735 304.739C227.679 304.794 227.609 304.821 227.525 304.821H222.748Z" fill="#5BF1CD"/>
+            <path d="M230.355 304.821C230.187 304.821 230.042 304.766 229.921 304.657C229.808 304.538 229.752 304.396 229.752 304.231V295.591C229.752 295.426 229.808 295.288 229.921 295.179C230.042 295.06 230.187 295 230.355 295H232.835C233.358 295 233.834 295.124 234.264 295.371C234.703 295.618 235.048 295.952 235.301 296.374C235.562 296.786 235.693 297.244 235.693 297.747C235.693 298.425 235.403 299.006 234.824 299.492C235.301 299.684 235.67 299.986 235.931 300.398C236.193 300.801 236.323 301.277 236.323 301.827C236.323 302.376 236.183 302.88 235.903 303.338C235.632 303.796 235.263 304.158 234.796 304.423C234.329 304.689 233.815 304.821 233.255 304.821H230.355ZM232.709 298.97C233.064 298.97 233.367 298.851 233.619 298.613C233.881 298.375 234.012 298.095 234.012 297.775C234.012 297.436 233.881 297.147 233.619 296.909C233.367 296.671 233.064 296.552 232.709 296.552H231.434V298.97H232.709ZM233.185 303.255C233.605 303.255 233.951 303.123 234.222 302.857C234.493 302.592 234.628 302.248 234.628 301.827C234.628 301.433 234.488 301.108 234.208 300.852C233.937 300.586 233.596 300.453 233.185 300.453H231.434V303.255H233.185Z" fill="#5BF1CD"/>
+            <path d="M240.469 305C239.806 305 239.18 304.844 238.592 304.533C238.003 304.222 237.532 303.796 237.177 303.255C237.139 303.21 237.121 303.146 237.121 303.063C237.121 302.935 237.172 302.834 237.275 302.761L238.045 302.198C238.111 302.152 238.172 302.129 238.228 302.129C238.33 302.129 238.419 302.179 238.494 302.28C238.746 302.637 239.05 302.921 239.405 303.132C239.759 303.333 240.114 303.434 240.469 303.434C240.806 303.434 241.114 303.352 241.394 303.187C241.684 303.022 241.912 302.798 242.081 302.514C242.249 302.221 242.333 301.905 242.333 301.566C242.333 301.09 242.165 300.678 241.828 300.33C241.501 299.973 241.104 299.776 240.637 299.739L240.245 300.275C240.189 300.357 240.11 300.398 240.007 300.398C239.951 300.398 239.89 300.375 239.825 300.33L239.026 299.766C238.942 299.712 238.9 299.634 238.9 299.533C238.9 299.469 238.919 299.414 238.956 299.368L240.988 296.566H238.2C238.116 296.566 238.045 296.538 237.989 296.484C237.933 296.429 237.905 296.36 237.905 296.277V295.288C237.905 295.206 237.933 295.137 237.989 295.082C238.045 295.027 238.116 295 238.2 295H242.333C242.613 295 242.842 295.087 243.019 295.261C243.197 295.435 243.285 295.641 243.285 295.879C243.285 296.09 243.22 296.277 243.089 296.442L241.646 298.379C242.337 298.599 242.903 299.002 243.341 299.588C243.78 300.165 244 300.824 244 301.566C244 302.179 243.841 302.752 243.524 303.283C243.206 303.805 242.776 304.222 242.235 304.533C241.693 304.844 241.104 305 240.469 305Z" fill="#5BF1CD"/>
+            <path d="M353.494 304.692C353.353 304.692 353.235 304.641 353.141 304.538C353.047 304.435 353 304.307 353 304.153V302.278C353 302.124 353.047 301.996 353.141 301.893C353.235 301.791 353.353 301.739 353.494 301.739H355.233C355.625 301.739 355.931 301.611 356.15 301.354C356.385 301.08 356.503 300.712 356.503 300.25V286.873C356.503 286.719 356.55 286.591 356.644 286.488C356.738 286.385 356.855 286.334 356.996 286.334H358.877C359.018 286.334 359.135 286.385 359.229 286.488C359.323 286.591 359.37 286.719 359.37 286.873V300.25C359.37 301.089 359.198 301.85 358.853 302.535C358.524 303.203 358.062 303.733 357.466 304.127C356.871 304.504 356.197 304.692 355.445 304.692H353.494Z" fill="#6FF3D3"/>
+            <path d="M367.499 305C366.653 305 365.815 304.855 364.984 304.564C364.169 304.255 363.409 303.836 362.704 303.305C362.626 303.254 362.571 303.168 362.539 303.049C362.508 302.912 362.516 302.792 362.563 302.689L363.386 301.072C363.48 300.866 363.629 300.764 363.832 300.764C363.958 300.764 364.075 300.798 364.185 300.866C365.36 301.671 366.457 302.073 367.476 302.073C368.306 302.073 368.957 301.859 369.427 301.431C369.913 300.986 370.156 300.413 370.156 299.711C370.156 299.249 370.038 298.864 369.803 298.555C369.568 298.23 369.255 297.956 368.863 297.734C368.471 297.511 367.899 297.237 367.147 296.912L366.465 296.604C365.399 296.108 364.498 295.474 363.762 294.704C363.041 293.934 362.68 292.804 362.68 291.315C362.68 290.271 362.892 289.346 363.315 288.542C363.754 287.737 364.357 287.113 365.125 286.668C365.893 286.223 366.778 286 367.781 286C368.612 286 369.435 286.154 370.25 286.462C371.08 286.753 371.825 287.164 372.483 287.695C372.561 287.746 372.616 287.84 372.647 287.977C372.679 288.097 372.671 288.208 372.624 288.311L371.848 289.928C371.754 290.134 371.605 290.236 371.402 290.236C371.276 290.236 371.159 290.202 371.049 290.134C370.438 289.706 369.85 289.398 369.286 289.209C368.737 289.021 368.244 288.927 367.805 288.927C367.1 288.927 366.543 289.141 366.136 289.569C365.729 289.98 365.525 290.51 365.525 291.161C365.525 291.828 365.744 292.385 366.183 292.83C366.637 293.258 367.358 293.694 368.346 294.139C368.487 294.191 369.019 294.43 369.944 294.858C370.884 295.269 371.629 295.877 372.177 296.681C372.726 297.486 373 298.436 373 299.531C373 300.592 372.765 301.542 372.295 302.381C371.84 303.203 371.198 303.845 370.367 304.307C369.537 304.769 368.581 305 367.499 305Z" fill="#6FF3D3"/>
+            <path d="M31.8852 223.022L31.4933 218.206C31.4782 217.97 31.3179 217.768 31.0914 217.7C30.8649 217.632 30.6198 217.711 30.4768 217.9V217.9C30.3406 218.071 30.3155 218.306 30.4125 218.503C30.5094 218.699 30.7109 218.822 30.93 218.818H33.9121C34.1312 218.822 34.3327 218.699 34.4296 218.503C34.5265 218.306 34.5015 218.071 34.3653 217.9V217.9C34.2223 217.711 33.9772 217.632 33.7507 217.7C33.5241 217.768 33.3639 217.97 33.3488 218.206L32.9385 223.022" stroke="#02E2AC" stroke-width="0.5" stroke-miterlimit="10"/>
+            <path d="M36.0892 218.84L35.8812 218.701L35.8809 218.702L36.0892 218.84ZM36.8179 216.143L36.5683 216.156L36.5684 216.158L36.8179 216.143ZM28 216.403L28.25 216.403V216.403H28ZM28.7593 218.88L28.5526 219.02L28.5526 219.02L28.7593 218.88ZM34.3185 223.022C34.3185 222.26 34.6258 221.52 35.0357 220.827C35.2398 220.481 35.4659 220.153 35.6865 219.843C35.9045 219.537 36.1223 219.242 36.2975 218.978L35.8809 218.702C35.7117 218.957 35.5047 219.237 35.2792 219.553C35.0563 219.866 34.8203 220.208 34.6053 220.572C34.177 221.296 33.8185 222.129 33.8185 223.022H34.3185ZM36.2973 218.979C36.8576 218.138 37.1281 217.136 37.0675 216.128L36.5684 216.158C36.6224 217.058 36.3811 217.951 35.8812 218.701L36.2973 218.979ZM37.0676 216.129C37.005 214.977 36.572 213.882 35.7825 213.072C34.9902 212.26 33.8525 211.75 32.412 211.75V212.25C33.7272 212.25 34.7327 212.712 35.4246 213.421C36.1193 214.134 36.5115 215.11 36.5683 216.156L37.0676 216.129ZM32.412 211.75C30.9758 211.75 29.8048 212.237 28.9931 213.074C28.1827 213.911 27.75 215.078 27.75 216.403H28.25C28.25 215.187 28.6456 214.152 29.3522 213.422C30.0577 212.694 31.0927 212.25 32.412 212.25V211.75ZM27.75 216.402C27.7479 217.336 28.0276 218.248 28.5526 219.02L28.9661 218.739C28.4977 218.05 28.2481 217.236 28.25 216.403L27.75 216.402ZM28.5526 219.02C28.9215 219.563 29.3991 220.152 29.806 220.845C30.2072 221.527 30.5056 222.258 30.5056 223.022H31.0056C31.0056 222.13 30.658 221.307 30.2371 220.591C29.8219 219.885 29.3013 219.232 28.966 218.739L28.5526 219.02ZM30.9372 225.472C30.9372 226.286 31.5974 226.946 32.4119 226.946V226.446C31.8736 226.446 31.4372 226.01 31.4372 225.472H30.9372ZM32.4119 226.946C33.2263 226.946 33.8866 226.286 33.8866 225.472H33.3866C33.3866 226.01 32.9502 226.446 32.4119 226.446V226.946Z" fill="#02E2AC"/>
+            <rect x="29.9629" y="223.022" width="4.89885" height="2.44942" stroke="#02E2AC" stroke-width="0.5" stroke-miterlimit="10"/>
+            <path d="M372 313L171 313" stroke="#02E2AC"/>
+            <line x1="362" y1="321" x2="331" y2="321" stroke="#02E2AC"/>
+          </svg>
+        </div>
+      </div>
+
+      <section class="row py-5 mt-5" id="accordion-group">
+        <header class="col-12 pt-4">
+          <h2>
+            Everything you need to learn on Gitcoin
+          </h2>
+        </header>
+        <div class="col-12 col-lg-6 pt-5">
+          <div class="accordion-group img-accordion mb-4 mb-md-0">
+            <div class="collapseOne w-100 collapse show bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-4.svg" %}" style="max-width: 20rem;"/>
+            </div>
+            <div class="collapseTwo w-100 collapse bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-5.svg" %}" style="max-width: 20rem;"/>
+            </div>
+            <div class="collapseThree w-100 collapse bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-6.svg" %}" style="max-width: 20rem;"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6 pt-5">
+          <div class="accordion-group gc-accordion gc-accordion-border">
+            <h5 class="accordion gc-font-base" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
+              <span class="accordion-title">Learn in sponsored hackathons</span>
+            </h5>
+            <div class="accordion-panel collapse show font-subheader text-grey-400 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+              <p class="font-header font-bigger-1">Learn to build on a variety of Web3 protocols. Tag team projects with peers, and collect rewards while upleveling your skills. Learn while working on the technology that will shape our future.</p>
+            </div>
+            <h5 class="accordion gc-font-base collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
+              <span class="accordion-title">Learn through fellowship</span>
+            </h5>
+            <div class="accordion-panel collapse font-subheader text-grey-400 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
+              <p class="font-header font-bigger-1">The Kernel Fellowship for open source builders is an exclusive 8-week learning program that occurs 3 times per year. Learn the first principles of decentralized Web3 development, and make a lifelong network of peers.</p>
+            </div>
+            <h5 class="accordion gc-font-base collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
+              <span class="accordion-title">Learn in workshops</span>
+            </h5>
+            <div class="accordion-panel collapse font-subheader text-grey-400 collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
+              <p class="font-header font-bigger-1">Learn with your peers in social settings. Gitcoin is at the center of collaborative learning. Participate in presentations, workshops, and roundtable discussions hosted by influential Web3 experts.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% if hackathons|length > 0 %}
+        <section class="row pt-5" id="learn-by-doing">
+          <header class="col-12 mb-5 pt-5">
+            <h2>
+              Learn by doing
+            </h2>
+          </header>
+          <div class="col-12">
+            <div class="row">
+              {% for hackathon in hackathons %}
+                {% with logo=hackathon.logo  name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
+                  <div class="col-12 {% if hackathons|length <= 2 %}col-md-6{% else %}col-md-4{% endif %} font-body mb-4 mb-md-0">
+                    <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 overflow-hidden" style="height: 297.74px; background: {{hackathon.background_color}} ">
+                      <img src="{{ MEDIA_URL}}{{ logo }}" class="img-fluid" alt="">
+                    </div>
+                    <h3 class="mt-4 mb-3 line-clamp-2 gc-font-base">{{ name }}</h3>
+                    <p class="text-grey-400 mb-3 line-clamp-4" style="min-height: 84px">{{ summary }}</p>
+                    <p class="text-grey-400 mb-3">
+                      {{ start_date | date_fromisoformat:"M j, Y"}} - {{ end_date | date_fromisoformat:"M j, Y" }}
+                    </p>
+                    <p class="text-grey-400">
+                      Sponsored by
+                      {% for sponsor in sponsor_profiles %}
+                        {% if forloop.counter <= 4 %}
+                          <img class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;" src="{{ sponsor.avatar_url }}" alt="{{sponsor.handle}}"/>
+                        {% endif %}
+                      {% endfor %}
+                      {% if sponsor_profiles|length > 4 %}
+                        <span class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;"><i class="fas fa-plus"></i></span>
+                      {% endif %}
+                    </p>
+                  </div>
+                {% endwith %}
+              {% endfor %}
+              {% if hackathons|length == 1 %}
+                <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
+                  <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
+                  <h3 class="mt-4 mb-3 gc-font-base">More hackathons coming soon!</h3>
+                  <p class="text-grey-400">Stay tuned for more great hackathons coming your way!</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+      {% endif %}
+
+      <section class="row pt-5" id="join-community">
+        <header class="col-12 py-4 mb-1">
+          <h2>
+            Join a community of life-long learners
+          </h2>
+        </header>
+        <div class="col-12 mb-2">
+          <div class="row">
+            <h4 class="col-10 font-weight-300 text-grey-400 line-height-md-3 gc-font-base mb-5">An eight-week fellowship program designed to help you supercharge your path forward. Learn from the best! Status, Yearn, IdeoCoLabs, Consensys, DeFi Alliance, and many thought leaders in the space — all open source.</h4>
+            <div class="col-12">
+              <div class="row">
+                <div class="col-12 col-md-6 mb-4">
+                  <div class="w-100 rounded shadow-sm" style="background: #212242;">
+                    <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-iii.png' %}"/>
+                  </div>
+                  <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Learn</p>
+                  <p class="text-grey-400">The objective of our syllabus is to start with wisdom, and work backwards. We’ll build long-term thinking skills, provide context and technical history, and introduce you to the patterns and modes required to flourish in decentralized, open communities like Web3.</p>
+                </div>
+                <div class="col-12 col-md-6 mb-4">
+                  <div class="w-100 rounded shadow-sm" style="background: #212242;">
+                    <img class="w-100 rounded" style="height: 10rem; object-fit: contain;" src="{% static 'v2/images/jtbd/learn-kernel-core.png' %}"/>
+                  </div>
+                  <p class="font-bigger-3 mt-4 mb-2" style="font-weight: 500;">Tracks</p>
+                  <p class="text-grey-400">In KERNEL, we also build. 75+ Web3 projects are built every KERNEL alongside peers and 100+ industry leaders. These projects are supported by Build Tracks (DeFi, Tokens, Gaming, and Security) facilitated by leaders in Web3.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-8 mt-5 font-bigger-1">
+              <p>The Kernel fellowship program is an opportunity to build relationships with a network of experienced mentors in blockchain.</p>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              {% for alumn in alumni %}
+                {% with avatar_url=alumn.avatar_url name=alumn.name role=alumn.role avatar_url=alumn.avatar_url %}
+                  <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
+                    <div class="row">
+                      <div class="col-5 col-md-12">
+                        <img class="rounded-circle w-100" style="max-width: 15rem;" src="{{ avatar_url }}" />
+                      </div>
+                      <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
+                        <span class="d-block w-100">{{ name }}</span>
+                        <span class="d-block w-100">{{ role }}</span>
+                      </div>
+                    </div>
+                  </div>
+                {% endwith %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row pt-2" id="testimonial">
+        <div class="col-12 col-md-6 order-1 order-md-0 font-body pt-4 pt-md-5">
+          <div class="row">
+            <div class="col-auto m-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
+            <div class="col text-grey-400 pr-5 pb-4">
+              <div class="row">
+                <p class="font-bigger-1 line-height-2" style="white-space: pre-line;">{{ testimonial.comment }}</p>
+              </div>
+              <div class="row">
+                <p class="font-bigger-1">{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
+              </div>
+              <div class="row">
+                {% if testimonial.twitter_handle %}
+                  <a class="{% if testimonial.github_handle %}pr-2{% endif %}" href="https://www.twitter.com/{{testimonial.twitter_handle}}" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-twitter text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                {% endif %}
+                {% if testimonial.github_handle %}
+                  <a class="{% if testimonial.twitter_handle %}pl-2{% endif %}" href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-2 order-0 order-md-1 pt-4 pt-md-5">
+          <div class="row mb-4 mb-md-0">
+            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% if testimonial.avatar_url %}{{ testimonial.avatar_url }}{% else %}{% url 'org_avatar' testimonial.github_handle %}{% endif %}" alt="{{ testimonial.handle }}" />
+          </div>
+        </div>
+      </section>
+
+      <section class="row mb-5 pt-4" id="ready-to-learn">
+        <header class="col-12 pt-5">
+          <h2>
+            Ready to learn?
+          </h2>
+        </header>
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn in a hackathon</h4>
+                <p class="font-bigger-1">Learn and earn with your peers while working on top open source projects.</p>
+              </div>
+              <div>
+                <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn through fellowship</h4>
+                <p class="font-bigger-1">Join the Kernel fellowship program and receive mentorship and access to a lifelong community.</p>
+              </div>
+              <div>
+                <a class="col-md-auto btn btn-primary btn-lg btn-cta py-2" href="https://kernel.community/">{% trans "Explore Kernel" %}</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-12 col-lg-4 mb-3 mt-0 mt-md-3 mt-lg-0">
+            <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
+              <div class="mb-4">
+                <h4 class="py-2 font-weight-normal">Learn through Quests</h4>
+                <p class="font-bigger-1">Gitcoin Quests are a fun, gamified, way to learn about web3 ecosystems and earn rewards.</p>
+              </div>
+              <div>
+                <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'quests_index' %}">{% trans "Explore Quests" %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    {% include 'shared/footer.html' %}
+
+  </div>
+
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
+
+  <script>
+    $(".scroll-to-ready").click(function(e) {
+      // prevent the href from being called
+      e.preventDefault();
+      // slow scroll to the element
+      document.querySelector('#ready-to-learn').scrollIntoView({
+        behavior: 'smooth'
+      });
+
+      return false;
+    });
+  </script>
+
+</body>
+</html>

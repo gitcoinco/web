@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -22,7 +22,7 @@
   </div>
   <input type="hidden" name="keywords" value="{{keywords}}">
   <div class="my-2">
-    <select name="{{name}}" filter_by_address="{{filter_by_address}}" class="kudos-search custom-select gc-border-blue">
+    <select name="{{name}}" filter_by_address="{{filter_by_address}}" filter_by_network="{% if kudos_network %}{{kudos_network}}{% else %}mainnet{%endif%}" class="kudos-search custom-select gc-border-blue">
       <option></option>
     </select>
   </div>

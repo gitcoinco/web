@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard related notifications.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -156,8 +156,11 @@ def maybe_market_to_twitter(bounty, event_name):
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
+    utm = ''
+    if bounty.metadata.get('hyper_tweet_counter', False):
+        utm = f'utm_source=hypercharge-auto&utm_medium=twitter&utm_campaign={bounty.title}'
 
-    url = bounty.get_absolute_url()
+    url = f'{bounty.get_absolute_url()}?{utm}'
     is_short = False
     for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
         try:
@@ -483,7 +486,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     openwork_msg = f"* ${amount_open_work} more funded OSS Work available on the " \
                    f"[Gitcoin Issue Explorer](https://gitcoin.co/explorer)"
     help_msg = "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
-        f"<a href='https://chat.gitcoin.co/'>Gitcoin Chat</a>"
+        f"<a href='https://discord.gg/gitcoin/'>Gitcoin's Discord</a>"
     claim_msg = f"* If you want to claim the bounty you can do so " \
                 f"[here]({absolute_url})"
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
@@ -539,7 +542,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             issue_message = interest.issue_message.strip()
             if issue_message:
                 msg += f"\n\n{issue_message}"
-        
+
         msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
@@ -600,12 +603,9 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    print('### GITCOIN BOT A1')
     if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
-        print(f'### GITCOIN BOT A6 NOT POSTING')
         return False
 
-    print(f'### GITCOIN BOT A6')
     # Define posting specific variables.
     comment_id = None
     url = bounty.github_url
@@ -614,7 +614,6 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
 
     # Prepare the comment message string.
     msg = build_github_notification(bounty, event_name, profile_pairs)
-    print(f'### GITCOIN BOT A7 {msg}')
     if not msg:
         return False
 
@@ -718,7 +717,7 @@ def maybe_market_tip_to_github(tip):
         addon_msg = f"\n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
                     f"https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
                     f"<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
-                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://chat.gitcoin.co/'>Gitcoin Chat</a>"
+                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://discord.gg/gitcoin'>Gitcoin's Discord</a>"
         msg += redeem_instructions + addon_msg
     else:
         msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has " \

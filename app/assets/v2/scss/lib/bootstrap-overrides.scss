@@ -1,0 +1,73 @@
+// Gitcoins shared variable set...
+@import "../gc-variables";
+
+// Bootstrap color overrides
+$blue: $gc-violet-400;
+$green: $gc-teal-400;
+$pink: $gc-pink-400;
+$yellow: $gc-yellow-400;
+$primary: $blue;
+$success: $gc-teal-500;
+$danger: $gc-pink-500;
+$secondary: $green;
+$dark: $gc-purple;
+$light: $gc-grey;
+
+$theme-colors: (
+  "primary":    $gc-violet-400,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark
+);
+
+// Link color overrides
+$link-color: $gc-violet-400;
+$link-hover-color: $gc-violet-500;
+
+// Active navbar item color override
+$navbar-light-color: $gc-grey-500;
+$navbar-light-hover-color: $gc-violet-400;
+$navbar-light-active-color: $gc-violet-500;
+
+// Dropdown overrides
+$dropdown-link-hover-color: $gc-violet-500;
+$dropdown-link-hover-bg: rgba(140,101,247,0.1);
+$dropdown-link-active-color: $gc-violet-500;
+$dropdown-link-active-bg: rgba(140,101,247,0.2);
+
+// Nav-pills overrides
+$nav-pills-link-active-color: $white;
+$nav-pills-link-active-bg: $blue;
+
+// Font overrides
+$enable-responsive-font-sizes: true;
+$font-size-base: 0.85rem;
+$dropdown-font-size: 0.8rem;
+$btn-font-size: 0.8rem;
+
+// Button overrides
+$input-btn-focus-width: 0.1rem;
+
+$border-radius: 4px;
+$border-radius-lg: 6px;
+$border-radius-sm: 2px;
+
+$btn-font-size-lg: 1rem;
+$btn-line-height-lg: 2;
+
+$btn-font-size-sm: 0.7rem;
+$btn-line-height-sm: 2;
+
+$modal-backdrop-bg: $black;
+$modal-backdrop-opacity: 0.7;
+
+$navbar-dark-toggler-icon-bg: unset;
+$navbar-light-toggler-icon-bg: unset;
+
+// Custom-control overrides
+$custom-control-indicator-checked-color: $gc-violet-400;
+$custom-control-indicator-checked-border-color: $gc-violet-500;

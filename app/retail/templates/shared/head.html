@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,63 +14,64 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static is_in_list matches %}
-{% include 'shared/tag_manager_1.html' %}
-<meta charset="utf-8">
-<link rel="preload" href="{% static "v2/css/base.css" %}" as="style">
-<link rel="preload" href="{% static "v2/css/gitcoin.css" %}" as="style">
-<link rel="preload" href="{% static "v2/css/bootstrap.min.css" %}" as="style" crossorigin="anonymous">
-<link rel="preload" href="{% static "v2/css/top-nav.css" %}" as="style">
-<link rel="preload" href="{% static "v2/css/fontawesome-all.min.css" %}" as="style">
-<link rel="preload" href="{% static "v2/css/lib/typography.css" %}" as="style">
-<link rel="preload" href="{% static "v2/css/jquery.select2.min.css" %}" as="style">
-<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-200.woff2" %}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-regular.woff2" %}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-600.woff2" %}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{% static "v2/fonts/muli/muli-v12-latin-700.woff2" %}" as="font" type="font/woff2" crossorigin>
+{% load i18n static is_in_list matches bundle %}
 
-<link rel="preload" href="{% static "v2/js/lib/bootstrap.min.js" %}" as="script" crossorigin="anonymous">
+<meta charset="utf-8">
 
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-<link rel="stylesheet" href="{% static "v2/css/search.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
-<link rel="stylesheet" href='{% static "v2/css/bootstrap-vue.min.css" %}'/>
-<link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/top-nav.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
+{% include 'shared/tag_manager_1.html' %}
+
+{% bundle css file libs %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/index.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gitcoin.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/top-nav.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/navbar.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/base.scss" %} />
+{% endbundle %}
+
 {% if not slim %}
-  <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-  <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+  {% bundle css file jquery %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery.modal.min.scss" %} />
+  {% endbundle %}
 {% endif %}
-<link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/faucet.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/colors.css" %}" />
 
-<!-- Forms -->
-<link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/drop.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/notifications.css" %}">
+{% bundle css file ql_banner %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/ql-banner.scss" %} />
+{% endbundle %}
 
-{% if 'grants' in request.path %}
+{% bundle css file components %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery.select2.min.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/buttons.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/timeline.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/carousel.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/faucet.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/colors.scss" %} />
+  <!-- Forms -->
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/checkbox.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/drop.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/form.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/input.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/label.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/radio.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/forms/select.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/external_bounties/checkboxes.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/notifications.scss" %} />
+{% endbundle %}
+
 <!-- Grants -->
-<link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/grants/cancel.css" %}">
+{% if 'grants' in request.path %}
+  {% bundle css file grants %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/grant.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/cancel.scss" %} />
+  {% endbundle %}
 {% endif %}
 
 <!-- Cookie Consent -->
-<link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
+{% bundle css file cookielaw %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/cookielaw/cookielaw.scss" %} />
+{% endbundle %}
 
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}

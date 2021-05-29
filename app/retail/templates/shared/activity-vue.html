@@ -16,18 +16,7 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<script type="text/x-template" id="townsquare-activity-indicator">
-  {% if chat_id or show_even_if_no_chat_id %}
-    {% if show_even_if_offline or last_chat_status == 'online' or last_chat_status == 'away' %}
-      <span class="chat_presence_indicator {{additionalclasses}} {{last_chat_status}}" {% if not suppress_click %} data-openchat="{{handle}}" {% endif %}>
-        <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: {{last_chat_status|title}}">
-          •
-        </span>
-      </span>
-    {% endif %}
-  {% endif %}
 
-</script>
 <script type="text/javascript">
   (($) => {
     let init = () => {
@@ -35,11 +24,6 @@
     };
 
     let registerComponents = () => {
-      Vue.component('ts-activity-indicator', {
-        template: '#townsquare-activity-indicator',
-        props: ['profile', 'show_even_if_offline', 'suppress_click', 'last_chat_status', 'show_even_if_no_chat_id']
-      });
-
       Vue.component('ts-activity', {
         template: '#townsquare-activity-template',
         props: ['row']
@@ -56,7 +40,7 @@
   <template v-if='row.activity_type == "new_bounty"'>
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
-      <i class="fad fa-sparkles" style="right: 0.2em; color: #3e00ff;"></i>
+      <i class="fad fa-sparkles" style="right: 0.2em; color: #6F3FF5;"></i>
     </div>
   </template>
   <div class="activity_main row">
@@ -80,13 +64,12 @@
           <div v-if="row.profile.organizations.length">
             <img v-for="org in row.profile.organizations" data-toggle="tooltip" title="Member of {{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
             {% if row.profile.handle not in my_tribes|join:"," and row.profile.data.type == 'Organization' %}
-                <div style="text-align:center"><a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>Join Tribe</a></div>
+                <div style="text-align:center"><a href=# class="align-middle btn btn-primary btn-sm mt-2 font-smaller-7" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>Join Tribe</a></div>
             {% endif %}
       </div>
     </div>
     <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
       <div>
-        <ts-activity-indicator last_chat_status="row.profile.last_chat_status" chat_id="row.profile.chat_id" handle="row.profile.handle" additionalclasses="mini" show_even_if_offline="1"></ts-activity-indicator>
         <b>{{row.profile.data.name or row.profile.handle }}</b>
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
@@ -118,7 +101,7 @@
         </template>
         <template v-else-if="row.activity_type == 'created_kudos'">
           a new kudos has been minted:
-          <a href="row.kudos.external_url">
+          <a href="{{ row.kudos.external_url }}">
             {{ row.kudos.ui_name }}
           </a>
         </template>
@@ -417,7 +400,7 @@
   </div>
   {% elif row.metadata.resource.type == 'content' %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content">
+    <div class="row align-items-center bg-light content cursor-none" >
       <div class="col-12 col-md-3 text-center">
         {% if not row.metadata.resource.image or row.metadata.resource.image  == 'undefined' %}
           <img class="py-2" style="max-height: 7rem;" src="{% static 'v2/images/team/gitcoinbot.png' %}">

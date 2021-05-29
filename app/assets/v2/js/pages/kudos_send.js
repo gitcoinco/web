@@ -308,6 +308,10 @@ $(document).ready(function() {
       startConfetti();
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
 
+      if (document.web3network == 'xdai') {
+        url = 'https://explorer.anyblock.tools/ethereum/poa/xdai/tx/' + txid;
+      }
+
       $('#loading_trans').html('This transaction has been sent 👌');
       $('#loading_trans').hide();
       $('#send_eth').css('display', 'none');
@@ -488,7 +492,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         return response.json();
       }).then(function(json) {
         var is_success = json['status'] == 'OK';
-        var _class = is_success ? 'info' : 'error';
+        var _class = is_success ? 'info' : 'danger';
 
         if (!is_success) {
           _alert(json['message'], _class);
@@ -663,7 +667,7 @@ if (web3Modal) {
       console.log(networkId);
     } else {
       error = true;
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'danger');
     }
 
   });

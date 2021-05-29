@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -23,10 +23,12 @@
     {% include 'shared/cards_pic.html' %}
     <meta name="title" content="Developers! Get Started with Gitcoin | Gitcoin">
     <meta name="description" content="Use Gitcoin to find paid work and solve real world problems in the blockchain/web3 ecosystem. Receive payment in (ETH or any ERC-20 token).">
-    <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/avatar_builder.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/avatar.css" %}>
+    {% bundle css file ftux_onboard %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/avatar_builder.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/avatar.scss" %} />
+    {% endbundle %}
   </head>
   <body class="g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -49,8 +51,8 @@
           {% endfor %}
           {% if github_handle %}
           <div class="controls">
-            <p id="prev-btn" class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
-            <p id="next-btn" class="button button--primary button--controls" onclick="changeStep(1)">{% trans "Next" %}</p>
+            <p id="prev-btn" class="btn btn-outline-primary" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+            <p id="next-btn" class="btn btn-primary" onclick="changeStep(1)">{% trans "Next" %}</p>
           </div>
           {% endif %}
         </form>

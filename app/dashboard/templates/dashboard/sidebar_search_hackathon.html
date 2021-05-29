@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -29,8 +29,8 @@
     <div class="col">
 
     {% if hackathon %}
-      <a v-if="!is_registered" href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue btn-block text-uppercase mb-4">Register</a>
-      <a href='{% url "hackathon_ts" hackathon.slug %}?filter=intro' class="btn btn-gc-blue mb-4">#intros</a>
+      <a v-if="!is_registered" href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-primary btn-block text-uppercase mb-4">Register</a>
+      <a href='{% url "hackathon_ts" hackathon.slug %}?filter=intro' class="btn btn-primary mb-4">#intros</a>
       <div class="col-12 subheading left-ribbon">
         {% trans "Hackathon Sponsors" %}
       </div>

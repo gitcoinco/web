@@ -20,14 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 import governance.views
-from governance.games.diplomacy import index as diplomacy
-from governance.games.sybilhunt import index as sybilhunt
+from governance.games.diplomacy import index as diplomacy, diplomacy_idx
 
 app_name = 'governance'
 urlpatterns = [
     path('', governance.views.index, name='governance'),
-    path('quadratic-diplomacy/<str:slug>', diplomacy, name='governance_game_diplomacy'),
-    re_path(r'^sybil-hunt/?', sybilhunt, name='governance_game_sybilhunt'),
+    path('diplomacy/<str:slug>', diplomacy, name='governance_game_diplomacy'),
+    re_path(r'diplomacy/?', diplomacy_idx, name='governance_game_diplomacy_idx'),
 
 
 ]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Admin views.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -35,8 +35,8 @@ class GeneralAdmin(admin.ModelAdmin):
 
 class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    search_fields = ['profile', 'name']
-    list_display = ['pk', 'profile', 'created_on', '__str__']
+    search_fields = ['profile__handle', 'name']
+    list_display = ['pk', 'profile', 'network', 'created_on', '__str__']
     raw_id_fields = ['profile']
     readonly_fields = ['preview']
 
@@ -96,10 +96,15 @@ class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
     raw_id_fields = ['contract']
-    readonly_fields = ['link', 'view_count']
+    readonly_fields = ['links', 'view_count']
 
-    def link(self, instance):
+    def links(self, instance):
         html = f"<a href={instance.url}>{instance.url}</a>"
+        other_items = instance.on_networks
+        if other_items:
+            html += "<BR>also avaialble on :"
+        for oi in other_items:
+            html += f"<BR> - <a href='{oi[1].url}'>{oi[0]}</a>"
         return mark_safe(html)
 
     def view_count(self, instance):
@@ -136,6 +141,14 @@ class TransferAdmin(admin.ModelAdmin):
     readonly_fields = ['claim']
     search_fields = ['tokenName', 'comments_public', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address', 'txid', 'receive_txid']
     list_display = ['created_on', '__str__']
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_broadcast_txn" in request.POST:
+            from kudos.tasks import redeem_bulk_kudos
+            redeem_bulk_kudos.delay(obj.pk, send_notif_email=True)
+            self.message_user(request, f"submitted broadcast to queues")
+            return redirect(obj.admin_url)
 
     def claim(self, instance):
         if instance.web3_type == 'yge':

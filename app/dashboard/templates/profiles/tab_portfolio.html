@@ -26,9 +26,9 @@
     </div>
     <div class="tab-projects-submit d-flex flex-column">
       <div class="tab-projects__item d-flex mb-0">
-        <form method="POST">
+        <form method="POST" name="portfolio">
           {% csrf_token %}
-          <div id="" class="py-1 collapse show" style="">
+          <div id="" class="py-1 collapse show">
             <div class="row mt-2">
               <div class="col-12 col-md-3">
                 <label class="form__label" for="URL">Project URL</label>
@@ -43,10 +43,11 @@
                 <input name="tags" id="tags" class="form__input" type="text" placeholder="python, javascript" value="">
               </div>
               <div class="col-12 col-md-3 pt-3">
-                <input class="mt-4 btn btn-gc-blue btn-sm font-caption font-weight-semibold"  type="submit" name="submit" id="submit" value="Add Project">
+                <button class="mt-4 btn btn-primary btn-sm font-caption font-weight-semibold" type="submit">Add Project</button>
               </div>
             </div>
           </div>
+        </form>
       </div>
     </div>
   </div>
@@ -71,9 +72,9 @@
         </div>
       </div>
       <div class="float-right">
-        <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.bounty.url}}">View Bounty &gt;</a>
+        <a class="btn btn-primary btn-sm m-2" href="{{submission.bounty.url}}">View Bounty &gt;</a>
         {% if submission.fulfiller_github_url %}
-          <a class="btn btn-gc-blue btn-sm m-2" href="{{submission.fulfiller_github_url}}">View Work &gt;</a>
+          <a class="btn btn-primary btn-sm m-2" href="{{submission.fulfiller_github_url}}">View Work &gt;</a>
         {% endif %}
       </div>
     </div>
@@ -95,13 +96,15 @@
       </div>
       <div class="float-right">
         {% if pi.link %}
-          <a class="btn btn-gc-blue btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
+          <a class="btn btn-primary btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
         {% endif %}
-        <form method="POST">
-          {% csrf_token %}
-          <input type="hidden" value="{{ pi.pk }}" name="project_pk">
-          <input class="btn btn-gc-pink btn-sm m-2" type="submit" name="submit" id="submit" value="Delete">
-        </form>
+        {% if is_my_profile %}
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="{{ pi.pk }}" name="project_pk">
+            <button type="submit" class="btn btn-danger btn-sm m-2">Delete</button>
+          </form>
+        {% endif %}
       </div>
     </div>
   {% endfor %}

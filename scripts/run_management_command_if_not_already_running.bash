@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : <<'END'
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -19,7 +19,20 @@ END
 
 IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1" | grep -c python)
 if [ "$2" != "" ]; then
-    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1" | grep -e "$2" | grep -c python)
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2" | grep -c python)
+fi
+if [ "$3" != "" ]; then
+    #echo "ps -aux | grep -e \"$1 $2 $3\" | grep -c python"
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2 $3" | grep -c python)
+fi
+if [ "$4" != "" ]; then
+    #echo "ps -aux | grep -e \"$1 $2 $3\" | grep -c python"
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2 $3 $4" | grep -c python)
+fi
+
+if [ "$5" != "" ]; then
+    #echo "ps -aux | grep -e \"$1 $2 $3\" | grep -c python"
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1 $2 $3 $4 $5" | grep -c python)
 fi
 
 if [ "$IS_ALREADY_RUNNING" -eq "0" ]; then

@@ -1,6 +1,6 @@
 """Define the mint all kudos management command.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -52,7 +52,7 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
             # Support Open Sea
             if kudos_contract.network == 'rinkeby':
                 image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
-            elif kudos_contract.network == 'mainnet':
+            elif kudos_contract.network in ['mainnet', 'xdai']:
                 image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
             elif kudos_contract.network == 'localhost':
                 image_path = f'v2/images/kudos/{image_name}'
@@ -61,7 +61,7 @@ def mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint
 
     if kudos_contract.network == 'rinkeby':
         external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
-    elif kudos_contract.network == 'mainnet':
+    elif kudos_contract.network in ['mainnet', 'xdai']:
         external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
     elif kudos_contract.network == 'localhost':
         external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'

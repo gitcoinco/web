@@ -2,11 +2,13 @@
 
 <div class="clr">
   <h2 class="label font-caption font-weight-semibold mb-1 p-1">
-    {{round_num}} MATCH ROUND
+    <span class="text-capitalize">{{round_num}}</span>
+    MATCH ROUND
   </h2>
 
   <h2 class="font-title font-weight-bold amount pt-1 mb-0">
-    {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
+    {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }}
+    USD
   </h2>
   <p class="amount mb-2 font-caption font-weight-semibold">
     {% if round_num == 'LAST' %} FINAL {% else %} ESTIMATED {% endif %}

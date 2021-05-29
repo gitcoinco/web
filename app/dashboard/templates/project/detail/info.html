@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,26 +15,50 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
-<div class="mt-3 mx-0 ml-md-5 px-0 pl-md-3 pr-md-2 pr-lg-3">
-  <a id="backprojects" class="font-caption" href="{% url 'hackathon_projects'  hackathon=hackathon %}">
-    <i class="fas fa-chevron-left mr-1"></i>
-    Back to Projects
-  </a>
-  <hackathon-project :hackathon="hackathon" :project="project" inline-template>
+<div class="mt-3 mx-0 px-0">
+  <hackathon-project :hackathon="hackathon" :project="project" v-on:project:edit="projectModal()" inline-template>
   <div class="row hackathon-project mt-3 mb-5">
     <div class="col-12 px-0">
-      <div class="col-12 col-lg-10 pb-2 d-flex" style="padding-top: 20px !important;">
-        <img v-if="project.logo_url" width="111" height="111" :src="project.logo_url">
-        <img v-else width="111" height="111" :src="project.prize.avatar">
-        <div class="ml-3">
-          <a class="text-decoration-none text-black project-title" :href="project.url"><h1 class="font-title-xl mt-md-4 mb-2 font-weight-bold">[[ project.name ]]</h1></a>
-          <div class="d-flex align-items-baseline">
-            <i class="fab fa-github mr-2"></i> <a class="font-body" :href="project.work_url">[[project.work_url]]</a>
+      <div class="bg-gc-blue px-3 pb-3 px-md-5 d-md-flex justify-content-between">
+        <div class="col-12 col-md-6 py-2 pt-md-4 pb-md-1">
+          <a id="backprojects" class="font-caption link-white pl-3 mb-4" href="{% url 'hackathon_projects'  hackathon=hackathon %}">
+            <i class="fas fa-chevron-left mr-1"></i>
+            Back to Projects
+          </a>
+
+          <div class="col-12 pb-2 d-flex mt-4">
+            <img class="project__logo mr-3" v-if="project.logo_url" :src="project.logo_url">
+            <img class="project__logo mr-3" v-else :src="project.prize.avatar">
+            <div class="ml-md-3">
+              <a class="text-decoration-none" :href="project.url"><h1 class="project-title mb-2 font-weight-bold" v-html="project.name"></h1></a>
+              <div class="d-flex align-items-baseline">
+                <i class="fab fa-github mr-2"></i> <a class="project__url link-white font-body" :href="project.work_url">[[project.work_url]]</a>
+              </div>
+              <div class="mt-3 project__actions">
+                <button class="btn btn-link btn-sm text-white p-0 m-0" @click="tabChange(1)"><i class="fas fa-comment mr-1"></i> [[ project.comments || 0 ]] Comment[[ project.comments > 1 ? 's' : '' ]]</button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 project__actions--mobile">
+            <button class="btn btn-link btn-sm text-white p-0 m-0" @click="tabChange(1)"><i class="fas fa-comment mr-1"></i> [[ project.comments || 0 ]] Comment[[ project.comments > 1 ? 's' : '' ]]</button>
           </div>
         </div>
+
+        <div class="float-md-right mt-md-5 pl-3 px-md-5 mr-md-5 mb-3 py-md-3">
+          {% if project_obj.grant_url %}
+            <b-link href="{{ project_obj.grant_url }}" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/grants-logo-2.svg' %}" alt="Triangles">{% if is_member %} EDIT GRANT {% else %} DONATE TO GRANT {% endif %}</b-link>
+          {% endif %}
+
+          {% if is_member %}
+            {% if not project_obj.grant_url %}
+              <a :href="`/grants/new?title=${project.name}&description_rich=${project.summary}&reference_url=${project.work_url}&github_project_url=${project.work_url}&related_hackathon_project_id=${project.id}`" target="_blank" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-plus mr-2"></i>CONVERT TO GRANT</a>
+            {% endif %}
+            <button @click="$emit('project:edit')" class="project__action--admin btn button-white btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
+          {% endif %}
+        </div>
       </div>
-      <div class="col-12 col-lg-7">
-        <div class="mt-4">
+      <div class="col-12 col-lg-12 pl-md-4 ml-md-5">
+        <div class="mt-4 pl-3 ml-3 ml-md-0 pl-md-0">
           <h2 class="font-body text-muted">TEAM MEMBERS</h2>
           <div class="d-flex flex-wrap">
             <div class="mb-3" v-for="team_member in project.team_members">
@@ -49,36 +73,82 @@
             </div>
           </div>
         </div>
-      </div>
-      <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 px-2" nav-wrapper-class="col-12" align="left" content-class="col-12 mt-4 light-blue" class="row">
+      <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-6" nav-wrapper-class="col-12" align="left" content-class="col-12 mt-4 light-blue" class="row">
         <b-tab class="col-12" title-item-class="navigation">
           <template v-slot:title>
             <div class="mt-4">
               {% trans "Summary" %}
             </div>
           </template>
-          <div class="mb-5">
-            <div class="mt-3 py-3 px-4" style="background: #FFFBE4; border-radius: 8px;" v-if="project.winner">
-              <p>🏆 <strong>Winner</strong></p>
-              <p class="font-body">This project is selected as the winner of the <strong>[[ project.prize.title ]]</strong> prize.</p>
+          <div class="mb-5 d-md-flex justify-content-between">
+            <div class="col-12 col-md-7">
+              <div class="d-flex d-md-none mt-3" v-if="project.winner">
+                  <img width="50" height="50" src="{% static 'v2/images/projects/winner-badge.svg' %}" alt="" class="mr-3">
+                  <div>
+                    <p style="color: #F4B33F" class="mb-0">Winner</p>
+                    <a :href="project.prize.url" class="text-black"><strong>[[ project.prize.title ]]</strong></a>
+                  </div>
+              </div>
+              <div class="mt-5">
+                <h3 class="font-title font-weight-semibold">Prize</h3>
+                <div class="d-flex mt-4">
+                  <img width="50" height="50" :src="project.prize.avatar" alt="" class="mr-3">
+                  <div>
+                    <a :href="project.prize.url"><strong>[[ project.prize.title ]]</strong></a> by <a :href="project.prize.org_url || '#'">[[project.prize.org]]</a><br>
+                    <a :href="`/hackathon/${hackathon.slug}`">[[hackathon.name]]</a>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 mb-5 col-sm-12 col-md-9 p-0" v-if="project.demo && project.demo.url">
+                <vue-plyr v-if="project.demo.provider != 'loom'">
+                  <div :data-plyr-provider="project.demo.provider" :data-plyr-embed-id="getVideoId(project.demo.url)" v-if="project.demo.provider == 'youtube' || project.demo.provider == 'vimeo'"></div>
+                  <video :src="project.demo.url" v-else-if="project.demo.provider == 'generic'"></video>
+                </vue-plyr>
+                <div style="position: relative; padding-bottom: 56.25%; height: 0;" v-else>
+                  <iframe :src="`https://www.loom.com/embed/${getVideoId(project.demo.url)}`" frameborder="0"
+                          webkitallowfullscreen mozallowfullscreen allowfullscreen
+                          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                  </iframe>
+                </div>
+              </div>
+              <div class="mt-5 mb-5">
+                <h3 class="font-title font-weight-semibold">Description</h3>
+                <p class="font-body mt-3">[[project.summary]]</p>
+              </div>
             </div>
-            <div class="mt-5">
-              <h3 class="font-title font-weight-semibold">Prize bounty</h3>
-              <div class="d-flex mt-4">
-                <img width="50" height="50" :src="project.prize.avatar" alt="" class="mr-3">
-                <div>
-                  <a :href="project.prize.url"><strong>[[ project.prize.title ]]</strong></a> by <a :href="project.prize.org_url || '#'">[[project.prize.org]]</a><br>
-                  <a :href="`/hackathon/${hackathon.slug}`">[[hackathon.name]]</a>
+            <div class="col-12 col-md-3 mr-4">
+              <div class="d-md-flex mt-4 d-none" v-if="project.winner">
+                  <img width="50" height="50" src="{% static 'v2/images/projects/winner-badge.svg' %}" alt="" class="mr-3">
+                  <div>
+                    <p style="color: #F4B33F" class="mb-0">Winner</p>
+                    <a :href="project.prize.url" class="text-black"><strong>[[ project.prize.title ]]</strong></a>
+                  </div>
+              </div>
+              <div class="mt-4">
+                <p class="font-weight-bold">Tribe</p>
+                <div class="d-flex">
+                  <img width="50" height="50" :src="project.prize.avatar" alt="" class="mr-3">
+                  <div>
+                    <a :href="project.prize.org_url || '#'">[[project.prize.org]]</a>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4">
+                <p class="font-weight-bold">Categories</p>
+                <div class="tag-list" v-if="project.categories.length">
+                  <small class="tag-list__item px-2" v-for="category in project.categories">[[category]]</small>
+                </div>
+              </div>
+              <div class="mt-4">
+                <p class="font-weight-bold">Built With</p>
+                <div class="tag-list" v-if="project.stack.length">
+                  <small class="tag-list__item px-2" v-for="stack in project.stack">[[stack]]</small>
                 </div>
               </div>
             </div>
-            <div class="mt-5 mb-5">
-              <h3 class="font-title font-weight-semibold">Description</h3>
-              <p class="font-body mt-3">[[project.summary]]</p>
-            </div>
           </div>
         </b-tab>
-        <b-tab class="col-12" title-item-class="navigation">
+        <b-tab class="col-12 col-md-6" title-item-class="navigation">
           <template v-slot:title>
             <div class="mt-4">
               {% trans "Activity" %}
@@ -95,6 +165,7 @@
           </div>
         </b-tab>
       </b-tabs>
+      </div>
     </div>
   </div>
   </hackathon-project>

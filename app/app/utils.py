@@ -185,7 +185,21 @@ def get_upload_filename(instance, filename):
     return f"docs/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
-def sync_profile(handle, user=None, hide_profile=True):
+def sync_profile(handle, user=None, hide_profile=True, delay_okay=False):
+    from dashboard.models import Profile
+    handle = handle.strip().replace('@', '').lower()
+    profile = Profile.objects.filter(handle=handle).exists()
+    # cant sync_profile if profile not existing, especially if profile is needed for login
+    delay = delay_okay and profile
+    if delay:
+        from dashboard.tasks import sync_profile as sync_profile_task
+        user_pk = user.pk if user else None
+        sync_profile_task.delay(handle, user_pk, hide_profile)
+    else:
+        actually_sync_profile(handle, user=user, hide_profile=hide_profile)
+
+
+def actually_sync_profile(handle, user=None, hide_profile=True):
     from dashboard.models import Profile
     handle = handle.strip().replace('@', '').lower()
     # data = get_user(handle, scoped=True)
@@ -202,15 +216,6 @@ def sync_profile(handle, user=None, hide_profile=True):
                 profile.handle = data['login']
                 profile.email = user.email
                 profile.save()
-
-                if profile is not None and (profile.chat_id is '' or profile.gitcoin_chat_access_token is ''):
-
-                    try:
-                        from chat.tasks import associate_chat_to_profile
-                        # created, profile = associate_chat_to_profile(profile)
-
-                    except Exception as e:
-                        logger.error(str(e))
 
         except UserSocialAuth.DoesNotExist:
             pass

@@ -103,8 +103,6 @@ generate:
     - grants.abi++
   - grants/admin.md:
     - grants.admin++
-  - grants/commands.md:
-    - grants.management.commands.subminer++
   - grants/forms.md:
     - grants.forms++
   - grants/models.md:

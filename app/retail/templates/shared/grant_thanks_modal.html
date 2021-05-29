@@ -16,46 +16,62 @@
 
 {% endcomment %}
 {% load i18n static %}
-    <div class="modal" id="tweetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+<contribution-thanks-modal inline-template>
+  <div>
+    <b-modal id="contribution-thanks"
+      @hide="handleHide()"
+      size="lg"
+      center
+      hide-header
+      hide-footer>
+        <div>
+          <div class="my-2 mx-3 row justify-content-end">
+              <b-button @click="close()" type="button" variant="white" class="close" data-dismiss="modal" aria-label="Close"></button>
+                <span aria-hidden="true">&times;</span>
+              </b-button>
           </div>
-          <div class="modal-body mt-4 mx-5 font-body">
-            <div class="row mb-1 justify-content-center">
-              {% if not fund_reward %}
-                <img class="icon w-75 h-75" src="{% static "v2/images/grants/torchbearer.svg" %}" />
-                <h5>Thanks for Contributing!</h5>
-                <span class="copy">{% trans "Tell your network about these Gitcoin Grants. If they fund a grant, the grant owner will get even more Matching Funds!" %}</span>
-              {% else %}
-                <img class="icon w-75 h-75" src="{{fund_reward.token.preview_img_url}}" />
-                <h5>Thanks for Contributing! You Earned a Kudos</h5>
-                <span>Have a <strong>{{fund_reward.token.ui_name}}</strong> Kudos on us.  When you click 'redeem kudos' your kudos will be transfered to your Ethereum wallet. </span>
-              {% endif %}
+          <div class="mx-3 mx-md-5 pb-4">
+            <div class="d-inline-flex flex-column-reverse flex-md-column text-left text-md-center">
+              <h3 class="mb-0 mb-md-5 d-flex-inline">Thank you for your contribution!</h3>
+              <div class="align-self-center d-flex-inline mb-5 mb-md-0 col-12 col-lg-6">
+                <img class="align-self-center d-flex-inline mb-5 mb-md-0" width="75%" style="max-width: 728px;" :src="imgURL" />
+              </div>
+            </div>
+            <div class="mt-5 my-4">
+              You've successfully contributed to [[numberOfContributions]] grants:
+            </div>
+            <hr />
+            <div>
+              <template v-for="donation in donations">
+                <div class="my-3">
+                  <a :href="donation.grant_url" target="_blank">[[donation.grant_title]]</a><br />
+                  [[donation.grant_donation_amount]] [[donation.grant_donation_currency]]
+                  <span v-if="donation.grant_donation_clr_match > 0" class="text-success"> + [[donation.grant_donation_clr_match]] DAI matching</span>
+                </div>
+              </template>
+            </div>
+            <hr />
+            <div class="mt-2 mb-4 px-1 row justify-content-end">
+              <b-button
+                class="mt-2 mx-2 col-md-4 col-sm-12"
+                variant="outline-primary"
+                @click="$refs.createCollection.fetchCollections()"
+              >
+                Save as Collection
+              </b-button>
+              <b-button
+                class="mt-2 mx-2 col-md-4 col-sm-12"
+                variant="primary"
+                @click="shareOnTwitter()"
+              >
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+                Share on Twitter
+              </b-button>
             </div>
           </div>
-          <div class="row mt-1 mb-4 justify-content-center">
-            {% if fund_reward %}
-              <a class="button button--primary" role="button" href="{{fund_reward.url}}?tweet=I just funded a grant on @gitcoin (https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}) and got this sweet Kudos! => "
-                target="_blank" rel="noopener noreferrer" >
-                {% trans "Redeem Kudos" %} 🌈
-              </a> |
-            {% elif grant.id %}
-              <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on @gitcoin => https://{{ request.META.HTTP_HOST }}/{% url 'grants:details' grant.id grant.slug %}"
-                target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Tweet Button', 'click', 'Grant Funder')">
-                {% trans "Tweet About this Grant" %} 🐦
-              </a>
-            {% else %}
-              <a class="button button--primary" role="button"
-                href="https://gitcoin.co/grants/"
-                target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Fund New Grant', 'click', 'Grant Funder')">
-                {% trans "Fund a New Grant" %}
-              </a>
-            {% endif %}
-          </div>
+          {% include 'shared/create_collection_modal.html' %}
         </div>
-      </div>
-    </div>
+      </b-modal>
+      {% include 'shared/contribution_trust_bonus.html' %}
+  </div>
+</contribution-thanks-modal>

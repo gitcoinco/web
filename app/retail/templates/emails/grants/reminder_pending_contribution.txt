@@ -1,0 +1,8 @@
+{% load i18n humanize %}
+
+{% trans "Complete Grant Contribution Checkout" %}
+
+{% trans "Contribute to the projects you care about!." %}
+
+{% trans "Complete Checkout" %}
+{% url 'grants:cart' %}?{{ utm_tracking }}

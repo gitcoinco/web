@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
@@ -12,21 +12,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n %}
+{% load humanize static i18n bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
   {% include 'shared/head.html' with slim=1 %}
   {% include 'shared/cards_pic.html' %}
-  <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-  <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
-  <link rel="stylesheet" href="{% static "v2/css/grants/collection.css" %}">
-  <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-  <link rel="stylesheet" href="{% static "v2/css/sidebar_search.css" %}" />
-  <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
+  {% bundle css file grants %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/collection.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
+  {% endbundle %}
   <style>
+
+    #sidebar-quick-view header.b-sidebar-header > strong {
+      font-weight: normal;
+      font-family: 'Miriam Libre';
+    }
+
     .select2-selection .select2-selection--single {
       background: none;
       outline: none;
@@ -38,128 +46,186 @@ along with this program. If not, see
     .no-bg {
       background: none !important;
     }
+
   </style>
+  <style class="page-styles">
+    {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
+  </style>
+
 </head>
 
 <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
-  {% include 'shared/tag_manager_2.html' %}
-  {% include 'shared/top_nav.html' with class='d-md-flex' %}
-  {% include 'grants/nav.html' %}
-  <div class="container-fluid header dash {% if not clr_round %} grants_hero_img {% endif %}"
-      style="{% if not clr_round %} background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
-  >
+  <div class="content__main min-vh-100 d-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'grants/nav.html' %}
+    <div id="grants-showcase" v-cloak>
+      <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
 
-    {% include 'shared/grant_thanks_modal.html' %}
+      </div>
+        {% include 'shared/grant_thanks_modal.html' %}
 
-    {% if clr_round and clr_round.logo %}
-        <img src="{{ clr_round.logo.url }}" class="w-100">
-    {% else %}
-      {% include 'grants/shared/landing_hero.html' %}
-    {% endif %}
+        {% include 'grants/shared/landing_hero.html' %}
 
-
-    <div class="row" class="mx-0" style="width: 100vw">
-      <div id="grants-details" class="no-gutters w-100">
-        <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
-          <div
-            style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
-            {% if prev_grants.count %}
-            <div class="row">
-              <div class="col-12 mt-3">
-                <div class="info-box large mx-auto p-3">
-                  <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for prev_grant in prev_grants %}{{prev_grant.pk}},{% endfor %}">+
-                    Add to Cart</a>
-                  <p class="mb-2">Want to contribute to <a href="https://vitalik.ca/general/2020/04/30/round5.html" target="_blank">stability of ecosystem funding</a>? You funded {{prev_grants.count}} grant{{ prev_grants.count|pluralize }} last time. Fund
-                    them again?</p>
-                  <span class="font-smaller-3">{% for prev_grant in prev_grants %}
-                  <a href="{{prev_grant.url}}">{{prev_grant.title}}</a>
-                  {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
-                  {%endfor%}</span>
-                </div>
-              </div>
-            </div>
-            {% endif %}
-            <div id="grants-showcase" v-cloak>
-              <div class="row" style="max-width: 99vw">
-                <div class="col-12 col-lg-3 col-xl-2 pr-xl-0" id="sidebar_container">
-                  {% include 'grants/shared/sidebar_search.html' %}
-                </div>
-
-                <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
-                  {% include 'grants/shared/landing_navbar.html' %}
-                  {% include 'grants/shared/landing_clr.html' %}
-
-                  <template v-if="'activity' == current_type">
-                    {% include 'grants/shared/landing_activity.html' %}
-                  </template>
-                  <template v-else-if="'about' == current_type">
-                    {% include 'grants/shared/landing_announce.html' %}
-                  </template>
-                  <template v-else-if="'stats' == current_type">
-                    <div id="insert_iframe">
-                      <div style="background-color: #eee; font-size: 14px; text-align: center;">
-                        <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a>
-                      </div>
-                      <iframe :src="`/grants/getstats/?category=${category}`" style="width: 100%; height: 100%; min-height: 1000px;">
-                      </iframe>
+        <div class="row grants-details-parent mx-0">
+          <div id="grants-details" :class="`no-gutters w-100 ${view == 'list' ? 'list-view' : 'grid-view'}`">
+            <div style="background-size: contain;" id="grant-background-image-mount-point">
+              <div
+                style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px;">
+                {% if prev_grants.count %}
+                <div class="row">
+                  <div class="col-12 mt-3">
+                    <div class="info-box large mx-auto p-3">
+                      <a class="btn btn-primary cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for prev_grant in prev_grants %}{{prev_grant.pk}},{% endfor %}">+
+                        Add to Cart</a>
+                      <p class="mb-2">Want to contribute to <a href="https://vitalik.ca/general/2020/04/30/round5.html" target="_blank">stability of ecosystem funding</a>? You funded {{prev_grants.count}} grant{{ prev_grants.count|pluralize }} last time. Fund
+                        them again?</p>
+                      <span class="font-smaller-3">{% for prev_grant in prev_grants %}
+                      <a href="{{prev_grant.url}}">{{prev_grant.title}}</a>
+                      {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
+                      {%endfor%}</span>
                     </div>
-                  </template>
-                  <template v-else>
-                    {% include 'grants/shared/landing_subnav.html' %}
-                    {% include 'grants/shared/landing_grants.html' %}
-                  </template>
+                  </div>
+                </div>
+                {% endif %}
+                <div >
+                  <div class="row mx-0">
+                    <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
+                      {% include 'grants/shared/sidebar_search.html' %}
+                    </div>
+
+                    <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
+                      {% include 'grants/shared/landing_navbar.html' %}
+
+                      <!-- TODO : REMOVE -->
+                      <!-- {% include 'grants/shared/landing_clr.html' %} -->
+
+                      <template v-if="'activity' == current_type">
+                        {% include 'grants/shared/landing_activity.html' %}
+                      </template>
+                      <template v-else-if="'about' == current_type">
+                        {% include 'grants/shared/landing_announce.html' %}
+                      </template>
+                      <template v-else-if="'stats' == current_type">
+                        <div id="insert_iframe">
+                          <div style="background-color: #eee; font-size: 14px; text-align: center;">
+                            <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
+                          </div>
+                          <br>
+                          <iframe :src="`https://metabase.gitcoin.co/public/dashboard/f57f8c61-e2f2-4129-89fc-d851f4d721ac`" style="width: 100%; height: 100%; min-height: 1000px;">
+                          </iframe>
+                        </div>
+                      </template>
+                      <template v-else>
+                        {% include 'grants/shared/top-filters.html' %}
+                        <template v-if="isGrantExplorer && !isGrantCollectionExplorer">
+                          {% include 'grants/shared/active_clr_round.html'%}
+                        </template>
+                        {% include 'grants/shared/landing_grants.html' %}
+                      </template>
+                    </div>
+                  </div>
+                  <b-sidebar
+                    id="sidebar-quick-view"
+                    ref="sidebar-quick-view"
+                    title="Grant Details"
+                    backdrop-variant="dark"
+                    bg-variant="white"
+                    backdrop
+                    shadow
+                    width="max(80vw, 1000px)"
+                  >
+                    <grant-details :grant="grant" :fullview="false" v-if="grant.id">
+                      <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
+                    </grant-details>
+                  </b-sidebar>
                 </div>
               </div>
             </div>
+            {% csrf_token %}
+          </div>
+          <div id="side-cart" class="grant-side-cart pb-md-0 pt-md-0 px-0 border-top-2 border-grey mt-n1 mt-md-0" style="display: none;">
+            {% include 'grants/detail/side-cart.html' %}
           </div>
         </div>
-        {% csrf_token %}
+
+
       </div>
-      <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
-        {% include 'grants/detail/side-cart.html' %}
-      </div>
+      {% include 'grants/components/collection.html' %}
+      {% include 'grants/detail/template-grant-details.html' %}
+      {% include 'shared/footer.html' %}
     </div>
+  </div>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+  {% include 'grants/shared/shared_scripts.html' %}
+  {{collections|json_script:"collections-object"}}
+  {{grant_bg.inline_css|json_script:"inline_css"}}
+  <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+  <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
+
+  <script>
+    document.current_type = "{{ type|default:'all' }}";
+    document.selected_category = "{{ selected_category }}";
+    document.network = "{{ network}}";
+    document.keyword = "{{ keyword }}";
+    document.following = {{ following|yesno:'true,false' }};
+    document.idle_grants = {{ idle_grants|yesno:'true,false' }};
+    document.show_contributions = {{ show_contributions|yesno:'true,false' }};
+    document.featured = {{ featured|yesno:'true,false' }};
+    document.collection_id = {{ collection_id|default:'null' }};
+    document.collections = JSON.parse(document.getElementById('collections-object').textContent);
+    document.activePage = "{{ active }}";
+
+    {% if clr_round %}
+      document.clr_round_pk = "{{clr_round.pk}}";
+      document.round_num = "{{clr_round.round_num}}";
+      document.sub_round_slug = "{{clr_round.sub_round_slug}}";
+      document.customer_name = "{{clr_round.customer_name}}";
+    {% else %}
+      delete document.round_num;
+      delete document.customer_name;
+      delete document.clr_round_pk;
+      delete document.sub_round_slug;
+    {% endif %}
+    let base_style = {
+        bg: '/static/v2/images/bg/{{styles.bg}}',
+        size: "{{styles.bg_size}}",
+        color: "{{styles.bg_color}}",
+        background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
+      };
+
+    document.all_type_styles = {% if all_styles %} {{ all_styles|safe }} {% else %} [] {% endif %};
+
+    document.all_routing_policies = {% if all_routing_policies %} {{ all_routing_policies | safe}} {% else %} [] {% endif %};
+    // document.all_routing_policies.push(base_style);
+
+    {% if grant_bg %}
+    // {{styles}}
+      document.current_style = {
+        banner_image: "{{ grant_bg.banner_image }}",
+        background_image: " url('{{grant_bg.background_image }}')",
+        inline_css: JSON.parse(document.getElementById('inline_css').textContent)
+      }
+    {% else %}
+      document.current_style = base_style
+    {% endif %}
+
+  </script>
+  {% include 'shared/activity_scripts.html' %}
 
 
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
-    {% include 'shared/footer.html' %}
-    {% include 'grants/shared/shared_scripts.html' %}
-    {{collections|json_script:"collections-object"}}
-
-    <script>
-      document.current_type = "{{ type|default:'all' }}";
-      document.selected_category = "{{ selected_category }}";
-      document.network = "{{ network}}";
-      document.keyword = "{{ keyword }}";
-      document.following = {{ following|yesno:'true,false' }};
-      document.idle_grants = {{ idle_grants|yesno:'true,false' }};
-      document.show_contributions = {{ show_contributions|yesno:'true,false' }};
-      document.featured = {{ featured|yesno:'true,false' }};
-      document.collection_id = {{ collection_id|default:'null' }};
-      document.collections = JSON.parse(document.getElementById('collections-object').textContent);
-      {% if clr_round %}
-        document.round_num = "{{clr_round.round_num}}";
-      {% endif %}
-    </script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/grants/components.js" %}"></script>
+  <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
+  <script src="{% static "v2/js/grants/funding.js" %}"></script>
+  <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
+  <script src="{% static "v2/js/grants/contribution-trust-bonus.js" %}"></script>
+  <script src="{% static "v2/js/grants/grant-thanks-modal.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
 </body>
-{% include 'shared/activity_scripts.html' %}
-<script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
-<script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-<script src="{% static "v2/js/grants/components.js" %}"></script>
-<script src="{% static "v2/js/grants/index.js" %}"></script>
-<script src="{% static "v2/js/grants/funding.js" %}"></script>
-<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-
-<script>
-  var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0]
-  });
-</script>
 
 
 </html>

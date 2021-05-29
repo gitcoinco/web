@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,8 +15,12 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% load i18n static bundle %}
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 {% block coltype %}colMS{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 {% block breadcrumbs %}{% endblock %}
@@ -48,6 +52,8 @@
     <script type="text/javascript" src="simple_graph.js"></script>
 
     <script type="text/javascript">
+      document.body.className += '  {{theme}}';
+
       var drawing;
       function createDrawing() {
         drawing = new Drawing.SimpleGraph({layout: '3d', selection: true, numNodes: 1056, graphLayout: {attraction: 4, repulsion: 7.5}, showStats: false, showInfo: false});
@@ -60,9 +66,6 @@
         padding: 0;
         font: 11px courier;
         overflow: hidden;
-      }
-      body.dark {
-        background: #12053a;
       }
       #graph-info {
         position: absolute;
@@ -81,16 +84,23 @@
       }
       #header{
         display: none !important;
-      }      
+      }
+      body.dark {
+        background: #0e0333;
+        color: white;
+      }
+      .dark .dashboard {
+        background-color: #0e0333;
+        color: white;
+      }
+      .dark .dashboard canvas {
+        color: white;
+      }
     </style>
   </head>
   <body onload="createDrawing()">
     <div id="options" class="p-2">
       <form>
-        <p>
-          <input type="checkbox" id="show_labels" onclick="drawing.show_labels = this.checked;">
-          <label for="show_labels">Show labels</label>
-        </p>
         <p>
           <input type="button" value="Stop layout" onclick="drawing.stop_calculating();">
         </p>
@@ -207,13 +217,13 @@ Drawing.SimpleGraph = function(options) {
    *  numNodes and numEdges.
    */
   function createGraph() {
-  
+
 
       {{graph|safe}}
 
     that.layout_options.width = that.layout_options.width || 2000;
     that.layout_options.height = that.layout_options.height || 2000;
-    that.layout_options.iterations = that.layout_options.iterations || 100000;
+    that.layout_options.iterations =  999;
     that.layout_options.layout = that.layout_options.layout || that.layout;
     graph.layout = new Layout.ForceDirected(graph, that.layout_options);
     graph.layout.init();
@@ -226,7 +236,14 @@ Drawing.SimpleGraph = function(options) {
    *  Create a node object and add it to the scene.
    */
   function drawNode(node) {
-    var draw_object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {  color: Math.random() * 0xe0e0e0, opacity: 0.8 } ) );
+     {% if theme == 'dark' %}
+        var choices = ['9760FF', ,'6A43B3', ,'7AFFF7', ,'54D8D0', ,'42AFA9', ,'FA72AF', ,'DA5892', ,'B44878'];
+        var i = Math.floor(Math.random() * choices.length)
+        var color = "#" + choices[i];
+      {% else %}
+        var color = Math.random() * 0xe0e0e0;
+      {% endif %}
+    var draw_object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( {  color: color, opacity: 0.8 } ) );
     var label_object;
 
     if(that.show_labels) {
@@ -236,7 +253,7 @@ Drawing.SimpleGraph = function(options) {
         label_object = new THREE.Label(node.id);
       }
       node.data.label_object = label_object;
-      scene.add( node.data.label_object );
+      scene.add( node.data.label_object);
     }
 
     var area = 5000;
@@ -258,7 +275,12 @@ Drawing.SimpleGraph = function(options) {
    *  Create an edge object (line) and add it to the scene.
    */
   function drawEdge(source, target) {
-      material = new THREE.LineBasicMaterial({ color: 0x606060 });
+     {% if theme == 'dark' %}
+        var color = 0xa0a0a0;
+      {% else %}
+        var color = 0x606060;
+      {% endif %}
+      material = new THREE.LineBasicMaterial({ color: color });
 
       var tmp_geo = new THREE.Geometry();
       tmp_geo.vertices.push(source.data.draw_object.position);
@@ -307,7 +329,7 @@ Drawing.SimpleGraph = function(options) {
 
     // Show labels if set
     // It creates the labels when this options is set during visualization
-    if(that.show_labels) {
+    if({{show_labels}}) {
       length = graph.nodes.length;
       for(i=0; i<length; i++) {
         node = graph.nodes[i];
@@ -315,6 +337,7 @@ Drawing.SimpleGraph = function(options) {
           node.data.label_object.position.x = node.data.draw_object.position.x;
           node.data.label_object.position.y = node.data.draw_object.position.y - 100;
           node.data.label_object.position.z = node.data.draw_object.position.z;
+
           node.data.label_object.lookAt(camera.position);
         } else {
           var label_object;
@@ -384,6 +407,16 @@ Drawing.SimpleGraph = function(options) {
 
     <div style="position: absolute; bottom: 0;">
       <form method=GET>
+      <select name="show_labels">
+        {% for option in show_labels_options %}
+          <option value="{{option}}" {% if show_labels == option %}selected=selected{%endif%}  >Label:{{option}}</option>
+        {% endfor %}
+      </select>
+      <select name="theme">
+        {% for option in themes %}
+          <option value="{{option}}" {% if theme == option %}selected=selected{%endif%}  >Theme:{{option}}</option>
+        {% endfor %}
+      </select>
       <select name="type">
         {% for option in types %}
           <option {% if type == option %}selected=selected{%endif%}  >{{option}}</option>

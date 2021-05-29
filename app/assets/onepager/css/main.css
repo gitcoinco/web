@@ -544,6 +544,23 @@ body #main a:not(.button):hover {
   color: #ec5597;
 }
 
+
+body #main a.no-pink {
+  color: var(--gc-blue);
+}
+
+body #main a.no-pink:hover {
+  color: var(--gc-blue-hover);
+}
+
+body #main a.no-pink.btn-primary {
+  color: #ffffff;
+}
+
+body #main a.text-black.no-pink {
+  color: black;
+}
+
 .proPic {
   width: 25vmin;
   margin: 0.75vmin;

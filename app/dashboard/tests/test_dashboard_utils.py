@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard utility related tests.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -124,22 +124,6 @@ class DashboardUtilsTest(TestCase):
         mockUserAction.create.assert_called_once_with(action='Login', metadata={}, user=None,
                                                       utm={'utm_campaign': 'test campaign'})
 
-    @staticmethod
-    def test_get_ipfs():
-        """Test that IPFS connectivity to gateway defined in settings succeeds."""
-        ipfs = get_ipfs()
-        assert type(ipfs) is ipfshttpclient.client.Client
-
-    @staticmethod
-    def test_get_ipfs_with_bad_host():
-        """Test that IPFS connectivity to gateway fails when bad host is passed."""
-        with pytest.raises(IPFSCantConnectException):
-            assert get_ipfs('nohost.com')
-
-    @staticmethod
-    def test_ipfs_cat_ipfsapi():
-        """Test that ipfs_cat_ipfsapi method returns IPFS object."""
-        assert "security-notes" in str(ipfs_cat_ipfsapi('/ipfs/QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv/readme'))
 
     @staticmethod
     def test_can_successfully_re_market_a_bounty():

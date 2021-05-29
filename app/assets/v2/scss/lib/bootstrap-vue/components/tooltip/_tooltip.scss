@@ -1,0 +1,86 @@
+// Some overrides to make tooltip transitions work with Vue `<transition>`
+.tooltip.b-tooltip {
+  display: block;
+  opacity: $tooltip-opacity;
+  // Needed due to Bootstrap v4.4 reboot.css changes
+  outline: 0;
+
+  &.fade:not(.show) {
+    opacity: 0;
+  }
+
+  &.show {
+    opacity: $tooltip-opacity;
+  }
+
+  // Disabled pointer events when in 'noninteractive' mode to hide
+  // the tooltip when the user hovers over its content
+  &.noninteractive {
+    pointer-events: none;
+  }
+
+  .arrow {
+    margin: 0 $tooltip-border-radius;
+  }
+
+  &.bs-tooltip-right,
+  &.bs-tooltip-left {
+    .arrow {
+      margin: $tooltip-border-radius 0;
+    }
+  }
+}
+
+// Create custom variants for tooltips
+@if $bv-enable-tooltip-variants {
+  @each $variant, $value in $theme-colors {
+    .tooltip.b-tooltip-#{$variant} {
+      $tip-bg-color: theme-color-level($variant, $b-tooltip-bg-level);
+      $tip-text-color: color-yiq($tip-bg-color);
+
+      &.bs-tooltip-top {
+        .arrow::before {
+          border-top-color: $tip-bg-color;
+        }
+      }
+
+      &.bs-tooltip-right {
+        .arrow::before {
+          border-right-color: $tip-bg-color;
+        }
+      }
+
+      &.bs-tooltip-bottom {
+        .arrow::before {
+          border-bottom-color: $tip-bg-color;
+        }
+      }
+
+      &.bs-tooltip-left {
+        .arrow::before {
+          border-left-color: $tip-bg-color;
+        }
+      }
+
+      &.bs-tooltip-auto {
+        &[x-placement^="top"] {
+          @extend .bs-tooltip-top;
+        }
+        &[x-placement^="right"] {
+          @extend .bs-tooltip-right;
+        }
+        &[x-placement^="bottom"] {
+          @extend .bs-tooltip-bottom;
+        }
+        &[x-placement^="left"] {
+          @extend .bs-tooltip-left;
+        }
+      }
+
+      .tooltip-inner {
+        color: $tip-text-color;
+        background-color: $tip-bg-color;
+      }
+    }
+  }
+}

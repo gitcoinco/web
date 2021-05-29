@@ -47,19 +47,6 @@
         messageInputDom.value = '';
     };
 
-    // jitsi
-    const domain = 'meet.jit.si';
-    const options = {
-        roomName: roomName,
-        width: 700,
-        height: 400,
-        displayName: document.contxt['github_handle'],
-        avatarUrl: '/dynamic/avatar/' + document.contxt['github_handle'],
-        parentNode: document.querySelector('#meet')
-    };
-    const api = new JitsiMeetExternalAPI(domain, options);
-    api.executeCommand('toggleAudio'); // default off
-    api.executeCommand('toggleVideo'); // default off
 
 
 })(jQuery);

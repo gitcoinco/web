@@ -76,8 +76,7 @@ When you [open an issue](https://github.com/gitcoinco/web), you'll notice four t
 
 ## Discussions And General Help
 
-As Gitcoin is still at its early stages, drop by
-[gitcoin.co/chat](https://chat.gitcoin.co/) and say hi to know what's next / to get
+As Gitcoin is still at its early stages, drop by on [Discord](https://discord.gg/gitcoin) and say hi to know what's next / to get
 your answers cleared up.
 
 ## Pull Requests

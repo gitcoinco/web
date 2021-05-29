@@ -1,0 +1,47 @@
+.form__checkbox {
+  display: flex;
+  position: relative;
+}
+
+.form__checkbox input {
+  position: absolute;
+  opacity: 0;
+}
+
+.form__checkbox .form__label {
+  cursor: pointer;
+}
+
+.form__checkbox .form__label::before {
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  content: '';
+  display: inline-flex;
+  justify-content: center;
+  height: 18px;
+  margin-right: 10px;
+  vertical-align: text-top;
+  width: 18px;
+}
+
+.form__checkbox input.error ~ .form__label,
+.form__checkbox input.error ~ .form__label a {
+  color: #D50000;
+}
+
+.form__checkbox input:disabled ~ .form__label::before {
+  background-color: #d0d0d0 !important;
+  border-color: #d0d0d0 !important;
+  cursor: not-allowed;
+}
+
+.form__checkbox label.error {
+  display: none !important;
+}
+
+.form__checkbox input:checked ~ .form__label::before {
+  background-color: #6F3FF5;
+  border-color: #6F3FF5;
+  content: url(static('v2/images/check.svg'));
+}

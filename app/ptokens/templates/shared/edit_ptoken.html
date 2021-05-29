@@ -1,0 +1,83 @@
+<div class="modal fade" id="editpTokenModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" style="max-width: 576px;" role="document">
+    <div class="modal-content">
+      <form class="modal-body my-4 mx-5 py-3">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title font-weight-semibold mb-5">Edit Your Time Token</h5>
+
+        <div class="`form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold">Name:</label>
+          <p class="d-inline">[[ pToken.name ]]</p>
+        </div>
+        <div class="form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold">Symbol:</label>
+          <p class="d-inline">[[ pToken.symbol ]]</p>
+        </div>
+        <div class="`form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold" for="pTokenPrice">Price:</label>
+          <input
+            type="number"
+            style="width: 75%"
+            :class="`form-control d-inline-block ${pToken.is_invalid_price && 'is-invalid' || ''}`"
+            id="pTokenPrice"
+            aria-describedby="tokenPrice"
+            required
+            v-model="pToken.price"
+          />
+          <br>
+          <div class="invalid-feedback">
+            Please provide an initial price for your token
+          </div>
+        </div>
+        <div class="form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold" for="pTokenSupply">Supply:</label>
+          <input
+            type="number"
+            style="width: 75%"
+            :class="`d-inline-block form-control ${pToken.is_invalid_supply && 'is-invalid' || ''}`"
+            id="pTokenSupply"
+            aria-describedby="tokenSupply"
+            required
+            v-model="pToken.supply"
+          />
+          <br>
+          <div class="invalid-feedback">
+            [[ supplyInvalidMsg ]]
+          </div>
+        </div>
+        <div class="form-check mb-5">
+          <input
+            type="checkbox"
+            :class="`form-check-input ${pToken.is_invalid_tos && 'is-invalid' || ''}`"
+            v-model="pToken.tos"
+            required
+            id="TOSCheck"
+          />
+          <small id="TOSText" class="form-check-label"
+            >I have read, understand, and agree to the <a href="https://gitcoin.co/terms">Terms of Servive</a> .</small
+          >
+          <br>
+          <div class="invalid-feedback">
+            You must agree before submitting.
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn btn-lg btn-primary mb-3 px-5" @click="editPToken" :disabled="pToken.tx_status !== 'success'">
+            Confirm
+          </button>
+          <br>
+          <button id="closeEdit" type="button" class="btn btn-lg btn-outline-primary px-5" data-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

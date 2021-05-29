@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';
@@ -5,15 +7,10 @@ let usersHasNext = false;
 let numUsers = '';
 let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_id : '';
 
+const EventBus = new Vue();
+
 Vue.mixin({
   methods: {
-    messageUser: function(handle) {
-      let vm = this;
-      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
-
-      chatWindow = window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
-    },
-
     fetchUsers: function(newPage) {
       let vm = this;
 
@@ -141,7 +138,7 @@ Vue.mixin({
       $.when(postInvite).then((response) => {
         console.log(response);
         if (response.status === 500) {
-          _alert(response.msg, 'error');
+          _alert(response.msg, 'danger');
 
         } else {
           vm.$refs['user-modal'].closeModal();
@@ -162,7 +159,7 @@ Vue.mixin({
       $.when(postInvite).then((response) => {
         console.log(response);
         if (response.status !== 200) {
-          _alert(response.msg, 'error');
+          _alert(response.msg, 'danger');
 
         } else {
           vm.$refs['user-modal'].closeModal();
@@ -214,26 +211,90 @@ Vue.mixin({
             vm.openBounties(response.data[0]);
             $('#userModal').bootstrapModal('show');
           } else {
-            _alert('The user was not found. Please try using the search box.', 'error');
+            _alert('The user was not found. Please try using the search box.', 'danger');
           }
         });
       }
     },
-    extractURLFilters: function() {
+
+    extractURLFilters: function(serverFilters) {
       let vm = this;
-      let params = getURLParams();
+      let params = getAllUrlParams();
+      let columns = serverFilters[vm.header.index]['mappings'][vm.header.type]['properties'];
 
-      vm.users = [];
+      if (params.body && !vm.filtersLoaded) {
+        let decodedBody = decodeURIComponent(params.body);
 
-      if (params) {
-        for (var prop in params) {
-          if (prop === 'skills') {
-            vm.$set(vm.params, prop, params[prop].split(','));
-          } else {
-            vm.$set(vm.params, prop, params[prop]);
+
+        let newBody = JSON.parse(decodedBody);
+
+        this.setBody(newBody);
+        this.fetch(this);
+
+        if (Object.values(newBody).length > 0) {
+          try {
+            // eslint-disable-next-line guard-for-in
+            let query = newBody['query'];
+            let activeFilters = [];
+
+            if (query.hasOwnProperty('bool') && query['bool'].hasOwnProperty('filter') && query['bool']['filter'].hasOwnProperty('bool') && query['bool']['filter']['bool'].hasOwnProperty('should')) {
+              query = query['bool']['filter']['bool']['should'];
+              for (let x in query) {
+                if (!query[x])
+                  continue;
+                let terms = query[x]['term'];
+
+                if (!terms) {
+                  continue;
+                }
+                // eslint-disable-next-line guard-for-in
+                for (let prop in terms) {
+                  let term = terms[prop];
+
+                  let meta = columns[prop];
+
+                  if (!meta)
+                    continue;
+                  let propKey = prop.replace('_exact', '');
+
+                  if (typeof activeFilters[propKey] !== 'object') {
+                    activeFilters[propKey] = [];
+                  }
+                  activeFilters[propKey].push(term);
+                  if (columns[propKey]['selected'] !== true) {
+                    columns[propKey]['selected'] = true;
+                    columns[propKey]['selectedValues'] = [];
+                  }
+
+
+                  let value = Object.values(activeFilters[propKey])[0];
+
+                  if (!value)
+                    continue;
+                  columns[propKey]['selectedValues'].push(value);
+
+                  let _instruction = {
+                    fun: 'orFilter',
+                    args: [ 'term', propKey, value ]
+                  };
+
+                  this.localInstructions.push(_instruction);
+                  this.addInstruction(_instruction);
+                }
+              }
+              vm.params = activeFilters;
+            }
+
+
+          } catch (e) {
+            console.log(e);
           }
         }
+
       }
+      vm.esColumns = columns;
+
+      vm.filterLoaded = true;
     },
     joinTribe: function(user, event) {
       event.target.disabled = true;
@@ -251,8 +312,8 @@ Vue.mixin({
           user.is_following = false;
         }
 
-        event.target.classList.toggle('btn-outline-green');
-        event.target.classList.toggle('btn-gc-blue');
+        event.target.classList.toggle('btn-outline-secondary');
+        event.target.classList.toggle('btn-primary');
       }).fail(function(error) {
         event.target.disabled = false;
       });
@@ -264,247 +325,107 @@ Vue = Vue.extend({
 });
 
 
-Vue.component('directory-card', {
-  name: 'DirectoryCard',
-  delimiters: [ '[[', ']]' ],
-  props: [ 'user', 'funderBounties' ]
-});
-Vue.use(innerSearch.default);
-Vue.component('autocomplete', {
-  props: [ 'options', 'value' ],
-  template: '#select2-template',
-  methods: {
-    formatMapping: function(item) {
-      console.log(item);
-      return item.name;
-    },
-    formatMappingSelection: function(filter) {
-      return '';
-    }
-  },
-  mounted() {
-    let count = 0;
-    let vm = this;
-
-    let data = $.map(this.options, function(obj, key) {
-      obj.id = count++;
-      obj.text = key;
-      return obj;
-    });
-
-
-    $(vm.$el).select2({
-      data: data,
-      multiple: true,
-      allowClear: true,
-      placeholder: 'Search for another filter to add',
-      minimumInputLength: 1,
-      templateSelection: this.formatSelection,
-      escapeMarkup: function(markup) {
-        return markup;
-      }
-    })
-      .on('change', function() {
-        console.log('changed');
-        let val = $(vm.$el).val();
-
-        let changeData = $.map(val, function(filter) {
-          return data[filter];
-        });
-
-        vm.$emit('input', changeData);
-      });
-
-    // fix for wrong position on select open
-    var select2Instance = $(vm.$el).data('select2');
-
-    select2Instance.on('results:message', function(params) {
-      this.dropdown._resizeDropdown();
-      this.dropdown._positionDropdown();
-    });
-  },
-  destroyed: function() {
-    $(this.$el).off().select2('destroy');
-    this.$emit('destroyed');
-  }
-});
-Vue.component('user-directory', {
-  delimiters: [ '[[', ']]' ],
-  props: [ 'tribe', 'is_my_org' ],
-  data: function() {
-    return {
-      orgOwner: this.is_my_org || false,
-      userFilter: {
-        options: [
-          {text: 'All', value: 'all'},
-          {text: 'Tribe Owners', value: 'owners'},
-          {text: 'Tribe Members', value: 'members'},
-          {text: 'Tribe Hackers', value: 'hackers'}
-        ]
-      },
-      tribeFilter: this.tribe || '',
-      users,
-      usersPage,
-      hackathonId,
-      usersNumPages,
-      usersHasNext,
-      numUsers,
-      media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
-      searchTerm: null,
-      bottom: false,
-      params: {
-        'user_filter': 'all'
-      },
-      funderBounties: [],
-      currentBounty: undefined,
-      contributorInvite: undefined,
-      isFunder: false,
-      bountySelected: null,
-      userSelected: [],
-      showModal: false,
-      showFilters: true,
-      skills: document.keywords,
-      selectedSkills: [],
-      noResults: false,
-      isLoading: true,
-      gitcoinIssueUrl: '',
-      issueDetails: undefined,
-      errorIssueDetails: undefined,
-      showBanner: undefined,
-      persona: undefined,
-      hideFilterButton: !!document.getElementById('explore_tribes'),
-      expandFilter: true
-    };
-  },
-
-  mounted() {
-    this.fetchUsers();
-    this.tribeFilter = this.tribe;
-    this.$watch('params', function(newVal, oldVal) {
-      this.searchUsers();
-    }, {
-      deep: true
-    });
-  },
-  created() {
-    if (document.contxt.github_handle && this.is_my_org) {
-      this.fetchBounties();
-    }
-    this.inviteOnMount();
-    this.extractURLFilters();
-  },
-  beforeMount() {
-    if (this.isMobile) {
-      this.showFilters = false;
-    }
-    window.addEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    }, false);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    });
-  }
-});
-Vue.component('user-directory-elastic', {
-  delimiters: [ '[[', ']]' ],
-  data: function() {
-    return {
-      filters: [],
-      esColumns: [],
-      filterLoaded: false,
-      users,
-      usersPage,
-      usersNumPages,
-      usersHasNext,
-      numUsers,
-      media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
-      searchTerm: null,
-      bottom: false,
-      params: {},
-      funderBounties: [],
-      currentBounty: undefined,
-      contributorInvite: undefined,
-      isFunder: false,
-      bountySelected: null,
-      userSelected: [],
-      showModal: false,
-      showFilters: !document.getElementById('explore_tribes'),
-      skills: document.keywords,
-      selectedSkills: [],
-      noResults: false,
-      isLoading: true,
-      gitcoinIssueUrl: '',
-      issueDetails: undefined,
-      errorIssueDetails: undefined,
-      showBanner: undefined,
-      persona: undefined,
-      hideFilterButton: !!document.getElementById('explore_tribes')
-    };
-  },
-  methods: {
-    autoCompleteDestroyed: function() {
-      this.filters = [];
-    },
-    autoCompleteChange: function(filters) {
-      this.filters = filters;
-    },
-    outputToCSV: function() {
-      let url = '/api/v0.1/users_csv/';
-
-      $.get(url, this.body).then(resp => resp.json()).then(json => {
-        _alert(json.message);
-      }).catch(() => _alert('There was an issue processing your request'));
-    },
-    fetchMappings: function() {
-      let vm = this;
-
-      $.when(vm.header.client.indices.getMapping())
-        .then(response => {
-          vm.esColumns = response[vm.header.index]['mappings'][vm.header.type]['properties'];
-          vm.filterLoaded = true;
-        });
-    }
-  },
-  mounted() {
-    this.fetchMappings();
-    // this.fetchUsers();
-    this.$watch('params', function(newVal, oldVal) {
-      this.searchUsers();
-    }, {
-      deep: true
-    });
-  },
-  created() {
-    this.setHost(document.contxt.search_url);
-    this.setIndex('haystack');
-    this.setType('modelresult');
-    this.fetchBounties();
-    this.inviteOnMount();
-    this.extractURLFilters();
-  },
-  beforeMount() {
-    window.addEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    }, false);
-  },
-  beforeDestroy() {
-    window.removeEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    });
-  }
-});
 if (document.getElementById('gc-users-elastic')) {
 
+  Vue.component('directory-card', {
+    name: 'DirectoryCard',
+    delimiters: [ '[[', ']]' ],
+    props: [ 'user', 'funderBounties' ]
+  });
+
+  Vue.use(innerSearch.default);
+  Vue.component('autocomplete', {
+    props: [ 'options', 'value' ],
+    template: '#select2-template',
+    data: function() {
+      return {
+        selectedFilters: []
+      };
+    },
+    methods: {
+      reset: function() {
+        $(this.$el).select2().val(null).trigger('change');
+      },
+      formatMapping: function(item) {
+        console.log(item);
+        return item.name;
+      },
+      formatMappingSelection: function(filter) {
+        return '';
+      }
+    },
+    created() {
+      EventBus.$on('reset', () => {
+        this.s2.val([]).trigger('change');
+      });
+    },
+    mounted() {
+      let count = 0;
+      let vm = this;
+      let mappedFilters = {};
+      let data = $.map(this.options, function(obj, key) {
+
+        if (key.indexOf('_exact') === -1)
+          return;
+        let newKey = key.replace('_exact', '');
+
+        if (mappedFilters[newKey])
+          return;
+        obj.id = count++;
+        obj.text = newKey;
+        obj.key = key;
+
+        if (obj.selected && obj.key !== 'keywords') {
+          console.log(`${obj.text} is selected`);
+          vm.selectedFilters.push(obj.id);
+        }
+
+        mappedFilters[newKey] = true;
+        mappedFilters[key] = true;
+        return obj;
+      });
+
+      vm.s2 = $(vm.$el)
+        .select2({
+          data: data,
+          multiple: true,
+          allowClear: true,
+          placeholder: 'Search for another filter to add',
+          minimumInputLength: 1,
+          escapeMarkup: function(markup) {
+            return markup;
+          }
+        })
+        .on('change', function() {
+          let val = $(vm.$el).val();
+          let changeData = $.map(val, function(filter) {
+            return data[filter];
+          });
+
+          vm.$emit('input', changeData);
+          EventBus.$emit('query:changed');
+        });
+
+      vm.s2.val(vm.selectedFilters).trigger('change');
+      // fix for wrong position on select open
+      var select2Instance = $(vm.$el).data('select2');
+
+      select2Instance.on('results:message', function(params) {
+        this.dropdown._resizeDropdown();
+        this.dropdown._positionDropdown();
+      });
+    },
+    destroyed: function() {
+      $(this.$el).off().select2('destroy');
+      this.$emit('destroyed');
+    }
+  });
   window.UserDirectory = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-users-elastic',
     data: {
+      localInstructions: [],
       csrf: document.csrf,
-      filters: [],
       esColumns: [],
       filterLoaded: false,
       users,
@@ -513,10 +434,10 @@ if (document.getElementById('gc-users-elastic')) {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {},
+      filters: [],
       funderBounties: [],
       currentBounty: undefined,
       contributorInvite: undefined,
@@ -537,6 +458,13 @@ if (document.getElementById('gc-users-elastic')) {
       hideFilterButton: !!document.getElementById('explore_tribes')
     },
     methods: {
+      filterSorter: function(results) {
+        return results;
+      },
+      select2InputEventListener(cb, args) {
+        cb(args);
+        this.serializeBodytoShare();
+      },
       resetCallback: function() {
         this.checkedItems = [];
       },
@@ -545,6 +473,18 @@ if (document.getElementById('gc-users-elastic')) {
       },
       autoCompleteChange: function(filters) {
         this.filters = filters;
+      },
+      serializeBodytoShare: function() {
+        const currBody = this.body;
+
+        const jsonBody = JSON.stringify(currBody);
+
+        const params = `body=${encodeURIComponent(jsonBody)}`;
+        const shareURL = `${window.location.origin}${window.location.pathname}?${params}`;
+
+        window.history.pushState('', '', shareURL);
+
+        console.log(shareURL);
       },
       outputToCSV: function() {
 
@@ -562,26 +502,27 @@ if (document.getElementById('gc-users-elastic')) {
 
         $.when(vm.header.client.indices.getMapping())
           .then(response => {
-            vm.esColumns = response[vm.header.index]['mappings'][vm.header.type]['properties'];
-            vm.filterLoaded = true;
+            this.extractURLFilters(response);
+            this.fetch(this);
           });
       }
     },
+    updated() {
+      this.serializeBodytoShare();
+    },
     mounted() {
       this.fetchMappings();
-      this.fetch(this);
-      this.$watch('params', function(newVal, oldVal) {
-        this.searchUsers();
-      }, {
-        deep: true
-      });
     },
     created() {
       this.setHost(document.contxt.search_url);
       this.setIndex('haystack');
       this.setType('modelresult');
 
-      // this.extractURLFilters();
+      this.bus.$on('reset', () => {
+        EventBus.$emit('reset');
+        this.removeInstructions();
+        this.fetch(this);
+      });
     },
     beforeMount() {
       window.addEventListener('scroll', () => {

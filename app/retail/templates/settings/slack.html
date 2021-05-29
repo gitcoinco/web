@@ -22,7 +22,7 @@
     <input type="text" name="channel" class="form__input" placeholder='#notif-gitcoin' value="{{ profile.slack_channel }}">
   </div>
   {% csrf_token %}
-  <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
-  <input class='button button--primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">
+  <input class='btn btn-primary' type='submit' name='submit' value="{% trans "Save" %}">
+  <input class='btn btn-primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">
 </form>
 {% endblock %}

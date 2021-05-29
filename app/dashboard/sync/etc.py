@@ -50,11 +50,11 @@ def get_etc_txn_status(txnid, network='mainnet'):
 
 
 def sync_etc_payout(fulfillment):
-    if not fulfillment.payout_tx_id:
+    if not fulfillment.payout_tx_id or fulfillment.payout_tx_id == "0x0":
         txn = find_txn_on_etc_explorer(fulfillment)
         if txn:
             fulfillment.payout_tx_id = txn['hash']
-    if fulfillment.payout_tx_id:
+    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_etc_txn_status(fulfillment.payout_tx_id)
         if txn_status and txn_status.get('has_mined'):
             fulfillment.payout_status = 'done'

@@ -1,7 +1,7 @@
 {% extends 'quests/base.html' %}
-{% load humanize static i18n %}
+{% load humanize static i18n bundle %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -18,7 +18,9 @@
 {% endcomment %}
 
 {% block 'extrahead' %}
-<link rel="stylesheet" href="{% static "v2/css/quests.example.css" %}" />
+{% bundle css file quest_example %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quests.example.scss" %} />
+{% endbundle %}
 {% endblock %}
 
 {% block 'content' %}

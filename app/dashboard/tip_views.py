@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the tip related views.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -63,7 +63,7 @@ def send_tip(request):
 
 def request_money(request):
     """"""
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         username = request.POST.get('username', '').strip('@')
         token_name = request.POST.get('tokenName')
         amount = request.POST.get('amount')
@@ -71,6 +71,7 @@ def request_money(request):
         network = request.POST.get('network')
         address = request.POST.get('address')
         profiles = Profile.objects.filter(handle=username.lower())
+        requester_profile = request.user.profile
 
         if network != 'ETH':
             token_name = ''
@@ -88,9 +89,9 @@ def request_money(request):
             }
             fund_request = FundRequest.objects.create(**kwargs)
             if network == 'ETH':
-                if not profile.preferred_payout_address:
-                    profile.preferred_payout_address = address
-                    profile.save() #save preferred payout addr
+                if not requester_profile.preferred_payout_address:
+                    requester_profile.preferred_payout_address = address
+                    requester_profile.save() #save preferred payout addr
             messages.success(request, f'Stay tuned, {profile.handle} has been notified by email.')
         else:
             messages.error(request, f'The user {username} doesn\'t exists.')
@@ -159,7 +160,7 @@ def receive_tip_v3(request, key, txid, network):
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
     ):
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower() or not tip.username
@@ -225,11 +226,12 @@ def receive_tip_v3(request, key, txid, network):
             messages.error(request, str(e))
             logger.exception(e)
 
+    gas_price_sanity_multiplier = 1.3
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
+        'gas_price': round(float(gas_price_sanity_multiplier) * float(recommend_min_gas_price_to_confirm_in_time(1)), 1),
         'tip': tip,
         'has_this_user_redeemed': has_this_user_redeemed,
         'key': key,
@@ -419,6 +421,7 @@ def send_tip_3(request):
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@login_required
 def send_tip_2(request):
     """Handle the second stage of sending a tip.
 
@@ -462,6 +465,15 @@ def send_tip_2(request):
             user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
             user['preferred_payout_address'] = profile.preferred_payout_address
 
+    recent_tips = Tip.objects.filter(sender_profile=request.user.profile).order_by('-created_on')
+    recent_tips_profiles = []
+
+    for tip in recent_tips:
+        if len(recent_tips_profiles) == 7:
+            break
+        if tip.recipient_profile not in recent_tips_profiles:
+            recent_tips_profiles.append(tip.recipient_profile)
+
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'send2',
@@ -470,7 +482,8 @@ def send_tip_2(request):
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
-        'fund_request': fund_request
+        'fund_request': fund_request,
+        'recent_tips_profiles': recent_tips_profiles
     }
 
     if user:

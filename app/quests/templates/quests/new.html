@@ -1,6 +1,6 @@
 {% extends 'quests/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,23 +15,24 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% block 'content' %}
-<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
-<style type="text/css">
-.add_answer,
-.add_question,
-.close_question,
-.close_answer{
-  font-size: 12px;
-}
-.kudos-module .kudos-comment,
-.kudos-module .msg-alert{
-  display: none !important;
-}
-</style>
-<link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
-
+{% bundle css file quest_new %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
+  <style type="text/css">
+    .add_answer,
+    .add_question,
+    .close_question,
+    .close_answer{
+      font-size: 12px;
+    }
+    .kudos-module .kudos-comment,
+    .kudos-module .msg-alert{
+      display: none !important;
+    }
+  </style>
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
+{% endbundle %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
@@ -78,7 +79,7 @@
           {% csrf_token %}
           <div class="form-group">
             <label class="form__label" for="style">{% trans "Type" %}</label>
-            <select name="style" class="select2">
+            <select name="style" class="select2" style="max-width: 100%;">
               <option value="quiz" {% if response.style == 'Quiz' %}selected=selected{% endif %}>Quiz</option>
               <option disabled="disabled">More options coming soon</option>
             </select>
@@ -121,10 +122,10 @@
               <input name=enemy type="hidden" value={{package.enemy}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='enemy2' %}
+                {% include 'shared/add_kudos.html' with name='enemy2' kudos_network='xdai' %}
               </div>
             {% else %}
-              {% include 'shared/add_kudos.html' with name='enemy' %}
+              {% include 'shared/add_kudos.html' with name='enemy' kudos_network='xdai' %}
             {% endif %}
           </div>
           <div class="form-group">
@@ -136,14 +137,16 @@
               <input name=reward type="hidden" value={{package.reward}}>
               <a class="remove" href=#>Remove</a>
               <div class=hidden>
-                {% include 'shared/add_kudos.html' with name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+                {% include 'shared/add_kudos.html' with kudos_network='xdai' name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F"  %}
               </div>
+            {% elif package.reward_tip %}
+              Tip Reward, N/A
             {% else %}
-              {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+              {% include 'shared/add_kudos.html' with kudos_network='xdai' name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
             {% endif %}
           </div>
           {% if is_staff %}
-          <div class="form-group">
+          <div class="form-group alpha-warning">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
             <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>
@@ -178,11 +181,11 @@
                 <hr>
                 <label class="form__label" for="points">{% trans "Correct?" %}</label>
                 <a href="#" class="float-right close_answer">X</a>
-                <select type="checkbox" name="answer_correct[]">
+                <select type="checkbox" name="answer_correct[]" class="custom-select m-2" style="max-width: 100px;">
                   <option {% if response.correct %}selected=selected{% endif %} >YES</option>
                   <option {% if not response.correct %}selected=selected{% endif %} >NO</option>
                 </select>
-                <input type="text" name="answer[]" class="form__input" placeholder='Yes' value="{{response.answer}}" required>
+                <input type="text" name="answer[]" class="form__input" placeholder='Potential Answer' value="{{response.answer}}" required>
                 <hr>
               </span>
               {% endfor %}
@@ -205,7 +208,7 @@
             <div class="background_container pt-4">
               <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
               <BR>
-                <input name='video_enabled' id='video_enabled' type="checkbox" value=1 required {% if package.video_enabled%}checked=checked{% endif %} />
+                <input name='video_enabled' id='video_enabled' type="checkbox" value=1 {% if package.video_enabled%}checked=checked{% endif %} />
               <label class="form__label" for="video_enabled">{% trans "Video Enabled Arena" %}</label>
               <BR>
               {% for bg in backgrounds %}
@@ -226,7 +229,7 @@
           <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{% else %}{{package.pk}}{% endif %}">
 
           {% csrf_token %}
-          <button class='button button--primary joinslack mt-2 float-right' style="font-size: 35px; padding-top: 20px;" type='submit' name='submit' value="Submit Quest">
+          <button class='btn btn-primary btn-lg mt-2 float-right pr-5 py-3' style="font-size: 35px;" type='submit' name='submit' value="Submit Quest">
           <img src="{% static 'v2/images/quests/orb.png' %}" style="max-width: 80px; margin-top: -20px" />
           {% if not the_quest %} Create {% else %} Edit {% endif %} Quest
           </button>
@@ -240,7 +243,7 @@
 <script src="{% static "v2/js/pages/quests.new.js" %}"></script>
 <script src="{% static "v2/js/kudos-search.js" %}"></script>
 <script>
-  $('[data-toggle="popover"]').popover()
+  $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').bootstrapTooltip();
 </script>
 

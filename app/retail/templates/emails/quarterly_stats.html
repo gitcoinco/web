@@ -88,7 +88,7 @@
   .bounty-img {
     border-radius: 50%;
     background-color: #DBD0FF;
-    color: #3E00FF;
+    color: #6F3FF5;
     float: left;
     width: 5em;
     height: 5em;
@@ -131,7 +131,7 @@
   .percent-content {
     display: flex;
     justify-content: center;
-    color: #3E00FF;
+    color: #6F3FF5;
   }
 
   .button-action > .button {
@@ -139,7 +139,7 @@
   }
 
   .full-bordered-circle {
-    border-bottom: 5px solid #3E00FF;
+    border-bottom: 5px solid #6F3FF5;
   }
   .full-bordered-circle .content {
     margin: 0px auto;
@@ -198,7 +198,7 @@
     <h1>{% trans "Gitcoin Quarterly Stats for" %} @{{profile.handle}}</h1>
 
     {% if user_active_in_last_quarter %}
-    
+
     	{% if user_fulfilled_bounties %}
 	<h2>{% trans "You've Been BUIDLing" %}</h2>
 	<h4>{% trans "An overview of your BUIDL-stats from the last 3 months." %}</h4>
@@ -273,7 +273,7 @@
 		    <p class="content">{{ user_funded_fulfilled_percentage }} {% trans "%" %}</p>
             </div>
             <div class="stat-contents col-sm-12">
-		    <p> 
+		    <p>
 			Of the {{ user_funded_bounties_count }} issues that you funded a bounty for, {{ user_num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ user_funded_fulfilled_percentage }}% success rate!
 		    </p>
             </div>

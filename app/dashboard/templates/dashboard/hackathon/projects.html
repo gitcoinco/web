@@ -15,13 +15,15 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
+    {% bundle css file howitworks %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/howitworks.scss" %} />
+    {% endbundle %}
     <style>
       .onboard-banner {
         background: {% firstof hackathon.background_color or 'white' %};
@@ -84,166 +86,172 @@
     </style>
   </head>
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav_hackathons.html' %}
-      <div class="onboard-banner text-center p-4">
-          {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-          {% if logo %}
-            <img class="" width="364" src="{{MEDIA_URL}}{{logo}}"/>
-          {% else %}
-            <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
-              {{ hackathon.name }}
-            </div>
-          {% endif %}
-        <h1>{{hackathon.name}} Projects</h1>
-        {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
-        <div><a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-green mt-3">Hackathon Prizes</a></div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav_hackathons.html' %}
+        <div class="onboard-banner text-center p-4">
+            {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+            {% if logo %}
+              <img class="" width="364" src="{{MEDIA_URL}}{{logo}}"/>
+            {% else %}
+              <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
+                {{ hackathon.name }}
+              </div>
+            {% endif %}
+          <h1>{{hackathon.name}} Projects</h1>
+          {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+          <div><a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-success mt-3">Hackathon Prizes</a></div>
+        </div>
       </div>
-    </div>
 
-    <div class="container-fluid p-5">
-      {% if hackathon.end_date|timeuntil >= "1 min" and not projects%}
-        <p class="p-3 mt-3 alert-warning">This hackathon event is running until {{hackathon.end_date}}, please check again later.</p>
-      {% endif %}
+      <div class="container-fluid p-5">
+        {% if hackathon.end_date|timeuntil >= "1 min" and not projects%}
+          <p class="p-3 mt-3 alert-warning">This hackathon event is running until {{hackathon.end_date}}, please check again later.</p>
+        {% endif %}
 
-      <form action="{% url 'hackathon_projects' hackathon.slug %}" method="get" id="filter-form" class="row py-3">
-        <div class="col-12 col-md-3">
-          <div class="input-group">
-            <input type="text" class="form-control" name="q" id="project-search" placeholder="{% trans 'Search Projects' %}" value="{{query|join:' '}}">
-            <div class="input-group-append">
-              <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
-              <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+        <form action="{% url 'hackathon_projects' hackathon.slug %}" method="get" id="filter-form" class="row py-3">
+          <div class="col-12 col-md-3">
+            <div class="input-group">
+              <input type="text" class="form-control" name="q" id="project-search" placeholder="{% trans 'Search Projects' %}" value="{{query|join:' '}}">
+              <div class="input-group-append">
+                <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
+                <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
+              </div>
+            </div>
+            {% if query %}
+              <small>Results for: {% for q in query %}{{ q }} {% endfor %}</small>
+            {% endif %}
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="form-group row">
+              <label for="inputPassword" class="col-sm-6 col-form-label">Filter by sponsor:</label>
+              <div class="col-sm-6">
+                <select name="sponsor" id="sponsor" class="form-control">
+                  <option value="">All</option>
+                  {% for sponsor_item in sponsors_list %}
+                    <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {% endif %}>{{sponsor_item.org_name}}</option>
+                  {% endfor%}
+                </select>
+              </div>
             </div>
           </div>
-          {% if query %}
-            <small>Results for: {% for q in query %}{{ q }} {% endfor %}</small>
-          {% endif %}
-        </div>
-        <div class="col-12 col-md-3">
-          <div class="form-group row">
-            <label for="inputPassword" class="col-sm-6 col-form-label">Filter by sponsor:</label>
-            <div class="col-sm-6">
-              <select name="sponsor" id="sponsor" class="form-control">
-                <option value="">All</option>
-                {% for sponsor_item in sponsors_list %}
-                  <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {% endif %}>{{sponsor_item.org_name}}</option>
-                {% endfor%}
-              </select>
-            </div>
+          <div class="col-12 col-md-3 text-md-center">
+            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |
+            <a href="{% url 'hackathon_projects' hackathon.slug %}?filters=winners" class="{% ifequal filters 'winners' %}underline{% endifequal %}">See winners</a>
           </div>
-        </div>
-        <div class="col-12 col-md-3 text-md-center">
-          <a href="{% url 'hackathon_projects' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |
-          <a href="{% url 'hackathon_projects' hackathon.slug %}?filters=winners" class="{% ifequal filters 'winners' %}underline{% endifequal %}">See winners</a>
-        </div>
-        <div class="col-12 col-md-3 text-md-right">
-          Order by:
-          <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=-created_on" class="{% ifequal order_by '-created_on' %}underline{% endifequal %}">Newest</a> |
-          <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=created_on" class="{% ifequal order_by 'created_on' %}underline{% endifequal %}">Oldest</a>
-        </div>
-      </form>
-      <div class="row py-5">
-        <div class="col-12">
-          <div class="project-grid">
-            {% for project in projects %}
-              <div class="card card-project">
-                {% if project.badge %}
-                  <img class="position-absolute card-badge" width="50" src="{{project.badge}}" alt="badge" />
-                {% endif %}
-
-                {% for profile in project.profiles.all %}
-                  {% if profile_id == profile.id and project.status == '' %}
-                    <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+          <div class="col-12 col-md-3 text-md-right">
+            Order by:
+            <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=-created_on" class="{% ifequal order_by '-created_on' %}underline{% endifequal %}">Newest</a> |
+            <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=created_on" class="{% ifequal order_by 'created_on' %}underline{% endifequal %}">Oldest</a>
+          </div>
+        </form>
+        <div class="row py-5">
+          <div class="col-12">
+            <div class="project-grid">
+              {% for project in projects %}
+                <div class="card card-project">
+                  {% if project.badge %}
+                    <img class="position-absolute card-badge" width="50" src="{{project.badge}}" alt="badge" />
                   {% endif %}
-                {% endfor %}
+
+                  {% for profile in project.profiles.all %}
+                    {% if profile_id == profile.id and project.status == '' %}
+                      <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-success btn-sm m-2">edit</button>
+                    {% endif %}
+                  {% endfor %}
 
 
-                <div class="card-bg rounded-top" style="background-image: url({% firstof project.profiles.first.profile_wallpaper or '/static/wallpapers/burst-pink.png' %})">
-                  {% if project.logo %}
-                    <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
-                  {% else %}
-                    <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
-                  {% endif %}
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title text-uppercase">{{ project.name }}</h5>
-                  <a href="{% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}" class="font-weight-bold card-subtitle">Project Home</a>
-                  <div class="my-2">
-                    <b class="text-muted">Project Summary</b>
-                    <p>
-                      {{project.summary | truncatechars:90}}
-                    </p>
+                  <div class="card-bg rounded-top" style="background-image: url({% firstof project.profiles.first.profile_wallpaper or '/static/wallpapers/burst-pink.png' %})">
+                    {% if project.logo %}
+                      <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                    {% else %}
+                      <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                    {% endif %}
                   </div>
-                  <div class="mb-2">
-                    <b class="text-muted">Team Members</b>
-                    <div class="mt-1">
-                      {% for profile in project.profiles.all %}
-                        <a href="{% url 'profile' profile %}" class="">
-                          <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
-                        </a>
-                      {% endfor %}
+                  <div class="card-body">
+                    <h5 class="card-title text-uppercase">{{ project.name }}</h5>
+                    <a href="
+                    {% if project.name %}
+                        {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
+                    {% else %}
+                        {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
+                    {% endif %}" class="font-weight-bold card-subtitle">Project Home</a>
+                    <div class="my-2">
+                      <b class="text-muted">Project Summary</b>
+                      <p>
+                        {{project.summary | truncatechars:90}}
+                      </p>
+                    </div>
+                    <div class="mb-2">
+                      <b class="text-muted">Team Members</b>
+                      <div class="mt-1">
+                        {% for profile in project.profiles.all %}
+                          <a href="{% url 'profile' profile %}" class="">
+                            <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
+                          </a>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="mb-2">
+                      <a href="{{project.bounty.url}}">Prize Bounty</a>
+                    </div>
+                    <div class="font-smaller-2">
+                      <b class="text-muted">Sponsor</b>
+                      <img class="" width="20" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                      <a href="{% url 'profile' project.bounty.org_name %}">{{project.bounty.org_name}}</a>
                     </div>
                   </div>
-                  <div class="mb-2">
-                    <a href="{{project.bounty.url}}">Prize Bounty</a>
-                  </div>
-                  <div class="font-smaller-2">
-                    <b class="text-muted">Sponsor</b>
-                    <img class="" width="20" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
-                    <a href="{% url 'profile' project.bounty.org_name %}">{{project.bounty.org_name}}</a>
-                  </div>
                 </div>
-              </div>
-            {% endfor %}
-          </div>
-          {% if not projects and query %}
-            <h4>Nothing found</h4>
-          {% elif not projects %}
-            <h4>No projects submitted yet</h4>
-          {% endif %}
-          {% if projects.has_other_pages %}
-            <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-center mt-5">
-                {% if projects.has_previous %}
-                  <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.previous_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Previous</a></li>
-                {% else %}
-                  <li class="page-item disabled"><span class="page-link page-link-gc">Previous</span></li>
-                {% endif %}
-                {% for i in projects.paginator.page_range %}
-                  {% if projects.number == i %}
-                    <li class="page-item active" aria-current="page">
-                      <span class="page-link page-link-gc">{{ i }}<span class="sr-only">(current)</span></span>
-                    </li>
+              {% endfor %}
+            </div>
+            {% if not projects and query %}
+              <h4>Nothing found</h4>
+            {% elif not projects %}
+              <h4>No projects submitted yet</h4>
+            {% endif %}
+            {% if projects.has_other_pages %}
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center mt-5">
+                  {% if projects.has_previous %}
+                    <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.previous_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Previous</a></li>
                   {% else %}
-                    <li class="page-item"><a class="page-link page-link-gc" href="?page={{ i }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">{{ i }}</a></li>
+                    <li class="page-item disabled"><span class="page-link page-link-gc">Previous</span></li>
                   {% endif %}
-                {% endfor %}
-                {% if projects.has_next %}
-                  <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.next_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Next</a></li>
-                {% else %}
-                  <li class="page-item disabled"><span class="page-link page-link-gc">Next</span></li>
-                {% endif %}
-              </ul>
-            </nav>
-          {% endif %}
+                  {% for i in projects.paginator.page_range %}
+                    {% if projects.number == i %}
+                      <li class="page-item active" aria-current="page">
+                        <span class="page-link page-link-gc">{{ i }}<span class="sr-only">(current)</span></span>
+                      </li>
+                    {% else %}
+                      <li class="page-item"><a class="page-link page-link-gc" href="?page={{ i }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">{{ i }}</a></li>
+                    {% endif %}
+                  {% endfor %}
+                  {% if projects.has_next %}
+                    <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.next_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Next</a></li>
+                  {% else %}
+                    <li class="page-item disabled"><span class="page-link page-link-gc">Next</span></li>
+                  {% endif %}
+                </ul>
+              </nav>
+            {% endif %}
+          </div>
+
         </div>
-
       </div>
+      {% csrf_token %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
+      {% include 'shared/current_profile.html' %}
+      <script src="{% static "v2/js/user-search.js" %}"></script>
+      <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+      <script>
+        $('#sponsor').change(function(){
+          $("#filter-form").submit();
+        })
+      </script>
+
     </div>
-    {% csrf_token %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    {% include 'shared/current_profile.html' %}
-    <script src="{% static "v2/js/user-search.js" %}"></script>
-    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
-    <script>
-      $('#sponsor').change(function(){
-        $("#filter-form").submit();
-      })
-    </script>
-
-
   </body>

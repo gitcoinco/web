@@ -7,7 +7,7 @@ let usersBySkills;
 let processedData;
 
 const populateFromAPI = bounty => {
-  if (bounty.is_featured) {
+  if (bounty && bounty.is_featured) {
     $('#featuredBounty').prop('checked', true);
     $('#featuredBounty').prop('disabled', true);
   }
@@ -43,7 +43,7 @@ const populateFromAPI = bounty => {
     }
   });
 
-  if (bounty.keywords) {
+  if (bounty && bounty.keywords) {
 
     let keywords = bounty['keywords'].split(',');
 
@@ -218,7 +218,7 @@ $(document).ready(function() {
     $('#invite-contributors.js-select2').val(null).trigger('change');
   });
 
-  const reservedForHandle = bounty.reserved_for_user_handle ? bounty.reserved_for_user_handle : [];
+  const reservedForHandle = bounty && bounty.reserved_for_user_handle ? bounty.reserved_for_user_handle : [];
 
   userSearch('#reservedFor', false, '', reservedForHandle, true);
 
@@ -295,7 +295,7 @@ $(document).ready(function() {
         formData['invite'] = inviteContributors;
       }
 
-      if (document.result.is_featured) {
+      if (document.result && document.result.is_featured) {
         formData['is_featured'] = true;
       } else if (formData['featuredBounty'] === '1') {
         formData['is_featured'] = true;
@@ -314,7 +314,7 @@ $(document).ready(function() {
       const payFeaturedBounty = function() {
         indicateMetamaskPopup();
         web3.eth.sendTransaction({
-          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          to: '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
           from: selectedAccount,
           value: web3.utils.toWei(String(ethFeaturedPrice)),
           gasPrice: web3.utils.toHex(5 * Math.pow(10, 9)),
@@ -324,13 +324,13 @@ $(document).ready(function() {
         function(error, result) {
           indicateMetamaskPopup(true);
           if (error) {
-            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'danger');
             console.log(error);
           } else {
             saveAttestationData(
               result,
               ethFeaturedPrice,
-              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
               'featuredbounty'
             );
             saveBountyChanges();
@@ -362,7 +362,7 @@ $(document).ready(function() {
               result.responseJSON.error :
               'Something went wrong. Please reload the page and try again.';
 
-            _alert({ message: alertMsg }, 'error');
+            _alert({ message: alertMsg }, 'danger');
           }
         );
       };

@@ -8,12 +8,13 @@ function kudosSearch(elem) {
     var auto_terms = [ 'rare', 'common', 'ninja', 'soft skills', 'programming' ];
     var name = $(this).attr('name');
     var filter_by_address = $(this).attr('filter_by_address');
+    var filter_by_network = $(this).attr('filter_by_network');
 
     if (name == 'enemy') {
       auto_terms = [ 'samurai', 'evil', 'undead', 'bot', 'cellarius', 'devcon', 'meme', 'doge', 'bowtie', 'moloch' ];
     }
     if (name == 'reward') {
-      auto_terms = [ 'common', 'diamond', 'fun', 'bot', 'eth', 'hummingbird', 'holy hand grenade' ];
+      auto_terms = [ 'common', 'diamond', 'fun', 'bot', 'eth', 'hummingbird', 'eye for detail' ];
     }
     var autocomplete_html = '';
 
@@ -32,7 +33,7 @@ function kudosSearch(elem) {
 
           let query = {
             term: params.term[0] === '@' ? params.term.slice(1) : params.term,
-            network: 'mainnet',
+            network: filter_by_network,
             filter_by_address: typeof filter_by_address != 'undefined' && filter_by_address ? filter_by_address : ''
           };
 

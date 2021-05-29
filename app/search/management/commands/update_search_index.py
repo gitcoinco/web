@@ -34,7 +34,7 @@ class Command(BaseCommand):
         if sync_type == 'create':
             for sr in SearchResult.objects.all():
                 print(sr.pk)
-            sr.put_on_elasticsearch()
+                sr.put_on_elasticsearch()
         elif sync_type == 'update':
             then = timezone.now() - timezone.timedelta(hours=1)
             for sr in SearchResult.objects.filter(modified_on__gt=then):

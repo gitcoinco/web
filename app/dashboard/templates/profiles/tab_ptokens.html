@@ -1,0 +1,23 @@
+{% load i18n static avatar_tags ptoken_tags humanize  %}
+
+<div class="tab-projects d-flex flex-column">
+
+  {% if buyed_ptokens.count == 0 %}
+    No Time Tokens
+  {% endif %}
+  {% for ptoken in buyed_ptokens %}
+    <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
+      <div class="activity-avatar ml-5">
+      <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url ptoken.token_owner_profile.handle %}" />
+      <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" style="margin-left: -30px; margin-top:30px;" src="{% avatar_url profile.handle %}" />
+    </div>
+      <div class="tab-projects__item-details ml-5" style="width: 60%">
+        <div class="d-flex mt-3">
+          <h5 class="font-weight-semibold"> <span data-address="{{ptoken.token_address}}" class="ptoken-amount">{% ptoken_balance ptoken profile %}</span> <small>{{ptoken.token_symbol}}</small> </h5>&nbsp;
+        </div>
+        <small class="align-self-center">from <a href="{% url 'profile' ptoken.token_owner_profile.handle %}">@{{ptoken.token_owner_profile.handle}}</a>
+        </small>
+      </div>
+    </div>
+  {% endfor %}
+</div>

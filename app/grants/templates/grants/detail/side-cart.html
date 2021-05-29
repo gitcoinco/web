@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -16,12 +16,12 @@
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
 
-<div class="pt-4 pr-2">
-  <div id="side-cart-data">
+<div class="min-vh-100 d-md-flex flex-column pr-2 mb-n4 mb-md-0">
+  <div id="side-cart-data" class="px-5 px-md-4 pt-4 mt-n1 mt-md-0">
     <!-- X Button -->
     <div class="row">
       <div class="col-11"></div>
-      <div id="close-side-cart" class="col-1 p-0 pr-md-2" style="opacity: 40%">
+      <div id="close-side-cart" class="col-1 p-0 pr-md-2 text-right" style="opacity: 40%">
         <i class="fas fa-times fa-lg" style="cursor: pointer"></i>
       </div>
     </div>
@@ -31,12 +31,14 @@
       <div>You can add more grants to fund multiple grants at once!</div>
     </div>
   </div>
-  <div class="mt-5 mb-3">
+  <div class="mt-auto mr-n2 position-sticky bg-white bottom-0">
     <form action="/grants/cart">
-      <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">
-        <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
-        CHECKOUT
-      </button>
+      <div class="p-4 border-top-2 border-grey">
+        <button class="btn btn-primary btn-block py-3">
+          <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
+          CHECKOUT
+        </button>
+      </div>
     </form>
   </div>
 </div>

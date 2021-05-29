@@ -16,6 +16,4 @@
 
 {% endcomment %}
 {% load i18n %}
-<div class="row bottom_notification font-caption">
-  {{footer_msg|safe}}
-</div>
+<div class="row bottom_notification font-caption {% if footer %} footer__notification left-0 {% endif %}">{{footer_msg|safe}}</div>

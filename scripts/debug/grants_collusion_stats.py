@@ -23,14 +23,11 @@ for contrib in contributions:
             match_amount = contrib.subscription.grant.clr_prediction_curve[0][1]
         except:
             pass
-        try:
-            backup_match_amount = contrib.subscription.grant.backup_clr_prediction_curve[0][1]
-        except:
-            pass
+
         stats[key] = {
             'url': "https://gitcoin.co" + contrib.subscription.grant.url,
             'match_amount': match_amount,
-            'backup_match_amount': backup_match_amount,
+            'backup_match_amount': match_amount,
             'contributions': [],
             'contributions_per_profile': [],
             'contributions_per_originated_address': [],

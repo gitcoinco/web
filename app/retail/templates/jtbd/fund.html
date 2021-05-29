@@ -1,0 +1,298 @@
+{% comment %}
+Copyright (C) 2019 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not,see
+<http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load humanize i18n static bundle grants_extra %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards_pic.html' %}
+
+  {% bundle css file jtbd %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
+  {% endbundle %}
+</head>
+
+<body>
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+
+    <div class="header">
+      {% include 'home/nav.html' %}
+    </div>
+
+    <div class="container pt-5">
+
+      <div class="row mt-5">
+        <div class="col-12 col-md-8">
+          <h1 class="mb-4 line-height-2">
+            There’s No Better Way To Fund Open Source Projects
+          </h1>
+          <p class="text-wrap mb-5 text-grey-400 font-bigger-2">
+            Gitcoin Grants uses quadratic funding, ensuring that projects doing the greatest public good get the most support.
+          </p>
+          <div class="row mt-5 mx-0">
+            <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5 scroll-to-ready" href="#ready-to-fund">
+              I’m ready to fund
+            </a>
+          </div>
+        </div>
+        <div class="d-none d-md-inline col-md-4 m-auto ">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 378 356"><path fill="#CAFFF0" d="M79.834 350.076c6.394.491 12.837.874 19.318 1.156l57.574 2.477c13.713.592 27.438 1.175 41.224 1.448 29.126.556 58.449-.336 86.922-2.668 2.698-.218 6.086-.801 5.655-1.812-.284-.665-2.957-1.12-4.325-1.33-10.029-1.521-33.672-4.253-38.082-4.763-11.151-1.093 7.081-4.196 11.294-4.569 4.212-.373 32.098-1.862 48.879-2.08 2.058-.028 8.969-.082 16.349-1.494a63.909 63.909 0 005.421-1.284c1.676-.483 2.391-1.312 1.676-2.058-.025-.028-.049-.046-.074-.073-3.856-3.525-35.2-3.532-60.469-2.695-40.029 1.33-100.782-2.495-138.409-2.914-15.98-.173-32.292-.273-47.57 1.466-1.096.128-2.365.337-2.5.756-.148.437 1.638.838 2.267.984 7.33 1.667 77.101-.82 82.892 3.852.924.747.062 1.558-.32 1.913-4.436 4.134-32.909 2.941-59.472 2.905-46.19-.064-88.769 3.406-88.781 5.282 0 .319 1.22.847 46.276 4.39 5.211.419 9.992.792 14.255 1.111z"/><path stroke="#8554E4" stroke-width="2" d="M94.585 71.698l-37.11 38.381M44.679 139.81l-7.939 63.485M336.07 160.216l-8.529 80.933M334.428 95.551l-53.076-50.458M252.872 30.467h-81.311M60.616 129.03L142.504 168M311.46 138.982l-101.548 29.88M90.243 303.228l-43.721-46.979M287.408 261.64l-72.177-35.793M128.561 194.962l-69.707 32.227"/><circle cx="130.842" cy="45.708" r="45.208" fill="#fff" stroke="#8554E4"/><path stroke="#8554E4" stroke-width="3" d="M123.267 23.316V66.75M132.314 23.316v7.24M132.314 66.749v-7.24M116.027 59.51h21.716M116.027 30.556h21.716M123.267 45.032h14.477M137.743 30.556a7.24 7.24 0 015.119 12.357 7.24 7.24 0 01-5.119 2.12"/><path stroke="#8554E4" stroke-width="3" d="M137.743 45.032a7.24 7.24 0 015.119 12.358 7.24 7.24 0 01-5.119 2.12"/><circle cx="342.651" cy="127.225" r="34.069" fill="#fff" stroke="#8554E4"/><path stroke="#8554E4" stroke-width="2" d="M342.812 149.788l-14.364-22.199 14.364-22.198 14.364 22.198-14.364 22.199z"/><path stroke="#8554E4" stroke-width="2" d="M328.448 127.589l14.364 7.835 14.364-7.835M342.812 105.391v44.397"/><circle cx="29.926" cy="231.667" r="29.426" fill="#fff" stroke="#8554E4"/><path stroke="#8554E4" stroke-width="3" d="M19.498 221.022H40.44a.125.125 0 01.07.019.119.119 0 01.05.131.118.118 0 01-.04.062l-20.81 20.809a.12.12 0 00-.037.135.12.12 0 00.117.077h20.942M30.114 221.022v-10.617M30.114 242.256v10.617"/><circle cx="264.757" cy="37.117" r="19.607" fill="#5BF1CD"/><circle cx="44.372" cy="121.767" r="18.059" fill="#5BF1CD"/><circle cx="98.549" cy="309.458" r="10.319" fill="#5BF1CD" transform="rotate(39.471 98.549 309.458)"/><circle cx="323.298" cy="282.231" r="40.777" fill="#fff" stroke="#8554E4"/><path stroke="#8554E4" stroke-width="3" d="M303.255 279.51h39.378M303.255 286.073h39.378M309.817 299.199h9.845a16.406 16.406 0 100-32.815h-9.845v32.815z"/><path fill="#fff" d="M163.845 159.319l-20.357 9.25-11.848 18.428-6.09 18.242-2.349.317-2.196 10.186 1.402 1.893-1.556 17.206.095 5.474H119.5l-.372 6.484-3.209 13.043-.578 3.588s-.62 2.154 2.196 3.01c2.817.856 10.121 1.879 11.444 1.157 1.323-.722 3.433-11.394 3.433-11.394l5.615 6.794 2.742-1.534.578-1.737-2.003-9.452.117-3.4-.425-4.626-.169-2.527-1.72-1.21 4.077-21.103 5.787-12.547 4.87-6.407.269 36.333-1.716.216-.111 11.813 1.74 1.065-1.209 82.588-5.923 3.915-3.237 6.945.116 4.746 27.672-.607-.238-5.991-1.541-5.209-3.92-2.129 6.116-28.428 5.664-15.395 7.86-15.51 4.259-.029 4.68 28.735 2.091 25.796-1.127 1.27-.028 14.498 37.403.337-.232-6.713-2.543-4.052-2.543-2.315-10.827-2.585-4.878-.023 3.855-78.935 3.065-1.564v-10.418l-1.965-.926-.531-16.689 8.009 5.201.961 3.038 8.553-.463 1.061-2.575 12.387-11.16 7.359-14.507 2.312-.232 3.026-5.787 5.574-8.373 4.877-9.419-.698-3.472-8.834-5.504-3.483.608-1.58 4.476-3.172 6.683-1.003-7.177-3.526-.846-2.439 2.442-.648 10.743-1.156.116-3.422 5.188 1.046 2.442-5.022 8.112-7.408 6.615-8.929-12.48-5.087-11.216-1.078-6.686-4.623-7.717-3.737-2.443 2.09-22.676h4.421l2.466-2.969.017-9.596-.017-3.06-3.279-1.203.813-5.587-1.541-8.334-3.271-9.02-5.36-6.722-7.487-4.093h-11.497l-7.834 3.476-5.241 5.864-5.312 11.591v10.955l-3.357 1.453-1.271 2.199-.232 9.839.309 2.238 2.466 1 3.538.697v18.467z"/><path fill="#6F3FF5" d="M170.346 125.819l15.403-.756 14.405 1.247.709 16.035-3.293 1.465-11.582-.483-14.477-.905-1.93-1.99.765-14.613z"/><path fill="#5932C4" d="M223.815 227.786c.043 0 .085-.001.128-.003l7.934-.463a2.13 2.13 0 001.998-2.084l.02-1.365a2.126 2.126 0 00-2.065-2.154l-2.119-.055-1.722-2.797-2.222 2.79-2.211.251a2.112 2.112 0 00-1.882 2.14l.026 1.651a2.1 2.1 0 00.676 1.522c.396.368.905.567 1.439.567zm4.048-6.822l1.162 1.889 2.773.073a.913.913 0 01.889.925l-.02 1.366a.915.915 0 01-.859.896l-7.934.463a.848.848 0 01-.675-.242.906.906 0 01-.291-.656l-.025-1.651a.907.907 0 01.808-.921l2.709-.307 1.463-1.835zM124.697 218.209c1.023 0 1.97-.673 2.267-1.698l.694-2.398 3.545-1.079-2.407-3.219.37-2.579a2.343 2.343 0 00-1.766-2.621l-1.85-.455a2.33 2.33 0 00-1.823.299 2.326 2.326 0 00-1.046 1.524l-1.803 8.988a2.367 2.367 0 001.677 2.73l1.516.422c.209.059.418.086.626.086zm4.508-5.829l-2.526.769-.876 3.025a1.152 1.152 0 01-1.408.785l-1.516-.422a1.15 1.15 0 01-.815-1.329l1.801-8.987c.061-.309.242-.573.51-.742.265-.169.58-.221.885-.145l1.85.454c.576.141.946.689.861 1.275l-.442 3.074 1.676 2.243zM141.319 346.202h29.633v-.604c0-6.673-1.073-10.575-3.586-13.051-2.446-2.408-6.333-3.484-12.339-3.395-4.046.062-7.291 1.375-9.641 3.902-4.482 4.816-4.117 12.263-4.098 12.578l.031.57zm28.422-1.208h-27.256c.013-1.794.338-7.419 3.789-11.122 2.118-2.273 5.069-3.455 8.772-3.512 5.628-.107 9.271.881 11.472 3.048 2.188 2.154 3.163 5.638 3.223 11.586z"/><path fill="#5932C4" d="M153.448 335.462h7.253c1.071 0 2.027-.757 2.381-1.885l.911-2.912-1.151-.36-.911 2.911c-.195.62-.689 1.038-1.23 1.038h-7.253c-.483 0-.927-.325-1.158-.848l-1.314-2.969-1.104.489 1.314 2.969c.426.966 1.293 1.567 2.262 1.567zM192.333 343.814h39.096l.081-.508c.043-.258.995-6.399-2.318-10.947-1.771-2.431-4.42-3.931-7.873-4.454a564.19 564.19 0 01-11.825-1.916l-.211 1.19c.051.008 5.007.88 11.853 1.92 3.124.474 5.506 1.81 7.079 3.971 2.498 3.431 2.309 8.021 2.163 9.536h-36.837v-13.388l1.274-1.814-.988-.695-1.494 2.127v14.978z"/><path fill="#5932C4" d="M193.569 328.138l16.341-.851 5.057-78.696-1.205-.077-4.988 77.623-14.079.733-2.048-30.459-4.719-23.96-4.765-.523-.132 1.201 3.884.427 4.537 23.013 2.117 31.569z"/><path fill="#5932C4" d="M165.248 331.825c4.536-40.778 22.906-64.7 23.092-64.936l-.953-.744c-.186.239-18.762 24.407-23.341 65.546l1.202.134zM151.127 247.606h1.208v82.419h-1.208v-82.419z"/><path fill="#5932C4" d="M181.166 252.022c19.131 0 35.516-3.742 35.767-3.801l.467-.109V235.14l-.714.132c-39.72 7.344-66.158-.56-66.421-.64l-.775-.238-.109 13.012.411.141c9.842 3.376 21.012 4.475 31.374 4.475zm35.026-4.874c-4.45.964-39.61 8.11-65.597-.604l.09-10.541c4.634 1.232 29.655 7.078 65.507.587v10.558z"/><path fill="#5932C4" d="M214.329 236.47h1.208v-40.151c0-26.892-10.578-31.557-11.028-31.743l-.46 1.117.23-.558-.233.557c.102.044 10.283 4.66 10.283 30.627v40.151zM149.499 234.755h1.208c.121-.062.941-.254 1.715-.216l.003-1.208c-.51.024-1.973.044-2.605.675a1.045 1.045 0 00-.321.749zM151.599 299.581l9.948-1.194.148-.278c.078-.149 8-15.262 13.285-46.514l-1.192-.201c-4.857 28.733-11.934 43.693-13.018 45.869l-9.316 1.117.145 1.201zM211.042 297.587l.028-1.208-3.953-.093c-.75-3.056-5.068-21.686-5.068-45.528h-1.208c0 26.145 5.166 46.076 5.219 46.274l.115.44 4.867.115z"/><path fill="#5932C4" d="M204.084 193.947h10.49v1.208h-10.49v-1.208zM152.153 200.645h1.208c0-.506.226-.971.69-1.423 4.809-4.665 29.545-3.973 29.795-3.961l.038-1.208c-1.038-.029-25.501-.715-30.673 4.302-.703.682-1.058 1.452-1.058 2.29zM193.911 202.746c4.233 0 7.678-3.523 7.678-7.853s-3.445-7.853-7.678-7.853c-4.233 0-7.676 3.523-7.676 7.853s3.443 7.853 7.676 7.853zm0-14.498c3.568 0 6.47 2.981 6.47 6.645 0 3.664-2.902 6.645-6.47 6.645-3.566 0-6.468-2.981-6.468-6.645 0-3.664 2.902-6.645 6.468-6.645z"/><path fill="#5932C4" d="M203.711 192.529h1.208v3.782h-1.208v-3.782zM183.262 192.529h1.208v3.782h-1.208v-3.782zM194.065 198.833c1.972 0 3.577-1.638 3.577-3.65 0-2.014-1.605-3.652-3.577-3.652-1.973 0-3.578 1.638-3.578 3.652 0 2.012 1.605 3.65 3.578 3.65zm0-6.094c1.305 0 2.369 1.096 2.369 2.444 0 1.346-1.064 2.442-2.369 2.442-1.306 0-2.369-1.096-2.369-2.442 0-1.348 1.063-2.444 2.369-2.444zM129.368 242.851c5.493 0 8.374-2.955 8.539-3.13l.148-.155.015-.214c2.16-28.499 14.738-40.987 14.866-41.11l-.84-.869c-.129.126-12.965 12.825-15.213 41.659-.906.839-5.8 4.754-14.632 1.028-.056-2.289-.243-14.34 1.623-22.364l-1.177-.274c-2.095 9.009-1.648 22.921-1.644 23.06l.013.38.349.153c3.075 1.351 5.729 1.836 7.953 1.836zM127.034 205.222c2.651-18.601 17.062-36.586 17.206-36.765l-.937-.76c-.148.182-14.766 18.419-17.464 37.355l1.195.17z"/><path fill="#5932C4" d="M152.153 235.42h1.208v-36.658c.376-.133.885-.408 1.398-.974 1.181-1.305 2.47-4.323 1.905-11.295-.805-9.936-8.581-16.422-11.321-18.416l18.447-7.682c9.235 3.065 10.097 12.235 10.105 12.328l.046.554h23.328c.133.011 3.22.018 5.315-2.053 1.213-1.198 1.828-2.831 1.828-4.854 0-6.283 3.352-43.694 3.385-44.071.001-.267-.392-20.955-20.398-22.875-20.065-1.936-23.239 21.486-23.269 21.722l-1.241 38.315-20.11 8.375.985.621c.108.068 10.786 6.919 11.695 18.133.522 6.442-.547 9.168-1.537 10.321-.618.719-1.168.766-1.192.767l-.56.04-.017.564v37.138zm32.925-134.902c.711 0 1.444.036 2.205.108 18.914 1.816 19.301 20.816 19.309 21.624-.135 1.483-3.388 37.783-3.388 44.12 0 1.684-.493 3.026-1.463 3.988-1.705 1.692-4.37 1.711-4.465 1.711h-22.253c-.359-2.157-2.245-10-10.917-12.842l1.227-37.986c.107-.828 2.839-20.723 19.745-20.723z"/><path fill="#5932C4" d="M188.345 160.171c3.46 0 4.931-2.116 5.225-3.235l-1.167-.312c-.027.095-.695 2.339-4.058 2.339h-10.799c.016-.002-.894-.104-1.424-.826-.426-.578-.527-1.426-.295-2.517l-1.183-.249c-.306 1.453-.132 2.63.517 3.5.873 1.168 2.276 1.293 2.335 1.298l10.849.002zM197.352 144.026a3.615 3.615 0 003.605-3.477l.426-11.528a3.595 3.595 0 00-.972-2.602 3.583 3.583 0 00-2.528-1.139l-24.874-.729-.105-.001a3.615 3.615 0 00-3.599 3.478l-.419 11.337a3.615 3.615 0 003.475 3.741l24.855.917c.046.002.09.003.136.003zm2.823-15.049l-.426 11.528a2.412 2.412 0 01-2.489 2.311l-24.855-.917a2.405 2.405 0 01-2.311-2.49l.419-11.337c.045-1.314 1.176-2.375 2.461-2.312l24.875.728a2.393 2.393 0 012.326 2.489zM164.362 141.6l.675-18.426-2.65-.097a4.715 4.715 0 00-3.411 1.268 4.737 4.737 0 00-1.515 3.309l-.327 8.923a4.762 4.762 0 004.578 4.925l2.65.098zm-.577-17.263l-.587 16.01-1.442-.052a3.551 3.551 0 01-3.414-3.674l.327-8.923a3.524 3.524 0 011.13-2.468c.694-.643 1.59-.965 2.543-.946l1.443.053zM208.395 142.894a4.715 4.715 0 003.068-1.13 4.723 4.723 0 001.661-3.238l.726-8.9a4.76 4.76 0 00-4.352-5.125l-2.644-.216-1.498 18.378 2.644.214c.132.011.263.017.395.017zm1.005-17.189a3.55 3.55 0 013.245 3.823l-.726 8.9a3.518 3.518 0 01-1.238 2.415 3.513 3.513 0 01-2.583.831l-1.439-.117 1.302-15.969 1.439.117z"/><path fill="#5932C4" d="M210.556 125.363c.024-.32 2.131-32.04-21.591-33.978-7.552-.618-13.73 1.301-18.351 5.704-9.616 9.159-9.19 25.66-9.168 26.357l1.208-.039c-.006-.166-.428-16.666 8.797-25.447 4.362-4.153 10.221-5.955 17.416-5.371 22.526 1.84 20.508 32.375 20.484 32.684l1.205.09zM129.089 248.783c6.054 0 10.635-2.111 10.921-2.245l.346-.164v-8.118h-2.927v1.208h1.719v6.13c-1.839.756-10.676 3.978-19.356.012v-5.55h1.446v-1.209h-2.654v7.525l.343.164c3.521 1.686 7.038 2.247 10.162 2.247z"/><path fill="#5932C4" d="M125.994 268.403c.804 0 1.522-.053 2.144-.131 1.419-.178 2.54-1.179 2.858-2.552.694-2.991 1.842-6.498 2.443-8.263l2.542 3.787a3.34 3.34 0 002.328 1.446 3.323 3.323 0 002.622-.783 3.342 3.342 0 001.095-3.137l-2.284-12.169-1.186.223 2.284 12.17a2.136 2.136 0 01-.698 1.999 2.13 2.13 0 01-3.158-.423l-3.883-5.783-.403 1.124c-.019.053-1.896 5.294-2.879 9.537-.203.873-.921 1.511-1.832 1.625-2.272.285-5.92.209-10.4-1.787a2.133 2.133 0 01-1.271-2.116c.251-2.962 1.13-9.003 4.216-16.165l-1.11-.479c-3.153 7.32-4.054 13.507-4.311 16.543a3.343 3.343 0 001.986 3.321c3.517 1.567 6.567 2.013 8.897 2.013zM226.804 206.15l.451-.302c.346-.233 8.543-5.798 12.82-15.224l-1.101-.498c-3.572 7.872-10.173 13.095-11.946 14.399-1.908-2.376-10.962-14.015-12.754-23.248l-1.186.23c2.056 10.59 12.905 23.674 13.366 24.226l.35.417zM233.912 224.479c14.848-9.398 19.079-26.306 19.12-26.476l-1.173-.284c-.041.165-4.169 16.609-18.592 25.739l.645 1.021zM221.683 225.186l.651-1.018c-.055-.035-5.501-3.543-6.987-5.846l-1.017.655c1.63 2.524 7.12 6.059 7.353 6.209z"/><path fill="#5932C4" d="M254.87 199.106l1.322-1.794 3.089-4.992-1.003-.065c-9.767-.641-15.701-9.869-15.759-9.963l-.511-.809-4.224 6.692.213.325c6.633 10.153 16.155 10.582 16.556 10.596l.317.01zm.307-2.45l-.89 1.207c-1.639-.165-9.451-1.38-15.067-9.702l2.81-4.449c1.642 2.26 6.965 8.66 15.181 9.656l-2.034 3.288z"/><path fill="#5932C4" d="M258.374 192.914c.31-.375 7.609-9.281 10.558-17.891a3.232 3.232 0 00-1.219-3.696l-8.828-5.493a3.194 3.194 0 00-2.935-.344 3.208 3.208 0 00-1.974 2.236c-.968 3.95-2.113 7.035-3.299 8.926a76.346 76.346 0 01-.066-3.921 3.169 3.169 0 00-.956-2.317 3.162 3.162 0 00-2.336-.92l-1.141.031a3.206 3.206 0 00-2.977 2.266c-.345 1.118-.372 2.773-.406 5.064-.03 1.876-.066 4.213-.302 6.902l1.205.105c.239-2.732.275-5.092.305-6.988.031-2.109.058-3.774.352-4.728a2 2 0 011.858-1.412l1.14-.032a1.955 1.955 0 011.455.573c.39.384.601.896.595 1.441a77.987 77.987 0 00.156 5.646l.096 1.349.94-.97c2.132-2.199 3.653-7.047 4.554-10.727a1.973 1.973 0 011.23-1.394 1.98 1.98 0 011.844.224l8.828 5.493c.716.494 1.029 1.444.739 2.295-2.877 8.398-10.273 17.423-10.347 17.513l.931.769zM219.757 334.409a5.086 5.086 0 003.86-1.773l1.644-1.915-.916-.787-1.644 1.914a3.857 3.857 0 01-3.408 1.326l-8.952-1.07a3.868 3.868 0 01-3.194-2.533l-.789-2.18-1.136.41.79 2.181a5.068 5.068 0 004.185 3.322l8.953 1.07c.202.023.405.035.607.035zM169.902 194.449c.005-1.206-.058-29.543-14.275-31.697l-.182 1.194c13.193 2 13.251 30.214 13.249 30.499l1.208.004zM210.24 194.793c.038-.719.835-17.697-6.338-26.264l-.925.776c6.87 8.206 6.066 25.254 6.058 25.425l1.205.063zM199.605 127.43l1-.678-2.035-3.006c-1.136-1.675-2.78-2.68-4.511-2.756l-17.286-.763c-1.935-.081-3.721.933-4.965 2.789l-1.947 2.906 1.003.673 1.948-2.906c1.003-1.498 2.391-2.316 3.907-2.255l17.286.763c1.347.06 2.646.871 3.565 2.227l2.035 3.006zM227.145 220.146l1.124-.446c-2.481-6.226-1.187-14.463-1.174-14.546l-1.192-.193c-.057.35-1.363 8.644 1.242 15.185zM141.503 217.196l.859-.849c-.168-.171-4.211-4.172-12.301-4.172l-.162.001.009 1.208c7.669-.019 11.558 3.774 11.595 3.812z"/><ellipse fill="#CAFFF0" rx="8.686" ry="1.448" transform="matrix(1 0 0 -1 259.628 316.09)"/></svg>
+        </div>
+      </div>
+
+      <section class="row my-5 pt-5">
+        <header class="col-12 mb-4 pt-4">
+          <h2>Why quadratic funding?</h2>
+        </header>
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-lg-6 ">
+              <p class="font-bigger-2 line-height-3 text-grey-400">
+                Quadratic Funding is the optimal way to fund public goods in a democratic community. It works like a crowdfunding campaign that matches contributions from individuals with a pool from bigger donors. The higher the number of individual donors, the more matched funds a project gets.
+              </p>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/HJljTtLnymE?rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <h2 class="mt-5">Traditional matching</h2>
+              <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
+                <li>Grant 1 gets $100.</li>
+                <li>Grant 2 gets $100.</li>
+                <li>At the end of the round, both grants get $100 in matching.</li>
+              </ul>
+            </div>
+            <div class="col-12 col-lg-6">
+              <h2 class="mt-5">Gitcoin quadratic matching</h2>
+              <ul class="list-unstyled font-bigger-2 line-height-3 text-grey-400">
+                <li>Grant 1 gets $100 from 1 funder.</li>
+                <li>Grant 2 gets $100 from 10 funders.</li>
+                <li>At the end of the round, Grant 1 gets $10 in matching, Grant 2 gets $190 in matching.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="row my-5 py-5" id="accordion-group">
+        <div class="col-12 col-lg-6 pt-5">
+          <div class="accordion-group img-accordion">
+            <div class="collapseOne w-100 collapse show bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-10.svg" %}" style="max-width: 19rem;"/>
+            </div>
+            <div class="collapseTwo w-100 collapse bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-11.svg" %}" style="max-width: 19rem;"/>
+            </div>
+            <div class="collapseThree w-100 collapse bg-white" data-parent="#accordion-group">
+              <img class="d-block m-auto ml-lg-0" src="{% static "v2/images/jtbd/jtbd-12.svg" %}" style="max-width: 19rem;"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6 pt-5">
+          <div class="accordion-group gc-accordion gc-accordion-border">
+            <h5 class="accordion" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
+              <span class="accordion-title gc-font-base">Support public goods, support open source</span>
+            </h5>
+            <div class="accordion-panel collapse show font-subheader text-grey-400 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+              <p>Often the most important tools, platforms, and software — things we all use — are woefully underfunded. By participating in Gitcoin Grants, you are supporting open source projects that do the most good.</p>
+            </div>
+            <h5 class="accordion collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
+              <span class="accordion-title gc-font-base">Create opportunities and wealth</span>
+            </h5>
+            <div class="accordion-panel collapse font-subheader text-grey-400 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
+              <p>Open source development is vital because it encourages rapid innovation through collaboration. Create opportunities for the next generation of decentralized web builders working on digital public goods.</p>
+            </div>
+            <h5 class="accordion collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
+              <span class="accordion-title gc-font-base">Shape the future of the open web</span>
+            </h5>
+            <div class="accordion-panel collapse font-subheader text-grey-400 collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
+              <p>Vote with your funds through Gitcoin Grants and make your voice heard! Take an active role in the success of Web3 projects doing the greatest public good.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="row mb-5">
+        <div class="col-12 mt-5 mb-4">
+          <h2>
+            Projects making an impact
+          </h2>
+        </div>
+        <div class="col-12">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {% for project in projects %}
+              <div class="col mb-4">
+                <div class="card">
+                  <img class="card-img-top" style="height: 14rem; object-fit: cover;" src={% if project.logo %}"{{ MEDIA_URL}}{{ project.logo }}"{% else %}{% with placeholder='v2/images/grants/logos/' id=project.id|modulo:3 %}"{% static placeholder|addstr:id|add:'.png' %}"{% endwith %}{% endif %}/>
+                  <div class="card-body">
+                    <h4 class="gc-font-base card-title text-truncate">{{ project.title }}</h4>
+                    <p class="text-grey-400">by @{{ project.admin_profile__handle }}</p>
+                    <p class="text-grey-400">{{ project.description | truncatechars_html:380 }}</p>
+                    {% if project.in_active_clrs %}
+                      <div class="d-flex flex-wrap justify-content-between">
+                        <div class="flex-shrink-0" style="flex-basis: 50%;">
+                          <span class="font-bigger-2 font-weight-semibold">${{project.amount_received_in_round|floatformat:0|intcomma}}</span>
+                          <span class="d-block text-grey-400">raised from {{project.positive_round_contributor_count}} contributors</span>
+                        </div>
+                        <div class="flex-shrink-0" style="flex-basis: 50%;">
+                          <span class="font-bigger-2 font-weight-semibold text-highlight-green">${{ project.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }}</span>
+                          <span class="d-block text-grey-400">matched</span>
+                        </div>
+                      </div>
+                    {% else %}
+                      <div class="d-flex flex-wrap justify-content-between">
+                        <div class="flex-shrink-0" style="flex-basis: 50%;">
+                          <span class="font-bigger-2 font-weight-semibold">${{project.amount_received|floatformat:0|intcomma}}</span>
+                          <span class="d-block text-grey-400">raised from {{project.contributor_count}} contributors</span>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+
+      <section class="row">
+        <div class="col-12 mt-5">
+          <h2 class="">Meet passionate builders</h2>
+        </div>
+        {% for builder in builders %}
+          <div class="col-12 col-md-6 col-lg-3 text-center p-5 mb-2">
+            <div class="row">
+              <div class="col-5 col-md-12">
+                <img class="rounded-circle w-100" style="max-width: 15rem;" src="{% url 'org_avatar' builder %}" />
+              </div>
+              <div class="col-7 col-md-12 pt-2 font-bigger-1 m-auto">
+                <span class="d-block w-100">@{{ builder }}</span>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </section>
+
+      <div class="row my-5 py-5">
+        <div class="col-12 col-md-6 order-1 order-md-0 font-body">
+          <div class="row">
+            <div class="col-auto m-0 p-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
+            <div class="col text-grey-400 pr-5">
+              <div class="row">
+                <p class="font-bigger-1 line-height-2">{{ testimonial.comment }}</p>
+              </div>
+              <div class="row">
+                <p class="font-bigger-1">{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
+              </div>
+              <div class="row">
+                {% if testimonial.twitter_handle %}
+                  <a class="{% if testimonial.github_handle %}pr-2{% endif %}" href="https://www.twitter.com/{{testimonial.twitter_handle}}" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-twitter text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                {% endif %}
+                {% if testimonial.github_handle %}
+                  <a class="{% if testimonial.twitter_handle %}pl-2{% endif %}" href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-2 order-0 order-md-1">
+          <div class="row mb-4 mb-md-0">
+            <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% if testimonial.avatar_url %}{{ testimonial.avatar_url }}{% else %}{% url 'org_avatar' testimonial.github_handle %}{% endif %}" alt="{{ testimonial.handle }}" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row my-4 ">
+        <div class="col-12">
+          <div class="border-top-1 border-bottom-1 border-grey">
+            <div class="row">
+              <div class="col-12 col-md-9 py-5 ">
+                <h2>Have questions before you fund through Gitcoin?</h2>
+                <p class="text-grey-400 font-bigger-2">Meet with the Gitcoin community in Discord</p>
+                <div class="row mt-4 mx-0">
+                  <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5" href="https://discord.gg/gitcoin" target="_blank">Join Discord</a>
+                </div>
+              </div>
+              <div class="d-none d-md-inline col-md-3 p-0 align-self-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240" style="width: 80%;"><path d="M104.4 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1.1-6.1-4.5-11.1-10.2-11.1zM140.9 103.9c-5.7 0-10.2 5-10.2 11.1s4.6 11.1 10.2 11.1c5.7 0 10.2-5 10.2-11.1s-4.5-11.1-10.2-11.1z"/><path d="M189.5 20h-134C44.2 20 35 29.2 35 40.6v135.2c0 11.4 9.2 20.6 20.5 20.6h113.4l-5.3-18.5 12.8 11.9 12.1 11.2 21.5 19V40.6c0-11.4-9.2-20.6-20.5-20.6zm-38.6 130.6s-3.6-4.3-6.6-8.1c13.1-3.7 18.1-11.9 18.1-11.9-4.1 2.7-8 4.6-11.5 5.9-5 2.1-9.8 3.5-14.5 4.3-9.6 1.8-18.4 1.3-25.9-.1-5.7-1.1-10.6-2.7-14.7-4.3-2.3-.9-4.8-2-7.3-3.4-.3-.2-.6-.3-.9-.5-.2-.1-.3-.2-.4-.3-1.8-1-2.8-1.7-2.8-1.7s4.8 8 17.5 11.8c-3 3.8-6.7 8.3-6.7 8.3-22.1-.7-30.5-15.2-30.5-15.2 0-32.2 14.4-58.3 14.4-58.3 14.4-10.8 28.1-10.5 28.1-10.5l1 1.2c-18 5.2-26.3 13.1-26.3 13.1s2.2-1.2 5.9-2.9c10.7-4.7 19.2-6 22.7-6.3.6-.1 1.1-.2 1.7-.2 6.1-.8 13-1 20.2-.2 9.5 1.1 19.7 3.9 30.1 9.6 0 0-7.9-7.5-24.9-12.7l1.4-1.6s13.7-.3 28.1 10.5c0 0 14.4 26.1 14.4 58.3 0 0-8.5 14.5-30.6 15.2z"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row my-4" id="ready-to-fund">
+        <div class="col-12">
+          <h2 class="pb-4 pt-5 w-100">Ready to fund?</h2>
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Make an impact</h4>
+                  <p class="font-bigger-1">With Gitcoin Grants you can support the most impactful projects in web3.</p>
+                </div>
+                <div>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'grants:grants' %}">Explore Grants</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Become a matching partner</h4>
+                  <p class="font-bigger-1">Pledge your support to public goods development by contributing to the match pool.</p>
+                </div>
+                <div>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'grants:new_matching_partner' %}">Pledge support</a>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+  </div>
+
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
+
+  <script>
+    $(".scroll-to-ready").click(function(e) {
+      // prevent the href from being called
+      e.preventDefault();
+      // slow scroll to the element
+      document.querySelector('#ready-to-fund').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+
+
+</html>

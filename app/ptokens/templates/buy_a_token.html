@@ -1,0 +1,195 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static bundle %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    {% bundle css file tabs %}
+      <link rel="stylesheet" type="text/x-scss" href={% static 'v2/scss/tabs.scss' %} />
+    {% endbundle %}
+    <style>
+      #quickstart-tabs-sections img {
+        max-width: 15rem;
+      }
+
+      .minihero .header-line {
+        color: #fff;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      a.btn-primary {
+        color: #fff !important;
+        padding-left: 5rem;
+        padding-right: 5rem;
+      }
+
+      p a,
+      #quickstart-referrer {
+        color: #6F3FF5;
+        text-decoration: none;
+      }
+
+      #quickstart-referrer {
+        position: absolute;
+        right: 1rem;
+        z-index: 2;
+      }
+
+      .font-title {
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'grants/nav.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/minihero.html' with h1='Buy or make a token' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
+      </div>
+
+      <div class="container pt-5 font-body">
+        <div class="col-12 offset-lg-1 col-lg-10">
+          <div id="quickstart-tabs" class="tab-container mb-3">
+            <button type="button" id="start" class="section-tab">{%trans "Make a Token" %}</button>
+            <button type="button" id="fund" class="section-tab">{%trans "Buy a Token" %}</button>
+          </div>
+
+          <div id="quickstart-tabs-sections" class="tab-sections section mt-4">
+            <div id="section-fund" class="tab-section active">
+              <div class="container px-0">
+                <div class="row mb-3 py-2 px-md-0 mx-sm-0">
+                  <div class="col-12 col-md-12 px-md-0">
+                    <h1 class="font-title">{%trans "Buy a Token" %}</h1>
+                    <p class="my-4">
+                      {%trans "With time tokens, you can buy a stake of someone's future work potential today." %} <br>
+                    </p>
+
+                    <h1 class="font-title">{%trans "Get Specialist's Attention" %}</h1>
+                    <p class="my-3">
+                      {%trans "Eager to work with a top tier contributor?" %} <br>
+                    </p>
+                    <p class="my-3">
+                      {%trans "Securing their time token opens the opportunity for future work if your request is accepted." %} <br>
+                    </p>
+
+                    <h1 class="font-title">{%trans "Support a Creator" %}</h1>
+                    <p class="my-3">
+                      {%trans "Funds spent on purchased tokens go directly to the creator, giving them the ability to live fluidly in a distributed world." %} <br>
+                    </p>
+                    <p class="my-3">
+                      {%trans "If you’re one to spot talent in its infancy, purchasing a time token is a great way to signal that their work should be valued." %} <br>
+                    </p>
+
+                    <h1 class="font-title">{%trans "Garner a Relationship" %}</h1>
+                    <p class="my-3">
+                      {%trans "Time tokens are all about reputation. Our creators are full of innovation and eager to bring that passion to your project." %} <br>
+                    </p>
+                    <p class="my-3">
+                      {%trans "Enjoy a vetted redemption cycle directly in Gitcoin - providing you with an end-to-end experience for working with our top talent." %} <br>
+                    </p>
+
+                    <p class="text-center my-3">
+                      {%trans "Ready to dive in? Check out our top creators!" %} <br>
+                    </p>
+
+                    <p class="text-center my-3">
+                      <a class="btn btn-primary" href="{% url "users_directory" %}">{%trans "Explore" %}</a>
+                    </p>
+
+                    <hr/>
+
+                    <p class="my-4">
+                        <i>{% trans "Disclaimer: Gitcoin time tokens are currently in beta. Creators remain full control over whether or not they accept a redemption request." %}</i>
+                        <i>{% trans "There is an inherent risk that your redemption may not be redeemed, so please purchase at your own risk with the knowledge that secondary liquidity may be limited."%}</i>
+                    </p>
+                  </div>
+                </div>
+                {% include 'shared/ptokens_buy_faq.html' %}
+              </div>
+            </div>
+            <div id="section-start" class="tab-section">
+              <div class="container px-0">
+                <div class="row mb-3 py-2 px-md-0 mx-sm-0">
+                  <div class="col-12 col-md-12 px-0">
+                    <h1 class="font-title">{%trans "Make a Token!" %}</h1>
+                    <p class="my-3">
+                      {%trans "Looking to bootstrap your future potential?" %} <br>
+                    </p>
+
+                    <h1 class="font-title">{%trans "Get Paid Today for Work Tomorrow" %}</h1>
+                    <p class="my-3">
+                      {%trans "Receive funding up-front from those eager to work with you." %} <br>
+                    </p>
+                    <p class="my-3">
+                      {%trans "Customize your skillset to match where you excel." %} <br>
+                    </p>
+
+                    <h1 class="font-title">{%trans "Boost Your Reliability" %}</h1>
+                    <p class="my-3">
+                      {%trans "Show funders that you can be trusted to complete specialized tasks." %} <br>
+                    </p>
+                    <p class="my-3">
+                      {%trans "Successfully completing redemptions boosts your ability to receive future work." %} <br>
+                    </p>
+
+                    <h1 class="font-title">{%trans "Solidify Your Reputation" %}</h1>
+                    <p class="my-3">
+                      {%trans "Resumes and CV’s are a thing of the past." %} <br>
+                    </p>
+                    <p class="my-3">
+                      {%trans "Let Gitcoin’s coveted reputation act as a glowing example of your standing in the ever-evolving digital world." %} <br>
+                    </p>
+
+                    <p class="text-center my-3">
+                      {%trans "What are you waiting for?" %} <br>
+                    </p>
+
+                    <p class="text-center my-3">
+                      <a class="btn btn-primary" href="{% url 'dashboard' %}?tab=ptoken">{%trans "Get Started" %}</a>
+                    </p>
+
+                    <hr/>
+
+                    <p class="my-4">
+                      <i>{% trans "Disclaimer: Time tokens are highly experimental. Users who issue time tokens and are unresponsive to redemption requests are likely to suffer penalties or be removed from the platform." %}</i>
+                    </p>
+
+                  </div>
+                </div>
+              </div>
+              {% include 'shared/ptokens_make_faq.html' %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
+  {% include 'shared/footer.html' %}
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      setupTabs('#quickstart-tabs');
+    });
+  </script>
+<html>

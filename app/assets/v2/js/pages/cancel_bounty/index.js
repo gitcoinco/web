@@ -36,6 +36,20 @@ window.onload = function() {
       } else {
         cancelBounty(data);
       }
+
+      MauticEvent.createEvent({
+        'alias': 'products',
+        'data': [
+          {
+            'name': 'product',
+            'attributes': {
+              'product': 'bounties',
+              'persona': 'bounty-funder',
+              'action': 'cancel'
+            }
+          }
+        ]
+      });
     }
   });
 };

@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -87,7 +87,7 @@
 <img src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "We are sad to see you go." %}" title="{% trans "We are sad to see you go." %}">
 <h1>{% trans "Your Subscription for" %} {{ grant.title }} {% trans "has been cancelled" %}.</h1>
 <p style="margin-bottom:1.25rem;">{% trans "Thank you for everything you have contributed!" %}</p>
-<hr>
+<hr style="margin-left: 0;">
 
 <div class="grant-info">
   <a href="{% url 'grants:details' grant.id grant.slug %}">
@@ -108,7 +108,7 @@
 
   <p>
     Total Grant received
-    <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
+    <strong>{{ grant.amount_received }} {% trans "USD" %}</strong>
   </p>
 </div>
 
@@ -124,6 +124,6 @@
   <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Inactive Grant" %}</a>
 </p>
 <br>
-<hr>
+<hr style="margin-left: 0;">
 
 {% endblock %}

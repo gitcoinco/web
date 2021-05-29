@@ -6,7 +6,7 @@ Your funded issue has been accepted, and the fulfillment transaction is now on t
 
 {% if unrated_count > 0 %}
     How was your experience?
-    Help us improve Gitcoin by rating your bounty experience! {% url "profile"  %}ratings#ratingTabs
+    Help us improve Gitcoin by rating your bounty experience! {% url "profile"  %}ratings#ratingTabs?{{ utm_tracking }}
 {% endif %}
 
 You are receiving this email because your email address is on the notification list for this funded issue.

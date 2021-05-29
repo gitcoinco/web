@@ -1,0 +1,162 @@
+/* Using checkbox
+	<div class="checkbox_container">
+		<input name="network" id="foobar" type="checkbox" />
+		<label for=foobar>gitcoin</label>
+	</div>
+*/
+
+.filter-label {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.checkbox_container label::after {
+  content: '';
+  position: absolute;
+  width: 0.4em;
+  height: 0.8em;
+  border: solid white;
+  border-width: 0 0.15em 0.15em 0;
+  -webkit-transform: rotate(45deg) translate(-0.6em, -1.2em);
+  -ms-transform: rotate(45deg) translate(-0.6em, -1.2em);
+  transform: rotate(45deg) translate(-0.6em, -1.2em);
+  display: none;
+}
+
+.checkbox_container input {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+}
+
+.checkbox_container label::before {
+  content: '';
+  position: relative;
+  display: inline-block !important;
+  left: 0px;
+  top: 3px;
+  height: 1.25em;
+  width: 1.25em;
+  background-color: #FFF;
+  border: 1px solid #D3D3D3;
+  border-radius: 2px;
+  margin-right: 0.5em;
+}
+
+.checkbox_container input:checked ~ label::before,
+.checkbox_container input:checked ~ * label::before {
+  background-color:#6F3FF5;
+  border: 1px solid #6F3FF5;
+  display: block;
+}
+
+.checkbox_container input:checked ~ label::after,
+.checkbox_container input:checked ~ * label::after {
+  display: block;
+}
+.checkbox_container input:focus + label::before,
+.checkbox_container input:focus ~ * label::before {
+  outline: auto;
+  outline-color: #619cf6;
+}
+
+/* Below needs refactoring */
+
+.checkbox .checkbox-label {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.checkbox .checkbox-label::before {
+  background-color: #fff;
+  border: 1px solid #0d023b;
+  content: '';
+  display: inline-block;
+  height: 18px;
+  margin-right: 10px;
+  transition: all 0.04s linear;
+  vertical-align: text-top;
+  width: 18px;
+}
+
+.checkbox .checkbox-input {
+  position: absolute;
+  opacity: 0;
+}
+
+.checkbox .checkbox-input:checked + .checkbox-label::before {
+  background-color: #26cd7f;
+  border: 3px solid #36E69B;
+}
+
+/* border checkbox  */
+
+.gc-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.gc-checkbox input[type="checkbox"] {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: .75em;
+  opacity: .00001;
+  position: relative;
+  vertical-align: top;
+  z-index: 2;
+}
+
+.gc-checkbox label {
+  position: relative;
+  display: inline-block;
+  padding-left: 22px;
+  min-height: 16px;
+  vertical-align: middle;
+}
+
+.gc-checkbox label::before,
+.gc-checkbox label::after {
+  position: absolute;
+  content: "";
+  display: inline-block;
+}
+
+.gc-checkbox label::before{
+  height: 18px;
+  width: 18px;
+  border: 2px solid #9F9F9F;
+  border-radius: 3px;
+  left: 0px;
+  top: 3px;
+}
+
+.gc-checkbox label::after {
+  height: 6px;
+  width: 10px;
+  border-left: 2px solid;
+  border-bottom: 2px solid;
+  transform: rotate(-45deg);
+  left: 4px;
+  top: 8px;
+}
+
+.gc-checkbox input[type="checkbox"] + label::after {
+  content: none;
+}
+
+.gc-checkbox input[type="checkbox"]:checked + label::after {
+  content: "";
+}
+
+.gc-checkbox input[type="checkbox"]:focus + label::before {
+  outline: rgb(59, 153, 252) auto 5px;
+}
+

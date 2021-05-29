@@ -55,6 +55,9 @@ class Game(SuperModel):
             },
             )
 
+    def __str__(self):
+        return self.title
+
     @property
     def players(self):
         return self.setup.get('players', [])

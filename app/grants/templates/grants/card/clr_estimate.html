@@ -3,39 +3,79 @@
 <div class="clr clr-prediction arrow_box">
   <p class="title">
     Your contribution goes a long way!
-    <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" >
+    {% if 'ETH' in grant.tenants %}
+      <img class="float-right" src="{% static "v2/images/diamonds_high_fiving.gif" %}" >
+    {% endif %}
+    {% if 'ZCASH' in grant.tenants %}
+      <img class="float-right" src="{% static "v2/images/chains/zcash.svg" %}">
+    {% endif %}
+    {% if 'CELO' in grant.tenants %}
+      <img class="float-right" src="{% static "v2/images/chains/celo.svg" %}">
+    {% endif %}
+    {% if 'ZIL' in grant.tenants %}
+      <img class="float-right" src="{% static "v2/images/chains/zilliqa.svg" %}">
+    {% endif %}
   </p>
   <div class="row mx-1">
     <div class="col-6 px-2 mb-2">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">1 DAI</span> contribution</p>
+      <p class="predict-label mb-0">
+        <span class="font-weight-semibold">
+          1 USD
+        </span>
+        contribution
+      </p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.1.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+        <span class="font-weight-bold">
+          + {{ grant.clr_prediction_curve.1.2|floatformat:0|intcomma|default:0 }} USD
+        </span>
+        match
       </p>
     </div>
     {% if not short %}
       <div class="col-6 px-2 mb-2">
-        <p class="predict-label mb-0"><span class="font-weight-semibold">10 DAI</span> contribution</p>
+        <p class="predict-label mb-0">
+          <span class="font-weight-semibold">
+            10 USD
+          </span>
+          contribution
+        </p>
         <p class="amount mb-0">
           <i class="fas fa-arrow-circle-right"></i>
-          <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.2.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+          <span class="font-weight-bold">
+            + {{ grant.clr_prediction_curve.2.2|floatformat:0|intcomma|default:0 }} USD
+          </span> match
         </p>
       </div>
     {% endif %}
 
     <div class="col-6 px-2 mb-2">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">100 DAI</span> contribution</p>
+      <p class="predict-label mb-0">
+        <span class="font-weight-semibold">
+          100 USD
+        </span>
+        contribution
+      </p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.3.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+        <span class="font-weight-bold">
+          + {{ grant.clr_prediction_curve.3.2|floatformat:0|intcomma|default:0 }} USD
+        </span> match
       </p>
     </div>
     {% if not short %}
       <div class="col-6 px-2 mb-2">
-        <p class="predict-label mb-0"><span class="font-weight-semibold">1,000 DAI</span> contribution</p>
+        <p class="predict-label mb-0">
+          <span class="font-weight-semibold">
+            1,000 USD
+          </span>
+          contribution
+        </p>
         <p class="amount mb-0">
           <i class="fas fa-arrow-circle-right"></i>
-          <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+          <span class="font-weight-bold">
+            + {{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma|default:0 }} USD
+          </span> match
         </p>
       </div>
     {% endif %}

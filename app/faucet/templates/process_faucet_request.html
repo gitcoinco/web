@@ -1,31 +1,34 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
-<style>
-  .d-none {
-    display: none;
-  }
-</style>
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
 
+  <style>
+    .d-none {
+      display: none;
+    }
+  </style>
 {% endblock %}
 {% block coltype %}colMS{% endblock %}
 
@@ -36,64 +39,64 @@
 {% block content %}
 
 <div>
-    <h1>{% trans "Process Faucet Request" %} {{obj.pk}}</h1>
-    <div style="border: 1px solid black; padding: 5px;">
-        {% trans "Github Profile" %}: <a href="https://github.com/{{obj.github_username}}
-        " target="_blank" rel="noopener noreferrer">@{{obj.github_username}}</a>
-        <br>
-        {% trans "Comments" %} {{obj.comment}}
-    </div>
-    <div id="no_metamask_error" style="display: none;">{% trans "MetaMask Extension Not Detected" %}</div>
-    <div id="unlock_metamask_error" style="display: none;">{% trans "Please Unlock MetaMask To Continue" %}</div>
-    <div id="zero_balance_error" style="display: none;">{% trans "Active Web3 Wallet Account Is Empty" %}</div>
-    <div class="row loading justify-content-center align-items-center loading_img" id="loadingImg"  style="display:none;">
-      <img src='{% static "v2/images/loading_v2.gif" %}' style="width: 6rem;" alt="loading...">
-    </div>
-    <div id="errResponse" style="display:none;">
-      {% trans "Transaction Failed" %} : <span id="failureReason"></span>
-    </div>
-    <form method=POST id="admin_faucet_form">
-        {% csrf_token %}
-    <p>{% blocktrans %}By funding this faucet request, you will transfer {{ faucet_amount }} ETH to
-    {{ obj.github_username }} with a wallet address of {{ obj.address }}{% endblocktrans %}</p>
+  <h1>{% trans "Process Faucet Request" %} {{obj.pk}}</h1>
+  <div style="border: 1px solid black; padding: 5px;">
+    {% trans "Github Profile" %}: <a href="https://github.com/{{obj.github_username}}
+    " target="_blank" rel="noopener noreferrer">@{{obj.github_username}}</a>
     <br>
-    <p>Connect to your wallet</p>
-    <div class="nav-item dropdown interior">
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
-        <a class="dropdown-item" href="#" id="wallet-btn">
-          Connect Wallet
-        </a>
-        <div class="dropdown-item wallet-hidden d-none">
-          <small>connected to:</small>
-          <div class="network-name"></div>
-          <div class="selected-account" data-toggle="tooltip" title="Click to copy"></div>
-        </div>
-        <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
-        <div class="dropdown-divider wallet-hidden d-none"></div>
-        <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
-          Disconnect
-        </a>
-      </div>
+    {% trans "Comments" %} {{obj.comment}}
+  </div>
+  <div id="no_metamask_error" style="display: none;">{% trans "MetaMask Extension Not Detected" %}</div>
+  <div id="unlock_metamask_error" style="display: none;">{% trans "Please Unlock MetaMask To Continue" %}</div>
+  <div id="zero_balance_error" style="display: none;">{% trans "Active Web3 Wallet Account Is Empty" %}</div>
+  <div class="row loading justify-content-center align-items-center loading_img" id="loadingImg"  style="display:none;">
+    <img src='{% static "v2/images/loading_v2.gif" %}' style="width: 6rem;" alt="loading...">
+  </div>
+  <div id="errResponse" style="display:none;">
+    {% trans "Transaction Failed" %} : <span id="failureReason"></span>
+  </div>
+  <form method=POST id="admin_faucet_form">
+    {% csrf_token %}
+  <p>{% blocktrans %}By funding this faucet request, you will transfer {{ faucet_amount }} ETH to
+  {{ obj.github_username }} with a wallet address of {{ obj.address }}{% endblocktrans %}</p>
+  <br>
+  <p>Connect to your wallet</p>
+  <div class="nav-item dropdown interior">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
+    <a class="dropdown-item" href="#" id="wallet-btn">
+      Connect Wallet
+    </a>
+    <div class="dropdown-item wallet-hidden d-none">
+      <small>connected to:</small>
+      <div class="network-name"></div>
+      <div class="selected-account" data-toggle="tooltip" title="Click to copy"></div>
     </div>
-    <div id="templates" style="display: none">
-      <template id="template-balance">
-        <div class="wallet-option">
-          <div class="wallet-address"></div>
-          <small class="wallet-balance"></small>
-        </div>
-      </template>
+    <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
+    <div class="dropdown-divider wallet-hidden d-none"></div>
+    <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
+      Disconnect
+    </a>
     </div>
-    <br>
-    <input type="hidden" name="destinationAccount" id="destinationAccount" value="{{ obj.address }}">
-    <input type="hidden" name="faucetAmount" id="faucetAmount" value="{{ faucet_amount }}">
-    <input type="submit" name="submitFaucet" id="submitFaucet" value="Submit">
-    </form>
+  </div>
+  <div id="templates" style="display: none">
+    <template id="template-balance">
+    <div class="wallet-option">
+      <div class="wallet-address"></div>
+      <small class="wallet-balance"></small>
+    </div>
+    </template>
+  </div>
+  <br>
+  <input type="hidden" name="destinationAccount" id="destinationAccount" value="{{ obj.address }}">
+  <input type="hidden" name="faucetAmount" id="faucetAmount" value="{{ faucet_amount }}">
+  <input type="submit" name="submitFaucet" id="submitFaucet" value="Submit">
+  </form>
 
-    {{pk}}
+  {{pk}}
 
 </div>
 <br>
@@ -101,23 +104,23 @@
 <br>
 
 <div>
-    <h1>Reject Faucet Request For {{obj.github_username}}</h1>
-    {% for rejection_reason in common_rejection_reasons %}
-      <form method=POST class="reject_faucet_form">
-      {% csrf_token %}
-      <textarea style="width: 200px; height: 50px;" name="reject_comments">{{rejection_reason}}</textarea>
-      <br>
-      <input type="submit" name="rejectFaucet" id="rejectFaucet" value="Submit">
-      </form>
-    {% endfor %}
+  <h1>Reject Faucet Request For {{obj.github_username}}</h1>
+  {% for rejection_reason in common_rejection_reasons %}
+    <form method=POST class="reject_faucet_form">
+    {% csrf_token %}
+    <textarea style="width: 200px; height: 50px;" name="reject_comments">{{rejection_reason}}</textarea>
+    <br>
+    <input type="submit" name="rejectFaucet" id="rejectFaucet" value="Submit">
+    </form>
+  {% endfor %}
 
 </div>
 
 {% endblock %}
 {% block extrahead %}{{ block.super }}
   <script>
-    document.gas_price = {{recommend_gas_price}};
-    function gettext(str){return str};
+  document.gas_price = {{recommend_gas_price}};
+  function gettext(str){return str};
   </script>
   {% include 'shared/footer_scripts.html' %}
 

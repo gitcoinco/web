@@ -1,0 +1,33 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+{% block content %}
+<h1>Your time token is ready</h1>
+
+<ul>
+  <li>{% trans "Congratulations, your time token was deployed succesfully:" %}
+  <li>{% trans "Token name:" %}{{ ptoken.token_name }}</li>
+  <li>{% trans "Token symbol:" %}{{ ptoken.token_symbol }}</li>
+  <li>{% trans "Token address:" %}{{ ptoken.token_address }}</li>
+</ul>
+
+<div style="margin-bottom: 2em; margin-top: 2em;">
+  <a class="btn btn-primary" href="{{ ptoken.token_owner_profile.absolute_url }}">View Profile</a>
+</div>
+{% endblock %}

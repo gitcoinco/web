@@ -27,7 +27,7 @@ var AvatarPage = (function() {
       if (response.message) {
         text = response.message;
       }
-      _alert(text, 'error');
+      _alert(text, 'danger');
     });
   }
 
@@ -113,7 +113,7 @@ var AvatarPage = (function() {
         presetAvatarsInitialized = true;
       })
       .catch(() => {
-        _alert('There was an error during preset avatars load.', 'error');
+        _alert('There was an error during preset avatars load.', 'danger');
       });
   }
 
@@ -126,7 +126,7 @@ var AvatarPage = (function() {
         appendAvatars($('#my-avatars'), myAvatars, selectMyAvatar);
       })
       .catch(() => {
-        _alert('There was an error during Your avatars load.', 'error');
+        _alert('There was an error during Your avatars load.', 'danger');
       });
   }
 

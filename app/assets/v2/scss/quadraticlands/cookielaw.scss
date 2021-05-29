@@ -1,0 +1,46 @@
+#cookielaw {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  padding: 3em;
+  width: 100%;
+
+  .text {
+    font-size: 80%;
+    margin-right: 2em;
+    color: var(--aqua_light);
+  }
+
+  .button {
+    margin-left: auto;
+    .btn {
+      margin: 0;
+      animation: colorcycle 1s ease-in-out infinite;
+    }
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  &.hide {
+    display: none;
+  }
+}
+
+@media #{$phone} {
+  #cookielaw {
+    display: block;
+    padding: 1.5em;
+    .text {
+      margin-right: initial;
+      margin-bottom: 2em;
+    }
+    .button {
+      text-align: right;
+    }
+  }
+}

@@ -66,7 +66,7 @@ $('[data-savehackathon]').on('click', function() {
     destroyQuill();
     _alert('Description saved');
   }).fail(function(error) {
-    _alert('Error saving description', 'error');
+    _alert('Error saving description', 'danger');
   });
 });
 

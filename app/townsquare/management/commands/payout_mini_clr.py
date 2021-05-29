@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -62,7 +62,7 @@ class Command(BaseCommand):
         network = 'mainnet' if not settings.DEBUG else 'rinkeby'
         from_address = settings.MINICLR_ADDRESS
         from_pk = settings.MINICLR_PRIVATE_KEY
-        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D'
+        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa'
 
         # find a round that has recently expired
         minutes_ago = options['minutes_ago']
@@ -172,6 +172,7 @@ class Command(BaseCommand):
                         "value_usd":amount_owed,
                         "url":'https://gitcoin.co/#clr',
                         "network":network,
+                        "success":True,
                     }
                     )
 

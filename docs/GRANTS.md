@@ -1,5 +1,32 @@
 # Grants General Documentation
 
+- [Grants General Documentation](#grants-general-documentation)
+  - [Round 8](#round-8)
+  - [Round 7](#round-7)
+    - [Architecture Background](#architecture-background)
+    - [Checkout Flow](#checkout-flow)
+    - [Transfer Fees](#transfer-fees)
+  - [Round 6](#round-6)
+  - [Rounds 1–5](#rounds-15)
+    - [How Grants works](#how-grants-works)
+    - [Sub Miner](#sub-miner)
+    - [More information](#more-information)
+
+## Round 8
+
+In round 8, the zkSync checkout flow was significantly simplified thanks to the new
+[`zksync-checkout`](https://www.npmjs.com/package/zksync-checkout) library released by zkSync. This library natively supports batch transfers, meaning multiple transfers can be approved
+with just one L1 signature. This provides many benefits over the round 7 approach:
+
+- It resolves the UX issues we worked around by introducing "Gitcoin zkSync wallets" in round 7
+- Security is improved, as Gitcoin never sees any of your zkSync private keys
+- It provides a familiar web2 checkout flow, similar to "Checkout with Amazon" or "Checkout with Google Pay"
+- It's less confusing to users as your transaction history on zkScan now shows ordinary transfers to grants instead of one big transfer to an unknown address
+- These native batch transfers are atomic, so your checkout will either succeed or fail. The previous approach can leave user accounts in an odd state if one of the multiple transfers failed, and care must be taken to properly recover from this
+
+For more information on how this new checkout flow works, please see the
+[zkSync Checkout documentation](https://www.notion.so/zkSync-Checkout-docs-2bffd6f169e746d0b51873e4127992a6).
+
 ## Round 7
 
 In round 7 we introduced the option to checkout on L2 using [zkSync](https://zksync.io/).
@@ -14,7 +41,7 @@ message. That signature is used to generate a private key, and each transfer the
 signatures&mdash;one from this private key, and as an additional security measure, one more from
 your regular web3 wallet. This is great from a security perspective, but not so great from a UX
 perspective. Requiring one signature for each transfer can be a pain if you want to send a lot of
-transfers, so you'd be doing a lot of clicking when checking out with large carts. 
+transfers, so you'd be doing a lot of clicking when checking out with large carts.
 
 To remedy this, we ask you to login to a "Gitcoin zkSync" account. This generates an L1 account
 that the Gitcoin frontend can use to sign transactions directly. The private key to this account is
@@ -26,7 +53,7 @@ there is no additional security risk.
 ### Checkout Flow
 
 Based on the items in your cart, we check your zkSync balances to see if you already have enough
-funds on zkSync to complete checkout. 
+funds on zkSync to complete checkout.
 
 If you do, the checkout flow is as follows:
 
@@ -49,7 +76,7 @@ If you do not have enough funds in your zkSync account to complete checkout, the
 2. Confirm one transaction for each required ERC20 approval (~25k–50k gas)
 3. Confirm one transaction to deposit funds into zkSync (~180k–200k gas)
 
-If you are only donating with one token, step 3 calls the deposit function directly on the 
+If you are only donating with one token, step 3 calls the deposit function directly on the
 [zkSync contract](https://etherscan.io/address/0xabea9132b05a70803a4e85094fd0e1800777fbef). If you
 are donating with multiple tokens, step 3 uses our
 [Batch ZkSync Deposit Contract](https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BatchZkSyncDeposit.sol)
@@ -147,5 +174,5 @@ For more information on the subminer for grants, checkout
 
 - https://github.com/gitcoinco/web/issues/2424
 - https://github.com/gitcoinco/web/pull/3055
-  https://chat.gitcoin.co/
+  https://discord.gg/gitcoin
 - http://1337alliance.com

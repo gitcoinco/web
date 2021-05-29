@@ -5,7 +5,6 @@
 </h1>
 <p class="mb-0">
   @{{ profile.handle }}
- {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 last_chat_status=profile.last_chat_status chat_id=profile.chat_id handle=profile.handle %}
   {% if profile.match_this_round %}
     <span data-placement="bottom" data-toggle="tooltip" data-html="true"  title="
       {% include 'profiles/match_estimate_explainer.html' %}
@@ -24,9 +23,26 @@
     </button>
   {% endif %}
 </p>
-{% if profile.data.bio %}
+{% if profile.bio %}
+  <div class="profile-header__bio my-2">
+    <small class="review-comment">{{ profile.bio }}</small>
+  </div>
+{% elif profile.data.bio %}
   <div class="profile-header__bio my-2">
     <small class="review-comment">{{ profile.data.bio }}</small>
+  </div>
+{% endif %}
+{% if profile.interests %}
+  Interests:
+  <div class="tag-list mt-1">
+    {% for interest in profile.interests %}
+      {% if forloop.counter < 5 %}
+        <small class="tag-list__item">{{interest}}</small>
+      {% endif %}
+    {% endfor %}
+    {% if profile.interests|length > 4 %}
+      <small class="tag-list__item" data-container="body" data-toggle="popover" data-template='<div class="popover big-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>' data-html="true" data-placement="bottom" data-trigger="hover click" data-content='<div class="tag-list mt-1">{% for interest in profile.interests %} <small class="tag-list__item">{{interest}}</small>{% endfor %}</div>'>+{{profile.interests|length|add:"-4"}}</small>
+    {% endif %}
   </div>
 {% endif %}
   {% if profile.custom_tagline %}
@@ -44,26 +60,18 @@
 {% endif %}
 
 <p class="mb-0 mt-1">
-  {% if not profile.is_org and profile.chat_id %}
-    <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{profile}}">
-      <i class="fas fa-comment-dots" data-placement="bottom" data-toggle="tooltip" data-html="true"
-        title="Chat @{{ profile.handle }}">
-      </i>
-    </button>
-  {% endif %}
-
-  <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
+  <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
     href="{% url 'tip' %}?username={{ profile.handle }}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="Tip @{{ profile.handle }}"
   >
     <i class="fab fa-ethereum"></i>
   </a>
 
-  <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" 
+  <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
      href="{% url 'kudos_send' %}?username={{ profile.handle }}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Kudos @{{ profile.handle }}">
      <i class="fas fa-dice-d6"></i>
   </a>
-  
-  <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="/users?invite={{ profile.handle }}"
+
+  <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="/users?invite={{ profile.handle }}"
     data-placement="bottom" data-toggle="tooltip" data-html="true" title="Invite @{{ profile.handle }} to Bounty"
   >
 
@@ -73,21 +81,21 @@
 
   |
 
-  <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
+  <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
     <i class="fab fa-github"></i>
   </a>
   {% if profile.data.blog and user.is_authenticated %}
-    <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
+    <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
       <i class="fas fa-home"></i>
     </a>
   {% endif %}
   {% if profile.linkedin_url and user.is_authenticated %}
-    <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
+    <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
       <i class="fab fa-linkedin-in"></i>
     </a>
   {% endif %}
   {% if profile.data.email and user.is_authenticated %}
-    <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
+    <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
       <i class="far fa-envelope"></i>
     </a>
   {% endif %}

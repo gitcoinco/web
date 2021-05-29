@@ -10,6 +10,34 @@ $(document).ready(function() {
       }
     });
   }
+  $('#kudos-section').on('click', '.fa-sync', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if ($(this).data('owned') == 'False') {
+      _alert('To re-issue this kudos, please contact the sender and have them re-send it.', 'danger');
+      return;
+    }
+    let url = '/kudos/sync/?pk=' + $(this).data('id');
+    let $target = $(this).parents('.flip-card__extra-data').find('.block_explorer_link');
+
+    $.get(url, function(response) {
+      let block_ex_url = response['url'];
+      let txid = response['txid'];
+
+      $target.attr('href', block_ex_url);
+      let txid_trunc = txid.substring(0, 5) + '...' + txid.substring(txid.length - 10, txid.length);
+
+      $target.text(txid_trunc);
+      $target.css('color', 'grey');
+      setTimeout(function() {
+        $target.css('color', 'white');
+      }, 1000);
+      _alert('Sync re-submitted to chain.', 'info', 1000);
+    });
+    $(this).remove();
+
+  });
+
 
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -51,8 +51,8 @@
               </div>
             </div>
           </div>
-          <button class="row button button--primary btn-extend" type="submit">{% trans "Submit" %}</button>
-          <button type="button" class="row button button--primary-o btn-cancel" data-dismiss="modal" aria-label="Close">{% trans "Cancel" %}</button>
+          <button class="row btn btn-primary btn-extend" type="submit">{% trans "Submit" %}</button>
+          <button type="button" class="row btn btn-primary-o btn-cancel" data-dismiss="modal" aria-label="Close">{% trans "Cancel" %}</button>
         </form>
       </div>
     {% else %}
@@ -61,7 +61,7 @@
           <div class="login__text">
             {% trans "Please login with Github to get started." %}
           </div>
-          <a class="button button--primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
+          <a class="btn btn-primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
             <i class="fab fa-github"></i> <span>{% trans "Login With Github" %}</span>
           </a>
         </div>

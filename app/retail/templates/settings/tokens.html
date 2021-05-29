@@ -64,7 +64,7 @@
   <input type="hidden" name='coinbase' id='coinbase' value="">
   <input type="hidden" name='network' id='network' value="">
   {% csrf_token %}
-  <input class='button button--primary' type='submit' name='submit' value="{% trans "Enable" %}">
+  <input class='btn btn-primary' type='submit' name='submit' value="{% trans "Enable" %}">
   <p class="mt-3">
     IMPORTANT: the list of tokens above is populated by your web3 wallet.  If you only see "ETH" in the token list, please make sure your web3 wallet is unlocked, on the mainnet, and connected to Gitcoin (settings > connections in metamask).
   </p>

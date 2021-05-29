@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle notification related signals.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -26,6 +26,7 @@ from app.utils import get_profiles_from_text
 from dashboard.models import Activity
 from inbox.utils import (
     comment_notification, mentioned_users_notification, send_mention_notification_to_users, send_notification_to_user,
+    send_notification_to_user_from_gitcoinbot,
 )
 from townsquare.models import Comment, Like
 
@@ -148,6 +149,76 @@ def create_notification(sender, **kwargs):
         text = activity.metadata['title']
         mentioned_profiles = get_profiles_from_text(text).exclude(id__in=[activity.profile_id])
         send_mention_notification_to_users(activity, mentioned_profiles)
+
+    if activity.activity_type == 'create_ptoken':
+        send_notification_to_user(
+            activity.profile.user,
+            activity.profile.user,
+            activity.profile.absolute_url,
+            'create_ptoken',
+            f'You <b>new time token {activity.ptoken.token_symbol}</b> has been created!'
+        )
+
+    if activity.activity_type == 'buy_ptoken':
+        send_notification_to_user(
+            activity.profile.user,
+            activity.ptoken.token_owner_profile.user,
+            activity.ptoken.token_owner_profile.absolute_url,
+            'buy_ptoken',
+            f'New {activity.ptoken.token_symbol} <b>purchase from {activity.profile.user}</b>'
+        )
+
+    if activity.activity_type == 'accept_redemption_ptoken':
+        send_notification_to_user(
+            activity.ptoken.token_owner_profile.user,
+            activity.redemption.redemption_requester.user,
+            activity.redemption.url,
+            'accept_redemption_ptoken',
+            f'📥 @{activity.ptoken.token_owner_profile.handle} <b>accepted</b> your request to redeem <b>{activity.redemption.total } { activity.ptoken.token_symbol }: "{activity.redemption.reason}</b>'
+        )
+
+    if activity.activity_type == 'denies_redemption_ptoken':
+        redemption = activity.redemption
+        if activity.redemption.redemption_state == 'denied':
+            from_profile = redemption.ptoken.token_owner_profile
+            to_profile = redemption.redemption_requester
+            msg = f'📥 @{from_profile.handle} <b>denied</b> your request to redeem <b>{activity.redemption.total} {activity.ptoken.token_symbol}: "{activity.redemption.reason}</b>'
+        else:
+            if redemption.redemption_requester != redemption.canceller:
+                from_profile = redemption.ptoken.token_owner_profile
+                to_profile = redemption.redemption_requester
+                msg = f'📥 @{from_profile.handle} <b>cancelled</b> your request to redeem <b>{activity.redemption.total} {activity.ptoken.token_symbol}: "{activity.redemption.reason}</b>'
+            else:
+                from_profile = redemption.redemption_requester
+                to_profile = redemption.ptoken.token_owner_profile
+                msg = f'📥 @{from_profile.handle} <b>cancelled</b> request to redeem <b>{activity.redemption.total} {activity.ptoken.token_symbol}: "{activity.redemption.reason}</b>'
+        send_notification_to_user(
+            from_profile.user,
+            to_profile.user,
+            redemption.url,
+            'denies_redemption_ptoken',
+            msg
+        )
+
+    if activity.activity_type == 'complete_redemption_ptoken':
+        redemption = activity.redemption
+        send_notification_to_user(
+            redemption.redemption_requester.user,
+            redemption.ptoken.token_owner_profile.user,
+            redemption.url,
+            'complete_redemption_ptoken',
+            f'📥 @{redemption.redemption_requester.handle} <b>completed</b> their redemption <b>{activity.redemption.total} {activity.ptoken.token_symbol}: "{activity.redemption.reason}</b>'
+        )
+
+    if activity.activity_type == 'incoming_redemption_ptoken':
+        redemption = activity.redemption
+        send_notification_to_user(
+            redemption.ptoken.token_owner_profile.user,
+            redemption.redemption_requester.user,
+            redemption.url,
+            'incoming_redemption_ptoken',
+            f'Redemption "{redemption.reason}" marked as <b>ready from {redemption.ptoken.token_owner_profile}</b>'
+        )
 
     # TODO
     # For Funder

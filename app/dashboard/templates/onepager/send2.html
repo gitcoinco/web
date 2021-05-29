@@ -1,6 +1,6 @@
 {% extends 'onepager/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
@@ -30,10 +30,25 @@
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+  <script>
+    $('.user-tooltip > .user-img').click(function() {
+      $('.user-tooltip > .user-img').removeClass('active');
+      $(this).addClass('active');
+      $('#username').empty();
+      parent = $(this).parent('.user-tooltip');
+      $('#username').append(`<option value="${parent.attr("user-id")}" avatar_url="${parent.attr("avatar-url")}"  preferred_payout_address="${parent.attr("preferred_payout_address")}">${parent.attr("username")}</option>`)
+    });
+    $('#username').on('select2:select', function(e) {
+      $('.user-tooltip > .user-img').removeClass('active');
+      $(`.user-tooltip[user-id=${e.params.data.id}] > .user-img`).addClass('active');
+    });
+  </script>
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
-<link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
+{% bundle css file tooltip_hover %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tooltip_hover.scss" %} />
+{% endbundle %}
 <style>
   #ethinfo-tooltip {
     top: 19.5rem;
@@ -63,6 +78,68 @@
   .terms {
     margin-top: 0.75rem;
   }
+
+  .recent-tips {
+    color: var(--gc-dark-grey);
+    text-align: left;
+  }
+  .recent-tips .label {
+    float: left;
+    width: 15%;
+    line-height: 1.2;
+  }
+  .recent-tips ul {
+    list-style: none;
+  }
+  .recent-tips-list img {
+    max-width: 40px;
+    border-radius: 50%;
+    padding: 2px;
+  }
+  .recent-tips-list img:hover {
+    box-shadow: 0 0 0 2px var(--gc-green-hover);
+    cursor: pointer;
+  }
+  .recent-tips-list img.active {
+    box-shadow: 0 0 0 2px var(--gc-blue);
+  }
+  .recent-tips-list a:hover {
+    text-decoration: none;
+  }
+
+  .user-tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  .user-tooltip .user-tooltip-text {
+    visibility: hidden;
+
+    background-color: #ffffff;
+    border: 1px solid var(--gc-dark-grey);
+    border-radius: 2px;
+    padding: 3px;
+
+    top: 100%;
+    left:50%;
+    transform:translateX(-50%);
+
+    text-align: center;
+    width: max-content;
+    position: absolute;
+    z-index: 1;
+    margin-top: 5px;
+
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .user-tooltip:hover .user-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+  .user-tooltip .user-tooltip-text a {
+    color: var(--gc-dark-grey) !important;
+  }
+
 </style>
 <div>
   <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
@@ -103,8 +180,25 @@
         {% endif %}
       </select>
     </div>
+    {% if recent_tips_profiles %}
+      <div class="my-3 recent-tips">
+          <span class="label my-2 font-smaller-5">{% trans "Recently Sent" %}</span>
+        <div>
+          <ul><li class="recent-tips-list">
+              {% for profile in recent_tips_profiles %}
+                {% if profile %}
+                  <div class="user-tooltip" user-id="{{profile.id}}" username="{{profile.username}}" avatar-url="{{profile.avatar_url}}" preferred_payout_address="{{profile.preferred_payout_address}}">
+                    <img class="user-img" src="{{profile.avatar_url}}">
+                    <div class='user-tooltip-text tooltip-xs'><a href="{% url 'profile' profile %}" target="_blank">@{{profile.username}}</a></div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </li></ul>
+        </div>
+      </div>
+    {% endif %}
     {% if is_staff %}
-    <div class="terms pb-1">
+    <div class="terms pb-1 alpha-warning">
       <input type="checkbox" id="secret_link" value="1" >
       <label for="secret_link">{% blocktrans %}STAFF ONLY - No to user, just create a tip with a secret link..{% endblocktrans %}</label>
     </div>
@@ -156,7 +250,7 @@
       <input type="checkbox" id="tos" value="1" >
       <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
     </div>
-    <a href="#" id="send" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
+    <a href="#" id="send" class="btn btn-primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
       <br>
   </div>
   <div id="send_eth_done" style="display:none;">
@@ -171,7 +265,7 @@
     <h1>{% blocktrans %}<span id="new_username"></span> has been notified{% endblocktrans %}</h1>
     <h3>{% trans "with instructions about how to receive their tip." %}</h1>
     <br>
-    <a id="" class="button button--primary" href="{% url "send_tip" %}">⬅ {% trans "Start Over" %}</a>
+    <a id="" class="btn btn-primary" href="{% url "send_tip" %}">⬅ {% trans "Start Over" %}</a>
   </div>
   <div id="ethinfo-tooltip" class="tooltip-hover g-text-left">
     <span id="heading">{% trans "Where is my Eth Going?" %}</span><br>

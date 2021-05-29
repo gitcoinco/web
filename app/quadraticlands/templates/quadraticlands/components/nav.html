@@ -1,0 +1,99 @@
+{% load i18n static matches cookielaw_tags token_format %}
+
+<header>
+
+  <!-- logo-->
+  <div class="logos">
+
+    <a class="gitcoin" href="/" data-kinetics-attraction data-kinetics-attraction-chance=".2"
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="bee" >
+      {% include "quadraticlands/_inlinesvg/logo_gitcoin.svg" %}
+    </a>
+
+    <span class="arrow">{% include "quadraticlands/_inlinesvg/logo_arrow.svg" %}</span>
+
+    <a class="quadraticlands" href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".2"
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="bee" >
+      {% include "quadraticlands/_inlinesvg/ql.svg" %}
+    </a>
+
+  </div>
+
+
+  <!-- nav -->
+  <nav>
+    <!-- links / burger menue -->
+    <div id="nav-links" >
+      <div id="burger">
+        {% include "quadraticlands/_inlinesvg/burger.svg" %}
+      </div>
+
+
+      <ul>
+        <a href="/quadraticlands/about" data-kinetics-attraction data-kinetics-attraction-chance=".2"
+          data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz"
+          {% if "about" in request.path %} aria-current="page" {% endif %}>
+          <li>About</li>
+        </a>
+
+        <a href="/quadraticlands/mission" data-kinetics-attraction data-kinetics-attraction-chance=".2"
+          data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz"
+          {% if "mission" in request.path %} aria-current="page" {% endif %}>
+          <li>Mission Control</li>
+        </a>
+      </ul>
+    </div>
+
+
+   {% if user.is_authenticated %}
+
+    <!-- user avatar / username -->
+    <div id="nav-user" data-kinetics-attraction data-kinetics-attraction-chance=".2"
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz" >
+      <a href="/quadraticlands/dashboard">
+        <div>
+          <img src="/dynamic/avatar/{{user.username}}" >
+          <span>{{user.username}}</span>
+        </div>
+      </a>
+    </div>
+
+
+    <!-- default wallet button / wallet status
+    what TRIGGER another div to pop up (components/wallet-provider.html) -->
+    <div id="nav-wallet" data-kinetics-attraction data-kinetics-attraction-chance=".2"
+      data-kinetics-attraction-force="1" data-kinetics-attraction-size="50" data-kinetics-attraction-type="horz" >
+
+      <!-- NETWORK -->
+      <span id="web3network" class="web3network hide"></span>
+
+ 
+      <!-- CLAIMABLE AMOUNT -->
+      <!-- IF :  user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False -->
+      {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False  %}
+        <span class="claimable"><a href="/quadraticlands/mission">CLAIM {{ total_claimable_gtc | token_format }} GTC</a></span>
+      {% endif %}
+
+      <div id="noproviderIcon">
+        {% include "quadraticlands/_inlinesvg/wallet.svg" %}
+      </div>
+
+      <!-- this will add an image inside this div, if a provider  -->
+      <div id="navbarDropdownWallet">
+        <!-- mandatory to not fuck the wallet.js code -->
+        <svg class="provider-icon" style="display:none;"></svg>
+      </div>
+    </div>
+
+    {% else %}
+    <!-- sign in button -->
+    <div id="nav-signin" >
+      <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});"
+      class="btn sm">{% trans "Log in" %}</a>
+    </div>
+    {% endif %}
+
+  </nav>
+</header>
+
+<script src="{% static "v2/js/quadraticlands/components/nav.js" %}"></script>

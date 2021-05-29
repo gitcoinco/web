@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -34,298 +34,300 @@
     </style>
   </head>
   <body class="{{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
-      {% include 'shared/minihero.html' with h1='Terms of Use' position_h1_below_logo=1 %}
-    </div>
-    <div class="container">
-      <div class="row pb-5 pt-5">
-        <div class="col-12 offset-lg-1 col-lg-10 terms">
-          {% blocktrans %}
-            <p>Gitcoin Terms of Use</p>
-            <p>Last updated: February 3, 2020</p>
-            <p>
-              IMPORTANT NOTICE: THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION
-              AND A WAIVER OF CLASS ACTION RIGHTS AS DETAILED IN SECTION 24.
-              PLEASE READ THE AGREEMENT CAREFULLY.
-            </p>
-            <h2 class="font-title">1. ACCEPTANCE OF TERMS</h2>
-            <p>
-              ConsenSys AG’s Gitcoin  (“Gitcoin”) is a blockchain-based incentivization toolkit for Open Source Software allowing Users to interact with Gitcoin. “Tasks” means any service a Site participant requests or performs. Site participants may consist of (a) those who post Tasks to Gitcoin, make Grants (as defined below) to Hunters, sponsor virtual hackathon events in which multiple Hunters may participate (“Hackathons”) or manage a community (“Tribes”) (such participant, individually a “Poster,” collectively the “Posters”); (b) those who fulfill Tasks (individually a “Hunter” or collectively the “Hunters”); (c) those who interact with the Gitcoin site but do not post or fulfill Tasks (a “Visitor”); (d) those who buy Kudos or other UGC (as defined below) (individually a “Buyer,” collectively the “Buyers”); (e) and those who create or sell Kudos or other UGC (individually a “Seller,” collectively the “Sellers” and, together with Posters, Hunters, Visitors and Buyers, “Users”). The Gitcoin website (https://gitcoin.co/, the “Site”) serves as a registration portal, product offering, and an overview of the Gitcoin services. The site also includes text, images, audio, code and other materials or third party information. The Site allows Posters to fund and post Tasks for Hunters to resolve, allows Posters to fund Grants for Hunters, allows Posters to sponsor Hackathons, allows Hunters to resolve Tasks and participate in Hackathons, and allows Buyers and Sellers to buy and sell (collectively, the “Service Offerings”). The Site and any other features, tools, materials, or services offered from time to time by Gitcoin, including without limitation the Service Offerings, is referred to here as the “Service.” Please read these Terms of Use (the “Terms” or “Terms of Use”) carefully before using the Service. By using or otherwise accessing the Services, or clicking to accept or agree to these Terms where that option is made available, you (x) accept and agree to these Terms, (y) consent to the collection, use, disclosure and other handling of information as described in our <a target="_blank" rel="noreferrer" href="https://gitcoin.co/legal/cookie">Privacy Policy</a> and (z) any additional terms, rules and conditions of participation issued by Gitcoin from time to time. IF YOU DO NOT AGREE TO THE TERMS, THEN YOU MAY NOT ACCESS OR USE THE SERVICES.
-            </p>
-            <h2 class="font-title">2. MODIFICATIONS OF TERMS OF USE</h2>
-            <p>
-              Except for Section 24, providing for binding arbitration and waiver of class action rights,
-              Gitcoin reserves the right, at its sole discretion, to modify or replace the Terms of Use at any time.
-              The most current version of these Terms will be posted on our Site. You shall be responsible for reviewing
-              and becoming familiar with any such modifications. Use of the Services by you after any modification to the
-               Terms constitutes your acceptance of the Terms of Use as modified.
-            </p>
-            <h2 class="font-title">3. ELIGIBILITY</h2>
-            <p>
-              You represent and warrant that you: (a) are of legal age to form a binding contract; (b) have not previously been suspended or removed from using our Services; and (c) have full power and authority to enter into this agreement and in doing so will not violate any other agreement to which you are a party. If you are registering to use the Services on behalf of a legal entity, you further represent and warrant that (x) such legal entity is duly organized and validly existing under the applicable laws of the jurisdiction of its organization, and (y) you are duly authorized by such legal entity to act on its behalf.
-            </p>
-            <h2 class="font-title">4. ROLE OF GITCOIN</h2>
-            <p>
-              You expressly acknowledge, agree, and understand that: the Site is merely a platform through which Posters, Hunters, Buyers and Sellers conduct transactions. Unless participating on the Site as a Poster or a Seller, Gitcoin is not involved in the transactions, and has no control over the quality, safety, or legality of Tasks or consideration for Tasks, the ability of Hunters to perform Tasks to Posters’ satisfaction, or the ability of Posters to pay for Tasks. You are not an employee of Gitcoin, and Gitcoin does not, in any way, screen, supervise, direct, or control Hunters or services performed for or delivered to Posters  (“Hunter Services”). Gitcoin will not have any liability or obligations under or related to Service Contracts (defined below) for any acts or omissions by you or other Users. Gitcoin has no control over Hunters or the Hunter Services offered or rendered by Hunters and Gitcoin makes no representations as to the reliability, capability, or qualifications of any Hunter or the quality, security, or legality of any Hunter Services, and Gitcoin disclaims any and all liability relating thereto. Gitcoin has no control over Buyers and Sellers and Gitcoin makes no representations as to the quality or legality of any UGC created or sold by Sellers, and Gitcoin disclaims any and all liability relating thereto. Use of the Site is at your own risk. Because Gitcoin is not a party to the transactions between Posters and Hunters or between Buyers and Sellers, Gitcoin is not responsible for (i) resolving any disputes between participants related to any Tasks or (ii) any tax liabilities that may arise in a transaction between participants.
-            </p>
-            <h2 class="font-title">5. GITCOIN POSTERS</h2>
-            <p>
-              As a Poster, you agree that: (a) you will interact with Hunters in a professional and courteous manner, and accurately describe your Task; (b) you may only use the Site for business, commercial, or research purposes; (c) you may not have Hunters perform Tasks through venues other than the Site; (d) payment will be issued and remitted to Hunters upon your approval of Task; (e) payment is not refundable; (f) you will not reject Tasks performed by Hunters without good cause; and (g) you will not post a Task that violates any part of Section 13 of the Terms.
-            </p>
-            <h2 class="font-title">6. GITCOIN HUNTERS</h2>
-            <p>
-              As a Hunter, you agree that:
-              (a) you will interact with Posters in a professional and courteous manner, and provide reasonably requested information in connection with your performance of Tasks; (b) you will perform Tasks in a competent and workmanlike manner; (c) you will supply complete, accurate, non-malicious information for all Tasks you perform; (d) you will not perform Tasks through venues other than the Site; (e) you will not submit anything to Poster that violates Section 13 of the Terms; and (f) Posters may reject Tasks you perform for good cause and currently there is no way for a Hunter to dispute any rejection of a submission made through the Site, meaning you may not be paid if a Poster rejects your submission.
-            </p>
-            <h2 class="font-title">7. GITCOIN FEES AND PAYMENT</h2>
-            <p>
-              Unless otherwise agreed between you and Gitcoin in a separate order form, which is obtainable by contacting us directly, all Tasks on the Site are subject to a ten (10) percent listing fee, calculated as 10% of the total Task value (the “Listing Fee”) payable to Gitcoin. The Listing Fee shall be paid by the Poster, and shall be due upon a Poster submitting a Task to the Site.
-            </p>
-            <p>
-              The Listing Fee is refundable to the Poster solely upon the satisfaction of either of the following limited circumstances:
-            </p>
-            <ol>
-              <li>The Task has not been filled by a Hunter prior to Gitcoin’s receipt of a written request for a refund from a Poster. The Poster must submit a refund request to Gitcoin within 90 days from the date of posting such Task in order to be eligible for a refund.</li>
-              <li>The Poster is dissatisfied by work submitted by a Hunter and submits a request for review within 30 days of completion of the Task by a Hunter. In these instances, the Poster shall submit a written request for review to Gitcoin, who will in its sole discretion determine whether or not the Poster is eligible for a refund of the Transaction Fee.</li>
-            </ol>
-            <h2 class="font-title">8. GITCOIN RECURRING GRANTS</h2>
-            <p>
-              In addition to Section 5, but notwithstanding anything to the contrary therein, if you use the Site to make a grant (a “Grant”) to a Hunter, you agree that: (a) the Hunter has broad discretion in performing the Task described on its project page on the Site (the “Grant Project Page”), including what, how and when they perform such Task, and how they use the Grant; (b) the Grant will be made to the Hunter on a recurring basis, commencing with the first contribution at the time that you agree to make the Grant and recurring based on the frequency specified by the Hunter on the Grant Project Page; (c) the Hunter may change the Task, including without limitation the scope and timeline and the frequency of contributions; (d) Grant contributions will be issued and remitted to the Hunter prior to the Hunter completing a Task; (e) the Grant is not refundable; (f) you will not have the ability on the Site to dispute or reject Tasks performed by Hunters, but you may terminate future Grant contributions to the extent they have not been made; and (g) you and Hunter are responsible for any tax liabilities in connection with your transaction.
-            </p>
-            <p>
-              In addition to Section 6, but notwithstanding anything to the contrary therein, if you use the Site to accept a Grant from Posters, you agree that: (a) you will use the Grant to perform the Task described on your Grant Project Page; (b) you will notify Posters of any material changes to your Grant Project Page or the Task, including without limitation the scope and timeline and the frequency of contributions; and (c) you and Posters are responsible for any tax liabilities in connection with your transaction.
-            </p>
-            <h2 class="font-title">9. WORK PRODUCT AND WORK FOR HIRE</h2>
-            <p>
-              Hunter will perform the Hunter Services in a professional and workmanlike manner and will timely deliver any agreed upon tangible or intangible results or deliverables, including, but not limited to, configurations, computer programs, software, applications, or other information, and any intellectual property developed in connection therewith (“Work Product”). Where applicable, the Work Product must be submitted to Poster in open source format.
-            </p>
-            <p>
-              Any Work Product from Tasks performed as a Hunter is a "work made for hire" for the benefit of the Poster. Upon Hunter’s receipt of full payment from Poster, the Work Product, including without limitation all patent rights, copyright rights, mask work rights, moral rights, rights of publicity, trademark, trade dress and service mark rights, goodwill, trade secret rights and other intellectual property rights as may now exist or hereafter come into existence, and all applications therefore and registrations, renewals and extensions thereof, under the laws of any state, country, territory or other jurisdiction (“Intellectual Property Rights”) in the Work Product, will be the sole and exclusive property of Poster, and Poster will be deemed to be the author thereof. If Hunter has any Intellectual Property Rights to the Work Product that are not owned by Poster upon Hunter’s receipt of payment from Client, Hunter hereby automatically irrevocably assigns to Client all right, title and interest worldwide in and to such Intellectual Property Rights. Except as set forth above, Hunter retains no rights to use, and will not challenge the validity of Poster’s ownership in, such Intellectual Property Rights. Hunter hereby waives any moral rights, rights of paternity, integrity, disclosure and withdrawal or inalienable rights under applicable law in and to the Work Product.
-            </p>
-            <p>
-              Hunter agrees that it will not incorporate into Work Product or otherwise supply Poster any deliverable for which the use or distribution of the code will create (or purport to create) obligations for Poster to grant any rights or immunities under Poster’s intellectual property to a third-party, including without limitation any obligation that the Work Product or Poster software combined with, derived from, or distributed with such Work Product (a) be disclosed or distributed in source code form, (b) be licensed for the purpose of making derivative works, or (c) be redistributable at no charge.
-            </p>
-            <h2 class="font-title">10. INDEPENDENT CONTRACTORS</h2>
-            <p>
-              Hunters perform Tasks for Posters in their personal capacity as an independent contractor and not as an employee of a Poster or Gitcoin. As a Hunter, you agree that: (a) you are responsible for and will comply with all applicable laws and registration requirements, including those applicable to independent contractors and maximum working hours regulations; (b) these Terms do not create an association, joint venture, partnership, franchise, or employer/employee relationship between you and Poster, or you and Gitcoin; (iii) you will not represent yourself as an employee or agent of a Poster or Gitcoin; (iv) you will not be entitled to any of the benefits that a Poster or Gitcoin may make available to its employees, such as vacation pay, sick leave, and insurance programs, including group health insurance or retirement benefits; and (v) you are not eligible to recover worker's compensation benefits in the event of injury. As an independent contractor, Hunter is free at all times to provide Hunter Services to persons or businesses other than Poster, including any competitor of Poster. Hunter does not have authority to enter into written or oral (whether implied or express) contracts on behalf of Poster or Gitcoin. As a Poster, you will not engage a Hunter in any way that may jeopardize that Hunter's status as an independent contractor performing Tasks for you. Posters may not require an exclusive relationship.
-            </p>
-            <h2 class="font-title">11. GITCOIN CONTRACTS</h2>
-            <p>
-              As used herein, a “Service Contract” means, as applicable, the unilateral contractual provisions created by Poster that govern the Hunter Services to be performed by Hunter for Poster for a particular Task posted to the Site and which will typically include a description of the Task or Tasks to be completed, the amount and type of currency as compensation, and the deadline.  You acknowledge and agree that Gitcoin is not a party to any Service Contracts, and that the formation of a Service Contract between any Posters and Hunters will not, under any circumstance, create an employment or other service relationship between Gitcoin and Poster or Gitcoin and Hunter.
-            </p>
-            <h2 class="font-title">12. PAYMENT</h2>
-            <p>
-              In order to use Site Services, each User must provide its Ethereum wallet address. The Site and the Site Services operate with Ether or ERC20 compatible tokens. Payment to Hunters will occur upon Poster’s acceptance of Hunter’s Work Product or, in the case of a Grant, immediately upon a Poster agreeing to contribute a Grant to the Hunter and upon each payment cycle thereafter. Acceptance of a Hunter’s Work Product is at the sole discretion of the Poster.
-            </p>
-            <h2 class="font-title">13. RESTRICTIONS ON USE</h2>
-            <p>
-              Unless otherwise expressly authorized in these Terms of Use or on the Site, you may not take any action to interfere with the Site or any other user’s use of the Site or decompile, reverse engineer or disassemble any content or other products or processes accessible through the Site, nor insert any code or product or manipulate the content in any way that affects any User’s experience. While using the Site you are required to comply with all applicable statutes, orders, regulations, rules, and other laws. In addition, we expect users of the Website to respect the rights and dignity of others. Your use of the Site is conditioned on your compliance with the rules of conduct set forth in this Section.
-            </p>
-            <p>
-              You may not use, or cause or encourage others to use, Gitcoin for any illegal, harmful, fraudulent, infringing, or objectionable activities. Here is a non-exhaustive list of prohibited activities:
-              <ul>
-                <li>Collecting personally identifiable information (e.g., do not ask Users for their email address or phone number)</li>
-                <li>Using Gitcoin to try to generate "referred" site visits or click-through traffic</li>
-                <li>Disrupting, manipulating, or degrading the operation of any website, product, or service</li>
-                <li>Phishing, spamming, or pharming</li>
-                <li>Unsolicited contacting of Users or other abusive behavior</li>
-                <li>Advertising or marketing activities, including Tasks requiring registration at another website or group</li>
-                <li>Tasks intended to promote a site, service or opinion (e.g., don't ask Hunters to write fake news or reviews)</li>
-                <li>Infringing or misappropriating the rights of others, including Tasks that require violating the terms of any website, product, or service</li>
-                <li>Posting or transmitting any content that is illegal, fraudulent or otherwise objectionable, including content that constitutes child pornography, relates to bestiality, or depicts non-consensual sex acts</li>
-                <li>Disrupting, manipulating, or impairing the operation of the Gitcoin Site (e.g., do not try to "game" search results for Tasks)</li>
-                <li>Scraping data or content from the Gitcoin Site</li>
-                <li>Creating a security risk for Gitcoin or any Gitcoin User, including posting Tasks that require downloading software that contains harmful content or malicious code</li>
-                <li>Performing or requesting asks through venues other than the Gitcoin Site</li>
-              </ul>
-            <p>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="header">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav.html' %}
+        {% include 'shared/minihero.html' with h1='Terms of Use' position_h1_below_logo=1 %}
+      </div>
+      <div class="container">
+        <div class="row pb-5 pt-5">
+          <div class="col-12 offset-lg-1 col-lg-10 terms">
+            {% blocktrans %}
+              <p>Gitcoin Terms of Use</p>
+              <p>Last updated: May 11, 2021</p>
+              <p>
+                IMPORTANT NOTICE: THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION
+                AND A WAIVER OF CLASS ACTION RIGHTS AS DETAILED IN SECTION 25.
+                PLEASE READ THE AGREEMENT CAREFULLY.
+              </p>
+              <h2 class="font-title">1. ACCEPTANCE OF TERMS</h2>
+              <p>
+                Gitcoin Holdings, Inc. (“Gitcoin”) is a blockchain-based incentivization toolkit for Open Source Software allowing Users to interact with Gitcoin. “Tasks” means any service a Site participant requests or performs. Site participants may consist of (a) those who post Tasks to Gitcoin, make Grants (as defined below) to Hunters, sponsor virtual hackathon events in which multiple Hunters may participate (“Hackathons”) or manage a community (“Tribes”) (such participant, individually a “Poster,” collectively the “Posters”); (b) those who fulfill Tasks (individually a “Hunter” or collectively the “Hunters”); (c) those who interact with the Gitcoin site but do not post or fulfill Tasks (a “Visitor”); (d) those who buy Kudos or other UGC (as defined below) (individually a “Buyer,” collectively the “Buyers”); (e) and those who create or sell Kudos or other UGC (individually a “Seller,” collectively the “Sellers” and, together with Posters, Hunters, Visitors and Buyers, “Users”). The Gitcoin website (https://gitcoin.co/, the “Site”) serves as a registration portal, product offering, and an overview of the Gitcoin services. The site also includes text, images, audio, code and other materials or third party information. The Site allows Posters to fund and post Tasks for Hunters to resolve, allows Posters to fund Grants for Hunters, allows Posters to sponsor Hackathons, allows Hunters to resolve Tasks and participate in Hackathons, and allows Buyers and Sellers to buy and sell (collectively, the “Service Offerings”). The Site and any other features, tools, materials, or services offered from time to time by Gitcoin, including without limitation the Service Offerings, is referred to here as the “Service.” Please read these Terms of Use (the “Terms” or “Terms of Use”) carefully before using the Service. By using or otherwise accessing the Services, or clicking to accept or agree to these Terms where that option is made available, you (x) accept and agree to these Terms, (y) consent to the collection, use, disclosure and other handling of information as described in our <a target="_blank" rel="noreferrer" href="https://gitcoin.co/legal/cookie">Privacy Policy</a> and (z) any additional terms, rules and conditions of participation issued by Gitcoin from time to time. IF YOU DO NOT AGREE TO THE TERMS, THEN YOU MAY NOT ACCESS OR USE THE SERVICES.
+              </p>
+              <h2 class="font-title">2. MODIFICATIONS OF TERMS OF USE</h2>
+              <p>
+                Except for Section 25, providing for binding arbitration and waiver of class action rights, Gitcoin reserves the right, at its sole discretion, to modify or replace the Terms of Use at any time. The most current version of these Terms will be posted on our Site. You shall be responsible for reviewing and becoming familiar with any such modifications. Use of the Services by you after any modification to the Terms constitutes your acceptance of the Terms of Use as modified.
+              </p>
+              <h2 class="font-title">3. ELIGIBILITY</h2>
+              <p>
+                You represent and warrant that you: (a) are of legal age to form a binding contract; (b) have not previously been suspended or removed from using our Services; and (c) have full power and authority to enter into this agreement and in doing so will not violate any other agreement to which you are a party. If you are registering to use the Services on behalf of a legal entity, you further represent and warrant that (x) such legal entity is duly organized and validly existing under the applicable laws of the jurisdiction of its organization, and (y) you are duly authorized by such legal entity to act on its behalf.
+              </p>
+              <h2 class="font-title">4. ROLE OF GITCOIN</h2>
+              <p>
+                You expressly acknowledge, agree, and understand that: the Site is merely a platform through which Posters, Hunters, Buyers and Sellers conduct transactions. Unless participating on the Site as a Poster or a Seller, Gitcoin is not involved in the transactions, and has no control over the quality, safety, or legality of Tasks or consideration for Tasks, the ability of Hunters to perform Tasks to Posters’ satisfaction, or the ability of Posters to pay for Tasks. You are not an employee of Gitcoin, and Gitcoin does not, in any way, screen, supervise, direct, or control Hunters or services performed for or delivered to Posters  (“Hunter Services”). Gitcoin will not have any liability or obligations under or related to Service Contracts (defined below) for any acts or omissions by you or other Users. Gitcoin has no control over Hunters or the Hunter Services offered or rendered by Hunters and Gitcoin makes no representations as to the reliability, capability, or qualifications of any Hunter or the quality, security, or legality of any Hunter Services, and Gitcoin disclaims any and all liability relating thereto. Gitcoin has no control over Buyers and Sellers and Gitcoin makes no representations as to the quality or legality of any UGC created or sold by Sellers, and Gitcoin disclaims any and all liability relating thereto. Use of the Site is at your own risk. Because Gitcoin is not a party to the transactions between Posters and Hunters or between Buyers and Sellers, Gitcoin is not responsible for (i) resolving any disputes between participants related to any Tasks or (ii) any tax liabilities that may arise in a transaction between participants.
+              </p>
+              <h2 class="font-title">5. GITCOIN POSTERS</h2>
+              <p>
+                As a Poster, you agree that: (a) you will interact with Hunters in a professional and courteous manner, and accurately describe your Task; (b) you may only use the Site for business, commercial, or research purposes; (c) you may not have Hunters perform Tasks through venues other than the Site; (d) payment will be issued and remitted to Hunters upon your approval of Task; (e) payment is not refundable; (f) you will not reject Tasks performed by Hunters without good cause; and (g) you will not post a Task that violates any part of Section 14 of the Terms.
+              </p>
+              <h2 class="font-title">6. GITCOIN HUNTERS</h2>
+              <p>
+                As a Hunter, you agree that:
+                (a) you will interact with Posters in a professional and courteous manner, and provide reasonably requested information in connection with your performance of Tasks; (b) you will perform Tasks in a competent and workmanlike manner; (c) you will supply complete, accurate, non-malicious information for all Tasks you perform; (d) you will not perform Tasks through venues other than the Site; (e) you will not submit anything to Poster that violates Section 14 of the Terms; and (f) Posters may reject Tasks you perform for good cause and currently there is no way for a Hunter to dispute any rejection of a submission made through the Site, meaning you may not be paid if a Poster rejects your submission.
+              </p>
+              <h2 class="font-title">7. GITCOIN FEES AND PAYMENT</h2>
+              <p>
+                Unless otherwise agreed between you and Gitcoin in a separate order form, which is obtainable by contacting us directly, all Tasks on the Site are subject to a ten (10) percent listing fee, calculated as 10% of the total Task value (the “Listing Fee”) payable to Gitcoin. The Listing Fee shall be paid by the Poster, and shall be due upon a Poster submitting a Task to the Site.
+              </p>
+              <p>
+                The Listing Fee is refundable to the Poster solely upon the satisfaction of either of the following limited circumstances:
+              </p>
+              <ol>
+                <li>The Task has not been filled by a Hunter prior to Gitcoin’s receipt of a written request for a refund from a Poster. The Poster must submit a refund request to Gitcoin within 90 days from the date of posting such Task in order to be eligible for a refund.</li>
+                <li>The Poster is dissatisfied by work submitted by a Hunter and submits a request for review within 30 days of completion of the Task by a Hunter. In these instances, the Poster shall submit a written request for review to Gitcoin, who will in its sole discretion determine whether or not the Poster is eligible for a refund of the Transaction Fee.</li>
+              </ol>
+              <h2 class="font-title">8. GITCOIN RECURRING GRANTS</h2>
+              <p>
+                In addition to Section 5, but notwithstanding anything to the contrary therein, if you use the Site to make a grant (a “Grant”) to a Hunter, you agree that: (a) the Hunter has broad discretion in performing the Task described on its project page on the Site (the “Grant Project Page”), including what, how and when they perform such Task, and how they use the Grant; (b) the Grant will be made to the Hunter on a recurring basis, commencing with the first contribution at the time that you agree to make the Grant and recurring based on the frequency specified by the Hunter on the Grant Project Page; (c) the Hunter may change the Task, including without limitation the scope and timeline and the frequency of contributions; (d) Grant contributions will be issued and remitted to the Hunter prior to the Hunter completing a Task; (e) the Grant is not refundable; (f) you will not have the ability on the Site to dispute or reject Tasks performed by Hunters, but you may terminate future Grant contributions to the extent they have not been made; and (g) you and Hunter are responsible for any tax liabilities in connection with your transaction.
+              </p>
+              <p>
+                In addition to Section 6, but notwithstanding anything to the contrary therein, if you use the Site to accept a Grant from Posters, you agree that: (a) you will use the Grant to perform the Task described on your Grant Project Page; (b) you will notify Posters of any material changes to your Grant Project Page or the Task, including without limitation the scope and timeline and the frequency of contributions; and (c) you and Posters are responsible for any tax liabilities in connection with your transaction.
+              </p>
+              <h2 class="font-title">9. WORK PRODUCT AND WORK FOR HIRE</h2>
+              <p>
+                Hunter will perform the Hunter Services in a professional and workmanlike manner and will timely deliver any agreed upon tangible or intangible results or deliverables, including, but not limited to, configurations, computer programs, software, applications, or other information, and any intellectual property developed in connection therewith (“Work Product”). Where applicable, the Work Product must be submitted to Poster in open source format.
+              </p>
+              <p>
+                Any Work Product from Tasks performed as a Hunter is a "work made for hire" for the benefit of the Poster. Upon Hunter’s receipt of full payment from Poster, the Work Product, including without limitation all patent rights, copyright rights, mask work rights, moral rights, rights of publicity, trademark, trade dress and service mark rights, goodwill, trade secret rights and other intellectual property rights as may now exist or hereafter come into existence, and all applications therefore and registrations, renewals and extensions thereof, under the laws of any state, country, territory or other jurisdiction (“Intellectual Property Rights”) in the Work Product, will be the sole and exclusive property of Poster, and Poster will be deemed to be the author thereof. If Hunter has any Intellectual Property Rights to the Work Product that are not owned by Poster upon Hunter’s receipt of payment from Client, Hunter hereby automatically irrevocably assigns to Client all right, title and interest worldwide in and to such Intellectual Property Rights. Except as set forth above, Hunter retains no rights to use, and will not challenge the validity of Poster’s ownership in, such Intellectual Property Rights. Hunter hereby waives any moral rights, rights of paternity, integrity, disclosure and withdrawal or inalienable rights under applicable law in and to the Work Product.
+              </p>
+              <p>
+                Hunter agrees that it will not incorporate into Work Product or otherwise supply Poster any deliverable for which the use or distribution of the code will create (or purport to create) obligations for Poster to grant any rights or immunities under Poster’s intellectual property to a third-party, including without limitation any obligation that the Work Product or Poster software combined with, derived from, or distributed with such Work Product (a) be disclosed or distributed in source code form, (b) be licensed for the purpose of making derivative works, or (c) be redistributable at no charge.
+              </p>
+              <h2 class="font-title">10. INDEPENDENT CONTRACTORS</h2>
+              <p>
+                Hunters perform Tasks for Posters in their personal capacity as an independent contractor and not as an employee of a Poster or Gitcoin. As a Hunter, you agree that: (a) you are responsible for and will comply with all applicable laws and registration requirements, including those applicable to independent contractors and maximum working hours regulations; (b) these Terms do not create an association, joint venture, partnership, franchise, or employer/employee relationship between you and Poster, or you and Gitcoin; (iii) you will not represent yourself as an employee or agent of a Poster or Gitcoin; (iv) you will not be entitled to any of the benefits that a Poster or Gitcoin may make available to its employees, such as vacation pay, sick leave, and insurance programs, including group health insurance or retirement benefits; and (v) you are not eligible to recover worker's compensation benefits in the event of injury. As an independent contractor, Hunter is free at all times to provide Hunter Services to persons or businesses other than Poster, including any competitor of Poster. Hunter does not have authority to enter into written or oral (whether implied or express) contracts on behalf of Poster or Gitcoin. As a Poster, you will not engage a Hunter in any way that may jeopardize that Hunter's status as an independent contractor performing Tasks for you. Posters may not require an exclusive relationship.
+              </p>
+              <h2 class="font-title">11. GITCOIN CONTRACTS</h2>
+              <p>
+                As used herein, a “Service Contract” means, as applicable, the unilateral contractual provisions created by Poster that govern the Hunter Services to be performed by Hunter for Poster for a particular Task posted to the Site and which will typically include a description of the Task or Tasks to be completed, the amount and type of currency as compensation, and the deadline.  You acknowledge and agree that Gitcoin is not a party to any Service Contracts, and that the formation of a Service Contract between any Posters and Hunters will not, under any circumstance, create an employment or other service relationship between Gitcoin and Poster or Gitcoin and Hunter.
+              </p>
+              <h2 class="font-title">12. GITCOIN TIME TOKENS</h2>
+              <p>
+                Gitcoin offers its Time Token minting technology to allow users to independently create and distribute their own personal ERC20 tokens. After generating the tokens, users can transfer their time tokens for a fixed price to purchasers who are users on the platform. In return, the purchaser will get access to 1 hour of time from the seller. All funds are transferred directly from the purchaser to the seller. The seller transfers the time token directly from the time token contract to the wallet of the purchaser. Gitcoin does not take custody of the token or the funds and currently does not collect any fees for providing this technology. Sellers shall provide a description of the services that a purchaser may redeem the Seller’s time tokens for. Users agree to refrain from participating in any illegal activities in all applicable jurisdictions.
+              </p>
+              <h2 class="font-title">13. PAYMENT</h2>
+              <p>
+                In order to use Site Services, each User must provide its Ethereum wallet address. The Site and the Site Services operate with Ether or ERC20 compatible tokens. Payment to Hunters will occur upon Poster’s acceptance of Hunter’s Work Product or, in the case of a Grant, immediately upon a Poster agreeing to contribute a Grant to the Hunter and upon each payment cycle thereafter. Acceptance of a Hunter’s Work Product is at the sole discretion of the Poster.
+              </p>
+              <h2 class="font-title">14. RESTRICTIONS ON USE</h2>
+              <p>
+                Unless otherwise expressly authorized in these Terms of Use or on the Site, you may not take any action to interfere with the Site or any other user’s use of the Site or decompile, reverse engineer or disassemble any content or other products or processes accessible through the Site, nor insert any code or product or manipulate the content in any way that affects any User’s experience. While using the Site you are required to comply with all applicable statutes, orders, regulations, rules, and other laws. In addition, we expect users of the Website to respect the rights and dignity of others. Your use of the Site is conditioned on your compliance with the rules of conduct set forth in this Section.
+              </p>
+              <p>
+                You may not use, or cause or encourage others to use, Gitcoin for any illegal, harmful, fraudulent, infringing, or objectionable activities. Here is a non-exhaustive list of prohibited activities:
+                <ul>
+                  <li>Collecting personally identifiable information (e.g., do not ask Users for their email address or phone number)</li>
+                  <li>Using Gitcoin to try to generate "referred" site visits or click-through traffic</li>
+                  <li>Disrupting, manipulating, or degrading the operation of any website, product, or service</li>
+                  <li>Phishing, spamming, or pharming</li>
+                  <li>Unsolicited contacting of Users or other abusive behavior</li>
+                  <li>Advertising or marketing activities, including Tasks requiring registration at another website or group</li>
+                  <li>Tasks intended to promote a site, service or opinion (e.g., don't ask Hunters to write fake news or reviews)</li>
+                  <li>Infringing or misappropriating the rights of others, including Tasks that require violating the terms of any website, product, or service</li>
+                  <li>Posting or transmitting any content that is illegal, fraudulent or otherwise objectionable, including content that constitutes child pornography, relates to bestiality, or depicts non-consensual sex acts</li>
+                  <li>Disrupting, manipulating, or impairing the operation of the Gitcoin Site (e.g., do not try to "game" search results for Tasks)</li>
+                  <li>Scraping data or content from the Gitcoin Site</li>
+                  <li>Creating a security risk for Gitcoin or any Gitcoin User, including posting Tasks that require downloading software that contains harmful content or malicious code</li>
+                  <li>Performing or requesting asks through venues other than the Gitcoin Site</li>
+                </ul>
+              <p>
 
-            <h2 class="font-title">14. WARRANTY DISCLAIMER</h2>
-            <p>
-              You expressly understand and agree that your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "as available" basis, without warranties of any kind, either express or implied, including, without limitation, implied warranties of merchantability, fitness for a particular purpose or non-infringement. You release Gitcoin from all liability for content you acquired or failed to acquire through the Service.
-            </p>
-            <h2 class="font-title">15. SOPHISTICATION AND RISK OF CRYPTOGRAPHIC SYSTEMS</h2>
-            <p>
-              By utilizing the Service or platform in any way, you represent that you understand the inherent risks associated with cryptographic systems; and warrant that you have an understanding of the usage and intricacies of public/private key cryptography, native cryptographic tokens, like Ether (ETH) and Bitcoin (BTC), smart contract based tokens such as those that follow the Ethereum Token Standard (https://github.com/ethereum/EIPs/issues/20), and blockchain-based software systems.
-            </p>
-            <h2 class="font-title">16. PLATFORM SECURITY</h2>
-            <p>
-              Gitcoin is an early stage platform. You acknowledge that Ethereum applications are code subject to flaws and acknowledge that you are solely responsible for evaluating any available code provided by the Services. You further expressly acknowledge and represent that applications can be written maliciously or negligently, that Gitcoin cannot be held liable for your interaction with such applications. These warnings and others later provided by Gitcoin in no way evidence or represent an on-going duty to alert you to all of the potential risks of utilizing the Service.
-            </p>
-            <h2 class="font-title">17. RISK OF ERRORS, BUGS, AND DOWNTIME</h2>
-            <p>
-              You acknowledge and accept that the Services (i) may contain bugs, errors and defects, (ii) may function improperly or be subject to periods of downtime and unavailability, (iii) may result in total or partial loss or corruption of data used in the Services, and (iv) may be modified at any time, including through the release of subsequent versions, all with or without notice.
-            </p>
-            <h2 class="font-title">18. INDEMNITY</h2>
-            <p>
-              You agree, to the fullest extent permitted by applicable law, to release and to indemnify, defend and hold harmless Gitcoin and its parents, subsidiaries, affiliates and agencies, as well as the officers, directors, employees, shareholders and representatives of any of the foregoing entities, from and against any and all losses, liabilities, expenses, damages, costs (including attorneys’ fees and court costs) claims or actions of any kind whatsoever arising or resulting from: (a) your use of the Service, (b) your violation of these Terms of Use, (c) any of your acts or omissions that implicate publicity rights, defamation, invasion of privacy, confidentiality, intellectual property rights or other property rights, (d) your UGC, (e) any misrepresentation by you and (f) any disputes or issues between you and any third party. Gitcoin reserves the right, at its own expense, to assume exclusive defense and control of any matter otherwise subject to indemnification by you and, in such case, you agree to cooperate with Gitcoin in the defense of such matter.
-            </p>
-            <h2 class="font-title">19. LIMITATION ON LIABILITY</h2>
-            <p>
-              YOU ACKNOWLEDGE AND AGREE THAT YOU ASSUME FULL RESPONSIBILITY FOR YOUR USE OF THE SITE AND SERVICE. YOU ACKNOWLEDGE AND AGREE THAT ANY INFORMATION YOU SEND OR RECEIVE DURING YOUR USE OF THE SITE AND SERVICE MAY NOT BE SECURE AND MAY BE INTERCEPTED OR LATER ACQUIRED BY UNAUTHORIZED PARTIES. YOU ACKNOWLEDGE AND AGREE THAT YOUR USE OF THE SITE AND SERVICE IS AT YOUR OWN RISK. RECOGNIZING SUCH, YOU UNDERSTAND AND AGREE THAT, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, NEITHER GITCOIN NOR ITS PARENTS, SUBSIDIARIES, AFFILIATES AND AGENCIES, AS WELL AS THE OFFICERS, DIRECTORS, EMPLOYEES, SHAREHOLDERS OR REPRESENTATIVES OF ANY OF THE FOREGOING ENTITIES, OR ITS SUPPLIERS OR LICENSORS WILL BE LIABLE TO YOU FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY OR OTHER DAMAGES OF ANY KIND, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA OR OTHER TANGIBLE OR INTANGIBLE LOSSES OR ANY OTHER DAMAGES BASED ON CONTRACT, TORT (INCLUDING, IN JURISDICTIONS WHERE PERMITTED, NEGLIGENCE AND GROSS NEGLIGENCE), STRICT LIABILITY OR ANY OTHER THEORY (EVEN IF GITCOIN HAD BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), RESULTING FROM THE SITE OR SERVICE; THE USE OR THE INABILITY TO USE THE SITE OR SERVICE; UNAUTHORIZED ACCESS TO OR ALTERATION OF YOUR TRANSMISSIONS OR DATA; STATEMENTS OR CONDUCT OF ANY THIRD PARTY ON THE SITE OR SERVICE; ANY ACTIONS WE TAKE OR FAIL TO TAKE AS A RESULT OF COMMUNICATIONS YOU SEND TO US; HUMAN ERRORS; TECHNICAL MALFUNCTIONS; FAILURES, INCLUDING PUBLIC UTILITY OR TELEPHONE OUTAGES; OMISSIONS, INTERRUPTIONS, LATENCY, DELETIONS OR DEFECTS OF ANY DEVICE OR NETWORK, PROVIDERS, OR SOFTWARE (INCLUDING, BUT NOT LIMITED TO, THOSE THAT DO NOT PERMIT PARTICIPATION IN THE SERVICE); ANY INJURY OR DAMAGE TO COMPUTER EQUIPMENT; INABILITY TO FULLY ACCESS THE SITE OR SERVICE OR ANY OTHER WEBSITE; THEFT, TAMPERING, DESTRUCTION, OR UNAUTHORIZED ACCESS TO, IMAGES OR OTHER CONTENT OF ANY KIND; DATA THAT IS PROCESSED LATE OR INCORRECTLY OR IS INCOMPLETE OR LOST; TYPOGRAPHICAL, PRINTING OR OTHER ERRORS, OR ANY COMBINATION THEREOF; OR ANY OTHER MATTER RELATING TO THE SITE OR SERVICE.
-            </p>
-            <p>
-              SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OR CONSEQUENTIAL DAMAGES. ACCORDINGLY, SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.
-            </p>
-            <h2 class="font-title">20. LICENSES</h2>
-            <p>
-              20.1. Site License
-              Subject to and conditioned on your compliance with these Terms of Use, Gitcoin grants you a limited, non-exclusive, non-transferable, non-sublicensable license to access and make personal and non-commercial use of the Service. This license does not include any resale or commercial use of the Service or any derivative use of the Service. All rights not expressly granted to you in these Terms of Use are reserved and retained by Gitcoin or its licensors. The Gitcoin Service may not be reproduced, duplicated, copied, sold, resold, visited, or otherwise exploited for any commercial purpose without express written consent of Gitcoin. You may not frame or utilize framing techniques to enclose any trademark, logo, or other proprietary information (including images, text, page layout, or form) of Gitcoin without express written consent. You may not misuse the Services. You may use the Services only as permitted by law. The licenses granted by Gitcoin terminate if you do not comply with these Terms of Use. Gitcoin retains all right, title, and interest in and to all Intellectual Property Rights in and to the Site and the Site Services.
-            </p>
-            <p>
-              20.2. User Content License
-              When you post or submit any data, feedback, content, text, photographs, images, or other information to any part of the Site or provide to Gitcoin (referred to as “User Content”), you represent and warrant that you have the right, power, and authority to post that User Content and grant the licenses specified below.  You further represent and warrant that by posting or providing such User Content you will not violate third-party rights of any kind, including, without limitation, any Intellectual Property Rights, rights of publicity, or privacy rights.  To the extent your User Content may be copyrightable, you represent, warrant, and covenant that you are the owner of all the copyright rights to such User Content and that Gitcoin may exercise the rights to your User Content granted under the Terms of Use without any liability or obligation for any payment.
-              <br>
-              You retain all ownership rights in any User Content you post on Gitcoin.  To the extent permitted by applicable law, you also grant to Gitcoin and our successors and affiliates a royalty-free, sub-licensable, transferable, perpetual, irrevocable, non-exclusive, worldwide license to use, reproduce, modify, publish, list information regarding, edit, translate, distribute, publicly perform, publicly display, and make derivative works of all such User Content and your name, voice, and/or likeness as contained in your User Content, in whole or in part, and in any form, media, or technology, whether now known or hereafter developed, for use in connection with the Site and Gitcoin (and our successors’ and affiliates’) business, including, without limitation, for promoting and redistributing part or all of the Site (and derivative works thereof) in any media formats and through any media channels.  You also hereby grant each User a non-exclusive license to access your User Content through the Site and to use, reproduce, distribute, display, and perform such User Content to the extent permitted through the normal functionality of the Site and subject to all applicable confidentiality and other provisions of this Agreement, our <a target="_blank" rel="noreferrer" href="https://gitcoin.co/legal/cookie">Privacy Policy</a>, and applicable law.
-              <br>
-              The licenses to User Content granted by you in this Agreement will terminate within a commercially reasonable time after you remove or delete your User Content from the Site, except that you grant Gitcoin and our successors and affiliates the irrevocable and perpetual license to retain and use, but not publicly display or distribute, server or archival copies of all User Content that you have removed or deleted to the extent permitted by applicable law.
-            </p>
-            <h2 class="font-title">21. TERMINATION AND SUSPENSION</h2>
-            <p>
-              Gitcoin may terminate or suspend all or part of the Service without prior notice or liability if you breach any of the terms or conditions of the Terms. We may, in our sole discretion and without liability to you, with or without prior notice and at any time, modify or discontinue, temporarily or permanently, any portion of our Services.
-            </p>
-            <p>
-              The following provisions of the Terms survive any termination of these Terms: INDEMNITY; WARRANTY DISCLAIMERS; LIMITATION ON LIABILITY; OUR PROPRIETARY RIGHTS; TERMINATION AND SUSPENSION; NO THIRD PARTY BENEFICIARIES; BINDING ARBITRATION AND CLASS ACTION WAIVER; GENERAL INFORMATION.
-            </p>
-            <h2 class="font-title">22. NO THIRD PARTY BENEFICIARIES</h2>
-            <p>
-              You agree that, except as otherwise expressly provided in these Terms, there shall be no third party beneficiaries to the Terms. The Terms of Use will not be construed as creating or implying any relationship of agency, franchise, partnership, or joint venture between Users and Gitcoin, except and solely to the extent expressly stated in this Agreement.
-            </p>
-            <h2 class="font-title">23. NOTICE AND PROCEDURE FOR MAKING COPYRIGHT INFRINGEMENT CLAIMS</h2>
-            <p>
-              If you believe that your copyright or the copyright of a person on whose behalf you are authorized to act has been infringed, please provide Gitcoin a written notice containing the following information:
-              <ul>
-                <li>an electronic or physical signature of the person authorized to act on behalf of the owner of the copyright or other intellectual property interest;</li>
-                <li>a description of the copyrighted work or other intellectual property that you claim has been infringed;</li>
-                <li>a description of where the material that you claim is infringing is located on the Service.</li>
-              </ul>
-            </p>
-            <p>
-              Gitcoin can be reached at: <br>
-              Email: notices@consensys.net <br>
-              Subject Line: Copyright Notification <br>
-            </p>
-            <h2 class="font-title">24. BINDING ARBITRATION AND CLASS ACTION WAIVER</h2>
-            <p>
-              PLEASE READ THIS SECTION CAREFULLY – IT MAY SIGNIFICANTLY AFFECT YOUR LEGAL RIGHTS, INCLUDING YOUR RIGHT TO FILE A LAWSUIT IN COURT
-            </p>
-            <p>
-              24.1. Initial Dispute Resolution <br>
-              The parties shall use their best efforts to engage directly to settle any dispute, claim, question, or disagreement and engage in good faith negotiations which shall be a condition to either party initiating a lawsuit or arbitration.
-            </p>
-            <p>
-              24.2. Binding Arbitration <br>
-              If the parties do not reach an agreed upon solution within a period of 30 days from the time informal dispute resolution under the Initial Dispute Resolution provision begins, then either party may initiate binding arbitration as the sole means to resolve claims, subject to the terms set forth below. Specifically, all claims arising out of or relating to these Terms (including their formation, performance and breach), the parties’ relationship with each other and/or your use of the Service shall be finally settled by binding arbitration administered by the American Arbitration Association in accordance with the provisions of its Commercial Arbitration Rules and the supplementary procedures for consumer related disputes of the American Arbitration Association (the “AAA”), excluding any rules or procedures governing or permitting class actions. The arbitrator, and not any federal, state or local court or agency, shall have exclusive authority to resolve all disputes arising out of or relating to the interpretation, applicability, enforceability or formation of these Terms, including, but not limited to any claim that all or any part of these Terms are void or voidable, or whether a claim is subject to arbitration. The arbitrator shall be empowered to grant whatever relief would be available in a court under law or in equity. The arbitrator’s award shall be written, and binding on the parties and may be entered as a judgment in any court of competent jurisdiction. The parties understand that, absent this mandatory provision, they would have the right to sue in court and have a jury trial. They further understand that, in some instances, the costs of arbitration could exceed the costs of litigation and the right to discovery may be more limited in arbitration than in court.
-            </p>
-            <p>
-              24.3. Location <br>
-              Binding arbitration shall take place in New York. You agree to submit to the personal jurisdiction of any federal or state court in New York County, New York, in order to compel arbitration, to stay proceedings pending arbitration, or to confirm, modify, vacate or enter judgment on the award entered by the arbitrator.
-            </p>
-            <p>
-              24.4. Class Action Waiver <br>
-              The parties further agree that any arbitration or other permitted action shall be conducted in their individual capacities only and not as a class action or other representative action, and the parties expressly waive their right to file a class action or seek relief on a class basis. YOU AND GITCOIN AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY, AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE PROCEEDING. If any court or arbitrator determines that the class action waiver set forth in this paragraph is void or unenforceable for any reason or that an arbitration can proceed on a class basis, then the arbitration provision set forth above shall be deemed null and void in its entirety and the parties shall be deemed to have not agreed to arbitrate disputes.
-            </p>
-            <p>
-              24.5. Exception - Litigation of Intellectual Property and Small Claims Court Claims <br>
-              Notwithstanding the parties' decision to resolve all disputes through arbitration, either party may bring an action in state or federal court to protect its intellectual property rights (“intellectual property rights” means patents, copyrights, moral rights, trademarks, and trade secrets, but not privacy or publicity rights). Either party may also seek relief in a small claims court for disputes or claims within the scope of that court’s jurisdiction.
-            </p>
-            <p>
-              24.6. 30-Day Right to Opt Out <br>
-              You have the right to opt-out and not be bound by the arbitration and class action waiver provisions set forth above by sending written notice of your decision to opt-out to the following address: Gitcoin ℅ ConsenSys, 49 Bogart Street, Brooklyn NY 11206 and via email at notices@consensys.net, with subject line “Gitcoin LEGAL OPT OUT”. The notice must be sent within 30 days of your first use of the Service otherwise you shall be bound to arbitrate disputes in accordance with the terms of those paragraphs. If you opt-out of these arbitration provisions, Gitcoin also will not be bound by them.
-            </p>
-            <p>
-              24.7. Changes to this Section <br>
-              Gitcoin will provide 60-days’ notice of any changes to this Section. Changes will become effective on the 60th day, and will apply prospectively only to any claims arising after the 60th day. For any dispute not subject to arbitration you and Gitcoin agree to submit to the personal and exclusive jurisdiction of and venue in the federal and state courts located in New York, New York. You further agree to accept service of process by mail, and hereby waive any and all jurisdictional and venue defenses otherwise available. The Terms and the relationship between you and Gitcoin shall be governed by the laws of the State of New York without regard to conflict of law provisions.
-            </p>
-            <h2 class="font-title">25. RELEASE</h2>
-            <p>
-              In addition to the recognition that Gitcoin is not a party to any Service Contract between Users, you hereby release Gitcoin, our affiliates, and our respective officers, directors, agents, subsidiaries, joint ventures, and employees from claims, demands, and damages (actual and consequential) of every kind and nature, known and unknown, arising out of or in any way connected with any dispute you have with another User, whether it be at law or in equity.  This release includes, for example and without limitation, any disputes regarding the performance, functions, and quality of the work provided to the Gitcoin Poster and requests for refunds based upon disputes.
-            </p>
-            <p>
-              TO THE EXTENT APPLICABLE, YOU HEREBY WAIVE THE PROTECTIONS OF CALIFORNIA CIVIL CODE § 1542 (AND ANY ANALOGOUS LAW IN ANY OTHER APPLICABLE JURISDICTION) WHICH SAYS: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”
-            </p>
-            <h2 class="font-title">26. GENERAL INFORMATION</h2>
-            <p>
-              26.1. Entire Agreement <br>
-              These Terms (and any additional terms, rules and conditions of participation that Gitcoin may post on the Service) constitute the entire agreement between you and Gitcoin with respect to the Service and supersedes any prior agreements, oral or written, between you and Gitcoin. In the event of a conflict between these Terms and the additional terms, rules and conditions of participation, the latter will prevail over the Terms to the extent of the conflict.
-            </p>
-            <p>
-              26.2. Waiver and Severability of Terms <br>
-              The failure of Gitcoin to exercise or enforce any right or provision of the Terms shall not constitute a waiver of such right or provision. If any provision of the Terms is found by an arbitrator or court of competent jurisdiction to be invalid, the parties nevertheless agree that the arbitrator or court should endeavor to give effect to the parties' intentions as reflected in the provision, and the other provisions of the Terms remain in full force and effect.
-            </p>
-            <p>
-              26.3. Statute of Limitations <br>
-              You agree that regardless of any statute or law to the contrary, any claim or cause of action arising out of or related to the use of the Service or the Terms must be filed within one (1) year after such claim or cause of action arose or be forever barred.
-            </p>
-            <p>
-              26.4. Communications <br>
-              Users with questions, complaints or claims with respect to the Service may contact us at legalnotices@gitcoin.co.
-            </p>
-            <h2 class="font-title">27. INTERNATIONAL USERS</h2>
-            <p>
-              The Site is controlled, operated and administered by Gitcoin from its offices within the United States of America and is not intended to subject Gitcoin to the laws or jurisdiction of any state, country or territory other than that of the United States. Gitcoin does not represent or warrant that the Site or any part thereof is appropriate or available for use in any particular jurisdiction other than the United States. Those who choose to access the Site do so on their own initiative and at their own risk, and are responsible for complying with all local statutes, orders, regulations, rules, and other laws. You are also subject to United States export controls and are responsible for any violations of such controls, including without limitation any United States embargoes or other federal rules and regulations restricting exports. Gitcoin may limit the Site’s availability, in whole or in part, to any person, geographic area or jurisdiction we choose, at any time and in our sole discretion.
-            </p>
-            <h2 class="font-title">28. KUDOS AND OTHER USER GENERATED CONTENT</h2>
-            <p>
-              28.1. General <br>
-              The Service permits you to create and/or upload material which you own, have created or otherwise have appropriate rights in, including without limitation Kudos (collectively, "User Generated Content" or "UGC"). UGC includes, for example, drawings, images, pictures, writings, games, videos and any other content or materials contributed by users to, on, or through the Service. If we believe that your use or uploading of UGC breaches any of the terms and conditions set forth herein, then we may remove, block, edit, move or disable such UGC in our sole discretion. If you contravene any of the terms and conditions herein, we reserve the right to suspend or permanently remove availability of your UGC and to take any other steps which we consider appropriate including terminating your ability to use the Service.
-            </p>
-            <p>
-              28.2. Your Responsibility <br>
-              You are solely responsible for your UGC and the consequences of posting or publishing UGC. By posting or publishing UGC on or through the Service, you affirm, represent, and warrant that: (a) you are the creator of or otherwise own the rights in the UGC that you make available to or through the Service, or, for any UGC that is owned by a third party, you have the express authorization of such third party to upload such UGC to or through the Service; (b) no item of UGC that you upload infringes the intellectual property rights or privacy or any other rights of anyone else or is illegal or breaches the Terms; (c) you waive and agree not to assert any moral rights or similar rights you may have in UGC; (d) you are solely responsible for your UGC, and acknowledge that we do not pre-screen any UGC and do not endorse or approve of any UGC that you or other users may contribute to the Service; (e) you must not in any way claim or suggest that any UGC is endorsed or supported by us; and (f) your use of the Service, including the UGC you upload, complies with all applicable laws and legislation and is not harmful, offensive, defamatory, sexually explicit, obscene, violent, threatening, harassing, abusive, falsely representative of your persona, invasive of someone else’s privacy, illegal or likely to cause any reputational loss or embarrassment to us or our affiliates.
-            </p>
-            <p>
-              28.3. License Grant to Us <br>
-              By posting or publishing UGC to the Service or otherwise, you grant us a worldwide, perpetual, non-exclusive, fully transferable, royalty-free, irrevocable, commercial right and license to host, store, use, transfer, display, perform, reproduce, modify, adapt, edit, combine with other materials, publish, distribute, create derivative works from, promote, exhibit, broadcast, syndicate, sublicense (including, without limitation, to third party individuals, media channels, platforms, and distributors), and otherwise use and exploit in any manner whatsoever, or grant third parties the right to do any of the foregoing, to all or any portion of your UGC, for any purpose whatsoever, including for commercial purposes, in any means or media formats and through any media channels (now known or hereafter developed) and to advertise, market, and promote the same. You further irrevocably grant us the right, but not the obligation, to use your name in connection with your UGC. You also agree to waive any right of approval for our use of the rights granted herein that you may have in any UGC, even if it is altered or changed in a manner not agreeable to you. To the extent not waivable, you irrevocably agree not to exercise such rights in a manner that interferes with any exercise of the granted rights. To the extent permitted by applicable laws, you also waive any moral rights or rights of a like nature that you may have in such UGC. Any such use of your UGC by us shall be without any compensation paid to you.
-            </p>
-            <p>
-              28.4. Use of UGC <br>
-              USERS OF THE SERVICE CREATE, DOWNLOAD AND USE UGC AT THEIR OWN RISK. WE ARE UNDER NO OBLIGATION TO EDIT OR CONTROL UGC THAT YOU OR OTHER USERS POST OR PUBLISH, AND WILL NOT BE IN ANY WAY RESPONSIBLE OR LIABLE FOR UGC. WE MAY, HOWEVER, AT ANY TIME AND WITHOUT PRIOR NOTICE, SCREEN, REMOVE, EDIT, OR BLOCK ANY UGC THAT IN OUR SOLE JUDGMENT VIOLATES THESE LICENSE TERMS OR IS OTHERWISE OBJECTIONABLE. YOU UNDERSTAND THAT WHEN USING THE SERVICE YOU WILL BE EXPOSED TO UGC FROM A VARIETY OF SOURCES AND ACKNOWLEDGE THAT UGC MAY BE INACCURATE, OFFENSIVE, INDECENT OR OBJECTIONABLE. YOU AGREE TO WAIVE, AND DO HEREBY WAIVE, ANY LEGAL OR EQUITABLE RIGHTS OR REMEDIES YOU HAVE OR MAY HAVE AGAINST US WITH RESPECT TO UGC. WE EXPRESSLY DISCLAIM ANY AND ALL LIABILITY IN CONNECTION WITH UGC. IF NOTIFIED BY A USER OR CONTENT OWNER THAT UGC ALLEGEDLY DOES NOT CONFORM TO THE LICENSE TERMS, WE MAY INVESTIGATE THE ALLEGATION AND DETERMINE IN OUR SOLE DISCRETION WHETHER TO REMOVE THE UGC, WHICH WE RESERVE THE RIGHT TO DO AT ANY TIME AND WITHOUT NOTICE. FOR CLARITY, WE DO NOT PERMIT COPYRIGHT-INFRINGING ACTIVITIES ON THE SERVICE.
-            </p>
-            <p>
-              28.5 Display of Profile <br>
-              Users who own or otherwise receive Kudos or other UGC agree to have their Gitcoin profile page linked on Kudos pages.
-            </p>
-            <h2 class="font-title">29. ADDITIONAL SERVICES</h2>
-            <p>
-              29.1. General <br>
-              If you enter into any order form for additional services (the “Additional Services”)
-              from Gitcoin (including without limitation Hackathons and Tribes), you agree to be subject
-               to the terms of such order form and these Terms, including this Section 29.
-            </p>
-            <p>
-              29.2. Payment <br>
-              You agree to pay Gitcoin the fees specified in the order form (the “Additional Fees”). Unless
-              otherwise specified therein, all Additional Fees will be due and payable within 30 days of your
-              receipt of an invoice. Failure to pay the Additional Fees by their due dates may result in the
-              loss of some or all of the Services at Gitcoin’s sole discretion. Additional Fees are non-refundable.
-            </p>
-            <p>
-              29.3. License to Your Materials <br>
-              You hereby grant to Gitcoin a non-exclusive, non-transferable license to use the logos, trademarks,
-              service marks, trade dress and other protectable source or business identifiers, and any documents,
-              information and other materials owned or licensed by you and provided by you to Gitcoin for use in
-              connection with the Additional Services.
+              <h2 class="font-title">15. WARRANTY DISCLAIMER</h2>
+              <p>
+                You expressly understand and agree that your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "as available" basis, without warranties of any kind, either express or implied, including, without limitation, implied warranties of merchantability, fitness for a particular purpose or non-infringement. You release Gitcoin from all liability for content you acquired or failed to acquire through the Service.
+              </p>
+              <h2 class="font-title">16. SOPHISTICATION AND RISK OF CRYPTOGRAPHIC SYSTEMS</h2>
+              <p>
+                By utilizing the Service or platform in any way, you represent that you understand the inherent risks associated with cryptographic systems; and warrant that you have an understanding of the usage and intricacies of public/private key cryptography, native cryptographic tokens, like Ether (ETH) and Bitcoin (BTC), smart contract based tokens such as those that follow the Ethereum Token Standard (https://github.com/ethereum/EIPs/issues/20), and blockchain-based software systems.
+              </p>
+              <h2 class="font-title">17. PLATFORM SECURITY</h2>
+              <p>
+                Gitcoin is an early stage platform. You acknowledge that Ethereum applications are code subject to flaws and acknowledge that you are solely responsible for evaluating any available code provided by the Services. You further expressly acknowledge and represent that applications can be written maliciously or negligently, that Gitcoin cannot be held liable for your interaction with such applications. These warnings and others later provided by Gitcoin in no way evidence or represent an on-going duty to alert you to all of the potential risks of utilizing the Service.
+              </p>
+              <h2 class="font-title">18. RISK OF ERRORS, BUGS, AND DOWNTIME</h2>
+              <p>
+                You acknowledge and accept that the Services (i) may contain bugs, errors and defects, (ii) may function improperly or be subject to periods of downtime and unavailability, (iii) may result in total or partial loss or corruption of data used in the Services, and (iv) may be modified at any time, including through the release of subsequent versions, all with or without notice.
+              </p>
+              <h2 class="font-title">19. INDEMNITY</h2>
+              <p>
+                You agree, to the fullest extent permitted by applicable law, to release and to indemnify, defend and hold harmless Gitcoin and its parents, subsidiaries, affiliates and agencies, as well as the officers, directors, employees, shareholders and representatives of any of the foregoing entities, from and against any and all losses, liabilities, expenses, damages, costs (including attorneys’ fees and court costs) claims or actions of any kind whatsoever arising or resulting from: (a) your use of the Service, (b) your violation of these Terms of Use, (c) any of your acts or omissions that implicate publicity rights, defamation, invasion of privacy, confidentiality, intellectual property rights or other property rights, (d) your UGC, (e) any misrepresentation by you and (f) any disputes or issues between you and any third party. Gitcoin reserves the right, at its own expense, to assume exclusive defense and control of any matter otherwise subject to indemnification by you and, in such case, you agree to cooperate with Gitcoin in the defense of such matter.
+              </p>
+              <h2 class="font-title">20. LIMITATION ON LIABILITY</h2>
+              <p>
+                YOU ACKNOWLEDGE AND AGREE THAT YOU ASSUME FULL RESPONSIBILITY FOR YOUR USE OF THE SITE AND SERVICE. YOU ACKNOWLEDGE AND AGREE THAT ANY INFORMATION YOU SEND OR RECEIVE DURING YOUR USE OF THE SITE AND SERVICE MAY NOT BE SECURE AND MAY BE INTERCEPTED OR LATER ACQUIRED BY UNAUTHORIZED PARTIES. YOU ACKNOWLEDGE AND AGREE THAT YOUR USE OF THE SITE AND SERVICE IS AT YOUR OWN RISK. RECOGNIZING SUCH, YOU UNDERSTAND AND AGREE THAT, TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, NEITHER GITCOIN NOR ITS PARENTS, SUBSIDIARIES, AFFILIATES AND AGENCIES, AS WELL AS THE OFFICERS, DIRECTORS, EMPLOYEES, SHAREHOLDERS OR REPRESENTATIVES OF ANY OF THE FOREGOING ENTITIES, OR ITS SUPPLIERS OR LICENSORS WILL BE LIABLE TO YOU FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY OR OTHER DAMAGES OF ANY KIND, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA OR OTHER TANGIBLE OR INTANGIBLE LOSSES OR ANY OTHER DAMAGES BASED ON CONTRACT, TORT (INCLUDING, IN JURISDICTIONS WHERE PERMITTED, NEGLIGENCE AND GROSS NEGLIGENCE), STRICT LIABILITY OR ANY OTHER THEORY (EVEN IF GITCOIN HAD BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), RESULTING FROM THE SITE OR SERVICE; THE USE OR THE INABILITY TO USE THE SITE OR SERVICE; UNAUTHORIZED ACCESS TO OR ALTERATION OF YOUR TRANSMISSIONS OR DATA; STATEMENTS OR CONDUCT OF ANY THIRD PARTY ON THE SITE OR SERVICE; ANY ACTIONS WE TAKE OR FAIL TO TAKE AS A RESULT OF COMMUNICATIONS YOU SEND TO US; HUMAN ERRORS; TECHNICAL MALFUNCTIONS; FAILURES, INCLUDING PUBLIC UTILITY OR TELEPHONE OUTAGES; OMISSIONS, INTERRUPTIONS, LATENCY, DELETIONS OR DEFECTS OF ANY DEVICE OR NETWORK, PROVIDERS, OR SOFTWARE (INCLUDING, BUT NOT LIMITED TO, THOSE THAT DO NOT PERMIT PARTICIPATION IN THE SERVICE); ANY INJURY OR DAMAGE TO COMPUTER EQUIPMENT; INABILITY TO FULLY ACCESS THE SITE OR SERVICE OR ANY OTHER WEBSITE; THEFT, TAMPERING, DESTRUCTION, OR UNAUTHORIZED ACCESS TO, IMAGES OR OTHER CONTENT OF ANY KIND; DATA THAT IS PROCESSED LATE OR INCORRECTLY OR IS INCOMPLETE OR LOST; TYPOGRAPHICAL, PRINTING OR OTHER ERRORS, OR ANY COMBINATION THEREOF; OR ANY OTHER MATTER RELATING TO THE SITE OR SERVICE.
+              </p>
+              <p>
+                SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OR EXCLUSION OF LIABILITY FOR INCIDENTAL OR CONSEQUENTIAL DAMAGES. ACCORDINGLY, SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.
+              </p>
+              <h2 class="font-title">21. LICENSES</h2>
+              <p>
+                21.1. Site License
+                Subject to and conditioned on your compliance with these Terms of Use, Gitcoin grants you a limited, non-exclusive, non-transferable, non-sublicensable license to access and make personal and non-commercial use of the Service. This license does not include any resale or commercial use of the Service or any derivative use of the Service. All rights not expressly granted to you in these Terms of Use are reserved and retained by Gitcoin or its licensors. The Gitcoin Service may not be reproduced, duplicated, copied, sold, resold, visited, or otherwise exploited for any commercial purpose without express written consent of Gitcoin. You may not frame or utilize framing techniques to enclose any trademark, logo, or other proprietary information (including images, text, page layout, or form) of Gitcoin without express written consent. You may not misuse the Services. You may use the Services only as permitted by law. The licenses granted by Gitcoin terminate if you do not comply with these Terms of Use. Gitcoin retains all right, title, and interest in and to all Intellectual Property Rights in and to the Site and the Site Services.
+              </p>
+              <p>
+                21.2. User Content License
+                When you post or submit any data, feedback, content, text, photographs, images, or other information to any part of the Site or provide to Gitcoin (referred to as “User Content”), you represent and warrant that you have the right, power, and authority to post that User Content and grant the licenses specified below.  You further represent and warrant that by posting or providing such User Content you will not violate third-party rights of any kind, including, without limitation, any Intellectual Property Rights, rights of publicity, or privacy rights.  To the extent your User Content may be copyrightable, you represent, warrant, and covenant that you are the owner of all the copyright rights to such User Content and that Gitcoin may exercise the rights to your User Content granted under the Terms of Use without any liability or obligation for any payment.
+                <br>
+                You retain all ownership rights in any User Content you post on Gitcoin.  To the extent permitted by applicable law, you also grant to Gitcoin and our successors and affiliates a royalty-free, sub-licensable, transferable, perpetual, irrevocable, non-exclusive, worldwide license to use, reproduce, modify, publish, list information regarding, edit, translate, distribute, publicly perform, publicly display, and make derivative works of all such User Content and your name, voice, and/or likeness as contained in your User Content, in whole or in part, and in any form, media, or technology, whether now known or hereafter developed, for use in connection with the Site and Gitcoin (and our successors’ and affiliates’) business, including, without limitation, for promoting and redistributing part or all of the Site (and derivative works thereof) in any media formats and through any media channels.  You also hereby grant each User a non-exclusive license to access your User Content through the Site and to use, reproduce, distribute, display, and perform such User Content to the extent permitted through the normal functionality of the Site and subject to all applicable confidentiality and other provisions of this Agreement, our <a target="_blank" rel="noreferrer" href="https://gitcoin.co/legal/cookie">Privacy Policy</a>, and applicable law.
+                <br>
+                The licenses to User Content granted by you in this Agreement will terminate within a commercially reasonable time after you remove or delete your User Content from the Site, except that you grant Gitcoin and our successors and affiliates the irrevocable and perpetual license to retain and use, but not publicly display or distribute, server or archival copies of all User Content that you have removed or deleted to the extent permitted by applicable law.
+              </p>
+              <h2 class="font-title">22. TERMINATION AND SUSPENSION</h2>
+              <p>
+                Gitcoin may terminate or suspend all or part of the Service without prior notice or liability if you breach any of the terms or conditions of the Terms. We may, in our sole discretion and without liability to you, with or without prior notice and at any time, modify or discontinue, temporarily or permanently, any portion of our Services.
+              </p>
+              <p>
+                The following provisions of the Terms survive any termination of these Terms: INDEMNITY; WARRANTY DISCLAIMERS; LIMITATION ON LIABILITY; OUR PROPRIETARY RIGHTS; TERMINATION AND SUSPENSION; NO THIRD PARTY BENEFICIARIES; BINDING ARBITRATION AND CLASS ACTION WAIVER; GENERAL INFORMATION.
+              </p>
+              <h2 class="font-title">23. NO THIRD PARTY BENEFICIARIES</h2>
+              <p>
+                You agree that, except as otherwise expressly provided in these Terms, there shall be no third party beneficiaries to the Terms. The Terms of Use will not be construed as creating or implying any relationship of agency, franchise, partnership, or joint venture between Users and Gitcoin, except and solely to the extent expressly stated in this Agreement.
+              </p>
+              <h2 class="font-title">24. NOTICE AND PROCEDURE FOR MAKING COPYRIGHT INFRINGEMENT CLAIMS</h2>
+              <p>
+                If you believe that your copyright or the copyright of a person on whose behalf you are authorized to act has been infringed, please provide Gitcoin a written notice containing the following information:
+                <ul>
+                  <li>an electronic or physical signature of the person authorized to act on behalf of the owner of the copyright or other intellectual property interest;</li>
+                  <li>a description of the copyrighted work or other intellectual property that you claim has been infringed;</li>
+                  <li>a description of where the material that you claim is infringing is located on the Service.</li>
+                </ul>
+              </p>
+              <p>
+                Gitcoin can be reached at: <br>
+                Email: privacy@gitcoin.co <br>
+                Subject Line: Copyright Notification <br>
+              </p>
+              <h2 class="font-title">25. BINDING ARBITRATION AND CLASS ACTION WAIVER</h2>
+              <p>
+                PLEASE READ THIS SECTION CAREFULLY – IT MAY SIGNIFICANTLY AFFECT YOUR LEGAL RIGHTS, INCLUDING YOUR RIGHT TO FILE A LAWSUIT IN COURT
+              </p>
+              <p>
+                25.1. Initial Dispute Resolution <br>
+                The parties shall use their best efforts to engage directly to settle any dispute, claim, question, or disagreement and engage in good faith negotiations which shall be a condition to either party initiating a lawsuit or arbitration.
+              </p>
+              <p>
+                25.2. Binding Arbitration <br>
+                If the parties do not reach an agreed upon solution within a period of 30 days from the time informal dispute resolution under the Initial Dispute Resolution provision begins, then either party may initiate binding arbitration as the sole means to resolve claims, subject to the terms set forth below. Specifically, all claims arising out of or relating to these Terms (including their formation, performance and breach), the parties’ relationship with each other and/or your use of the Service shall be finally settled by binding arbitration administered by the American Arbitration Association in accordance with the provisions of its Commercial Arbitration Rules and the supplementary procedures for consumer related disputes of the American Arbitration Association (the “AAA”), excluding any rules or procedures governing or permitting class actions. The arbitrator, and not any federal, state or local court or agency, shall have exclusive authority to resolve all disputes arising out of or relating to the interpretation, applicability, enforceability or formation of these Terms, including, but not limited to any claim that all or any part of these Terms are void or voidable, or whether a claim is subject to arbitration. The arbitrator shall be empowered to grant whatever relief would be available in a court under law or in equity. The arbitrator’s award shall be written, and binding on the parties and may be entered as a judgment in any court of competent jurisdiction. The parties understand that, absent this mandatory provision, they would have the right to sue in court and have a jury trial. They further understand that, in some instances, the costs of arbitration could exceed the costs of litigation and the right to discovery may be more limited in arbitration than in court.
+              </p>
+              <p>
+                25.3. Location <br>
+                Binding arbitration shall take place in New York. You agree to submit to the personal jurisdiction of any federal or state court in New York County, New York, in order to compel arbitration, to stay proceedings pending arbitration, or to confirm, modify, vacate or enter judgment on the award entered by the arbitrator.
+              </p>
+              <p>
+                25.4. Class Action Waiver <br>
+                The parties further agree that any arbitration or other permitted action shall be conducted in their individual capacities only and not as a class action or other representative action, and the parties expressly waive their right to file a class action or seek relief on a class basis. YOU AND GITCOIN AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY, AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE PROCEEDING. If any court or arbitrator determines that the class action waiver set forth in this paragraph is void or unenforceable for any reason or that an arbitration can proceed on a class basis, then the arbitration provision set forth above shall be deemed null and void in its entirety and the parties shall be deemed to have not agreed to arbitrate disputes.
+              </p>
+              <p>
+                25.5. Exception - Litigation of Intellectual Property and Small Claims Court Claims <br>
+                Notwithstanding the parties' decision to resolve all disputes through arbitration, either party may bring an action in state or federal court to protect its intellectual property rights (“intellectual property rights” means patents, copyrights, moral rights, trademarks, and trade secrets, but not privacy or publicity rights). Either party may also seek relief in a small claims court for disputes or claims within the scope of that court’s jurisdiction.
+              </p>
+              <p>
+                25.6. 30-Day Right to Opt Out <br>
+                You have the right to opt-out and not be bound by the arbitration and class action waiver provisions set forth above by sending written notice of your decision to opt-out to the following address: Gitcoin Holdings, 2770 Arapahoe Rd. Ste 132-1015 Lafayette, CO 80026 and via email at privacy@gitcoin.co, with subject line “Gitcoin LEGAL OPT OUT”. The notice must be sent within 30 days of your first use of the Service otherwise you shall be bound to arbitrate disputes in accordance with the terms of those paragraphs. If you opt-out of these arbitration provisions, Gitcoin also will not be bound by them.
+              </p>
+              <p>
+                25.7. Changes to this Section <br>
+                Gitcoin will provide 60-days’ notice of any changes to this Section. Changes will become effective on the 60th day, and will apply prospectively only to any claims arising after the 60th day. For any dispute not subject to arbitration you and Gitcoin agree to submit to the personal and exclusive jurisdiction of and venue in the federal and state courts located in New York, New York. You further agree to accept service of process by mail, and hereby waive any and all jurisdictional and venue defenses otherwise available. The Terms and the relationship between you and Gitcoin shall be governed by the laws of the State of New York without regard to conflict of law provisions.
+              </p>
+              <h2 class="font-title">26. RELEASE</h2>
+              <p>
+                In addition to the recognition that Gitcoin is not a party to any Service Contract between Users, you hereby release Gitcoin, our affiliates, and our respective officers, directors, agents, subsidiaries, joint ventures, and employees from claims, demands, and damages (actual and consequential) of every kind and nature, known and unknown, arising out of or in any way connected with any dispute you have with another User, whether it be at law or in equity.  This release includes, for example and without limitation, any disputes regarding the performance, functions, and quality of the work provided to the Gitcoin Poster and requests for refunds based upon disputes.
+              </p>
+              <p>
+                TO THE EXTENT APPLICABLE, YOU HEREBY WAIVE THE PROTECTIONS OF CALIFORNIA CIVIL CODE § 1542 (AND ANY ANALOGOUS LAW IN ANY OTHER APPLICABLE JURISDICTION) WHICH SAYS: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”
+              </p>
+              <h2 class="font-title">27. GENERAL INFORMATION</h2>
+              <p>
+                27.1. Entire Agreement <br>
+                These Terms (and any additional terms, rules and conditions of participation that Gitcoin may post on the Service) constitute the entire agreement between you and Gitcoin with respect to the Service and supersedes any prior agreements, oral or written, between you and Gitcoin. In the event of a conflict between these Terms and the additional terms, rules and conditions of participation, the latter will prevail over the Terms to the extent of the conflict.
+              </p>
+              <p>
+                27.2. Waiver and Severability of Terms <br>
+                The failure of Gitcoin to exercise or enforce any right or provision of the Terms shall not constitute a waiver of such right or provision. If any provision of the Terms is found by an arbitrator or court of competent jurisdiction to be invalid, the parties nevertheless agree that the arbitrator or court should endeavor to give effect to the parties' intentions as reflected in the provision, and the other provisions of the Terms remain in full force and effect.
+              </p>
+              <p>
+                27.3. Statute of Limitations <br>
+                You agree that regardless of any statute or law to the contrary, any claim or cause of action arising out of or related to the use of the Service or the Terms must be filed within one (1) year after such claim or cause of action arose or be forever barred.
+              </p>
+              <p>
+                27.4. Communications <br>
+                Users with questions, complaints or claims with respect to the Service may contact us at legalnotices@gitcoin.co.
+              </p>
+              <h2 class="font-title">28. INTERNATIONAL USERS</h2>
+              <p>
+                The Site is controlled, operated and administered by Gitcoin from its offices within the United States of America and is not intended to subject Gitcoin to the laws or jurisdiction of any state, country or territory other than that of the United States. Gitcoin does not represent or warrant that the Site or any part thereof is appropriate or available for use in any particular jurisdiction other than the United States. Those who choose to access the Site do so on their own initiative and at their own risk, and are responsible for complying with all local statutes, orders, regulations, rules, and other laws. You are also subject to United States export controls and are responsible for any violations of such controls, including without limitation any United States embargoes or other federal rules and regulations restricting exports. Gitcoin may limit the Site’s availability, in whole or in part, to any person, geographic area or jurisdiction we choose, at any time and in our sole discretion.
+              </p>
+              <h2 class="font-title">29. KUDOS AND OTHER USER GENERATED CONTENT</h2>
+              <p>
+                29.1. General <br>
+                The Service permits you to create and/or upload material which you own, have created or otherwise have appropriate rights in, including without limitation Kudos (collectively, "User Generated Content" or "UGC"). UGC includes, for example, drawings, images, pictures, writings, games, videos and any other content or materials contributed by users to, on, or through the Service. If we believe that your use or uploading of UGC breaches any of the terms and conditions set forth herein, then we may remove, block, edit, move or disable such UGC in our sole discretion. If you contravene any of the terms and conditions herein, we reserve the right to suspend or permanently remove availability of your UGC and to take any other steps which we consider appropriate including terminating your ability to use the Service.
+              </p>
+              <p>
+                29.2. Your Responsibility <br>
+                You are solely responsible for your UGC and the consequences of posting or publishing UGC. By posting or publishing UGC on or through the Service, you affirm, represent, and warrant that: (a) you are the creator of or otherwise own the rights in the UGC that you make available to or through the Service, or, for any UGC that is owned by a third party, you have the express authorization of such third party to upload such UGC to or through the Service; (b) no item of UGC that you upload infringes the intellectual property rights or privacy or any other rights of anyone else or is illegal or breaches the Terms; (c) you waive and agree not to assert any moral rights or similar rights you may have in UGC; (d) you are solely responsible for your UGC, and acknowledge that we do not pre-screen any UGC and do not endorse or approve of any UGC that you or other users may contribute to the Service; (e) you must not in any way claim or suggest that any UGC is endorsed or supported by us; and (f) your use of the Service, including the UGC you upload, complies with all applicable laws and legislation and is not harmful, offensive, defamatory, sexually explicit, obscene, violent, threatening, harassing, abusive, falsely representative of your persona, invasive of someone else’s privacy, illegal or likely to cause any reputational loss or embarrassment to us or our affiliates.
+              </p>
+              <p>
+                29.3. License Grant to Us <br>
+                By posting or publishing UGC to the Service or otherwise, you grant us a worldwide, perpetual, non-exclusive, fully transferable, royalty-free, irrevocable, commercial right and license to host, store, use, transfer, display, perform, reproduce, modify, adapt, edit, combine with other materials, publish, distribute, create derivative works from, promote, exhibit, broadcast, syndicate, sublicense (including, without limitation, to third party individuals, media channels, platforms, and distributors), and otherwise use and exploit in any manner whatsoever, or grant third parties the right to do any of the foregoing, to all or any portion of your UGC, for any purpose whatsoever, including for commercial purposes, in any means or media formats and through any media channels (now known or hereafter developed) and to advertise, market, and promote the same. You further irrevocably grant us the right, but not the obligation, to use your name in connection with your UGC. You also agree to waive any right of approval for our use of the rights granted herein that you may have in any UGC, even if it is altered or changed in a manner not agreeable to you. To the extent not waivable, you irrevocably agree not to exercise such rights in a manner that interferes with any exercise of the granted rights. To the extent permitted by applicable laws, you also waive any moral rights or rights of a like nature that you may have in such UGC. Any such use of your UGC by us shall be without any compensation paid to you.
+              </p>
+              <p>
+                29.4. Use of UGC <br>
+                USERS OF THE SERVICE CREATE, DOWNLOAD AND USE UGC AT THEIR OWN RISK. WE ARE UNDER NO OBLIGATION TO EDIT OR CONTROL UGC THAT YOU OR OTHER USERS POST OR PUBLISH, AND WILL NOT BE IN ANY WAY RESPONSIBLE OR LIABLE FOR UGC. WE MAY, HOWEVER, AT ANY TIME AND WITHOUT PRIOR NOTICE, SCREEN, REMOVE, EDIT, OR BLOCK ANY UGC THAT IN OUR SOLE JUDGMENT VIOLATES THESE LICENSE TERMS OR IS OTHERWISE OBJECTIONABLE. YOU UNDERSTAND THAT WHEN USING THE SERVICE YOU WILL BE EXPOSED TO UGC FROM A VARIETY OF SOURCES AND ACKNOWLEDGE THAT UGC MAY BE INACCURATE, OFFENSIVE, INDECENT OR OBJECTIONABLE. YOU AGREE TO WAIVE, AND DO HEREBY WAIVE, ANY LEGAL OR EQUITABLE RIGHTS OR REMEDIES YOU HAVE OR MAY HAVE AGAINST US WITH RESPECT TO UGC. WE EXPRESSLY DISCLAIM ANY AND ALL LIABILITY IN CONNECTION WITH UGC. IF NOTIFIED BY A USER OR CONTENT OWNER THAT UGC ALLEGEDLY DOES NOT CONFORM TO THE LICENSE TERMS, WE MAY INVESTIGATE THE ALLEGATION AND DETERMINE IN OUR SOLE DISCRETION WHETHER TO REMOVE THE UGC, WHICH WE RESERVE THE RIGHT TO DO AT ANY TIME AND WITHOUT NOTICE. FOR CLARITY, WE DO NOT PERMIT COPYRIGHT-INFRINGING ACTIVITIES ON THE SERVICE.
+              </p>
+              <p>
+                29.5 Display of Profile <br>
+                Users who own or otherwise receive Kudos or other UGC agree to have their Gitcoin profile page linked on Kudos pages.
+              </p>
+              <h2 class="font-title">30. ADDITIONAL SERVICES</h2>
+              <p>
+                30.1. General <br>
+                If you enter into any order form for additional services (the “Additional Services”)
+                from Gitcoin (including without limitation Hackathons and Tribes), you agree to be subject
+                to the terms of such order form and these Terms, including this Section 30.
+              </p>
+              <p>
+                30.2. Payment <br>
+                You agree to pay Gitcoin the fees specified in the order form (the “Additional Fees”). Unless
+                otherwise specified therein, all Additional Fees will be due and payable within 30 days of your
+                receipt of an invoice. Failure to pay the Additional Fees by their due dates may result in the
+                loss of some or all of the Services at Gitcoin’s sole discretion. Additional Fees are non-refundable.
+              </p>
+              <p>
+                30.3. License to Your Materials <br>
+                You hereby grant to Gitcoin a non-exclusive, non-transferable license to use the logos, trademarks,
+                service marks, trade dress and other protectable source or business identifiers, and any documents,
+                information and other materials owned or licensed by you and provided by you to Gitcoin for use in
+                connection with the Additional Services.
 
-              Except as specifically set forth above, neither party will acquire any right, title or interest
-              in the other party’s trademarks, service marks, trade secrets, logos, commercial symbols, copyrights, patents and any
-              other intellectual property rights by virtue of the provisions hereunder.
-            </p>
-            <p>
-              29.4 Publicity <br>
-              You agree not to issue any press release or otherwise make any public announcement related to the
-              Additional Services or the transactions contemplated in the order forms without the prior written
-              approval of Gitcoin.
-            </p>
-          {% endblocktrans %}
+                Except as specifically set forth above, neither party will acquire any right, title or interest
+                in the other party’s trademarks, service marks, trade secrets, logos, commercial symbols, copyrights, patents and any
+                other intellectual property rights by virtue of the provisions hereunder.
+              </p>
+              <p>
+                30.4 Publicity <br>
+                You agree not to issue any press release or otherwise make any public announcement related to the
+                Additional Services or the transactions contemplated in the order forms without the prior written
+                approval of Gitcoin.
+              </p>
+            {% endblocktrans %}
+          </div>
         </div>
       </div>
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
     </div>
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
   </body>
 </html>

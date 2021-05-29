@@ -15,15 +15,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/scroll-carousel.css" %}" />
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% bundle css file process_bounty %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tooltip_hover.scss" %} />
+    {% endbundle %}
 
     <style>
       /* TODO: remove duplication of alert with same styles in bounties merge */
@@ -35,113 +38,112 @@
         display: flex;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
   </head>
 
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
-    </div>
-    <div class="container-fluid">
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_issue_error.html' with page='process_bounty' %}
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-          {% include 'shared/connect_metamask.html' %}
-        </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav.html' %}
       </div>
-      <div class="row">
-        <div class="col-12 body">
-          <div class="row font-smaller-2" id="form_container">
-            <div id="robot_error" class="hidden">
-              <img src="{% static "v2/images/prime.png" %}">
-            </div>
-            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
-              <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                <div class="text-center mb-3">
-                  <h3>{% trans "Basic Payout" %}</h3>
-                  <p>
-                    <a class="d-block" href="{{ bounty.url }}">
-                      <i class="fas fa-chevron-left mr-1" style="font-size: 10px; position: relative;top: -1px;"></i>
-                      Back to Bounty
-                    </a>
-                    <a href="{{action_urls.advanced_payout}}">Switch to Advanced Payout</a>
-                  </p>
-                </div>
-                <div>
-                  <label for="issueTitle">{% trans "Issue Title" %}</label>
-                  <p name="issueTitle" id="issueTitle" class="font-subheader">{{ bounty.title }}</p>
-                </div>
-                <div>
-                  <label for="issueURL">{% trans "Issue URL" %}</label>
-                  <p name="issueURL" id="issueURL" class="font-subheader">{{ bounty.github_url }}</p>
-                </div>
-                <div class="w-100 my-2">
-                  <label for='bountyFulfillment'>{% trans "Bounty Submission:" %}</label>
-                  <label id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
-                  <select class='custom-select w-100 btn-sm' name='bountyFulfillment' id='bountyFulfillment'>
-                    {% for fulfillment in open_fulfillments %}
-                      <option value='{{ fulfillment.fulfillment_id }}'
-                              username='{{ fulfillment.fulfiller_github_username }}'
-                              address='{{ fulfillment.fulfiller_address }}'
-                              avatar='{{ fulfillment.profile.avatar_url }}'>
-                        {{ fulfillment.fulfiller_github_username }}
-                      </option>
-                    {% endfor %}
-                  </select>
-                </div>
-                {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' label="Rate this contributor"%}
-                <div class="w-100 mt-2">
-                  <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
-                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
-                </div>
-                <div class="my-4">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="font-subheader mb-0">Suggested Kudos</h3>
-                    <a href="{% url 'kudos_about' %}" target="_blank">What is kudos?</a>
-                  </div>
-
-                  <div id="kudos-holder">
-                    <img src="{% static 'v2/images/loading_v2.gif' %}" class="d-block m-auto" style="max-width: 122px;max-height: 122px;">
-                  </div>
-                </div>
-                {% include 'shared/add_kudos.html' with name='kudos-search' keywords=bounty.keywords %}
-                {% include 'shared/bounty_actions_hidden_vars.html' %}
-                <div class="mt-4 terms_container">
-                  <input name='terms' id='terms' type="checkbox" value=1 required />
-                  <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
-                </div>
-                <div class="row mt-2 text-center">
-                  <a id="acceptBounty" class="button button--primary mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
-                    {% trans "Accept" %}
-                  </a>
-                </div>
-                <div class="mt-1 text-center">
-                  <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
-                    Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
-                    Learn more here.
-                  </a>
-                </div>
+      <div class="container-fluid">
+        <div class="row no-gutters metamask-banner">
+          <div class="col-12">
+            {% include 'shared/no_issue_error.html' with page='process_bounty' %}
+            {% include 'shared/no_metamask_error.html' %}
+            {% include 'shared/zero_balance_error.html' %}
+            {% include 'shared/unlock_metamask.html' %}
+            {% include 'shared/connect_metamask.html' %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 body">
+            <div class="row font-smaller-2" id="form_container">
+              <div id="robot_error" class="hidden">
+                <img src="{% static "v2/images/prime.png" %}">
               </div>
-              <div id="ethinfo-tooltip" class="tooltip-hover">
-                <span id="heading">{% trans "Where is my Eth Going?" %}</span><br>
-                <span id="subheading">{% trans "Your funds are safe!" %}</span><br><br>
-                <span id="hovertext"><br><strong>{% trans "Standard Bounties" %}</strong><br>{% trans "When you pay via Standard Bounties, your tokens will be securely taken from the escrow StandardBounties.sol contract on the Ethereum mainnet, and transferred to the payee's wallet" %}</span>
+              <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+                <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
+                  <div class="text-center mb-3">
+                    <h3>{% trans "Basic Payout" %}</h3>
+                    <p>
+                      <a class="d-block" href="{{ bounty.url }}">
+                        <i class="fas fa-chevron-left mr-1" style="font-size: 10px; position: relative;top: -1px;"></i>
+                        Back to Bounty
+                      </a>
+                      <a href="{{action_urls.advanced_payout}}">Switch to Advanced Payout</a>
+                    </p>
+                  </div>
+                  <div>
+                    <label for="issueTitle">{% trans "Issue Title" %}</label>
+                    <p name="issueTitle" id="issueTitle" class="font-subheader">{{ bounty.title }}</p>
+                  </div>
+                  <div>
+                    <label for="issueURL">{% trans "Issue URL" %}</label>
+                    <p name="issueURL" id="issueURL" class="font-subheader">{{ bounty.github_url }}</p>
+                  </div>
+                  <div class="w-100 my-2">
+                    <label for='bountyFulfillment'>{% trans "Bounty Submission:" %}</label>
+                    <label id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
+                    <select class='custom-select w-100 btn-sm' name='bountyFulfillment' id='bountyFulfillment'>
+                      {% for fulfillment in open_fulfillments %}
+                        <option value='{{ fulfillment.fulfillment_id }}'
+                                username='{{ fulfillment.fulfiller_github_username }}'
+                                address='{{ fulfillment.fulfiller_address }}'
+                                avatar='{{ fulfillment.profile.avatar_url }}'>
+                          {{ fulfillment.fulfiller_github_username }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' label="Rate this contributor"%}
+                  <div class="w-100 mt-2">
+                    <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
+                    <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
+                  </div>
+                  <div class="my-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <h3 class="font-subheader mb-0">Suggested Kudos</h3>
+                      <a href="{% url 'kudos_about' %}" target="_blank">What is kudos?</a>
+                    </div>
+
+                    <div id="kudos-holder">
+                      <img src="{% static 'v2/images/loading_v2.gif' %}" class="d-block m-auto" style="max-width: 122px;max-height: 122px;">
+                    </div>
+                  </div>
+                  {% include 'shared/add_kudos.html' with name='kudos-search' keywords=bounty.keywords %}
+                  {% include 'shared/bounty_actions_hidden_vars.html' %}
+                  <div class="mt-4 terms_container">
+                    <input name='terms' id='terms' type="checkbox" value=1 required />
+                    <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
+                  </div>
+                  <div class="row mt-2 text-center">
+                    <a id="acceptBounty" class="btn btn-primary mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
+                      {% trans "Accept" %}
+                    </a>
+                  </div>
+                  <div class="mt-1 text-center">
+                    <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                      Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
+                      Learn more here.
+                    </a>
+                  </div>
+                </div>
+                <div id="ethinfo-tooltip" class="tooltip-hover">
+                  <span id="heading">{% trans "Where is my Eth Going?" %}</span><br>
+                  <span id="subheading">{% trans "Your funds are safe!" %}</span><br><br>
+                  <span id="hovertext"><br><strong>{% trans "Standard Bounties" %}</strong><br>{% trans "When you pay via Standard Bounties, your tokens will be securely taken from the escrow StandardBounties.sol contract on the Ethereum mainnet, and transferred to the payee's wallet" %}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    
   </body>
 
   <script>

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static is_in_list %}
+{% load i18n static is_in_list bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -29,145 +29,148 @@
     </div>
     <meta name="title" content="Labs | Gitcoin">
     <meta name="description" content="To keep you updated about latest research at Gitcoin">
-    <link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/card.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/labs.css" %}" />
+    {% bundle css file labs %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/card.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/labs.scss" %} />
+    {% endbundle %}
   </head>
   <body class="interior {{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/labs_nav.html' %}
-    </div>
-    <div id="landing_page_wrapper">
-      <div class="container-fluid header header-labs">
-        {% include 'shared/lab_hero.html' %}
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/labs_nav.html' %}
       </div>
+      <div id="landing_page_wrapper">
+        <div class="container-fluid header header-labs">
+          {% include 'shared/lab_hero.html' %}
+        </div>
 
-      <div class="row grey-bg no-gutter">
-        <br>
-        <div class="container-fluid col-12 col-md-10 col-xl-8 mb-2">
-          {% if labs %}
-            <h3 class="sub-title mb-4 dark-text">{% trans "Latest Research" %}</h3>
-            <div class="cards">
-              {% for lab in labs %}
-                {% if not lab.upcoming %}
-                  <div class="lab-card col-10 col-sm-6 col-md-5 col-xl-3 mx-md-4" id="{{ lab.title }}">
-                    <div class="img">
-                      {% if lab.image.url %}
-                        <img src="{{ lab.image.url }}"/>
-                      {% else %}
-                        <img src="{% static "v2/images/labs/default_article.png" %}">
-                      {% endif %}
-                    </div>
-
-                    <div class="content">
-                      <div class="title font-title mb-2">{{ lab.title }}</div>
-                      <div class="description">
-                        {{ lab.description | safe }}
+        <div class="row grey-bg no-gutter">
+          <br>
+          <div class="container-fluid col-12 col-md-10 col-xl-8 mb-2">
+            {% if labs %}
+              <h3 class="sub-title mb-4 dark-text">{% trans "Latest Research" %}</h3>
+              <div class="cards">
+                {% for lab in labs %}
+                  {% if not lab.upcoming %}
+                    <div class="lab-card col-10 col-sm-6 col-md-5 col-xl-3 mx-md-4" id="{{ lab.title }}">
+                      <div class="img">
+                        {% if lab.image.url %}
+                          <img src="{{ lab.image.url }}"/>
+                        {% else %}
+                          <img src="{% static "v2/images/labs/default_article.png" %}">
+                        {% endif %}
                       </div>
-                      <a class="magenta-link font-weight-semibold font-caption" href="{{ lab.link }}">{% trans "Read More" %}</a>
+
+                      <div class="content">
+                        <div class="title font-title mb-2">{{ lab.title }}</div>
+                        <div class="description">
+                          {{ lab.description | safe }}
+                        </div>
+                        <a class="magenta-link font-weight-semibold font-caption" href="{{ lab.link }}">{% trans "Read More" %}</a>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <hr>
+              <h3 class="sub-title dark-text">{% trans "Roadmap" %}</h3>
+              <div class="roadmap text-center">
+                {% for item in labs %}
+                  <a class="magenta-link font-weight-bold" href="{{ item.link }}">{{ item.title }}</a>
+                {% endfor %}
+              </div>
+              <br>
+              <hr>
+            {% endif %}
+
+            <h3 class="sub-title dark-text">{% trans "Tools" %}</h3>
+            <div class="cards text-center mt-2">
+              {% for tool in tools %}
+                <div class="card col-md-4 col-lg-3 mx-md-5 mx-lg-4 {{ tool.class }}" id="{{ tool.i18n_name }}">
+                  <div class="img">
+                    <img src="{{ tool.img_url }}" {% if tool.stat_graph %} {% endif %} />
+                  </div>
+                  <div class="content">
+                    <div class="title">{{ tool.name }}</div>
+                    <div class="description">
+                      {{ tool.i18n_description|safe }}
                     </div>
                   </div>
-                {% endif %}
+                </div>
               {% endfor %}
             </div>
-            <hr>
-            <h3 class="sub-title dark-text">{% trans "Roadmap" %}</h3>
-            <div class="roadmap text-center">
-              {% for item in labs %}
-                <a class="magenta-link font-weight-bold" href="{{ item.link }}">{{ item.title }}</a>
-              {% endfor %}
-            </div>
-            <br>
-            <hr>
-          {% endif %}
-
-          <h3 class="sub-title dark-text">{% trans "Tools" %}</h3>
-          <div class="cards text-center mt-2">
-            {% for tool in tools %}
-              <div class="card col-md-4 col-lg-3 mx-md-5 mx-lg-4 {{ tool.class }}" id="{{ tool.i18n_name }}">
-                <div class="img">
-                  <img src="{{ tool.img_url }}" {% if tool.stat_graph %} {% endif %} />
-                </div>
-                <div class="content">
-                  <div class="title">{{ tool.name }}</div>
-                  <div class="description">
-                    {{ tool.i18n_description|safe }}
-                  </div>
-                </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="container-fluid col-12 col-md-8">
+            <h3 class="sub-title dark-text">{% trans "Meet the Team" %}</h3>
+            <div class="row mt-3 mb-3">
+              <div class="col-lg-12 col-xl-2 text-center pr-md-0 my-auto">
+                <img class="profile-img rounded-circle img-fluid" src="https://austingriffith.com/images/austingriffith.jpg">
               </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="container-fluid col-12 col-md-8">
-          <h3 class="sub-title dark-text">{% trans "Meet the Team" %}</h3>
-          <div class="row mt-3 mb-3">
-            <div class="col-lg-12 col-xl-2 text-center pr-md-0 my-auto">
-              <img class="profile-img rounded-circle img-fluid" src="https://austingriffith.com/images/austingriffith.jpg">
-            </div>
-            <div class="mx-lg-auto col-lg-6 col-xl-3 ml-1 text-center pl-xl-0 ml-xl-0">
-              <h3 class="sub-title dark-text">Austin Griffith</h3>
-              <p class="description">{% trans "Serial builder constantly curious about how we can make user and developer experience smoother in Ethereum" %}
-              </p>
-              <a href="https://twitter.com/austingriffith" class="profile-icon dark-text">
-                <i class="fab fa-twitter fa-lg"></i>
-              </a>
-              <a href="https://github.com/austintgriffith" class="profile-icon dark-text">
-                <i class="fab fa-github fa-lg"></i>
-              </a>
-              <a href="https://medium.com/@austin_48503" class="profile-icon dark-text">
-                <i class="fab fa-medium fa-lg"></i>
-              </a>
-            </div>
+              <div class="mx-lg-auto col-lg-6 col-xl-3 ml-1 text-center pl-xl-0 ml-xl-0">
+                <h3 class="sub-title dark-text">Austin Griffith</h3>
+                <p class="description">{% trans "Serial builder constantly curious about how we can make user and developer experience smoother in Ethereum" %}
+                </p>
+                <a href="https://twitter.com/austingriffith" class="profile-icon dark-text">
+                  <i class="fab fa-twitter fa-lg"></i>
+                </a>
+                <a href="https://github.com/austintgriffith" class="profile-icon dark-text">
+                  <i class="fab fa-github fa-lg"></i>
+                </a>
+                <a href="https://medium.com/@austin_48503" class="profile-icon dark-text">
+                  <i class="fab fa-medium fa-lg"></i>
+                </a>
+              </div>
 
-            <div class="mx-lg-auto col-lg-6 col-xl-3 mt-3 text-center pl-xl-0 ml-xl-0">
-              <h2 class="dark-text">
-                <strong>
-                  {% trans 'You?' %}
-                </strong>
-              </h2>
-              <p class="description">{% trans 'Want to join the Labs team? Start contributing on' %} <a href="https://github.com/gitcoinco/" class="font-weight-bold magenta-link">GitHub</a>.
-                  {% trans 'We pretty much only hire those who we have worked with before' %}</p>
+              <div class="mx-lg-auto col-lg-6 col-xl-3 mt-3 text-center pl-xl-0 ml-xl-0">
+                <h2 class="dark-text">
+                  <strong>
+                    {% trans 'You?' %}
+                  </strong>
+                </h2>
+                <p class="description">{% trans 'Want to join the Labs team? Start contributing on' %} <a href="https://github.com/gitcoinco/" class="font-weight-bold magenta-link">GitHub</a>.
+                    {% trans 'We pretty much only hire those who we have worked with before' %}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row grey-bg mb-3">
-        <div class="container-fluid col-12 col-md-8">
-          <div class="row">
-            <div class="col-8 col-lg-6">
-              <h3 class="sub-title dark-text mb-4">{% trans "Community" %}</h3>
-              <p class="mb-4 mt-1">
-                {% trans "Gitcoin Labs is a community of Ethereum builders, providing research reports and toolkits for busy developers." %}
-              </p>
-              <p class="pt-2">
-                {% trans "We welcome contributions and contributors of all kinds - research suggestions, useful tools, or simply sharing your ideas. To get started, check out our" %}
-                <a href="https://github.com/gitcoinco/labs/" class="font-weight-bold magenta-link">GitHub Repo</a>
-                <span>{% trans "and join our" %}</span>
-                <a href="{% url 'slack' %}" class="font-weight-bold magenta-link">Slack Channel!</a>
-              </p>
-            </div>
+        <div class="row grey-bg mb-3">
+          <div class="container-fluid col-12 col-md-8">
+            <div class="row">
+              <div class="col-8 col-lg-6">
+                <h3 class="sub-title dark-text mb-4">{% trans "Community" %}</h3>
+                <p class="mb-4 mt-1">
+                  {% trans "Gitcoin Labs is a community of Ethereum builders, providing research reports and toolkits for busy developers." %}
+                </p>
+                <p class="pt-2">
+                  {% trans "We welcome contributions and contributors of all kinds - research suggestions, useful tools, or simply sharing your ideas. To get started, check out our" %}
+                  <a href="https://github.com/gitcoinco/labs/" class="font-weight-bold magenta-link">GitHub Repo</a>
+                  <span>{% trans "and join our" %}</span>
+                  <a href="{% url 'slack' %}" class="font-weight-bold magenta-link">Slack Channel!</a>
+                </p>
+              </div>
 
-            <div class="col-8 offset-lg-2 col-lg-4 mt-5">
-              {% for social in socials %}
-                <div class="mt-4">
-                  <a href="{{ social.link }}" class="dark-text">
-                    <i class="{{ social.class }}" style="vertical-align: middle;">&nbsp</i>
-                    <span class="sub-title">{{ social.name }}</span><br>
-                  </a>
-                </div>
-              {% endfor %}
+              <div class="col-8 offset-lg-2 col-lg-4 mt-5">
+                {% for social in socials %}
+                  <div class="mt-4">
+                    <a href="{{ social.link }}" class="dark-text">
+                      <i class="{{ social.class }}" style="vertical-align: middle;">&nbsp</i>
+                      <span class="sub-title">{{ social.name }}</span><br>
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
             </div>
           </div>
         </div>
       </div>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
     <script>
       $(document).ready(function(){
         $('#labs_overlay').click(function(){

@@ -31,7 +31,7 @@
               <p class="mb-2">Edit your existing project{{ projects.count|pluralize }}:</p>
               {% for project in projects %}
                 {% if project.status == '' %}
-                  <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
+                  <a href="#" class="btn btn-sm btn-outline-primary mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
                 {% endif %}
               {% endfor %}
                 or <a href="#" class="" onclick="projectModal({{bounty_id}});">create a new one</a>
@@ -71,10 +71,38 @@
                 <label  class="font-weight-semibold" for="work_url">Project Github Repository or Link to Pull Request</label>
                 <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web" required>
               </div>
+              <div class="form-group mt-4">
+                <label class="font-weight-semibold" for="videodemo-url">Link to Video Demo</label>
+                <div class="d-flex">
+                  <input type="url" class="form-control" name="videodemo-url" id="videodemo-url" value="{{project_selected.extra.video_url}}" placeholder="https://www.youtube.com/watch?v=DJartWzDn0E">
+                </div>
+              </div>
+
+              <div class="from-group mb-3 mt-4">
+                <label  class="font-weight-semibold" for="project_stack">Built With <small>Add Tech Stack</small></label>
+                <div class="form__select2 g-multiselect">
+                  <select id="project_stack" class="project__tags" name="tech-stack[]" multiple="multiple" aria-describedby="profilesHelp">
+                    {% for stack in project_selected.tech_stack %}
+                      <option selected="selected"  value="{{ stack }}">{{ stack }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="from-group mb-3 mt-4">
+                <label  class="font-weight-semibold" for="project_categories">Categories <small>Add Categories</small></label>
+                <div class="form__select2 g-multiselect">
+                  <select id="project_categories" class="project__tags" name="categories[]" multiple="multiple" aria-describedby="profilesHelp">
+                    {% for category in project_selected.categories %}
+                      <option selected="selected"  value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
               <div class="from-group mb-3 mt-4">
                 <label  class="font-weight-semibold" for="project_profiles">Team Members (Optional) <small>Add Gitcoin Usernames</small></label>
                 <div class="form__select2 g-multiselect">
-                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
+                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp">
                       {% for profile in project_selected.profiles.all %}
                       <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
                     {% endfor %}
@@ -110,9 +138,9 @@
 
               <div class="d-flex align-items-center flex-fill mt-5">
                   <p class="text-muted mb-0 font-smaller-1">You can modify your project details anytime on the projects page or when you submit work.</p>
-                </div>
+              </div>
               <div class="row mt-4">
-                  <button class="mx-auto px-5 btn btn-lg btn-gc-blue" id="sendInvites">Submit</button>
+                  <button class="mx-auto px-5 btn btn-lg btn-primary" id="sendInvites">Submit</button>
               </div>
             {% else %}
               <input type="hidden" name="bounty_id" value="{{bounty.id}}">
@@ -142,7 +170,7 @@
               <div class="from-group mb-3 mt-4">
                 <label class="font-weight-semibold" for="project_profiles">Team members</label>
                 <div class="form__select2 g-multiselect">
-                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
+                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp">
                   </select>
                 </div>
                 <small id="profilesHelp" class="form-text text-muted">
@@ -179,7 +207,7 @@
                 <p class="text-muted mb-0 font-smaller-1">You can modify your project details anytime on the projects page or when you submit work.</p>
               </div>
               <div class="row mt-4">
-                <button class="mx-auto px-5 btn btn-lg btn-gc-blue" id="sendInvites">Submit</button>
+                <button class="mx-auto px-5 btn btn-lg btn-primary" id="sendInvites">Submit</button>
               </div>
             {% endif %}
           </form>

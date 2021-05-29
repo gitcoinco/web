@@ -1,0 +1,12 @@
+<script>
+  function initFingerprintJS() {
+    FingerprintJS.load({token: 'W0FUPDGsTv97t0sPFbgI'})
+      .then(fp => fp.get({ pid: document.contxt.profile_id}))
+      .then(result => document.visitorId = result.visitorId);
+  }
+</script>
+<script
+  async
+  src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs-pro@3/dist/fp.min.js"
+  onload="initFingerprintJS()"
+></script>

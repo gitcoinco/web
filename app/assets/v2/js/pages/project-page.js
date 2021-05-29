@@ -30,6 +30,15 @@
           let newUrl = `/hackathon/${vm.hackathon['slug']}/projects/${vm.project.id}/${vm.project.name}/${newPathName}?${window.location.search}`;
 
           history.pushState({}, `${vm.hackathon['slug']} - ${newPathName}`, newUrl);
+        },
+        getVideoId(videoURL) {
+          const metadata = getVideoMetadata(videoURL);
+
+          if (metadata) {
+            return metadata['id'];
+          }
+
+          return '';
         }
       },
       data: function() {

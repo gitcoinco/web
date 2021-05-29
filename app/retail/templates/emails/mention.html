@@ -1,47 +1,49 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+Copyright (C) 2018 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
 {% load i18n humanize %}
 
 {% block content %}
+<div id="content-body">
 
-<h1>💬@{{post.profile.handle}} {% trans "mentioned you in a post" %} 💬</h1>
+  <h1 style="text-transform: none;">💬@{{post.profile.handle}} {% trans "mentioned you in a post" %} 💬</h1>
 
-<p>
+  <p>
 
-<a href="{{post.profile.url}}">@{{post.profile.handle}}</a> mentioned you in a post. This is what the post looks like:
+    <a href="{{post.profile.url}}?{{ utm_tracking }}">@{{post.profile.handle}}</a> mentioned you in a post. This is what
+    the post looks like:
 
-<pre>
-{% if is_activity %}
-  {{post.metadata.title}}
-{% else %}
-  - @{{post.profile.handle}} ({{post.created_on | naturaltime}}): {{post.comment}}
-{% endif %}
-</pre>
+  <br><br>
+  <code style="word-wrap: break-word;">
+  {% if is_activity %}
+    {{post.metadata.title}}
+  {% else %}
+    - @{{post.profile.handle}} ({{post.created_on | naturaltime}}): {{post.comment}}
+  {% endif %}
+  </code>
 
-<div style="margin-bottom: 2em; margin-top: 2em;">
-  <a class="button" href="{{ post.url }}">View Thread</a>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="{{ post.url }}&{{ utm_tracking }}">View Thread</a>
+  </div>
+
+  </p>
+
+  <br>
+
 </div>
-
-</p>
-
-<br>
-
-
-
-
 {% endblock %}

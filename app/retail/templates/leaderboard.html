@@ -1,5 +1,5 @@
 {% load i18n humanize %}
-{% load static %}
+{% load static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,196 +8,197 @@
     <meta name="description" content="See the Top Earners, Payers, Orgs, Tokens and Keywords on Gitcoin.">
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/leaderboard.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
+    {% bundle css file leaderboard %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/leaderboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
+    {% endbundle %}
   </head>
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'home/nav.html' %}
-    </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'home/nav.html' %}
+      </div>
 
-    <div class="row no-gutter">
-      <div class="col body leaderboard-container">
-        <div class="container-fluid leaderboard">
+      <div class="row no-gutter">
+        <div class="col body leaderboard-container">
+          <div class="container-fluid leaderboard">
 
-          {% if podium_items %}
-            <div class="row col-sm-12 col-md-12 podium-items m-0 p-0">
-              <div class="row offset-md-1 col-12 col-md-10 mx-0 mx-md-auto mb-2 podium text-center">
-                  {% for podium_item in podium_items %}
-                    <div class="winner mt-5">
-                      {% if not is_linked_to_profile %}
-                        <a href="{{ podium_item.url }}" data-usercard="{{ podium_item.profile.handle }}" target="_blank">
-                          <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
-                        </a>
-                      {% endif %}
-
-                      <h6 class="pt-3 pb-2 text-center">
+            {% if podium_items %}
+              <div class="row col-sm-12 col-md-12 podium-items m-0 p-0">
+                <div class="row offset-md-1 col-12 col-md-10 mx-0 mx-md-auto mb-2 podium text-center">
+                    {% for podium_item in podium_items %}
+                      <div class="winner mt-5">
                         {% if not is_linked_to_profile %}
-                          {% if forloop.counter == 1 %}
-                            <img src="/static/v2/images/leaderboard-1.png" style="max-width: 2rem; float: left; position: relative; bottom: 3px;"></img>
-                          {% endif %}
-                          <a href="{{ podium_item.url }}" class="font-weight-semibold" target="_blank">
-                            {{ podium_item.at_ify_username }}
+                          <a href="{{ podium_item.url }}" data-usercard="{{ podium_item.profile.handle }}" target="_blank">
+                            <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
                           </a>
                         {% endif %}
-                      </h6>
 
-                    </div>
-                  {% endfor %}
+                        <h6 class="pt-3 pb-2 text-center">
+                          {% if not is_linked_to_profile %}
+                            {% if forloop.counter == 1 %}
+                              <img src="/static/v2/images/leaderboard-1.png" style="max-width: 2rem; float: left; position: relative; bottom: 3px;"></img>
+                            {% endif %}
+                            <a href="{{ podium_item.url }}" class="font-weight-semibold" target="_blank">
+                              {{ podium_item.at_ify_username }}
+                            </a>
+                          {% endif %}
+                        </h6>
+
+                      </div>
+                    {% endfor %}
+                </div>
               </div>
-            </div>
-          {% endif %}
+            {% endif %}
 
-          <div class="offset-md-1 col-12 col-md-10 {% if podium_items %} pt-2 {% else %} py-5 my-5 {% endif %}">
+            <div class="offset-md-1 col-12 col-md-10 {% if podium_items %} pt-2 {% else %} py-5 my-5 {% endif %}">
 
-            <div class="card mt-5">
-              <div class="card-body pb-0">
-                <div class="row mt-0 pt-2 pl-1 mx-auto pb-3">
+              <div class="card mt-5">
+                <div class="card-body pb-0">
+                  <div class="row mt-0 pt-2 pl-1 mx-auto pb-3">
 
-                  <!-- RESULTS TITLE & FILTER -->
+                    <!-- RESULTS TITLE & FILTER -->
 
-                  <div class="col-12 my-auto col-lg-6 text-center text-md-left">
-                    <h1 class="font-header font-weight-semibold mb-lg-0">{{title}}</h1>
-                    {% if last_update %}
-                    <p class="mt-2">Last update: {{last_update | naturaltime}}
-                      <BR>
-                      Next update: {{next_update | naturaltime}}
-                    {% endif %}
-                  </div>
-                  <div class="col-12 col-sm-6 col-lg-3 mx-auto my-2 my-md-0 text-center text-sm-right text-lg-left">
-                  </div>
-
-                  <!-- END RESULTS TITLE & FILTER -->
-
-                  <div class="col-12 col-sm-6 col-lg-3 select mx-auto my-2 my-md-0 text-center text-lg-left">
-                    <div class="form-group text-center text-md-right d-inline">
-
-                      <div class=" mt-2">
-                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Type : &nbsp; &nbsp; &nbsp; </p>
-                        <select id="key" class="form-control key font-body">
-                          {% for this_title in titles.items %}
-                            <option value="{{this_title.0}}"
-                              {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-
-                      <div class=" mt-2">
-                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Cadence :</p>
-                        <select id="cadence" class="form-control key font-body">
-                          {% for ele in cadences %}
-                            <option value="{{ele}}"
-                              {% if cadence == ele %}selected=selected{% endif %} >{{ele|title}}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-
-                      <div class=" mt-2">
-                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Product :</p>
-                        <select id="product" class="form-control key font-body">
-                          {% for ele in products %}
-                            <option value="{{ele}}"
-                              {% if product == ele %}selected=selected{% endif %} >{{ele|title}}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-
-                    <div class=" mt-2">
-                      {% if technologies|length > 0 %}
-                        <p class="key-title font-body mb-0 font-weight-semibold mr-2">Key : &nbsp; &nbsp; &nbsp; &nbsp;</p>
-                        <div class="form-group text-center text-md-right d-inline">
-                          <select id="tech-keyword" class="form-control tech-options key">
-                            <option value="all">All</option>
-                          </select>
-                        </div>
-                      {% else %}
-                        <input type="hidden" id="tech-keyword" name="tech-keyword" val="">
+                    <div class="col-12 my-auto col-lg-6 text-center text-md-left">
+                      <h1 class="font-header font-weight-semibold mb-lg-0">{{title}}</h1>
+                      {% if last_update %}
+                      <p class="mt-2">Last update: {{last_update | naturaltime}}
+                        <BR>
+                        Next update: {{next_update | naturaltime}}
                       {% endif %}
                     </div>
+                    <div class="col-12 col-sm-6 col-lg-3 mx-auto my-2 my-md-0 text-center text-sm-right text-lg-left">
+                    </div>
 
+                    <!-- END RESULTS TITLE & FILTER -->
+
+                    <div class="col-12 col-sm-6 col-lg-3 select mx-auto my-2 my-md-0 text-center text-lg-left">
+                      <div class="form-group text-center text-md-right d-inline">
+
+                        <div class=" mt-2">
+                          <p class="key-title font-body mb-0 font-weight-semibold mr-2">Type : &nbsp; &nbsp; &nbsp; </p>
+                          <select id="key" class="form-control key font-body">
+                            {% for this_title in titles.items %}
+                              <option value="{{this_title.0}}"
+                                {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
+                              </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                        <div class=" mt-2">
+                          <p class="key-title font-body mb-0 font-weight-semibold mr-2">Cadence :</p>
+                          <select id="cadence" class="form-control key font-body">
+                            {% for ele in cadences %}
+                              <option value="{{ele}}"
+                                {% if cadence == ele %}selected=selected{% endif %} >{{ele|title}}
+                              </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                        <div class=" mt-2">
+                          <p class="key-title font-body mb-0 font-weight-semibold mr-2">Product :</p>
+                          <select id="product" class="form-control key font-body">
+                            {% for ele in products %}
+                              <option value="{{ele}}"
+                                {% if product == ele %}selected=selected{% endif %} >{{ele|title}}
+                              </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                      <div class=" mt-2">
+                        {% if technologies|length > 0 %}
+                          <p class="key-title font-body mb-0 font-weight-semibold mr-2">Key : &nbsp; &nbsp; &nbsp; &nbsp;</p>
+                          <div class="form-group text-center text-md-right d-inline">
+                            <select id="tech-keyword" class="form-control tech-options key">
+                              <option value="all">All</option>
+                            </select>
+                          </div>
+                        {% else %}
+                          <input type="hidden" id="tech-keyword" name="tech-keyword" val="">
+                        {% endif %}
+                      </div>
+
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {% if items|length == 0 %}
-                  <div class="col-12 pt-4 pt-md-0 my-5 mx-auto col-md-6 text-center">
-                    <img class="obiwan my-2" src="{% static "v2/images/obiwan-bot.svg" %}">
-                    <h1 class="font-title-lg font-weight-semibold mt-2">{% trans "None found" %}</h1>
-                    <p class="font-title mb-0 pb-3">
-                      {% trans "Looks like we are missing activity here." %}
-                    </p>
+                  {% if items|length == 0 %}
+                    <div class="col-12 pt-4 pt-md-0 my-5 mx-auto col-md-6 text-center">
+                      <img class="obiwan my-2" src="{% static "v2/images/obiwan-bot.svg" %}">
+                      <h1 class="font-title-lg font-weight-semibold mt-2">{% trans "None found" %}</h1>
+                      <p class="font-title mb-0 pb-3">
+                        {% trans "Looks like we are missing activity here." %}
+                      </p>
+                    </div>
+                  {% else %}
+
+                {% if cht %}
+                  <div class="row no-gutter">
+                    <div id="container" style="width:100%;"> Chart will be rendered here
+                    </div>
                   </div>
-                {% else %}
-
-              {% if cht %}
-                <div class="row no-gutter">
-                  <div id="container" style="width:100%;"> Chart will be rendered here
-                  </div>
-                </div>
-              {% endif %}
-
-                <div class="row">
-                  <table class="table table-hover leaderboard_entry font-weight-semibold mb-0">
-                    <thead>
-                      <tr class="clickable-row d-flex align-items-stretch font-weight-bold font-body">
-                        <td class="col-3 d-flex align-items-center item-position tableheaders">RANK</td>
-                        <td class="col-5 d-flex align-items-center item-position tableheaders">NAME</td>
-                        <td class="col-2 d-flex align-items-center item-position tableheaders">TXs</td>
-                        <td class="col-2 d-flex align-items-center item-position tableheaders">VOL</td>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      {% for item in items %}
-                        <tr class='{% if not is_linked_to_profile %} clickable-row {% endif %} d-flex  align-items-stretch' {% if not is_linked_to_profile %} data-href="{{item.url}}" {% endif %} >
-                          <td class="col-2 d-flex align-items-center item-position"># {{forloop.counter}}</td>
-                          <td class="col-6 d-flex align-items-center" >
-                            {% if not is_linked_to_profile %}
-                              <img class="img-fluid"  data-src="{{item.avatar_url}}">
-                            {% elif key == "countries" %}
-                              <img class="img-fluid"  data-src="{{flag}}">
-                            {% endif %}
-                            <div class="ml-3 item-count-bounties" style="white-space: nowrap">
-                              {% if not is_linked_to_profile %}
-                                <a href="/profile/{{item.github_username}}" data-usercard="{{item.github_username}}" target="_blank" >
-                                  {{item.at_ify_username}}
-                                </a>
-                              {% else %}
-                                {{item.at_ify_username}}
-                              {% endif %}
-                            </div>
-                          </td>
-                          <td style="white-space: nowrap" class="col-2 d-flex align-items-center">
-                            {{item.count}} tx{{item.count|pluralize}}
-                          </td>
-                          <td class="col-2 d-flex align-items-center">
-                            ${{item.amount|floatformat:0|intcomma}}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
                 {% endif %}
 
+                  <div class="row">
+                    <table class="table table-hover leaderboard_entry font-weight-semibold mb-0">
+                      <thead>
+                        <tr class="clickable-row d-flex align-items-stretch font-weight-bold font-body">
+                          <td class="col-3 d-flex align-items-center item-position tableheaders">RANK</td>
+                          <td class="col-5 d-flex align-items-center item-position tableheaders">NAME</td>
+                          <td class="col-2 d-flex align-items-center item-position tableheaders">TXs</td>
+                          <td class="col-2 d-flex align-items-center item-position tableheaders">VOL</td>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {% for item in items %}
+                          <tr class='{% if not is_linked_to_profile %} clickable-row {% endif %} d-flex  align-items-stretch' {% if not is_linked_to_profile %} data-href="{{item.url}}" {% endif %} >
+                            <td class="col-2 d-flex align-items-center item-position"># {{forloop.counter}}</td>
+                            <td class="col-6 d-flex align-items-center" >
+                              {% if not is_linked_to_profile %}
+                                <img class="img-fluid"  data-src="{{item.avatar_url}}">
+                              {% elif key == "countries" %}
+                                <img class="img-fluid"  data-src="{{flag}}">
+                              {% endif %}
+                              <div class="ml-3 item-count-bounties" style="white-space: nowrap">
+                                {% if not is_linked_to_profile %}
+                                  <a href="/profile/{{item.github_username}}" data-usercard="{{item.github_username}}" target="_blank" >
+                                    {{item.at_ify_username}}
+                                  </a>
+                                {% else %}
+                                  {{item.at_ify_username}}
+                                {% endif %}
+                              </div>
+                            </td>
+                            <td style="white-space: nowrap" class="col-2 d-flex align-items-center">
+                              {{item.count}} tx{{item.count|pluralize}}
+                            </td>
+                            <td class="col-2 d-flex align-items-center">
+                              ${{item.amount|floatformat:0|intcomma}}
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% endif %}
+
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
     </div>
-
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-
-
   </body>
 
   <script>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the GDPR reconsent command for EU users.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -31,12 +31,13 @@ from townsquare.models import Offer
 
 
 def make_secret_offer(profile, title, desc, bounty):
+    utm = f'utm_source=hypercharge-auto-secret&utm_medium=gitcoinbot&utm_campaign={bounty.title}'
     Offer.objects.create(
         created_by=profile,
         title=title,
         desc=desc,
         key='secret',
-        url=bounty.absolute_url,
+        url=f'{bounty.absolute_url}?{utm}',
         valid_from=timezone.now(),
         valid_to=timezone.now() + timezone.timedelta(hours=3),
         public=True,

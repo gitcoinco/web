@@ -1,0 +1,278 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    {% bundle css file grants_simple %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+    {% endbundle %}
+  </head>
+
+  <body class="interior {{ active }} grant g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash px-0">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'grants/nav.html' %}
+      </div>
+
+      <div class="container-fluid bg-lightblue pb-5 pt-5" v-cloak id="gc-new-match">
+        <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
+          <div class="text-center">
+            <img style="width:6rem;" src="{% static "v2/images/grants/torchbearer.svg" %}">
+          </div>
+
+          <div class="container mt-3 mb-3 bg-white position-relative rounded col-lg-6 mx-auto">
+            <div class="row p-4 p-md-5">
+
+              <div class="col-12 text-center mb-4">
+                <h1 class="text-center font-title-xl">Pledge your Support</h1>
+                <p class="text-center font-smaller-1 text-black-60">
+                  Thank you for your interest in supporting public goods in Gitcoin.
+                  <br>
+                  Complete the form below to get started.
+                </p>
+              </div>
+
+              {% csrf_token %}
+
+              <!-- Why -->
+              <div class="col-12 mb-3">
+                <label class="font-body letter-spacing text-black-60 " for="why">
+                  Why do you want to fund public goods on Gitcoin Grants?
+                </label>
+                <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                <v-select :options="why_options" label="label" v-model="form.why">
+                  <template #search="{attributes, events}">
+                    <input
+                      class="vs__search"
+                      :required="!form.why"
+                      v-bind="attributes"
+                      v-on="events"
+                    />
+                  </template>
+                </v-select>
+                <div class="text-danger" v-if="errors.why && !form.why">
+                  [[errors.why]]
+                </div>
+              </div>
+
+
+              <!-- Categorization -->
+              <div class=" col-12 mb-2">
+                <h5 class="mt-4">Grants to Fund</h5>
+                <hr>
+
+                <div class="mb-3">
+                  <p class="font-body mb-1">Choose the group of Grants you'd want to allocate funds to:</p>
+
+                  <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
+                    <label class="font-caption btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-semibold py-2 px-4" :class="{'active': grants_to_fund === 'types'}">
+                      <input type="radio" name="grants_to_fund" id="types" value="types" v-model="grants_to_fund" checked> Grant Category
+                    </label>
+
+                    <label class=" font-caption btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-semibold py-2 px-4" :class="{'active': grants_to_fund === 'collections'}">
+                      <input type="radio" name="grants_to_fund" id="collections" value="collections" v-model="grants_to_fund"> Grant Collection
+                    </label>
+                  </div>
+
+                  <div class="text-danger" v-if="errors.grants_to_fund && !grants_to_fund">
+                    [[errors.grants_to_fund]]
+                  </div>
+                </div>
+
+
+                <div v-if="grants_to_fund == 'types'" class="form-group">
+                  <!-- GRANT TYPE -->
+
+                  <div class="form-group">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Categories</label>
+                    <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                    <v-select placeholder="Select categories" :options="grant_types" label="name" v-model="form.grant_types" :reduce="state => state.id" multiple>
+                      <template #search="{attributes, events}">
+                        <input
+                          class="vs__search"
+                          :required="!form.grant_types.length"
+                          v-bind="attributes"
+                          v-on="events"
+                        />
+                      </template>
+                      <template v-slot:option="option">
+                        <span class="font-weight-semibold">[[ option.name ]]</span>
+                      </template>
+                    </v-select>
+
+                    <div class="text-danger" v-if="errors.grant_types && !form.grant_types.length">
+                      [[errors.grant_types]]
+                    </div>
+                  </div>
+
+                  <!-- GRANT CATEGORY -->
+                  <div class="form-group">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
+                    <v-select placeholder="Select Sub categories" :options="grant_categories" label="name" v-model="form.grant_categories" :reduce="state => state.id" multiple>
+                      <template v-slot:option="option">
+                        <span class="font-weight-semibold">[[ option.name ]]</span>
+                      </template>
+                    </v-select>
+
+                    <div class="text-danger" v-if="errors.grant_categories && !form.grant_categories.length">
+                      [[errors.grant_categories]]
+                    </div>
+                  </div>
+
+                </div>
+
+                <div v-else-if="grants_to_fund == 'collections'" class="form-group">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Collection</label>
+                  <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+                  <v-select placeholder="Pick collections" :options="grant_collections" label="name" v-model="form.grant_collections" :reduce="state => state.id" multiple>
+                    <template #search="{attributes, events}">
+                      <input
+                        class="vs__search"
+                        :required="!form.grant_collections.length"
+                        v-bind="attributes"
+                        v-on="events"
+                      />
+                    </template>
+                    <template v-slot:option="option">
+                      <span class="font-weight-semibold">[[ option.name ]]</span>
+                    </template>
+                  </v-select>
+
+                  <div class="text-danger" v-if="errors.grant_collections && !form.grant_collections.length">
+                    [[errors.grant_collections]]
+                  </div>
+                </div>
+
+              </div>
+
+
+              <!-- Funding Stage -->
+              <div class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="stage">
+                  What stage of your decision making process are you?
+                </label>
+                <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                <v-select placeholder="Contact / Send Funds" :options="stage_options" label="val" v-model="form.stage" :reduce="state => state.key">
+                  <template #search="{attributes, events}">
+                    <input
+                      class="vs__search"
+                      :required="!form.stage"
+                      v-bind="attributes"
+                      v-on="events"
+                    />
+                  </template>
+                  <template v-slot:option="option">
+                    <span class="font-weight-semibold">[[ option.val ]]</span>
+                  </template>
+                </v-select>
+
+                <p v-if="form.stage == 'ready'" class="font-caption text-black-60">
+                  This will popup a metamask prompt to transfer funds to Gitcoin
+                </p>
+
+                <div class="text-danger" v-if="errors.stage && !form.stage">
+                  [[errors.stage]]
+                </div>
+              </div>
+
+
+              <!-- Amount -->
+              <div class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Amount (in Dai)</label>
+                <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+                <input id="amount" v-model="form.amount" name="amount" :class="`form__input form__input-lg ${errors.amount && Number(form.amount) <= 0 ? 'invalid' : ''}`" required />
+
+                <div class="text-danger" v-if="errors.amount && Number(form.amount) <= 0">
+                  [[errors.amount]]
+                </div>
+              </div>
+
+
+              <!-- Comment -->
+              <div class="mb-2 col-12">
+                <div class="form__group-horizontal pb-1">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="comment">Comment</label>
+                  <textarea id="comment" v-model="form.comment" name="comment" class="form__input form__input-lg "
+                    placeholder="note for the gitcoin team" >
+                  </textarea>
+                </div>
+              </div>
+
+
+              <!-- Anonymous -->
+              <div class="mb-3 col-12">
+
+                <div class="form__checkbox text-uppercase">
+                  <input name="anonymous" id="anonymous" type="checkbox" value="1" v-model="form.anonymous">
+                  <label class="form__label" for="anonymous">I would like my contribution to be anonymous</label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="container mt-5">
+            <div class="row">
+              <div class="col-12 text-center">
+                <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="submitForm($event)">Submit New Pledge</button>
+              </div>
+              <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
+                Please verify forms errors and try again
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      {% include 'shared/footer.html' %}
+      {% include 'shared/current_profile.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'grants/shared/shared_scripts.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+
+      <script type="application/javascript">
+        document.grant_types = {{grant_types|safe}};
+        document.grant_categories = {{grant_categories|safe}};
+        document.grant_collections = {{grant_collections|safe}};
+      </script>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8"></script>
+
+      <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+      <script src="{% static "v2/js/ipfs.js" %}"></script>
+      <script src="{% static "v2/js/abi.js" %}"></script>
+
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+      <script src="{% static "v2/js/grants/shared.js" %}"></script>
+
+      <script src="{% static "v2/js/grants/new_match.js" %}"></script>
+    </div>
+  </body>
+
+<html>

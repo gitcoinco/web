@@ -22,7 +22,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import (
-    AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
+    AccountDeletionRequest, Alumni, EmailEvent, EmailInventory, EmailSubscriber, EmailSupressionList, GithubEvent,
     GithubOrgToTwitterHandleMapping, Job, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match, RoundupEmail,
     SlackPresence, SlackUser, Stat, UpcomingDate,
 )
@@ -137,6 +137,7 @@ class SlackUserAdmin(admin.ModelAdmin):
 admin.site.register(MarketingCallback, GeneralAdmin)
 admin.site.register(AccountDeletionRequest, GeneralAdmin)
 admin.site.register(EmailSupressionList, GeneralAdmin)
+admin.site.register(EmailInventory, GeneralAdmin)
 admin.site.register(Alumni, AlumniAdmin)
 admin.site.register(GithubEvent, GithubEventAdmin)
 admin.site.register(Match, MatchAdmin)

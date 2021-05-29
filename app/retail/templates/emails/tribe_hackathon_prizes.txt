@@ -1,0 +1,14 @@
+Win exciting prizes with <br> {{ sponsor.name }}
+
+{{ sponsor.name }} is participating on a new hackathon on Gitcoin: {{ hackathon.name }} 🚀
+
+  {% if prizes %}
+    Meet a community of like-minded hackers, buidl cool stuff, and win these exciting prizes:
+      {% for prize in prizes %}
+        {% include 'emails/bounty.html' with bounty=prize count=forloop.counter small=1 prize=1 %}
+      {% endfor %}
+  {% endif %}
+
+  See you @ {{ hackathon.name }}!
+
+  The Gitcoin team

@@ -2,8 +2,6 @@ import copy
 import json
 import time
 
-import pandas as pd
-
 match_amounts_to_estimate = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 100, 1000]
 #match_amounts_to_estimate = [0.30]
 

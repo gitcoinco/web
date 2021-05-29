@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,17 +17,17 @@
 
 '''
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 
-from marketing.mails import nth_day_email_campaign
-from marketing.models import EmailSubscriber
+# from marketing.mails import nth_day_email_campaign
+# from marketing.models import EmailSubscriber
 
 
-@receiver(post_save, sender=EmailSubscriber)
-def create_email_subscriber(sender, instance, created, **kwargs):
-    if created:
-        if not EmailSubscriber.objects.filter(email=instance.email).exclude(id=instance.id).exists():
-            # this subscriber is the first time shown in our db
-            # send email
-            nth_day_email_campaign(1, instance)
+# @receiver(post_save, sender=EmailSubscriber) - PURGED
+# def create_email_subscriber(sender, instance, created, **kwargs):
+#     if created:
+#         if not EmailSubscriber.objects.filter(email=instance.email).exclude(id=instance.id).exists():
+#             # this subscriber is the first time shown in our db
+#             # send email
+#             nth_day_email_campaign(1, instance)

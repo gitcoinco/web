@@ -1,116 +1,115 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2019 Gitcoin Core
+Copyright (C) 2019 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 
 {% endcomment %}
 {% load i18n humanize %}
 
+<style>
+  .tip-box {
+    margin-bottom: 2em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e0e0e0;
+  }
+  .tip {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+</style>
+
 {% block content %}
-
-  <style>
-    .tip-box {
-      margin-bottom: 2em;
-      border-style: solid;
-      border-width: 1px;
-      border-color: #e0e0e0;
-    }
-    .tip-contents {
-      text-align: left;
-    }
-    .tip {
-      display: flex;
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
-      padding-left: 1em;
-      padding-right: 1em;
-    }
-  </style>
-
+<div id="content-body">
   <div>
     <h1>🕑️ {% trans "Request funds" %} 🕑️</h1>
-    <h3>
-        {{request.requester.handle}} {% blocktrans %} requested {{amount}} {{tokenName}}{% endblocktrans %}
-        {% if address %}
-        Recipient Address: {{ address }}
-        {% endif %}
-        {{tip.created_on | naturaltime}}.
-    </h3>
+    <h2 style="text-transform: none; word-wrap: break-word;">
+      @{{request.requester.handle}} {% blocktrans %} requested {{amount}} {{tokenName}}{% endblocktrans %}
+      {% if address %}
+      <br><br>Recipient Address: {{ address }}
+      {% endif %}
+      <br><br>{% if tip %}{{tip.created_on | naturaltime}}.{% endif %}
+    </h2>
   </div>
 
-  <div class="text-center tip-box">
+  <div class="tip-box">
     <div class="tip">
-      <div class="tip-contents">
-          <p>
-            {% trans "They had the following comments:" %}
-            <pre>
-              {{comments}}
-            </pre>
-          </p>
-      </div>
+      <p>
+        {% trans "They had the following comments:" %}
+      <pre>
+            {{comments}}
+          </pre>
+      </p>
     </div>
     {% if not already_redeemed %}
-      <div style="margin-bottom: 1.5em;">
-        <a class="button" href="{{link}}">{% trans "Fund this Request" %}</a>
-        <br>
-        <br>
-        - or -
-        <br>
-        <a class="" href="https://gitcoin.co/{{request.requester.handle}}">{% trans "Write them a message" %}</a>
-        <br>
-        <br>
-        {% if request.other_earnings|length %}
-          <hr>
-          <h4>
-            {{request.other_earnings|length}} Other transactions between {{request.requester.handle}} &lt;&gt; {{request.profile.handle}}
-          </h4>
-        {% endif %}
-        <table style="margin: 0px auto; text-align: left;">
-          <tr style="font-weight:bold;">
-            <td>
-              When
-            </td>
-            <td>
-              What
-            </td>
-            <td>
-              Amount
-            </td>
-            <td>
-              To/From
-            </td>
-          </tr>
+    <div style="margin-bottom: 1.5em;">
+      <a class="button" href="{{link}}&{{ utm_tracking }}">{% trans "Fund this Request" %}</a>
+      <br>
+      <br>
+      - or -
+      <br>
+      <br>
+      <a href="https://gitcoin.co/{{request.requester.handle}}?{{ utm_tracking }}">{% trans "Write them a message" %}</a>
+      <br>
+      <br>
+      {% if request.other_earnings|length %}
+      <hr style="margin-left: 0;">
+      <h4>
+        {{request.other_earnings|length}} Other transactions between {{request.requester.handle}} &lt;&gt;
+        {{request.profile.handle}}
+      </h4>
+      {% endif %}
+      {% if request.other_earnings %}
+      <table style="margin: 0px auto; text-align: left;">
+        <tr style="font-weight:bold;">
+          <td>
+            When
+          </td>
+          <td>
+            What
+          </td>
+          <td>
+            Amount
+          </td>
+          <td>
+            To/From
+          </td>
+        </tr>
         {% for earning in request.other_earnings %}
-            <tr>
-              <td>
-              {{earning.created_on}} ({{earning.created_on|naturaltime}})
-              </td>
-              <td>
-              {{earning.source_type}}
-              </td>
-              <td>
-                ${{earning.value_usd}} {% if earning.token_name %} in {% endif %} {{earning.token_name}}
-              </td>
-              <td>
-                 {{earning.from_profile.handle}} => {{earning.to_profile.handle}}
-              </td>
-            </tr>
+        <tr>
+          <td>
+            {{earning.created_on}} ({{earning.created_on|naturaltime}})
+          </td>
+          <td>
+            {{earning.source_type}}
+          </td>
+          <td>
+            ${{earning.value_usd}} {% if earning.token_name %} in {% endif %} {{earning.token_name}}
+          </td>
+          <td>
+            {{earning.from_profile.handle}} => {{earning.to_profile.handle}}
+          </td>
+        </tr>
         {% endfor %}
-        </table>
-      </div>
+      </table>
+      {% endif %}
+    </div>
     {% endif %}
   </div>
-
+</div>
 {% endblock %}

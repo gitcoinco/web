@@ -5,10 +5,11 @@ $(document).ready(function() {
 
   waitforWeb3(function() {
     if (document.web3network == 'locked') {
-      _alert('Wallet not connected. <button id="metamask_connect" onclick="onConnect()">Click here to connect a wallet</button>', 'error');
-    } else if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-      $('#receive').attr('disabled', 'disabled');
+      _alert('Wallet not connected. <button id="metamask_connect" onclick="onConnect()">Click here to connect a wallet</button>', 'danger');
+    // } else if (document.web3network != document.network) {
+      // This is fine, you dont need to be on the same network
+      // _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'danger');
+      // $('#receive').attr('disabled', 'disabled');
     } else {
       web3.eth.getCoinbase(function(_, coinbase) {
         $('#forwarding_address').val(coinbase);
@@ -24,7 +25,7 @@ $(document).ready(function() {
     }
 
     if (!web3) {
-      _alert({ message: gettext('Please connect to a web3 wallet.')}, 'error');
+      _alert({ message: gettext('Please connect to a web3 wallet.')}, 'danger');
       return;
     }
 
@@ -56,7 +57,7 @@ $(document).ready(function() {
                 setTimeout(function() {
                   $('label[for=pay_gas]').fadeOut();
                   $('#free_countdown').remove();
-                  $('.btn-gc-purple').removeAttr('disabled');
+                  $('.btn-dark').removeAttr('disabled');
                 }, 1000);
               }, 1000);
             }, 1000);
@@ -71,7 +72,7 @@ $(document).ready(function() {
 
     setTimeout(function() {
       $('#free_countdown').remove();
-      $('.btn-gc-purple').removeAttr('disabled');
+      $('.btn-dark').removeAttr('disabled');
       var gasLabel = $('label[for=pay_gas]')[0].innerText;
 
       $('label[for=pay_gas]')[0].innerText = $('label[for=pay_gas]')[0].innerText.substring(0, gasLabel.length - 28) + '(Optional, but recommended)';

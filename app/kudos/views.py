@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define view for the Kudos app.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -83,6 +83,29 @@ def get_profile(handle):
     return to_profile
 
 
+def sync(request):
+    response = {}
+    try:
+        kt_id = request.GET.get('pk')
+        kt = KudosTransfer.objects.get(pk=kt_id)
+        response['txid'] = kt.txid
+        if kt.kudos_token_cloned_from.is_owned_by_gitcoin:
+            if request.user.is_authenticated:
+                if request.user.profile.handle in [kt.username.replace('@',''), kt.from_username.replace('@','')] or settings.DEBUG:
+                    authd = not kt.tx_time or kt.tx_time < (timezone.now() - timezone.timedelta(minutes=30))
+                    authd = authd and (kt.receive_txid == 'pending_celery' or kt.receive_tx_status == 'dropped' or kt.receive_tx_status == 'unknown')
+                    if authd:
+                        from kudos.helpers import re_send_kudos_transfer
+                        response['txid'] = re_send_kudos_transfer(kt, True)
+        from dashboard.utils import tx_id_to_block_explorer_url
+        response['url'] = tx_id_to_block_explorer_url(kt.txid, kt.network)
+        response['success'] = 1
+    except Exception as e:
+        response['error'] = str(e)
+
+    return JsonResponse(response)
+
+
 def about(request):
     """Render the Kudos 'about' page."""
     activity_limit = 5
@@ -114,11 +137,12 @@ def about(request):
 
 def marketplace(request):
     """Render the Kudos 'marketplace' page."""
-    q = request.GET.get('q')
+    q = request.GET.get('q', '')
     order_by = request.GET.get('order_by', '-created_on')
     title = str(_('Kudos Marketplace'))
-    network = request.GET.get('network', settings.KUDOS_NETWORK)
-
+    network = request.GET.get('network', 'xdai')
+    if not network:
+        network = 'xdai'
     # Only show the latest contract Kudos for the current network.
     query_kwargs = {
         'num_clones_allowed__gt': 0,
@@ -152,6 +176,7 @@ def marketplace(request):
         'is_outside': True,
         'active': 'marketplace',
         'title': title,
+        'q': q,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
@@ -303,7 +328,7 @@ def send_2(request):
 
     """
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     _id = request.GET.get('id')
     if _id and not str(_id).isdigit():
@@ -621,7 +646,7 @@ def receive(request, key, txid, network):
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
             request.user, 'profile', None
         ):
-            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            login_redirect = redirect('/login/github/?next=' + request.get_full_path())
             return login_redirect
 
     if kudos_transfer.receive_txid:
@@ -688,7 +713,7 @@ def receive(request, key, txid, network):
     return TemplateResponse(request, 'transaction/receive.html', params)
 
 
-def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, submit_later=False, exit_after_sending_tx=False):
+def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, submit_later=False, exit_after_sending_tx=False, max_gas_price_we_are_willing_to_pay_gwei=15):
     try:
         address = Web3.toChecksumAddress(address)
     except:
@@ -705,7 +730,13 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
     gas_price_confirmation_time = 1 if not coupon.sender_address else 60
     gas_price_multiplier = 1.3 if not coupon.sender_address else 1
-    kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+    kudos_contract_address = settings.KUDOS_CONTRACT_MAINNET
+    if coupon.token.contract.network == 'xdai':
+        kudos_contract_address = settings.KUDOS_CONTRACT_XDAI
+    if coupon.token.contract.network == 'rinkeby':
+        kudos_contract_address = settings.KUDOS_CONTRACT_RINKEBY
+
+    kudos_contract_address = Web3.toChecksumAddress(kudos_contract_address)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
     contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
@@ -718,8 +749,8 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
         'value': int(coupon.token.price_finney / 1000.0 * 10**18),
     })
 
-    if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
-        error = f'Your github profile is too new.  Cannot receive kudos.'
+    if profile.trust_bonus <= 1 and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        error = f'Your github profile is too new, so you cannot receive kudos.  Please go to the TrustBonus tab of your profile + verify your profile to proceed.'
         return None, error, None
     else:
 
@@ -738,8 +769,9 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
         else:
             try:
                 # TODO - in the future, override this if the user pays for expediated processing
-                if recommend_min_gas_price_to_confirm_in_time(1) > 15:
-                    raise Exception("gas price is too high.  try again when its not pls")
+                if recommend_min_gas_price_to_confirm_in_time(1) > max_gas_price_we_are_willing_to_pay_gwei:
+                    if coupon.token.contract.network == 'mainnet':
+                        raise Exception("gas price is too high.  try again when its not pls")
 
                 txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
             except Exception as e:
@@ -866,7 +898,7 @@ def newkudos(request):
     }
 
     if not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -902,7 +934,7 @@ def newkudos(request):
                 tags=request.POST['tags'].split(","),
                 to_address=request.POST['to_address'],
                 artwork_url=artwork_url,
-                network='mainnet',
+                network='xdai',
                 approved=False,
                 metadata={
                     'ip': get_ip(request),

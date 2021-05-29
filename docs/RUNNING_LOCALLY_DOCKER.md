@@ -7,24 +7,21 @@ cp app/app/local.env app/app/.env
 ```
 
 ## Special instructions for Windows WSL contributors
-*If you are using Windows 10 Professional or Enterprise*
 
-Download Docker Desktop for Windows [here](https://hub.docker.com/editions/community/docker-ce-desktop-windows).
+If you are using Windows 10 Professional or Enterprise, you can download [Docker Desktop for Windows](https://hub.docker.com/editions/community/docker-ce-desktop-windows). Otherwise, you will need to install and configure Docker Toolbox.
 
-*If you are NOT using Windows 10 Professional or Enterprise*
-
-Docker Desktop for Windows is not available to your OS. Follow the steps below to install and configure Docker Toolbox:
+### Docker Toolbox
 
 1. Follow the installation instructions on the [manual for installing Docker Toolbox on Windows](https://docs.docker.com/toolbox/toolbox_install_windows/).
-
 2. WSL by default mounts your C: drive on `/mnt/c`, but Docker Toolkit instead expects it to be mounted on `/c/`. To instruct WSL to mount it in the correct location, create a config file in `/etc/wsl.conf` using WSL and enter the following:
-```
-[automount]
-root = /
-options = "metadata"
-```
-
+    ```ini
+    [automount]
+    root = /
+    options = "metadata"
+    ```
 3. Lastly, ensure that you are sharing the folders of your project directory to your VirtualBox VM, i.e. if your Gitcoin repository is located in `C:/Projects/web`, you will have to go to the VirtualBox UI, click on `Settings > Shared Folders`, and ensure that there is an entry with a name of `c/Projects` and a path of `C:\Projects`.
+
+### Configure
 
 Once Docker is installed (either via Docker Desktop for Windows or Docker Toolkit), install the Docker packages on WSL as you normally would for Ubuntu:
 
@@ -125,8 +122,6 @@ For background build, Gitcoin server runs as a service and its always there. You
 *Note: Running `docker-compose logs --tail=50 -f <optional container_name>` will follow all container output in the active terminal window, while specifying a container name will follow that specific container's output. `--tail` is optional.*
 Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/reference/) for more information.
 
-You will need to edit the `app/.env` file with your local environment variables. Look for config items that are marked `# required`.
-
 ## A note on performance
 
 The Gitcoin docker containers contain serval containers for many purposes (web development, task pipeline dev, ganache for blockchain development). Because of this, the whole package can take several GB of RAM.   If all you want to do is work on the site, and you experience slowness while running Gitcoin, we recommend running these commands
@@ -142,7 +137,7 @@ If you run `docker-compose restart web` after doing these things, you should fin
 
 ## Integration Setup (recommended)
 
-If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
+If you plan on using the Github or Google integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 ## Static Asset Handling (optional)
 
@@ -150,49 +145,63 @@ If you're testing in a staging or production style environment behind a CDN, pas
 
 For example:
 
-`DJANGO_STATIC_HOST='https://gitcoin.co'`
+```sh
+DJANGO_STATIC_HOST='https://gitcoin.co'
+```
+
+## Initial test data
+
+The development server is conditioned with a representative sampling of test data fixtures outlined below:
+
+* 20ish users doing a variety things
+* Bounties in various statuses - so you can get to work!
+* Grants - ask some friends to support your work on Gitcoin
+* A variety of Kudos for you to send to everybody hard at work on bounties
+* A default superuser - usage below
+    1. Go to [http://localhost:8000/_administrationeconomy/](http://localhost:8000/_administration)
+    2. Login with
+        * username: root
+        * password: gitcoinco
+    3. Poke around the database tables
+    4. Click the _Impersonate User_ link,  pick any user and poke around the site
 
 ## Create Django Admin
+
+The [initial test data](#initial-test-data) comes with a pre-configured
+superuser. You can also create a new one using the following command:
 
 ```shell
 docker-compose exec web python3 app/manage.py createsuperuser
 ```
+
+Make sure that the services are already running. See [Startup server](#startup-server) for an example.
+
+If the script worked correctly, you will be asked for the following information:
+
+* username
+* password
+* email - optional, blank is ok
 
 ## Add a Custom ERC20 Token To your Local Gitcoin
 
 1. [Create a django admin](https://github.com/gitcoinco/web/blob/master/docs/RUNNING_LOCALLY_DOCKER.md#create-django-admin)
 2. Go to [http://localhost:8000/_administrationeconomy/token/](http://localhost:8000/_administrationeconomy/token/) and click `Add New Token`.
 3. Open another tab and go to [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh)
-4. Mint a new token on the network of ur choice.
+4. Mint a new token on the network of your choice.
 5. Go back to your Gitcoin local tab, and enter the token.
 6. Click Save
 7. Congratulations, your local environment now supports your custom token!
 8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
 
-
-## Initial test data
-
-The development server is conditioned with a representative sampling of test data fixtures outlined below:
-* 20ish users doing a variety things
-* Bounties in various statuses - so you can get to work!
-* Grants - ask some friends to support your work on Gitcoin
-* A variety of Kudos for you to send to everybody hahrd at work on bounties
-* A default superuser - usage below
-    1. Go to [http://localhost:8000/_administrationeconomy/](http://localhost:8000/_administration) 
-    2. Login with - username - root - password - gitcoinco 
-    3. Poke around the database tables.
-    4. Click the "Impersonate User" link,  pick any user and poke around the site.
-
-Note, using the sync_geth command described below can potentially break some of the fixtures outlined above.
-
 ## Optional: Import bounty data from web3 to your database
 
-This can be useful if you'd like data to test with:
-
+This can be useful if you'd like data to test with shared data:
 
 ```shell
 docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
 ```
+
+**Note:** using the `sync_geth` command can potentially break some of the [Initial test data](#initial-test-data) fixtures.
 
 ### FAQ
 
@@ -302,8 +311,8 @@ sudo nano /etc/docker/daemon.json
 
 Copy and paste
 
-```
-{ 
+```json
+{
     "experimental": true 
 } 
 ```
@@ -321,11 +330,11 @@ Alternatively, you can use the local `ganache-cli` test rpc network that ships w
 
 This error can occur when you are already running a local instance of PostgreSQL or another service on any of the ports specified in the `docker-compose.yml`.  You can identify which process is currently bound to the port with: `lsof -i :<port_number> | grep LISTEN` - for example: `lsof -i :8000 | grep LISTEN` and simply `sudo kill <pid>`, substituting the PID returned from `lsof`.
 
-#### Github Login
+#### Github Login and Google Verification
 
-`Q: How can I enable the Github Login functionality on my local docker instance?`
+`Q: How can I enable the Github Login and/or Google verification functionality on my local docker instance?`
 
-If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
+If you plan on using the Github and/or Google integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 #### ipdb
 
@@ -344,7 +353,6 @@ Simply run: `make get_django_shell` or `docker-compose exec web python3 app/mana
 `Q: I want to inspect or manipulate the container via bash.  How can I access the root shell of the container?`
 
 Run: `docker-compose exec web bash`
-
 
 #### I have a question about Kudos.  Is there a FAQ for that product?
 

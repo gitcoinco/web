@@ -1,0 +1,63 @@
+{% load humanize static i18n %}
+<div class="container">
+  <div id="top-filters" class="row">
+
+    <div class="col-12 col-xl-12 mt-2 mt-xl-0 font-caption text-center text-xl-right sort_container">
+      <div class="float-md-left mb-md-3" v-if="activeCollection">
+        <a href="#" :class="`font-weight-bold`" @click="clearSingleCollection()">Back to collections</a>
+      </div>
+
+
+      <div class="d-inline-block" v-if="grants.length">
+        <span class="heading mr-2">View</span>
+        <a href="#" :class="`${view == 'list' ?  'gc-text-blue' : 'text-black' }`" @click="setView('list', $event)"> <i class="fas fa-list"></i> List</a> |
+        <a href="#" :class="`${view == 'grid' ? 'gc-text-blue' : 'text-black' }`" @click="setView('grid', $event)"><i class="fas fa-th-large"></i> Grid</a>
+      </div>
+      <div class="d-inline-block ml-4" v-if="current_type !== 'collections'">
+        <!-- <label class="form__label" for="experience_level">{% trans "Experience Level" %}</label> -->
+        <div class="d-flex align-items-baseline" >
+          <label class="heading">{% trans "Sort by" %}</label>
+          <v-select class="vselect-clean" style="min-width:200px;" id="experience_level" :clearable="false" :options="[
+            {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
+            {label: 'Trending', value: '-metadata__upcoming'},
+            {label: 'Undiscovered Gems', value: '-metadata__gem'},
+            {label: 'Newest', value: '-created_on'},
+            {label: '---------', value: '?'},
+            {label: 'Match Estimate (This round)', value: '-clr_prediction_curve__0__1'},
+            {label: 'Amount Raised (This round)', value: '-amount_received_in_round'},
+            {label: 'Contributors (This round)', value: '-positive_round_contributor_count'},
+            {label: '---------', value: '?'},
+            {label: 'Amount Raised (Alltime)', value: '-amount_received'},
+            {label: 'Most Contributions (Alltime)', value: '-contribution_count'},
+            {label: 'Most Contributors (Alltime)', value: '-contributor_count'},
+            {label: '---------', value: '?'},
+            {label: 'Updated Recently', value: '-last_update'},
+            {label: 'Oldest Grants', value: 'created_on'},
+            {label: '---------', value: '?'},
+            {label: 'Random', value: '-random_shuffle'},
+            {% if is_staff %}
+            {label: '---------', value: '?'},
+            {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
+            {label: 'ADMIN:Sybil Score', value: '-sybil_score'},
+            {% endif %}
+
+          ]" placeholder="Sort by" v-model="sort" :reduce="sort => sort.value" @input="filter_grants({sort: sort})">
+            <template #search="{attributes, events}">
+              <input
+                class="vs__search"
+                v-bind="attributes"
+                v-on="events"
+              />
+            </template>
+          </v-select>
+        </div>
+
+      </div>
+      <div class="mr-4" v-if="current_type !== 'collections' && !(current_type === 'all' && !clr_round_pk)">
+        <button class="btn btn-outline-primary font-caption" @click.event="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+

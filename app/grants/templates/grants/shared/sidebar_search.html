@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,15 +15,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static get_categories_from_list %}
-<grant-sidebar :grant_types="grant_types" :filter_grants="filter_grants" :type="current_type"
-               :selected_category="category" :keyword="keyword" :following="following"
-               :set_type="setCurrentType" :idle_grants="idle_grants" :show_contributions="show_contributions"
-               :query_params="getQueryParams" :round_num="round_num" :featured="featured"
-               inline-template>
-  <div class="sidebar_search font-body pr-0 pl-4" >
-    <div class="search font-caption mb-4" style="width: 110%;">
+<grant-sidebar
+  :grant_types="grant_types" :filter_grants="filter_grants" :type="current_type"
+  :selected_category="category" :keyword="keyword" :following="following"
+  :set_type="setCurrentType" :idle_grants="idle_grants" :show_contributions="show_contributions"
+  :query_params="getQueryParams" :round_num="round_num" :sub_round_slug="sub_round_slug"
+  :customer_name="customer_name" :featured="featured"
+  inline-template
+>
+  <div class="sidebar_search font-body pr-lg-0 px-4">
+    <div class="search font-caption mb-4 w-100">
       <div class="search-area col-12">
-        <input @input="searchKeyword()" class="form__input form__input_lg" type="search" v-model="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Muli', sans-serif; font-weight: 900;" placeholder="&#xF002; Search Grant" />
+        <input @input="searchKeyword()" class="form__input form__input_lg" type="search" v-model="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Libre Franklin', sans-serif; font-weight: normal;" placeholder="&#xF002;  Filter Grants" />
       </div>
     </div>
 
@@ -38,67 +41,50 @@
 
     <form id="filters" :class="{hide_filters: !show_filters }">
       <div class="col border-top-0">
-        <div class="subheading">
-          {% trans "Filters" as filts %}{{ filts|upper }}
+
+      <!-- CLR rounds-->
+      {% if active_rounds %}
+        <div class="subheading font-weight-bold">
+          {% trans "QF Rounds" as filts %}{{ filts|upper }}
         </div>
 
-
-        <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
-          <template v-if="!round_num">
-            {% if profile %}
-              <li>
-                <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0 ${ following ? 'gc-text-blue' : 'text-black'}`">
-                  <i :class="following ? 'fas' : 'far'" class="fa-fw fa-star" ></i>
-                  Following
-                  <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
-                </span>
-              </li>
-            {% endif %}
+        <ul class="font-weight-semibold nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+          {% for active_round in active_rounds %}
             <li>
-              <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
-                <i :class="idle_grants ? 'fas' : 'far'" class="fa-fw fa-clock" ></i>
-                Show Idle Grants
-                <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
-              </span>
+              <a href="/grants/clr{% if active_round.customer_name %}/{{ active_round.customer_name }}{% endif %}{% if active_round.round_num %}/{{ active_round.round_num }}{% endif %}{% if active_round.sub_round_slug %}/{{ active_round.sub_round_slug }}{% endif %}"
+                 :class="`btn btn-link font-smaller-1 text-decoration-none text-left ml-0 pl-0  ${ sub_round_slug == '{{ active_round.sub_round_slug }}' ? 'selected' : ''}`">
+                {% if active_round.display_text %}
+                  {{ active_round.display_text|upper }}
+                {% elif active_round.customer_name %}
+                  {{ active_round.customer_name|upper }} - {{ active_round.round_num }}
+                {% elif active_round.sub_round_slug %}
+                  {{ active_round.sub_round_slug|upper }} - {{ active_round.round_num }}
+                {% else %}
+                  {{ active_round.round_num }}
+                {% endif %}
+              </a>
             </li>
-          </template>
-
-          {% if profile %}
-            <li>
-              <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 ml-0 pl-0 text-left text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
-                <i :class="show_contributions ? 'fas' : 'far'" class="fa-fw fa-donate" ></i>
-                My Contributions
-                <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
-              </span>
-            </li>
-            <li>
-              <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 ml-0 pl-0 text-decoration-none text-left" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
-                <i :class="type === 'me' ? 'fas' : 'far'" class="fa-fw fa-user-alt"></i>
-                My Grants
-                <i v-if="type === 'me'" class="fas fa-times font-smaller-4 ml-1"></i>
-              </span>
-            </li>
-          {% endif %}
+          {% endfor %}
         </ul>
+      {% endif %}
 
+        <!-- CATEGORIES -->
         <div class="subheading">
           {% trans "Categories" as cats %}{{ cats|upper }}
         </div>
         <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
-          <li class="mr-1 ">
-            <a :href="`/grants`" data-type="all" data-category="" :class="`mr-1 ${ type == 'all'? 'selected':''}`">
-              All Categories
+          <li class="mr-1 d-flex">
+            <a @click="filterLink({type: 'all', category: '', keyword: ''})" :class="`mr-1 ${ type == 'all'? 'selected':''}`">
+              All Grants
             </a>
           </li>
-          <template v-for="grant_type in grant_types">
-            <li class="mr-1">
-              <a @click="filterLink({type: grant_type.keyword, category: ''})"  :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
-                <template v-if="grant_type.funding_ui != '$0k'">
-                  <strong>[[grant_type.funding_ui]]</strong> -
-                </template>
+
+          <template v-for="grant_type in grant_types" v-if="grant_type.is_visible || round_num">
+            <li class="mr-1 d-flex">
+              <a @click="filterLink({type: grant_type.keyword, category: ''})"  :data-type="grant_type.keyword" :class="`d-inline-block text-truncate mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
                 [[grant_type.label]] <sup>([[grant_type.count]])</sup>
               </a>
-              <a v-b-toggle='grant_type.keyword' href="#example-collapse" @click.prevent class="m-1">
+              <a v-b-toggle='grant_type.keyword' href="#example-collapse" @click.prevent class="mx-1">
                 <i class="fa fa-fw fa-chevron-up when-open"></i>
                 <i class="fa fa-fw fa-chevron-down when-closed"></i>
               </a>
@@ -106,13 +92,13 @@
             <b-collapse class="" :id="grant_type.keyword" :visible="grant_type.keyword == type">
               <div class="col-12 options">
                 <ul class="nav d-inline-block font-body mb-2 grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-xl-left font-body font-weight-semibold">
-                  <li class="mr-1 ">
-                    <a @click="filterLink({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
+                  <li class="mr-1 d-flex">
+                    <a @click="filterLink({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" :class="`d-inline-block text-truncate mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
                       All [[grant_type.label]] <sup>([[grant_type.count]])</sup>
                     </a>
                   </li>
-                  <li class="mr-1" v-for="category in grant_type.sub_categories">
-                    <a @click="filterLink({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
+                  <li class="mr-1 d-flex" v-for="category in grant_type.sub_categories">
+                    <a @click="filterLink({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`d-inline-block text-truncate mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
                       [[category.label]] <sup>([[category.count]])</sup>
                     </a>
                   </li>
@@ -121,23 +107,73 @@
             </b-collapse>
           </template>
 
-          <hr>
-          <li>
-            <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: true})"  :class="`mr-1  px-1  ${ type == 'collections' && featured ? 'selected':''}`">
-              Featured Collections <span class="gc-text-green">NEW</span>
-            </a>
-          </li>
-          <li>
-            <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: false})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword != handle && !featured ? 'selected':''}`">
-              View Collections
-            </a>
-          </li>
-          <li>
-            <a @click="filterLink({type: 'collections',  keyword: handle})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword == handle ? 'selected':''}`" v-if="handle">
-              My Collections
-            </a>
-          </li>
-          <hr>
+          <!-- Collections -->
+          <div class="subheading font-weight-bold">
+            {% trans "Collections" as filts %}{{ filts|upper }}
+          </div>
+          <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+            <li>
+              <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: true})"  :class="`mr-0  px-1  ${ type == 'collections' && featured ? 'selected':''}`">
+                Featured Collections <span class="gc-text-green">NEW</span>
+              </a>
+            </li>
+            <li>
+              <a @click="filterLink({type: 'collections',  category: '', keyword: '', featured: false})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword != handle && !featured ? 'selected':''}`">
+                View Collections
+              </a>
+            </li>
+          </ul>
+
+          {% if profile %}
+
+            <div class="subheading">
+              {% trans "my items" as filts %}{{ filts|upper }}
+            </div>
+
+
+            <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+
+              <li>
+                <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0 ${ following ? 'text-primary' : 'text-black'}`">
+                  Starred Grants
+                  <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
+                </span>
+              </li>
+
+              <li>
+                <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+                  <template v-if="idle_grants">
+                    Hide Idle Grants
+                    <i class="fas fa-times font-smaller-4 ml-1"></i>
+                  </template>
+                  <template v-else>
+                    Show Idle Grants
+                  </template>
+                </span>
+              </li>
+
+              <li>
+                <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-2 ml-0 pl-0 text-left text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
+                  My Contributions
+                  <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
+                </span>
+              </li>
+              <li>
+                <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-2 ml-0 pl-0 text-decoration-none text-left" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
+                  My Grants
+                  <i v-if="type === 'me'" class="fas fa-times font-smaller-4 ml-1"></i>
+                </span>
+              </li>
+              <li>
+                <span @click="toggleMyCollections(!(keyword === handle), $event)" class="btn font-smaller-2 ml-0 pl-0 text-decoration-none text-left" :class="` ${ type == 'collections' && keyword == handle ? 'selected':''}`" v-if="handle">
+                  My Collections
+                  <i v-if="keyword === handle" class="fas fa-times font-smaller-4 ml-1"></i>
+                </span>
+              </li>
+
+            </ul>
+          {% endif %}
+
           <div class="subheading">
             {% trans "Meta" as desc %}{{ desc|upper }}
           </div>
@@ -147,31 +183,27 @@
               About
             </a>
           </li>
+
           <li>
             <a @click="set_type('stats')" data-type="stats" data-category="" :class="`mr-1  pr-1  ${ type == 'stats'? 'selected':''}`">
               Stats
             </a>
           </li>
+
           <li>
             <a @click="set_type('activity')" data-type="activity" data-category="" :class="`mr-1  pr-1  ${ type == 'activity'? 'selected':''}`">
               Activity
             </a>
           </li>
           <li>
-            <a target="new" href='/wiki/grants' class="mr-1 pr-1 ">
+            <a target="new" href='/grants/quickstart' class="mr-1 pr-1 ">
               FAQ <i class="fas fa-external-link-alt"></i>
             </a>
           </li>
         </ul>
+
       </div>
 
     </form>
-
-      <div class="col p-0">
-        <div class="info-box p-2 mt-4">
-          <p class="mb-1"><b>💡Did you know?</b></p>
-          <span class="font-smaller-3">You can now add grants to your cart & come back to checkout later.  Just make sure to checkout by {{round_end|date:'Y-m-d'}} in order to get your contributions matched. </span>
-        </div>
-      </div>
   </div>
 </grant-sidebar>

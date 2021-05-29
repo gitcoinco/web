@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing views.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -41,10 +41,10 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from chat.tasks import update_chat_notifications
 from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from git.utils import get_github_primary_email
 from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
@@ -108,6 +108,16 @@ def settings_helper_get_auth(request, key=None):
     is_logged_in = bool(request.user.is_authenticated)
     es = EmailSubscriber.objects.none()
 
+    # check if user's email has changed
+    if request.user.is_authenticated:
+        current_email = get_github_primary_email(request.user.profile.github_access_token)
+        if current_email != request.user.profile.email:
+            request.user.profile.email = current_email
+            request.user.profile.save()
+        if current_email != request.user.email:
+            request.user.email = current_email
+            request.user.save()
+
     # find the user info
     if key is None or not EmailSubscriber.objects.filter(priv=key).exists():
         email = request.user.email if request.user.is_authenticated else None
@@ -116,6 +126,11 @@ def settings_helper_get_auth(request, key=None):
         if hasattr(request.user, 'profile'):
             if request.user.profile.email_subscriptions.exists():
                 es = request.user.profile.email_subscriptions.first()
+                profile_email = request.user.profile.email
+                if es.email != profile_email \
+                    and not EmailSubscriber.objects.filter(email=profile_email).exists():
+                    es.email = request.user.profile.email
+                    es.save()
             if not es or es and not es.priv:
                 es = get_or_save_email_subscriber(
                     request.user.email, 'settings', profile=request.user.profile)
@@ -152,7 +167,7 @@ def privacy_settings(request):
     # setup
     profile, __, __, is_logged_in = settings_helper_get_auth(request)
     if not profile:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
@@ -161,8 +176,10 @@ def privacy_settings(request):
             profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile.anonymize_gitcoin_grants_contributions = bool(request.POST.get('anonymize_gitcoin_grants_contributions', False))
             profile.pref_do_not_track = bool(request.POST.get('pref_do_not_track', False))
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
+            profile.hide_wallet_address_anonymized = bool(request.POST.get('hide_wallet_address_anonymized', False))
             profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
@@ -207,7 +224,7 @@ def matching_settings(request):
     # setup
     profile, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
@@ -242,7 +259,7 @@ def feedback_settings(request):
     # setup
     __, es, __, __ = settings_helper_get_auth(request)
     if not es:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     msg = ''
@@ -284,7 +301,7 @@ def email_settings(request, key):
     if not request.user.is_authenticated and (not es and key) or (
         request.user.is_authenticated and not hasattr(request.user, 'profile')
     ):
-        return redirect('/login/github?next=' + request.get_full_path())
+        return redirect('/login/github/?next=' + request.get_full_path())
 
     # handle 'noinput' case
     email = ''
@@ -302,8 +319,6 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
-            if email_type == 'chat' and profile:
-                update_chat_notifications(profile, 'email', False)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
@@ -349,9 +364,6 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
 
-                if form['chat'] and profile:
-                    update_chat_notifications(profile, 'email', False)
-
                 es.build_email_preferences(form)
                 es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)
@@ -391,7 +403,7 @@ def slack_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -437,7 +449,7 @@ def token_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -475,6 +487,29 @@ def token_settings(request):
     return TemplateResponse(request, 'settings/tokens.html', context)
 
 
+def export_earnings_csv(earnings, export_type):
+    response = HttpResponse(content_type='text/csv')
+    name = f"gitcoin_{export_type}_{timezone.now().strftime('%Y_%m_%dT%H_00_00')}"
+    response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'txid', 'token_name', 'token_value', 'url'])
+    for earning in earnings:
+        writer.writerow([earning.pk,
+            earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
+            earning.from_profile.handle if earning.from_profile else '*',
+            earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
+            earning.to_profile.handle if earning.to_profile else '*',
+            earning.to_profile.data.get('location', 'Unknown') if earning.to_profile else 'Unknown',
+            earning.source_type_human,
+            earning.value_usd,
+            earning.txid,
+            earning.token_name,
+            earning.token_value,
+            earning.url,
+            ])
+
+    return response
+
 def account_settings(request):
     """Display and save user's Account settings.
 
@@ -486,7 +521,7 @@ def account_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -505,31 +540,10 @@ def account_settings(request):
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
 
-            response = HttpResponse(content_type='text/csv')
-            name = f"gitcoin_{export_type}_{timezone.now().strftime('%Y_%m_%dT%H_00_00')}"
-            response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
-
-            writer = csv.writer(response)
-            writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'url', 'txid', 'token_name', 'token_value'])
             profile = request.user.profile
             earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
             earnings = earnings.filter(network='mainnet').order_by('-created_on')
-            for earning in earnings:
-                writer.writerow([earning.pk,
-                    earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
-                    earning.from_profile.handle if earning.from_profile else '*',
-                    earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
-                    earning.to_profile.handle if earning.to_profile else '*',
-                    earning.to_profile.data.get('location', 'Unknown') if earning.to_profile else 'Unknown',
-                    earning.source_type.model_class(),
-                    earning.value_usd,
-                    earning.txid,
-                    earning.token_name,
-                    earning.token_value,
-                    earning.url,
-                    ])
-
-            return response
+            return export_earnings_csv(earnings, export_type)
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile = record_form_submission(request, profile, 'account-disconnect')
@@ -599,7 +613,7 @@ def job_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     if request.POST:
@@ -672,7 +686,7 @@ def org_settings(request):
     current_scopes = []
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
 
     social_auth = user.social_auth.first()
@@ -705,9 +719,9 @@ def tax_settings(request):
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not profile or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
         return login_redirect
-        
+
     # location  dict is not empty
     location = ''
     if profile.location:
@@ -747,15 +761,15 @@ def tax_settings(request):
                     location += ', ' + country_code
                 else:
                     location += country_code
-    
+
     #address is not empty
     if profile.address:
-        address = profile.address   
+        address = profile.address
     else:
         address = ''
-    
+
     g_maps_api_key = "AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ"
-        
+
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'home',
@@ -795,7 +809,7 @@ def leaderboard(request, key=''):
         TemplateResponse: The leaderboard template response.
 
     """
-    cadences = ['all', 'weekly', 'monthly', 'quarterly', 'yearly']
+    cadences = ['all', 'daily', 'weekly', 'monthly', 'quarterly', 'yearly']
 
 
     product = request.GET.get('product', 'all')
@@ -813,11 +827,12 @@ def leaderboard(request, key=''):
         f'earners': _('Top Earners'),
         f'orgs': _('Top Orgs'),
         f'tokens': _('Top Tokens'),
-        f'keywords': _('Top Keywords'),
-        f'kudos': _('Top Kudos'),
-        f'cities': _('Top Cities'),
-        f'countries': _('Top Countries'),
-        f'continents': _('Top Continents'),
+# TODO re-enable these sometime soon
+#        f'keywords': _('Top Keywords'),
+#        f'kudos': _('Top Kudos'),
+#        f'cities': _('Top Cities'),
+#        f'countries': _('Top Countries'),
+#        f'continents': _('Top Continents'),
     }
 
     if not key:
@@ -888,9 +903,9 @@ def leaderboard(request, key=''):
                   'type': 'line',
                   'stacking': False
                   },
-                'terms': 
+                'terms':
                     ['amount']
-                
+
             }],
             chart_options =
               {'legend': {
@@ -964,7 +979,17 @@ def trending_avatar():
     return avatar.first()
 
 def quest_of_the_day():
-    quest = trending_quests()[0]
+    quest = trending_quests()[0] if (len(trending_quests())) else 0
+    return quest
+
+def trending_kudos():
+    from kudos.models import KudosTransfer
+    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    kudos = [ele.kudos_token_cloned_from for ele in KudosTransfer.objects.order_by('?').all()[0:10]]
+    return kudos
+
+def kudos_of_the_day():
+    quest = trending_kudos()[0] if (len(trending_quests())) else 0
     return quest
 
 def upcoming_grant():
@@ -980,6 +1005,20 @@ def upcoming_hackathon():
         except HackathonEvent.DoesNotExist:
             return None
 
+def get_hackathons():
+    from perftools.models import JSONStore
+    from dateutil.parser import parse
+
+    hackathons = JSONStore.objects.get(key='hackathons', view='hackathons').data
+
+    if hackathons and hackathons[0] not in ['current', 'upcoming']:
+        return None
+    else:
+        current_hackathons = [hack for hack in hackathons[1] if parse(hack['start_date']) < timezone.now() and parse(hack['end_date']) > timezone.now()]
+        upcoming_hackathons = [hack for hack in hackathons[1] if parse(hack['start_date']) > timezone.now()]
+
+        return current_hackathons, upcoming_hackathons
+
 def latest_activities(user):
     from retail.views import get_specific_activities
     from townsquare.tasks import increment_view_counts
@@ -989,14 +1028,6 @@ def latest_activities(user):
     increment_view_counts.delay(activities_pks)
     return activities
 
-def static_proxy(request, filepath):
-    # TODO: if this is ever extended with a dynamic filepath
-    # make sure it is VERY VERY security conscious
-    filepath = 'assets/landingpage/fusion/fusion-interface.svg'
-    content_type = 'image/svg+xml'
-    with open(filepath) as file:
-        response = HttpResponse(file, content_type=content_type)
-        return response
 
 @staff_member_required
 def new_bounty_daily_preview(request):
@@ -1009,5 +1040,5 @@ def new_bounty_daily_preview(request):
     max_bounties = 5
     if len(new_bounties) > max_bounties:
         new_bounties = new_bounties[0:max_bounties]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user))
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), latest_activities=latest_activities(request.user))
     return HttpResponse(response_html)

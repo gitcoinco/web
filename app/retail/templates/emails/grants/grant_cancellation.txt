@@ -4,15 +4,8 @@
 
 {% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled" %}
 
-{% trans "You can see the transaction on Etherscan" %} at
-{% if grant.network == 'mainnet' %}
-  http://etherscan.io/tx/{{ grant.cancel_tx_id }}
-{% else %}
-  http://{{ grant.network }}.etherscan.io/tx/{{ grant.cancel_tx_id }}
-{% endif %}
 
-
-{% trans "View Inactive Grant here" %} {% url 'grants:details' grant.pk grant.slug %}
+{% trans "View Inactive Grant here" %} {% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}
 
 
 {% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}

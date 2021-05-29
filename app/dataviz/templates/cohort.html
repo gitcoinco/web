@@ -1,26 +1,30 @@
 {% extends "admin/base_site.html" %}
 {% load humanize %}
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+  Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file dashboard %}
+    <link rel="stylesheet" href="{% static "v2/scss/admin/dashboard.scss" %}">
+  {% endbundle %}
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -35,86 +39,86 @@
 <a href="..">&lt; back</a>
 
 <style>
-    td{
-        border: 1px solid #eee;
-    }
+  td{
+    border: 1px solid #eee;
+  }
 </style>
 
 <head>
-    <!-- code to include the highcharts and jQuery libraries goes here -->
-    <!-- load_charts filter takes a comma-separated list of id's where -->
-    <!-- the charts need to be rendered to                             -->
-    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  <!-- code to include the highcharts and jQuery libraries goes here -->
+  <!-- load_charts filter takes a comma-separated list of id's where -->
+  <!-- the charts need to be rendered to               -->
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 </head>
 
 <body>
-    <form method=GET>
-        Data Source: <select name=data_source>
-            <option {% if args.data_source == "profile-startwork" %}selected{% endif %} >profile-startwork</option>
-            <option {% if args.data_source == "profile-new_bounty" %}selected{% endif %} >profile-new_bounty</option>
-            <option {% if args.data_source == "profile-login" %}selected{% endif %} >profile-login</option>
-            <option {% if args.data_source == "profile-visit" %}selected{% endif %} >profile-visit</option>
-            <option {% if args.data_source == "profile-githubinteraction" %}selected{% endif %} >profile-githubinteraction</option>
-            <option {% if args.data_source == "slack-online" %}selected{% endif %} >slack-online</option>
-            <option {% if args.data_source == "email-processed" %}selected{% endif %} >email-processed</option>
-            <option {% if args.data_source == "email-dropped" %}selected{% endif %} >email-dropped</option>
-            <option {% if args.data_source == "email-deferred" %}selected{% endif %} >email-deferred</option>
-            <option {% if args.data_source == "email-delivered" %}selected{% endif %}>email-delivered</option>
-            <option {% if args.data_source == "email-bounce" %}selected{% endif %} >email-bounce</option>
-            <option {% if args.data_source == "email-open" %}selected{% endif %} >email-open</option>
-            <option {% if args.data_source == "email-click" %}selected{% endif %} >email-click</option>
-            <option {% if args.data_source == "email-spamreport" %}selected{% endif %} >email-spamreport</option>
-            <option {% if args.data_source == "email-unsubscribe" %}selected{% endif %} >email-unsubscribe</option>
-        </select>
-        <br>
-        Time Period Granularity: <select name="period_size">
-            <option {% if args.period_size == "quarters" %}selected{% endif %} >quarters</option>
-            <option {% if args.period_size == "months" %}selected{% endif %} >months</option>
-            <option {% if args.period_size == "weeks" %}selected{% endif %} >weeks</option>
-            <option {% if args.period_size == "days" %}selected{% endif %}>days</option>
-            <option {% if args.period_size == "hours" %}selected{% endif %}>hours</option>
-        </select>
-        <br>
-        Time Period Start: <input type="number" name=num_periods value="{{args.num_periods}}">
-        <br>
-        <input type="submit" name="submit" value="Go">
-    </form>
-    <table>
-        <tr>
-            <td>
-                Period
-            </td>
-            <td>
-                Users
-            </td>
-            <td>
-                Date
-            </td>
-            {% for no in title_rows %}
-                <td>
-                    {{args.period_size}}:{{no}}
-                </td>
-            {% endfor %}
-        </tr>
-        {% for idx, obj in cohorts.items %}
-        <tr>
-            <td>
-                {{idx}}
-            </td>
-            <td>
-                {{obj.num}}
-            </td>
-            <td>
-                {{obj.start_time | naturalday}} -  {{obj.end_time | naturalday}}
-            </td>
-            {% for idx, obj in obj.cohort_progression.items %}
-                <td style="background-color:hsla(120,100%,50%,{{obj.pct_float}})">
-                    {{obj.pct_int}}%
-                </td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
+  <form method=GET>
+    Data Source: <select name=data_source>
+      <option {% if args.data_source == "profile-startwork" %}selected{% endif %} >profile-startwork</option>
+      <option {% if args.data_source == "profile-new_bounty" %}selected{% endif %} >profile-new_bounty</option>
+      <option {% if args.data_source == "profile-login" %}selected{% endif %} >profile-login</option>
+      <option {% if args.data_source == "profile-visit" %}selected{% endif %} >profile-visit</option>
+      <option {% if args.data_source == "profile-githubinteraction" %}selected{% endif %} >profile-githubinteraction</option>
+      <option {% if args.data_source == "slack-online" %}selected{% endif %} >slack-online</option>
+      <option {% if args.data_source == "email-processed" %}selected{% endif %} >email-processed</option>
+      <option {% if args.data_source == "email-dropped" %}selected{% endif %} >email-dropped</option>
+      <option {% if args.data_source == "email-deferred" %}selected{% endif %} >email-deferred</option>
+      <option {% if args.data_source == "email-delivered" %}selected{% endif %}>email-delivered</option>
+      <option {% if args.data_source == "email-bounce" %}selected{% endif %} >email-bounce</option>
+      <option {% if args.data_source == "email-open" %}selected{% endif %} >email-open</option>
+      <option {% if args.data_source == "email-click" %}selected{% endif %} >email-click</option>
+      <option {% if args.data_source == "email-spamreport" %}selected{% endif %} >email-spamreport</option>
+      <option {% if args.data_source == "email-unsubscribe" %}selected{% endif %} >email-unsubscribe</option>
+    </select>
+    <br>
+    Time Period Granularity: <select name="period_size">
+      <option {% if args.period_size == "quarters" %}selected{% endif %} >quarters</option>
+      <option {% if args.period_size == "months" %}selected{% endif %} >months</option>
+      <option {% if args.period_size == "weeks" %}selected{% endif %} >weeks</option>
+      <option {% if args.period_size == "days" %}selected{% endif %}>days</option>
+      <option {% if args.period_size == "hours" %}selected{% endif %}>hours</option>
+    </select>
+    <br>
+    Time Period Start: <input type="number" name=num_periods value="{{args.num_periods}}">
+    <br>
+    <input type="submit" name="submit" value="Go">
+  </form>
+  <table>
+    <tr>
+      <td>
+        Period
+      </td>
+      <td>
+        Users
+      </td>
+      <td>
+        Date
+      </td>
+      {% for no in title_rows %}
+        <td>
+          {{args.period_size}}:{{no}}
+        </td>
+      {% endfor %}
+    </tr>
+    {% for idx, obj in cohorts.items %}
+    <tr>
+      <td>
+        {{idx}}
+      </td>
+      <td>
+        {{obj.num}}
+      </td>
+      <td>
+        {{obj.start_time | naturalday}} -  {{obj.end_time | naturalday}}
+      </td>
+      {% for idx, obj in obj.cohort_progression.items %}
+        <td style="background-color:hsla(120,100%,50%,{{obj.pct_float}})">
+          {{obj.pct_int}}%
+        </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
 
 
 </body>

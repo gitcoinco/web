@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -29,93 +29,93 @@
   </head>
 
   <body class="interior {{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
-    </div>
-    <div class="container-fluid">
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_issue_error.html' with page='payout_bounty_choice' %}
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-          {% include 'shared/connect_metamask.html' %}
-        </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav.html' %}
       </div>
-      {% include 'shared/success_container.html' %}
-      <div class="row content">
-        <div class="col-12 body">
-          <div class="row font-smaller-2" id="form_container">
-            <div class="row col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form" style="max-width:80rem;">
-                <div class="col-12 text-center my-5 mb-md-4">
-                  <h3 class="mt-4">{% trans "Let's Get This Bounty Paid Out" %}</h3>
-                  <p class="font-title">Pick one of the two to get started</p>
-                </div>
-
-                <div class="col-12 col-xl-6">
-                  <div class="text-center">
-                    <img src="{% static "v2/images/obiwan-bot.svg" %}" style="max-width:80rem; height: 10rem">
+      <div class="container-fluid">
+        <div class="row no-gutters metamask-banner">
+          <div class="col-12">
+            {% include 'shared/no_issue_error.html' with page='payout_bounty_choice' %}
+            {% include 'shared/no_metamask_error.html' %}
+            {% include 'shared/zero_balance_error.html' %}
+            {% include 'shared/unlock_metamask.html' %}
+            {% include 'shared/connect_metamask.html' %}
+          </div>
+        </div>
+        {% include 'shared/success_container.html' %}
+        <div class="row content">
+          <div class="col-12 body">
+            <div class="row font-smaller-2" id="form_container">
+              <div class="row col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form" style="max-width:80rem;">
+                  <div class="col-12 text-center my-5 mb-md-4">
+                    <h3 class="mt-4">{% trans "Let's Get This Bounty Paid Out" %}</h3>
+                    <p class="font-title">Pick one of the two to get started</p>
                   </div>
-                  <a class="bounty_box text-center {% if bounty.fulfillments.count == 0 %}disabled{% endif %}"
-                      href="{% if bounty.fulfillments.count > 0 %}{{ bounty.action_urls.accept }}{% else %}#{% endif %}">
-                    <h5>{% trans "BASIC" %}</h5>
-                    <p class="font-subheader mt-2 mb-0">
-                      USED TO
-                      <span class="font-weight-bold">ACCEPT + PAY</span> 
-                      CONTRIBUTOR AFTER SUBMISSION.
-                      <br>
-                      <span class="font-caption font-weight-semibold">
-                        {% if bounty.fulfillments.count == 0 %}
-                          This is enabled when only when a contributor has submitted work on the Gitcoin Bounty.
-                        {% elif bounty.fulfillments.count == 1 %}
-                          You've got 1 SUBMISSION. Give them kudos.
-                        {% else %}
-                          You've got {{bounty.fulfillments.count | pluralize}} submissions.
-                          Click here to pay one of them out.
-                        {% endif %}
-                      </span>
-                    </p>
-                  </a>
-                </div>
 
-                <div class="col-12 d-block d-xl-none text-center">
-                  <h2 class="my-5">OR</h2>
-                </div>
-
-                <div class="col-12 col-xl-6">
-                  <div class="text-center mt-xl-4 pt-xl-2">
-                    <img src="{% static "v2/images/bounty/share.svg" %}" style="max-width:80rem; height: 14rem">
-                  </div>
-                  <div>
-                    <a class="bounty_box text-center" href="{{ bounty.action_urls.advanced_payout }}">
-                      <h5 class="mt-2">{% trans "ADVANCED" %}</h5>
-                      <p class="font-subheader my-2">
-                        USED TO PAY
-                        <span class="font-weight-bold">MULTIPLE PARTIES</span>/ 
-                        <span class="font-weight-bold">WITHOUT SUBMISSION</span>
+                  <div class="col-12 col-xl-6">
+                    <div class="text-center">
+                      <img src="{% static "v2/images/obiwan-bot.svg" %}" style="max-width:80rem; height: 10rem">
+                    </div>
+                    <a class="bounty_box text-center {% if bounty.fulfillments.count == 0 %}disabled{% endif %}"
+                        href="{% if bounty.fulfillments.count > 0 %}{{ bounty.action_urls.accept }}{% else %}#{% endif %}">
+                      <h5>{% trans "BASIC" %}</h5>
+                      <p class="font-subheader mt-2 mb-0">
+                        USED TO
+                        <span class="font-weight-bold">ACCEPT + PAY</span> 
+                        CONTRIBUTOR AFTER SUBMISSION.
+                        <br>
+                        <span class="font-caption font-weight-semibold">
+                          {% if bounty.fulfillments.count == 0 %}
+                            This is enabled when only when a contributor has submitted work on the Gitcoin Bounty.
+                          {% elif bounty.fulfillments.count == 1 %}
+                            You've got 1 SUBMISSION. Give them kudos.
+                          {% else %}
+                            You've got {{bounty.fulfillments.count | pluralize}} submissions.
+                            Click here to pay one of them out.
+                          {% endif %}
+                        </span>
                       </p>
                     </a>
                   </div>
-                    <div class="row col-12 btn-metamask mt-4 mx-1 py-3 br-2">
-                      <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
-                      <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
-                        {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
-                      </p>
-                    </div>
-                </div>
 
+                  <div class="col-12 d-block d-xl-none text-center">
+                    <h2 class="my-5">OR</h2>
+                  </div>
+
+                  <div class="col-12 col-xl-6">
+                    <div class="text-center mt-xl-4 pt-xl-2">
+                      <img src="{% static "v2/images/bounty/share.svg" %}" style="max-width:80rem; height: 14rem">
+                    </div>
+                    <div>
+                      <a class="bounty_box text-center" href="{{ bounty.action_urls.advanced_payout }}">
+                        <h5 class="mt-2">{% trans "ADVANCED" %}</h5>
+                        <p class="font-subheader my-2">
+                          USED TO PAY
+                          <span class="font-weight-bold">MULTIPLE PARTIES</span>/ 
+                          <span class="font-weight-bold">WITHOUT SUBMISSION</span>
+                        </p>
+                      </a>
+                    </div>
+                      <div class="row col-12 btn-metamask mt-4 mx-1 py-3 br-2">
+                        <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
+                        <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
+                          {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
+                        </p>
+                      </div>
+                  </div>
+
+              </div>
             </div>
           </div>
         </div>
       </div>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    
   </body>
 
   <!-- jQuery -->

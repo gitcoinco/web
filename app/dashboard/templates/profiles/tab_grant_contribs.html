@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -19,63 +19,18 @@
   <div class="grants-container">
     <h2 class="font-title my-3 pb-3 title">
       {% trans "Grant Contribution History" %}
-      {% if total_grant_contributions %} ({{total_grant_contributions}}) {% endif %}
+      {% if history|length %} ({{history|length}}) {% endif %}
     </h2>
     <h3 class="font-body mt-1 mb-2 font-weight-semibold">Monthly Summary</h3>
 
     {% include "profiles/earningsgraph.html" with graph_type="grants" %}
 
-    {% if subs.count %}
-    <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in profile.grant_contributor.all %}{{subs.grant.pk}},{% endfor %}">+
-      Add all to Cart</a>
-    {% endif %}
-
-    <h2 class="font-body ml-0 mt-3 mb-3 pb-3 title">Subscriptions ({{subs.count}})</h3>
-
-    {% if not subs.count %}
-      <p>
-        No Grants Subscribed. <a href=grants/>Explore Grants &gt;</a>
-      </p>
-    {% endif %}
-
-    {% for subscription in subs.all %}
-      {# FIXME: last_contribution_date is wrong. #}
-      <div class="py-3 mx-sm-0 px-lg-0 row subscription-history bounty_row">
-        <div class="col-auto px-0 justify-content-center special_tag">
-          <img class="avatar" style="max-width: 70px" src="{% if subscription.grant.logo and subscription.grant.logo.url %}{{ subscription.grant.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=subscription.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
-        </div>
-        <div class="col-auto my-auto">
-          <div class="title font-body">
-            <a href="{{ subscription.grant.url }}">{{ subscription.grant.title }}</a>
-          </div>
-        </div>
-        <div class="col-auto my-auto">
-          <div class="font-body">
-            {% if not subscription.active %}<strike>{% endif %}
-            {{ subscription.amount_per_period|floatformat }} {{ subscription.token_symbol }} (${{ subscription.amount_per_period_usdt|floatformat}}) per round &times; {{ subscription.num_tx_approved|floatformat }}
-            {% if not subscription.active %}</strike>{% endif %}
-          </div>
-        </div>
-        <div class="col-auto my-auto">
-          <div class="info font-caption mt-4 mt-md-0 text-center text-sm-left">
-            <span class="font-weight-semibold">Goal: </span> {{ subscription.grant.amount_goal}}<br>
-            <span class="font-weight-semibold">Received:</span> {{ subscription.grant.amount_received }}<br>
-          </div>
-        </div>
-        <div class="col-auto my-auto">
-          <div class="info font-caption mt-sm-4 mt-md-0 text-center text-sm-left">
-            <span class="font-weight-semibold">Contributons Count:</span> {{ subscription.grant.contribution_count }} <br>
-            <span class="font-weight-semibold">Contributors Count:</span> {{ subscription.grant.contributor_count }}
-          </div>
-        </div>
-      </div>
-    {% endfor %}
 
     <h2 class="font-body mt-3 mb-3 ml-0 pb-3 title">Grants Created ({{profile.grant_admin.count}})</h3>
 
     {% if not profile.grant_admin.count %}
       <p>
-        No Grants Created. <a href=grants/new>Create a Grant &gt;</a>
+        No Grants Funded. <a href=grants/new>Create a Grant &gt;</a>
       </p>
     {% endif %}
 
@@ -108,7 +63,7 @@
     {% endfor %}
 
     <h2 class="font-body mt-3 mb-3 ml-0 pb-2 mt-5 title">Grant Contribution History ({{history|length}})</h2>
-    <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in history %}{{subs.id}},{% endfor %}">+
+    <a class="btn btn-primary cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in history %}{{subs.id}},{% endfor %}">+
       Add all to Cart</a>
 
     {% for transaction in history %}

@@ -12,9 +12,9 @@ Do you still want to work on this?  No big deal!  We can help with that:
 
 Please leave a comment on the github thread to check in.
 -AND-
-Click 'Start Work' at {{ bounty.absolute_url }}
+Click 'Start Work' at {{ bounty.absolute_url }}?{{ utm_tracking }}
 
-If you have any questions, feel free to reach out on slack => {% url 'slack' %}
+If you have any questions, feel free to reach out on slack => {% url 'slack' %}?{{ utm_tracking }}
 
 Funded Issue Details
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Gitcoin project settings.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -17,21 +17,21 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import os
 import socket
+import subprocess
+import warnings
 
 from django.utils.translation import gettext_noop
 
 import environ
 import raven
 import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.celery import CeleryIntegration
-
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
-
-import warnings
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
 
@@ -58,8 +58,12 @@ VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
 PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
+XINFIN_API_KEY = env('XINFIN_API_KEY', default='')
+ALGORAND_API_KEY = env('ALGORAND_API_KEY', default='')
 
 # Ratelimit
+MARKETING_QUEUE_RATE_LIMIT = env('MARKETING_QUEUE_RATE_LIMIT', default='32/m')
+MARKETING_FLUSH_QUEUE = env.bool('MARKETING_FLUSH_QUEUE', default=False)
 FLUSH_QUEUE = env.bool('FLUSH_QUEUE', default=False)
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
@@ -71,12 +75,12 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
 
-
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
 # Application definition
 INSTALLED_APPS = [
+    'csp',
     'corsheaders',
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
@@ -87,6 +91,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
+    'livereload',
     'cacheops',
     'storages',
     'social_django',
@@ -106,11 +111,11 @@ INSTALLED_APPS = [
     'app',
     'avatar',
     'retail',
+    'ptokens',
     'rest_framework',
     'marketing',
     'economy',
     'dashboard',
-    'chat',
     'quests',
     'faucet',
     'tdi',
@@ -150,11 +155,13 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
-    'haystack',
     'governance',
+    'passport',
+    'quadraticlands',
 ]
 
 MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -184,7 +191,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'instant/templates', 'governance/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates', 'quadraticlands/templates', 'governance/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -202,7 +209,15 @@ WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-DATABASES = {'default': env.db()}
+DATABASES = {
+    'default': env.db()
+    }
+if ENV in ['prod']:
+    DATABASES = {
+        'default': env.db(),
+        'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL')
+        }
+    DATABASE_ROUTERS = ['app.db.PrimaryDBRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -302,7 +317,8 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration(), CeleryIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()],
+        traces_sample_rate=0.35
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
@@ -401,9 +417,9 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/',))
-STATIC_ROOT = root('static')
 STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
+STATIC_ROOT = root(STATICFILES_LOCATION)
 
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
@@ -416,14 +432,20 @@ if ENV in ['prod', 'stage']:
     )
 else:
     # Handle local static file storage
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
     STATIC_HOST = BASE_URL
     STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
+
     # Handle local media file storage
     MEDIA_ROOT = root('media')
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
-COMPRESS_ROOT = STATIC_ROOT
-COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
+
+# Staticfinder finders
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
+]
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
 
@@ -521,14 +543,20 @@ CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
 # https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
 CELERY_ROUTES = [
     ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
+    ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
+    ('dashboard.tasks.increment_view_count', {'queue': 'analytics'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
-    ('chat.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
     ('townsquare.tasks.*', {'queue': 'default'}),
     ('kudos.tasks.*', {'queue': 'default'}),
     ]
+if DEBUG:
+    CELERY_ROUTES = [
+        ('*', {'queue': 'default'}),
+        ]
+
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
@@ -571,6 +599,10 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
+MAUTIC_USER = env('MAUTIC_USER', default='')
+MAUTIC_PASSWORD = env('MAUTIC_PASSWORD', default='')
+
+
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
@@ -594,17 +626,25 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
-# Kudos revenue account
-KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
+# Google
+GOOGLE_AUTH_BASE_URL = env('GOOGLE_AUTH_BASE_URL', default='https://accounts.google.com/o/oauth2/auth')
+GOOGLE_TOKEN_URL = env('GOOGLE_TOKEN_URL', default='https://oauth2.googleapis.com/token')
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET', default='')
+GOOGLE_SCOPE = env('GOOGLE_SCOPE', default='https://www.googleapis.com/auth/userinfo.profile')
 
-# Chat
-CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
-CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
-CHAT_SERVER_URL = env('CHAT_SERVER_URL', default='chat')  # location of where mattermost is hosted
-CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
-GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
-GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
-GITCOIN_LEADERBOARD_CHANNEL_ID = env('GITCOIN_LEADERBOARD_CHANNEL_ID', default='')
+# OATHLIB
+OAUTHLIB_INSECURE_TRANSPORT = env('OAUTHLIB_INSECURE_TRANSPORT', default=1)
+
+# Facebook
+FACEBOOK_AUTH_BASE_URL = env('FACEBOOK_AUTH_BASE_URL', default='https://www.facebook.com/v9.0/dialog/oauth')
+FACEBOOK_TOKEN_URL = env('FACEBOOK_TOKEN_URL', default='https://graph.facebook.com/v9.0/oauth/access_token')
+FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID', default='')
+FACEBOOK_CLIENT_SECRET = env('FACEBOOK_CLIENT_SECRET', default='')
+
+# Kudos revenue account
+KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xAD278911Ad07534F921eD7D757b6c0e6730FCB16')
+
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -669,10 +709,15 @@ OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
 KUDOS_OWNER_ACCOUNT = env('KUDOS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
 KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
 KUDOS_CONTRACT_MAINNET = env('KUDOS_CONTRACT_MAINNET', default='0x2aea4add166ebf38b63d09a75de1a7b94aa24163')
+KUDOS_CONTRACT_XDAI = env('KUDOS_CONTRACT_XDAI', default='0x74e596525C63393f42C76987b6A66F4e52733efa')
 KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529d924571d00e81ecde104601ae8')
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
 KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
+
+# Passport
+PASSPORT_PK_MAINNET = env('PASSPORT_PK_MAINNET', default='')
+PASSPORT_PK_RINKEBY = env('PASSPORT_PK_RINKEBY', default='')
 
 # Grants
 GRANTS_OWNER_ACCOUNT = env('GRANTS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
@@ -733,6 +778,9 @@ MEDIA_CUSTOM_DOMAIN = env('MEDIA_CUSTOM_DOMAIN', default='c.gitcoin.co')
 AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public-read')
 if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
+
+CSP_DEFAULT_SRC = False
+CSP_FRAME_ANCESTORS = ("'self'")
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
@@ -854,18 +902,20 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_BLOCKED_REGION = { 'country_code': 'US', 'region': 'NY' }
+PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
+PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
+PTOKEN_FACTORY_ADDRESS = env('PTOKEN_FACTORY_ADDRESS', default='0x358bcf43fe7ec2659aD829F3604c72781fc93a9E')
+PTOKEN_ABI = ''
+PTOKEN_FACTORY_ABI = ''
 
-HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
+if PTOKEN_ABI_PATH:
+    with open(str(root.path(PTOKEN_ABI_PATH))) as f:
+        PTOKEN_ABI = json.load(f)
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': HAYSTACK_ELASTIC_SEARCH_URL,
-        'INDEX_NAME': 'haystack',
-    },
-}
-# Update Search index in realtime (using models.db.signals)
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+if PTOKEN_FACTORY_ABI_PATH:
+    with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
+        PTOKEN_FACTORY_ABI = json.load(f)
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
@@ -877,5 +927,34 @@ EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
 PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')
 
 HYPERCHARGE_BOUNTIES_PROFILE_HANDLE = env('HYPERCHARGE_BOUNTIES_PROFILE', default='gitcoinbot')
+ADDEVENT_CLIENT_ID = env('ADDEVENT_CLIENT_ID', default='')
+ADDEVENT_API_TOKEN = env('ADDEVENT_API_TOKEN', default='')
 
 BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
+
+# Duniter
+BMAS_ENDPOINT = env('BMAS_ENDPOINT', default='BMAS g1.duniter.org 443')
+ES_CORE_ENDPOINT = env('ES_CORE_ENDPOINT', default='ES_CORE_API g1.data.duniter.fr 443')
+ES_USER_ENDPOINT = env('ES_USER_ENDPOINT', default='ES_USER_API g1.data.duniter.fr 443')
+
+# Idena
+IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
+IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min
+
+# Match Payouts contract
+MATCH_PAYOUTS_ABI = '[ { "inputs": [ { "internalType": "address", "name": "_owner", "type": "address" }, { "internalType": "address", "name": "_funder", "type": "address" }, { "internalType": "contract IERC20", "name": "_dai", "type": "address" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [], "name": "Finalized", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Funded", "type": "event" }, { "anonymous": false, "inputs": [], "name": "FundingWithdrawn", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutAdded", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutClaimed", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "_recipient", "type": "address" } ], "name": "claimMatchPayout", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "dai", "outputs": [ { "internalType": "contract IERC20", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "enablePayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "finalize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "funder", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "", "type": "address" } ], "name": "payouts", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "components": [ { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" } ], "internalType": "struct MatchPayouts.PayoutFields[]", "name": "_payouts", "type": "tuple[]" } ], "name": "setPayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "state", "outputs": [ { "internalType": "enum MatchPayouts.State", "name": "", "type": "uint8" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "withdrawFunding", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]'
+MATCH_PAYOUTS_ADDRESS = '0x3342e3737732d879743f2682a3953a730ae4f47c'
+MATCH_PAYOUTS_ROUND_NUM = 9
+
+# BulkCheckout contract
+# BulkCheckout parameters
+BULK_CHECKOUT_ADDRESS = "0x7d655c57f71464B6f83811C55D84009Cd9f5221C" # same address on mainnet and rinkeby
+BULK_CHECKOUT_ABI = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"address","name":"dest","type":"address"},{"indexed":true,"internalType":"address","name":"donor","type":"address"}],"name":"DonationSent","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token","type":"address"},{"indexed":true,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":true,"internalType":"address","name":"dest","type":"address"}],"name":"TokenWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[{"components":[{"internalType":"address","name":"token","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"address payable","name":"dest","type":"address"}],"internalType":"struct BulkCheckout.Donation[]","name":"_donations","type":"tuple[]"}],"name":"donate","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"_dest","type":"address"}],"name":"withdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_tokenAddress","type":"address"},{"internalType":"address","name":"_dest","type":"address"}],"name":"withdrawToken","outputs":[],"stateMutability":"nonpayable","type":"function"}]'
+
+
+JOBS_NODE = env.bool('JOBS_NODE', default=False)
+CELERY_NODE = env.bool('CELERY_NODE', default=False)
+
+# GTC Token Distribution
+GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
+GTC_DIST_KEY = env('GTC_DIST_KEY', default='')

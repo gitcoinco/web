@@ -1,195 +1,211 @@
-{% load i18n static kudos_extras avatar_tags%}
+{% load i18n static kudos_extras avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+    {% bundle css file kudos_details %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+    {% endbundle %}
   </head>
   <body class="{{ active }} bg-light g-font-muli">
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <header class="header">
-      {% include 'shared/kudos_nav.html' %}
-      <div class="container pb-5">
-        {% include 'shared/kudos_searchbar.html' %}
-      </div>
-    </header>
-
-    {% if is_staff %}
-    <div class="alpha-warning font-caption mb-0">
-      <span class="font-weight-bold">Staff only</span>
-      <a style="color:white;" href="{{kudos.admin_url}}">{% trans "Kudos Admin" %}</a>
-    </div>
-    {% endif %}
-
-    <div class="container py-5">
-      <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
-    </div>
-
-  	<section class="container my-2 pb-2">
-      <div class="row justify-content-around">
-        <div class="col-md-6 col-lg-5 mb-5">
-          <div class="kudos_msg">
-            <strong></strong>
-            <p></p>
-          </div>
-          <div id="kudos-image" class="sticky-top w-100">
-            {% include 'shared/kudos_levitate.html' %}
-            <img src="{{ kudos.preview_img_url }}" alt="{{ kudos.ui_name }}" class="w-100">
-          </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <header class="header">
+        {% include 'shared/kudos_nav.html' %}
+        <div class="container pb-5">
+          {% include 'shared/kudos_searchbar.html' %}
         </div>
-        <div class="col-md-6 col-lg-5 kudos-details">
-          {% if 'cellarius' in kudos.tags %}
-            <img src="{% static 'v2/images/kudos/assets/cellarius_logo_horizontal.svg' %}" alt="Cellarius" height="40">
-          {% endif %}
-          <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
-          <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
-          {% if kudos.artist %}
-            <div>Artist: <img style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{kudos.artist}}" > <a href="/profile/{{kudos.artist}}/kudos" class="kudos-details__address" title="@{{ kudos.artist }} has this kudos on {{kudos.created_on}}">{{kudos.artist}}</a> | <a href="/kudos/marketplace?q={{kudos.artist}}">View all {{kudos.artist_count}} Kudos by @{{kudos.artist}}</a></div>
-          {% endif %}
-          {% if kudos.quests_reward.count %}
-            Reward for beating
-            {% for quest in reward_for %}
-              <a href="{{quest.url}}">{{quest.title}} Quest</a>
-            {% endfor %}
-          {% endif %}
-          <div class="my-4 font-bigger-1 font-weight-300">
-            <p>{{ kudos.description }}</p>
-          </div>
-          <div class="kudos-details__subtitle">
-            <img class="mr-2" src="{% static 'v2/images/kudos/assets/kudos-diamond.svg' %}" alt="">{% trans "MARKETPLACE STATS" %}
-            <i id="share-button" class="fas fa-share-alt float-right"></i>
-          </div>
-          {% include 'share.html' %}
-          <p>
-            <span class="text-color_blue text-weight_semibold">
-              {{ kudos.rarity }}
-            </span>
-            ({{ kudos.num_clones_in_wild_counting_indirect_send }} {% trans "out of" %} {{ kudos.num_gen0_clones_allowed }})
-            <i data-toggle="tooltip" title="" data-html="true" data-original-title="
-              <span class='title-tooltip'>Kudos Rarity</span>
-              <div class='d-table w-100 text-left'>
-                <div class='d-table-row'>
-                  <span class='d-table-cell'>{% trans 'One of a Kind' %}:</span>
-                  <span class='d-table-cell'>1 clone</span>
-                </div>
-                <div class='d-table-row'>
-                  <span class='d-table-cell'>{% trans 'Legendary' %}:</span>
-                  <span class='d-table-cell'>2 - 5 clones</span>
-                </div>
-                <div class='d-table-row'>
-                  <span class='d-table-cell'>{% trans 'Ultra' %}:</span>
-                  <span class='d-table-cell'>6 - 15 clones</span>
-                </div>
-                <div class='d-table-row'>
-                  <span class='d-table-cell'>{% trans 'Very Rare' %}:</span>
-                  <span class='d-table-cell'>16 - 35 clones</span>
-                </div>
-                <div class='d-table-row'>
-                  <span class='d-table-cell'>{% trans 'Rare' %}:</span>
-                  <span class='d-table-cell'>36 - 100 clones</span>
-                </div>
-                <div class='d-table-row'>
-                  <span class='d-table-cell'>{% trans 'Special' %}:</span>
-                  <span class='d-table-cell'>101 - 200 clones</span>
-                </div>
-                <div class='d-table-row'>
-                  <span class='d-table-cell'>{% trans 'Common' %}:</span>
-                  <span class='d-table-cell'>201+</span>
-                </div>
-              </div>"
-              data-template='
-              <div class="tooltip-kudos" role="tooltip">
-                <div class="tooltip-inner"></div>
-              </div>' class="fas fa-question-circle text-color_blue">
-            </i>
-          </p>
+      </header>
 
-          <div class="mb-4">
-            <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available_counting_indirect_send }}</span> {% trans "Total Available" %}
-            <span id='kudosNumClonesAllowed' class="text-color_blue text-weight_semibold ml-5">{{ kudos.num_clones_in_wild_counting_indirect_send }}</span> {% trans "Total minted" %}
-          </div>
-          <p class="mb-4 kudos-details__price" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></p>
-          <div class="row justify-content-start pb-4">
-            <div class="col-12">
-              {% if send_enabled %}
-                <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
-              {% if kudos.quests_reward %}
-                <BR>
-                <BR>
-                {% if reward_for|length %}
-                or: 
-                {% endif %}
-                {% for quest in reward_for %}
-                  <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
-                  <BR>
-                {% endfor %}
-              {% endif %}
-              {% else %}
-                <button type="button" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
-                <small class="d-block mt-2">
-                  {% if send_enabled_for|length %}
-                    {% trans "These users have the power to send this Kudos.  Contact them if you want this Kudos:" %}
-                    <ul>
-                      {% for sef in send_enabled_for %}
-                      <li>
-                        <a href="{% url 'profile' sef.profile.handle %}" title="{{sef.profile.handle}}">
-                        <img src="{% avatar_url sef.profile.handle  %}" alts="{{sef.profile.handle}}" width="70" class="rounded-circle border m-1">
-                        </a>
-                      </li>
-                      {% endfor %}
-                    </ul>
-                  {% else %}
-                    {% trans "There are no clones available but you can still look at the beautiful artwork!" %}
-                  {% endif %}
-                </small>
-              {% endif %}
+      {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{kudos.admin_url}}">{% trans "Kudos Admin" %}</a>
+      </div>
+      {% endif %}
+
+      <div class="container py-5">
+        <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
+      </div>
+
+      <section class="container my-2 pb-2">
+        <div class="row justify-content-around">
+          <div class="col-md-6 col-lg-5 mb-5">
+            <div class="kudos_msg">
+              <strong></strong>
+              <p></p>
+            </div>
+            <div id="kudos-image" class="sticky-top w-100">
+              {% include 'shared/kudos_levitate.html' %}
+              <img src="{{ kudos.preview_img_url }}" alt="{{ kudos.ui_name }}" class="w-100">
             </div>
           </div>
-          <hr>
-          <p>
-            {% for tag in kudos.tags_as_array %}
-            <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{ tag }}">{{ tag }}</a>
-            {% endfor %}
-          </p>
-          {% if related_handles %}
-            <div class="row pt-3">
+          <div class="col-md-6 col-lg-5 kudos-details">
+            {% if 'cellarius' in kudos.tags %}
+              <img src="{% static 'v2/images/kudos/assets/cellarius_logo_horizontal.svg' %}" alt="Cellarius" height="40">
+            {% endif %}
+            <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
+            <div>
+              Network: {{kudos.contract.network}}
+
+              {% if kudos.on_other_networks|length %}
+                (Also available on
+                {% for other_kudos in kudos.on_other_networks %}
+                  <a href="{{other_kudos.1.url}}">{{other_kudos.0}}</a>
+                {% endfor %}
+                )
+              {% endif %}
+            </div>
+            <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
+            {% if kudos.artist %}
+              <div>Artist: <img style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{kudos.artist}}" > <a href="/profile/{{kudos.artist}}/kudos" class="kudos-details__address" title="@{{ kudos.artist }} has this kudos on {{kudos.created_on}}">{{kudos.artist}}</a> | <a href="/kudos/marketplace?q={{kudos.artist}}">View all {{kudos.artist_count}} Kudos by @{{kudos.artist}}</a></div>
+            {% endif %}
+            {% if kudos.quests_reward.count %}
+              Reward for beating
+              {% for quest in reward_for %}
+                <a href="{{quest.url}}">{{quest.title}} Quest</a>
+              {% endfor %}
+            {% endif %}
+            <div class="my-4 font-bigger-1 font-weight-300">
+              <p>{{ kudos.description }}</p>
+            </div>
+            <div class="kudos-details__subtitle">
+              <img class="mr-2" src="{% static 'v2/images/kudos/assets/kudos-diamond.svg' %}" alt="">{% trans "MARKETPLACE STATS" %}
+              <i id="share-button" class="fas fa-share-alt float-right"></i>
+            </div>
+            {% include 'share.html' %}
+            <p>
+              <span class="text-color_blue text-weight_semibold">
+                {{ kudos.rarity }}
+              </span>
+              ({{ kudos.num_clones_in_wild_counting_indirect_send }} {% trans "out of" %} {{ kudos.num_gen0_clones_allowed }})
+              <i data-toggle="tooltip" title="" data-html="true" data-original-title="
+                <span class='title-tooltip'>Kudos Rarity</span>
+                <div class='d-table w-100 text-left'>
+                  <div class='d-table-row'>
+                    <span class='d-table-cell'>{% trans 'One of a Kind' %}:</span>
+                    <span class='d-table-cell'>1 clone</span>
+                  </div>
+                  <div class='d-table-row'>
+                    <span class='d-table-cell'>{% trans 'Legendary' %}:</span>
+                    <span class='d-table-cell'>2 - 5 clones</span>
+                  </div>
+                  <div class='d-table-row'>
+                    <span class='d-table-cell'>{% trans 'Ultra' %}:</span>
+                    <span class='d-table-cell'>6 - 15 clones</span>
+                  </div>
+                  <div class='d-table-row'>
+                    <span class='d-table-cell'>{% trans 'Very Rare' %}:</span>
+                    <span class='d-table-cell'>16 - 35 clones</span>
+                  </div>
+                  <div class='d-table-row'>
+                    <span class='d-table-cell'>{% trans 'Rare' %}:</span>
+                    <span class='d-table-cell'>36 - 100 clones</span>
+                  </div>
+                  <div class='d-table-row'>
+                    <span class='d-table-cell'>{% trans 'Special' %}:</span>
+                    <span class='d-table-cell'>101 - 200 clones</span>
+                  </div>
+                  <div class='d-table-row'>
+                    <span class='d-table-cell'>{% trans 'Common' %}:</span>
+                    <span class='d-table-cell'>201+</span>
+                  </div>
+                </div>"
+                data-template='
+                <div class="tooltip-kudos" role="tooltip">
+                  <div class="tooltip-inner"></div>
+                </div>' class="fas fa-question-circle text-color_blue">
+              </i>
+            </p>
+
+            <div class="mb-4">
+              <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available_counting_indirect_send }}</span> {% trans "Total Available" %}
+              <span id='kudosNumClonesAllowed' class="text-color_blue text-weight_semibold ml-5">{{ kudos.num_clones_in_wild_counting_indirect_send }}</span> {% trans "Total minted" %}
+            </div>
+            <p class="mb-4 kudos-details__price" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></p>
+            <div class="row justify-content-start pb-4">
               <div class="col-12">
-                <p class="font-bigger-1">{% trans "These people own this Kudos" %}</p>
+                {% if send_enabled %}
+                  <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-primary">{% trans "Send Kudos" %}</a>
+                {% if kudos.quests_reward %}
+                  <BR>
+                  <BR>
+                  {% if reward_for|length %}
+                  or:
+                  {% endif %}
+                  {% for quest in reward_for %}
+                    <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
+                    <BR>
+                  {% endfor %}
+                {% endif %}
+                {% else %}
+                  <button type="button" class="btn btn-primary" disabled>{% trans "Not Available" %}</button>
+                  <small class="d-block mt-2">
+                    {% if send_enabled_for|length %}
+                      {% trans "These users have the power to send this Kudos.  Contact them if you want this Kudos:" %}
+                      <ul>
+                        {% for sef in send_enabled_for %}
+                        <li>
+                          <a href="{% url 'profile' sef.profile.handle %}" title="{{sef.profile.handle}}">
+                          <img src="{% avatar_url sef.profile.handle  %}" alts="{{sef.profile.handle}}" width="70" class="rounded-circle border m-1">
+                          </a>
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    {% else %}
+                      {% trans "There are no clones available but you can still look at the beautiful artwork!" %}
+                    {% endif %}
+                  </small>
+                {% endif %}
               </div>
             </div>
-            <div class="row">
-              {% for handle in related_handles %}
-                <a href="{% url 'profile' handle %}" data-usercard="{{handle}}" title="{{handle}}">
-                <img src="{% avatar_url handle  %}" alts="{{handle}}" width="70" class="rounded-circle border m-1">
-                </a>
+            <hr>
+            <p>
+              {% for tag in kudos.tags_as_array %}
+              <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{ tag }}">{{ tag }}</a>
               {% endfor %}
-            </div>
-          {% endif %}
+            </p>
+            {% if related_handles %}
+              <div class="row pt-3">
+                <div class="col-12">
+                  <p class="font-bigger-1">{% trans "These people own this Kudos" %}</p>
+                </div>
+              </div>
+              <div class="row">
+                {% for handle in related_handles %}
+                  <a href="{% url 'profile' handle %}" data-usercard="{{handle}}" title="{{handle}}">
+                  <img src="{% avatar_url handle  %}" alts="{{handle}}" width="70" class="rounded-circle border m-1">
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
         </div>
-      </div>
-    </section>
-    <section class="container col-12 col-md-8 col-lg-5 mx-auto my-1 py-1 mt-3">
-      {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on wall" what="kudos" whatid=kudos.pk %}
-      <div id="activities" class="activity_stream container">
-        {% include 'shared/activity_container.html' %}
-      </div>
-    </section>
+      </section>
+      <section class="container col-12 col-md-8 col-lg-5 mx-auto my-1 py-1 mt-3">
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on wall" what="kudos" whatid=kudos.pk %}
+        <div id="activities" class="activity_stream container">
+          {% include 'shared/activity_container.html' %}
+        </div>
+      </section>
 
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
-    {% include 'shared/footer_scripts.html' with slim=1 %}
-    <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
-    <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="{% static "v2/js/amounts.js" %}"></script>
-    <script src="{% static "v2/js/eth-price.js" %}"></script>
-    {% include 'shared/activity_scripts.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-    <script src="{% static "v2/js/status.js" %}"></script>
-    <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
-
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
+      <script src="{% static "v2/js/abi.js" %}"></script>
+      <script src="{% static "v2/js/amounts.js" %}"></script>
+      <script src="{% static "v2/js/eth-price.js" %}"></script>
+      {% include 'shared/activity_scripts.html' %}
+      {% bundle css file activity_stream %}
+        <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      {% endbundle %}
+      <script src="{% static "v2/js/status.js" %}"></script>
+      <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
+    </div>
   </body>
 </html>

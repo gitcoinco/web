@@ -1,11 +1,9 @@
 td{
   padding: 5px;
   font-size: 20px;
-    border: #ddd 1px solid;
+  border: 1px solid #5bf1cd;
 }
 input{
-  width: 50px;
-  height: 50px;
   font-size: 20px;
 }
 input[readonly]{
@@ -21,7 +19,54 @@ input[readonly]{
     width: 50%;
 }
 #gameboard img{
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     border-radius: 15px;
+    border: 1px solid #301041;
+    color: #9b95b0;
+}
+
+
+textarea, #chat-message-input {
+    border: 1px solid #5bf1cd !important;
+    display: block;
+    padding: 0em;
+    margin: 0em;
+    width: 100%;
+    height: auto;
+    font-family: "Space Mono", monospace;
+    font-size: 100%;
+    resize: none;
+    word-break: break-all;
+    border: none;
+    outline: none;
+    color: var(--aqua_light);
+    background-color: transparent;
+}
+
+.avatar{
+  vertical-align: middle;
+}
+.avatar img{
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  display: inline-block;
+}
+
+#chat-message-input{
+  width: 93%;
+  display: inline-block;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+#chat-message-submit{
+  margin-top: 10px;
+  float: right;
+}
+
+#game_container{
+  border: 1px solid #5bf1cd;
+  padding: 5px 15px;
 }

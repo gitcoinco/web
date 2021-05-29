@@ -1,0 +1,58 @@
+{% load i18n static avatar_tags %}
+<div class="col-12 col-lg-3">
+{% if ptoken or is_my_profile %}
+  <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+    <div class="card-header font-subheader">
+        <b>{% if ptoken %}{{ ptoken.token_symbol|upper }}{% else %}PRSNL{% endif %}</b>
+      {% trans "Token" %}
+      <div id="tooltip" class="float-right mt-2">
+        <i class='fa fa-info-circle' data-toggle="tooltip" data-html="true" data-delay="1000"
+          data-placement="bottom" title="{% if ptoken %}These tokens represent one hour of @{{ profile.handle }}‘s time. Open a redemption quest to use one today!{% else %}Time Tokens represent an hour of this users time. To learn more, please reference this <a href='{% url "ptokens_faq" %}'>resource</a>.{% endif %} ">
+        </i>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul>
+        {% if ptoken %}
+        <li>
+            <b><span id="ptoken-price">{{ ptoken.value }}</span> DAI</b> per token
+            <div><small>Worth one hour of {{profile.handle}}'s time</small></div>
+        </li>
+        <li>
+          <b>{{ ptoken.total_minted }}</b> Total Supply
+          <div><small><span id="amount-available">{{ ptoken.total_available }}</span> Available</small></div>
+        </li>
+        <li><b id="purchase-counter">{{ ptoken.purchases }}</b> Purchases</li>
+        <li><b>{{ ptoken.redemptions }}</b> Redemptions</li>
+        <li><b>{{ total_holders }}</b> Holders</li>
+        <li>
+          <!-- todo: add holders with holders -->
+        </li>
+        {% endif %}
+        <li id="ptoken-action" data-address="{{ ptoken.token_address }}" data-id="{{ ptoken.id }}">
+          {% if is_my_profile %}
+            {% if not ptoken  %}
+              <a class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5" href="{% url 'ptoken_quickstart' %}">CREATE A TIME TOKEN</a>
+            {% endif %}
+          {% else %}
+            {% comment %} Buy button: Disable it if user holds no tokens or is not in a valid region {% endcomment %}
+            {% if ptoken.total_available == 0 or is_location_blocked_for_ptokens %}
+              <button disabled style="cursor: default; pointer-events: none;" class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5">BUY</button>
+            {% else %}
+              <button class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5" data-toggle="modal" data-target="#buyTokenModal">BUY</button>
+            {% endif %}
+            {% comment %} Redeem button: Disable it if user holds no tokens {% endcomment %}
+            {% if available_to_redeem == 0 or is_location_blocked_for_ptokens %}
+              <button id="redeemPToken" disabled style="cursor: default; pointer-events: none;" class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5" data-toggle="modal" data-target="#redeemTokenModal">REDEEM</button>
+            {% else %}
+              <button id="redeemPToken" class="btn btn-outline-primary btn-sm flex-grow-1 font-smaller-5" data-toggle="modal" data-target="#redeemTokenModal">REDEEM</button>
+            {% endif %}
+          {% endif %}
+        </li>
+    </ul>
+    </div>
+  </div>
+{% endif %}
+</div>
+
+

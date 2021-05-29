@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static is_in_list %}
-<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between">
+<div class="navbar navbar-onepager navbar-expand-md w-100 p-0 m-0 mb-2 justify-content-between text-white">
   <a class="navbar-brand p-1" href="{% url 'kudos_marketplace' %}">
     <img class="mw-100 mx-4" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" height="50">
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/faucets" %}
@@ -43,12 +43,18 @@
     </a>
   </div>
 
-  {% if user.is_authenticated %}
-  <div class="d-flex order-0 order-md-last">
-    {% include 'shared/notifications.html' %}
-    <div class="nav-item dropdown interior">
 
-      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+  {% if user.is_authenticated %}
+  <div class="d-flex order-0 order-last mr-3 text-white">
+    {% include 'shared/notifications.html' with onepager=True %}
+    <a class="nav-link login text-white" href="{% url 'profile' %}">
+      <img class="nav_avatar rounded-circle" width=40 height=40
+        src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      {{ user }}
+    </a>
+    <div class="nav-item dropdown interior m-auto">
+
+      <a class="nav-link dropdown-toggle m-auto pr-0 text-white" href="#" id="navbarDropdownWallet" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
       </a>
@@ -69,22 +75,15 @@
       </div>
 
     </div>
-    <div id="templates" style="display: none">
-      <template id="template-balance">
-        <div class="wallet-option">
-          <div class="wallet-address"></div>
-          <small class="wallet-balance"></small>
-        </div>
-      </template>
-    </div>
-
-    <a class="nav-link login" href="{% url 'profile' %}">
-      <img class="nav_avatar" width=25 height=25
-      src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
-      {{ user }}
-    </a>
   </div>
-
+  <div id="templates" style="display: none">
+    <template id="template-balance">
+      <div class="wallet-option">
+      	<div class="wallet-address"></div>
+      	<small class="wallet-balance"></small>
+      </div>
+    </template>
+  </div>
   {% else %}
   <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i>{% trans "Login" %}
@@ -113,7 +112,7 @@
   }
 
   .nav-link.login {
-    top:15px;
+    top: 15px;
     right: 15px;
     text-transform: none;
   }
@@ -128,7 +127,7 @@
 
   .nav-link.logo {
     position: absolute;
-    top:20px;
+    top: 20px;
     left: 20px;
   }
 

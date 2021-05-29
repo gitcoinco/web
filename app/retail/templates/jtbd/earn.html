@@ -1,0 +1,355 @@
+{% comment %}
+Copyright (C) 2019 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not,see
+<http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n static bundle date_fromisoformat grants_extra split %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards_pic.html' %}
+
+  {% bundle css file jtbd %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
+  {% endbundle %}
+
+  {% bundle css file jtbd_earn %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+  {% endbundle %}
+</head>
+
+<body>
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+
+    <div class="header">
+      {% include 'home/nav.html' %}
+    </div>
+
+    <div class="container pt-5">
+
+      <!--  Header section -->
+      <div class="row justify-content-between my-5">
+        <div class="col">
+          <h1 class="mb-4 line-height-2">
+            Break free from your 9–5 to work on open source projects that matter.
+          </h1>
+          <p class="text-wrap mb-5 text-grey-400 font-bigger-2">
+            Millions of dollars flow into projects on Gitcoin. Earn by participating in sponsored hackathons, bounties, and funded community grants.
+          </p>
+          <div class="mt-5">
+            <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5 scroll-to-ready" href="#ready-to-earn">
+              {% trans "I'm ready to earn" %}
+            </a>
+          </div>
+        </div>
+        <div class="d-none d-md-inline col-md-4 m-auto">
+          <svg viewBox="0 0 385 238" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M382.725 197.669C398.348 207.491 330.206 222.075 279.515 228.868C167.413 243.894 11.4346 238.042 0.631665 228.015C-4.10503 223.575 18.6643 217.665 39.9379 215.018C85.4766 209.373 119.049 220.87 191.013 216.665C200.819 216.077 234.225 213.313 254.086 205.844C283.67 194.7 208.88 195.376 213.284 191.965C220.431 186.437 363.113 185.319 382.725 197.669Z" fill="#FFE0EB"/>
+            <path d="M96.2 161.801L82.7 170.201L81.2 167.701L94.7 159.301L96.2 161.801Z" fill="#8C65F7"/>
+            <path d="M271.5 44.5L258 52.9L256.5 50.4L270 42L271.5 44.5Z" fill="#8C65F7"/>
+            <path d="M269.5 156L283 164.4L284.5 161.9L271 153.5L269.5 156Z" fill="#8C65F7"/>
+            <path d="M92.7 44.5L106.2 52.9L107.7 50.4L94.3 42L92.7 44.5Z" fill="#8C65F7"/>
+            <path d="M286.2 96.8008H296.3V99.7008H286.2V96.8008Z" fill="#8C65F7"/>
+            <path d="M66 96.8008H74.7V99.7008H66V96.8008Z" fill="#8C65F7"/>
+            <path d="M180.4 22.9004V11.4004H183.3V23.0004H180.4V22.9004Z" fill="#8C65F7"/>
+            <path d="M180.4 188.1V179.4H183.3V188.1H180.4Z" fill="#8C65F7"/>
+            <path d="M54.9996 135.5C54.9996 137.3 53.5996 138.7 51.7996 138.7C49.9996 138.7 48.5996 137.3 48.5996 135.5C48.5996 133.7 49.9996 132.3 51.7996 132.3C53.5996 132.3 54.9996 133.7 54.9996 135.5Z" fill="#F579A6"/>
+            <path d="M330.8 138.7C330.8 140.5 329.4 141.9 327.6 141.9C325.8 141.9 324.4 140.5 324.4 138.7C324.4 136.9 325.8 135.5 327.6 135.5C329.4 135.5 330.8 136.9 330.8 138.7Z" fill="#F579A6"/>
+            <path d="M129.9 3.2C129.9 5 128.5 6.4 126.7 6.4C124.9 6.4 123.5 5 123.5 3.2C123.5 1.4 125 0 126.7 0C128.4 0 129.9 1.4 129.9 3.2Z" fill="#F579A6"/>
+            <path d="M59.7996 34.2998C59.7996 36.4998 57.9996 38.2998 55.7996 38.2998C53.5996 38.2998 51.7996 36.4998 51.7996 34.2998C51.7996 32.0998 53.5996 30.2998 55.7996 30.2998C57.9996 30.2998 59.7996 32.0998 59.7996 34.2998Z" fill="#F579A6"/>
+            <path d="M318 217.6C318 220.7 315.5 223.2 312.4 223.2C309.3 223.2 306.8 220.7 306.8 217.6C306.8 214.5 309.3 212 312.4 212C315.5 212 318 214.5 318 217.6Z" fill="#F579A6"/>
+            <path d="M324.4 12.0004C324.4 15.1004 321.9 17.6004 318.8 17.6004C315.7 17.6004 313.2 15.1004 313.2 12.0004C313.2 8.90039 315.7 6.40039 318.8 6.40039C321.9 6.40039 324.4 8.90039 324.4 12.0004Z" fill="#F579A6"/>
+            <path d="M66.1997 211.2C66.1997 213.4 64.3997 215.2 62.1997 215.2C59.9997 215.2 58.1997 213.4 58.1997 211.2C58.1997 209 59.9997 207.2 62.1997 207.2C64.3997 207.2 66.1997 209 66.1997 211.2Z" fill="#F579A6"/>
+            <path d="M219.3 55.4002C191.5 31.3002 153.6 29.4002 134.7 51.2002C115.7 73.0002 122.9 110.3 150.7 134.4C178.5 158.5 216.4 160.4 235.3 138.6C254.2 116.8 247.1 79.5002 219.3 55.4002ZM232.2 135.9C215.3 155.3 180.2 154.5 153.4 131.3C126.6 108 121 73.3002 137.8 53.9002C154.7 34.5002 189.8 35.2002 216.6 58.5002C243.4 81.8002 249 116.4 232.2 135.9Z" fill="#8C65F7"/>
+            <path d="M232.2 135.9C215.3 155.3 180.2 154.5 153.4 131.3C126.6 108 121 73.3002 137.8 53.9002C154.7 34.5002 189.8 35.2002 216.6 58.5002C243.4 81.8002 249 116.4 232.2 135.9Z" fill="white"/>
+            <path d="M142.7 144.8C170.5 168.9 216.1 172.5 234.9 139.1C216.2 154.3 182.3 163.6 147.2 130.1C116.5 100.8 125 63.6998 133.4 52.7998C105.2 80.0998 114.9 120.6 142.7 144.8Z" fill="#6F3FF5"/>
+            <path d="M211.1 64.9003C190 46.6003 161.2 45.2003 146.8 61.7003C132.4 78.3003 137.8 106.6 158.9 124.9C180 143.2 208.8 144.6 223.1 128C237.6 111.5 232.2 83.2003 211.1 64.9003ZM220.1 125.3C207.8 139.5 181.8 139.2 161.7 121.7C141.6 104.2 137.7 78.5003 150 64.3003C162.3 50.1003 188.3 50.4003 208.4 67.9003C228.5 85.5003 232.4 111.2 220.1 125.3Z" fill="#8C65F7"/>
+            <path d="M177.556 71.1385C176.146 70.6422 174.627 71.5356 174.519 72.9255L173 96.9498C173 97.744 173.434 98.439 174.193 98.836L201.637 112.734C203.156 113.529 205 112.437 205 110.848L204.132 81.7609C204.132 80.9667 203.59 80.1725 202.722 79.8747L177.556 71.1385Z" fill="#DAD1FF"/>
+            <path d="M175.8 71.1005C174.5 70.6005 173.1 71.5005 173 72.9005L171.6 97.1005C171.6 97.9005 172 98.6005 172.7 99.0005L198 113C199.4 113.8 201.1 112.7 201.1 111.1L200.3 81.8005C200.3 81.0005 199.8 80.2005 199 79.9005L175.8 71.1005ZM168.9 72.7005C169.1 68.5005 173.4 65.8005 177.3 67.3005L200.4 76.2005C202.7 77.1005 204.3 79.3005 204.4 81.8005L205.2 111C205.3 115.8 200.2 118.9 196 116.6L170.7 102.6C168.6 101.5 167.4 99.2005 167.5 96.8005L168.9 72.7005Z" fill="#8C65F7"/>
+            </svg>
+        </div>
+      </div>
+
+      <section class="py-5" id="ways-to-earn">
+        <h2 class="pt-4">Ways to earn</h2>
+        <div class="row" id="accordion-group">
+          <div class="col-12 col-lg-6 pt-5">
+            <div class="accordion-group img-accordion">
+              <div class="collapseOne w-100 collapse show bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-lg-0" src="{% static 'v2/images/jtbd/earn-bounties.svg' %}" style="max-width: 21rem"/>
+              </div>
+              <div class="collapseTwo w-100 collapse bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-lg-0" src="{% static 'v2/images/jtbd/earn-hackathons.svg' %}" style="max-width: 21rem"/>
+              </div>
+              <div class="collapseThree w-100 collapse bg-white" data-parent="#accordion-group">
+                <img class="d-block m-auto ml-lg-0" src="{% static 'v2/images/jtbd/earn-grants.svg' %}" style="max-width: 21rem"/>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6 pt-5">
+            <div class="accordion-group gc-accordion gc-accordion-border">
+              <h5 class="accordion gc-font-base" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseOne">
+                <span class="accordion-title">Earn through bounties</span>
+              </h5>
+              <div class="accordion-panel collapse show font-subheader text-grey-400 collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+                <p class="font-header font-bigger-1">Tackle bounties for all skill levels hosted by Web3’s most exciting projects. From open security contests and new feature builds, to UX/UI design and content creation.</p>
+              </div>
+              <h5 class="accordion collapsed gc-font-base" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseTwo">
+                <span class="accordion-title">Earn through sponsored hackathons</span>
+              </h5>
+              <div class="accordion-panel collapse font-subheader text-grey-400 collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
+                <p class="font-header font-bigger-1">Collect rewards and tokens as you hack your way through creative solutions on a variety of protocols. Team up with other Web3 builders to advance the technology that will shape our future.</p>
+              </div>
+              <h5 class="accordion collapsed gc-font-base" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target=".collapseThree">
+                <span class="accordion-title">Earn through grant funding</span>
+              </h5>
+              <div class="accordion-panel collapse font-subheader text-grey-400 collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
+                <p class="font-header font-bigger-1">Start an open source, public goods project and begin crowdsourcing funds through Gitcoin Grants. Participate in our quarterly Grants Rounds for the opportunity to earn a portion of the generous matching pool that has helped launch thousands of projects.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pt-5" id="top-earners">
+        <h2 class="text-grey-500 mb-5 pt-5">See top earners on Gitcoin</h2>
+        <div class="row pt-3 mb-0">
+          {% for earner in top_earners %}
+            <div class="col-12 col-md-6 col-lg-3 mb-5">
+              <div class="row">
+                <div class="col-5 col-md-12">
+                  <img class="rounded-circle w-100" style="max-width: 10rem;" src="{% url 'org_avatar' earner.github_username %}" />
+                </div>
+                <div class="col-7 col-md-12 pt-2 m-auto">
+                  <div class="row pl-md-4 mt-3">
+                    <div class="col-12 col-md-2 p-0">
+                      <h2 class="d-inline w-100 gc-font-base text-grey-500 p-0">#{{ earner.rank }}</h2>
+                    </div>
+                    <div class="col-12 col-md-8 pt-2 pl-md-2 pl-0" style="line-height: 10px;">
+                      <p class="w-100 text-grey-400 font-subheader">@{{ earner.github_username }}</p>
+                      <p class="w-100 text-grey-400 font-subheader">{{ earner.amount|floatformat:"0" }} DAI</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <a class="text-primary font-bigger-1" href="{{ BASE_URL }}/leaderboard/earners?cadence=monthly&keyword=all&product=bounties" target="_blank">View Leaderboard</a>
+      </section>
+
+      {% if hackathons|length > 0 %}
+        <section class="row pt-5" id="earn-in-hackathons">
+          <header class="col-12 mb-5 pt-5">
+            <h2>
+              Earn in hackathons
+            </h2>
+          </header>
+          <div class="col-12">
+            <div class="row">
+              {% for hackathon in hackathons %}
+                {% with logo=hackathon.logo  name=hackathon.name summary=hackathon.summary start_date=hackathon.start_date end_date=hackathon.end_date sponsor_profiles=hackathon.sponsor_profiles %}
+                  <div class="col-12 {% if hackathons|length <= 2 %}col-md-6{% else %}col-md-4{% endif %} font-body mb-4 mb-md-0">
+                    <div class="align-items-center d-flex justify-content-center rounded shadow-sm w-100 overflow-hidden" style="height: 297.74px; background: {{hackathon.background_color}} ">
+                      <img src="{{ MEDIA_URL}}{{ logo }}" class="img-fluid" alt="">
+                    </div>
+                    <h3 class="mt-4 mb-3 line-clamp-2 gc-font-base">{{ name }}</h3>
+                    <p class="text-grey-400 mb-3 line-clamp-4" style="min-height: 84px">{{ summary }}</p>
+                    <p class="text-grey-400 mb-3">
+                      {{ start_date | date_fromisoformat:"M j, Y"}} - {{ end_date | date_fromisoformat:"M j, Y" }}
+                    </p>
+                    <p class="text-grey-400">
+                      Sponsored by
+                      {% for sponsor in sponsor_profiles %}
+                        {% if forloop.counter <= 4 %}
+                          <img class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;" src="{{ sponsor.avatar_url }}" alt="{{sponsor.handle}}"/>
+                        {% endif %}
+                      {% endfor %}
+                      {% if sponsor_profiles|length > 4 %}
+                        <span class="rounded-circle mx-1" style="max-height: 2rem; object-fit: contain;"><i class="fas fa-plus"></i></span>
+                      {% endif %}
+                    </p>
+                  </div>
+                {% endwith %}
+              {% endfor %}
+              {% if hackathons|length == 1 %}
+                <div class="col-12 col-md-6 font-body mb-4 mb-md-0">
+                  <div class="w-100 rounded shadow-sm bg-light" style="height: 297.74px"></div>
+                  <h3 class="mt-4 mb-3 gc-font-base">More hackathons coming soon!</h3>
+                  <p class="text-grey-400">Stay tuned for more great hackathons coming your way!</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+      {% endif %}
+
+      <section class="pt-5" id="bounties">
+        <h2 class="mb-5 pt-4">Earn in bounties</h2>
+        <div class="d-flex flex-column flex-md-row flex-wrap">
+          {% for bounty in bounties %}
+            <div class="flex-basis-md-50 mt-2 mt-md-0 font-body p-1">
+              <div class="border" style="min-height: 200px;">
+                <div class="row py-4 px-3">
+                  <div class="col-3 col-lg-2">
+                  <img src="{% url 'org_avatar' bounty.bounty_owner_github_username %}" alt="{{ bounty.bounty_owner_github_username }}" class="rounded-circle w-100">
+                  </div>
+                  <div class="col-9 col-lg-10 pl-0 pl-lg-2">
+                    <p class="text-wrap font-bigger-1 text-grey-500">{{ bounty.title }}</p>
+                    <p class="text-grey-400 font-subheader">
+                      {% for keyword in bounty.metadata.issueKeywords|split:',' %}
+                        <small class="badge badge--bluelight">{{keyword.lower}}</small>
+                      {% endfor %}
+                    </p>
+                    <div class="d-flex">
+                      <p class="tag token font-bigger-1 ml-0">{{ bounty.value_true }} {{ bounty.token_name }}</p>
+                      <p class="tag usd font-bigger-1">{{ bounty.val_usd_db }} USD</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="pt-5" id="grants">
+        <div class="row">
+          <div class="col-12">
+            <h2 class="mb-5 pt-5">Earn through grants</h2>
+            <div>
+              <p class="font-subheader">Gitcoin grants enables your open source project to get funding through community support and Quadratic matching. The more people support your project, the more matching funds you receive.</p>
+            </div>
+          </div>
+          <div class="col-md-7 col-12">
+            <img class="d-block m-auto ml-md-0 w-100 img-thumbnail p-0" style="height: 16rem; object-fit: cover;" src={% if featured_grant.logo %}"{{ MEDIA_URL}}{{ featured_grant.logo }}"{% else %}{% with placeholder='v2/images/grants/logos/' id=featured_grant.id|modulo:3 %}"{% static placeholder|addstr:id|add:'.png' %}"{% endwith %}{% endif %}/>
+
+            <p class="font-bigger-2 mt-4 text-wrap text-grey-500">{{ featured_grant.title }}</p>
+            <div>
+              <p class="text-grey-400 font-subheader">{{ featured_grant.description | truncatechars_html:380}}</p>
+            </div>
+            {% if featured_grant.in_active_clrs %}
+              <p class="text-secondary font-bigger-1 mb-0">${{ featured_grant.amount_received_in_round|floatformat:2 }} Raised</p>
+            {% else %}
+              <p class="text-secondary font-bigger-1 mb-0">${{ featured_grant.amount_received|floatformat:2 }} Raised</p>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+
+      <section class="pt-5" id="testimonial">
+        <h2 class="mb-5 pt-5">What developers are saying</h2>
+        <div class="row">
+          <div class="col-12 col-md-6 order-1 order-md-0 font-body">
+            <div class="row">
+              <div class="col-auto m-0 p-0 px-2 mt-n3"><span class="font-bigger-4">“</span></div>
+              <div class="col text-grey-400 pr-5">
+                <div class="row">
+                  <p class="font-bigger-1 line-height-2">{{ testimonial.comment }}</p>
+                </div>
+                <div class="row">
+                  <p class="font-bigger-1">{{ testimonial.handle }}<br/>{{ testimonial.role }}</p>
+                </div>
+                <div class="row">
+                  {% if testimonial.twitter_handle %}
+                    <a class="{% if testimonial.github_handle %}pr-2{% endif %}" href="https://www.twitter.com/{{testimonial.twitter_handle}}" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-twitter text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                  {% endif %}
+                  {% if testimonial.github_handle %}
+                    <a class="{% if testimonial.twitter_handle %}pl-2{% endif %}" href="https://github.com/{{testimonial.github_handle}}?tab=repositories" target="_blank" rel="nofollow noopener noreferrer"><i class="fab fa-github text-grey-400 text-primary-hover font-bigger-2"></i></a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-2 order-0 order-md-1">
+            <div class="row mb-4 mb-md-0">
+              <img class="mx-auto mx-md-0 rounded-circle" style="max-height: 12rem; object-fit: contain;" src="{% if testimonial.avatar_url %}{{ testimonial.avatar_url }}{% else %}{% url 'org_avatar' testimonial.github_handle %}{% endif %}" alt="{{ testimonial.handle }}" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row pt-5 mb-5" id="ready-to-earn">
+        <div class="col-12">
+          <h2 class="pb-4 pt-5 w-100">
+            Ready to earn?
+          </h2>
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Earn in bounties</h4>
+                  <p class="font-bigger-1">Earn while building meaningful open source projects.</p>
+                </div>
+                <div>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'explorer' %}">{% trans "Explore Bounties" %}</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-3">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-md-50 flex-basis-lg-33 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Earn in hackathons</h4>
+                  <p class="font-bigger-1">Earn while working on top open source projects with great leaders in crypto.</p>
+                </div>
+                <div>
+                  <a class="col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'get_hackathons4' %}">{% trans "Explore Hackathons" %}</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 mb-3 mt-0 mt-md-3 mt-lg-0">
+              <div class="bg-lighter d-flex justify-content-between flex-column flex-basis-auto flex-basis-lg-33 flex-basis-md-100 p-5 h-100">
+                <div class="mb-4">
+                  <h4 class="py-2 font-weight-normal">Earn in grants</h4>
+                  <p class="font-bigger-1">Get community support and matched funds for public goods projects.</p>
+                </div>
+                <div>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'grants:grants' %}">{% trans "Earn through Grants" %}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    {% include 'shared/footer.html' %}
+
+  </div>
+
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
+
+  <script>
+    $(".scroll-to-ready").click(function(e) {
+      // prevent the href from being called
+      e.preventDefault();
+      // slow scroll to the element
+      document.querySelector('#ready-to-earn').scrollIntoView({
+        behavior: 'smooth'
+      });
+
+      return false;
+    });
+  </script>
+</body>
+
+</html>

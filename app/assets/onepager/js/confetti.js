@@ -101,9 +101,9 @@ var doconfetti = function(){
     return results;
   })();
 
-  window.step = function() {
+  window.cStep = function() {
     var c, j, len, results;
-    requestAnimationFrame(step);
+    requestAnimationFrame(cStep);
     context.clearRect(0, 0, w, h);
     results = [];
     for (j = 0, len = confetti.length; j < len; j++) {
@@ -113,9 +113,9 @@ var doconfetti = function(){
     return results;
   };
 
-  step();
+  cStep();
 
-}).call(this); 
+}).call(this);
 
 };
 
@@ -127,7 +127,11 @@ var stopConfetti = function(){
 
 
 var startConfetti = function(){
-  doconfetti();
+  try{
+    doconfetti();
+  }catch(err){
+    console.error(err);
+  };
   setTimeout(function(){
     stopConfetti();
   }, 20000);

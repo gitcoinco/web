@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -20,7 +20,7 @@
   <div class="col-12 col-md-4">
     <label class="form__label" for="experience_level">{% trans "Experience Level" %}</label>
     <div class="form__select2">
-      <select class="js-select2" name="experience_level" id="experience_level">
+      <select class="custom-select" name="experience_level" id="experience_level">
         <option disabled selected>{% trans "Experience Level" %}</option>
         <option>{% trans "Beginner" %}</option>
         <option>{% trans "Intermediate" %}</option>
@@ -31,7 +31,7 @@
   <div class="col-12 col-md-4">
     <label class="form__label" for="project_length">{% trans "Time Commitment" %}</label>
     <div class="form__select2">
-      <select class="js-select2" name="project_length" id="project_length">
+      <select class="custom-select" name="project_length" id="project_length">
         <option disabled selected>{% trans "Time Commitment" %}</option>
         <option>{% trans "Hours" %}</option>
         <option>{% trans "Days" %}</option>
@@ -43,7 +43,7 @@
   <div class="col-12 col-md-4">
     <label class="form__label" for="bounty_type">{% trans "Bounty Type" %}</label>
     <div class="form__select2">
-      <select class="js-select2" name="bounty_type" id="bounty_type">
+      <select class="custom-select" name="bounty_type" id="bounty_type">
         <option disabled selected>{% trans "Bounty Type" %}</option>
         <option>{% trans "Bug" %}</option>
         <option>{% trans "Feature" %}</option>

@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags %}
+{% load i18n static cookielaw_tags bundle %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,121 +23,125 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="{{ title }}">
     <meta name="description" content="{{ desc }}">
-    <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
+    {% bundle css file howitworks %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/landing_page.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/howitworks.scss" %} />
+    {% endbundle %}
     <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </head>
   <body class="index d-flex flex-column g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% cookielaw_banner %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'shared/nav.html' %}
-    <div>
-      <div class="container-fluid p-5 howworks-container howworks-container-contributors">
-        {% if active == 'how_it_works_contributor' %}
-          {% include "how_it_works/contributor.html" %}
-        {% else %}
-          {% include "how_it_works/funder.html" %}
-        {% endif %}
-      </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% cookielaw_banner %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+      <div>
+        <div class="container-fluid p-5 howworks-container howworks-container-contributors">
+          {% if active == 'how_it_works_contributor' %}
+            {% include "how_it_works/contributor.html" %}
+          {% else %}
+            {% include "how_it_works/funder.html" %}
+          {% endif %}
+        </div>
 
-      <div class="in-some-cases-container">
-        <div class="container-fluid py-5 px-0 col-12">
-          <div class="row mb-4">
-            <div class="col text-center">
-              <h2 class="light my-5">{% trans "Things to Note" %}</h2>
+        <div class="in-some-cases-container">
+          <div class="container-fluid py-5 px-0 col-12">
+            <div class="row mb-4">
+              <div class="col text-center">
+                <h2 class="light my-5">{% trans "Things to Note" %}</h2>
+              </div>
             </div>
-          </div>
-          <div class="row mb-4 d-flex flex-row text-center font-body mx-4">
-            {% if active == 'how_it_works_contributor' %}
+            <div class="row mb-4 d-flex flex-row text-center font-body mx-4">
+              {% if active == 'how_it_works_contributor' %}
+                <div>
+                  <img src="{% static "v2/images/how-it-works/icons/notes_1.svg" %}"
+                    alt="start work" />
+                  <div class="text-center mt-3">
+                  <h5 class="">{% trans "Signal Your Intent" %}</h5>
+                    {% blocktrans %}
+                      As a courtesy to other contributors and to ensure payment,
+                      use the start work button to notify all parties your intention
+                      to work.
+                    {% endblocktrans %}
+                  </div>
+                </div>
+              {% endif %}
               <div>
-                <img src="{% static "v2/images/how-it-works/icons/notes_1.svg" %}"
-                  alt="start work" />
+                <img src="{% static "v2/images/how-it-works/icons/notes_2.svg" %}"
+                  alt="approve work" />
                 <div class="text-center mt-3">
-                <h5 class="">{% trans "Signal Your Intent" %}</h5>
+                  <h5 class="">{% trans "Funders Choose Workers" %}</h5>
                   {% blocktrans %}
-                    As a courtesy to other contributors and to ensure payment,
-                    use the start work button to notify all parties your intention
-                    to work.
+                    The funder reserves the right to accept or deny a worker
+                    in order to find the best fit for the project.
                   {% endblocktrans %}
                 </div>
               </div>
+              <div>
+                <img src="{% static "v2/images/how-it-works/icons/notes_3.svg" %}"
+                  alt="iterate work" />
+                <div class="text-center mt-3">
+                  <h5 class="">{% trans "Iteration is Key" %}</h5>
+                  {% blocktrans %}
+                    Expect a few rounds of revisions to complete the project.
+                  {% endblocktrans %}
+                </div>
+              </div>
+              <div>
+                <img src="{% static "v2/images/how-it-works/icons/notes_4.svg" %}"
+                  alt="start work" />
+                <div class="text-center mt-3">
+                  <h5 class="">{% trans "Be on Time" %}</h5>
+                  {% blocktrans %}
+                    Work that has not been completed and is past the
+                    expiration date is considered expired.
+                  {% endblocktrans %}
+                </div>
+              </div>
+              <div>
+                <img src="{% static "v2/images/how-it-works/icons/notes_5.svg" %}"
+                  alt="expired work" />
+                <div class="text-center mt-3">
+                  <h5 class="">{% trans "Cancel Anytime" %}</h5>
+                  {% blocktrans %}
+                    A project can be cancelled by a bounty funder. The funds will then be reclaimed by the bounty owner.
+                  {% endblocktrans %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container-fluid howworks-container-contributors p-2 p-md-5">
+          <div class="col-12 offset-md-1 col-md-10">
+            {% include "how_it_works/project_types.html" %}
+            {% include "how_it_works/permissions.html" %}
+
+            {% if active == 'how_it_works_funder' %}
+              {% include "how_it_works/payment.html" %}
+              {% include "how_it_works/disputes.html" %}
             {% endif %}
-            <div>
-              <img src="{% static "v2/images/how-it-works/icons/notes_2.svg" %}"
-                alt="approve work" />
-              <div class="text-center mt-3">
-                <h5 class="">{% trans "Funders Choose Workers" %}</h5>
-                {% blocktrans %}
-                  The funder reserves the right to accept or deny a worker
-                  in order to find the best fit for the project.
-                {% endblocktrans %}
-              </div>
-            </div>
-            <div>
-              <img src="{% static "v2/images/how-it-works/icons/notes_3.svg" %}"
-                alt="iterate work" />
-              <div class="text-center mt-3">
-                <h5 class="">{% trans "Iteration is Key" %}</h5>
-                {% blocktrans %}
-                  Expect a few rounds of revisions to complete the project.
-                {% endblocktrans %}
-              </div>
-            </div>
-            <div>
-              <img src="{% static "v2/images/how-it-works/icons/notes_4.svg" %}"
-                alt="start work" />
-              <div class="text-center mt-3">
-                <h5 class="">{% trans "Be on Time" %}</h5>
-                {% blocktrans %}
-                  Work that has not been completed and is past the
-                  expiration date is considered expired.
-                {% endblocktrans %}
-              </div>
-            </div>
-            <div>
-              <img src="{% static "v2/images/how-it-works/icons/notes_5.svg" %}"
-                alt="expired work" />
-              <div class="text-center mt-3">
-                <h5 class="">{% trans "Cancel Anytime" %}</h5>
-                {% blocktrans %}
-                  A project can be cancelled by a bounty funder. The funds will then be reclaimed by the bounty owner.
-                {% endblocktrans %}
+          </div>
+        </div>
+
+        <div class="container-fluid py-5 px-0 how-it-works-footer">
+          <div class="row mb-4">
+            <div class="col text-center text-white how-it-works-footer">
+              <div class="mt-4 font-subheader">{% blocktrans %}For more details,
+                please see <a target="_blank" rel="noopener noreferrer"
+                  href="https://docs.google.com/document/d/1_U9IdDN8FIRMGAdLWCMl2BnqCTAv558QvyJiSWQfkbs/edit?usp=sharing">
+                repo maintainer's guide</a> or the
+                <a target="_blank" rel="noopener noreferrer"
+                  href="https://docs.google.com/document/d/1S8BLKJF7J5RbrfFw-mX0iYcy4VSc6-a1aQXtKT_ta0Y/edit?usp=sharing">
+                  developer guide</a>.{% endblocktrans %}
               </div>
             </div>
           </div>
         </div>
+        {% include 'shared/footer.html' %}
       </div>
-
-      <div class="container-fluid howworks-container-contributors p-2 p-md-5">
-        <div class="col-12 offset-md-1 col-md-10">
-          {% include "how_it_works/project_types.html" %}
-          {% include "how_it_works/permissions.html" %}
-
-          {% if active == 'how_it_works_funder' %}
-            {% include "how_it_works/payment.html" %}
-            {% include "how_it_works/disputes.html" %}
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="container-fluid py-5 px-0 how-it-works-footer">
-        <div class="row mb-4">
-          <div class="col text-center text-white how-it-works-footer">
-            <div class="mt-4 font-subheader lighter">{% blocktrans %}For more details,
-              please see <a target="_blank" rel="noopener noreferrer"
-                href="https://docs.google.com/document/d/1_U9IdDN8FIRMGAdLWCMl2BnqCTAv558QvyJiSWQfkbs/edit?usp=sharing">
-              repo maintainer's guide</a> or the
-              <a target="_blank" rel="noopener noreferrer"
-                href="https://docs.google.com/document/d/1S8BLKJF7J5RbrfFw-mX0iYcy4VSc6-a1aQXtKT_ta0Y/edit?usp=sharing">
-                developer guide</a>.{% endblocktrans %}
-            </div>
-          </div>
-        </div>
-      </div>
-      {% include 'shared/footer.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
     </div>
-    {% include 'shared/footer_scripts.html' with slim=1 %}
   </body>
   {% include 'shared/analytics.html' %}
   {% block scripts %}{% endblock %}

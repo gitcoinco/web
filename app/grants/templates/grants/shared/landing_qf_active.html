@@ -1,0 +1,76 @@
+{% load humanize static i18n %}
+<div class="container bg-white">
+  <!--  Header section -->
+  <div class="row justify-content-between align-items-center my-5">
+    <div class="col">
+      <h1 class="mb-3">
+        Democratic public goods funding <span class="text-nowrap">for the 21st century</span>
+      </h1>
+      <h3 class="text-wrap gc-font-base font-weight-normal mb-4 text-grey-400">
+        Gitcoin grants sustain web3 projects with
+        <span class="text-nowrap">
+          <a href="https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000" target="_blank">quadratic funding</a>
+        </span>
+      </h3>
+      <div class="my-3">
+        <a class="btn btn-lg btn-primary" href="{% url 'grants:grants_explorer' %}">{% trans 'Explore Grants' %}</a>
+        <a class="btn btn-lg btn-outline-primary ml-3" href="/grants/new">{% trans 'Create a Grant' %}</a>
+      </div>
+      <p>or <a href="{% url 'grants:new_matching_partner' %}">{% trans "become a member of the funder's league" %}</a></p>
+    </div>
+    <div class="col-auto d-none d-md-block">
+      <img src="{% static 'v2/images/grants/rocket.svg' %}" height="241" width="311" />
+    </div>
+  </div>
+
+
+  <!-- This div is where the hero image goes-->
+
+  <section class="mb-5 banner-sponsors">
+    <div class="row">
+      <div class="col">
+        <img src="{{grant_bg.background_image }}" alt="" class="img-fluid">
+        {% comment %}
+        <div class="py-3" id="grant-hero-im" :style="`background: ${mainBanner.background_image} center center no-repeat; background-size: contain;`">
+          <!-- <img :src="mainBanner.banner_image" class="img-fluid" alt=""> -->
+          <div class="mb-3">
+            <h1>$500k Funding Pool, Now Live</h1>
+            <span class="text-muted">Sponsored by</span>
+          </div>
+          <div class="banner-sponsors-list d-flex">
+            {% for sponsor in sponsors %}
+              <a href="{% url 'profile' sponsor.profile %}" target="_blank" class="d-flex flex-column align-items-center">
+                <img class="rounded-circle img-thumbnail" width="90" height="90" src="/dynamic/avatar/{{sponsor.profile}}">
+                <span class="text-break text-black font-weight-semibold d-none d-md-block">@{{sponsor.profile}}</span>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endcomment %}
+
+      </div>
+    </div>
+    <!-- Summary of matching pools this round -->
+    <!-- <div class="row mt-3" v-cloak>
+      <div class="col" v-for="grantType in grant_types" v-if="grantType.is_visible">
+        <a :href="`explorer/${grantType.keyword}`" class="font-bigger-1 text-success">
+          [[grantType.funding_ui]]
+          [[grantType.label]]
+        </a>
+      </div>
+    </div> -->
+  </section>
+
+   <!-- Ongoing matching pools (CURRENTLY HIDDEN AND NOT IMPLEMENTED) -->
+   {% comment %}
+   <div class="my-5">
+     <div class="row justify-content-start align-items-center">
+       <div class="col-auto"><img height="30rem" src="{% static 'v2/images/ethereum.svg' %}" /></div>
+       <h4 class="col-auto font-weight-bold py-0 my-0 pl-0">Ongoing Matching Pools</h4>
+     </div>
+   </div>
+   {% endcomment %}
+
+
+  </div>
+

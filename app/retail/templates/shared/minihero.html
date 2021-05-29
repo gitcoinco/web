@@ -16,21 +16,26 @@
 
 {% endcomment %}
 {% load static %}
-<div class="minihero row pt-5 pb-5 text-center">
+<style>
+  .about-gc-logo {
+    max-width: 20vw;
+  }
+</style>
+<div class="minihero row pt-{% if not position_h1_below_logo or suppress_logo %}5{% else %}0{% endif %} pb-1 mr-0 ml-0 text-center" style="background-image: linear-gradient(to right, #fafafa, #eeee, #fff, #dddd);">
   {% if position_h1_below_logo %}
     <div class="col">
       {% if not suppress_logo %}
-        <img class="about-pink-logo mb-2" src="{% static "v2/images/logo_gitcoins.png" %}" height="49" />
+        <img class="about-gc-logo mb-2" src="{% static "v2/images/new-logos/gc-h-pos.svg" %}" width="600px" />
       {% endif %}
       <div class="w-100"></div>
       <h1 class="minihero__title">{{h1}}</h1>
     </div>
   {% else %}
     <div class="col">
-      <h1 class="minihero__title mb-2">{{h1}}</h1>
+      <h1 class="minihero__title mb{% if not suppress_logo %}-2{% else %}-5 mt-1{% endif %}">{{h1}}</h1>
       <div class="w-100"></div>
       {% if not suppress_logo %}
-        <img class="about-pink-logo" src="{% static "v2/images/pink-wordmark.png" %}" height="49" />
+        <img class="about-gc-logo" src="{% static "v2/images/new-logos/gc-h-pos.svg" %}" width="600px" />
       {% endif %}
     </div>
   {% endif %}

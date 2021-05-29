@@ -69,17 +69,16 @@ def get_next_time_available(key):
     if key == 'monthly':
         month = int(d.strftime('%m'))
         year = int(d.strftime('%Y'))
-        year += 1 if month > 11 else 0
-        month += 1
+
+        if month == 12:
+            year += 1
+            month = 1
+        else:
+            month += 1
+
         d = timezone.datetime(year=year, month=month, day=1)
     return d
 
-
-def landing_toggle(request):
-    if not request.user.is_authenticated:
-        from retail.views import index as index_page
-        return index_page(request)
-    return town_square(request)
 
 def index(request):
 
@@ -227,7 +226,7 @@ def get_offers(request):
 
     if request.user.is_authenticated:
         available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
-    for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
+    for key in ['top', 'secret', 'random', 'weekly', 'monthly']:
         next_time_available = get_next_time_available(key)
         offers = available_offers.filter(key=key).order_by('-pk')
         offer = offers.first()
@@ -326,19 +325,26 @@ def ignored_suggested_tribe(request, tribeId):
 
 def get_suggested_tribes(request):
     following_tribes = []
+    tribe_limit = 5
+
     if request.user.is_authenticated:
         profile = request.user.profile
         ignore = list(profile.ignore_tribes.all().values_list('pk', flat=True))
-        handles = TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).exclude(pk__in=ignore).order_by('-follower_count')
+        ignore += list(TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__pk', flat=True))
+        tribes = Profile.objects.filter(is_org=True).order_by('-follower_count')
         count = tribes.count()
+        ignore_count = len(ignore)
 
-        if count > 5:
-            index_shuffle = list(range(count if count < 60 else 60))
-            shuffle(index_shuffle)
-            tribes = [tribes[index] for index in index_shuffle[:5]]
+        if count > tribe_limit:
+            tribes = tribes.filter(follower_count__gt=10).order_by('?')
+        if len(ignore):
+            tribes = tribes.exclude(pk__in=ignore).order_by('?')
+
+        tribes = list(tribes)
 
         for profile in tribes:
+            if len(following_tribes) > tribe_limit:
+                break
             handle = profile.handle
             last_24_hours_activity = 0  # TODO: integrate this with get_amount_unread
             tribe = {
@@ -356,7 +362,7 @@ def get_suggested_tribes(request):
 def get_following_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
-        handles = request.user.profile.tribe_members.filter(org__data__type='Organization').values_list('org__handle', flat=True)
+        handles = request.user.profile.tribe_members.filter(org__is_org=True).values_list('org__handle', flat=True)
         for handle in handles:
             last_24_hours_activity = 0 # TODO: integrate this with get_amount_unread
             tribe = {
@@ -373,7 +379,7 @@ def get_following_tribes(request):
 def town_square(request):
     try:
         audience = redis.get(f"townsquare:audience")
-        audience = str(audience.decode('utf-8')) if audience else '39102'
+        audience = str(audience.decode('utf-8')) if audience else '84244'
     except KeyError:
         data_results = JSONStore.objects.filter(view='results', key=None).first()
         if data_results:
@@ -384,6 +390,8 @@ def town_square(request):
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     try:
         pinned = PinnedPost.objects.get(what=tab)
+        if settings.ENV == 'prod' and pinned.activity.bounty and pinned.activity.bounty != 'mainnet':
+            pinned = None
     except PinnedPost.DoesNotExist:
         pinned = None
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
@@ -526,10 +534,6 @@ def api(request, activity_id):
             comment_dict['handle'] = comment.profile.handle
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             # perf - 0.3s on a 150 comment thread
-            comment_dict['last_chat_status'] = comment.profile.last_chat_status
-            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
-            comment_dict['last_chat_status_title'] = comment_dict['last_chat_status'].title()
-            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['tip_count_eth'] = comment.tip_count_eth
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)
@@ -749,7 +753,7 @@ def offer_go(request, offer_id, offer_slug):
 
     try:
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'go', False)
         return redirect(offer.url)
     except:
@@ -761,7 +765,7 @@ def offer_decline(request, offer_id, offer_slug):
     try:
         offer = Offer.objects.current().get(pk=offer_id)
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         offer = get_offer_and_create_offer_action(request.user.profile, offer_id, 'decline', False)
         return redirect('/')
     except:
@@ -777,7 +781,7 @@ def offer_view(request, offer_id, offer_slug):
             offers = offers.current()
         offer = offers.get(pk=offer_id)
         if not request.user.is_authenticated:
-            return redirect('/login/github?next=' + request.get_full_path())
+            return redirect('/login/github/?next=' + request.get_full_path())
         if request.user.profile.offeractions.filter(what='go', offer=offer) and not is_debugging_offers:
             raise Exception('already visited this offer')
         if not is_debugging_offers:

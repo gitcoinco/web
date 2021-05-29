@@ -1,86 +1,89 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static humanize %}
+{% load i18n static humanize bundle %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
+  {% bundle css file dashboard_hackathons %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/home.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboarding_v2.scss" %} />
+  {% endbundle %}
+  <style>
+    .hackathon-logo-svg {
+      height: 4.5rem;
+      max-width: 100%;
+    }
 
-    <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
-    <style>
-      .hackathon-logo-svg {
-        height: 4.5rem;
+    img.hackathon-card-logo {
+      max-height: 12rem;
+      max-width: 9rem;
+    }
+
+    @media (max-width: 420px) {
+      .tablist-small {
+        font-size: 0.890rem;
+      }
+    }
+    @media (max-width: 370px) {
+      .tablist-extra-small {
+        font-size: 0.694rem;
+      }
+    }
+
+    @media (max-width: 920px) {
+      img.hackathon-card-logo {
         max-width: 100%;
       }
+    }
 
-      img.hackathon-card-logo {
-        max-height: 12rem;
-        max-width: 9rem;
+    @media (min-width: 1200px) {
+      .container.custom-container {
+        max-width: 1200px !important;
+      }
+    }
+
+    @media (min-width: 1020px) and (max-width: 1250px) {
+      .hackathon-actions {
+        text-align: center;
       }
 
-      @media (max-width: 420px) {
-        .tablist-small {
-          font-size: 0.890rem;
-        }
+      .hackathon-actions > a {
+        width: 7rem;
       }
-      @media (max-width: 370px) {
-        .tablist-extra-small {
-          font-size: 0.694rem;
-        }
-      }
-
-      @media (max-width: 920px) {
-        img.hackathon-card-logo {
-          max-width: 100%;
-        }
-      }
-
-      @media (min-width: 1200px) {
-        .container.custom-container {
-          max-width: 1200px !important;
-        }
-      }
-
-      @media (min-width: 1020px) and (max-width: 1250px) {
-        .hackathon-actions {
-          text-align: center;
-        }
-
-        .hackathon-actions > a {
-          width: 7rem;
-        }
-      }
-    </style>
-  </head>
-  <body class="interior {{active}} g-font-muli">
+    }
+  </style>
+</head>
+<body class="interior {{active}} g-font-muli">
+  <div class="content__main min-vh-100 d-md-flex flex-column">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav_hackathons.html' %}
-    <div class="container-fluid header dash text-white" style="background-image: url('/static/v2/images/bg/4.jpg');">
+    <div class="container-fluid header dash text-white" style="background-image: url('/static/v2/images/bg/space.png'); background-size: cover;">
 
       <div class="row justify-content-center" style="padding:5rem 0 5rem 0">
         <div class="col-12 col-lg-12 col-xl-6 mt-3">
           <div class="text-center">
             {% include 'shared/svg-embed/h35px_hackathons.svg' with extra_class='hackathon-logo-svg' %}
             <h2 class="mt-4">Build with the coolest Web3 projects </h2>
-            <p class="mt-3 mb-3" style="font-size:1.39rem;">Connect with a community of talented hackers, learn new tech, buidl cool projects, and earn exciting prizes!</p>
-            <a href="https://hackathons.gitcoin.co/contact/" class="btn button--primary mt-3 mb-4 mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">Become a Sponsor</a>
+            <p class="mt-3 mb-3 gc-font-base h4">Connect with a community of talented hackers, learn new tech, buidl cool projects, and earn exciting prizes!</p>
+            <a href="mailto:sales@gitcoin.co" class="btn btn-primary mt-3 mb-4 mx-2 shadow-none py-2 px-4">Become a Sponsor</a>
           </div>
         </div>
       </div>
@@ -88,16 +91,29 @@
 
     <div class="container custom-container">
       <div class="row rounded my-5 py-2" style="background-color:#0d023b;">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-8">
           <img class="pull-left mb-2" style="float:left;" width="49" src="/static/v2/images/hackathon/hackathon-subscribe.png" />
           <p class="white" style="padding:1.5rem 0 0 4rem;">Subscribe to get the latest hackathon updates</p>
         </div>
-        <div class="col-12 col-md-6">
-          <form class="form-inline py-3" style="float:right;" action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
-            <input name="EMAIL" id="newsletter-input" class="form-control px-3 font-body" style="width: 14rem;" placeholder="Email Address" required>
-            <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe ml-lg-2 px-3 font-weight-semibold">
-              Subscribe
-            </button>
+
+        <div id="mauticform_wrapper_hackathonnewsletter" class="mauticform_wrapper col-12 col-md-4  d-flex justify-content-end">
+          <form autocomplete="false" role="form" method="post" action="https://engage.gitcoin.co/form/submit?formId=7" id="mauticform_hackathonnewsletter" data-mautic-form="hackathonnewsletter" enctype="multipart/form-data" class="py-3 form-inline w-100">
+            <div class="mauticform-innerform w-100">
+              <div class="mauticform-page-wrapper mauticform-page-1 d-flex align-items-center position-relative justify-content-end" data-mautic-form-page="1">
+                <div id="mauticform_hackathonnewsletter_email" data-validate="email" data-validation-type="email" class="mauticform-row mauticform-email mauticform-field-1 mauticform-required flex-fill pr-2">
+                  <input id="mauticform_input_hackathonnewsletter_email" name="mauticform[email]" value="" placeholder="Enter your email" class="mauticform-input form-control font-body w-100" type="email">
+                  <span class="mauticform-errormsg position-absolute text-white" style="display: none; left: 0; margin-top: 39px;">Please fill the email input.</span>
+                </div>
+                <div id="mauticform_hackathonnewsletter_submit" class="mauticform-row mauticform-button-wrapper mauticform-field-2">
+                  <button type="submit" name="mauticform[submit]" id="mauticform_input_hackathonnewsletter_submit" value="" class="mauticform-button btn btn-primary">Subscribe</button>
+                </div>
+              </div>
+            </div>
+            <div class="mauticform-error text-white position-absolute mt-5" id="mauticform_hackathonnewsletter_error"></div>
+            <div class="mauticform-message text-white position-absolute mt-5" id="mauticform_hackathonnewsletter_message"></div>
+            <input type="hidden" name="mauticform[formId]" id="mauticform_hackathonnewsletter_id" value="7">
+            <input type="hidden" name="mauticform[return]" id="mauticform_hackathonnewsletter_return" value="">
+            <input type="hidden" name="mauticform[formName]" id="mauticform_hackathonnewsletter_name" value="hackathonnewsletter">
           </form>
         </div>
       </div>
@@ -105,108 +121,25 @@
       <div id="tabs" class="row my-4">
         <div class="container">
           <ul class="nav nav-tabs mt-3 tablist-small tablist-extra-small" id="myTab" role="tablist">
-            {% for id, title in tabs %}
-              <li class="nav-item">
-                <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }}</a>
-              </li>
+            {% for id, title, num in tabs %}
+            <li class="nav-item">
+              <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{num}})</a>
+            </li>
             {% endfor %}
           </ul>
         </div>
       </div>
-
-      <div class="row my-4">
-      {% if events|length %}
-      {% load date_fromisoformat timesince_fromisoformat %}
-      <div class="container custom-container">
-      <div class="row">
-      {% for event in events %}
-          <style>
-            #{{event.slug}} .card-header {
-              background: {{ event.background_color }};
-            }
-          </style>
-
-          <div class="col-xs-12 col-md-9 col-lg-8 col-xl-6 mx-auto hackathon-list {{ event.type }} {% if event.type != default_tab %}hidden{% endif %}">
-
-            <div class="card flex-row flex-wrap mb-5" id="{{ event.slug }}">
-
-              <div class="card-header text-center col-12 col-sm-4 px-0">
-                <a href="{% url 'hackathon' event.slug %}">
-                {% if event.logo %}
-                  <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ event.logo }}" alt="Hackathon logo" />
-                {% else %}
-                  <div class="hackathon-card-logo text-center px-3 font-caption">
-                    {{ event.name }}
-                  </div>
-                {% endif %}
-                </a>
-              </div>
-
-              <div class="card-body col-12 col-sm-8">
-                <h5 class="font-subheader font-weight-semibold">
-                  <a href="{% url 'hackathon' event.slug %}" class="text-black" rel="noopener noreferrer">
-                    {{ event.name }}
-                  </a>
-                </h5>
-                <div class="font-smaller-2">
-                  <span class>From</span>
-                  <time class="font-weight-bold" datetime="{{ event.start_date|date_fromisoformat:'c' }}">{{ event.start_date|date_fromisoformat:"m/d/Y" }}</time>
-                  <span>To</span>
-                  <time class="font-weight-bold" datetime="{{ event.end_date|date_fromisoformat:'c' }}">{{ event.end_date|date_fromisoformat:"m/d/Y" }}</time>
-                </div>
-                <div class="mt-3 font-smaller-2 hackathon-summary">
-                  <p>{{ event.summary }}</p>
-                </div>
-                {% if event.sponsor_profiles|length %}
-                  <div class="mt-3 font-smaller-2">
-                    <span class="pr-1">Sponsored by</span>
-                    {% for sponsor in event.sponsor_profiles %}
-                      <a href="{{ sponsor.absolute_url }}" target="_blank"><img class="rounded-circle" style="width:21px;" src="{{ sponsor.avatar_url }}" /></a>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-                <div class="mt-3 hackathon-actions">
-                  {% if event.end_date|timesince_fromisoformat <= "1 min" %}
-                    <a href="{% url 'hackathon_onboard' event.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                      <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
-                      Join
-                    </a>
-                  {% endif %}
-                  {% if event.display_showcase %}
-                  <a href="{% url 'hackathon_showcase_proxy' event.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                    <i class="fas fa-star d-none d-sm-inline" style="font-size:6.5px;position:relative;top:0.2rem;left:0.2rem;"></i>
-                    <i class="fas fa-star mr-1 d-none d-sm-inline"></i>
-                    Showcase
-                  </a>
-                  {% endif %}
-                  {% if event.start_date|timesince_fromisoformat >= "1 min" and event.end_date|timesince_fromisoformat <= "1 min"%}
-                    <a href="{% url 'hackathon_prizes' event.slug %}" class="btn button--secondary font-caption font-weight-semibold px-3 mb-2">
-                      <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
-                      Prizes
-                    </a>
-                  {% endif %}
-                  {% if event.show_results %}
-                    <a href="{% url 'hackathon_projects' event.slug %}" class="btn button--secondary font-caption font-weight-semibold px-3 mb-2">
-                      <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
-                      Projects
-                    </a>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-          </div>
-      {% endfor %}
-      </div>
-      </div>
-      {% endif %}
-      </div>
-
+      {% include 'shared/hackathon-list.html' %}
     </div>
+
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/footer.html' %}
 
     {% block 'scripts' %}
     <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
     {% endblock %}
-  </body>
+    <!-- hackathon modal temparilly disabled  -->
+    <!-- {% include "dashboard/hackathon/onboarding_v2.html"%} -->
+  </div>
+</body>

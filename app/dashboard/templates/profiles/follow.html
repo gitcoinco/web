@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -20,9 +20,9 @@
 <span id=follower_count>(<span>{{profile.org.count}}</span> Follower{{profile.org.count|pluralize}})</span>
 {% if not is_my_profile %}
   {% if is_on_tribe %}
-    <button class="btn btn-gc-pink btn-sm m-2 px-2 font-caption" data-jointribe="{{profile.handle}}">Unfollow<i class="fas fa-user-minus font-smaller-4 ml-2"></i></button>
+    <button class="btn btn-success btn-sm m-2 px-2 font-caption" data-jointribe="{{profile.handle}}">Unfollow<i class="fas fa-user-minus font-smaller-4 ml-2"></i></button>
   {% else %}
-    <button class="btn btn-gc-blue btn-sm m-2 px-2 font-caption" data-jointribe="{{profile.handle}}">Follow<i class="fas fa-user-plus font-smaller-4 ml-2"></i></button>
+    <button class="btn btn-primary btn-sm m-2 px-2 font-caption" data-jointribe="{{profile.handle}}">Follow<i class="fas fa-user-plus font-smaller-4 ml-2"></i></button>
   {% endif %}
 {% endif %}
 {% endif %}

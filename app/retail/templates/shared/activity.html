@@ -18,10 +18,10 @@
 
 {% load humanize i18n static grants_extra %}
 <div class="box d-block m-0 mb-3 activity {% if is_pin %} pinned-activity {% else %} infinite-item {% endif %} {{ row.activity_type }} px-sm-3 py-4" {% if not is_pin %} data-pk="{{row.pk}}" {% endif %}>
-  <div class="activity_main row bg_{{ row.activity_type }}">
+  <div class="activity_main pl-2 row bg_{{ row.activity_type }} m-0">
     <div class="col-2 p-0">
       <div class="activity-avatar">
-        <a id="profile-avatar-link" style="display:flex; width: 6.1rem; height: 6.1rem; margin-left: auto; margin-right: auto;" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
+        <a id="profile-avatar-link" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
           <img class="avatar rounded-circle" src="https://gitcoin.co/dynamic/avatar/{{row.profile.handle}}"/>
         </a>
         <div class="position-relative">
@@ -50,15 +50,14 @@
         {% if row.profile.data.type == 'Organization'%}
           {% if row.profile.handle not in my_tribes|join:"," %}
             <div style="text-align:center">
-              <a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>follow</a>
+              <a href=# class="align-middle btn btn-outline-primary btn-sm mt-2 font-smaller-7" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>follow</a>
             </div>
           {% endif %}
         {% endif %}
       </div>
     </div>
-    <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
+    <div class="col-10 col-sm-7 pl-3 activity_detail">
       <div>
-        {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
           <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
@@ -75,7 +74,11 @@
             <br>
           {% endif %}
           {% if row.project %}
-            <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+            {% if row.project.name %}
+              <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+            {% else %}
+              <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id %}" class="tag"   data-toggle="tooltip" title="Go to project {{ row.project.id }}">via project {{ row.project.id }}</a>
+            {% endif %}
           {% endif %}
 
           {% if row.hackathonevent %}
@@ -105,11 +108,33 @@
           <a data-usercard="{{ row.metadata.to_username }}" href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
+        {% elif row.activity_type == 'create_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "created the" %} {{ row.ptoken.token_symbol }} token.
+        {% elif row.activity_type == 'complete_redemption_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "marked his "%} {{ row.ptoken.token_symbol }}  {% trans "token request from" %}  {{ row.metadata.redemption_requester_name }} {% trans "as complete" %}
+        {% elif row.activity_type == 'mint_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "minted "%} {{ row.ptoken.token_symbol }} tokens.
+        {% elif row.activity_type == 'burn_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "burned "%} {{ row.ptoken.token_symbol }} tokens.
+        {% elif row.activity_type == 'buy_ptoken' %}
+           {% trans "Purchased" %} {{ row.ptoken.token_symbol }} {% trans "time token from" %}  <a href="/{{ row.ptoken.token_owner_profile.handle }}">@{{ row.ptoken.token_owner_profile.handle }}</a>.
+        {% elif row.activity_type == 'edit_price_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "edited the"%} {{ row.ptoken.token_symbol }}  {% trans "token price." %}
+        {% elif row.activity_type == 'accept_redemption_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "accepted a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.redemption.redemption_requester.handle }}
+        {% elif row.activity_type == 'denies_redemption_ptoken' and row.profile.id == row.ptoken.token_owner_profile.id and row.metadata.redemption_state == 'cancelled'%}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "cancelled a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.redemption.redemption_requester.handle }}
+        {% elif row.activity_type == 'denies_redemption_ptoken' and row.profile.id == row.ptoken.token_owner_profile.id %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "denied a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.ptoken.token_owner_profile.handle }}
+        {% elif row.activity_type == 'denies_redemption_ptoken' %}
+          @{{ row.redemption.redemption_requester.handle }} {% trans "denied a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request to"%} @{{ row.ptoken.token_owner_profile.handle }}
+        {% elif row.activity_type == 'incoming_redemption_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans " has an incoming redemption finalized by the Buyer "%}
         {% elif row.activity_type == 'mini_clr_payout' %}
           {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
           a new kudos, created by the illustrious <img style="height: 20px; width: 20px; border-radius: 20px;" src="/dynamic/avatar/{{row.kudos.artist}}"> <a href={{row.kudos.artist}}>@{{row.kudos.artist}}</a>, has been minted:
-          <a href="{{ row.kudos.external_url }}">
+          <a href="{{ row.kudos.url }}">
             {{ row.kudos.ui_name }}
           </a>
         {% elif row.activity_type == 'new_kudos' %}
@@ -185,7 +210,11 @@
             {{ row.grant.title }}
           </a>
         {% elif row.activity_type == 'new_grant_contribution' %}
-          {% trans "contributed to" %}
+          {% if row.metadata.anonymize %}
+            {% trans "observed an anonymous contribution to" %}
+          {% else %}
+            {% trans "contributed to" %}
+          {% endif %}
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
@@ -279,7 +308,7 @@
       {% else %}
         {{row.humanized_activity_type }}
         {% if row.bounty %}
-          : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
+          : <a href="{{ row.bounty.url }}">{{ row.bounty.title | safe }}</a>
         {% endif %}
       {% endif %}
       </div>
@@ -393,15 +422,15 @@
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
                   {% if row.activity_type == 'new_tip' %}
-                    <span class="value_in_token">{{ row.metadata.amount  | floatformat:2}} {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.amount | floatformat:3 }} {{row.metadata.token_name}}</span>
                   {% elif row.bounty %}
-                    <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
+                    <span class="value_in_token_bounty">{{ row.bounty.value_true.normalize }} {{row.bounty.token_name}}</span>
                   {% elif row.value_in_token_disp %}
-                    <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp.normalize }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
-                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:3 }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:2}} {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:3 }} {{row.metadata.token_name}}</span>
                   {% endif %}
                 </p>
               </div>
@@ -425,41 +454,41 @@
           <i class="fas fa-exclamation-triangle error red hidden"></i>
         {% endif %}
         {% if row.metadata.attach.token %}
-          | <button class="btn btn-sm btn-link" style="color: #3E00FF;">
+          | <button class="btn btn-sm btn-link" style="color: #6F3FF5;">
           <i class="fas fa-coins gc-blue-text" ></i>
           <span class="value_in_token">{{row.metadata.attach.amount}}  {{row.metadata.attach.token_name}} attached</span>
           </button>
         {% endif %}
       </div>
     </div>
-    <div class="d-none d-sm-inline col-sm-2 pl-0 position-relative">
+    <div class="d-none pt-4 d-sm-inline col-sm-3 pl-0 pr-0">
       {% if row.activity_type == 'new_bounty' %}
-        <div class="bg-gc-blue card-ribbon px-2 text-center">
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
           <!-- <i style="font-size: 14px" class="text-white fas fa-tools"></i> -->
-          <img height="15" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New bounty</span>
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New bounty</span>
         </div>
       {% elif row.activity_type == 'new_kudos' %}
-        <div class="bg-light-blue card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New kudos</span>
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New kudos</span>
         </div>
       {% elif row.activity_type == 'hackathon_new_hacker' %}
-      <div class="bg-gc-dark-blue card-ribbon px-2 text-center">
-        <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Hacker</span>
+      <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
+        <span class="text-white font-smaller-2 text-capitalize">New Hacker</span>
       </div>
       {% elif row.activity_type == 'new_hackathon_project' %}
-        <div class="bg-gc-green card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Project</span>
+        <div class="bg-success ml-auto card-ribbon px-2 text-center mb-2 float-right">
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New Project</span>
         </div>
       {% elif row.activity_type == 'new_grant' %}
-        <div class="bg-gc-dark-blue card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="">
-          <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Grant</span>
+        <div class="bg-primary ml-auto card-ribbon py-2 px-2 text-center mb-2 float-right">
+          <img class="mt-n1 mr-1" height="15" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="">
+          <span class="text-white font-smaller-2 text-capitalize">New Grant</span>
         </div>
       {% endif %}
-    <div class="d-none d-sm-inline col-sm-4 pl-0">
+    <div class="d-none d-sm-inline-block pl-0 w-100">
       <div class="activity_time font-smaller-5 text-right">
         {% if not hide_date %}
         {{ row.created_human_time }}
@@ -496,7 +525,7 @@
   </div>
   {% if row.activity_type == 'hypercharge_bounty'%}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.bounty.url }}">
       <div class="col-12 col-md-2 text-center">
         {% if row.bounty.funding_organisation %}
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.funding_organisation %}">
@@ -504,7 +533,7 @@
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
         {% endif %}
       </div>
-      <div class="col-12 col-md-7 d-flex flex-column">
+      <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
             {{ row.metadata.description }}
@@ -525,7 +554,7 @@
   </div>
   {% elif row.activity_type == 'new_bounty' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.bounty.url }}">
       <div class="col-12 col-md-2 text-center">
         {% if row.bounty.funding_organisation %}
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.funding_organisation %}">
@@ -533,10 +562,10 @@
           <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
         {% endif %}
       </div>
-      <div class="col-12 col-md-7 d-flex flex-column">
+      <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
-            {{ row.bounty.title }}
+            {{ row.bounty.title | safe }}
           </div>
 
           <div class="bounty-summary p-0 col-12">
@@ -570,7 +599,7 @@
   </div>
   {% elif row.activity_type == 'new_kudos' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.kudos.external_url }}">
       <div class="col-12 col-md-3 text-center">
           <img class="logo-metacard" src="{{ row.kudos.img_url }}">
       </div>
@@ -582,13 +611,13 @@
   </div>
   {% elif row.activity_type == 'new_hackathon_project' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
+    <div class="row align-items-center bg-light content py-3" data-href="{% if row.project.name %}{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}{% else %}{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id %}{% endif %}">
       <div class="col-12 col-md-2 text-center">
-         {% if row.project.logo %}
-           <img class="logo-metacard rounded-circle" src="{{MEDIA_URL}}{{row.project.logo}}" alt="Hackathon logo" />
-         {% else %}
-           <img class="logo-metacard rounded-circle" src="{{ row.project.bounty.avatar_url }}" alt="{{row.project.bounty.org_name}}" />
-         {% endif %}
+        {% if row.project.logo %}
+          <img class="logo-metacard rounded-circle" src="{{MEDIA_URL}}{{row.project.logo}}" alt="Hackathon logo" />
+        {% else %}
+          <img class="logo-metacard rounded-circle" src="{{ row.project.bounty.avatar_url }}" alt="{{row.project.bounty.org_name}}" />
+        {% endif %}
       </div>
       <div class="col-12 col-md-6 text-left">
         <p class="mt-2 mb-1 font-weight-bold" style="font-size: 1.2em;">{{ row.project.name }}</p>
@@ -605,8 +634,8 @@
   </div>
   {% elif row.activity_type == 'new_grant' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3">
-      <div class="col-12 col-md-2 text-center">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.metadata.grant_url }}">
+      <div class="col-12 col-md-2 text-center mr-2">
           <img class="logo-metacard" src="{% if row.grant.logo and row.grant.logo.url %}{{ row.grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=row.grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}">
       </div>
       <div class="col-12 col-md-9 text-left">

@@ -28,7 +28,7 @@
             <span class="head-number_value">[[ contributorBounties.work_in_progress ? contributorBounties.work_in_progress.length : '0' ]]</span>
           </div>
           <div class="my-3 mx-4 head-number">
-            <span class="head-number_title">BOUNTIES APPLIED </span>
+            <span class="head-number_title">BOUNTIES APPLIED</span>
             <span class="head-number_value">[[ contributorBounties.interested ? contributorBounties.interested.length : '0' ]]</span>
           </div>
           <div class="my-3 mx-4 head-number">
@@ -43,7 +43,7 @@
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
-          <div class="d-flex justify-content-between p-4 border-bottom btn-gc-blue btn-sm" @click="skills && skills[0] ? (toggleCollapse(1, 'bountiesMatch'), fetchMatchingBounties()) : redirect('/settings/matching')">
+          <div class="d-flex justify-content-between p-4 border-bottom btn-primary btn-sm" @click="skills && skills[0] ? (toggleCollapse(1, 'bountiesMatch'), fetchMatchingBounties()) : redirect('/settings/matching')">
             <div v-if="skills && skills[0]">
               Bounties matching your skills: <b>[[ skills.join(', ') ]]</b> <a href="{% url 'matching_settings' %}" class="white underline">(Update Skills)</a>
             </div>
@@ -86,7 +86,7 @@
                     </div>
                   </div>
                   <div>
-                    <a :href="bounty.url" title="View bounty details" class="btn btn-sm btn-gc-blue">View Details</a>
+                    <a :href="bounty.url" title="View bounty details" class="btn btn-sm btn-primary">View Details</a>
                   </div>
                 </div>
               </li>
@@ -97,7 +97,7 @@
                 <p class="text-black-70">Check back regularly for the latest matching bounties or <br> check out the <b>Issue Explorer</b> for more bounties!</p>
               </li>
               <li class="text-center">
-                <a :href="`/explorer?network=${network}&applicants=ALL&keywords=${skills}&order_by=-web3_created`" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing" target="_blank">VIEW MORE BOUNTIES</a>
+                <a :href="`/explorer?network=${network}&applicants=ALL&keywords=${skills}&order_by=-web3_created`" class="btn btn-outline-primary w-75 font-smaller-2 gc-letter-spacing" target="_blank">VIEW MORE BOUNTIES</a>
               </li>
             </ul>
             <loading-screen v-if="isLoading.matchingBounties"></loading-screen>
@@ -120,7 +120,7 @@
                 <i class="fas fa-circle fa-stack-2x text-danger"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span class="font-weight-bold">You are currently working on this bounty </span>
+              <span class="font-weight-bold">You are currently working on this bounty</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -142,8 +142,8 @@
                   </div>
                 </div>
                 <div class="d-flex flex-column justify-content-center mx-2">
-                  <a target="_blank" :href="`/issue/fulfill?pk=${bounty.id}`" title="Submit work" class="btn btn-sm btn-gc-blue m-2 px-4">Submit Work</a>
-                  <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'work_in_progress')" class="btn btn-sm btn-outline-gc-blue mb-2 mx-2 px-4" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
+                  <a target="_blank" :href="`/issue/fulfill?pk=${bounty.id}`" title="Submit work" class="btn btn-sm btn-primary m-2 px-4">Submit Work</a>
+                  <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'work_in_progress')" class="btn btn-sm btn-outline-primary mb-2 mx-2 px-4" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
                 </div>
               </div>
             </li>
@@ -153,8 +153,8 @@
                   You are not working in any bounty yet.
               </h4>
               <p class="text-black-70"><a href="{% url 'explorer' %}">Find a bounty</a> or check out our <a href="{% url 'how_it_works' 'contributor' %}">Contributors Guide</a> to start doing bounties! </p>
-              <p class="text-black-70">Have any question? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
-              <a href="{% url 'explorer' %}" title="Find bounty" class="btn btn-gc-blue">Find a Bounty</a>
+              <p class="text-black-70">Have any questions? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
+              <a href="{% url 'explorer' %}" title="Find bounty" class="btn btn-primary">Find a Bounty</a>
             </li>
           </ul>
           <loading-screen v-if="isLoading.work_in_progress"></loading-screen>
@@ -167,7 +167,7 @@
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
-          <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.interested.length, 'y', 'ies') ]] Applied </div>
+          <div class="p-4 border-bottom font-weight-bold" v-if="contributorBounties.interested">[[ contributorBounties.interested.length ]] [[ 'Bount' | pluralize(contributorBounties.interested.length, 'y', 'ies') ]] Applied</div>
 
           <ul class="list-unstyled list-bounty">
             <li v-for="(bounty, key) in contributorBounties.interested" :key="bounty.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
@@ -175,7 +175,7 @@
                 <i class="fas fa-circle fa-stack-2x green"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span class="font-weight-bold">You are awaiting approval </span>
+              <span class="font-weight-bold">You are awaiting approval</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -197,7 +197,7 @@
                   </div>
                 </div>
                 <div>
-                  <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'interested')" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Stop Work</button>
+                  <button @click="stopWork(key, bounty.id, authProfile, 'contributorBounties', 'interested')" class="btn btn-sm btn-outline-primary m-2" :disabled="key === disabledBtn">Stop Work</button>
                 </div>
               </div>
             </li>
@@ -223,7 +223,7 @@
                 <i class="fas fa-circle fa-stack-2x light-blue"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span class="font-weight-bold">You are awaiting payment </span>
+              <span class="font-weight-bold">You are awaiting payment</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -261,7 +261,7 @@
         <p>
           If you also want to check your finished bounties, you can find them here:
         </p>
-        <a class="btn btn-gc-blue" href="/explorer?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
+        <a class="btn btn-primary" href="{% url 'explorer' %}?bounty_filter=startedByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
       </div>
     </div>
   </section>

@@ -15,545 +15,548 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/users.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/explorer.css" %}>
-
+    {% bundle css file dashboard_explorer %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/explorer.scss" %} />
+    {% endbundle %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'shared/nav.html' %}
-    <div class="" id="gc-explorer" v-cloak>
-      <div class="sidebar-container flex-column flex-lg-row">
-        <transition name="fade">
-          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-            <div class="">
-              <!-- <div class="form-inline">
-                <input type="text" placeholder="Search" v-model="params.keywords" class="form-control mr-2">
-                <i class="fas fa-search" aria-hidden="true"></i>
-              </div> -->
-              <div class="g-multiselect mb-2">
-                <div class="form__select2 align-items-center pr-4">
-                  <select2 v-model="params.keywords" data-placeholder="Search by keywords" data-tags="true" multiple class="form-control">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+      <div class="" id="gc-explorer" v-cloak>
+        <div class="sidebar-container flex-column flex-lg-row">
+          <transition name="fade">
+            <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
+              <div class="">
+                <!-- <div class="form-inline">
+                  <input type="text" placeholder="Search" v-model="params.keywords" class="form-control mr-2">
+                  <i class="fas fa-search" aria-hidden="true"></i>
+                </div> -->
+                <div class="g-multiselect mb-2">
+                  <div class="form__select2 align-items-center pr-4">
+                    <select2 v-model="params.keywords" data-placeholder="Search by keywords" data-tags="true" multiple class="form-control">
+                    </select2>
+                    <i class="fas fa-search pl-1" aria-hidden="true"></i>
+
+                  </div>
+                </div>
+
+                <div v-for="(value, prop, index) in params" :key="index" v-if="value && value.length">
+                  <template v-if="typeof value == 'string'">
+                    <button @click.prevented="removeFilter(prop, 0)" class="btn btn-primary btn-sm font-smaller-5 mr-1">
+                      [[value | stringFixer]] <i class="fas fa-times"></i>
+                    </button>
+                  </template>
+                  <template v-else-if="typeof value == 'object'">
+                    <button v-for="(res, index) in value" @click.prevented="removeFilter(prop, index, true)" class="btn btn-primary btn-sm font-smaller-5 mr-1">[[res | stringFixer]] <i class="fas fa-times"></i></button>
+                  </template>
+                </div>
+              </div>
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">
+                  {% trans "Status" %}
+                  <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window"  data-content='{% include "shared/status_tooltip.html" %}'></i>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="open" value="open"  v-model="params.idx_status" class="form-check-input">
+                  <label for="open" class="form-check-label">Open</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="started" value="started"  v-model="params.idx_status" class="form-check-input">
+                  <label for="started" class="form-check-label">Work Started</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="submitted" value="submitted"  v-model="params.idx_status" class="form-check-input">
+                  <label for="submitted" class="form-check-label">Work Submitted</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="done" value="done"  v-model="params.idx_status" class="form-check-input">
+                  <label for="done" class="form-check-label">Work Done</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="reserved" value="reserved"  v-model="params.idx_status" class="form-check-input">
+                  <label for="reserved" class="form-check-label">Reserved</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="expired" value="expired"  v-model="params.idx_status" class="form-check-input">
+                  <label for="expired" class="form-check-label">Expired</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="cancelled" value="cancelled"  v-model="params.idx_status" class="form-check-input">
+                  <label for="cancelled" class="form-check-label">Cancelled</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input type="radio" id="any" value="" v-model="params.idx_status" class="form-check-input">
+                  <label for="any" class="form-check-label">Any</label>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="g-multiselect ">
+                  <label for="organisations" class="mb-3 text-black-70 font-weight-semibold">Organization name <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/organization_tooltip.html" %}'></i></label>
+                  <div class="font-smaller">
+                    <input v-model.lazy="params.org" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Experience Level</div>
+                <div class="checkbox_container">
+                  <input id="beginner" type="checkbox" value="beginner" v-model="params.experience_level">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="beginner">Beginner</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="intermediate" type="checkbox" value="intermediate" v-model="params.experience_level">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="intermediate">Intermediate</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="advanced" type="checkbox" value="advanced" v-model="params.experience_level">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="advanced">Advanced</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <div class="mb-3 text-black-70 font-weight-semibold">Project Type <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/project_type_tooltip.html" %}'></i></div>
+                <div class="checkbox_container">
+                  <input id="traditional" type="checkbox" value="traditional" v-model="params.project_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="traditional">traditional</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="contest" type="checkbox" value="contest" v-model="params.project_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="contest">contest</label>
+                  </div>
+                </div>
+                <div class="checkbox_container">
+                  <input id="cooperative" type="checkbox" value="cooperative" v-model="params.project_type">
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="cooperative">cooperative</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-bottom py-3 font-smaller-1">
+                <label for="applicants" class="mb-3 text-black-70 font-weight-semibold">Applicants</label>
+                <div class="form__select2">
+                  <select2 v-model="params.applicants" data-minimum-results-for-search="Infinity" class="form-control">
+                    <option value="" selected="true">All</option>
+                    <option value="0">0</option>
+                    <option value="5-10">1-5</option>
                   </select2>
-                  <i class="fas fa-search pl-1" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div @click="showExtraParams = !showExtraParams" class="text-justify btn-block d-flex justify-content-between align-items-center py-3">Advanced Filters <i class="fa fa-fw" :class="showExtraParams ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
 
+              <div v-show="showExtraParams">
+                <div class="border-bottom py-3 font-smaller-1">
+                  <div class="mb-3 text-black-70 font-weight-semibold">My Bounties</div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="createdByMe" value="createdByMe" v-model="params.bounty_filter" class="form-check-input">
+                    <label for="createdByMe" class="form-check-label">Created By Me</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="startedByMe" value="startedByMe" v-model="params.bounty_filter" class="form-check-input">
+                    <label for="startedByMe" class="form-check-label">Started By Me</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="fulfilledByMe" value="fulfilledByMe" v-model="params.bounty_filter" class="form-check-input">
+                    <label for="fulfilledByMe" class="form-check-label">Fulfilled By Me</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="reservedForMe" value="reservedForMe" v-model="params.bounty_filter" class="form-check-input">
+                    <label for="reservedForMe" class="form-check-label">Reserved For Me</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="all_bounty" value="" v-model="params.bounty_filter" class="form-check-input">
+                    <label for="all_bounty" class="form-check-label">All</label>
+                  </div>
                 </div>
-              </div>
 
-              <div v-for="(value, prop, index) in params" :key="index" v-if="value && value.length">
-                <template v-if="typeof value == 'string'">
-                  <button @click.prevented="removeFilter(prop, 0)" class="btn btn-gc-blue btn-sm font-smaller-5 mr-1">
-                    [[value | stringFixer]] <i class="fas fa-times"></i>
-                  </button>
-                </template>
-                <template v-else-if="typeof value == 'object'">
-                  <button v-for="(res, index) in value" @click.prevented="removeFilter(prop, index, true)" class="btn btn-gc-blue btn-sm font-smaller-5 mr-1">[[res | stringFixer]] <i class="fas fa-times"></i></button>
-                </template>
-              </div>
-            </div>
-            <div class="border-bottom py-3 font-smaller-1">
-              <div class="mb-3 text-black-70 font-weight-semibold">
-                {% trans "Status" %}
-                <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window"  data-content='{% include "shared/status_tooltip.html" %}'></i>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="open" value="open"  v-model="params.idx_status" class="form-check-input">
-                <label for="open" class="form-check-label">Open</label>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="started" value="started"  v-model="params.idx_status" class="form-check-input">
-                <label for="started" class="form-check-label">Work Started</label>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="submitted" value="submitted"  v-model="params.idx_status" class="form-check-input">
-                <label for="submitted" class="form-check-label">Work Submitted</label>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="done" value="done"  v-model="params.idx_status" class="form-check-input">
-                <label for="done" class="form-check-label">Work Done</label>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="reserved" value="reserved"  v-model="params.idx_status" class="form-check-input">
-                <label for="reserved" class="form-check-label">Reserved</label>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="expired" value="expired"  v-model="params.idx_status" class="form-check-input">
-                <label for="expired" class="form-check-label">Expired</label>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="cancelled" value="cancelled"  v-model="params.idx_status" class="form-check-input">
-                <label for="cancelled" class="form-check-label">Cancelled</label>
-              </div>
-              <div class="form-check mb-2">
-                <input type="radio" id="any" value="" v-model="params.idx_status" class="form-check-input">
-                <label for="any" class="form-check-label">Any</label>
-              </div>
-            </div>
-
-            <div class="border-bottom py-3 font-smaller-1">
-              <div class="g-multiselect ">
-                <label for="organisations" class="mb-3 text-black-70 font-weight-semibold">Organization name <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/organization_tooltip.html" %}'></i></label>
-                <div class="font-smaller">
-                  <input v-model.lazy="params.org" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
-                </div>
-              </div>
-            </div>
-
-            <div class="border-bottom py-3 font-smaller-1">
-              <div class="mb-3 text-black-70 font-weight-semibold">Experience Level</div>
-              <div class="checkbox_container">
-                <input id="beginner" type="checkbox" value="beginner" v-model="params.experience_level">
-                <span class="checkbox"></span>
-                <div class="filter-label">
-                  <label for="beginner">Beginner</label>
-                </div>
-              </div>
-              <div class="checkbox_container">
-                <input id="intermediate" type="checkbox" value="intermediate" v-model="params.experience_level">
-                <span class="checkbox"></span>
-                <div class="filter-label">
-                  <label for="intermediate">Intermediate</label>
-                </div>
-              </div>
-              <div class="checkbox_container">
-                <input id="advanced" type="checkbox" value="advanced" v-model="params.experience_level">
-                <span class="checkbox"></span>
-                <div class="filter-label">
-                  <label for="advanced">Advanced</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="border-bottom py-3 font-smaller-1">
-              <div class="mb-3 text-black-70 font-weight-semibold">Project Type <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/project_type_tooltip.html" %}'></i></div>
-              <div class="checkbox_container">
-                <input id="traditional" type="checkbox" value="traditional" v-model="params.project_type">
-                <span class="checkbox"></span>
-                <div class="filter-label">
-                  <label for="traditional">traditional</label>
-                </div>
-              </div>
-              <div class="checkbox_container">
-                <input id="contest" type="checkbox" value="contest" v-model="params.project_type">
-                <span class="checkbox"></span>
-                <div class="filter-label">
-                  <label for="contest">contest</label>
-                </div>
-              </div>
-              <div class="checkbox_container">
-                <input id="cooperative" type="checkbox" value="cooperative" v-model="params.project_type">
-                <span class="checkbox"></span>
-                <div class="filter-label">
-                  <label for="cooperative">cooperative</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="border-bottom py-3 font-smaller-1">
-              <label for="applicants" class="mb-3 text-black-70 font-weight-semibold">Applicants</label>
-              <div class="form__select2">
-                <select2 v-model="params.applicants" data-minimum-results-for-search="Infinity" class="form-control">
-                  <option value="" selected="true">All</option>
-                  <option value="0">0</option>
-                  <option value="5-10">1-5</option>
-                </select2>
-              </div>
-            </div>
-            <div @click="showExtraParams = !showExtraParams" class="text-justify btn-block d-flex justify-content-between align-items-center py-3">Advanced Filters <i class="fa fa-fw" :class="showExtraParams ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
-
-            <div v-show="showExtraParams">
-              <div class="border-bottom py-3 font-smaller-1">
-                <div class="mb-3 text-black-70 font-weight-semibold">My Bounties</div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="createdByMe" value="createdByMe" v-model="params.bounty_filter" class="form-check-input">
-                  <label for="createdByMe" class="form-check-label">Created By Me</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="startedByMe" value="startedByMe" v-model="params.bounty_filter" class="form-check-input">
-                  <label for="startedByMe" class="form-check-label">Started By Me</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="fulfilledByMe" value="fulfilledByMe" v-model="params.bounty_filter" class="form-check-input">
-                  <label for="fulfilledByMe" class="form-check-label">Fulfilled By Me</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="reservedForMe" value="reservedForMe" v-model="params.bounty_filter" class="form-check-input">
-                  <label for="reservedForMe" class="form-check-label">Reserved For Me</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="all_bounty" value="" v-model="params.bounty_filter" class="form-check-input">
-                  <label for="all_bounty" class="form-check-label">All</label>
-                </div>
-              </div>
-
-              <div class="border-bottom py-3 font-smaller-1">
-                <div class="mb-3 text-black-70 font-weight-semibold">Project Category</div>
-                <div class="checkbox_container">
-                  <input id="frontend" type="checkbox" value="frontend" v-model="params.bounty_categories">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="frontend">Front End</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="backend" type="checkbox" value="backend" v-model="params.bounty_categories">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="backend">Back End</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="design" type="checkbox" value="design" v-model="params.bounty_categories">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="design">Design</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="documentation" type="checkbox" value="documentation" v-model="params.bounty_categories">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="documentation">Documentation</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="other" type="checkbox" value="other" v-model="params.bounty_categories">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="other">Other</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-bottom py-3 font-smaller-1">
-                <div class="mb-3 text-black-70 font-weight-semibold">Moderation</div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="escalated" value="escalated" v-model="params.moderation_filter" class="form-check-input">
-                  <label for="escalated" class="form-check-label">Escalated</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="warned" value="warned" v-model="params.moderation_filter" class="form-check-input">
-                  <label for="warned" class="form-check-label">Warned</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="hidden" value="hidden" v-model="params.moderation_filter" class="form-check-input">
-                  <label for="hidden" class="form-check-label">Hidden</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="not_started" value="not_started" v-model="params.moderation_filter" class="form-check-input">
-                  <label for="not_started" class="form-check-label">Not Picked Up 3+ Days</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="closed_on_github" value="closed_on_github" v-model="params.moderation_filter" class="form-check-input">
-                  <label for="closed_on_github" class="form-check-label">Closed On Github</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="needs_review" value="needs_review" v-model="params.moderation_filter" class="form-check-input">
-                  <label for="needs_review" class="form-check-label">Needs Review</label>
-                </div>
-                <div class="form-check mb-2">
-                  <input type="radio" id="no_moderation" value="" v-model="params.moderation_filter" class="form-check-input">
-                  <label for="no_moderation" class="form-check-label">No Moderation</label>
-                </div>
-              </div>
-              <div class="border-bottom py-3 font-smaller-1">
-                <div class="mb-3 text-black-70 font-weight-semibold">Permissions <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/permissions_type_tooltip.html" %}'></i></div>
-                <div class="checkbox_container">
-                  <input id="permissionless" type="checkbox" value="permissionless" v-model="params.permission_type">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="permissionless">Permissionless</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="approval" type="checkbox" value="approval" v-model="params.permission_type">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="approval">Approval Required</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-bottom py-3 font-smaller-1">
-                <div class="mb-3 text-black-70 font-weight-semibold">Time Commitment</div>
-                <div class="checkbox_container">
-                  <input id="hours" type="checkbox" value="hours" v-model="params.project_length">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="hours">Hours</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="days" type="checkbox" value="days" v-model="params.project_length">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="days">Days</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="weeks" type="checkbox" value="weeks" v-model="params.project_length">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="weeks">Weeks</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="months" type="checkbox" value="months" v-model="params.project_length">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="months">Months</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-bottom py-3 font-smaller-1">
-                <div class="mb-3 text-black-70 font-weight-semibold">Type</div>
-                <div class="checkbox_container">
-                  <input id="bug" type="checkbox" value="bug" v-model="params.bounty_type">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="bug">Bug</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="feature" type="checkbox" value="feature" v-model="params.bounty_type">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="feature">Feature</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="security" type="checkbox" value="security" v-model="params.bounty_type">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="security">Security</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-bottom py-3 font-smaller-1">
-                <div class="mb-3 text-black-70 font-weight-semibold">Network</div>
-                <div class="checkbox_container">
-                  <input id="rinkeby" type="checkbox" value="rinkeby" v-model="params.network">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="rinkeby">Rinkeby</label>
-                  </div>
-                </div>
-                <div class="checkbox_container">
-                  <input id="mainnet" type="checkbox" value="mainnet" v-model="params.network">
-                  <span class="checkbox"></span>
-                  <div class="filter-label">
-                    <label for="mainnet">Mainnet</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button class="btn blue" @click="clearParams();">Reset Filters</button>
-          </nav>
-        </transition>
-        <div class="container pt-4" @scroll.passive="onScroll($event)">
-          <div class="pb-5">
-            <h1 class="font-bigger-1">
-              <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters"><i class="fas fa-filter"></i></button>
-              Issue Explorer - Freelance Code Bounties
-            </h1>
-            <div class="d-flex justify-content-between align-items-center border-bottom mx-2 pb-1">
-              <div class="font-smaller-1">
-                [[bounties.length]]<span v-show="bountiesHasNext">+</span> bounties
-              </div>
-              <div class="form__select2">
-                <select2 v-model="params.order_by" data-minimum-results-for-search="Infinity" class="form-control">
-                  <option value="-web3_created" selected="true">Created: Recent</option>
-                  <option value="web3_created">Created: Oldest</option>
-                  <option value="-_val_usd_db">Value: Highest</option>
-                  <option value="_val_usd_db">Value: Lowest</option>
-                </select2>
-              </div>
-            </div>
-            <div class="featured-bounties my-4" v-if="featuredBounties.length">
-              <div>
-                <h3 class="featured-bounties__title">
-                  {% trans 'Featured Bounties' %}
-                  <span class="status-open">
-                    <i class="g-icon g-icon__dot-circle"></i>
-                    {% trans 'Ready to work' %}
-                  </span>
-                </h3>
-              </div>
-              <button class="featured-bounties__arrow featured-bounties__arrow-left" id="arrowLeft"><i class="fas fa-angle-left fa-2x"></i></button>
-              <button class="featured-bounties__arrow featured-bounties__arrow-right" id="arrowRight"><i class="fas fa-angle-right fa-2x"></i></button>
-              <div class="scroll-carousel" id="featured-card-container">
-                <div class="bounty-card" v-for="bountyFeat in featuredBounties" :key="bountyFeat.pk">
-                  <img :src="bountyFeat.avatar_url" alt="" width="56" height="56" class="bounty-card__avatar rounded-circle">
-                  <div class="">
-                    <p class="bounty-card__title">[[ bountyFeat.title ]] [[ bountyFeat.pk ]]</p>
-                    <div class="d-flex">
-                      <div class="tag token">[[ bountyFeat.rounded_amount ]] <span>[[ bountyFeat.token_name ]]</span></div>
-                      <div class="tag usd">[[ bountyFeat.value_in_usdt ]] <span>USD</span></div>
+                <div class="border-bottom py-3 font-smaller-1">
+                  <div class="mb-3 text-black-70 font-weight-semibold">Project Category</div>
+                  <div class="checkbox_container">
+                    <input id="frontend" type="checkbox" value="frontend" v-model="params.bounty_categories">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="frontend">Front End</label>
                     </div>
-                    <a :href="bountyFeat.url" class="bounty-card__link">View Bounty</a>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="backend" type="checkbox" value="backend" v-model="params.bounty_categories">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="backend">Back End</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="design" type="checkbox" value="design" v-model="params.bounty_categories">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="design">Design</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="documentation" type="checkbox" value="documentation" v-model="params.bounty_categories">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="documentation">Documentation</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="other" type="checkbox" value="other" v-model="params.bounty_categories">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="other">Other</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border-bottom py-3 font-smaller-1">
+                  <div class="mb-3 text-black-70 font-weight-semibold">Moderation</div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="escalated" value="escalated" v-model="params.moderation_filter" class="form-check-input">
+                    <label for="escalated" class="form-check-label">Escalated</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="warned" value="warned" v-model="params.moderation_filter" class="form-check-input">
+                    <label for="warned" class="form-check-label">Warned</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="hidden" value="hidden" v-model="params.moderation_filter" class="form-check-input">
+                    <label for="hidden" class="form-check-label">Hidden</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="not_started" value="not_started" v-model="params.moderation_filter" class="form-check-input">
+                    <label for="not_started" class="form-check-label">Not Picked Up 3+ Days</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="closed_on_github" value="closed_on_github" v-model="params.moderation_filter" class="form-check-input">
+                    <label for="closed_on_github" class="form-check-label">Closed On Github</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="needs_review" value="needs_review" v-model="params.moderation_filter" class="form-check-input">
+                    <label for="needs_review" class="form-check-label">Needs Review</label>
+                  </div>
+                  <div class="form-check mb-2">
+                    <input type="radio" id="no_moderation" value="" v-model="params.moderation_filter" class="form-check-input">
+                    <label for="no_moderation" class="form-check-label">No Moderation</label>
+                  </div>
+                </div>
+                <div class="border-bottom py-3 font-smaller-1">
+                  <div class="mb-3 text-black-70 font-weight-semibold">Permissions <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-boundary="window" data-content='{% include "shared/permissions_type_tooltip.html" %}'></i></div>
+                  <div class="checkbox_container">
+                    <input id="permissionless" type="checkbox" value="permissionless" v-model="params.permission_type">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="permissionless">Permissionless</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="approval" type="checkbox" value="approval" v-model="params.permission_type">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="approval">Approval Required</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border-bottom py-3 font-smaller-1">
+                  <div class="mb-3 text-black-70 font-weight-semibold">Time Commitment</div>
+                  <div class="checkbox_container">
+                    <input id="hours" type="checkbox" value="hours" v-model="params.project_length">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="hours">Hours</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="days" type="checkbox" value="days" v-model="params.project_length">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="days">Days</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="weeks" type="checkbox" value="weeks" v-model="params.project_length">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="weeks">Weeks</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="months" type="checkbox" value="months" v-model="params.project_length">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="months">Months</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border-bottom py-3 font-smaller-1">
+                  <div class="mb-3 text-black-70 font-weight-semibold">Type</div>
+                  <div class="checkbox_container">
+                    <input id="bug" type="checkbox" value="bug" v-model="params.bounty_type">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="bug">Bug</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="feature" type="checkbox" value="feature" v-model="params.bounty_type">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="feature">Feature</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="security" type="checkbox" value="security" v-model="params.bounty_type">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="security">Security</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border-bottom py-3 font-smaller-1">
+                  <div class="mb-3 text-black-70 font-weight-semibold">Network</div>
+                  <div class="checkbox_container">
+                    <input id="rinkeby" type="checkbox" value="rinkeby" v-model="params.network">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="rinkeby">Rinkeby</label>
+                    </div>
+                  </div>
+                  <div class="checkbox_container">
+                    <input id="mainnet" type="checkbox" value="mainnet" v-model="params.network">
+                    <span class="checkbox"></span>
+                    <div class="filter-label">
+                      <label for="mainnet">Mainnet</label>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div v-if="noResults" class="text-center">
-              <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
-              <p class="mt-4 font-weight-bold mb-0">No users found</p>
-              <button class="btn blue" @click="clearParams(); searchBounties()">Reset Filters</button>
-            </div>
-
-            <div class="">
-              <a v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk" :href="bounty.url" class="d-flex align-items-center flex-wrap bounty_row" data-container="body" :data-content='popoverConfig(bounty)'>
-                <div class="avatar-container col-1 justify-content-center d-none d-md-block">
-                  <img :src="bounty.avatar_url" class="avatar w-100" :class="bounty.github_org_name">
+              <button class="btn text-primary text-primary-hover hover-underline" @click="clearParams();">Reset Filters</button>
+            </nav>
+          </transition>
+          <div class="container pt-4" @scroll.passive="onScroll($event)">
+            <div class="pb-5">
+              <h1 class="font-bigger-1">
+                <button class="btn text-primary text-primary-hover hover-underline font-smaller-1 font-weight-bold" @click="showFilters = !showFilters"><i class="fas fa-filter"></i></button>
+                Issue Explorer - Freelance Code Bounties
+              </h1>
+              <div class="d-flex justify-content-between align-items-center border-bottom mx-2 pb-1">
+                <div class="font-smaller-1">
+                  [[bounties.length]]<span v-show="bountiesHasNext">+</span> bounties
                 </div>
-                <div class="col-12 col-md-8 d-flex flex-column">
-                  <div class="bounty-detail">
-
-                    <div class="title font-subheader">
-                      [[ bounty.title ]]
+                <div class="form__select2">
+                  <select2 v-model="params.order_by" data-minimum-results-for-search="Infinity" class="form-control">
+                    <option value="-web3_created" selected="true">Created: Recent</option>
+                    <option value="web3_created">Created: Oldest</option>
+                    <option value="-_val_usd_db">Value: Highest</option>
+                    <option value="_val_usd_db">Value: Lowest</option>
+                  </select2>
+                </div>
+              </div>
+              <div class="featured-bounties my-4" v-if="featuredBounties.length">
+                <div>
+                  <h3 class="featured-bounties__title">
+                    {% trans 'Featured Bounties' %}
+                    <span class="status-open">
+                      <i class="g-icon g-icon__dot-circle"></i>
+                      {% trans 'Ready to work' %}
+                    </span>
+                  </h3>
+                </div>
+                <button class="featured-bounties__arrow featured-bounties__arrow-left" id="arrowLeft"><i class="fas fa-angle-left fa-2x"></i></button>
+                <button class="featured-bounties__arrow featured-bounties__arrow-right" id="arrowRight"><i class="fas fa-angle-right fa-2x"></i></button>
+                <div class="scroll-carousel" id="featured-card-container">
+                  <div class="bounty-card" v-for="bountyFeat in featuredBounties" :key="bountyFeat.pk">
+                    <img :src="bountyFeat.avatar_url" alt="" width="56" height="56" class="bounty-card__avatar rounded-circle">
+                    <div class="">
+                      <p class="bounty-card__title">[[ bountyFeat.title ]] [[ bountyFeat.pk ]]</p>
+                      <div class="d-flex">
+                        <div class="tag token">[[ bountyFeat.rounded_amount ]] <span>[[ bountyFeat.token_name ]]</span></div>
+                        <div class="tag usd">[[ bountyFeat.value_in_usdt ]] <span>USD</span></div>
+                      </div>
+                      <a :href="`${bountyFeat.url}?utm_source=hypercharge-auto-prize-explorer&utm_medium=gitcoin&utm_campaign=${bountyFeat.title}`" class="bounty-card__link" v-if="bountyFeat.metadata.hypercharge_mode">View Bounty</a>
+                      <a :href="bountyFeat.url" class="bounty-card__link" v-else>View Bounty</a>
                     </div>
-                    <div class="bounty-summary">
-                      <div class="info font-caption">
-                        <span :class="`status-${bounty.status}`">
-                          <i class="g-icon g-icon__dot-circle"></i>
+                  </div>
+                </div>
+              </div>
+              <div v-if="noResults" class="text-center">
+                <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                <p class="mt-4 font-weight-bold mb-0">No users found</p>
+                <button class="btn text-primary text-primary-hover hover-underline" @click="clearParams(); searchBounties()">Reset Filters</button>
+              </div>
+
+              <div class="">
+                <a v-for="bounty in bounties" :class="[bounty.standard_bounties_id.toString(), bounty.network]" :key="bounty.pk" :href="bounty.url" class="d-flex align-items-center flex-wrap bounty_row" data-container="body" :data-content='popoverConfig(bounty)'>
+                  <div class="avatar-container col-1 justify-content-center d-none d-md-block">
+                    <img :src="bounty.avatar_url" class="avatar w-100" :class="bounty.github_org_name">
+                  </div>
+                  <div class="col-12 col-md-8 d-flex flex-column">
+                    <div class="bounty-detail">
+
+                      <div class="title font-subheader" v-html="bounty.title">
+                      </div>
+                      <div class="bounty-summary">
+                        <div class="info font-caption">
+                          <span :class="`status-${bounty.status}`">
+                            <i class="g-icon g-icon__dot-circle"></i>
+                            <template v-if="bounty.status === 'open'">
+                              {% trans "Ready to work" %}
+                            </template>
+                            <template v-else-if="bounty.status === 'started'">
+                              {% trans "Work Started" %}
+                            </template>
+                            <template v-else-if="bounty.status === 'submitted'">
+                              {% trans "Work Submitted" %}
+                            </template>
+                            <template v-else-if="bounty.status === 'done'">
+                              {% trans "Work Done" %}
+                            </template>
+                            <template v-else-if="bounty.status === 'cancelled'">
+                              {% trans "Cancelled" %}
+                            </template>
+                            <template v-else-if="bounty.status === 'expired'">
+                              {% trans "expired" %}
+                            </template>
+                          </span>
+                          <span class="separator-bull"></span>
+                          <template v-if="bounty.project_type">
+                            [[ bounty.project_type ]] <span class="separator-bull"></span>
+                          </template>
+                          <template v-if="bounty.experience_level">
+                            [[ bounty.experience_level ]] <span class="separator-bull"></span>
+                          </template>
+
                           <template v-if="bounty.status === 'open'">
-                            {% trans "Ready to work" %}
+                            {% trans "Opened" %}
+                            <time class="" :datetime="[[ bounty.web3_created ]]" :title="[[ bounty.web3_created ]]">
+                              [[ bounty.web3_created | moment ]]
+                            </time>
                           </template>
                           <template v-else-if="bounty.status === 'started'">
-                            {% trans "Work Started" %}
+                            {% trans "Started" %}
+                            <time class="" :datetime="[[ bounty.fulfillment_started_on ]]" :title="[[ bounty.fulfillment_started_on ]]">
+                              [[ bounty.fulfillment_started_on | moment ]]
+                            </time>
                           </template>
                           <template v-else-if="bounty.status === 'submitted'">
-                            {% trans "Work Submitted" %}
+                            {% trans "Submitted" %}
+                            <time class="" :datetime="[[ bounty.fulfillment_submitted_on ]]" :title="[[ bounty.fulfillment_submitted_on ]]">
+                              [[ bounty.fulfillment_submitted_on | moment ]]
+                            </time>
                           </template>
                           <template v-else-if="bounty.status === 'done'">
-                            {% trans "Work Done" %}
+                            {% trans "Done" %}
+                            <time class="" :datetime="[[ bounty.fulfillment_accepted_on ]]" :title="[[ bounty.fulfillment_accepted_on ]]">
+                              [[ bounty.fulfillment_accepted_on | moment ]]
+                            </time>
                           </template>
                           <template v-else-if="bounty.status === 'cancelled'">
                             {% trans "Cancelled" %}
+                            <time class="" :datetime="[[ bounty.canceled_on ]]" :title="[[ bounty.canceled_on ]]">
+                              [[ bounty.canceled_on | moment ]]
+                            </time>
                           </template>
                           <template v-else-if="bounty.status === 'expired'">
-                            {% trans "expired" %}
+                            {% trans "Expired" %}
+                            <time class="" :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">
+                              [[ bounty.expires_date | moment ]]
+                            </time>
                           </template>
-                        </span>
-                        <span class="separator-bull"></span>
-                        <template v-if="bounty.project_type">
-                          [[ bounty.project_type ]] <span class="separator-bull"></span>
-                        </template>
-                        <template v-if="bounty.experience_level">
-                          [[ bounty.experience_level ]] <span class="separator-bull"></span>
-                        </template>
+                          <span class="separator-bull"></span>
+                          <i class="fas fa-user"></i> [[ bounty.interested.length ]] Applicants
 
-                        <template v-if="bounty.status === 'open'">
-                          {% trans "Opened" %}
-                          <time class="" :datetime="[[ bounty.web3_created ]]" :title="[[ bounty.web3_created ]]">
-                            [[ bounty.web3_created | moment ]]
-                          </time>
-                        </template>
-                        <template v-else-if="bounty.status === 'started'">
-                          {% trans "Started" %}
-                          <time class="" :datetime="[[ bounty.fulfillment_started_on ]]" :title="[[ bounty.fulfillment_started_on ]]">
-                            [[ bounty.fulfillment_started_on | moment ]]
-                          </time>
-                        </template>
-                        <template v-else-if="bounty.status === 'submitted'">
-                          {% trans "Submitted" %}
-                          <time class="" :datetime="[[ bounty.fulfillment_submitted_on ]]" :title="[[ bounty.fulfillment_submitted_on ]]">
-                            [[ bounty.fulfillment_submitted_on | moment ]]
-                          </time>
-                        </template>
-                        <template v-else-if="bounty.status === 'done'">
-                          {% trans "Done" %}
-                          <time class="" :datetime="[[ bounty.fulfillment_accepted_on ]]" :title="[[ bounty.fulfillment_accepted_on ]]">
-                            [[ bounty.fulfillment_accepted_on | moment ]]
-                          </time>
-                        </template>
-                        <template v-else-if="bounty.status === 'cancelled'">
-                          {% trans "Cancelled" %}
-                          <time class="" :datetime="[[ bounty.canceled_on ]]" :title="[[ bounty.canceled_on ]]">
-                            [[ bounty.canceled_on | moment ]]
-                          </time>
-                        </template>
-                        <template v-else-if="bounty.status === 'expired'">
-                          {% trans "Expired" %}
-                          <time class="" :datetime="[[ bounty.expires_date ]]" :title="[[ bounty.expires_date ]]">
-                            [[ bounty.expires_date | moment ]]
-                          </time>
-                        </template>
-                        <span class="separator-bull"></span>
-                        <i class="fas fa-user"></i> [[ bounty.interested.length ]] Applicants
-
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="tags-container col-12 col-md-4 col-lg-3 font-caption d-flex justify-content-end">
-                  <div v-if="bounty.network !== 'mainnet'" class="tag network_warning">
-                    <p>
-                      <span>[[ bounty.network ]]</span>
-                    </p>
-                  </div>
-                  <div class="tag token">
-                    <p>
-                      [[ bounty.rounded_amount ]]
-                      <span>[[ bounty.token_name ]]</span>
-                      <template v-if="bounty.tokens">
-                        <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
-                        <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
-                      </template>
-                    </p>
-                    <template v-if="bounty.tokens">
-                      <button class="btn-expand-token" onclick="toggleExpandableBounty(event, `.${bounty.network}.i${bounty.standard_bounties_id}`)">
-                        {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
-                      </button>
-                    </template>
-                  </div>
-                  <template v-if="bounty.value_in_usdt">
-                    <div class="tag usd">
+                  <div class="tags-container col-12 col-md-4 col-lg-3 font-caption d-flex justify-content-end">
+                    <div v-if="bounty.network !== 'mainnet'" class="tag network_warning">
                       <p>
-                        [[ bounty.value_in_usdt ]]
-                        <span>USD</span>
+                        <span>[[ bounty.network ]]</span>
                       </p>
                     </div>
-                  </template>
+                    <div class="tag token">
+                      <p>
+                        [[ bounty.rounded_amount ]]
+                        <span>[[ bounty.token_name ]]</span>
+                        <template v-if="bounty.tokens">
+                          <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
+                          <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
+                        </template>
+                      </p>
+                      <template v-if="bounty.tokens">
+                        <button class="btn-expand-token" onclick="toggleExpandableBounty(event, `.${bounty.network}.i${bounty.standard_bounties_id}`)">
+                          {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
+                        </button>
+                      </template>
+                    </div>
+                    <template v-if="bounty.value_in_usdt">
+                      <div class="tag usd">
+                        <p>
+                          [[ bounty.value_in_usdt ]]
+                          <span>USD</span>
+                        </p>
+                      </div>
+                    </template>
 
 
 
-                </div>
-              </a>
+                  </div>
+                </a>
+              </div>
+              <loading-screen v-if="isLoading"></loading-screen>
             </div>
-            <loading-screen v-if="isLoading"></loading-screen>
           </div>
         </div>
+
       </div>
 
+      <script type="text/x-template" id="select2-template">
+        <select>
+          <slot></slot>
+        </select>
+      </script>
+
+      {% csrf_token %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
+      {% include 'shared/messages.html' %}
     </div>
-
-    <script type="text/x-template" id="select2-template">
-      <select>
-        <slot></slot>
-      </select>
-    </script>
-
-    {% csrf_token %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
     <script src="{% static "v2/js/explorer.js" %}"></script>
     <script>
       $('[data-toggle="tooltip"]').bootstrapTooltip();

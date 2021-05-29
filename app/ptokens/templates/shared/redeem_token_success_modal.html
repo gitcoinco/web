@@ -1,0 +1,40 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="modal fade g-modal" id="redeemTokenSuccessModal" tabindex="-1" role="dialog" aria-labelledby="redeem_ptoken_modalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 576px;" role="document">
+    <div class="modal-content p-4">
+      <div class="modal-header border-0">
+        <h5 class="font-weight-semibold text-center w-100">Redemption Request Submitted!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <p>{% trans "You should hear from the token owner shortly." %}</p>
+        <p>{% trans "You can track the status of your redemption request on the" %} 
+        <span class="font-italic">Time Tokens</span>
+        {% trans "tab of the" %}  <a href="dashboard?tab=ptoken">Dashboard</a>.</p>
+      </div>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary btn-md ml-2" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
+from django.shortcuts import redirect
 
 # Create your views here.
 def index(request):
-    params = {}
-    response =  TemplateResponse(request, 'governance/index.html', params)
-    return response
+
+    return redirect('/quadraticlands/mission')

@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,1080 +10,1078 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
-    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/rating.css" %}"/>
+    {% bundle css file bounty_details2 %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/highlight_github.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/user_popover.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+    {% endbundle %}
     {% include 'shared/fbpixel.html' %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
-    </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/nav.html' %}
+      </div>
 
-    <div class="container min-vh-100" id="gc-bounty-detail" v-cloak>
+      <div class="container min-vh-100" id="gc-bounty-detail" v-cloak>
 
-      <div class="row">
-        <loading-screen class="position-absolute" v-show="loadingState == 'loading'"></loading-screen>
+        <div class="row">
+          <loading-screen class="position-absolute" v-show="loadingState == 'loading'"></loading-screen>
 
-        <div class="col-12 pt-3 text-center" v-if="contxt.is_staff && loadingState == 'resolved'">
-          <span class="text-black-70 my-2 font-caption">
-            <i class="fas fa-user-secret mr-2"></i>
-            Admin Actions
-          </span>
-          <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
-          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="contactFunder()">Contact Funder</button>
-          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="overrideStatus()">Override Status</button>
-        </div>
-        <div class="col-12" v-if="loadingState === 'resolved'">
-          {% if event_tag %}
-            <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body mt-3">
-              <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Hackathon Explorer" %}
-            </a>
-          {% else %}
-            <a href="{% url 'explorer' %}" class="btn btn-link font-body mt-3">
-              <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Issue Explorer" %}
-            </a>
-          {% endif %}
-          <div class="row align-items-center mt-4 mb-3">
-            <div class="col-md-2 col-xl-1 text-center mb-2 mb-md-0">
-              <a :href="`/profile/${bounty.org_name}`" v-show="bounty.avatar_url"><img :class="`avatar avatar-big ${bounty.github_org_name}`" :src="[[bounty.avatar_url]]"></a>
-            </div>
-            <div class="col-md-10">
-              <div v-if="bounty.event" class="font-subheader hackathon-alt text-center text-lg-left" id="event_name">
-                Hackathon: [[bounty.event.name]]
+          <div class="col-12 pt-3 text-center" v-if="contxt.is_staff && loadingState == 'resolved'">
+            <span class="text-black-70 my-2 font-caption">
+              <i class="fas fa-user-secret mr-2"></i>
+              Admin Actions
+            </span>
+            <a v-for="link in quickLinks" class="btn btn-outline-primary px-2 mx-2 btn-sm" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
+            <button class="btn btn-outline-primary px-2 mx-2 btn-sm" @click="contactFunder()">Contact Funder</button>
+          </div>
+          <div class="col-12" v-if="loadingState === 'resolved'">
+            {% if event_tag %}
+              <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body mt-3">
+                <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Hackathon Explorer" %}
+              </a>
+            {% else %}
+              <a href="{% url 'explorer' %}" class="btn btn-link font-body mt-3">
+                <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Issue Explorer" %}
+              </a>
+            {% endif %}
+            <div class="row align-items-center mt-4 mb-3">
+              <div class="col-md-2 col-xl-1 text-center mb-2 mb-md-0">
+                <a :href="`/profile/${bounty.org_name}`" v-show="bounty.avatar_url"><img :class="`avatar avatar-big ${bounty.github_org_name}`" :src="[[bounty.avatar_url]]"></a>
               </div>
-              <h4 id="title" class="font-title p-0 text-center text-lg-left">[[bounty.title]]</h4>
-              <div class="text-center text-lg-left">
-                <div class="tags font-caption d-inline-flex d-md-flex">
-                  <div class="tag token" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">${bounty.value_true} ${bounty.token_name} in funding from original funder.</div>`'>
-                    <p class="inner-tooltip">
-                      <span id="value_in_token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
-                    </p>
+              <div class="col-md-10">
+                <div v-if="bounty.event" class="font-subheader hackathon-alt text-center text-lg-left" id="event_name">
+                  Hackathon: [[bounty.event.name]]
+                </div>
+                <h4 id="title" class="font-title p-0 text-center text-lg-left" v-html="bounty.title"></h4>
+                <div class="text-center text-lg-left">
+                  <div class="tags font-caption d-inline-flex d-md-flex">
+                    <div class="tag token" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">${bounty.value_true} ${bounty.token_name} in funding from original funder.</div>`'>
+                      <p class="inner-tooltip">
+                        <span id="value_in_token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                      </p>
+                    </div>
+                    <div v-if="bounty.value_in_usdt_now" id="value_in_usdt_wrapper" class="tag usd ml-3" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">The funding in this bounty adds up to $${bounty.value_in_usdt_now} USD </div>`'>
+                      <p class="inner-tooltip">
+                        <span id="value_in_usdt">[[bounty.value_in_usdt_now]]</span>
+                        <span>USD</span>
+                      </p>
+                    </div>
+                    <div class="d-inline-block font-subheader ml-3" id="bounty_categories">
+                      <template v-for="category in bounty.bounty_categories">
+                        <span class="badge badge-secondary mr-1" v-if="category === 'frontend'"><i class="fas fa-laptop-code"></i> Front End</span>
+                        <span class="badge badge-secondary mr-1" v-else-if="category === 'backend'"><i class="fas fa-code"></i> Back End</span>
+                        <span class="badge badge-secondary mr-1" v-else-if="category === 'design'"><i class="fas fa-pencil-ruler"></i> Design</span>
+                        <span class="badge badge-secondary mr-1" v-else-if="category === 'documentation'"><i class="fas fa-file-alt"></i> Documentation</span>
+                        <span class="badge badge-secondary mr-1" v-else="category === 'other'"><i class="fas fa-briefcase"></i> Other</span>
+                      </template>
+                    </div>
                   </div>
-                  <div v-if="bounty.value_in_usdt_now" id="value_in_usdt_wrapper" class="tag usd ml-3" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">The funding in this bounty adds up to $${bounty.value_in_usdt_now} USD </div>`'>
-                    <p class="inner-tooltip">
-                      <span id="value_in_usdt">[[bounty.value_in_usdt_now]]</span>
-                      <span>USD</span>
-                    </p>
+                </div>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12" v-if="bounty.network !== 'mainnet'">
+                <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
+                To see mainnet bounties, go to <a href="{% url 'explorer' %}">the bounty explorer</a> and search for mainnet bounties.</span>
+              </div>
+              <div class="col-12 text-center text-lg-left my-3 my-lg-0">
+                <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>
+              </div>
+            </div>
+            <div id="bounty-info-row" class="row font-body bounty-info">
+              <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+                <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
+
+                <span v-if="isExpired" class="bounty-info-text pr-sm-3 pr-md-5">Expired</span>
+                <span v-else-if="expiresAfterAYear" class="bounty-info-text pr-sm-3 pr-md-5">More than a year</span>
+                <time v-else class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
+                  [[ bounty.expires_date | moment ]]
+                </time>
+              </div>
+              <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+                <span class="bounty-info-heading">{% trans "Opened" %} </span>
+                <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.web3_created" :title="bounty.web3_created | momentFormat" id="web3_created">
+                  [[ bounty.web3_created | moment ]]
+                </time>
+              </div>
+              <div v-if="bounty.bounty_type" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+                <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
+                <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_type">[[ bounty.bounty_type ]]</span>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" id="auto_approve_workers_wrapper" v-if="bounty.permission_type === 'approval'">
+                <span class="bounty-info-heading">{% trans "Workers Auto Approve" %} </span>
+                <span class="bounty-info-text pr-sm-3 pr-md-5" id="admin_override_suspend_auto_approval">[[ bounty.admin_override_suspend_auto_approval ? 'Off' : 'On' ]]</span>
+              </div>
+              <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+                <span class="bounty-info-heading mr-1" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>
+                  {% trans "Project Type" %} <i class="fas fa-info-circle"></i>
+                </span>
+                <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_type" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>[[ bounty.project_type ]]
+                </span>
+              </div>
+
+              <div v-if="bounty.project_length" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.project_length">
+                <span class="bounty-info-heading">{% trans "Time Commitment" %}</span>
+                <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_length">[[ bounty.project_length ]]</span>
+              </div>
+              <div v-if="bounty.experience_level" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+                <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
+                <span class="bounty-info-text pr-sm-3 pr-md-5" id="experience_level">[[ bounty.experience_level ]]</span>
+              </div>
+              <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+                <span class="bounty-info-heading" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %} <i class="fas fa-info-circle"></i></span>
+                <span class="bounty-info-text pr-sm-3 pr-md-5" id="permission_type" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>[[ bounty.permission_type ]]</span>
+              </div>
+              <div id="fulfillment_accepted_on_wrapper" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.fulfillment_accepted_on">
+                <span class="bounty-info-heading">{% trans "Accepted" %} </span>
+                <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.fulfillment_accepted_on" :title="bounty.fulfillment_accepted_on | momentFormat" id="fulfillment_accepted_on">
+                  [[ bounty.fulfillment_accepted_on | moment ]]
+                </time>
+              </div>
+              <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.reserved_for_user_handle">
+                <span class="bounty-info-heading" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
+                <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_reserved_for">[[ bounty.reserved_for_user_handle ]]</span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
+                <template v-if="isOwner || contxt.is_staff">
+                  <div v-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
+                    <a class="btn btn-primary btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
+                      <i class="fas fa-check mr-2"></i>
+                      {% trans "Close Bounty" %}
+                    </a>
                   </div>
-                  <div class="d-inline-block font-subheader ml-3" id="bounty_categories">
-                    <template v-for="category in bounty.bounty_categories">
-                      <span class="badge badge-secondary mr-1" v-if="category === 'frontend'"><i class="fas fa-laptop-code"></i> Front End</span>
-                      <span class="badge badge-secondary mr-1" v-else-if="category === 'backend'"><i class="fas fa-code"></i> Back End</span>
-                      <span class="badge badge-secondary mr-1" v-else-if="category === 'design'"><i class="fas fa-pencil-ruler"></i> Design</span>
-                      <span class="badge badge-secondary mr-1" v-else-if="category === 'documentation'"><i class="fas fa-file-alt"></i> Documentation</span>
-                      <span class="badge badge-secondary mr-1" v-else="category === 'other'"><i class="fas fa-briefcase"></i> Other</span>
+                </template>
+
+                <template v-if="checkInterest()">
+                  <a :href="bounty.action_urls.fulfill" class="btn btn-primary btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
+                    Submit Work
+                  </a>
+                  <button class="btn btn-primary btn-sm mr-2 px-3 font-caption" @click="stopWork()">
+                    Stop Work
+                  </button>
+                </template>
+                <template v-else-if="bounty.is_open && !isOwner">
+                  <button class="btn btn-primary btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
+                    Express Interest
+                  </button>
+                  <button @click="show_interest_modal()" class="btn btn-primary btn-sm mr-2 px-3 font-caption" v-else>
+                    Start Work
+                  </button>
+                </template>
+                <div id="github_actions" class="d-inline-block">
+                  <a :href="bounty.github_url" class="btn btn-outline-primary mr-2 px-3" target="_blank">
+                    <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
+                  </a>
+                  <a class="modal-link btn btn-outline-primary px-3" href="#" data-toggle="modal" data-target=".share-modal">
+                    <i class="fas fa-share-alt mr-2"></i>
+                    <span>Share</span>
+                  </a>
+                </div>
+                <div class="dropdown show float-right" v-if="isOwner">
+                  <a class="btn btn-link btn-sm blue dropdown-toggle font-caption" href="#" role="button"
+                    id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% trans "Bounty Options" %}
+                  </a>
+                  <div id="bounty-options-link" class="dropdown-menu font-caption shadow-sm" aria-labelledby="bounty-options">
+                    <a class="dropdown-item p-2" @click="syncGhIssue()">
+                      <i class="fas fa-sync mr-2"></i>
+                      Sync Issue
+                    </a>
+                    <a class="dropdown-item p-2" :href="`/bounty/change/${bounty.pk}`" v-if="isOwner">
+                      <i class="fas fa-edit mr-2"></i>
+                      Update Details
+                    </a>
+                    <a class="dropdown-item p-2" :href="bounty.action_urls.invoice">
+                      <i class="fas fa-file-alt mr-2"></i>
+                      Show Invoice
+                    </a>
+                    <button class="dropdown-item p-2" @click="show_extend_deadline_modal()">
+                      <i class="fas fa-calendar-plus mr-2"></i>
+                      Extend Deadline
+                    </button>
+                    <a class="dropdown-item p-2" :href="`${bounty.url}?trigger_remarket=1`" v-if="bounty.can_remarket">
+                      <i class="fas fa-bullhorn mr-2"></i>
+                      Remarket Issue
+                    </a>
+                    <a class="dropdown-item p-2" :href="bounty.action_urls.cancel">
+                      <i class="fas fa-times mr-2"></i>
+                      Cancel Bounty
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-12 mt-2">
+                <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
+                <div class="issue_description" :inner-html.prop="bounty.issue_description | markdownit"></div>
+              </div>
+              <div class="col-12">
+                <div id="issue_keywords">
+                  <div v-if="bounty.keywords" class="">
+                    <template v-for="keyword in bounty.keywords.split(',')">
+                      <a class="tag keyword" :href="`/explorer/?q=${keyword.trim()}`">[[ keyword ]]</a>[[ ' ' ]]
                     </template>
                   </div>
                 </div>
               </div>
-
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12" v-if="bounty.network !== 'mainnet'">
-              <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
-              To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.</span>
-            </div>
-            <div class="col-12 text-center text-lg-left my-3 my-lg-0">
-              <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>
-            </div>
-          </div>
-          <div id="bounty-info-row" class="row font-body bounty-info">
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
-              <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
-              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
-                [[ bounty.expires_date | moment ]]
-              </time>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
-              <span class="bounty-info-heading">{% trans "Opened" %} </span>
-              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.web3_created" :title="bounty.web3_created | momentFormat" id="web3_created">
-                [[ bounty.web3_created | moment ]]
-              </time>
-            </div>
-            <div v-if="bounty.bounty_type" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
-              <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
-              <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_type">[[ bounty.bounty_type ]]</span>
             </div>
 
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" id="auto_approve_workers_wrapper" v-if="bounty.permission_type === 'approval'">
-              <span class="bounty-info-heading">{% trans "Workers Auto Approve" %} </span>
-              <span class="bounty-info-text pr-sm-3 pr-md-5" id="admin_override_suspend_auto_approval">[[ bounty.admin_override_suspend_auto_approval ? 'Off' : 'On' ]]</span>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
-              <span class="bounty-info-heading mr-1" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>
-                {% trans "Project Type" %} <i class="fas fa-info-circle"></i>
-              </span>
-              <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_type" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>[[ bounty.project_type ]]
-              </span>
-            </div>
-
-            <div v-if="bounty.project_length" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.project_length">
-              <span class="bounty-info-heading">{% trans "Time Commitment" %}</span>
-              <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_length">[[ bounty.project_length ]]</span>
-            </div>
-            <div v-if="bounty.experience_level" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
-              <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
-              <span class="bounty-info-text pr-sm-3 pr-md-5" id="experience_level">[[ bounty.experience_level ]]</span>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
-              <span class="bounty-info-heading" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %} <i class="fas fa-info-circle"></i></span>
-              <span class="bounty-info-text pr-sm-3 pr-md-5" id="permission_type" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>[[ bounty.permission_type ]]</span>
-            </div>
-            <div id="fulfillment_accepted_on_wrapper" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.fulfillment_accepted_on">
-              <span class="bounty-info-heading">{% trans "Accepted" %} </span>
-              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.fulfillment_accepted_on" :title="bounty.fulfillment_accepted_on | momentFormat" id="fulfillment_accepted_on">
-                [[ bounty.fulfillment_accepted_on | moment ]]
-              </time>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.reserved_for_user_handle">
-              <span class="bounty-info-heading" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
-              <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_reserved_for">[[ bounty.reserved_for_user_handle ]]</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
-              <template v-if="isOwner">
-                <div v-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
-                  <a class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
-                    <i class="fas fa-check mr-2"></i>
-                    {% trans "Close Bounty" %}
-                  </a>
-                </div>
-              </template>
-
-              <template v-if="checkInterest()">
-                <a :href="bounty.action_urls.fulfill" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
-                  Submit Work
-                </a>
-                <button v-if="canStopWork(contxt.github_handle)" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
-                  Stop Work
-                </button>
-              </template>
-              <template v-else-if="bounty.is_open && !isOwner">
-                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
-                  Express Interest
-                </button>
-                <button @click="show_interest_modal()" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-else>
-                  Start Work
-                </button>
-              </template>
-              <div id="github_actions" class="d-inline-block">
-                <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" target="_blank">
-                  <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
-                </a>
-                <a class="modal-link btn btn-outline-gc-blue btn-sm px-3 font-caption" href="#" data-toggle="modal" data-target=".share-modal">
-                  <i class="fas fa-share-alt mr-2"></i>
-                  <span>Share</span>
-                </a>
-              </div>
-              <div class="dropdown show float-right" v-if="isOwner">
-                <a class="btn btn-link btn-sm blue dropdown-toggle font-caption" href="#" role="button"
-                  id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {% trans "Bounty Options" %}
-                </a>
-                <div id="bounty-options-link" class="dropdown-menu font-caption shadow-sm" aria-labelledby="bounty-options">
-                  <a class="dropdown-item p-2" @click="syncGhIssue()">
-                    <i class="fas fa-sync mr-2"></i>
-                    Sync Issue
-                  </a>
-                  <a class="dropdown-item p-2" :href="`/bounty/change/${bounty.pk}`" v-if="isOwner">
-                    <i class="fas fa-edit mr-2"></i>
-                    Update Details
-                  </a>
-                  <a class="dropdown-item p-2" :href="bounty.action_urls.invoice">
-                    <i class="fas fa-file-alt mr-2"></i>
-                    Show Invoice
-                  </a>
-                  <button class="dropdown-item p-2" @click="show_extend_deadline_modal()">
-                    <i class="fas fa-calendar-plus mr-2"></i>
-                    Extend Deadline
-                  </button>
-                  <a class="dropdown-item p-2" :href="`${bounty.url}?trigger_remarket=1`" v-if="bounty.can_remarket">
-                    <i class="fas fa-bullhorn mr-2"></i>
-                    Remarket Issue
-                  </a>
-                  <a class="dropdown-item p-2" :href="bounty.action_urls.cancel">
-                    <i class="fas fa-times mr-2"></i>
-                    Cancel Bounty
-                  </a>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="row">
-            <div class="col-12 mt-2">
-              <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
-              <div class="issue_description" :inner-html.prop="bounty.issue_description | markdownit"></div>
-            </div>
-            <div class="col-12">
-              <div id="issue_keywords">
-                <div v-if="bounty.keywords" class="">
-                  <template v-for="keyword in bounty.keywords.split(',')">
-                    <a class="tag keyword" :href="`/explorer/?q=${keyword.trim()}`">[[ keyword ]]</a>[[ ' ' ]]
-                  </template>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row" v-if="bounty.fulfillments && bounty.fulfillments.length">
-            <div class="col-12">
-              <div class="border my-5 px-4 pt-4">
-                <h5 class="font-body font-weight-semibold">{% trans "SUBMISSIONS" %}</h5>
-                <div v-for="fulfillment in bounty.fulfillments" :key="fulfillment.pk" class="my-4 row font-body">
-                  <div class="col-md-2 col-lg-1 text-center text-md-left">
-                    <a :href="`/profile/${fulfillment.profile.handle}`" v-show="fulfillment.profile.avatar_url">
-                      <img class="avatar" :src="[[fulfillment.profile.avatar_url]]">
-                    </a>
-                  </div>
-                  <div class="col-md-4 my-auto text-center text-md-left">
-                    <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-usercard="[[ fulfillment.profile.handle ]]"
-                      data-html="true" data-toggle="popover" data-container="body"
-                    >
-                      [[ fulfillment.profile.handle ]]
-                    </a>
-                    <div class="font-smaller-4" v-if="fulfillment.fulfiller_address">
-
-                      <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.fulfiller_address | truncateHash ]]</span>
-                      <a v-else :href="getAddressURL(fulfillment.token_name, fulfillment.fulfiller_address)" target="_blank">
-                        [[ fulfillment.fulfiller_address | truncateHash ]]
+            <div class="row" v-if="bounty.fulfillments && bounty.fulfillments.length">
+              <div class="col-12">
+                <div class="border my-5 px-4 pt-4">
+                  <h5 class="font-body font-weight-semibold">{% trans "SUBMISSIONS" %}</h5>
+                  <div v-for="fulfillment in bounty.fulfillments" :key="fulfillment.pk" class="my-4 row font-body">
+                    <div class="col-md-2 col-lg-1 text-center text-md-left">
+                      <a :href="`/profile/${fulfillment.profile.handle}`" v-show="fulfillment.profile.avatar_url">
+                        <img class="avatar" :src="[[fulfillment.profile.avatar_url]]">
                       </a>
-
-                      <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
-                        <i class="far fa-clipboard-check"></i>
-                      </button>
                     </div>
-                  </div>
-                  <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
-                    <time class="text-black-60 text-capitalize" :datetime="fulfillment.created_on" :title="fulfillment.created_on | momentFormat">
-                      [[ fulfillment.created_on | moment ]]
-                    </time>
-                  </div>
-                  <div class="col-md-3 col-lg-3 my-auto text-center">
-                    <template v-if="isOwner">
-                      <template v-if="fulfillment.payout_status == 'done'">
-                        <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
-                          <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
-                        </span>
-                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
+                    <div class="col-md-4 my-auto text-center text-md-left">
+                      <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-usercard="[[ fulfillment.profile.handle ]]"
+                        data-html="true" data-toggle="popover" data-container="body"
+                      >
+                        [[ fulfillment.profile.handle ]]
+                      </a>
+                      <div class="font-smaller-4" v-if="fulfillment.fulfiller_address">
 
-                          <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
-                          <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
-                            ([[ fulfillment.payout_tx_id | truncateHash ]])
-                          </a>
+                        <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.fulfiller_address | truncateHash ]]</span>
+                        <a v-else :href="getAddressURL(fulfillment.token_name, fulfillment.fulfiller_address)" target="_blank">
+                          [[ fulfillment.fulfiller_address | truncateHash ]]
+                        </a>
 
-                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
-                            <i class="far fa-clipboard-check"></i>
-                          </button>
-                        </p>
-                      </template>
-
-                      <template v-else-if="fulfillment.payout_status == 'pending'">
-                        <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
-                          <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
+                        <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
+                          <i class="far fa-clipboard-check"></i>
                         </button>
-                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
+                      <time class="text-black-60 text-capitalize" :datetime="fulfillment.created_on" :title="fulfillment.created_on | momentFormat">
+                        [[ fulfillment.created_on | moment ]]
+                      </time>
+                    </div>
+                    <div class="col-md-3 col-lg-3 my-auto text-center">
+                      <template v-if="isOwner">
+                        <template v-if="fulfillment.payout_status == 'done'">
+                          <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
+                            <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
+                          </span>
+                          <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
 
-                          <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
-                          <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
-                            ([[ fulfillment.payout_tx_id | truncateHash ]])
-                          </a>
+                            <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
+                            <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
+                              ([[ fulfillment.payout_tx_id | truncateHash ]])
+                            </a>
 
-                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
-                            <i class="far fa-clipboard-check"></i>
+                            <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                              <i class="far fa-clipboard-check"></i>
+                            </button>
+                          </p>
+                        </template>
+
+                        <template v-else-if="fulfillment.payout_status == 'pending'">
+                          <button class="btn btn-sm btn-outline-primary my-auto px-3 font-smaller-2 font-weight-semibold">
+                            <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                           </button>
-                        </p>
+                          <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
+
+                            <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
+                            <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
+                              ([[ fulfillment.payout_tx_id | truncateHash ]])
+                            </a>
+
+                            <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                              <i class="far fa-clipboard-check"></i>
+                            </button>
+                          </p>
+                        </template>
+
+                        <template v-else>
+                          <template v-if="fulfillment.payout_status == 'expired'">
+                            <span class="font-smaller-1 position-relative" style="top: 2px" data-html="true" data-toggle="tooltip"
+                              title="<div class='tooltip-info text-left'><p class='font-smaller-1 font-weight-semibold mb-1'>We couldn't find the transaction on chain</p><p class='mb-0 font-smaller-2'>Please ensure the payment has been made and click on payout bounty </p></div>">
+                              <i class="fas fa-exclamation-triangle text-danger mr-3"></i>
+                            </span>
+                          </template>
+
+                          <button data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" @click="initFulfillmentContext(fulfillment)" class="btn btn-sm btn-primary my-auto px-5 py-2 font-smaller-2 font-weight-semibold">
+                            Payout Bounty
+                          </button>
+                        </template>
+
                       </template>
 
                       <template v-else>
-                        <template v-if="fulfillment.payout_status == 'expired'">
-                          <span class="font-smaller-1 position-relative" style="top: 2px" data-html="true" data-toggle="tooltip"
-                            title="<div class='tooltip-info text-left'><p class='font-smaller-1 font-weight-semibold mb-1'>We couldn't find the transaction on chain</p><p class='mb-0 font-smaller-2'>Please ensure the payment has been made and click on payout bounty </p></div>">
-                            <i class="fas fa-exclamation-triangle text-danger mr-3"></i>
+                        <div v-if="fulfillment.payout_status == 'done'">
+                          <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
+                            <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                           </span>
-                        </template>
+                          <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
 
-                        <button data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" @click="initFulfillmentContext(fulfillment)" class="btn btn-sm btn-gc-blue my-auto px-5 py-2 font-smaller-2 font-weight-semibold">
-                          Payout Bounty
-                        </button>
-                      </template>
+                            <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
+                            <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
+                              ([[ fulfillment.payout_tx_id | truncateHash ]])
+                            </a>
 
-                    </template>
+                              <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                              <i class="far fa-clipboard-check"></i>
+                            </button>
+                          </p>
+                        </div>
+                        <div v-else-if="fulfillment.payout_status == 'pending'">
+                          <button class="btn btn-sm btn-outline-primary my-auto px-3 font-smaller-2 font-weight-semibold">
+                            <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
+                          </button>
+                          <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
 
-                    <template v-else>
-                      <div v-if="fulfillment.payout_status == 'done'">
-                        <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
-                          <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
-                        </span>
-                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
-
-                          <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
-                          <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
-                            ([[ fulfillment.payout_tx_id | truncateHash ]])
-                          </a>
+                            <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
+                            <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
+                              ([[ fulfillment.payout_tx_id | truncateHash ]])
+                            </a>
 
                             <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
-                            <i class="far fa-clipboard-check"></i>
-                          </button>
+                              <i class="far fa-clipboard-check"></i>
+                            </button>
+                          </p>
+                        </div>
+                      </template>
+
+                    </div>
+                    <div class="col-12">
+                      <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
+                        <i class="far fa-link mr-1"></i>
+                        <span class="font-weight-bold mb-2">PR:</span>
+                        <a :href="fulfillment.fulfiller_github_url" target="_blank">
+                          [[ fulfillment.fulfiller_github_url ]]
+                        </a>
+                        <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
+                          <i class="far fa-clock font-caption mr-1"></i>
+                          <span class="font-weight-bold">Hours worked:</span>
+                          [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
                         </p>
-                      </div>
-                      <div v-else-if="fulfillment.payout_status == 'pending'">
-                        <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
-                          <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
-                        </button>
-                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0 pl-lg-4">
 
-                          <span v-if="fulfillment.payout_type == 'manual'">[[ fulfillment.payout_tx_id | truncateHash ]]</span>
-                          <a v-else :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">
-                            ([[ fulfillment.payout_tx_id | truncateHash ]])
-                          </a>
+                        <modal :id="`payoutModal${fulfillment.pk}`" :ref="`payout-modal${fulfillment.pk}`">
+                          <div slot="body">
 
-                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
-                            <i class="far fa-clipboard-check"></i>
-                          </button>
-                        </p>
-                      </div>
-                    </template>
+                            <!-- PAYPAL FLOW -->
+                            <div v-if="fulfillment.payout_type == 'fiat'" class="px-sm-4">
+                              <div class="text-center pb-3">
+                                <p class="mb-3 font-subheader font-weight-bold">Payout</p>
+                                <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
 
-                  </div>
-                  <div class="col-12">
-                    <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
-                      <i class="far fa-link mr-1"></i>
-                      <span class="font-weight-bold mb-2">PR:</span>
-                      <a :href="fulfillment.fulfiller_github_url" target="_blank">
-                        [[ fulfillment.fulfiller_github_url ]]
-                      </a>
-                      <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
-                        <i class="far fa-clock font-caption mr-1"></i>
-                        <span class="font-weight-bold">Hours worked:</span>
-                        [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
-                      </p>
-
-                      <modal :id="`payoutModal${fulfillment.pk}`" ref="payout-modal">
-                        <div slot="body">
-
-                          <!-- PAYPAL FLOW -->
-                          <div v-if="fulfillment.payout_type == 'fiat'" class="px-sm-4">
-                            <div class="text-center pb-3">
-                              <p class="mb-3 font-subheader font-weight-bold">Payout</p>
-                              <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-
-                              <p class="font-subheader font-weight-bold mt-3 mb-1">
-                                [[ fulfillment.fulfiller_github_username ]]
-                              </p>
-
-                              <p class="font-body text-medium-dark-grey">
-                                [[ fulfillment.fulfiller_identifier ]]
-                              </p>
-                            </div>
-
-                            <!-- STEP : ENTER PAYOUT AMOUNT -->
-                            <div id="payout_amount" v-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
-                              <p class="font-subheader">How much are you paying out to this person?</p>
-
-                              <p class="payout-input-amount-container font-weight-semibold">
-                                <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
-                                <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
-                              </p>
-
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
-                                v-on:click="nextStepAndLoadPYPLButton(fulfillment.pk, fulfillment.fulfiller_identifier)"
-                              >
-                                Next
-                              </button>
-                            </div>
-
-                            <!-- STEP : MAKE PAYMENT -->
-                            <div id="submit_transaction" v-else-if="fulfillment_context.active_step == 'submit_transaction'" class="text-center">
-
-                              <div class="font-caption payout-summary-container p-3 mb-4 text-left">
-                                <p class="mb-1">
-                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                <p class="font-subheader font-weight-bold mt-3 mb-1">
+                                  [[ fulfillment.fulfiller_github_username ]]
                                 </p>
-                                <p class="mb-0">
-                                  <span>To: </span>
-                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_identifier ]]</span>
+
+                                <p class="font-body text-medium-dark-grey">
+                                  [[ fulfillment.fulfiller_identifier ]]
                                 </p>
                               </div>
 
-                              <div id="payout-with-pypl"></div>
+                              <!-- STEP : ENTER PAYOUT AMOUNT -->
+                              <div id="payout_amount" v-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
+                                <p class="font-subheader">How much are you paying out to this person?</p>
 
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('payout_amount', 'submit_transaction')">
-                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
-                                  Previous Step
-                                </a>
-                              </p>
-
-                            </div>
-
-                          </div>
-
-                          <!-- WEB3 MODAL FLOW -->
-                          <div v-else-if="fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext'" class="px-sm-4">
-
-                            <div class="text-center pb-3">
-                              <p class="mb-3 font-subheader font-weight-bold">Payout</p>
-                              <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-
-                              <p class="font-subheader font-weight-bold mt-3 mb-1">
-                                [[ fulfillment.fulfiller_github_username ]]
-                              </p>
-
-                              <p class="font-body text-medium-dark-grey">
-                                [[ fulfillment.fulfiller_address | truncateHash ]]
-                              </p>
-                            </div>
-
-                            <!-- STEP : ENTER PAYOUT AMOUNT -->
-                            <div id="payout_amount" v-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
-                              <p class="font-subheader">How much are you paying out to this person?</p>
-
-                              <p class="payout-input-amount-container font-weight-semibold">
-                                <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
-                                <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
-                              </p>
-
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
-                                v-on:click="goToStep('payout', 'payout_amount')"
-                              >
-                                Next
-                              </button>
-
-                            </div>
-
-                            <!-- STEP: PAYOUT -->
-                            <div id="payout" v-else-if="fulfillment_context.active_step == 'payout'">
-                              <p class="text-center font-subheader mb-1">Pay using your web3 wallet.</p>
-
-                              <div class="font-caption payout-summary-container p-3 mb-4">
-                                <p class="mb-1">
-                                  From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                <p class="payout-input-amount-container font-weight-semibold">
+                                  <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
+                                  <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
                                 </p>
-                                <p class="mb-1">
-                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
-                                </p>
-                                <p class="mb-1">To:</p>
-                                <p class="mb-0">
-                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
-                                  <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
-                                    Copy
-                                  </a>
-                                </p>
-                              </div>
 
-                              <template v-if="fulfillment.payout_type == 'web3_modal'">
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                  @click="payWithWeb3Step(fulfillment.pk, fulfillment.fulfiller_address, $event)"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                  v-on:click="nextStepAndLoadPYPLButton(fulfillment.pk, fulfillment.fulfiller_identifier)"
                                 >
-                                  Payout
+                                  Next
                                 </button>
-                              </template>
-                              <template v-if="fulfillment.payout_type == 'polkadot_ext'">
-                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                  @click="payWithPolkadotExtensionStep(fulfillment.pk, fulfillment.fulfiller_address, $event)"
-                                >
-                                  Payout
-                                </button>
-                              </template>
-
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('payout_amount', 'payout')">
-                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
-                                  Previous Step
-                                </a>
-                              </p>
-                            </div>
-
-                          </div>
-
-                          <!-- MANUAL FLOW -->
-                          <div v-else-if="fulfillment.payout_type == 'manual'" class="px-sm-4">
-
-                            <div class="text-center pb-3">
-                              <p class="mb-3 font-subheader font-weight-bold">Payout</p>
-                              <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-
-                              <p class="font-subheader font-weight-bold mt-3 mb-1">
-                                [[ fulfillment.fulfiller_github_username ]]
-                              </p>
-
-                              <p class="font-body text-medium-dark-grey">
-                                [[ fulfillment.fulfiller_address | truncateHash ]]
-                              </p>
-                            </div>
-
-                            <!-- STEP : WALLET OWNER CHECK -->
-                            <div id="check_wallet_owner" v-if="fulfillment_context.active_step == 'check_wallet_owner'">
-
-                              <p>
-                                This bounty can only be paid out from the same wallet address that funded it.
-                              </p>
-                              <p class="mb-4 font-weight-bold">
-                                Make sure you’re paying out from this address
-
-                                <span v-if="fulfillment.payout_type == 'manual'">[[ bounty.bounty_owner_address | truncateHash ]]</span>
-                                <a v-else class="font-weight-bold" :href="getAddressURL(fulfillment.token_name, bounty.bounty_owner_address)" target="_blank">
-                                  [[ bounty.bounty_owner_address ]]
-                                </a>
-
-                              </p>
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-4"
-                                v-on:click="goToStep('payout_amount', 'check_wallet_owner')"
-                              >
-                                Yes, I understand
-                              </button>
-                            </div>
-
-                            <!-- STEP : ENTER PAYOUT AMOUNT -->
-                            <div id="payout_amount" v-else-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
-                              <p class="font-subheader">How much are you paying out to this person?</p>
-
-                              <p class="payout-input-amount-container font-weight-semibold">
-                                <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
-                                <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
-                              </p>
-
-                              <button  class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
-                                v-on:click="goToStep('submit_transaction', 'payout_amount')"
-                              >
-                                Next
-                              </button>
-
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('check_wallet_owner', 'payout_amount')">
-                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
-                                  Previous Step
-                                </a>
-                              </p>
-                            </div>
-
-                            <!-- STEP: SUBMIT TXN ID -->
-                            <div id="submit_transaction" v-else-if="fulfillment_context.active_step == 'submit_transaction'">
-                              <div v-if="fulfillment_context.flow == 'access_to_wallet'" class="text-center">
-
                               </div>
 
-                              <p class="mb-1 font-subheader">
-                                Pay with your wallet and enter the transaction ID
-                              </p>
+                              <!-- STEP : MAKE PAYMENT -->
+                              <div id="submit_transaction" v-else-if="fulfillment_context.active_step == 'submit_transaction'" class="text-center">
 
-
-                              <p class="font-caption text-medium-dark-grey mb-2">
-                                Input the
-                                <span class="font-weight-bold">Transaction ID</span>
-                                of the payment:
-                              </p>
-                              <div class="payout-tx-container">
-                                <input v-model="fulfillment_context.payout_tx_id"
-                                  name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
-                                  class="w-100 p-2 font-smaller-5 border-0"
-                                >
-                              </div>
-
-                              <div class="font-caption payout-summary-container p-3 my-4">
-                                <p class="mb-1">
-                                  From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
-                                </p>
-                                <p class="mb-1">
-                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
-                                </p>
-                                <p class="mb-1">To:</p>
-                                <p class="mb-1">
-                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
-                                  <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
-                                    Copy
-                                  </a>
-                                </p>
-                              </div>
-
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
-                              >
-                                I have Paid
-                              </button>
-
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('payout_amount', 'submit_transaction')">
-                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
-                                  Previous Step
-                                </a>
-                              </p>
-
-                            </div>
-
-                          </div>
-
-                          <!-- CROSS CHAIN FLOW -->
-                          <div v-else class="px-sm-4">
-
-                            <div class="text-center pb-3">
-                              <p class="mb-3 font-subheader font-weight-bold">Payout</p>
-                              <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-
-                              <p class="font-subheader font-weight-bold mt-3 mb-1">
-                                [[ fulfillment.fulfiller_github_username ]]
-                              </p>
-
-                              <p class="font-body text-medium-dark-grey">
-                                [[ fulfillment.fulfiller_address | truncateHash ]]
-                              </p>
-                            </div>
-
-                            <!-- STEP : WALLET OWNER CHECK -->
-                            <div id="check_wallet_owner" v-if="fulfillment_context.active_step == 'check_wallet_owner'">
-
-                              <p>
-                                This bounty can only be paid out from the same wallet address that funded it.
-                              </p>
-                              <p class="mb-4">
-                                Make sure you’re paying out from this address
-
-                                <span v-if="fulfillment.payout_type == 'manual'">[[ bounty.bounty_owner_address | truncateHash ]]</span>
-                                <a v-else class="font-weight-bold" :href="getAddressURL(fulfillment.token_name, bounty.bounty_owner_address)" target="_blank">
-                                  [[ bounty.bounty_owner_address ]]
-                                </a>
-
-                              </p>
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-4"
-                                v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
-                              >
-                                Yes, I understand
-                              </button>
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'no_access_to_wallet')">
-                                  I don’t have access to this address
-                                </a>
-                              </p>
-
-                            </div>
-
-                            <!-- STEP : ENTER PAYOUT AMOUNT -->
-                            <div id="payout_amount" v-else-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
-                              <p class="font-subheader">How much are you paying out to this person?</p>
-
-                              <p class="payout-input-amount-container font-weight-semibold">
-                                <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
-                                <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
-                              </p>
-
-                              <button v-if="fulfillment_context.flow == 'access_to_wallet'"
-                                class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
-                                v-on:click="goToStep('scan_qr_code', 'payout_amount')"
-                              >
-                                Next
-                              </button>
-                              <button v-else class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
-                                v-on:click="goToStep('submit_transaction', 'payout_amount')"
-                              >
-                                Next
-                              </button>
-
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('check_wallet_owner', 'payout_amount')">
-                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
-                                  Previous Step
-                                </a>
-                              </p>
-                            </div>
-
-                            <!-- STEP: SCAN QR CODE -->
-                            <div id="scan_qr_code" v-else-if="fulfillment_context.active_step == 'scan_qr_code'">
-                              <p class="text-center font-subheader mb-1">Scan the QR code with your [[ bounty.token_name ]] wallet to payout.</p>
-                              <p class="font-caption text-center">
-                                <a href="#" v-on:click="goToStep('submit_transaction', 'scan_qr_code')">
-                                  ( Don't have a QR wallet ? )
-                                </a>
-                              </p>
-
-                              <div class="text-center py-3">
-                                <qrcode v-if="fulfillment_context.include_amount_in_qr" :string="getQRString(bounty.token_name, fulfillment.fulfiller_address, fulfillment_context.amount)"></qrcode>
-                                <qrcode v-else :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
-
-                                <div class="custom-control custom-switch mt-4">
-                                  <input type="checkbox" class="custom-control-input" id="include_amount_in_qr" v-model="fulfillment_context.include_amount_in_qr" checked>
-                                  <label class="custom-control-label" for="include_amount_in_qr">Include amount in QR code</label>
+                                <div class="font-caption payout-summary-container p-3 mb-4 text-left">
+                                  <p class="mb-1">
+                                    Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                  </p>
+                                  <p class="mb-0">
+                                    <span>To: </span>
+                                    <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                    <span class="font-weight-bold">[[ fulfillment.fulfiller_identifier ]]</span>
+                                  </p>
                                 </div>
+
+                                <div id="payout-with-pypl"></div>
+
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('payout_amount', 'submit_transaction')">
+                                    <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                    Previous Step
+                                  </a>
+                                </p>
+
                               </div>
 
-                              <div class="font-caption payout-summary-container p-3 mb-4">
-                                <p class="mb-1">
-                                  From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                            </div>
+
+                            <!-- WEB3 MODAL FLOW -->
+                            <div v-else-if="fulfillment.payout_type == 'algorand_ext' || fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
+
+                              <div class="text-center pb-3">
+                                <p class="mb-3 font-subheader font-weight-bold">Payout</p>
+                                <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+
+                                <p class="font-subheader font-weight-bold mt-3 mb-1">
+                                  [[ fulfillment.fulfiller_github_username ]]
                                 </p>
-                                <p class="mb-1">
-                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+
+                                <p class="font-body text-medium-dark-grey">
+                                  [[ fulfillment.fulfiller_address | truncateHash ]]
                                 </p>
-                                <p class="mb-1">To:</p>
-                                <p class="mb-0">
-                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
-                                  <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
-                                    Copy
+                              </div>
+
+                              <!-- STEP : ENTER PAYOUT AMOUNT -->
+                              <div id="payout_amount" v-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
+                                <p class="font-subheader">How much are you paying out to this person?</p>
+
+                                <p class="payout-input-amount-container font-weight-semibold">
+                                  <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
+                                  <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
+                                </p>
+
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                  v-on:click="goToStep('payout', 'payout_amount')"
+                                >
+                                  Next
+                                </button>
+
+                              </div>
+
+                              <!-- STEP: PAYOUT -->
+                              <div id="payout" v-else-if="fulfillment_context.active_step == 'payout'">
+                                <p class="text-center font-subheader mb-1">Pay using your web3 wallet.</p>
+
+                                <div class="font-caption payout-summary-container p-3 mb-4">
+                                  <p class="mb-1">
+                                    From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                  </p>
+                                  <p class="mb-1">
+                                    Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                  </p>
+                                  <p class="mb-1">To:</p>
+                                  <p class="mb-0">
+                                    <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                    <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
+                                    <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
+                                      Copy
+                                    </a>
+                                  </p>
+                                </div>
+
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  @click="payWithExtension(fulfillment.pk, fulfillment.fulfiller_address, fulfillment.payout_type, $event)"
+                                >
+                                  Payout
+                                </button>
+
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('payout_amount', 'payout')">
+                                    <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                    Previous Step
                                   </a>
                                 </p>
                               </div>
 
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
-                              >I have paid
-                              </button>
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('payout_amount', 'scan_qr_code')">
-                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
-                                  Previous Step
-                                </a>
-                              </p>
                             </div>
 
-                            <!-- STEP: SUBMIT TXN ID -->
-                            <div id="submit_transaction" v-else-if="fulfillment_context.active_step == 'submit_transaction'">
-                              <div v-if="fulfillment_context.flow == 'access_to_wallet'" class="text-center">
+                            <!-- MANUAL FLOW -->
+                            <div v-else-if="fulfillment.payout_type == 'manual'" class="px-sm-4">
+
+                              <div class="text-center pb-3">
+                                <p class="mb-3 font-subheader font-weight-bold">Payout</p>
+                                <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+
+                                <p class="font-subheader font-weight-bold mt-3 mb-1">
+                                  [[ fulfillment.fulfiller_github_username ]]
+                                </p>
+
+                                <p class="font-body text-medium-dark-grey">
+                                  [[ fulfillment.fulfiller_address | truncateHash ]]
+                                </p>
+                              </div>
+
+                              <!-- STEP : WALLET OWNER CHECK -->
+                              <div id="check_wallet_owner" v-if="fulfillment_context.active_step == 'check_wallet_owner'">
+
+                                <p>
+                                  This bounty can only be paid out from the same wallet address that funded it.
+                                </p>
+                                <p class="mb-4 font-weight-bold">
+                                  Make sure you’re paying out from this address
+
+                                  <span v-if="fulfillment.payout_type == 'manual'">[[ bounty.bounty_owner_address | truncateHash ]]</span>
+                                  <a v-else class="font-weight-bold" :href="getAddressURL(fulfillment.token_name, bounty.bounty_owner_address)" target="_blank">
+                                    [[ bounty.bounty_owner_address ]]
+                                  </a>
+
+                                </p>
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
+                                  v-on:click="goToStep('payout_amount', 'check_wallet_owner')"
+                                >
+                                  Yes, I understand
+                                </button>
+                              </div>
+
+                              <!-- STEP : ENTER PAYOUT AMOUNT -->
+                              <div id="payout_amount" v-else-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
+                                <p class="font-subheader">How much are you paying out to this person?</p>
+
+                                <p class="payout-input-amount-container font-weight-semibold">
+                                  <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
+                                  <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
+                                </p>
+
+                                <button  class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                  v-on:click="goToStep('submit_transaction', 'payout_amount')"
+                                >
+                                  Next
+                                </button>
+
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('check_wallet_owner', 'payout_amount')">
+                                    <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                    Previous Step
+                                  </a>
+                                </p>
+                              </div>
+
+                              <!-- STEP: SUBMIT TXN ID -->
+                              <div id="submit_transaction" v-else-if="fulfillment_context.active_step == 'submit_transaction'">
+                                <div v-if="fulfillment_context.flow == 'access_to_wallet'" class="text-center">
+
+                                </div>
+
                                 <p class="mb-1 font-subheader">
                                   Pay with your wallet and enter the transaction ID
                                 </p>
-                                <p>
-                                  <a href="#" class="font-caption" v-on:click="goToStep('scan_qr_code', 'submit_transaction')">
-                                    ( Switch to QR code payment )
-                                  </a>
+
+
+                                <p class="font-caption text-medium-dark-grey mb-2">
+                                  Input the
+                                  <span class="font-weight-bold">Transaction ID</span>
+                                  of the payment:
                                 </p>
-                              </div>
+                                <div class="payout-tx-container">
+                                  <input v-model="fulfillment_context.payout_tx_id"
+                                    name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
+                                    class="w-100 p-2 font-smaller-5 border-0"
+                                  >
+                                </div>
 
-                              <p v-else class="text-center font-subheader mb-4">
-                                Contact the owner of wallet
-                                <span class="font-weight-bold">[[ bounty.bounty_owner_address | truncateHash ]]</span>
-                                to make the payment with the details below:
-                              </p>
+                                <div class="font-caption payout-summary-container p-3 my-4">
+                                  <p class="mb-1">
+                                    From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                  </p>
+                                  <p class="mb-1">
+                                    Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                  </p>
+                                  <p class="mb-1">To:</p>
+                                  <p class="mb-1">
+                                    <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                    <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
+                                    <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
+                                      Copy
+                                    </a>
+                                  </p>
+                                </div>
 
-                              <p class="font-caption text-medium-dark-grey mb-2">
-                                Input the
-                                <span class="font-weight-bold">Transaction ID</span>
-                                of the payment:
-                              </p>
-                              <div class="payout-tx-container">
-                                <input v-model="fulfillment_context.payout_tx_id"
-                                  name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
-                                  class="w-100 p-2 font-smaller-5 border-0"
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
+                                  I have Paid
+                                </button>
+
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('payout_amount', 'submit_transaction')">
+                                    <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                    Previous Step
+                                  </a>
+                                </p>
+
                               </div>
 
-                              <div class="font-caption payout-summary-container p-3 my-4">
-                                <p class="mb-1">
-                                  From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                            </div>
+
+                            <!-- CROSS CHAIN FLOW -->
+                            <div v-else class="px-sm-4">
+
+                              <div class="text-center pb-3">
+                                <p class="mb-3 font-subheader font-weight-bold">Payout</p>
+                                <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+
+                                <p class="font-subheader font-weight-bold mt-3 mb-1">
+                                  [[ fulfillment.fulfiller_github_username ]]
                                 </p>
-                                <p class="mb-1">
-                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+
+                                <p class="font-body text-medium-dark-grey">
+                                  [[ fulfillment.fulfiller_address | truncateHash ]]
                                 </p>
-                                <p class="mb-1">To:</p>
-                                <p class="mb-1">
-                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
-                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
-                                  <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
-                                    Copy
+                              </div>
+
+                              <!-- STEP : WALLET OWNER CHECK -->
+                              <div id="check_wallet_owner" v-if="fulfillment_context.active_step == 'check_wallet_owner'">
+
+                                <p>
+                                  This bounty can only be paid out from the same wallet address that funded it.
+                                </p>
+                                <p class="mb-4">
+                                  Make sure you’re paying out from this address
+
+                                  <span v-if="fulfillment.payout_type == 'manual'">[[ bounty.bounty_owner_address | truncateHash ]]</span>
+                                  <a v-else class="font-weight-bold" :href="getAddressURL(fulfillment.token_name, bounty.bounty_owner_address)" target="_blank">
+                                    [[ bounty.bounty_owner_address ]]
+                                  </a>
+
+                                </p>
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
+                                  v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
+                                >
+                                  Yes, I understand
+                                </button>
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'no_access_to_wallet')">
+                                    I don’t have access to this address
+                                  </a>
+                                </p>
+
+                              </div>
+
+                              <!-- STEP : ENTER PAYOUT AMOUNT -->
+                              <div id="payout_amount" v-else-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
+                                <p class="font-subheader">How much are you paying out to this person?</p>
+
+                                <p class="payout-input-amount-container font-weight-semibold">
+                                  <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
+                                  <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
+                                </p>
+
+                                <button v-if="fulfillment_context.flow == 'access_to_wallet'"
+                                  class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                  v-on:click="goToStep('scan_qr_code', 'payout_amount')"
+                                >
+                                  Next
+                                </button>
+                                <button v-else class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                  v-on:click="goToStep('submit_transaction', 'payout_amount')"
+                                >
+                                  Next
+                                </button>
+
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('check_wallet_owner', 'payout_amount')">
+                                    <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                    Previous Step
                                   </a>
                                 </p>
                               </div>
 
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
-                              >
-                                I have Paid
-                              </button>
+                              <!-- STEP: SCAN QR CODE -->
+                              <div id="scan_qr_code" v-else-if="fulfillment_context.active_step == 'scan_qr_code'">
+                                <p class="text-center font-subheader mb-1">Scan the QR code with your [[ bounty.token_name ]] wallet to payout.</p>
+                                <p class="font-caption text-center">
+                                  <a href="#" v-on:click="goToStep('submit_transaction', 'scan_qr_code')">
+                                    ( Don't have a QR wallet ? )
+                                  </a>
+                                </p>
 
-                              <p class="font-subheader mt-4 mb-0 text-center">
-                                <a href="#" v-on:click="goToStep('payout_amount', 'submit_transaction')">
-                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
-                                  Previous Step
-                                </a>
-                              </p>
+                                <div class="text-center py-3">
+                                  <qrcode v-if="fulfillment_context.include_amount_in_qr" :string="getQRString(bounty.token_name, fulfillment.fulfiller_address, fulfillment_context.amount)"></qrcode>
+                                  <qrcode v-else :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
+
+                                  <div class="custom-control custom-switch mt-4">
+                                    <input type="checkbox" class="custom-control-input" id="include_amount_in_qr" v-model="fulfillment_context.include_amount_in_qr" checked>
+                                    <label class="custom-control-label" for="include_amount_in_qr">Include amount in QR code</label>
+                                  </div>
+                                </div>
+
+                                <div class="font-caption payout-summary-container p-3 mb-4">
+                                  <p class="mb-1">
+                                    From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                  </p>
+                                  <p class="mb-1">
+                                    Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                  </p>
+                                  <p class="mb-1">To:</p>
+                                  <p class="mb-0">
+                                    <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                    <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
+                                    <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
+                                      Copy
+                                    </a>
+                                  </p>
+                                </div>
+
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
+                                >I have paid
+                                </button>
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('payout_amount', 'scan_qr_code')">
+                                    <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                    Previous Step
+                                  </a>
+                                </p>
+                              </div>
+
+                              <!-- STEP: SUBMIT TXN ID -->
+                              <div id="submit_transaction" v-else-if="fulfillment_context.active_step == 'submit_transaction'">
+                                <div v-if="fulfillment_context.flow == 'access_to_wallet'" class="text-center">
+                                  <p class="mb-1 font-subheader">
+                                    Pay with your wallet and enter the transaction ID
+                                  </p>
+                                  <p>
+                                    <a href="#" class="font-caption" v-on:click="goToStep('scan_qr_code', 'submit_transaction')">
+                                      ( Switch to QR code payment )
+                                    </a>
+                                  </p>
+                                </div>
+
+                                <p v-else class="text-center font-subheader mb-4">
+                                  Contact the owner of wallet
+                                  <span class="font-weight-bold">[[ bounty.bounty_owner_address | truncateHash ]]</span>
+                                  to make the payment with the details below:
+                                </p>
+
+                                <p class="font-caption text-medium-dark-grey mb-2">
+                                  Input the
+                                  <span class="font-weight-bold">Transaction ID</span>
+                                  of the payment:
+                                </p>
+                                <div class="payout-tx-container">
+                                  <input v-model="fulfillment_context.payout_tx_id"
+                                    name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
+                                    class="w-100 p-2 font-smaller-5 border-0"
+                                  >
+                                </div>
+
+                                <div class="font-caption payout-summary-container p-3 my-4">
+                                  <p class="mb-1">
+                                    From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                  </p>
+                                  <p class="mb-1">
+                                    Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                  </p>
+                                  <p class="mb-1">To:</p>
+                                  <p class="mb-1">
+                                    <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                    <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
+                                    <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
+                                      Copy
+                                    </a>
+                                  </p>
+                                </div>
+
+                                <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
+                                  @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
+                                >
+                                  I have Paid
+                                </button>
+
+                                <p class="font-subheader mt-4 mb-0 text-center">
+                                  <a href="#" v-on:click="goToStep('payout_amount', 'submit_transaction')">
+                                    <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                    Previous Step
+                                  </a>
+                                </p>
+
+                              </div>
 
                             </div>
 
                           </div>
+                        </modal>
 
-                        </div>
-                      </modal>
-
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="row" v-if="bounty.interested && bounty.interested.length">
-            <div class="col-12">
-              <div class="border my-5 px-4 pt-4">
-                <h5 class="font-body font-weight-semibold">APPLICANTS</h5>
-                <div v-for="interest in bounty.interested" :key="interest.pk" class="my-4 row font-body">
-                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
-                    <a :href="`/profile/${interest.profile.handle}`" v-show="interest.profile.avatar_url">
-                      <img class="avatar" :src="[[interest.profile.avatar_url]]">
-                    </a>
-                  </div>
-                  <div class="col-md-4 my-auto text-center text-md-left">
-                    <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-usercard="[[ interest.profile.handle ]]"
-                      data-html="true" data-toggle="popover" data-container="body"
-                    >
-                      [[ interest.profile.handle ]]
-                    </a>
-
-                  </div>
-                  <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
-                    <time class="text-black-60 text-capitalize" :datetime="interest.created" :title="interest.created | momentFormat">
-                      [[ interest.created | moment ]]
-                    </time>
-                  </div>
-                  <div class="col-md-3 col-lg-3 my-auto text-center">
-                    <template v-if="interest.pending && isOwner">
-                      <a :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
-                        <i class="fas fa-check mr-1 font-caption"></i> Approve
+            <div class="row" v-if="bounty.interested && bounty.interested.length">
+              <div class="col-12">
+                <div class="border my-5 px-4 pt-4">
+                  <h5 class="font-body font-weight-semibold">APPLICANTS</h5>
+                  <div v-for="interest in bounty.interested" :key="interest.pk" class="my-4 row font-body">
+                    <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                      <a :href="`/profile/${interest.profile.handle}`" v-show="interest.profile.avatar_url">
+                        <img class="avatar" :src="[[interest.profile.avatar_url]]">
                       </a>
-                      <a :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
-                        <i class="fas fa-times mr-1 font-caption"></i> Reject
-                      </a>
-                    </template>
-                    <template v-else-if="isOwner && canStopWork(interest.profile.handle)">
-                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner)">
-                        <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
-                      </button>
-                    </template>
-                    <template v-if="interest.profile.handle === contxt.github_handle && canStopWork(interest.profile.handle)">
-                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork()">
-                        <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Work
-                      </button>
-                    </template>
-                  </div>
-                  <div class="col-md-12 my-auto text-center text-md-left">
-                    <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
-                      <p class="font-weight-bold mb-2">Work Plan</p>
-                      <p class="mb-0">
-                        [[ interest.issue_message]]
-                      </p>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row" v-if="bounty.activities && bounty.activities.length">
-            <div class="col-12">
-              <div class="border my-5 px-4 pt-4">
-                <h5 class="font-body font-weight-semibold">ALL ACTIVITY</h5>
-                <div v-for="activity in sortedActivity" :key="activity.pk" class="my-4 row font-body">
-                  <div class="col-md-2 col-lg-1 text-center text-md-left">
-                    <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
-                      <img class="avatar" :src="[[activity.profile.avatar_url]]">
-                    </a>
-                  </div>
-                  <div class="col-lg-3 col-md-3 my-auto text-center text-md-left">
-                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-usercard="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
-                      [[ activity.profile.handle ]]
-                    </a>
-                  </div>
-                  <div class="col-md-4 col-lg-3 my-auto text-center text-md-left">
-                    [[ activity.activity_type | stringReplace ]]
-                    <template v-if="activity.activity_type === 'new_bounty'">
-                      <span class="tag token">
-                        <template v-if="activity.metadata.new_bounty">
-                          [[ activity.metadata.new_bounty.token_value ]]
-                          [[ activity.metadata.new_bounty.token_name ]]
-                        </template>
-                        <template v-else>
-                          [[ activity.metadata.token_value ]]
-                          [[ activity.metadata.token_name ]]
-                        </template>
-                      </span>
-                    </template>
-                    <template v-if="activity.activity_type === 'worker_paid'">
-                      <a :href="`/profile/${activity.metadata.to}`" class="user-popover" :data-username="[[ activity.metadata.to ]]"
+                    <div class="col-md-4 my-auto text-center text-md-left">
+                      <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-usercard="[[ interest.profile.handle ]]"
                         data-html="true" data-toggle="popover" data-container="body"
                       >
-                        [[ activity.metadata.to ]]
+                        [[ interest.profile.handle ]]
                       </a>
-                      <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
-                    </template>
-                    <template v-if="activity.activity_type === 'increased_bounty'">
-                      to <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
-                    </template>
-                    <div v-if="activity.activity_type === 'new_kudos'">
-                      show value
+
                     </div>
-                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
-                      data-html="true" data-toggle="popover" data-container="body"
-                    >
-                      [[ activity.metadata.worker_handle ]]
-                    </a>
-                  </div>
-                  <div class="col-md-3 col-lg-5 my-auto text-center text-md-left">
-                    <time class="text-black-60 text-capitalize" :datetime="activity.created" :title="activity.created |momentFormat">
-                      [[ activity.created | moment ]]
-                    </time>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12">
-              <div class="border my-3 px-4 py-3">
-                <h5 class="bounty-heading mt-0 mb-3">Funder</h5>
-                <div class="row">
-                  <div class="col-md-2 col-lg-1 text-center text-md-left my-auto">
-                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" v-show="bounty.bounty_owner_github_username">
-                      <img class="avatar" :src="'/dynamic/avatar/' + bounty.bounty_owner_github_username">
-                    </a>
-                  </div>
-                  <div class="col-md-10 col-lg-9 my-auto text-center text-md-left">
-                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-usercard="[[ bounty.bounty_owner_github_username ]]"
-                      data-html="true" data-toggle="popover" data-container="body"
-                    >
-                      [[ bounty.bounty_owner_github_username ]]
-                    </a>
-
-                    <div class="font-caption text-black-70">
-                      <span class="font-weight-semibold">Email :</span>
-                      <span>[[ bounty.bounty_owner_email ]]</span>
+                    <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
+                      <time class="text-black-60 text-capitalize" :datetime="interest.created" :title="interest.created | momentFormat">
+                        [[ interest.created | moment ]]
+                      </time>
+                    </div>
+                    <div class="col-md-3 col-lg-3 my-auto text-center">
+                      <template v-if="interest.pending && isOwner">
+                        <a :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-primary m-2 px-3">
+                          <i class="fas fa-check mr-1 font-caption"></i> Approve
+                        </a>
+                        <a :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-outline-primary m-2 px-3">
+                          <i class="fas fa-times mr-1 font-caption"></i> Reject
+                        </a>
+                      </template>
+                      <template v-else-if="isOwner">
+                        <button class="btn btn-outline-primary m-2 px-3" @click="stopWork(isOwner, interest.profile.handle)">
+                          <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
+                        </button>
+                      </template>
+                      <template v-if="interest.profile.handle === contxt.github_handle">
+                        <button class="btn btn-outline-primary m-2 px-3" @click="stopWork()">
+                          <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Work
+                        </button>
+                      </template>
+                    </div>
+                    <div class="col-md-12 my-auto text-center text-md-left">
+                      <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
+                        <p class="font-weight-bold mb-2">Work Plan</p>
+                        <p class="mb-0 break-line">
+                          [[ interest.issue_message]]
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            {% if prize_projects %}
+
+            <div class="row" v-if="bounty.activities && bounty.activities.length">
               <div class="col-12">
-                <h5 class="bounty-heading">Projects</h5>
-                <div class="row">
-                  {% for project in prize_projects %}
-                    <div class="col-12 col-md-4">
+                <div class="border my-5 px-4 pt-4">
+                  <h5 class="font-body font-weight-semibold">ALL ACTIVITY</h5>
+                  <div v-for="activity in sortedActivity" :key="activity.pk" class="my-4 row font-body">
+                    <div class="col-md-2 col-lg-1 text-center text-md-left">
+                      <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
+                        <img class="avatar" :src="[[activity.profile.avatar_url]]">
+                      </a>
+                    </div>
+                    <div class="col-lg-3 col-md-3 my-auto text-center text-md-left">
+                      <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-usercard="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
+                        [[ activity.profile.handle ]]
+                      </a>
+                    </div>
+                    <div class="col-md-4 col-lg-3 my-auto text-center text-md-left">
+                      [[ activity.activity_type | stringReplace ]]
+                      <template v-if="activity.activity_type === 'new_bounty'">
+                        <span class="tag token">
+                          <template v-if="activity.metadata.new_bounty">
+                            [[ activity.metadata.new_bounty.token_value ]]
+                            [[ activity.metadata.new_bounty.token_name ]]
+                          </template>
+                          <template v-else>
+                            [[ activity.metadata.token_value ]]
+                            [[ activity.metadata.token_name ]]
+                          </template>
+                        </span>
+                      </template>
+                      <template v-if="activity.activity_type === 'worker_paid'">
+                        <a :href="`/profile/${activity.metadata.to}`" class="user-popover" :data-username="[[ activity.metadata.to ]]"
+                          data-html="true" data-toggle="popover" data-container="body"
+                        >
+                          [[ activity.metadata.to ]]
+                        </a>
+                        <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
+                      </template>
+                      <template v-if="activity.activity_type === 'increased_bounty'">
+                        to <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
+                      </template>
+                      <div v-if="activity.activity_type === 'new_kudos'">
+                        show value
+                      </div>
+                      <a v-if="activity.activity_type === 'worker_approved' || activity.activity_type === 'stop_worker'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
+                        data-html="true" data-toggle="popover" data-container="body"
+                      >
+                        [[ activity.metadata.worker_handle ]]
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-lg-5 my-auto text-center text-md-left">
+                      <time class="text-black-60 text-capitalize" :datetime="activity.created" :title="activity.created |momentFormat">
+                        [[ activity.created | moment ]]
+                      </time>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                      <div class="card m-3 p-1">
-                        {% for profile in project.profiles.all %}
-                          {% if profile_id == profile.id and project.status == '' %}
-                            <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+            <div class="row">
+              <div class="col-12">
+                <div class="border my-3 px-4 py-3">
+                  <h5 class="bounty-heading mt-0 mb-3">Funder</h5>
+                  <div class="row">
+                    <div class="col-md-2 col-lg-1 text-center text-md-left my-auto">
+                      <a :href="`/profile/${bounty.bounty_owner_github_username}`" v-show="bounty.bounty_owner_github_username">
+                        <img class="avatar" :src="'/dynamic/avatar/' + bounty.bounty_owner_github_username">
+                      </a>
+                    </div>
+                    <div class="col-md-10 col-lg-9 my-auto text-center text-md-left">
+                      <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-usercard="[[ bounty.bounty_owner_github_username ]]"
+                        data-html="true" data-toggle="popover" data-container="body"
+                      >
+                        [[ bounty.bounty_owner_github_username ]]
+                      </a>
+
+                      <div class="font-caption text-black-70">
+                        <span class="font-weight-semibold">Email :</span>
+                        <span>[[ bounty.bounty_owner_email ]]</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              {% if prize_projects %}
+                <div class="col-12">
+                  <h5 class="bounty-heading">Projects</h5>
+                  <div class="row">
+                    {% for project in prize_projects %}
+                      <div class="col-12 col-md-4">
+
+                        <div class="card m-3 p-1">
+                          {% for profile in project.profiles.all %}
+                            {% if profile_id == profile.id and project.status == '' %}
+                              <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-success btn-sm m-2">edit</button>
+                            {% endif %}
+                          {% endfor %}
+                          {% if project.logo %}
+                            <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                          {% else %}
+                            <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
                           {% endif %}
-                        {% endfor %}
-                        {% if project.logo %}
-                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
-                        {% else %}
-                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
-                        {% endif %}
 
-                        <div class="text-center mt-2">
-                          <a href="{% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
-                          <div class="mb-2">
-                            <b class="text-muted font-smaller-2">Team Members</b>
-                            <div class="mt-1">
-                              {% for profile in project.profiles.all %}
-                                <a href="{% url 'profile' profile %}" class="">
-                                  <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
-                                </a>
-                              {% endfor %}
+                          <div class="text-center mt-2">
+                            <a href="{%if project.name %}
+                              {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
+                            {% else %}
+                              {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
+                            {% endif %}
+
+                            " target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
+                            <div class="mb-2">
+                              <b class="text-muted font-smaller-2">Team Members</b>
+                              <div class="mt-1">
+                                {% for profile in project.profiles.all %}
+                                  <a href="{% url 'profile' profile %}" class="">
+                                    <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
+                                  </a>
+                                {% endfor %}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  {% endfor %}
+                    {% endfor %}
+                  </div>
                 </div>
-              </div>
-            {% endif %}
+              {% endif %}
+            </div>
+
           </div>
-
-        </div>
-        <div v-if="loadingState == 'empty'">
-          empty waiting
-        </div>
-        <div v-if="loadingState == 'notfound'" class="d-block mx-auto text-center m-5">
-          <div class=" nonefound">
-            <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot" class="mw-100" width="250">
-            <h3>{% trans "No funded issue found." %}</h3>
-            <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
-            <br>
-            <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
-            <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
+          <div v-if="loadingState == 'empty'">
+            empty waiting
+          </div>
+          <div v-if="loadingState == 'notfound'" class="d-block mx-auto text-center m-5">
+            <div class=" nonefound">
+              <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot" class="mw-100" width="250">
+              <h3>{% trans "No funded issue found." %}</h3>
+              <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
+              <br>
+              <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
+              <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-    </div>
-    <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-        </div>
       </div>
-    </div>
-
-    <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
+      <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
           </div>
         </div>
       </div>
-    </div>
-    <div id="modalExtend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-dialog ">
-          <div class="modal-content py-3">
+
+      <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
             <div class="row loading justify-content-center align-items-center loading_img">
               <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
             </div>
           </div>
         </div>
       </div>
+      <div id="modalExtend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-dialog ">
+            <div class="modal-content py-3">
+              <div class="row loading justify-content-center align-items-center loading_img">
+                <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <noscript>
+        <h2>{{ noscript.title }}</h2>
+        <h3>{{ noscript.org_name }}</h3>
+        <h3>{{ noscript.keywords }}</h3>
+        <p>{{ noscript.issue_description_text }}</p>
+      </noscript>
+
+      <script>
+        document.issueURL = '{{ issueURL }}';
+
+        {% if event_tag %}
+          document.eventTag = '{{ event_tag }}';
+        {% endif %}
+
+        // ETC-TODO: remove network + std bounties for ETC
+        document.issueNetwork = '{{ network }}';
+        document.issue_stdbounties_id = '{{ stdbounties_id }}';
+      </script>
+
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
+      {% include 'shared/current_profile.html' %}
     </div>
-
-    <noscript>
-      <h2>{{ noscript.title }}</h2>
-      <h3>{{ noscript.org_name }}</h3>
-      <h3>{{ noscript.keywords }}</h3>
-      <p>{{ noscript.issue_description_text }}</p>
-    </noscript>
-
-    {% if PYPL_CLIENT_ID %}
-      <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
-    {% endif %}
-    <script>
-      document.issueURL = '{{ issueURL }}';
-
-      {% if event_tag %}
-        document.eventTag = '{{ event_tag }}';
-      {% endif %}
-
-      // ETC-TODO: remove network + std bounties for ETC
-      document.issueNetwork = '{{ network }}';
-      document.issue_stdbounties_id = '{{ stdbounties_id }}';
-    </script>
-
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with slim=1 %}
-    {% include 'shared/footer.html' %}
-    {% include 'shared/current_profile.html' %}
-
     <script src="{% static "v2/js/lib/highlight.js" %}"></script>
     <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
 
@@ -1110,7 +1108,38 @@
       <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
       <script src="{% static "v2/js/pages/bounty_detail/polkadot_extension.js" %}"></script>
 
+    {% elif web3_type == 'binance_ext' %}
+
+      <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/binance_extension.js" %}"></script>
+
+    {% elif web3_type == 'harmony_ext' %}
+
+      <script src="{% static "v2/js/lib/harmony/HarmonyUtils.browser.js" %}"></script>
+      <script src="{% static "v2/js/lib/harmony/HarmonyJs.browser.js" %}"></script>
+      <script src="{% static "v2/js/lib/harmony/HarmonyAccount.browser.js" %}"></script>
+      <script src="{% static "v2/js/lib/harmony/HarmonyCrypto.browser.js" %}"></script>
+      <script src="{% static "v2/js/lib/harmony/HarmonyNetwork.browser.js" %}"></script>
+      <script src="{% static "v2/js/lib/harmony/utils.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/harmony_extension.js" %}"></script>
+
+    {% elif web3_type == 'rsk_ext' %}
+      <script src="{% static "v2/js/pages/bounty_detail/rsk_extension.js" %}"></script>
+
+    {% elif web3_type == 'xinfin_ext' %}
+
+      <script src="{% static "v2/js/lib/xinfin/xdc3.min.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/xinfin_extension.js" %}"></script>
+
+    {% elif web3_type == 'algorand_ext' %}
+
+      <script src="{% static "v2/js/pages/bounty_detail/algorand_extension.js" %}"></script>
+
     {% elif web3_type == 'fiat' %}
+
+      {% if PYPL_CLIENT_ID %}
+        <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
+      {% endif %}
       <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
 
     {% elif web3_type == 'web3_modal' %}

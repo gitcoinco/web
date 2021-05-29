@@ -1,0 +1,115 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load i18n humanize static %}
+
+{% block content %}
+
+<style>
+  .sponsor-logo {
+    width: 65px;
+    height: 65px;
+    margin: 20px 0;
+  }
+
+  .hackathon-image {
+    width: 100%;
+    height: 200px;
+    margin-top: 30px;
+    background-color: #000000;
+  }
+
+  .message {
+    margin-top: 3em;
+    margin-bottom: 0;
+  }
+
+  #content-body {
+    color: #15003E;
+  }
+
+  #preferred_payout {
+    margin-top: 7em;
+    background-color: #15EBB7;
+    padding: 10px 50px;
+    text-align: center;
+  }
+
+  #preferred_payout a {
+    font-size: 1em;
+    color: #6F3FF5;
+  }
+
+  hr {
+    height: 4px;
+    width: 9%;
+    background: #15EBB7;
+    min-width: 70px;
+    border: none;
+    margin-bottom: 1em;
+  }
+
+  h1 {
+    font-size: 43px;
+    font-weight: normal;
+  }
+</style>
+
+<div id="content-body">
+  <img class="center-img" style="width: 25em; height: auto;" src="{% static 'v2/images/emails/hackathons.png' %}">
+  <br>
+  <hr style="margin-left: 0;"><br>
+  <div class="text-left">
+    <h1>New Prize Listed</h1>
+    <p style="margin-top: 2em;">
+      Meet a community of like-minded hackers, buidl cool stuff, and win these exciting prizes:
+    </p>
+    <h3 class="mb-0">{{ hackathon.name }}</h3>
+    <h3 class="mt-0" style="font-size: 1.1em; margin-bottom: 2em;">{{ hackathon.hackathon.start_date|date:"F jS, Y" }}
+    </h3>
+
+    {% for sponsor in sponsors_prizes %}
+    {% if sponsor.prizes %}
+    {% for prize in sponsor.prizes %}
+    <p class="mb-0" style="margin-top: 2em;">{{ prize.title | title }}</p>
+    <p style="margin-top: 0.2em; margin-bottom: 1.2em; color: #11BC92; font-weight: 700;">
+      {% if prize.value_true and prize.token_name %}
+      {{ prize.value_true|floatformat }} {{ prize.token_name }}
+      {% endif %}
+    </p>
+    <a class="button" href="{{ prize.absolute_url }}?{{ utm_tracking }}">{% trans "See Prize Details" %}</a>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+
+    <h1 style="margin-top: 3.2em">Join hackathon now</h1>
+    <p class="text-left" style="margin-top: 2em; margin-bottom: 3em;">{{ intro }}</p>
+    <a href="{{ hackathon.url }}?{{ utm_tracking }}" class="button large">Join Hackathon</a>
+  </div>
+</div>
+<div id="preferred_payout">
+  {% if subscriber.profile.preferred_payout_address %}
+  Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>. Payments
+  will be auto-sent to this address (unless otherwise specified upon work submission).
+  <a href="{{base_url}}settings/account?{{ utm_tracking }}">New Wallet? Click here to update Payout Address.</a>
+  {% else %}
+  You do not have a preferred payout address on file.
+  <a href="{{base_url}}settings/account?{{ utm_tracking }}">Click here to set a Payout Address.</a>
+  {% endif %}
+</div>
+{% endblock %}

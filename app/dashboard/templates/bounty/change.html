@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,111 +14,110 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
-  <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+  {% bundle css file bounty_change %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+  {% endbundle %}
 </head>
 <body class="interior submit_bounty g-font-muli">
-  {% include 'shared/tag_manager_2.html' %}
-  <div class="container-fluid header dash">
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'shared/nav.html' %}
-  </div>
-  <div class="container-fluid submit_bounty_content">
-    <div class="row">
-      <div class="col-sm-12 col-lg-12">
-        <div id="form_container">
-          <div class="row justify-content-center">
-            <div id="primary_form" class="col-xl-8 col-sm-12 my-5">
-              <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
-                <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid submit_bounty_content">
+      <div class="row">
+        <div class="col-sm-12 col-lg-12">
+          <div id="form_container">
+            <div class="row justify-content-center">
+              <div id="primary_form" class="col-xl-8 col-sm-12 my-5">
+                <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                  <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
 
-                <div id="details-section" class="pt-2">
-                  {% include 'shared/issue_details.html' %}
-                </div>
-
-                <div class="mt-4">
-                  {% include 'shared/bounty_details.html' %}
-                </div>
-
-                <div class="mt-4">
-                  {% include 'shared/bounty_categories.html' %}
-                </div>
-
-                <div class="mt-4">
-                  {% include 'shared/bounty_keywords.html' %}
-                </div>
-
-                <div class="mt-4">
-                  {% include 'shared/reserved.html' %}
-                </div>
-
-                {% if is_bounties_network %}
-                  <div class="m-4 pt-4">
-                    {% include 'shared/featured.html' %}
+                  <div id="details-section" class="pt-2">
+                    {% include 'shared/issue_details.html' %}
                   </div>
-                {% endif %}
 
-                {% if not is_bounties_network %}
-                  <div class="mt-4" id="pricing-section">
-                   <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0">{% trans "Pricing" %}</label>
-                    <div class="row mb-2">
-                      <div class="col-12 col-md-3">
-                        <label class="form__label" for="denomination">{% trans "Denomination" %}</label>
-                        <input name="denomination" class="border-0 form__input font-caption" value="{{ token_name }}" disabled/>
-                      </div>
-                      <div class="col-12 col-md-3">
-                        <label class="form__label" for="amount">{% trans "Amount" %}</label>
-                        <input name='amount' id='amount'  class="form__input" type="number" min="{{ amount }}" value="{{ amount }}" step="0.001" min="0.001"/>
-                      </div>
-                      <div class="col-12 col-md-3" id="usd-amount-wrapper">
-                        <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
-                        <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
-                      </div>
-                      <div class="col-12 col-md-3">
-                      <label class="form__label" for="amount">{% trans "Est. Hours of Work" %}</label>
-                        <input name='hours' id='hours' class="form__input" type="number" step="1" value="{{ estimated_hours }}"
-                        min="1" required="required"/>
-                      </div>
+                  <div class="mt-4">
+                    {% include 'shared/bounty_details.html' %}
+                  </div>
+
+                  <div class="mt-4">
+                    {% include 'shared/bounty_categories.html' %}
+                  </div>
+
+                  <div class="mt-4">
+                    {% include 'shared/bounty_keywords.html' %}
+                  </div>
+
+                  <div class="mt-4">
+                    {% include 'shared/reserved.html' %}
+                  </div>
+
+                  {% if is_bounties_network %}
+                    <div class="m-4 pt-4">
+                      {% include 'shared/featured.html' %}
                     </div>
+                  {% endif %}
 
-                    <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text"></small>
+                  {% if not is_bounties_network %}
+                    <div class="mt-4" id="pricing-section">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0">{% trans "Pricing" %}</label>
+                      <div class="row mb-2">
+                        <div class="col-12 col-md-3">
+                          <label class="form__label" for="denomination">{% trans "Denomination" %}</label>
+                          <input name="denomination" class="border-0 form__input font-caption" value="{{ token_name }}" disabled/>
+                        </div>
+                        <div class="col-12 col-md-3">
+                          <label class="form__label" for="amount">{% trans "Amount" %}</label>
+                          <input name='amount' id='amount'  class="form__input" type="number" min="{{ amount }}" value="{{ amount }}" step="0.001" min="0.001"/>
+                        </div>
+                        <div class="col-12 col-md-3" id="usd-amount-wrapper">
+                          <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
+                          <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
+                        </div>
+                        <div class="col-12 col-md-3">
+                        <label class="form__label" for="amount">{% trans "Est. Hours of Work" %}</label>
+                          <input name='hours' id='hours' class="form__input" type="number" step="1" value="{{ estimated_hours }}"
+                          min="1" required="required"/>
+                        </div>
+                      </div>
+
+                      <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text"></small>
+                    </div>
+                  {% endif %}
+
+                  <div class="row justify-content-center p-3">
+                    <button class="btn btn-primary btn-lg js-submit mb-3 btn-lg-padding" type="submit">{% trans 'Update Issue Details' %}</button>
                   </div>
-                {% endif %}
 
-                <div class="row justify-content-center p-3">
-                  <button class="button button--primary btn-lg font-weight-semibold js-submit mb-3 btn-lg-padding" type="submit">{% trans 'Update Issue Details' %}</button>
-                </div>
-
-              </form>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/current_profile.html' %}
   </div>
-  {% include 'shared/bottom_notification.html' %}
-  {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts_lite.html' %}
-  {% include 'shared/footer.html' %}
-
-  {% include 'shared/current_profile.html' %}
+  <script>
+    document.pk = {{ pk }};
+    document.result = {{ result|safe }};
+    const token_address = '{{ token_address }}';
+  </script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </body>
-<script>
-  document.pk = {{ pk }};
-  document.result = {{ result|safe }};
-  const token_address = '{{ token_address }}';
-</script>
-<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "v2/js/user-search.js" %}"></script>
-<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
-<script src="/dynamic/js/tokens_dynamic.js"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
 </html>

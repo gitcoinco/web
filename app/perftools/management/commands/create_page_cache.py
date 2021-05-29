@@ -17,6 +17,7 @@
 '''
 
 import json
+import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -25,16 +26,17 @@ from django.db import models, transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
 from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
-from dashboard.models import Activity, HackathonEvent, Profile
+from dashboard.models import Activity, Bounty, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
-from economy.models import EncodeAnything, SuperModel
-from grants.models import Contribution, Grant, GrantCategory
+from economy.models import EncodeAnything
+from grants.models import Contribution, Grant, GrantCategory, GrantType
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
 from marketing.models import Stat
@@ -46,24 +48,32 @@ from retail.utils import build_stat_results, programming_languages
 from retail.views import get_contributor_landing_page_context, get_specific_activities
 from townsquare.views import tags
 
+logger = logging.getLogger(__name__)
+
+
+def create_email_inventory_cache():
+    print('create_email_inventory_cache')
+    from marketing.models import EmailEvent, EmailInventory
+    for ei in EmailInventory.objects.all().exclude(email_tag=''):
+        stats = {}
+        for i in [1, 7, 30]:
+            key = f'{i}d'
+            stats[key] = {}
+            after = timezone.now() - timezone.timedelta(days=i)
+            for what in ['delivered', 'open', 'click']:
+                num = EmailEvent.objects.filter(created_on__gt=after, event=what, category__contains=ei.email_tag).count()
+                stats[key][what] = num
+        ei.stats = stats
+        ei.save()
+
 
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
-    pks = Grant.objects.values_list('pk', flat=True)
+    from grants.tasks import update_grant_metadata
+    pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
-        grant = Grant.objects.get(pk=pk)
-        clr_round = None
+        update_grant_metadata.delay(pk)
 
-        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
-            clr_round = grant.in_active_clrs.first()
-
-        if clr_round:
-            grant.is_clr_active = True
-            grant.clr_round_num = clr_round.round_num
-        else:
-            grant.is_clr_active = False
-            grant.clr_round_num = ''
-        grant.save()
 
 def create_grant_type_cache():
     print('create_grant_type_cache')
@@ -71,7 +81,7 @@ def create_grant_type_cache():
     for network in ['rinkeby', 'mainnet']:
         view = f'get_grant_types_{network}'
         keyword = view
-        data = get_grant_types('mainnet', None)
+        data = get_grant_types(network, None)
         with transaction.atomic():
             JSONStore.objects.filter(view=view).all().delete()
             JSONStore.objects.create(
@@ -83,39 +93,38 @@ def create_grant_type_cache():
 
 def create_grant_active_clr_mapping():
     print('create_grant_active_clr_mapping')
-    # Upate grants mppping to active CLR rounds
-    from grants.models import Grant, GrantCLR
 
-    grants = Grant.objects.all()
-    clr_rounds = GrantCLR.objects.all()
+    # removes grants who are not in an active matching round from having a match prediction curve
+    # waits 14 days from removing them tho
+    from grants.models import GrantCLRCalculation
+    from_date = timezone.now() - timezone.timedelta(days=14)
+    gclrs = GrantCLRCalculation.objects.filter(latest=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
+    for gclr in gclrs:
+        gclr.latest = False
+        gclr.save()
+        grant = gclr.grant
+        grant.calc_clr_round()
+        grant.save()
 
-    # remove all old mapping
-    for clr_round in clr_rounds:
-        _grants = clr_round.grants
-        for _grant in grants:
-            _grant.in_active_clrs.remove(clr_round)
-            _grant.save()
+    return
 
-    # update new mapping
-    active_clr_rounds = clr_rounds.filter(is_active=True)
-    for clr_round in active_clr_rounds:
-        grants_in_clr_round = grants.filter(**clr_round.grant_filters)
 
-        for grant in grants_in_clr_round:
-            grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
-
-            if not grant_has_mapping_to_round:
-                grant.in_active_clrs.add(clr_round)
-                grant.save()
+def create_hack_event_cache():
+    from dashboard.models import HackathonEvent
+    for he in HackathonEvent.objects.all():
+        he.save()
 
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
+    grant_types = GrantType.objects.all()
     redis = RedisService().redis
-    for category in GrantCategory.objects.all():
-        key = f"grant_category_{category.category}"
-        val = Grant.objects.filter(categories__category__contains=category.category).count()
-        redis.set(key, val)
+    for g_type in grant_types:
+        for category in GrantCategory.objects.all():
+            key = f"grant_category_{g_type.name}_{category.category}"
+            val = Grant.objects.filter(active=True, hidden=False, grant_type=g_type, categories__category__contains=category.category).count()
+            redis.set(key, val)
+
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
@@ -151,13 +160,13 @@ def create_top_grant_spenders_cache():
                     )
 
 
-
 def fetchPost(qt='2'):
     import requests
     """Fetch last post from wordpress blog."""
     url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
     last_posts = requests.get(url=url).json()
     return last_posts
+
 
 def create_hidden_profiles_cache():
 
@@ -372,26 +381,39 @@ def create_contributor_landing_page_context():
         JSONStore.objects.bulk_create(items)
 
 
-
 class Command(BaseCommand):
 
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_grant_type_cache()
-        create_grant_clr_cache()
-        create_grant_category_size_cache()
-        create_grant_active_clr_mapping()
+        operations = []
+        operations.append(create_grant_active_clr_mapping)
+        operations.append(create_grant_type_cache)
+        operations.append(create_grant_clr_cache)
+        operations.append(create_grant_category_size_cache)
+
         if not settings.DEBUG:
-            create_results_cache()
-            create_hidden_profiles_cache()
-            create_tribes_cache()
-            create_activity_cache()
-            create_post_cache()
-            create_top_grant_spenders_cache()
-            create_avatar_cache()
-            create_quests_cache()
-            create_grants_cache()
-            create_contributor_landing_page_context()
-            create_hackathon_cache()
-            create_hackathon_list_page_cache()
+            operations.append(create_results_cache)
+            operations.append(create_hack_event_cache)
+            operations.append(create_hidden_profiles_cache)
+            operations.append(create_tribes_cache)
+            operations.append(create_activity_cache)
+            operations.append(create_post_cache)
+            operations.append(create_top_grant_spenders_cache)
+            operations.append(create_avatar_cache)
+            operations.append(create_quests_cache)
+            operations.append(create_grants_cache)
+            operations.append(create_contributor_landing_page_context)
+            operations.append(create_hackathon_cache)
+            operations.append(create_hackathon_list_page_cache)
+
+            hour = int(timezone.now().strftime('%H'))
+            if hour < 4:
+                # do daily updates
+                operations.append(create_email_inventory_cache)
+        for func in operations:
+            try:
+                print(f'running {func}')
+                func()
+            except Exception as e:
+                logger.exception(e)

@@ -11,7 +11,7 @@ const checkUnrated = () => {
 
   $.when(requestUnrated).then((response, status, statusCode) => {
     if (statusCode.status != 200) {
-      return _alert(response.msg, 'error');
+      return _alert(response.msg, 'danger');
     }
 
     if (response.unrated > 0) {

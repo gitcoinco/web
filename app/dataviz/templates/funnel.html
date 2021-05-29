@@ -1,26 +1,30 @@
 {% extends "admin/base_site.html" %}
 {% load humanize %}
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+  Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -35,76 +39,76 @@
 <a href="..">&lt; back</a>
 
 <style>
-td.raw{ border-left: 1px #ccc solid; }
-tr.data:nth-child(even) {background: #eee}
-tr.data:nth-child(odd) {background: #FFF}
+  td.raw{ border-left: 1px #ccc solid; }
+  tr.data:nth-child(even) {background: #eee}
+  tr.data:nth-child(odd) {background: #FFF}
 </style>
 
 <head>
-    <!-- code to include the highcharts and jQuery libraries goes here -->
-    <!-- load_charts filter takes a comma-separated list of id's where -->
-    <!-- the charts need to be rendered to                             -->
-    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  <!-- code to include the highcharts and jQuery libraries goes here -->
+  <!-- load_charts filter takes a comma-separated list of id's where -->
+  <!-- the charts need to be rendered to               -->
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 </head>
 
 <body>
-    {% for data in funnels %}
-        <h2>{{data.title}}</h2>
-        <table>
-            <tr>
-                <td>
-                    -
-                </td>
-                {% for outer_ele in data.data %}
-                    {% for ele in outer_ele.stats %}
-                        {% if outer_ele.idx == 0 %}
-                            <td class='raw' colspan="2">
-                                {{ele.key}}
-                            </td>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-            </tr>
-            <tr>
-                <td>
-                    Date
-                </td>
-                {% for outer_ele in data.data %}
-                    {% for ele in outer_ele.stats %}
-                        {% if outer_ele.idx == 0 %}
-                            <td class='raw'>
-                                num
-                            </td>
-                            <td>
-                                conv %
-                            </td>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-            </tr>
-
-            {% for outer_ele in data.data %}
-            <tr class='data'>
-                <td>
-                    {{outer_ele.meta.start_date | date:'Y-m-d'}} => {{outer_ele.meta.end_date  | date:'Y-m-d'}}
-                </td>
-                {% for ele in outer_ele.stats %}
-                    <td class='raw'>
-                        {{ele.val}}
-                    </td>
-                    <td>
-                        {% if not ele.pct %}
-                            N/A
-                        {%else %}
-                            {{ele.pct}}%
-                        {%endif %}
-                    </td>
-                {% endfor %}
-            </tr>
+  {% for data in funnels %}
+    <h2>{{data.title}}</h2>
+    <table>
+      <tr>
+        <td>
+          -
+        </td>
+        {% for outer_ele in data.data %}
+          {% for ele in outer_ele.stats %}
+            {% if outer_ele.idx == 0 %}
+              <td class='raw' colspan="2">
+                {{ele.key}}
+              </td>
+            {% endif %}
+          {% endfor %}
         {% endfor %}
+      </tr>
+      <tr>
+        <td>
+          Date
+        </td>
+        {% for outer_ele in data.data %}
+          {% for ele in outer_ele.stats %}
+            {% if outer_ele.idx == 0 %}
+              <td class='raw'>
+                num
+              </td>
+              <td>
+                conv %
+              </td>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tr>
 
-        </table>
+      {% for outer_ele in data.data %}
+      <tr class='data'>
+        <td>
+          {{outer_ele.meta.start_date | date:'Y-m-d'}} => {{outer_ele.meta.end_date  | date:'Y-m-d'}}
+        </td>
+        {% for ele in outer_ele.stats %}
+          <td class='raw'>
+            {{ele.val}}
+          </td>
+          <td>
+            {% if not ele.pct %}
+              N/A
+            {%else %}
+              {{ele.pct}}%
+            {%endif %}
+          </td>
+        {% endfor %}
+      </tr>
     {% endfor %}
+
+    </table>
+  {% endfor %}
 
 </body>
 

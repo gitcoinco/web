@@ -1,0 +1,289 @@
+
+{% comment %}
+    Copyright (C) 2021 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load static bundle %}
+{% bundle css file onboard %}
+<style>
+  #onboard-modal {
+    background-image: url(static('v2/images/tribes/promo-decoration.svg'));
+    background-color: rgba(111, 63, 245, 0.94);
+    background-size: cover;
+  }
+  .vs-blue .vs__selected {
+    background-color: var(--gc-blue);
+    color: white;
+  }
+  .vs-blue .vs__deselect {
+    fill: white;
+  }
+</style>
+{% endbundle %}
+<div id="gc-onboard">
+  <modal id="onboard-modal" ref="onboard-modal" size="modal-lg" backdrop="static" keyboard="false">
+    <template v-if="step === 1">
+
+      <div slot="header">
+        <img src="{% static 'v2/images/modals/persona-choose.svg' %}" width="160" height="137" class="mx-auto d-block mb-3">
+        <h2 class="h4 pt-0">Setup your profile</h2>
+      </div>
+      <div slot="body">
+        <p>
+          Tell us a little about you:
+        </p>
+        <div class="form-group">
+          <label for="">Skills</label>
+          <v-select class="vs-blue" @search="keywordSearch" :options="skills" placeholder="eg. CSS, HTML, Solidity..." v-model="data.skillsSelected" multiple>
+            <template v-slot:no-options="{ search, searching }">
+              <template v-if="searching">
+                No results found for <em>[[search]]</em>.
+              </template>
+              <em style="opacity: 0.5;" v-else>Type to search skills..</em>
+            </template>
+          </v-select>
+        </div>
+        <div class="form-group">
+          <label for="">Bio <span class="badge badge-greylight">Required</span></label>
+          <textarea placeholder="Short description about yourself" class="form-control bg-lightblue" maxlength="240" name="" id="" cols="10" rows="5"  v-model="data.bio"></textarea>
+          <span class="d-block text-right font-smaller-1 mt-1">[[totalcharacter]] / 240</span>
+        </div>
+
+        <div class="form-group">
+          <label for="">What are you interested in? <span class="badge badge-greylight">Required</span></label>
+          <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap mt-3">
+            <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 px-3 py-1" :class="{'active': data.interestsSelected.includes(interest)}"  v-for="interest in interests">
+              <input type="checkbox" name="interests" id="" :value="interest" v-model="data.interestsSelected"> [[interest]]
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="">Are you currently looking for work?</label>
+          <v-select placeholder="Job status" :options="jobSearchStatus" label="string" v-model="data.jobSelected" :reduce="state => state.value">
+            <template v-slot:option="option">
+              <span class="font-weight-semibold">[[ option.string ]]</span>
+            </template>
+          </v-select>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+          <button class="btn btn-primary" @click="goStep(2)" :disabled="!data.interestsSelected.length || !data.bio">Next</button>
+        </div>
+      </div>
+    </template>
+    <template v-if="step === 2">
+      <div slot="header">
+        <img src="{% static 'v2/images/modals/persona-choose.svg' %}" width="160" height="137" class="mx-auto d-block mb-3">
+        <h2 class="h4 pt-0">Setup your profile</h2>
+      </div>
+      <div slot="body">
+
+        <p>Our tools are based on the principles of earn (💰), learn (📖), and meet (💬).
+          Select the ones you are interested in. You can change it later in your settings.</p>
+        <div class="d-flex">
+          <div class="btn-group-toggle w-100">
+            <label class="btn btn-block btn-radio d-flex hackathons my-2 p-3 text-left align-items-center" :class="{'active': data.userOptions.includes('hackathons')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="Hackathons" height="32">
+                  Hackathons 📖 💰 💬
+                </div>
+                <p class="mb-0">Participate and win in Hackathons using the latest blockchain technologies!</p>
+                <input type="checkbox" name="project_type" id="hackathons" value="hackathons" v-model="data.userOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.userOptions.includes('hackathons') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex bounties my-2 p-3 text-left align-items-center" :class="{'active': data.userOptions.includes('bounties')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="bounties" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="bounties" height="32">
+                  Bounties 📖 💰 💬
+                </div>
+                <p class="mb-0">Find and get paid for Bounties suited to your skills!</p>
+                <input type="checkbox" name="project_type" id="bounties" value="bounties" v-model="data.userOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.userOptions.includes('bounties') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex grants my-2 p-3 text-left align-items-center" :class="{'active': data.userOptions.includes('grants')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/grants-symbol-pos.svg' %}" alt="grants" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="grants" height="32">
+                  Grants 💰 💬
+                </div>
+                <p class="mb-0">Fund the community or your own project with recurring open source funding!</p>
+                <input type="checkbox" name="project_type" id="grants" value="grants" v-model="data.userOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.userOptions.includes('grants') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex quests my-2 p-3 text-left align-items-center" :class="{'active': data.userOptions.includes('quests')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="quests" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/quests-symbol-neg.svg' %}" alt="quests" height="32">
+                  Quests 📖 💰
+                </div>
+                <p class="mb-0">Play and earn while learning about Web3.0!</p>
+                <input type="checkbox" name="project_type" id="quests" value="quests" v-model="data.userOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.userOptions.includes('quests') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex kudos my-2 p-3 text-left align-items-center" :class="{'active': data.userOptions.includes('kudos')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="kudos" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="kudos" height="32">
+                  Kudos 💰
+                </div>
+                <p class="mb-0">Show appreciation for each other with non-fungible ERC-721 art tokens!</p>
+                <input type="checkbox" name="project_type" id="kudos" value="kudos" v-model="data.userOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.userOptions.includes('kudos') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+          </div>
+        </div>
+        <div class="checkbox_container mt-3">
+          <input name='isorg' id='isorg' type="checkbox" v-model="isOrg" class="form-check-input form__input" />
+          <label class="form-check-label" for=isorg>I'm also an organization manager looking for a great community.
+          </label>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+          <button class="btn btn-outline-primary mr-4" @click="goStep(1)">Back</button>
+          <template v-if="isOrg">
+            <button class="btn btn-primary" @click="goStep(3)" :disabled="!data.userOptions.length">Next</button>
+          </template>
+          <template v-else>
+            <button class="btn btn-primary" @click="submitData()" :disabled="!data.userOptions.length">Save</button>
+          </template>
+        </div>
+      </div>
+
+    </template>
+    <template v-if="step === 3">
+      <div slot="header">
+        <img src="{% static 'v2/images/modals/persona-choose.svg' %}" width="160" height="137" class="mx-auto d-block mb-3">
+        <h2 class="h4 pt-0">Enable your organization profile</h2>
+      </div>
+      <div slot="body">
+        <p>Gitcoin products can help grow community around your brand. Create your tribe, events, and incentivize your community with bounties. Announce new and upcoming events using townsquare. Find top-quality hackers and fund them to work with you on a grant.</p>
+        <p>These are the organizations you own. If you don't see your organization here please be sure that information is public on your GitHub profile. Gitcoin will sync this information for you.</p>
+
+        <div class="form-group">
+          <label for="">Find your organization:</label>
+          <v-select placeholder="eg. gitcoinco"  :options="orgs" label="handle" v-model="data.orgSelected" @input="fetchOrgOnboardData(data.orgSelected)">
+            <template v-slot:option="option">
+              <div class="d-flex align-items-baseline">
+                <div class="mr-2">
+                  <img :src="`/dynamic/avatar/${option.handle}`" height="24" alt="">
+                </div>
+                <span class="font-weight-semibold">[[ option.handle ]]</span>
+              </div>
+            </template>
+            <template slot="selected-option" slot-scope="option">
+              <div class="d-flex align-items-baseline">
+                <div class="mr-2">
+                  <img :src="`/dynamic/avatar/${option.handle}`" height="20" alt="">
+                </div>
+                <span class="font-weight-semibold">[[ option.handle ]]</span>
+              </div>
+            </template>
+          </v-select>
+        </div>
+        <p>Select the products you are interested in:</p>
+        <div class="d-flex">
+          <div class="btn-group-toggle w-100">
+            <label class="btn btn-block btn-radio d-flex hackathons my-2 p-3 text-left align-items-center" :class="{'active': data.orgOptions.includes('hackathons')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="Hackathons" height="32">
+                  Hackathons 📖 💰 💬
+                </div>
+                <p class="mb-0">Participate and win in Hackathons using the latest blockchain technologies!</p>
+                <input type="checkbox" name="project_type" id="hackathons" value="hackathons" v-model="data.orgOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.orgOptions.includes('hackathons') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex bounties my-2 p-3 text-left align-items-center" :class="{'active': data.orgOptions.includes('bounties')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="bounties" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="bounties" height="32">
+                  Bounties 📖 💰 💬
+                </div>
+                <p class="mb-0">Find and get paid for Bounties suited to your skills!</p>
+                <input type="checkbox" name="project_type" id="bounties" value="bounties" v-model="data.orgOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.orgOptions.includes('bounties') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex grants my-2 p-3 text-left align-items-center" :class="{'active': data.orgOptions.includes('grants')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/grants-symbol-pos.svg' %}" alt="grants" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="grants" height="32">
+                  Grants 💰 💬
+                </div>
+                <p class="mb-0">Fund the community or your own project with recurring open source funding!</p>
+                <input type="checkbox" name="project_type" id="grants" value="grants" v-model="data.orgOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.orgOptions.includes('grants') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex quests my-2 p-3 text-left align-items-center" :class="{'active': data.orgOptions.includes('quests')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="quests" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/quests-symbol-neg.svg' %}" alt="quests" height="32">
+                  Quests 📖 💰
+                </div>
+                <p class="mb-0">Play and earn while learning about Web3.0!</p>
+                <input type="checkbox" name="project_type" id="quests" value="quests" v-model="data.orgOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.orgOptions.includes('quests') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+            <label class="btn btn-block btn-radio d-flex kudos my-2 p-3 text-left align-items-center" :class="{'active': data.orgOptions.includes('kudos')}">
+              <div class="flex-fill">
+                <div class="font-title-lg d-flex align-items-center mb-1">
+                  <img class="mw-100 mr-2 display-light" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="kudos" height="32">
+                  <img class="mw-100 mr-2 display-dark" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="kudos" height="32">
+                  Kudos 💰
+                </div>
+                <p class="mb-0">Show appreciation for each other with non-fungible ERC-721 art tokens!</p>
+                <input type="checkbox" name="project_type" id="kudos" value="kudos" v-model="data.orgOptions" required>
+              </div>
+              <i class="font-bigger-1" :class="data.orgOptions.includes('kudos') ? 'fas fa-check-circle' : 'far fa-circle' "></i>
+            </label>
+          </div>
+        </div>
+        <p>Out of the box you will receive Tribes Lite for your organization. Please provide us with a contact email:</p>
+        <div class="form-group">
+          <label for="">Email</label>
+          <input type="email" v-model="data.email" placeholder="eg. user@domain.com" class="form-control bg-lightblue">
+        </div>
+
+
+        <div class="d-flex justify-content-center mt-4">
+          <button class="btn btn-outline-primary mr-4" @click="goStep(2)">Back</button>
+          <button class="btn btn-primary" @click="submitData()" :disabled="!data.orgOptions.length || !data.orgSelected">Save</button>
+        </div>
+
+      </div>
+
+    </template>
+  </modal>
+</div>

@@ -5,7 +5,9 @@ $(document).ready(function() {
   const question_template = $('.form-group.question:last').clone();
   const answer_template = question_template.children('span:last').clone();
 
-  let video_toggle = function(e) {
+  $('.select2').select2();
+
+  const video_toggle = function(e) {
     var is_checked = $('#video_enabled').is(':checked');
 
     if (is_checked) {
@@ -17,14 +19,8 @@ $(document).ready(function() {
   };
 
   $(document).on('click', '#video_enabled', video_toggle);
+
   video_toggle();
-
-  $(document).on('form#newkudos', 'submit', function(e) {
-    // e.preventDefault();
-    // console.log($(this).formdata);
-    // alert('hi');
-
-  });
 
   $(document).on('click', '.add_answer', function(e) {
     e.preventDefault();
@@ -37,8 +33,8 @@ $(document).ready(function() {
     var last_answer = $(this).parents('.form-group.question').children('span:last');
 
     last_answer.after(answer_template.clone());
-
   });
+
   $(document).on('click', '.new_quest_background', function(e) {
     e.preventDefault();
     $('.new_quest_background').removeClass('selected');
@@ -62,7 +58,6 @@ $(document).ready(function() {
     last_question.after(question_template.clone());
   });
 
-
   $(document).on('click', '.close_answer', function(e) {
     e.preventDefault();
     if ($(this).parents('.question').find('span').length <= 1) {
@@ -73,6 +68,7 @@ $(document).ready(function() {
 
     ele.remove();
   });
+
   $(document).on('click', '.remove', function(e) {
     e.preventDefault();
     $(this).parents('.form-group').find('.hidden').removeClass('hidden');
@@ -82,7 +78,6 @@ $(document).ready(function() {
     $(this).parents('.form-group').find('[name=reward2]').attr('name', 'reward');
     $(this).remove();
   });
-
 
   $(document).on('click', '.close_question', function(e) {
     e.preventDefault();

@@ -1,0 +1,34 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<article>
+<section class="column">
+
+<h1>Quadratic Diplomacy</h1>
+<p>
+<strong>Welcome to Quadratic Diplomacy</strong> - a staking game where you can use your GTC to vouch for your friends' personhood.
+<br>
+<br>
+<strong>Why?</strong>  Quadratic Funding relies on Proof of Personhood to work, and Gitcoin Grants is built on Quadratic Funding.  
+<br>
+<br>
+By playing Quadratic Diplomacy, you are helping to harden the Gitcoin network against <a href="https://gov.gitcoin.co/t/anti-fraud-collusion-detection-workstream-assemble/158">Sybil attacks</a>.
+</p>
+
+<h3>Active Public Games of Quadratic Diplomacy</h3>
+<ul>
+  {% for game in games %}
+  <li>
+    <a href="/governance/diplomacy/{{game.slug}}">{{game.title}}</a>
+  </li>
+  {% endfor %}
+</ul>
+<a href="/governance/diplomacy/create" class="btn" data-kinetics-attraction="" data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">
+      Create Game
+    </a>
+</section>
+</article>
+{% endblock %}

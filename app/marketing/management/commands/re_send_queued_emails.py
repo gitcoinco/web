@@ -15,10 +15,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
 import time
+
+from django.core.management.base import BaseCommand
+
 from app.services import RedisService
 from marketing.tasks import weekly_roundup
+
 THROTTLE_S = 0.3
 redis = RedisService().redis
 

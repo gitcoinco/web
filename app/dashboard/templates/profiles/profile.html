@@ -1,4 +1,4 @@
-{% load i18n humanize static avatar_tags kudos_extras %}
+{% load i18n humanize static avatar_tags kudos_extras bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,127 +10,153 @@
     {% if not hidden %}
       <link rel="canonical" href="{{profile.url}}/{{tab}}" />
     {% endif %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/kudos/styles.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    {% bundle css file profile %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/profile.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+    {% endbundle %}
   </head>
   <body class="interior {{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'home/nav.html' %}
-    <div class="container-fluid header profile-header dash {% if not profile.profile_wallpaper %}basic {% endif %}" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
-      {% csrf_token %}
-      {% if not hidden and is_staff %}
-        <div class="alpha-warning font-caption mb-0">
-          <span class="font-weight-bold">Staff only</span>
-          <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
-        </div>
-      {% endif %}
-      {% if is_editable %}
-        <div class="position-relative profile-banner">
-          <div class="container mt-5">
-            <div class="row">
-              <div class="col-12">
-                <p class="profile-banner-cta text-center">
-                  <i class="fa fa-camera"></i>
-                  Update Header Image
-                </p>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
+      {% if not hidden %}
+        <div class="container-fluid header profile-header dash {% if not profile.profile_wallpaper %}basic {% endif %}" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
+          {% csrf_token %}
+          {% if not hidden and is_staff %}
+            <div class="alpha-warning font-caption mb-0">
+              <span class="font-weight-bold">Staff only</span>
+              <a style="color:white;" href="{{profile.admin_url}}">{% trans "Profile Admin" %}</a>
+            </div>
+          {% endif %}
+          {% if is_editable %}
+            <div class="position-relative profile-banner">
+              <div class="container mt-5">
+                <div class="row">
+                  <div class="col-12">
+                    <p class="profile-banner-cta text-center">
+                      <i class="fa fa-camera"></i>
+                      Update Header Image
+                    </p>
+                  </div>
+                </div>
               </div>
+            </div>
+          {% endif %}
+        </div>
+        <div class="container-fluid bg-light">
+          <div class="container profile-card mh-150">
+            <div class="row">
+              <div id="follow_header" class="d-md-block d-none {% if not my_kudos|length %}lower{% endif %}">
+                {% include 'profiles/follow.html' %}
+              </div>
+              {% if total_kudos_count %}
+                <div id="kudos_header" class="d-md-block d-none">
+                  {% for kudos_group in my_kudos %}
+                    <img src="{{ kudos_group.kudos_token_cloned_from.preview_img_url }}" title="{{ kudos_group.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="70">
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              {% if not hidden %}
+                <div class="col-12 col-lg-3 profile-header__main-infos">
+                  {% include 'profiles/header_avatar.html' %}
+                  {% include 'profiles/header_details.html' %}
+                </div>
+                {% if is_staff %}
+                  {% include 'profiles/scorecard_ptoken.html' %}
+                {% else %}
+                  <div class="col-12 col-lg-3"></div>
+                {% endif %}
+                {% if profile.is_org %}
+                  {% include 'profiles/organization.html' %}
+                {% elif profile.cascaded_persona == 'funder' %}
+                  {% include 'profiles/scorecard_funder.html' %}
+                {% else %}
+                  {% include 'profiles/scorecard_hunter.html' %}
+                {% endif %}
+              {% endif %}
             </div>
           </div>
         </div>
-      {% endif %}
-    </div>
 
-    <div class="container-fluid bg-light">
-      <div class="container profile-card mh-150">
-        <div class="row">
-            <div id="follow_header" class="d-md-block d-none {% if not my_kudos|length %}lower{% endif %}">
-            {% include 'profiles/follow.html' %}
-            </div>
-          {% if total_kudos_count %}
-            <div id="kudos_header" class="d-md-block d-none">
-              {% for kudos_group in my_kudos %}
-                <img src="{{ kudos_group.kudos_token_cloned_from.preview_img_url }}" title="{{ kudos_group.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="70">
-              {% endfor %}
-            </div>
-          {% endif %}
+        {% include 'profiles/tabs.html' %}
+        {% include 'profiles/tabs_close.html' %}
+        {% include 'shared/buy_token_modal.html' %}
+        {% include 'shared/redeem_token_modal.html' %}
+        {% include 'shared/redeem_token_success_modal.html' %}
+        {% include 'shared/buy_receipt.html' %}
+        {% include 'shared/redeem_receipt.html' %}
+        {% include 'shared/create_ptoken.html' %}
 
-          {% if not hidden %}
-            <div class="col-12 col-lg-6 profile-header__main-infos">
-              {% include 'profiles/header_avatar.html' %}
-              {% include 'profiles/header_details.html' %}
-            </div>
+        {% if not profile.is_org %}
+          </div>
+        {% endif %}
 
-            {% if profile.is_org %}
-              {% include 'profiles/organization.html' %}
-            {% elif profile.cascaded_persona == 'funder' %}
-              {% include 'profiles/scorecard_funder.html' %}
-            {% else %}
-              {% include 'profiles/scorecard_hunter.html' %}
-            {% endif %}
-          {% endif %}
+      {% elif hidden %}
+        <div class="container">
+          {% include 'profiles/hidden.html' %}
         </div>
-      </div>
-    </div>
-
-    {% include 'profiles/tabs.html' %}
-
-    <div class="container">
-      {% if hidden %}
-        {% include 'profiles/hidden.html' %}
       {% endif %}
-    </div>
 
-    {% include 'profiles/tabs_close.html' %}
-
-    </div>
-  </div>
-
-    {% include 'shared/result.html' %}
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html'%}
-    {% include 'shared/current_profile.html' %}
-    {% if tab == 'activity' %}
-      {% include 'shared/tip_dependancies.html' %}
-    {% else %}
-      <script src="/dynamic/js/tokens_dynamic.js"></script>
-      <script src="{% static "v2/js/tokens.js" %}"></script>
-    {% endif %}
-    <!-- jQuery -->
-    <script src="{% static "v2/js/abi.js" %}"></script>
-    <script>
-      $('[data-toggle="popover"]').popover()
-      $('[data-toggle="tooltip"]').bootstrapTooltip();
-    </script>
-    <script src="{% static "v2/js/pages/tabs.js" %}"></script>
-    <script src="{% static "v2/js/pages/profile.js" %}"></script>
-    <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
-    <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
-    <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
-    <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
-    <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
-    <script src="{% static "v2/js/rating.js" %}"></script>
-    <script src="{% static "v2/js/status.js" %}"></script>
-    <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
-    <script src="{% static "v2/js/lib/jitsi.js" %}"></script>
-    <script src="{% static "v2/js/activity.js" %}"></script>
-    <script src="{% static "v2/js/3box.min.js" %}"></script>
-    <script>
-      {% if profile.preferred_payout_address %}
-        document.hasPreferredPayoutAddress = true;
+      {% include 'shared/result.html' %}
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/current_profile.html' %}
+      {% if tab == 'activity' %}
+        {% include 'shared/tip_dependancies.html' %}
+      {% else %}
+        <script src="/dynamic/js/tokens_dynamic.js"></script>
+        <script src="{% static "v2/js/tokens.js" %}"></script>
       {% endif %}
-      {% if profile.automatic_backup and is_editable %}
-        window.profile_automatic_backup = true;
-      {% endif %}
-    </script>
+      <!-- jQuery -->
+      <script src="{% static "v2/js/abi.js" %}"></script>
+      <script>
+        $('[data-toggle="popover"]').popover()
+        $('[data-toggle="tooltip"]').bootstrapTooltip();
+      </script>
+      <script>
+        window.history.replaceState('', document.title, window.location.pathname);
+        {% if profile.preferred_payout_address %}
+          document.hasPreferredPayoutAddress = true;
+        {% endif %}
+        {% if profile.automatic_backup and is_editable %}
+          window.profile_automatic_backup = true;
+        {% endif %}
+        {% if ptoken %}
+          document.current_ptoken_address = "{{ ptoken.token_address }}";
+          document.current_ptoken_symbol = "{{ ptoken.token_symbol }}";
+          document.current_ptoken_id = {{ ptoken.id }};
+          document.current_ptoken_value = {{ ptoken.value }};
+          document.current_ptoken_total_available = {{ ptoken.total_available }};
+          document.current_hodling = {{ available_to_redeem|default:0 }};
+        {% endif %}
+      </script>
+      {% bundle merge_js file profile %}
+        <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+        <script src="{% static "v2/js/pages/profile.js" %}"></script>
+        <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
+        <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
+        <script src="{% static "v2/js/pages/profile_tokens.js" %}"></script>
+        <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
+        <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
+        <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+        <script src="{% static "v2/js/rating.js" %}"></script>
+        <script src="{% static "v2/js/status.js" %}"></script>
+        <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
+        <script src="{% static "v2/js/lib/jitsi.js" %}"></script>
+        <script src="{% static "v2/js/activity.js" %}"></script>
+        <script src="{% static "v2/js/3box.min.js" %}"></script>
+        <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
+      {% endbundle %}
+    </div>
   </body>
 </html>

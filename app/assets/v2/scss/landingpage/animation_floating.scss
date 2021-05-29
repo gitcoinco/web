@@ -1,0 +1,20 @@
+
+.floating{
+  animation: floating 3s ease-in-out infinite;
+}
+
+.floating2{
+  animation: floating2 3s ease-in-out infinite;
+}
+
+@keyframes floating { 
+  0% { transform: translate(0,  0px); } 
+  50%  { transform: translate(0, 15px); } 
+  100%   { transform: translate(0, 0px); }     
+} 
+
+@keyframes floating2 { 
+  0% { transform: translate(0,  15px); } 
+  50%  { transform: translate(0, 0px); } 
+  100%   { transform: translate(0, 15px); }     
+} 

@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+
 let users = [];
 let usersPage = 1;
 let usersNumPages = '';
@@ -8,9 +10,6 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 
 Vue.mixin({
   methods: {
-    chatWindow: function(channel) {
-      window.chatSidebar.chatWindow(channel);
-    },
     fetchUsers: function(newPage) {
       let vm = this;
 
@@ -140,7 +139,7 @@ Vue.mixin({
       $.when(postInvite).then((response) => {
         console.log(response);
         if (response.status === 500) {
-          _alert(response.msg, 'error');
+          _alert(response.msg, 'danger');
 
         } else {
           vm.$refs['user-modal'].closeModal();
@@ -161,7 +160,7 @@ Vue.mixin({
       $.when(postInvite).then((response) => {
         console.log(response);
         if (response.status !== 200) {
-          _alert(response.msg, 'error');
+          _alert(response.msg, 'danger');
 
         } else {
           vm.$refs['user-modal'].closeModal();
@@ -213,7 +212,7 @@ Vue.mixin({
             vm.openBounties(response.data[0]);
             $('#userModal').bootstrapModal('show');
           } else {
-            _alert('The user was not found. Please try using the search box.', 'error');
+            _alert('The user was not found. Please try using the search box.', 'danger');
           }
         });
       }
@@ -250,8 +249,8 @@ Vue.mixin({
           user.is_following = false;
         }
 
-        event.target.classList.toggle('btn-outline-green');
-        event.target.classList.toggle('btn-gc-blue');
+        event.target.classList.toggle('btn-outline-secondary');
+        event.target.classList.toggle('btn-primary');
       }).fail(function(error) {
         event.target.disabled = false;
       });
@@ -284,7 +283,6 @@ Vue.component('user-directory', {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {
@@ -354,7 +352,6 @@ if (document.getElementById('gc-users-directory')) {
       usersHasNext,
       numUsers,
       media_url,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
       params: {},
@@ -378,6 +375,12 @@ if (document.getElementById('gc-users-directory')) {
       hideFilterButton: !!document.getElementById('explore_tribes')
     },
     mounted() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (params.has('ptokens')) {
+        this.$set(this.params, 'only_with_token', true);
+      }
+
       this.fetchUsers();
       this.$watch('params', function(newVal, oldVal) {
         this.searchUsers();

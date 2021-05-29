@@ -1,10 +1,9 @@
 language: python
 python: 3.7
-dist: xenial
+dist: bionic
 sudo: true
 
-node_js:
-  - "9"
+node_js: 14
 
 os:
   - linux
@@ -12,9 +11,10 @@ os:
 services:
   - docker
   - postgresql
-  - redis-server
+  - redis
 
 cache:
+  npm: false
   directories:
     - $HOME/.cache/pip
     - node_modules
@@ -24,14 +24,14 @@ jobs:
     # Lint and test the repository.
     - stage: lint-test
       before_script:
+        - nvm install "14"
         - psql -c 'create database testdb;' -U postgres
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
-        - pip install pip setuptools --upgrade
-        - pip install codecov
+        - pip install pip==20.0.2 setuptools --upgrade
         # Fetch and Install GeoIP database files.
-        - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
+        - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
         # Download links no more valid
         - cp dist/*.gz ./
         - gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
@@ -42,13 +42,13 @@ jobs:
         # Install libvips dependencies.
         - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.
+        - node --version
         - npm install
         - pip install -r requirements/test.txt
         - npm run eslint
         - npm run stylelint
+        - (cd app; python3 ./manage.py collectstatic --noinput --disable-collectfast)
         - pytest -p no:ethereum -p no:warnings
-        # Publish CodeCov coverage results.
-        - codecov
         # Generate Markdown documentation and static docs page.
         - pydocmd build
       env:

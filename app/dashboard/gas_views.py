@@ -245,6 +245,15 @@ def gas_history_view(request):
         for gh in gas_histories[i]:
             max_y = max(gh[0], max_y)
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
+
+    events = JSONStore.objects.get(key='hackathons', view='hackathons').data[1]
+    default_tab = 'current'
+
+    tabs = [
+        ('current', 'happening now'),
+        ('upcoming', 'upcoming'),
+        ('finished', 'completed'),
+    ]
     context = {
         'title': _('Live Ethereum (ETH) Gas History'),
         'card_desc': _('See and comment on the Ethereum (ETH) Gas - Hourly History Graph'),
@@ -254,5 +263,8 @@ def gas_history_view(request):
         'breakdown': breakdown,
         'breakdown_ui': breakdown_ui,
         'granularity_options': granularity_options,
+        'events': events,
+        'tabs': tabs,
+        'default_tab': default_tab
     }
     return TemplateResponse(request, 'gas_history.html', context)

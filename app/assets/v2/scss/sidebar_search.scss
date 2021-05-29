@@ -1,0 +1,119 @@
+.sidebar_search {
+  padding: 20px 20px 10px 40px;
+}
+
+.subheading {
+  color: #5B5C5C;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.subheading i {
+  position: relative;
+  top: -1px;
+  font-size: 0.8rem;
+}
+
+#expand,
+#minimize {
+  display: none;
+}
+
+.close-icon {
+  position: absolute;
+  top: 13px;
+  right: 25px;
+  width: 15px;
+  display: none;
+  cursor: pointer;
+}
+
+.sidebar_search .options .option {
+  margin-bottom: 2px;
+}
+
+.sidebar_search .option.Azure-Samples img {
+  border-radius: 0px !important;
+}
+
+.option label:before,
+.option label:after {
+  width: 16px;
+  height: 16px;
+  top: 3px;
+}
+
+.option label {
+  padding-left: 20px;
+}
+
+.option label:after {
+  border: 1px solid #D3D3D3;
+  background: #FFF;
+}
+
+.sidebar_search label,
+.sidebar_search #clear {
+  cursor: pointer;
+}
+
+.sidebar_search #clear {
+  margin-top: 2px;
+  color: #6F3FF5;
+}
+
+#new_search {
+  color: #6F3FF5;
+  position: absolute;
+  right: 10px;
+  top: 11px;
+}
+
+.filter-label {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.sidebar_search .col {
+  border-top: 1px solid #D3D3D3;
+}
+
+.accordion:after {
+  color: #5B5C5C;
+}
+
+.panel .col {
+  margin-bottom: 1rem;
+}
+
+.panel .col:first-child {
+  border-top: none;
+}
+
+@media (max-width: 991.98px) {
+  #expand {
+    display: inherit;
+  }
+
+  .sidebar_filters {
+    display: none
+  }
+
+  .search_bar div {
+    padding-right: 15px !important;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .sidebar_search {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 20px 20px 10px;
+  }
+}
+
+.left-ribbon {
+  border-left: 3px solid var(--gc-blue);
+  padding-left: 6px !important;
+}

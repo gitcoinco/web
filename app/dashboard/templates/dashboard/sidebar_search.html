@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -30,16 +30,16 @@
     </div>
   </div>
 
-  <p id="expand" class="text-right font-caption font-weight-semibold">
+  <p id="expand" class="text-right font-caption font-weight-semibold cursor-pointer">
     {% trans "Expand Filter" %}
     <i class="fas fa-chevron-down"></i>
   </p>
-  <p id="minimize" class="text-right font-caption font-weight-semibold">
+  <p id="minimize" class="text-right font-caption font-weight-semibold cursor-pointer">
     {% trans "Minimize Filter" %}
     <i class="fas fa-chevron-up"></i>
   </p>
 
-  <form>
+  <form class="sidebar_filters">
 
     <div class="col">
       <div class="col-12 subheading">
@@ -160,7 +160,7 @@
       <div class="col-12 subheading">
         {% trans "Applicants" %}
       </div>
-      <div class="col-12 options">
+      <div class="col-12 options pb-2">
         <select class="w-100 js-select2" name="applicants" id="applicants_box">
           <option value="ALL">{% trans "ALL" %}</option>
           <option value="0">0</option>
@@ -170,10 +170,10 @@
     </div>
 
     <div class="col">
-      <div class="col-12 subheading accordion">
+      <div class="col-12 subheading accordion collapsed" id="advanced_filters" data-toggle="collapse" data-target="#filters" aria-controls="filters">
         {% trans "Advanced Filters" %}
       </div>
-      <div class="panel">
+      <div class="accordion-panel collapse" id="filters" aria-labelledby="advanced_filters">
         {% if github_handle %}
           <div class="col">
             <div class="col-12 subheading">{% trans "My Bounties" %}</div>

@@ -1,0 +1,58 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Gitcoin Quadratic Lands - Workstream" />
+<meta name="twitter:description"
+  content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web." />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- subnavigation -->
+{% include 'quadraticlands/workstream/nav.html' %}
+
+
+<article>
+
+  <section class="column">
+    <h2>Progressive Decentralization</h2>
+    <p>Workstream Driver: <a target="_blank" href="https://twitter.com/flipture">Philip Hutchins</a></p>
+    <div class="intro purple">Digital public goods like the ones we’re building in web3 will one day be ubiquitous, and Gitcoin’s mission is to build and fund them. But right now, Gitcoin’s products are crypto-aware but not fully decentralized. We call this Web 2.5</div>
+
+    <p>But Gitcoin should not be a centralized pillar of a decentralized ecosystem, and mature experiments for public goods funding should ultimately be run on credibly neutral technology. From 2021-2025, we will be actively working to decentralize Gitcoin. This means building fully decentralized new web experiences, and eventually turning over every Gitcoin Company managed property to a community-run DAO. Join this working group to help decentralize Gitcoin!</p>
+
+  </section>
+
+  <section class="column">
+    <h3 class="aqua">Example Quests:</h3>
+    <li>Help define the architecture for the next iteration of Gitcoin Grants and beyond</li>
+    <li>Work with anti-sybil and other workstreams to ensure any solutions we come up with meet a strong definition of “sufficient decentralization”</li>
+    <li>Build out L2 interfaces for Gitcoin Grants, eventually replacing the Web2.5 grants experience entirely.</li>
+    <li>Create a core set of APIs that the community can use to build on top of Gitcoin</li>
+  </section>
+
+  <section class="column">
+    <a href="https://gov.gitcoin.co/t/workstream-suggestion-decentralize-gitcoin/180" target="_blank" class="btn purple" data-kinetics-attraction
+      data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1"
+      data-kinetics-attraction-grow="7">Get Involved on Discourse</a>
+  </section>
+
+</article>
+
+{% endblock %}
+
+
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'transaction/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -130,6 +130,10 @@
       <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" class="form-control">
     </div>
     <div class="form-group">
+      <label for="">{% trans "Network" %}:</label>
+      <input type="text" value="{{kudos.contract.network}}" id="issueURL" disabled="disabled" class="form-control">
+    </div>
+    <div class="form-group">
       <label for="">{% trans "Public Comments" %} ({% trans "optional" %}):</label>
       <textarea id="comments_public" class="form-control"></textarea>
     </div>
@@ -153,7 +157,7 @@
       </label>
     </div>
     <div class="text-center">
-      <button class="btn btn-gc-purple" id="send">{% trans "Send" %} <span class="emoji">⚡️</span></button>
+      <button class="btn btn-dark" id="send">{% trans "Send" %} <span class="emoji">⚡️</span></button>
     </div>
   </form>
 
@@ -170,7 +174,7 @@
     <h3 class="font-weight-300">{% blocktrans %}<span id="new_username">the user</span> has been notified{% endblocktrans %}</h3>
     <p class="notifier">{% trans "with instructions about how to receive their kudos." %}</p>
     <br>
-    <a id="" class="btn btn-gc-purple" href="{% url 'kudos_marketplace' %}">⬅ {% trans "Start Over" %}</a>
+    <a id="" class="btn btn-dark" href="{% url 'kudos_marketplace' %}">⬅ {% trans "Start Over" %}</a>
   </div>
 </section>
 

@@ -16,83 +16,98 @@
 
 {% endcomment %}
 {% load i18n static %}
-<footer class="container-fluid no-gutters footer">
-  <div class="container footer__main">
+{% include 'shared/bottom_notification.html' with footer=1 %}
+<footer class="py-5 mt-auto">
+  <div class="container">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-4 mt-md-5">
           <a class="navbar-brand text-center py-0 mb-3" href="/">
-            <img id="logo" {{prefix}}src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+            <img class="" src="{% static "v2/images/new-logos/gc-h-pos.svg" %}" width="150" />
           </a>
-          <p class="footer__text">Gitcoin is a platform for you to get paid for working on open source software in <a href="{% url 'contributor_bounties' '/python' %}">Python</a>, <a href="{% url 'contributor_bounties' '/rust' %}">Rust</a>, <a href="{% url 'contributor_bounties' '/ruby' %}">Ruby</a>, <a href="{% url 'contributor_bounties' '/javascript' %}">JavaScript</a>, <a href="{% url 'contributor_bounties' '/solidity' %}">Solidity</a>, <a href="{% url 'contributor_bounties' '/html' %}">HTML</a>, <a href="{% url 'contributor_bounties' '/css' %}">CSS</a>, <a href="{% url 'contributor_bounties' '/design' %}">Design</a>, and more.</p>
+          <p class="line-height-3">Gitcoin is a platform for you to get paid for working on open source software in <a class="link-current underline" href="{% url 'contributor_bounties' '/python' %}">Python</a>, <a class="link-current underline" href="{% url 'contributor_bounties' '/rust' %}">Rust</a>, <a class="link-current underline" href="{% url 'contributor_bounties' '/ruby' %}">Ruby</a>, <a class="link-current underline" href="{% url 'contributor_bounties' '/javascript' %}">JavaScript</a>, <a class="link-current underline" href="{% url 'contributor_bounties' '/solidity' %}">Solidity</a>, <a class="link-current underline" href="{% url 'contributor_bounties' '/html' %}">HTML</a>, <a class="link-current underline" href="{% url 'contributor_bounties' '/css' %}">CSS</a>, <a class="link-current underline" href="{% url 'contributor_bounties' '/design' %}">Design</a>, and more.</p>
       </div>
-      <div class="col-md-8">
-        <div class="nav mb-3">
-          <a class="nav-link" href="/blog">
-            <img {{prefix}}src="{% static "v2/images/social/medium.png" %}" alt="Medium">
+      <div class="col-lg-6 col-md-8">
+        <div class="nav mb-3 font-smaller-1">
+          <a class="pl-0 pr-2 py-2 pr-md-3 py-md-3 link-current" href="/blog">
+            <span class="fa-stack">
+              <i class="far fa-circle fa-stack-2x"></i>
+              <i class="fas fa-blog fa-stack-1x"></i>
+            </span>
           </a>
-          <a class="nav-link" href="{% url "github" %}">
-            <img {{prefix}}src="{% static "v2/images/social/github.png" %}" alt="Github">
+          <a class="p-2 p-md-3 link-current" href="{% url "github" %}">
+            <span class="fa-stack">
+              <i class="far fa-circle fa-stack-2x"></i>
+              <i class="fab fa-github fa-stack-1x"></i>
+            </span>
           </a>
-          <a class="nav-link hide_min_viewport" href="{% url "fb" %}">
-            <img {{prefix}}src="{% static "v2/images/social/facebook.png" %}" alt="Facebook">
+          <a class="p-2 p-md-3 link-current hide_min_viewport" href="{% url "fb" %}">
+            <span class="fa-stack">
+              <i class="far fa-circle fa-stack-2x"></i>
+              <i class="fab fa-facebook fa-stack-1x"></i>
+            </span>
           </a>
-          <a class="nav-link" href="{% url "twitter" %}">
-            <img {{prefix}}src="{% static "v2/images/social/twitter.png" %}" alt="Twitter">
+          <a class="p-2 p-md-3 link-current" href="{% url "twitter" %}">
+            <span class="fa-stack">
+              <i class="far fa-circle fa-stack-2x"></i>
+              <i class="fab fa-twitter fa-stack-1x"></i>
+            </span>
           </a>
-          <a class="nav-link" href="{% url "reddit" %}">
-            <img {{prefix}}src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
+          <a class="p-2 p-md-3 link-current" href="{% url "reddit" %}">
+            <span class="fa-stack">
+              <i class="far fa-circle fa-stack-2x"></i>
+              <i class="fab fa-reddit fa-stack-1x"></i>
+            </span>
           </a>
-          <a class="nav-link" target="_blank" href="https://chat.gitcoin.co">
-            <img {{prefix}}src="{% static "v2/images/tribes/landing/chat_round.svg" %}" alt="Chat">
+          <a class="p-2 p-md-3 link-current" target="_blank" href="{% url "discord" %}">
+            <span class="fa-stack">
+              <i class="far fa-circle fa-stack-2x"></i>
+              <i class="fab fa-discord fa-stack-1x"></i>
+            </span>
           </a>
-          <a class="nav-link" href="mailto:founders@gitcoin.co">
-            <img {{prefix}}src="{% static "v2/images/social/mail.png" %}" alt="Mail">
+          <a class="pr-0 pl-2 py-2 pl-md-3 py-md-3 link-current" href="mailto:support@gitcoin.co">
+            <span class="fa-stack">
+              <i class="far fa-circle fa-stack-2x"></i>
+              <i class="fas fa-envelope fa-stack-1x"></i>
+            </span>
           </a>
         </div>
-        <div class="d-flex flex-wrap">
-          <div class="sitenav sitenav__product">
+
+        <div class="d-flex flex-row flex-wrap justify-content-between gap-1">
+          <div class="d-flex flex-column mb-2">
             <h5>{% trans "Product" %}</h5>
-            <a href="https://github.com/gitcoinco/web/releases/" target="_blank">{% trans "Latest Updates" %}</a>
-            <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
-            <a href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
-            <a href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
-            <a href="{% url "quests_index" %}">{% trans "Quests" %}</a>
-            <a href="{% url "avatar_landing" %}">{% trans "Avatar Builder" %}</a>
+            <a class="link-current hover-underline mb-2" href="https://status.gitcoin.co/" target="_blank">{% trans "Site Status" %} <i class="ml-2 fas fa-external-link-alt"></i></a>
+            <a class="link-current hover-underline mb-2" href="https://github.com/gitcoinco/web/releases/" target="_blank">{% trans "Releases" %} <i class="ml-2 fas fa-external-link-alt"></i></a>
+            <a class="link-current hover-underline mb-2" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "quests_index" %}">{% trans "Quests" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "avatar_landing" %}">{% trans "Avatar Builder" %}</a>
           </div>
-          <div class="sitenav">
+          <div class="d-flex flex-column mb-2">
             <h5>{% trans "Business" %}</h5>
-            <a href="{% url "about" %}">{% trans "About" %}</a>
-            <a href="{% url "mission" %}">{% trans "Mission" %}</a>
-            <a href="{% url "results" %}">{% trans "Results" %}</a>
-            <a href="{% url "jobs" %}">{% trans "Jobs" %}</a>
-            <a href="{% url "blog" %}">{% trans "Blog" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "about" %}">{% trans "About" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "mission" %}">{% trans "Mission" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "results" %}">{% trans "Results" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "jobs" %}">{% trans "Jobs" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "blog" %}">{% trans "Blog" %}</a>
           </div>
-          <div class="sitenav">
+          <div class="d-flex flex-column mb-2">
             <h5>{% trans "Community" %}</h5>
-            <a href="https://gitcoin.co/wiki/wiki-code-conduct/">{% trans "Code of Conduct" %}</a>
-            <a class="slack{% if active == 'slack' %} selected{% endif %}" target="_blank" href="https://chat.gitcoin.co">
-              Chat
-            </a>
-            <a href="{% url "request_money" %}">{% trans "Request Money" %}</a>
-            <a href="/wiki/">{% trans "Wiki" %}</a>
-            <a href="https://github.com/gitcoinco/web/issues/new/choose">{% trans "Help" %}</a>
-            <a href="https://store.gitcoin.co/">{% trans "Store" %}</a>
+            <a class="link-current hover-underline mb-2" target="_blank" href="{% url "discord" %}">Discord</a>
+            <a class="link-current hover-underline mb-2" href="https://support.gitcoin.co/kb/article/42-code-of-conduct/">{% trans "Code of Conduct" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "request_money" %}">{% trans "Request Money" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "support" %}">{% trans "Support" %}</a>
+            <a class="link-current hover-underline mb-2" href="https://store.gitcoin.co/">{% trans "Store" %}</a>
           </div>
-          <div class="sitenav">
+          <div class="d-flex flex-column mb-2">
             <h5>{% trans "Legal" %}</h5>
-            <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms" %}</a>
-            <a href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">{% trans "Privacy" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms" %}</a>
+            <a class="link-current hover-underline mb-2" href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">{% trans "Privacy" %}</a>
           </div>
         </div>
       </div>
     </div>
   </div>
   <span id=csrf_container>{% csrf_token %}</span>
-  <div class="row">
-    <div class="d-flex w-100 footer__consensys">
-      <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style="margin: 10px auto;" target="_blank" rel="noopener noreferrer">
-        <img {{prefix}}src="{% static "v2/images/consensys-logo-white-small.png" %}" width="100" height="35"/>
-      </a>
-    </div>
-  </div>
+
 </footer>

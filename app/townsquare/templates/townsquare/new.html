@@ -1,6 +1,6 @@
 {% extends 'quests/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,28 +15,28 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% block 'content' %}
-<link rel="stylesheet" href="{% static "v2/css/onepagesubmit.css" %}">
-<style type="text/css">
-.add_answer,
-.add_question,
-.close_question,
-.close_answer{
-  font-size: 12px;
-}
-.kudos-module .kudos-comment,
-.kudos-module .msg-alert{
-  display: none !important;
-}
+{% bundle css file townsquare_new %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepagesubmit.scss" %} />
+  <style type="text/css">
+    .add_answer,
+    .add_question,
+    .close_question,
+    .close_answer {
+      font-size: 12px;
+    }
+    .kudos-module .kudos-comment,
+    .kudos-module .msg-alert {
+      display: none !important;
+    }
 
-.new_quest_background.selected {
-  border: 2px solid #F9006C;
-}
-
-</style>
-<link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
-
+    .new_quest_background.selected {
+      border: 2px solid #F9006C;
+    }
+  </style>
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/select2-kudos.scss" %} />
+{% endbundle %}
 <div class="container-fluid">
   <div class="row">
     <div class="col-12 col-md-12 pr-2 pl-2 pb-4 mt-2 form_container">
@@ -131,7 +131,7 @@
             </div>
           <input name=pk type="hidden" value="{% if the_quest %}{{the_quest.pk}}{% else %}{{package.pk}}{% endif %}">
           {% csrf_token %}
-          <button class='button button--primary mt-2 float-right' style="font-size: 35px; padding-top: 20px; width: 400px;" type='submit' name='submit' value="Submit Quest">
+          <button class='btn btn-primary mt-2 float-right' style="font-size: 35px; padding-top: 20px; width: 400px;" type='submit' name='submit' value="Submit Quest">
           <img src="{% static 'v2/images/helmet.svg' %}" style="max-width: 50px; margin-top: -20px" />
           Create Action
           </button>

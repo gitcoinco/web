@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -24,18 +24,16 @@
 </head>
 
 <style>
-  body {
-    margin: 0px;
-    padding: 0px;
-    font-family: 'Roboto', Arial, sans-serif;
-  }
-
   .rounded {
     border-radius: 50%;
   }
 
   .mb-0 {
     margin-bottom: 0;
+  }
+
+  .mt-0 {
+    margin-top: 0;
   }
 
   .mt-1 {
@@ -71,44 +69,30 @@
   }
 
   h3 {
-    line-height: 30px;
-  }
-
-  h3{
-    color: #000000;
+    color: #15003E;
     font-weight: bold;
+    font-size: 1.4rem;
     margin-bottom: 10px;
     margin-top: 40px;
+    line-height: 30px;
   }
 
   h3.no-subtitle {
     margin-bottom: 0;
   }
 
-  h5{
-    color: #000000;
+  h5 {
+    color: #15003E;
     font-size: 0.8em;
     margin-top:5px;
     margin-bottom: 0;
     font-weight: 400;
   }
 
-  hr {
-    width: 90%;
-  }
-
   h1 {
-    font-size: 1.8rem;
-    color: black;
+    color: #15003E;
     font-weight: bold;
-  }
-
-  h2 {
-    font-size: 1.6rem;
-  }
-
-  h3 {
-    font-size: 1.4rem;
+    margin-top: 2em;
   }
 
   h4 {
@@ -116,7 +100,6 @@
   }
 
   h4, .h4 {
-    text-align: center;
     padding-top: 40px;
   }
 
@@ -124,21 +107,39 @@
     {% if override_back_color %}
       background-color: {{ override_back_color }};
     {% else %}
-      background-color: #f2f6f9;
+      background-color: #FDFAFA;
     {% endif %}
+    font-family: 'Libre Franklin', 'Verdana', sans-serif !important;
   }
 
   a.button {
     color: #fff;
-    background-color: #3E00FF;
+    background-color: #6F3FF5;
     border-radius: 3px;
     cursor: pointer;
-    padding: 10px 15px;
-    font-size: 14px;
-    line-height: 1.5;
+    padding: 10px 20px;
+    font-size: 16px;
+    line-height: 19.39px;
     text-align: center;
     text-decoration: none;
-    font-family: 'Muli', Arial, sans-serif;
+  }
+
+  @media (min-width: 992px) {
+    .container {
+      max-width: 960px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      max-width: 720px;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .container {
+      max-width: 540px;
+    }
   }
 
   a.button.large {
@@ -156,105 +157,9 @@
     {% endif %}
   }
 
-  #grow-oss {
-    display: inline-block;
-    max-width: 100%;
-    margin-top: 1em;
-    margin-bottom: 5em;
-  }
-
-  #header {
-    {% if email_style %}
-      max-height: 100%;
-    {% else %}
-      height: 100px;
-      padding: 30px 50px;
-    {% endif %}
-  }
-
-  #header, #footer {
-    color: white;
-    align-content: center;
-    text-align: center;
-  }
-
-  body, #header {
-      {% if email_style == 1 %}
-        background-color: #3E00FF;
-      {% elif email_style == 2 %}
-        background-color: #8934b3;
-      {% elif email_style == 3 or email_style == 4 %}
-        background-color: #dbdbdb;
-      {% elif email_style == 5 %}
-        background-color: #1f8de3;
-      {% elif email_style == 6 %}
-        background-color: #2bffbc;
-      {% elif email_style == 0 %}
-        background-color: #15003e;
-      {% elif email_style == 7 or email_style == 8 or email_style == 9 or email_style == 11 or email_style == 15 or email_style == 16 or email_style == 18 or email_style == 19 or email_style == 28 %}
-        background-color: #150065;
-      {% elif email_style == 12 or  email_style == 25 %}
-        background-color: #ffffff;
-      {% elif email_style == 13 %}
-        background-color: #f2f2f2;
-      {% elif email_style == 17 or email_style == 22 or email_style == 24 %}
-        background-color: #fccf0e;
-      {% elif email_style == 20 or email_style == 10 or email_style == 14 %}
-        background-color: #3e00ff;
-      {% elif email_style == 23 %}
-        background-color: #ffc000;
-      {% elif email_style == 21 %}
-        background-color: #f7ecbc;
-      {% elif email_style == 26 %}
-        background-color: #0D0764;
-      {% elif email_style == 27 %}
-        background-color: #15053F;
-      {% elif email_style == 28 %}
-        background-color: #167D56;
-      {% else %}
-        background-color: #15003e;
-      {% endif %}
-  }
-  #footer {
-    padding: 30px 50px;
-    background-color: #0D0764;
-  }
-
-  #preferred_payout{
-    margin-top: 20px;
-    background-color: #eee;
-    padding: 10px 50px;
-    text-align: center;
-  }
-
-  #preferred_payout a {
-    font-size: 1em;
-    color: #70b2ff;
-  }
-
-  #footer p {
-    color: #ccc;
-  }
-
-  #footer a {
-    color: #70b2ff;
-  }
-
-  #copyright, #legal-contact {
-
-  }
-
   a {
-    color: #70b2ff;
+    color: #6F3FF5;;
     text-decoration: none;
-  }
-
-  p, li, a{
-    color: #000000;
-    line-height: 26px;
-    font-size: 16px;
-    list-style: none;
-    margin-top: 1.5em;
   }
 
   li {
@@ -266,20 +171,19 @@
     text-align: center;
   }
 
+  .text-left {
+    text-align: left;
+  }
+
   .primary-content {
     background-color: white;
     overflow: hidden;
-    padding-bottom: 20px;
   }
 
   .roundup {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     line-height: 20px;
-  }
-
-  .grant-recontrib-msg {
-    margin: 0 auto;
   }
 
   .grant-tile {
@@ -395,7 +299,6 @@
     }
   }
 
-
   .col-12 {
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
@@ -412,20 +315,6 @@
   .mt-2,
   .my-2 {
     margin-top: .5rem !important;
-  }
-
-  @media (min-width: 576px) {
-    .pl-sm-3,
-    .px-sm-3 {
-      padding-left: 1rem !important;
-    }
-  }
-
-  @media (min-width: 576px) {
-    .pr-sm-3,
-    .px-sm-3 {
-      padding-right: 1rem !important;
-    }
   }
 
   .pb-3, .py-3 {
@@ -496,20 +385,22 @@
   }
 
   @media (min-width: 576px) {
+    .pl-sm-3,
+    .px-sm-3 {
+      padding-left: 1rem !important;
+    }
+    .pl-sm-3,
+    .px-sm-3 {
+      padding-left: 1rem !important;
+    }
     .pl-sm-0,
     .px-sm-0 {
       padding-left: 0 !important;
     }
-  }
-
-  @media (min-width: 576px) {
     .pr-sm-0,
     .px-sm-0 {
       padding-right: 0 !important;
     }
-  }
-
-  @media (min-width: 576px) {
     .col-sm-8 {
       -ms-flex: 0 0 66.666667%;
       flex: 0 0 66.666667%;
@@ -646,7 +537,7 @@
 
   .activity_stream .activity_detail .tag {
     background-color: #e7f0fa;
-    color: #3E00FF; /* var(--gc-blue) */
+    color: #6F3FF5; /* var(--gc-blue) */
     font-size: 10px;
     list-style: none;
     padding: 5px;
@@ -666,11 +557,11 @@
 
   .tag.token {
     background-color: #e7f0fa;
-    color: #3E00FF; /* var(--gc-blue) */
+    color: #6F3FF5; /* var(--gc-blue) */
   }
 
   .tag span {
-    color: #3E00FF; /* var(--gc-blue) */
+    color: #6F3FF5; /* var(--gc-blue) */
   }
 
   .tag p {
@@ -683,7 +574,7 @@
   }
 
   .activity_stream a {
-    color: #3E00FF;
+    color: #6F3FF5;
   }
 
   .fa-icon-png {
@@ -727,7 +618,7 @@
     position: relative;
   }
   .bg-gc-blue {
-    background-color: #3E00FF; /* var(--gc-blue) */
+    background-color: #6F3FF5; /* var(--gc-blue) */
   }
   /* Styles for .activity_stream -- END */
 
@@ -781,17 +672,12 @@
     .quest-img-top {
       margin-left: 30vw;
     }
-
-    .primary-content {
-      padding: 1em;
-    }
   }
 
   @media screen and (min-width: 48em) {
     .primary-content {
-      margin-left: 10%;
-      margin-right: 10%;
-      padding: 2em;
+      margin-left: 15%;
+      margin-right: 15%;
     }
 
     .quest-img-bottom {
@@ -825,8 +711,8 @@
 
   @media screen and (max-width: 48em) {
     .primary-content {
-      margin-left: 0;
-      margin-right: 0;
+      margin-left: 6%;
+      margin-right: 6%;
     }
   }
 
@@ -849,99 +735,152 @@
       margin-left: 5vw;
     }
   }
+
+  /* Extra small devices (phones, 600px and down) */
+  @media only screen and (max-width: 600px) {
+    a.button {
+      display: inline-block;
+      width: 90% !important;
+    }
+
+    a {
+      word-wrap: break-word;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+    }
+
+    h2 {
+      font-size: 1rem;
+    }
+
+    .bounties-img {
+      width: 80%;
+    }
+
+    hr {
+      width: 100%;
+    }
+
+    #content-body {
+      padding: 1.5em 11% 3em 11%;
+      text-align: left;
+      color: #15003E;
+    }
+
+    #footer {
+      padding-top: 40px;
+      color: #757087 !important;
+      text-align: center;
+    }
+
+    .footer-links {
+      margin: 1.5em 1% 3em 1%;
+    }
+
+    .footer-socials {
+      width: 2em;
+      height: auto;
+      margin-left: 0.2em;
+      margin-right: 0.2em;
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
+    .bounties-img {
+      width: 60%;
+    }
+
+    .center-img {
+      width: 60%;
+    }
+
+    hr {
+      width: 90%;
+    }
+
+    #content-body {
+      padding: 1.5em 11% 3em 11%;
+      text-align: left;
+      color: #15003E;
+    }
+
+    #footer {
+      padding-top: 40px;
+      margin: 0px 50px 0px 50px;
+      color: #757087 !important;
+      text-align: center;
+    }
+
+    .footer-links {
+      margin: 1.5em 5% 3em 5%;
+    }
+
+    .footer-socials {
+      width: 3em;
+      height: auto;
+      margin-left: 2%;
+      margin-right: 2%;
+    }
+  }
+
+  .center-img {
+    display: block;
+    margin: 0.5em auto 0.5em auto;
+  }
+
+  .bounties-img {
+    max-width: 20em;
+    height: auto;
+    margin-bottom: 4em;
+  }
 </style>
 
-<body class="g-font-muli">
-  {% if not hide_header %}
-  <div id="header">
-    <a href="{% url 'funder_bounties' %}">
-      <span style="display: inline-block;height: 100%;vertical-align: middle;"></span>
-      {% if email_style == 1 %}
-        <img id="logo" src="{% static "v2/images/emails/email_header1.gif" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 2 %}
-        <img id="logo" src="{% static "v2/images/emails/email_header2.gif" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 3 %}
-        <img id="logo" src="{% static "v2/images/emails/email_header3.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 4 %}
-        <img id="logo" src="{% static "v2/images/emails/email_header4.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 5 %}
-        <img id="logo" src="{% static "v2/images/emails/email_header5.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 6 %}
-        <img id="logo" src="{% static "v2/images/emails/email_header6.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 0 %}
-        <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 7 %} <img id="logo" src="{% static "v2/images/emails/email_header7.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 8 %} <img id="logo" src="{% static "v2/images/emails/email_header8.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 9 %} <img id="logo" src="{% static "v2/images/emails/email_header9.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 10 %} <img id="logo" src="{% static "v2/images/emails/email_header10.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 11 %} <img id="logo" src="{% static "v2/images/emails/email_header11.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 12 %} <img id="logo" src="{% static "v2/images/emails/email_header12.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 13 %} <img id="logo" src="{% static "v2/images/emails/email_header13.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 14 %} <img id="logo" src="{% static "v2/images/emails/email_header14.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 15 %} <img id="logo" src="{% static "v2/images/emails/email_header15.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 16 %} <img id="logo" src="{% static "v2/images/emails/email_header16.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 17 %} <img id="logo" src="{% static "v2/images/emails/email_header17.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 18 %} <img id="logo" src="{% static "v2/images/emails/email_header18.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 19 %} <img id="logo" src="{% static "v2/images/emails/email_header19.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 20 %} <img id="logo" src="{% static "v2/images/emails/email_header20.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 21 %} <img id="logo" src="{% static "v2/images/emails/email_header21.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 22 %} <img id="logo" src="{% static "v2/images/emails/email_header22.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 23 %} <img id="logo" src="{% static "v2/images/emails/email_header23.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 24 %} <img id="logo" src="{% static "v2/images/emails/email_header24.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 26 %} <img id="logo" src="{% static "v2/images/emails/email_header26.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 27 %} <img id="logo" src="{% static "v2/images/emails/email_header27.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% elif email_style == 28 %} <img id="logo" src="{% static "v2/images/emails/email_header28.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% else %}
-        <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
-      {% endif %}
-    </a>
+<body>
+  <br>
+  <img class="center-img" src="{% static 'v2/images/emails/gitcoin_logo.png' %}" style="height: auto; width: 2.7em;" />
+  <br>
+  <div class="primary-content text-center">
+    {% block content %}
+    {% endblock %}
   </div>
-  {% endif %}
+  <div id="footer">
+    <div class="footer-links">
+      {% block footer_links %}
+        <a href="https://www.facebook.com/GetGitcoin"><img class="footer-socials" src="{% static "v2/images/emails/facebook.png" %}"></a>
 
-    <div class="primary-content text-center">
-        {% block content %}
-        {% endblock %}
-        {% if not hide_bottom_logo %}
-          <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
-        {% endif %}
+        <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w"><img class="footer-socials" src="{% static "v2/images/emails/youtube.png" %}"></a>
+
+        <a href="https://www.twitter.com/gitcoin"><img class="footer-socials" src="{% static "v2/images/emails/twitter.png" %}"></a>
+
+        <a href="https://github.com/gitcoinco/"><img class="footer-socials" src="{% static "v2/images/emails/github.png" %}"></a>
+
+        <a href="mailto:team@gitcoin.co"><img class="footer-socials" src="{% static "v2/images/emails/email.png" %}"></a>
+
+        <a href="https://discord.gg/gitcoin"><img class="footer-socials" src="{% static "v2/images/emails/discord.png" %}"></a>
+      {% endblock %}
     </div>
-
-  <div id="preferred_payout">
-    {% if subscriber.profile.preferred_payout_address %}
-      Your Gitcoin preferred payout address is <strong>{{subscriber.profile.preferred_payout_address}}</strong>.  Payments will be auto-sent to this address (unless otherwise specified upon work submission).
-      <a href="https://gitcoin.co/settings/account">New Wallet? Click here to update Payout Address.</a>
-    {% else %}
-      You do not have a preferred payout address on file.
-      <a href="https://gitcoin.co/settings/account">Click here to set a Payout Address.</a>
-    {% endif %}
-
-  </div>
-  <div id="footer" class="text-center">
-    <div>
-      <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
-
-      <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
-
-      <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
-
-      <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
-
-      <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
-    </div>
-    <div>
-      <div id="copyright">
+    <center style="margin-bottom: 80px;">
         <p>
-          <span>&copy; {% now "Y" %} Gitcoin Core, Inc. {% trans "All rights reserved." %}</span>
+          &copy; {% now "Y" %} Gitcoin. {% trans "All Rights Reserved." %}
+          <br>
+          <a href="{{base_url}}legal/privacy">{% trans "Privacy Policy" %}</a> | <a href="{{base_url}}legal/terms">{% trans "Terms + Conditions" %}</a>
         </p>
-      </div>
-      <div id="legal-contact">
         <p>
           {% trans "Want to change how you receive these emails?" %}
           <br>
-          {% trans "You can update your " %} <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "preferences" %}</a> or <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+          {% trans "You can update your " %} <a href="{% url 'email_settings' subscriber.priv %}">{% trans "preferences" %}</a> or <a href="{% url 'email_settings' subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
         </p>
-      </div>
-    </div>
+    </center>
   </div>
 </body>
 </html>

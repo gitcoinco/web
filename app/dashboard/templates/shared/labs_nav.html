@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,8 +16,8 @@
 
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
-<nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
-  <a class="navbar-brand py-0 brand-hover" href="{% url 'labs' %}">
+<nav class="navbar navbar-expand-md navbar-light bg-white gitcoin-background w-100">
+  <a class="navbar-brand sticky-top py-0 brand-hover" href="{% url 'labs' %}">
     <img class="mw-100 logo-static" src="{% static "v2/images/labs/gitcoin_labs_white.svg" %}" alt="Gitcoin Labs" height="50" />
     <img class="mw-100 logo-animated" src="{% static "v2/images/labs/gitcoin_labs.gif" %}" alt="Gitcoin Labs" height="50">
   </a>
@@ -27,13 +27,12 @@
       <span id="current-network"></span>
     </div>
   {% endif %}
-  <div class="d-flex order-0 order-md-last">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+  <div class="d-flex order-0 order-last">
+    <button class="navbar-toggler sticky-top" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     {% if user.is_authenticated %}
-      {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
     {% endif %}
   </div>

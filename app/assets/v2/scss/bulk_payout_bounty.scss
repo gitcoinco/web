@@ -1,0 +1,172 @@
+.tooltip-inner {
+  max-width: 30rem !important;
+  text-align: left;
+}
+
+tr div {
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.form__radio label > div {
+  top: 2px;
+}
+
+.table-hover tbody tr:hover{
+  background-color: #FAFAFA;
+}
+
+.preview_payment {
+  background-color: #FAFAFA;
+  border-radius: 3px;
+}
+
+.error {
+  border: 1px solid red !important;
+}
+
+.entry.active {
+  background-color: #bbb;
+}
+
+.paymentAlert {
+  background-color: #E66700;
+  color: #FFF;
+  border-radius: 5px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  display: none;
+  padding-left: 15px;
+}
+
+.paymentAlert > div:first-child {
+  float: left;
+  position: relative;
+  top: 7px;
+}
+
+.paymentAlert > div:last-child {
+  width: calc(100% - 40px);
+  float: left;
+  margin-left: 15px;
+  padding-right: 15px;
+  padding-top: 6.5px;
+}
+
+.paymentAlert > div:first-child > img {
+  width: 17px;
+}
+
+.overagePreview , .tipPreview {
+  color: #E66700;
+  padding-bottom: 5px;
+  display: none;
+}
+
+.select2 {
+  width: 100% !important;
+}
+
+#payout_table th {
+  border-bottom-width: 1px;
+}
+
+#payout_table tr td {
+  border-top: none;
+  border-width: 1px;
+}
+
+#payout_table .select2-selection,
+#payout_table .input_amount,
+#payout_table tr td .amount {
+  border-radius: 4px !important;
+  border: 2px solid #d3d3d3 !important;
+}
+
+#payout_table tr td .input_amount {
+  min-width: 4.5rem;
+}
+
+#payout_table tr td .amount  {
+  min-width: 6rem;
+}
+
+#payout_table tr td .input_amount,
+#payout_table tr td .amount {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  padding-left: 10px;
+  top: 5px;
+  left: 4px;
+}
+
+#payout_table .rating > .rating-star {
+  font-size: 9px;
+}
+
+#payout_table td a.remove {
+  top: 7px;
+  font-size: 1.1rem;
+}
+
+#payout_table .label {
+  top: -1.52rem;
+  right: 8px;
+  color: #898989;
+}
+
+#payout_table th:first-child {
+  padding-left: 0;
+}
+
+.select2-selection.select2-selection--single {
+  height: 2.56rem !important;
+}
+
+.ui-tooltip {
+  font-size: 12px;
+}
+
+#transaction_registry tr td {
+  padding: 10px;
+  border: black solid 2px;
+}
+
+#transaction_registry tr td:first-child {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+#transaction_registry .fa-minus,
+#transaction_registry .fa-plus {
+  top: -1px;
+}
+
+#transaction_registry .direction {
+  border-radius: 2px;
+}
+
+#transaction_registry .direction.in {
+  color: #0FCE7C;
+  background-color: #E7FAF1;
+}
+
+#transaction_registry .direction.out {
+  color: #E66700;
+  background-color: #FCEFE5;
+}
+
+.badge-primary {
+  background-color: #6F3FF5;
+  font-size: 0.75rem;
+}
+
+.badge-primary i {
+  font-size: 10px;
+}
+
+@media (min-width: 1120px) and (max-width: 1450px) {
+  .payout_bounty #primary_form {
+    flex: 0 0 70%;
+  }
+}

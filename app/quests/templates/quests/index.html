@@ -1,7 +1,7 @@
 {% extends 'quests/base.html' %}
 {% load humanize static i18n %}
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -17,19 +17,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block 'content' %}
-  <div class="row">
-    <div class="container py-5 ">
-      <div class="quests-hero white my-3">
+  <div class="row back_gradient mb-4">
+    <div class="container py-5">
+      <div class="quests-hero white mt-0 mt-sm-3">
         <div class="row">
           <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
-            <img class="mr-1 demo" src="{% static "v2/images/quests/hero.png" %}">
+            <img class="mr-0 mr-sm-1 demo col-12 col-sm-auto border-0" src="{% static "v2/images/quests/hero.png" %}">
           </div>
           <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
             <h1 class="font-title-xl font-weight-semibold hero-p-mobile">Explore. Learn. Battle Baddies. Win Rewards.</h1>
             <p class="hero-p-mobile my-4 pt-1 font-header">
               Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
             </p>
-            <a id=explore_quests class="hero-p-mobile btn btn-gc-blue px-4" href="#available_quests">
+            <a id=explore_quests class="btn btn-primary btn-lg px-4" href="#available_quests">
               <img class="mr-1 white-icon" height="22" src="{% static "v2/images/top-bar/quests-symbol-neg.svg" %}">
               Explore Quests
             </a>
@@ -38,8 +38,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
   </div>
-
-  <div class="row indent_on_mobile available_quests" id="available_quests">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto available_quests" id="available_quests">
     <div class="w-100">
       <form method="GET" id=search_form>
         <input class="float-right mt-3 mr-4 w-25" type="text" name="q" value="{{query}}" placeholder="Search">
@@ -51,7 +50,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <ul class="nav nav-tabs my-3 font-body" id="myTab" role="tablist">
         {% for difficulty_level, the_quests in quests%}
           <li class="nav-item">
-            <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active font-weight-semibold{% endif %}" href="#" data-href="{{difficulty_level}}">
+            <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active{% endif %}" href="#" data-href="{{difficulty_level}}">
               {{difficulty_level}} <span>({{the_quests|length}})</span>
             </a>
           </li>
@@ -98,18 +97,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <tbody>
                 <tr>
                   <td> {{quest.title}}</td>
-                  <td> {{quest.kudos_reward.humanized_name}}</td>
+                  {% if quest.reward_tip %}
+                    <td class="green"> {{quest.reward_tip.value_true}} {{quest.reward_tip.tokenName}}</td>
+                  {% else %}
+                    <td> {{quest.kudos_reward.humanized_name}}</td>
+                  {% endif %}
                   <td> {{difficulty_level}}</td>
                   <td> {{quest.ui_data.attempts_count}}</td>
                   <td>
                     <span>
-                      <a id="info_button" class="btn btn-outline-info" title="{{quest.description}}"> <span><i class="fa fa-info-circle"></i></span> Info</a>
+                      <a id="info_button" class="btn btn-outline-info border-0" title="{{quest.description}}"> <span><i class="fa fa-info-circle"></i></span> Info</a>
                     </span>
                   </td>
                   <td> {{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
                   {% if difficulty_level == 'Created' %}
                     <td>
-                      <a class="btn btn-outline-secondary" title="Edit your Quest" role="button" href="{{quest.edit_url}}"><span><i class="fa fa-cog"></i></span> Edit</a>
+                      <a class="btn btn-outline-dark" title="Edit your Quest" role="button" href="{{quest.edit_url}}"><span><i class="fa fa-cog"></i></span> Edit</a>
                     </td>
                   {% endif %}
                   {% if not difficulty_level == 'Created' %}
@@ -121,26 +124,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   {% endif %}
                   {% if beaten %}
                     <td>
-                      <a class="btn btn-outline-success disabled" title="Quest Beaten"><span>✅</span> Beaten</a>
-                      <a class="btn btn-outline-primary" title="Dive into the web3" role="button" href="{{quest.url}}">
+                      <a class="btn btn-outline-success border-0 disabled" disabled title="Quest Beaten"><span>✅</span> Beaten</a>
+                      <a class="btn btn-outline-primary border-0" title="Dive into the web3" role="button" href="{{quest.url}}">
                         <span><i class="fa fa-gamepad"></i></span> Play Again
                       </a>
 
                     </td>
                   {% elif cooldown %}
                     <td>
-                      <a class="btn btn-secondary disabled" title="In Cooldown Period"><span>🥶</span> Cold</a>
+                      <a class="btn btn-outline-primary border-0 disabled" disabled title="In Cooldown Period"><span>🥶</span> Cold</a>
                     </td>
                   {% elif unlocked %}
                     <td>
-                      <a class="btn btn-outline-primary" title="Dive into the web3" role="button" href="{{quest.url}}">
+                      <a class="btn btn-outline-primary border-0" title="Dive into the web3" role="button" href="{{quest.url}}">
                         <span><i class="fa fa-gamepad"></i></span> Play
                       </a>
                     </td>
                   {% else %}
                     <td>
                       {% if quest.unlocked_by_hackathon %}
-                        <a href="{{quest.unlocked_by_hackathon.url}}" target="_blank" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒Unlock</a>
+                        <a href="{{quest.unlocked_by_hackathon.url}}" target="_blank" class="btn btn-secondary border-0" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒Unlock</a>
                       {% else %}
                         beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
                       {% endif %}
@@ -155,7 +158,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% endfor %}
   </div>
 
-  <div class="row indent_on_mobile" id=leaderboard_top>
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto" id=leaderboard_top>
     <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
     <div id="announce">
       <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
@@ -168,7 +171,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
 
 
-  <div class="row indent_on_mobile" id="leaderboard_nav">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto" id="leaderboard_nav">
     <div id="leaderboard_tabs">
       <div class="container">
         <ul class="nav nav-tabs mt-3 font-body" id="myTab" role="tablist">
@@ -195,9 +198,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
   </div>
-  <div class="row indent_on_mobile leaderboard_tab my_points hidden">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto leaderboard_tab my_points hidden">
 
-    <div class="row indent_on_mobile point_history w-100" style="background-color: #fafafa; min-height: 400px;">
+    <div class="row indent_on_mobile col-12 col-sm-10 mx-auto point_history w-100" style="background-color: #fafafa; min-height: 400px;">
       <h3 class="mt-2">
         <i class="ml-1 far fa-chart-bar"></i>
         @{{github_handle}} has {{point_value}} Points
@@ -260,8 +263,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% endif %}
     </div>
   </div>
-  <div class="row indent_on_mobile leaderboard_tab how_to_earn hidden">
-  <div class="row indent_on_mobile" style="background-color: #fafafa;">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto leaderboard_tab how_to_earn hidden">
+  <div class="row indent_on_mobile col-12 col-sm-10 mx-auto" style="background-color: #fafafa;">
     <h3 class="mt-3">
       <i class="ml-1 fab fa-ethereum"></i>
       By completing quests.
@@ -367,7 +370,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </div>
   </div>
   {% for round_number, this_leaderboard in leaderboard.items %}
-    <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
+    <div class="row indent_on_mobile col-12 col-sm-10 mx-auto leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
       <div class="leaderboard_hero hide_on_mobile">
         {% for item in this_leaderboard.1 %}
         <div class="inner_row {{ item.4|apnumber }}">
@@ -417,13 +420,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
   {% endfor %}
 
-  <div class="container-fluid py-1 announce-bot indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/lovebot.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">We &lt;3 Feedback.</h4>
@@ -432,19 +435,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <br>
       Quests is still in ALPHA and is evolving.  Got feedback?
       <BR>
-      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5298">
+      <a class="hero-p-mobile btn btn-lg my-4" href="https://github.com/gitcoinco/web/issues/5298">
         Let us know
       </a>
     </div>
   </div>
 
-  <div class="container-fluid py-1 announce-bot announce-bot2 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot2 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/droid.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Quest Content Squad Here; Looking for new Quest Topic Ideas..</h4>
@@ -466,38 +469,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <br>
       <span style="font-size: 18px;">What were your web3 a-ha moments?  What Quests Topics should we add to the experience?</span>
       <BR>
-      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5334">
+      <a class="hero-p-mobile btn btn-lg my-4" href="https://github.com/gitcoinco/web/issues/5334">
         Contribute a Topic Idea (1 minute commitment)
       </a>
     </div>
   </div>
 
 
-  <div class="container-fluid py-1 announce-bot announce-bot6 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot6 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/super_bot.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Our Roadmap is Decentralized. Vote on what we should BUIDL next.</h4>
-      We are proud to say that our quest product roadmap is open to all.. You can even vote on what we BUIDL next!
-      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5436">
+      We are proud to say that our quest product roadmap is open to all.. You can even vote on what we BUIDL next!</a>
+      <br>
+      <a class="hero-p-mobile btn btn-lg my-4" href="https://github.com/gitcoinco/web/issues/5436">
         Vote on Product Roadmap (1 minute commitment)
       </a>
     </div>
   </div>
 
 
-  <div id=create_quest class="container-fluid py-1 announce-bot announce-bot3 indent_on_mobile">
+  <div id=create_quest class="container-fluid py-1 announce-bot announce-bot3 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
     </div>
   </div>
 
-  <div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile">
+  <div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Want to Write a Gitcoin Quest?</h4>
@@ -509,19 +513,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <br>
       Create a Gitcoin Quest.  It takes 10-15 minutes to do, you'll get Quest Points and Kudos for every new person who plays your game, and best of all - you get to help teach people about web3!
       <BR>
-      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5338">
+      <a class="hero-p-mobile btn btn-lg my-4" href="https://github.com/gitcoinco/web/issues/5338">
         Write a Quest (15 minute commitment)
       </a>
     </div>
   </div>
 
-  <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/composability.svg' %}" />
     </div>
   </div>
 
-  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile">
+  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
 
       <h4 class="pt-0">Want to BUIDL a Gitcoin Quest Game Dynamic?</h4>
@@ -549,23 +553,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <strong>average quest has {{avg_play_count}} plays = your quest could get {{avg_play_count}} plays</strong>
       <BR>
       <br>
-    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5339">
+    <a class="hero-p-mobile btn btn-lg my-4" href="https://github.com/gitcoinco/web/issues/5339">
         BUIDL a Gitcoin Quest Game Dynamic ( 7-14 hour commitment)
       </a>
     </div>
   </div>
 
-  <div class="container-fluid py-1 announce-bot announce-bot5 indent_on_mobile">
+  <div class="container-fluid py-1 announce-bot announce-bot5 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <img data-src="{% static 'v2/images/quests/enemies/green_monster.svg' %}" />
     </div>
   </div>
 
-  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce5 indent_on_mobile">
+  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce5 indent_on_mobile col-12 col-sm-10 mx-auto">
     <div class="container">
       <h4 class="pt-0">Play Gitcoin Quests Now.</h4>
       <p>We'll automagically choose your next quest for you.</p>
-      <a class="hero-p-mobile btn btn-gc-blue my-4" href="/quests/next">
+      <a class="hero-p-mobile btn btn-lg my-4" href="/quests/next">
         Play Next Quest ( 2 min - 20 min commitment)
       </a>
     </div>

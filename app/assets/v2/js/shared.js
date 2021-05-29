@@ -6,7 +6,7 @@
  *  * Generates a boostrap modal handler for when a user clicks a link to launch a boostrap modal.
  *   * @param {string} modalUrl - content url for the modal
  *    */
-var show_modal_handler = (modalUrl) => {
+this.show_modal_handler = (modalUrl) => {
 	  const url = modalUrl;
 
 	   return (e) => {
@@ -24,13 +24,13 @@ var show_modal_handler = (modalUrl) => {
 /**
  * how many decimals are allowed in token displays
  */
-let token_round_decimals = 3;
+this.token_round_decimals = 3;
 
 /**
  * Validates if input is a valid URL
  * @param {string} input - Input String
  */
-var validURL = function(input) {
+this.validURL = function(input) {
   var regex = /(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,63}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?/;
 
   return regex.test(input);
@@ -42,7 +42,7 @@ var validURL = function(input) {
  * @param {string} txhash - The transaction hash.
  * @param {function} f - The function passed into this callback.
  */
-var callFunctionWhenTransactionMined = function(txHash, f) {
+this.callFunctionWhenTransactionMined = function(txHash, f) {
   var transactionReceipt = web3.eth.getTransactionReceipt(txHash, function(error, result) {
     if (result) {
       f();
@@ -60,7 +60,7 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
  * @callback
  * @param {function} f - The function passed into this callback.
  */
-var callFunctionWhenweb3Available = function(f) {
+this.callFunctionWhenweb3Available = function(f) {
   if (typeof document.web3network != 'undefined') {
     f();
   } else {
@@ -70,19 +70,19 @@ var callFunctionWhenweb3Available = function(f) {
   }
 };
 
-var loading_button = function(button) {
+this.loading_button = function(button) {
   button.prop('disabled', true);
   button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">');
 };
 
-var cb_address;
-var unloading_button = function(button) {
+this.cb_address = null;
+this.unloading_button = function(button) {
   button.prop('disabled', false);
   button.removeClass('disabled');
   button.find('img').remove();
 };
 
-var sanitizeDict = function(d, keyToIgnore) {
+this.sanitizeDict = function(d, keyToIgnore) {
   if (typeof d != 'object') {
     return d;
   }
@@ -99,7 +99,7 @@ var sanitizeDict = function(d, keyToIgnore) {
   return d;
 };
 
-var sanitizeAPIResults = function(results, keyToIgnore) {
+this.sanitizeAPIResults = function(results, keyToIgnore) {
   if (results.length >= 1) {
     for (let i = 0; i < results.length; i++) {
       results[i] = sanitizeDict(results[i], keyToIgnore);
@@ -110,13 +110,13 @@ var sanitizeAPIResults = function(results, keyToIgnore) {
   return sanitizeDict(results, keyToIgnore);
 };
 
-function ucwords(str) {
+this.ucwords = function(str) {
   return (str + '').replace(/^([a-z])|\s+([a-z])/g, function($1) {
     return $1.toUpperCase();
   });
-}
+};
 
-var sanitize = function(str) {
+this.sanitize = function(str) {
   if (typeof str != 'string') {
     return str;
   }
@@ -125,7 +125,7 @@ var sanitize = function(str) {
   return result;
 };
 
-var getFormattedDate = function(date) {
+this.getFormattedDate = function(date) {
   var monthNames = [
     'January', 'February', 'March',
     'April', 'May', 'June', 'July',
@@ -140,11 +140,11 @@ var getFormattedDate = function(date) {
   return monthNames[monthIndex] + ' ' + day + ', ' + year;
 };
 
-var getTimeFromDate = function(date) {
+this.getTimeFromDate = function(date) {
   return date.getHours() + ':' + date.getMinutes();
 };
 
-var waitforWeb3 = function(callback) {
+this.waitforWeb3 = function(callback) {
   if (document.web3network && document.web3network != 'locked') {
     callback();
   } else {
@@ -156,16 +156,16 @@ var waitforWeb3 = function(callback) {
   }
 };
 
-var normalizeURL = function(url) {
+this.normalizeURL = function(url) {
   return url.replace(/\/$/, '');
 };
 
-var timestamp = function() {
+this.timestamp = function() {
   return Math.floor(Date.now() / 1000);
 };
 
 
-var showLoading = function() {
+this.showLoading = function() {
   $('.loading').css('display', 'flex');
   $('.nonefound').css('display', 'none');
   $('#primary_view').css('display', 'none');
@@ -173,7 +173,7 @@ var showLoading = function() {
   setTimeout(showLoading, 10);
 };
 
-var waitingStateActive = function() {
+this.waitingStateActive = function() {
   $('.bg-container').show();
   $('.loading_img').addClass('waiting-state ');
   $('.waiting_room_entertainment').show();
@@ -181,7 +181,7 @@ var waitingStateActive = function() {
   waitingRoomEntertainment();
 };
 
-const notify_funder = (network, std_bounties_id, data) => {
+this.notify_funder = (network, std_bounties_id, data) => {
   var request_url = '/actions/bounty/' + network + '/' + std_bounties_id + '/notify/funder_payout_reminder/';
 
   showBusyOverlay();
@@ -192,12 +192,12 @@ const notify_funder = (network, std_bounties_id, data) => {
     return true;
   }).fail(() => {
     hideBusyOverlay();
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
 /** Add the current profile to the interested profiles list. */
-var add_interest = function(bounty_pk, data) {
+this.add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
@@ -214,7 +214,7 @@ var add_interest = function(bounty_pk, data) {
 };
 
 /** Remove the current profile from the interested profiles list. */
-var remove_interest = function(bounty_pk, slash = false) {
+this.remove_interest = function(bounty_pk, slash = false) {
   if (!document.interested) {
     return;
   }
@@ -223,7 +223,7 @@ var remove_interest = function(bounty_pk, slash = false) {
 };
 
 /** Helper function -- mutates interests in either direction. */
-var mutate_interest = function(bounty_pk, direction, data) {
+this.mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   showBusyOverlay();
@@ -255,12 +255,12 @@ var mutate_interest = function(bounty_pk, direction, data) {
       alertMsg = gettext('Network error. Please reload the page and try again.');
     }
 
-    _alert({ message: alertMsg }, 'error');
+    _alert({ message: alertMsg }, 'danger');
   });
 };
 
 
-var uninterested = function(bounty_pk, profileId, slash) {
+this.uninterested = function(bounty_pk, profileId, slash) {
   var data = {};
   var success_message = 'Contributor removed from bounty.';
 
@@ -284,11 +284,11 @@ var uninterested = function(bounty_pk, profileId, slash) {
     return false;
   }).fail(function(result) {
     hideBusyOverlay();
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
-var extend_expiration = function(bounty_pk, data) {
+this.extend_expiration = function(bounty_pk, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
 
   showBusyOverlay();
@@ -304,13 +304,13 @@ var extend_expiration = function(bounty_pk, data) {
     return false;
   }).fail(function(result) {
     hideBusyOverlay();
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
 
 
 /** Pulls the list of interested profiles from the server. */
-var pull_interest_list = function(bounty_pk, callback) {
+this.pull_interest_list = function(bounty_pk, callback) {
   document.interested = false;
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
   var started = [];
@@ -342,13 +342,13 @@ var pull_interest_list = function(bounty_pk, callback) {
   });
 };
 
-var profileHtml = function(handle, name) {
+this.profileHtml = function(handle, name) {
   return '<span><a href="/profile/' +
     handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
 // Update the list of bounty submitters.
-var update_fulfiller_list = function(bounty_pk) {
+this.update_fulfiller_list = function(bounty_pk) {
   fulfillers = [];
   $.getJSON('/api/v0.1/bounties/' + bounty_pk, function(data) {
     data = sanitizeAPIResults(data);
@@ -371,13 +371,21 @@ var update_fulfiller_list = function(bounty_pk) {
 };
 // ETC TODO END
 
-function validateEmail(email) {
+this.validateEmail = function(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   return re.test(email);
-}
+};
 
-function getParam(parameterName) {
+this.timedifferenceCvrt = function(date) {
+  return timeDifference(new Date(), new Date(date), false, 60 * 60);
+};
+
+this.activitytextCvrt = function(activity_type) {
+  return activity_names[activity_type];
+};
+
+this.getParam = function(parameterName) {
   var result = null;
   var tmp = [];
 
@@ -390,7 +398,7 @@ function getParam(parameterName) {
         result = decodeURIComponent(tmp[1]);
     });
   return result;
-}
+};
 
 if ($.views) {
   $.views.converters({
@@ -399,12 +407,7 @@ if ($.views) {
   });
 
 }
-
-function timedifferenceCvrt(date) {
-  return timeDifference(new Date(), new Date(date), false, 60 * 60);
-}
-
-const activity_names = {
+this.activity_names = {
   new_bounty: gettext('New bounty'),
   start_work: gettext('Work started'),
   stop_work: gettext('Work stopped'),
@@ -426,11 +429,7 @@ const activity_names = {
   bounty_changed: gettext('Bounty details changed')
 };
 
-function activitytextCvrt(activity_type) {
-  return activity_names[activity_type];
-}
-
-function timeDifference(current, previous, remaining, now_threshold_seconds) {
+this.timeDifference = function(current, previous, remaining, now_threshold_seconds) {
 
   var elapsed = current - previous;
 
@@ -474,9 +473,9 @@ function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
   if (remaining) return amt + ' ' + unit + plural;
   return amt + ' ' + unit + plural + ' ago';
-}
+};
 
-var attach_change_element_type = function() {
+this.attach_change_element_type = function() {
   (function($) {
     $.fn.changeElementType = function(newType) {
       var attrs = {};
@@ -494,7 +493,7 @@ var attach_change_element_type = function() {
 
 // callbacks that can retrieve various metadata about a github issue URL
 
-var retrieveAmount = function() {
+this.retrieveAmount = function() {
   var ele = $('input[name=amount]');
   var target_ele = $('#usd_amount');
 
@@ -537,7 +536,7 @@ var retrieveAmount = function() {
   });
 };
 
-var updateAmountUI = function(target_ele, usd_amount) {
+this.updateAmountUI = function(target_ele, usd_amount) {
   usd_amount = Math.round(usd_amount * 100) / 100;
 
   if (usd_amount > 1000000) {
@@ -548,7 +547,7 @@ var updateAmountUI = function(target_ele, usd_amount) {
   target_ele.html('Approx: ' + usd_amount + ' USD');
 };
 
-const showChoices = (choice_id, selector_id, choices) => {
+this.showChoices = (choice_id, selector_id, choices) => {
   let html = '';
   let selected_choices = [];
 
@@ -566,7 +565,7 @@ const showChoices = (choice_id, selector_id, choices) => {
   });
 };
 
-var retrieveIssueDetails = function() {
+this.retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
   var target_eles = {
     'title': $('input[name=title]'),
@@ -621,7 +620,7 @@ var retrieveIssueDetails = function() {
 };
 
 
-const randomElement = array => {
+this.randomElement = array => {
   const length = array.length;
   const randomNumber = Math.random();
   const randomIndex = Math.floor(randomNumber * length);
@@ -629,7 +628,7 @@ const randomElement = array => {
   return array[randomIndex];
 };
 
-function getNetwork(id) {
+this.getNetwork = function(id) {
   var networks = {
     '1': 'mainnet',
     '2': 'morden',
@@ -639,9 +638,9 @@ function getNetwork(id) {
   };
 
   return networks[id] || 'custom network';
-}
+};
 
-var actions_page_warn_if_not_on_same_network = function() {
+this.actions_page_warn_if_not_on_same_network = function() {
   var user_network = document.web3network;
 
   if (user_network === 'locked') {
@@ -663,13 +662,13 @@ var actions_page_warn_if_not_on_same_network = function() {
               bounty_network +
               ' network.';
 
-    _alert({ message: gettext(msg) }, 'error');
+    _alert({ message: gettext(msg) }, 'danger');
   }
 };
 
 attach_change_element_type();
 
-var setUsdAmount = function() {
+this.setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
   const denomination = $('#token option:selected').text();
 
@@ -692,7 +691,7 @@ var setUsdAmount = function() {
   });
 };
 
-var usdToAmount = function(usdAmount) {
+this.usdToAmount = function(usdAmount) {
   const denomination = $('#token option:selected').text();
 
   getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
@@ -703,7 +702,7 @@ var usdToAmount = function(usdAmount) {
   });
 };
 
-function renderBountyRowsFromResults(results, renderForExplorer) {
+this.renderBountyRowsFromResults = function(results, renderForExplorer) {
   let html = '';
   const tmpl = $.templates('#result');
 
@@ -809,7 +808,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
 
     if (renderForExplorer) {
 
-      if (typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && cb_address == result['bounty_owner_address']) {
+      if (web3 && typeof web3 != 'undefined' && typeof web3.eth != 'undefined' && cb_address == result['bounty_owner_address']) {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
       } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
         result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
@@ -823,9 +822,9 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     html += tmpl.render(result);
   }
   return html;
-}
+};
 
-const saveAttestationData = (result, cost_eth, to_address, type) => {
+this.saveAttestationData = (result, cost_eth, to_address, type) => {
   let request_url = '/revenue/attestations/new';
   let txid = result;
   let data = {
@@ -842,7 +841,7 @@ const saveAttestationData = (result, cost_eth, to_address, type) => {
   });
 };
 
-const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
+this.renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
   let html = '';
   const tmpl = $.templates('#featured-card');
 
@@ -858,6 +857,10 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
+    if (result.metadata.hypercharge_mode) {
+      result['url'] = `${result['url']}?utm_source=hypercharge-auto-hack-explorer&utm_medium=gitcoin&utm_campaign=${result['title']}`;
+    }
+
     result['rounded_amount'] = normalizeAmount(result['value_in_token'], decimals);
 
     html += tmpl.render(result);
@@ -874,7 +877,7 @@ const renderFeaturedBountiesFromResults = (results, renderForExplorer) => {
  *
  * TODO: refactor explorer to reuse this
  */
-function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
+this.fetchBountiesAndAddToList = function(params, target, limit, additional_callback) {
   $.get('/api/v0.1/bounties/?' + params, function(results) {
     results = sanitizeAPIResults(results);
 
@@ -911,9 +914,9 @@ function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
       additional_callback(results);
     }
   });
-}
+};
 
-function showBusyOverlay() {
+this.showBusyOverlay = function() {
   let overlay = document.querySelector('.busyOverlay');
 
   if (overlay) {
@@ -935,9 +938,9 @@ function showBusyOverlay() {
     false
   );
   document.body.appendChild(overlay);
-}
+};
 
-function hideBusyOverlay() {
+this.hideBusyOverlay = function() {
   let overlay = document.querySelector('.busyOverlay');
 
   if (overlay) {
@@ -946,9 +949,9 @@ function hideBusyOverlay() {
       overlay.style['animation-name'] = 'fadeOut';
     }, 300);
   }
-}
+};
 
-function toggleExpandableBounty(evt, selector) {
+this.toggleExpandableBounty = function(evt, selector) {
   evt.preventDefault();
 
   if (evt.target.id === 'expanded') {
@@ -968,17 +971,17 @@ function toggleExpandableBounty(evt, selector) {
     container.id = 'expanded';
     evt.target.id = 'expanded';
   }
-}
+};
 
-function normalizeAmount(amount, decimals) {
+this.normalizeAmount = function(amount, decimals) {
   return Math.round((parseInt(amount) / Math.pow(10, decimals)) * 1000) / 1000;
-}
+};
 
-function round(amount, decimals) {
+this.round = function(amount, decimals) {
   return Math.round(((amount) * Math.pow(10, decimals))) / Math.pow(10, decimals);
-}
+};
 
-function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
+this.newTokenTag = function(amount, tokenName, tooltipInfo, isCrowdfunded) {
   const ele = document.createElement('div');
   const p = document.createElement('p');
   const span = document.createElement('span');
@@ -995,18 +998,87 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   }
 
   return ele;
-}
+};
 
-function shuffleArray(array) {
+this.shuffleArray = function(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
 
     [ array[i], array[j] ] = [ array[j], array[i] ];
   }
   return array;
-}
+};
 
-const getURLParams = (k) => {
+
+this.getAllUrlParams = () => {
+
+  // get query string from url (optional) or window
+  var queryString = window.location.search.slice(1);
+
+  // we'll store the parameters here
+  var obj = {};
+
+  // if query string exists
+  if (queryString) {
+
+    // stuff after # is not part of query string, so get rid of it
+    queryString = queryString.split('#')[0];
+
+    // split our query string into its component parts
+    var arr = queryString.split('&');
+
+    for (var i = 0; i < arr.length; i++) {
+      // separate the keys and the values
+      var a = arr[i].split('=');
+
+      // set parameter name and value (use 'true' if empty)
+      var paramName = a[0];
+      var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+
+      // (optional) keep case consistent
+      paramName = paramName.toLowerCase();
+      if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+
+      // if the paramName ends with square brackets, e.g. colors[] or colors[2]
+      if (paramName.match(/\[(\d+)?\]$/)) {
+
+        // create key if it doesn't exist
+        var key = paramName.replace(/\[(\d+)?\]/, '');
+
+        if (!obj[key]) obj[key] = [];
+
+        // if it's an indexed array e.g. colors[2]
+        if (paramName.match(/\[\d+\]$/)) {
+          // get the index value and add the entry at the appropriate position
+          var index = (/\[(\d+)\]/).exec(paramName)[1];
+
+          obj[key][index] = paramValue;
+        } else {
+          // otherwise add the value to the end of the array
+          obj[key].push(paramValue);
+        }
+      } else {
+        // we're dealing with a string
+        // eslint-disable-next-line no-lonely-if
+        if (!obj[paramName]) {
+          // if it doesn't exist, create property
+          obj[paramName] = paramValue;
+        } else if (obj[paramName] && typeof obj[paramName] === 'string') {
+          // if property does exist and it's a string, convert it to an array
+          obj[paramName] = [obj[paramName]];
+          obj[paramName].push(paramValue);
+        } else {
+          // otherwise add the property
+          obj[paramName].push(paramValue);
+        }
+      }
+    }
+  }
+
+  return obj;
+};
+
+this.getURLParams = (k) => {
   var p = {};
 
   location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
@@ -1015,7 +1087,7 @@ const getURLParams = (k) => {
   return k ? p[k] : p;
 };
 
-const updateParams = (key, value) => {
+this.updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
@@ -1028,7 +1100,7 @@ const updateParams = (key, value) => {
   window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
 };
 
-const updateMultipleParams = (_newParams) => {
+this.updateMultipleParams = (_newParams) => {
   params = new URLSearchParams(window.location.search);
   newParams = Object.entries(_newParams);
   for (const [ key, value ] of newParams) {
@@ -1059,7 +1131,7 @@ const updateMultipleParams = (_newParams) => {
  *
  * @param {number} length - text length to be wrapped.
  */
-const showMore = (length = 400) => {
+this.showMore = (length = 400) => {
   const placeholder = '...';
   const expand = 'More';
   const shrink = 'Less';
@@ -1101,7 +1173,7 @@ const showMore = (length = 400) => {
  *
  * Useage: checkFileSize($(input), 4000000)
  */
-const checkFileSize = (input, max_img_size) => {
+this.checkFileSize = (input, max_img_size) => {
   if (input.files && input.files.length > 0) {
     if (input.files[0].size > max_img_size) {
       input.value = '';
@@ -1116,7 +1188,7 @@ const checkFileSize = (input, max_img_size) => {
  *
  * Usage: caseInsensitiveCompare('gitcoinco', 'GitcoinCo')
  */
-const caseInsensitiveCompare = (val1, val2) => {
+this.caseInsensitiveCompare = (val1, val2) => {
   if (val1 && val2 && typeof val1 === 'string' && typeof val2 === 'string') {
     return val1.toLowerCase() === val2.toLowerCase();
   }
@@ -1127,7 +1199,7 @@ const caseInsensitiveCompare = (val1, val2) => {
  * A popup to notify users to approve metamask transaction
  * @param {*} closePopup [boolean]
  */
-const indicateMetamaskPopup = (closePopup) => {
+this.indicateMetamaskPopup = (closePopup) => {
   // Don't show popup if user is not using Metamask
   if (web3Modal.cachedProvider !== 'injected') {
     return;
@@ -1188,7 +1260,7 @@ $(document).ready(function() {
   });
 });
 
-const copyToClipboard = str => {
+this.copyToClipboard = str => {
   const el = document.createElement('textarea');
 
   el.value = str;
@@ -1198,7 +1270,7 @@ const copyToClipboard = str => {
   document.body.removeChild(el);
 };
 
-function check_balance_and_alert_user_if_not_enough(
+this.check_balance_and_alert_user_if_not_enough = function(
   tokenAddress,
   amount,
   msg = 'You do not have enough tokens to perform this action.') {
@@ -1227,13 +1299,13 @@ function check_balance_and_alert_user_if_not_enough(
     }
   });
 
-}
+};
 
 /**
  * fetches github issue details of the issue_url
  * @param {string} issue_url
  */
-const fetchIssueDetailsFromGithub = issue_url => {
+this.fetchIssueDetailsFromGithub = issue_url => {
   return new Promise((resolve, reject) => {
     if (!issue_url || issue_url.length < 5 || issue_url.indexOf('github') == -1) {
       reject('error: issue_url needs to be a valid github URL');
@@ -1257,7 +1329,7 @@ const fetchIssueDetailsFromGithub = issue_url => {
   });
 };
 
-const get_UUID = () => {
+this.get_UUID = () => {
   var dt = new Date().getTime();
   const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = (dt + Math.random() * 16) % 16 | 0;
@@ -1268,3 +1340,84 @@ const get_UUID = () => {
 
   return uuid;
 };
+
+this.isVimeoProvider = (videoURL) => {
+  let vimeoId = null;
+
+  $.ajax({
+    url: `https://vimeo.com/api/oembed.json?url=${videoURL}`,
+    async: false,
+    success: function(response) {
+      if (response.video_id) {
+        vimeoId = response.video_id;
+      }
+    }
+  });
+
+  return vimeoId;
+};
+
+this.isValidUrl = function(string) {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(string);
+  } catch (_) {
+    return false;
+  }
+
+  return true;
+};
+
+this.getVideoMetadata = (videoURL) => {
+  const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
+  const loom_re = /(?:https?:\/\/|\/\/)?(?:www\.)?(?:loom\.com\/share\/)([\w]{32})/;
+
+  if (!videoURL || !isValidUrl(videoURL)) {
+    return null;
+  }
+
+  const youtube_match = videoURL.match(youtube_re);
+  const loom_match = videoURL.match(loom_re);
+
+  if (youtube_match !== null && youtube_match[1].length === 11) {
+    return {
+      'provider': 'youtube',
+      'id': youtube_match[1],
+      'url': videoURL
+    };
+  }
+
+  if (loom_match !== null) {
+    return {
+      'provider': 'loom',
+      'id': loom_match[1],
+      'url': videoURL
+    };
+  }
+
+  const vimeoId = isVimeoProvider(videoURL);
+
+  if (vimeoId) {
+    return {
+      'provider': 'vimeo',
+      'id': vimeoId,
+      'url': videoURL
+    };
+  }
+
+  return {
+    'provider': 'generic',
+    'id': null,
+    'url': videoURL
+  };
+};
+
+/**
+ * bootstrap breakpoints
+ */
+this.computedRootStyles = getComputedStyle(document.documentElement);
+
+this.breakpoint_sm = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-sm'));
+this.breakpoint_md = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md'));
+this.breakpoint_lg = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-lg'));
+this.breakpoint_xl = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-xl'));

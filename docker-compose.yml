@@ -15,22 +15,6 @@ services:
           memory: 1024M
         reservations:
           memory: 128M
-  chat:
-    image: gitcoin/chat:latest
-    restart: unless-stopped
-    ports:
-      - "8065:8065"
-    volumes:
-      - ./chatdata/config:/mattermost/config/
-    depends_on:
-      - db
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 1024M
-        reservations:
-          memory: 128M
 
   elasticsearch:
     image: launcher.gcr.io/google/elasticsearch5
@@ -39,7 +23,6 @@ services:
       - "9300:9300"
     volumes:
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-
 
   ipfs:
     image: ipfs/go-ipfs:v0.6.0
@@ -78,6 +61,8 @@ services:
     ports:
       - "8000:8000"
       - "3030:3030"
+      - "8001:8001"
+      - "35729:35729"
     depends_on:
       - db
     stdin_open: true
@@ -137,7 +122,6 @@ services:
       - db
       - redis
     command: ["bash","./bin/celery/worker/run.sh"]
-
 #  scheduler:
 #    <<: *worker
 #    command: ["bash","./bin/celery/scheduler/run.sh"]

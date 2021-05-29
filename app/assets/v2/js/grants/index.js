@@ -4,9 +4,6 @@ let numGrants = '';
 
 
 $(document).ready(() => {
-  $('#sort_option').select2({
-    minimumResultsForSearch: Infinity
-  });
 
   if ($('.grants_type_nav').length) {
     localStorage.setItem('last_grants_index', document.location.href);
@@ -17,31 +14,6 @@ $(document).ready(() => {
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
   }
 
-  $('#wall_of_love .show_more_wall_of_love').click(function(e) {
-    $('#wall_of_love .hidden').removeClass('hidden');
-    $(this).remove();
-    e.preventDefault();
-  });
-
-
-  $(document).on('click', '.grant-item', function() {
-    $(this).find('img').each(function() {
-      var src_url = $(this).data('src');
-
-      $(this).attr('src', src_url);
-    });
-  });
-
-
-  $('.select2-selection__rendered').removeAttr('title');
-
-  waitforWeb3(() => {
-    let _network = $('#grant-network').html();
-    let links = $('.etherscan_link');
-
-    etherscanUrlConvert(links, _network);
-  });
-
   window.addEventListener('scroll', function() {
     if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
       $('#skip').addClass('hidden');
@@ -51,11 +23,14 @@ $(document).ready(() => {
 
   });
 
+  // toggleStyle(document.current_style);
 });
 
 Vue.component('grant-sidebar', {
-  props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'featured'
+  props: [
+    'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
+    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'sub_round_slug', 'customer_name',
+    'featured'
   ],
   data: function() {
     return {
@@ -81,32 +56,21 @@ Vue.component('grant-sidebar', {
       let me = state ? 'me' : 'all';
 
       event.preventDefault;
-      this.filter_grants({type: me, category: ''});
+      this.filter_grants({type: me, category: '', keyword: ''});
     },
     isMobileDevice: function() {
       return window.innerWidth < 576;
     },
+    toggleMyCollections: function(state, event) {
+      let me = state ? {type: 'collections', keyword: this.handle} : {type: 'all', keyword: ''};
+
+      this.filter_grants(me);
+
+      this.search = me.keyword;
+    },
     filterLink: function(params) {
-      if (params.type === this.type) {
-        this.filter_grants(params);
-      } else if (params.type === 'collections') {
-        const collections_query = {};
 
-        if (params.featured) {
-          collections_query.featured = true;
-        }
-
-        if (params.keyword) {
-          collections_query.keyword = params.keyword;
-        }
-
-        document.location.href = `/grants/collections?${$.param(collections_query)}`;
-      } else {
-        document.location.href = this.round_num ?
-          `/grants/clr/${this.round_num}?type=${params.type}` :
-          `/grants/${params.type}`
-        ;
-      }
+      return this.filter_grants(params);
     },
     searchKeyword: function() {
       if (this.timeout) {
@@ -131,15 +95,23 @@ Vue.component('grant-sidebar', {
 });
 if (document.getElementById('grants-showcase')) {
 
+  let sort = getParam('sort');
+
+  if (!sort) {
+    sort = 'weighted_shuffle';
+  }
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
     data: {
+      activePage: document.activePage,
       grants: [],
+      grant: {},
       page: 1,
       collectionsPage: 1,
       limit: 6,
-      sort: 'weighted_shuffle',
+      show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
+      sort: sort,
       network: document.network,
       keyword: document.keyword,
       current_type: document.current_type,
@@ -160,12 +132,44 @@ if (document.getElementById('grants-showcase')) {
       cart_lock: false,
       collection_id: document.collection_id,
       round_num: document.round_num,
+      clr_round_pk: document.clr_round_pk,
+      sub_round_slug: document.sub_round_slug,
+      customer_name: document.customer_name,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
-      numGrants
+      numGrants,
+      regex_style: {}
     },
     methods: {
+      toggleStyle: function(style) {
+
+        if (!style) {
+          return;
+        }
+
+        // let banner;
+
+        // if (style.bg) {
+        //   banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
+        // } else {
+        //   banner = `url("${ style.banner_image }") center  no-repeat`;
+        // }
+        // $('#grant-hero-img').css('background', banner);
+        // if (style.background_image) {
+        //   $('#grant-background-image-mount-point').css('background-image', style.background_image);
+        // }
+
+        if (style.inline_css) {
+          $('.page-styles').last().text(style.inline_css);
+        } else {
+          $('.page-styles').last().text('');
+        }
+      },
+      toggleActiveCLRs() {
+        this.show_active_clrs = !this.show_active_clrs;
+        window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
+      },
       setView: function(mode, event) {
         event.preventDefault();
         localStorage.setItem('grants_view', mode);
@@ -187,13 +191,25 @@ if (document.getElementById('grants-showcase')) {
         if (vm.round_num) {
           let uri = `/grants/clr/${vm.round_num}/`;
 
+          if (vm.sub_round_slug && !vm.customer_name) {
+            uri = `/grants/clr/${vm.round_num}/${vm.sub_round_slug}/`;
+          }
+
+          if (!vm.sub_round_slug && vm.customer_name) {
+            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/`;
+          }
+
+          if (vm.sub_round_slug && vm.customer_name) {
+            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/${vm.sub_round_slug}/`;
+          }
+
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
           } else {
             window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
           }
         } else {
-          let uri = '/grants/';
+          let uri = '/grants/explorer/';
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
@@ -256,8 +272,16 @@ if (document.getElementById('grants-showcase')) {
         if (event) {
           event.preventDefault();
         }
+        if (filters.type == 'all' && location.href.indexOf('grants/explorer') == -1) {
+          location.href = '/grants/explorer';
+          return false;
+        }
+        let current_style;
 
         if (filters.type !== null && filters.type !== undefined) {
+          if (!current_style) {
+            current_style = document.all_type_styles[filters.type];
+          }
           this.current_type = filters.type;
           if (this.current_type === 'collections') {
             this.collection_id = null;
@@ -290,11 +314,20 @@ if (document.getElementById('grants-showcase')) {
 
         if (filters.type === 'collections') {
           this.collectionsPage = 1;
+        } else {
+          this.clearSingleCollection();
         }
-
         this.page = 1;
         this.setCurrentType(this.current_type);
         this.fetchGrants(this.page);
+
+      },
+      changeBanner: function() {
+        this.regex_style = document.all_routing_policies &&
+          document.all_routing_policies.find(policy => {
+            return new RegExp(policy.url_pattern).test(window.location.href);
+          });
+        this.toggleStyle(this.regex_style || document.current_style);
       },
       clearSingleCollection: function() {
         this.grants = [];
@@ -359,6 +392,14 @@ if (document.getElementById('grants-showcase')) {
           base_params['round_num'] = vm.round_num;
         }
 
+        if (vm.sub_round_slug) {
+          base_params['sub_round_slug'] = vm.sub_round_slug;
+        }
+
+        if (vm.customer_name) {
+          base_params['customer_name'] = vm.customer_name;
+        }
+
         const params = new URLSearchParams(base_params).toString();
         const getGrants = await fetchData(`/grants/cards_info?${params}`);
 
@@ -373,23 +414,22 @@ if (document.getElementById('grants-showcase')) {
           if (getGrants.collections.length > 0) {
             this.activeCollection = getGrants.collections[0];
           }
+        } else if (this.current_type === 'collections') {
+          getGrants.collections.forEach(function(item) {
+            vm.collections.push(item);
+          });
         } else {
-          if (this.current_type === 'collections') {
-            getGrants.collections.forEach(function(item) {
-              vm.collections.push(item);
-            });
-          } else {
-            vm.collections = getGrants.collections;
-          }
-
-          vm.credentials = getGrants.credentials;
-          vm.grant_types = getGrants.grant_types;
-          vm.contributions = getGrants.contributions;
+          vm.collections = getGrants.collections;
         }
+
+        vm.credentials = getGrants.credentials;
+        vm.grant_types = getGrants.grant_types;
+        vm.contributions = getGrants.contributions;
 
         vm.grantsNumPages = getGrants.num_pages;
         vm.grantsHasNext = getGrants.has_next;
         vm.numGrants = getGrants.count;
+        vm.changeBanner();
 
         if (vm.grantsHasNext) {
           vm.page = ++vm.page;
@@ -432,6 +472,10 @@ if (document.getElementById('grants-showcase')) {
           type: this.current_type
         };
 
+        if (this.clr_round_pk) {
+          base_params['clr_round'] = this.clr_round_pk;
+        }
+
         if (this.following) {
           base_params['following'] = this.following;
         }
@@ -457,12 +501,28 @@ if (document.getElementById('grants-showcase')) {
         this.cart_lock = false;
       },
       removeCollection: async function({collection, grant, event}) {
-        const getGrants = await fetchData(`v1/api/collections/${collection.id}/grants/remove`, 'POST', {
+        const getGrants = await fetchData(`/grants/v1/api/collections/${collection.id}/grants/remove`, 'POST', {
           'grant': grant.id
         });
 
         this.grants = getGrants.grants;
       }
+    },
+    computed: {
+      isGrantExplorer() {
+        return (this.activePage == 'grants_explorer');
+      },
+      isGrantCollectionExplorer() {
+        return this.current_type === 'collections';
+      },
+      isUserLogged() {
+        let vm = this;
+
+        if (document.contxt.github_handle) {
+          return true;
+        }
+      }
+
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
@@ -479,15 +539,6 @@ if (document.getElementById('grants-showcase')) {
 
       this.fetchGrants(this.page);
 
-      $('#sort_option2').select2({
-        minimumResultsForSearch: Infinity,
-        templateSelection: function(data, container) {
-          // Add custom attributes to the <option> tag for the selected option
-          vm.filter_grants({sort: data.id});
-
-          return data.text;
-        }
-      });
     }
   });
 }

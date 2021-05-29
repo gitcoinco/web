@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,40 +15,45 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html>
   <head>
     {% include 'shared/head.html' %}
     {% block 'extrahead' %}
-    <link rel="stylesheet" href="{% static "v2/css/quests.css" %}" />
+    {% bundle css file quests %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quests.scss" %} />
+    {% endbundle %}
     {% endblock %}
     {% include 'shared/cards_pic.html' %}
   </head>
   <body class="g-font-muli {{body_class}} {{quest.background}} {{quest.style}}">
-    {% if quest and quest.video %}
-      <video class="video-background" no-controls autoplay loop="true" src="/static/v2/images/quests/backs/{{quest.video}}" poster="/static/v2/images/quests/backs/{{quest.background}}.jpeg"></video>
-    {% endif %}
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% if quest and quest.video %}
+        <video class="video-background" no-controls autoplay loop="true" src="/static/v2/images/quests/backs/{{quest.video}}" poster="/static/v2/images/quests/backs/{{quest.background}}.jpeg"></video>
+      {% endif %}
 
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="header dash">
-    {% if nav == 'home' %}
-      {% include 'home/nav.html' %}
-    {% else %}
-      {% include 'quests/nav.html' %}
-    {% endif %}
-    </div>
-    <div class="row back_gradient">
-      <div class="{% if not hide_col %}col-12 col-sm-10 m-auto{%endif %}" style="{% if hide_col %}width:100%;{%endif %}">
-        {% block 'content' %}
-        {% endblock %}
+      {% include 'shared/tag_manager_2.html' %}
+      {% if not quest %}
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% endif %}
+      <div class="header dash">
+      {% if nav == 'home' %}
+        {% include 'home/nav.html' %}
+      {% else %}
+        {% include 'quests/nav.html' %}
+      {% endif %}
       </div>
+      <div class="row ml-0 mr-0">
+        <div class="{% if not hide_col %}col-12 m-auto{%endif %}" style="{% if hide_col %}width:100%;{%endif %}">
+          {% block 'content' %}
+          {% endblock %}
+        </div>
+      </div>
+      {% include 'shared/footer.html' with prefix="data-" %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
     </div>
-    {% include 'shared/footer.html' with prefix="data-" %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-
   </body>
   {% csrf_token %}
   <script>

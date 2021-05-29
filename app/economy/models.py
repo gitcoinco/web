@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define economy related models.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -41,14 +41,20 @@ from django.utils.timezone import localtime
 
 import pytz
 from app.services import RedisService
+from hexbytes import HexBytes
+from web3.utils.datastructures import AttributeDict
 
 
 class EncodeAnything(DjangoJSONEncoder):
     def default(self, obj):
+        if isinstance(obj, AttributeDict):
+            return dict(obj)
         if isinstance(obj, Promise):
             return force_text(obj)
         elif isinstance(obj, FieldFile):
             return bool(obj)
+        elif isinstance(obj, HexBytes):
+            return str(obj)
         elif isinstance(obj, SuperModel):
             return (obj.to_standard_dict())
         elif isinstance(obj, models.Model):
@@ -172,6 +178,7 @@ class ConversionRate(SuperModel):
         ('poloniex', 'poloniex'),
         ('uniswap', 'uniswap'),
         ('manual', 'manual'),
+        ('coingecko', 'coingecko'),
     ]
     from_amount = models.FloatField()
     to_amount = models.FloatField()
@@ -237,6 +244,14 @@ class TXUpdate(SuperModel):
 class Token(SuperModel):
     """Define the Token model."""
 
+    CONVERSION_RATE_SOURCE = [
+        ('cryptocompare', 'cryptocompare'),
+        ('poloniex', 'poloniex'),
+        ('uniswap', 'uniswap'),
+        ('manual', 'manual'),
+        ('coingecko', 'coingecko'),
+    ]
+
     address = models.CharField(max_length=255, db_index=True)
     symbol = models.CharField(max_length=10, db_index=True)
     network = models.CharField(max_length=25, db_index=True)
@@ -246,6 +261,9 @@ class Token(SuperModel):
     network_id = models.IntegerField(default=1)
     metadata = JSONField(null=True, default=dict, blank=True)
     approved = models.BooleanField(default=True)
+    conversion_rate_id = models.CharField(max_length=25, blank=True, null=True, help_text="unique identifier used by conversion_rate_source")
+    conversion_rate_source = models.CharField(max_length=25, blank=True, null=True, help_text="API source", choices=CONVERSION_RATE_SOURCE)
+
 
     def __str__(self):
         """Define the string representation of a conversion rate."""

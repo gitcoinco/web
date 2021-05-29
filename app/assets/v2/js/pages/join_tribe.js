@@ -1,11 +1,13 @@
-const joinTribe = () => {
+/* eslint-disable no-prototype-builtins */
+
+this.joinTribe = () => {
   $('[data-jointribe]').each(function(index, elem) {
 
     $(elem).on('click', function(e) {
 
       if (!document.contxt.github_handle) {
         e.preventDefault();
-        _alert('Please login first.', 'error');
+        _alert('Please login first.', 'danger');
         return;
       }
 
@@ -18,6 +20,7 @@ const joinTribe = () => {
       $.when(sendJoin).then(function(response) {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
+        $(elem).toggleClass('btn-success').toggleClass('btn-primary');
         response.is_member ? $(elem).html('Unfollow <i class="fas fa-minus"></i>') : $(elem).html('Follow <i class="fas fa-plus"></i>');
         let old_count = parseInt($('#follower_count span').text());
         var new_count = response.is_member ? old_count + 1 : old_count - 1;
@@ -36,10 +39,10 @@ const joinTribe = () => {
 
 joinTribe();
 
-const joinTribeDirect = (elem) => {
+this.joinTribeDirect = (elem) => {
 
   if (!document.contxt.github_handle) {
-    _alert('Please login first.', 'error');
+    _alert('Please login first.', 'danger');
     return;
   }
 
@@ -63,9 +66,9 @@ const joinTribeDirect = (elem) => {
 };
 
 
-const followRequest = (handle, elem, cb, cbError) => {
+this.followRequest = (handle, elem, cb, cbError) => {
   if (!document.contxt.github_handle) {
-    _alert('Please login first.', 'error');
+    _alert('Please login first.', 'danger');
     return;
   }
 
@@ -80,7 +83,7 @@ const followRequest = (handle, elem, cb, cbError) => {
 };
 
 
-const tribeLeader = () => {
+this.tribeLeader = () => {
   $('[data-tribeleader]').each(function(index, elem) {
 
     $(elem).on('click', function() {
@@ -106,7 +109,7 @@ const tribeLeader = () => {
 
 tribeLeader();
 
-const build_suggested_tribe = (tribe) => {
+this.build_suggested_tribe = (tribe) => {
   return `
     <li class="nav-item d-flex justify-content-between align-items-center my-1">
       <a style="max-width: 70%;" href="/profile/${ tribe.title }" class="d-flex nav-link nav-line pr-0 mr-0">
@@ -117,7 +120,7 @@ const build_suggested_tribe = (tribe) => {
         </span>
       </a>
       <div>
-        <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="${ tribe.title }">
+        <a class="follow_tribe btn btn-sm btn-primary font-weight-bold font-smaller-7 px-3" href="#" data-jointribe="${ tribe.title }">
           Follow
         </a>
         <button data-ignore-tribe="${ tribe.title }"  class="font-smaller-6 px-0 remove-tribe btn btn-link"><i class="fa fa-times"></i></button>
@@ -130,7 +133,7 @@ $(document).on('click', '.remove-tribe', function(e) {
 
   if (!document.contxt.github_handle) {
     e.preventDefault();
-    _alert('Please login first.', 'error');
+    _alert('Please login first.', 'danger');
     return;
   }
   $(element).attr('disabled', true);
@@ -159,32 +162,31 @@ $(document).on('click', '.remove-tribe', function(e) {
 
     });
 
-
   });
 
 });
 
 
-const newManageTribe = () => {
+this.newManageTribe = () => {
   $('[data-tribe]').each(function(index, elem) {
     $(elem).on('mouseenter focus', function(e) {
-      if ($(elem).hasClass('btn-outline-gc-green')) {
-        $(elem).addClass('btn-gc-outline-red').text('Unfollow');
-        $(elem).removeClass('btn-outline-gc-green');
+      if ($(elem).hasClass('btn-primary')) {
+        $(elem).removeClass('btn-primary');
+        $(elem).addClass('btn-success').text('Unfollow');
       }
     });
 
     $(elem).on('mouseleave focusout', function(e) {
-      if ($(elem).hasClass('btn-gc-outline-red')) {
-        $(elem).removeClass('btn-gc-outline-red');
-        $(elem).addClass('btn-outline-gc-green').text('Following');
+      if ($(elem).hasClass('btn-primary')) {
+        $(elem).removeClass('btn-primary');
+        $(elem).addClass('btn-success').text('Following');
       }
     });
 
     $(elem).on('click', function(e) {
       if (!document.contxt.github_handle) {
         e.preventDefault();
-        _alert('Please login first.', 'error');
+        _alert('Please login first.', 'danger');
         return;
       }
 
@@ -196,9 +198,9 @@ const newManageTribe = () => {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
         if (response.is_member) {
-          $(elem).addClass('btn-outline-gc-green').removeClass([ 'btn-gc-blue', 'btn-gc-outline-red' ]).text('Following');
+          $(elem).addClass('btn-success').removeClass(['btn-primary']).text('Following');
         } else {
-          $(elem).removeClass([ 'btn-outline-gc-green', 'btn-gc-outline-red' ]).addClass('btn-gc-blue').text('Follow');
+          $(elem).removeClass(['btn-success']).addClass('btn-primary').text('Follow');
         }
       }, function(error) {
         $(elem).attr('disabled', false);

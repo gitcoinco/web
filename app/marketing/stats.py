@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -89,55 +89,6 @@ def slack_users_active():
         key='slack_users_away',
         val=num_away,
         )
-
-
-def chat_users():
-    from chat.tasks import get_driver
-    try:
-        chat_driver = get_driver()
-        stats_request = chat_driver.system.get_analytics({'name': 'standard', 'team_id': ''})
-        stats_request = { ele['name']: ele["value"] for ele in stats_request }
-        Stat.objects.create(
-            key='chat_total_users',
-            val=stats_request['unique_user_count'],
-        )
-        Stat.objects.create(
-            key='chat_daily_active_users',
-            val=stats_request['daily_active_users'],
-        )
-        Stat.objects.create(
-            key='chat_monthly_active_users',
-            val=stats_request['monthly_active_users'],
-        )
-        Stat.objects.create(
-            key='chat_total_post_counts',
-            val=stats_request['post_count'],
-        )
-        Stat.objects.create(
-            key='chat_total_public_channels',
-            val=stats_request['channel_open_count'],
-        )
-        Stat.objects.create(
-            key='chat_total_private_channels',
-            val=stats_request['channel_private_count'],
-        )
-        hack_team_stats = chat_driver.teams.get_team_stats(
-            settings.GITCOIN_HACK_CHAT_TEAM_ID
-        )
-        core_team_stats = chat_driver.teams.get_team_stats(
-            settings.GITCOIN_CHAT_TEAM_ID
-        )
-
-        active_user_count = hack_team_stats['active_member_count'] + core_team_stats['active_member_count']
-
-        Stat.objects.create(
-            key='chat_active_users',
-            val=active_user_count,
-        )
-
-    except Exception as e:
-        logging.info(str(e))
-
 
 
 def profiles_ingested():
@@ -415,6 +366,7 @@ def joe_dominance_index(created_before=timezone.now()):
     joe_addresses = joe_addresses + ['0x5DA565AD870ee827608fC764f76ab8055B3E8474'.lower()]  # justin
     joe_addresses = joe_addresses + ['0x5cdb35fADB8262A3f88863254c870c2e6A848CcA'.lower()]  # aditya
     joe_addresses = joe_addresses + ['0x00de4b13153673bcae2616b67bf822500d325fc3'.lower()]  # kevin
+    joe_addresses = joe_addresses + ['0x88c62f1695DD073B43dB16Df1559Fda841de38c6'.lower()]  # kevin
     joe_addresses = joe_addresses + ['0xe317C793ebc9d4A3732cA66e5a8fC4ffc213B989'.lower()]  # dan
 
 
@@ -514,7 +466,7 @@ def sendcryptoassets():
     }
 
     for key, SendCryptoAsset in iterate_me.items():
-        objs = SendCryptoAsset.objects.filter(network='mainnet').send_success()
+        objs = SendCryptoAsset.objects.filter(network__in=['mainnet', 'xdai']).send_success()
         val = sum(obj.value_in_usdt for obj in objs if obj.value_in_usdt)
 
         stats_to_create = [

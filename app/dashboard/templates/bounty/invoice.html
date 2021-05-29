@@ -117,7 +117,7 @@
           <table>
             <tr>
               <td class="title">
-                <img src="{% static "v2/images/presskit/GitcoinLogoText.svg" %}" style="width:100%; max-width:300px;">
+                <img src="{% static "v2/images/new-logos/gc-h-pos.svg" %}" style="width:100%; max-width:200px;">
               </td>
 
               <td>
@@ -138,10 +138,10 @@
             <tr>
               <td>
                 {% trans "Prepared by" %} <br>
-                Gitcoin Core LLC<br>
-                ConsenSys Inc. <br>
-                49 Bogart Street Suite 22 <br>
-                Brooklyn, NY 11206 <br>
+                Gitcoin Holdings Inc<br>
+                2770 Arapahoe Rd<br>
+                Ste 132 - 1015<br>
+                Lafayette CO 80026 <br>
               </td>
 
               <td>
@@ -181,29 +181,46 @@
         </td>
       </tr>
 
-      {% for fullfillment in accepted_fulfillments %}
-        <tr class="item">
-          <td>
-            {% trans "Direct Payment to " %}{{fullfillment.fulfiller_github_username}} {{fullfillment.fulfiller_address}}
-          </td>
 
-          <td>
-            {{bounty.value_true}} {{bounty.token_name}} (${{bounty.get_value_in_usdt|floatformat:2}})
-          </td>
-        </tr>
-      {% endfor %}
+      {% if web3_type == 'bounties_network' %}
+        <!-- LEGACY FLOW -->
+        {% for fullfillment in accepted_fulfillments %}
+          <tr class="item">
+            <td>
+              {% trans "Direct Payment to " %}{{fullfillment.fulfiller_github_username}} {{fullfillment.fulfiller_address}}
+            </td>
 
-      {% for tip in tips %}
-        <tr class="item">
-          <td>
-            Direct Payment to {{tip.username}} {{tip.receive_address}}
-          </td>
+            <td>
+              {{bounty.value_true}} {{bounty.token_name}} (${{bounty.get_value_in_usdt|floatformat:2}})
+            </td>
+          </tr>
+        {% endfor %}
 
-          <td>
-            {{tip.amount_in_whole_units}} {{tip.tokenName}} (${{tip.value_in_usdt|floatformat:2}})
-          </td>
-        </tr>
-      {% endfor %}
+        {% for tip in tips %}
+          <tr class="item">
+            <td>
+              Direct Payment to {{tip.username}} {{tip.receive_address}}
+            </td>
+
+            <td>
+              {{tip.amount_in_whole_units}} {{tip.tokenName}} (${{tip.value_in_usdt|floatformat:2}})
+            </td>
+          </tr>
+        {% endfor %}
+
+      {% else %}
+        {% for fullfillment in accepted_fulfillments %}
+          <tr class="item">
+            <td>
+              {% trans "Direct Payment to " %}{{fullfillment.fulfiller_github_username}} {{fullfillment.fulfiller_address}}
+            </td>
+
+            <td>
+              {{fullfillment.payout_amount}} {{fullfillment.token_name}} (${{fullfillment.payout_amount_usd|floatformat:2}})
+            </td>
+          </tr>
+        {% endfor %}
+      {% endif %}
 
       {% if fee_value_in_usdt %}
       <tr class="item">

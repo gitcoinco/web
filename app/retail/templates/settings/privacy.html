@@ -5,32 +5,7 @@
   <form id="whitepaper" method="POST" class="col-md-8 m-auto">
     <div class="form-group">
       <h5>{% trans "Privacy Preferences" %}</h5>
-      <div>
-        <input type="checkbox" name="suppress_leaderboard" id=suppress_leaderboard value="1" {% if profile.suppress_leaderboard %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
-          <label class="form__label" for="suppress_leaderboard">{% trans "Hide my profile from the leaderboard" %}</label>
-          <br>
-          <small id="suppress_leaderboard_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile information from the leaderboard" %}</small>
-      </div>
-      <div>
-          <input type="checkbox" name="hide_profile" id=hide_profile value="1" {% if profile.hide_profile %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
-          <label class="form__label" for="hide_profile">{% trans "Hide my profile altogether" %}</label>
-          <br>
-          <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile altogether" %}</small>
-      </div>
-      <div>
-          <input type="checkbox" name="pref_do_not_track" id=pref_do_not_track value="1" {% if profile.pref_do_not_track %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
-          <label class="form__label" for="pref_do_not_track">{% trans "Do not Track" %}</label>
-          <br>
-          <small id="pref_do_not_track_help" class="form__input-help">{% trans "If this option is chosen, we will not put GA/FB tracking on pages that you browse" %}</small>
-      </div>
-      <div>
-        <input type="checkbox" name="hide_wallet_address" id=hide_wallet_address {% if profile.hide_wallet_address %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
-        <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
-        <br>
-        <small id="hide_wallet_address_help" class="form__input-help">
-          {% trans "If this option is chosen, Gitcoin will hide your wallet address in it's UI." %}
-        </small>
-      </div>
+      <h6 class="mt-2 pt-2">Profile Privacy</h6>
       <div>
         <input type="checkbox" name="dont_autofollow_earnings" id=dont_autofollow_earnings {% if profile.dont_autofollow_earnings %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
         <label class="form__label" for="dont_autofollow_earnings">{% trans "Don't auto-follow users you do business with" %}</label>
@@ -47,12 +22,57 @@
           <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we not show that you are a Gitcoin alumni on your profile or about page." %}</small>
         </div>
       {% endif %}
+      <div>
+        <input type="checkbox" name="suppress_leaderboard" id=suppress_leaderboard value="1" {% if profile.suppress_leaderboard %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+          <label class="form__label" for="suppress_leaderboard">{% trans "Hide my profile from the leaderboard" %}</label>
+          <br>
+          <small id="suppress_leaderboard_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile information from the leaderboard" %}</small>
+      </div>
+      <div>
+        <input type="checkbox" name="hide_profile" id=hide_profile value="1" {% if profile.hide_profile %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+          <label class="form__label" for="hide_profile">{% trans "Hide my profile altogether" %}</label>
+          <br>
+          <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile altogether" %}</small>
+      </div>
+      <div>
+          <input type="checkbox" name="anonymize_gitcoin_grants_contributions" id=anonymize_gitcoin_grants_contributions value="1" {% if profile.anonymize_gitcoin_grants_contributions %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+          <label class="form__label" for="anonymize_gitcoin_grants_contributions">{% trans "Anonymize my gitcoin Grants contributions" %}</label>
+          <br>
+          <small id="anonymize_gitcoin_grants_contributions_help" class="form__input-help">{% trans "If this option is chosen, we will anonymize your gitcoin grants contributions from now on." %}</small>
+      </div>
+      <h6 class="mt-2 pt-2">Account Privacy</h6>
+      <div>
+          <input type="checkbox" name="pref_do_not_track" id=pref_do_not_track value="1" {% if profile.pref_do_not_track %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+          <label class="form__label" for="pref_do_not_track">{% trans "Do not Track" %}</label>
+          <br>
+          <small id="pref_do_not_track_help" class="form__input-help">{% trans "If this option is chosen, we will not put GA/FB tracking on pages that you browse" %}</small>
+      </div>
+      <h6 class="mt-2 pt-2">Wallet Privacy</h6>
+      <div>
+        <input type="checkbox" name="hide_wallet_address" id=hide_wallet_address {% if profile.hide_wallet_address %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+        <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address whereever PIA is shown." %}</label>
+        <br>
+        <small id="hide_wallet_address_help" class="form__input-help">
+          {% trans "If this option is chosen, Gitcoin will hide your wallet address in it's UI/APIs wherever it's associated with your handle or other PIA (personally identifiable information) wherever possible." %}
+        </small>
+      </div>
+      <div>
+        <input type="checkbox" name="hide_wallet_address_anonymized" id=hide_wallet_address_anonymized {% if profile.hide_wallet_address_anonymized %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+        <label class="form__label" for="hide_wallet_address_anonymized">{% trans "Hide my wallet address, even when it's anonymized." %}</label>
+        <br>
+        <small id="hide_wallet_address_anonymized_help" class="form__input-help">
+          {% trans "If this option is chosen, Gitcoin will hide your wallet address in it's UI/APIs, even in instances in which it's anonymized." %}
+        </small>
+      </div>
+
     </div>
     {% csrf_token %}
-    <input class='button button--primary' type='submit' name='submit' value="Save">
+    <input class='btn btn-primary' type='submit' name='submit' value="Save">
     <a href="{% url 'privacy' %}" style="float: right;">{% trans "Gitcoin's Privacy Policy" %}</a>
   </form>
   <div class="disclosure pt-5 col-md-8 m-auto">
+  <hr>
+  <br>
     <h5>{% trans "Disclosure" %}</h5>
     <ul class="font-body" style="padding: 1rem;">
       <li>{% trans "We collect your profile information to provide context on the bounties you submit to the gitcoin system, or to help bounty funders evaluate your fitness for performing their bounty." %}</li>

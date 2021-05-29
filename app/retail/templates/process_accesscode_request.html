@@ -17,10 +17,13 @@
 
 {% endcomment %}
 
-{% load i18n static %}
+{% load i18n static bundle %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
-
+{% block extrastyle %}{{ block.super }}
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+{% endblock %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
@@ -31,7 +34,7 @@
 
 <h1>{% trans "Process" %} {{obj}}</h1>
 <form method=POST>
-    {% csrf_token %}
+  {% csrf_token %}
 <input type="text" name="subject" value="RE: Gitcoin Whitepaper Request for {{obj.email}}" style="width: 500px;">
 <textarea name="body" style="width: 500px; height: 300px;">
 {% blocktrans %}> New Whitepaper Request:

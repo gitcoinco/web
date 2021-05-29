@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard model related tests.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -431,7 +431,7 @@ class DashboardModelsTest(TestCase):
             web3_type='yge',
         )
         assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
-        assert tip.get_natural_value() == 7e-18
+        assert tip.get_natural_value() == 7
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
         assert tip.status == 'PENDING'

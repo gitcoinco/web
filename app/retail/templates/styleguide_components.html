@@ -1,0 +1,785 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not,see
+    <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static bundle %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    <script src="//cdn.quilljs.com/1.3.6/quill.core.js"></script>
+    {% bundle css file new_grant %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+    {% endbundle %}
+    <meta name="title" content="Component Guide | Gitcoin">
+    <meta name="description" content="Component Guide">
+  </head>
+
+  <body class="{{ active }} g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      <div class="header">
+        {% include 'home/nav.html' %}
+        {% include 'shared/minihero.html' with h1='Component Guide' position_h1_below_logo=1 %}
+      </div>
+
+      <div class="container-xl" id="styleguide-components" v-cloak>
+        <div class="row py-5 justify-content-center">
+          <div class="col-12 col-md-10 pt-3 align-items-center">
+
+            <!-- Introduction -->
+            <div class="py-3">
+              <h3>Introduction</h3>
+              <p class="mt-4">
+                We primarily use bootstrap (v4.6) for our styling needs - please check the
+                <a href="https://getbootstrap.com/docs/4.6/getting-started/introduction/" target="_blank">bootstrap (bs) documentation</a>
+                before adding any rules to our SCSS which could be handled with a bs utility class.
+              </p>
+              <p>
+                All of our SCSS is located under <code>./app/assets/v2/scss/**/*.scss</code>, and we use <code>django-compressor</code> and <code>libsass</code>
+                to compile our SCSS to CSS, in development, any change will trigger the document to be recompiled without needing any manual intervention.
+              </p>
+              <p>
+                If you are creating a new page, please ensure you include <code>compress</code> in the custom tag set and wrap your <code>*.scss</code> script(s) in a <code>django-compressor</code> block:
+                <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[djangoExample]]</code></pre>
+              </p>
+            </div>
+
+            <hr/>
+
+            <!-- Third-part libraries  -->
+            <div class="py-3">
+              <h3>Third-party libraries</h3>
+              <p class="mt-4">
+                In addition to bootstrap, we use the following third-party libraries:
+              </p>
+              <ul>
+                <li>
+                  <a href="https://vue-select.org/">Vue Select v3.10.8</a>
+                </li>
+                <li>
+                  <a href="https://bootstrap-vue.js.org/">Bootstrap Vue v2.18.0</a>
+                </li>
+                <li>
+                  <a href="https://quilljs.com/">Quill Editor v1.3.6</a>
+                </li>
+                <li>
+                  <a href="https://fontawesome.com">Font Awesome v5.12.1</a>
+                </li>
+              </ul>
+            </div>
+
+            <hr/>
+
+            <!-- Variables  -->
+            <div class="py-3">
+              <h3>Variables</h3>
+              <p class="mt-4">
+                In order to keep the system adaptable, we have ordered the inclusion of our SCSS documents such that <code>./gc-variables.scss</code> can override the definitions
+                of any other third-party library.
+              </p>
+              <p>
+                Our intention is to include all globally used libraries in <code>./lib/index.scss</code>, which includes our variables before any third-party libraries.
+                If you are introducing any new libraries to our system, please follow this procedure and add appropriate overides to ensure consistency.
+              </p>
+              <p>
+                If you wish to use these variables inside an .scss document, then please import <code>./gc-utilities.scss</code> so that you have full access to everything mentioned in this document.
+              </p>
+              <table class="table mt-4">
+                <thead>
+                  <tr>
+                    <th scope="col">Variable</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">$blue / $gc-violet-400 * / $primary</th>
+                    <td class="text-primary">Purple</span></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">$green / $gc-teal-400 * / $secondary</th>
+                    <td class="text-secondary">Teal</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">$pink / $gc-pink-400 * / $danger</th>
+                    <td class="text-danger">Pink</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">$yellow / $gc-yellow-400 * / $warning</th>
+                    <td class="text-warning">Yellow</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">$dark / $gc-purple</th>
+                    <td class="text-dark">Dark Purple</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">$light / $gc-grey</th>
+                    <td class="text-grey-400">Grey</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">$font-family-base</th>
+                    <td style="font-family: 'Libre Franklin', sans-serif;">'Libre Franklin', sans-serif</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">$headings-font-family</th>
+                    <td style="font-family: 'Miriam Libre', sans-serif;">'Miriam Libre', sans-serif</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="alert alert-static bs-alert alert-primary">
+                * Please note, we have each of these colors defined in different shades (100, 200, 300, 400 & 500), where 100 is the lightest and 500 is the darkest.
+              </div>
+            </div>
+
+            <hr/>
+
+            <!-- Utilities & Mixins  -->
+            <div class="py-3">
+              <h3>Utilities & Mixins</h3>
+              <p class="mt-4">
+                Along with the utilities/mixins available in bs we also offer a selection of additional utilities/mixins which can be found in <code>./gc-utilities.scss</code> and <code>./gc-mixins.scss</code>.
+              </p>
+              <p>
+                If you wish to extend these, please make sure we don't already have something similiar in bs or our codebase, if there is something similar as part of one of our custom pages,
+                then please feel free to refactor and replace our custom rules with your generic utility.
+              </p>
+              <p>
+                Replacing old styles is an ongoing task and we would appreciate any and all help to get the codebase updated.
+              </p>
+              <table class="table mt-4">
+                <thead>
+                  <tr>
+                    <th scope="col">Class</th>
+                    <th scope="col">Options</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">.border-top-*</th>
+                    <td class="text-grey-400">[1-5]</td>
+                    <td>Places a solid border on the top of the element with a width of *px (1-5)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.border-left-*</th>
+                    <td class="text-grey-400">[1-5]</td>
+                    <td>Places a solid border on the left of the element with a width of *px (1-5)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.border-bottom-*</th>
+                    <td class="text-grey-400">[1-5]</td>
+                    <td>Places a solid border on the bottom of the element with a width of *px (1-5)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.border-right-*</th>
+                    <td class="text-grey-400">[1-5]</td>
+                    <td>Places a solid border on the right of the element with a width of *px (1-5)</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.border-*</th>
+                    <td class="text-grey-400">[grey, primary, secondary, danger, info, dark, light]</td>
+                    <td>Sets the <code class="font-body">border-color</code> property on an element</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.top-0</th>
+                    <td class="text-grey-400">/</td>
+                    <td>Sets <code class="font-body">top: 0px</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.bottom-0</th>
+                    <td class="text-grey-400">/</td>
+                    <td>Sets <code class="font-body">bottom: 0px</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.hover-underline</th>
+                    <td class="text-grey-400">/</td>
+                    <td>Adds <code class="font-body">text-decoration: underline</code> on <code class="font-body">::hover</code></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">.text-primary-hover</th>
+                    <td class="text-grey-400">/</td>
+                    <td>Darkens <code class="font-body">.text-primary</code> on <code class="font-body">::hover</code></td>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">@include border()</th>
+                    <td class="text-grey-400">($position, $minWidth, $maxWidth)</td>
+                    <td>Defines <code class="font-body">.border-*-*</code> utility classes to set solid borders on elements</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">@include border-colors()</th>
+                    <td class="text-grey-400">($colors...)</td>
+                    <td>Accepts <code class="font-body">key=>value</code> pairs where <code class="font-body">key</code> is the name and <code class="font-body">value</code> is a color code to construct <code class="font-body">.border-*(color)</code> utilities</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <hr/>
+
+            <!-- Typeography -->
+            <div class="py-3">
+
+              <h3>Typeography</h3>
+              <!-- Headings -->
+              <div class="py-3">
+                <h4 class="my-3">Headings</h4>
+                <table class="table mt-4">
+                  <tbody>
+                    <tr>
+                      <td>&lt;h1&gt;&lt;/h1&gt;</h1></td>
+                      <td><h1>h1</h1></td>
+                    </tr>
+                    <tr>
+                      <td>&lt;h2&gt;&lt;/h2&gt;</h1></td>
+                      <td><h2>h2</h2></td>
+                    </tr>
+                    <tr>
+                      <td>&lt;h3&gt;&lt;/h3&gt;</h1></td>
+                      <td><h3>h3</h3></td>
+                    </tr>
+                    <tr>
+                      <td>&lt;h4&gt;&lt;/h4&gt;</h1></td>
+                      <td><h4>h4</h4></td>
+                    </tr>
+                    <tr>
+                      <td>&lt;h5&gt;&lt;/h5&gt;</h1></td>
+                      <td><h5>h5</h5></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Components -->
+            <div class="py-3">
+
+              <h3>Components</h3>
+
+              <!-- Buttons -->
+              <div class="py-3">
+                <h4 class="my-3">Buttons</h4>
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <button class="btn btn-primary m-1">btn-primary</button>
+                    <button class="btn btn-dark m-1">btn-dark</button>
+                    <button class="btn btn-success m-1">btn-success</button>
+                    <button class="btn btn-warning m-1">btn-warning</button>
+                    <button class="btn btn-danger m-1">btn-danger</button>
+                  </div>
+                  <div class="col-12">
+                    <button class="btn btn-outline-primary m-1">btn-outline-primary</button>
+                    <button class="btn btn-outline-dark m-1">btn-outline-dark</button>
+                    <button class="btn btn-outline-success m-1">btn-outline-success</button>
+                    <button class="btn btn-outline-warning m-1">btn-outline-warning</button>
+                    <button class="btn btn-outline-danger m-1">btn-outline-danger</button>
+                  </div>
+                  <div class="col-12">
+                    <button class="btn btn-primary btn-block m-1">btn-block</button>
+                    <button class="btn btn-primary btn-lg m-1">btn-lg</button>
+                    <button class="btn btn-primary btn-sm m-1">btn-sm</button>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[buttonExample]]</code></pre>
+                  </div>
+                </div>
+              </div>
+
+              <hr/>
+
+              <!-- Form Elements -->
+              <div class="py-3">
+                <h4>Form Elements</h4>
+                <p class="mt-4">
+                  If you are creating a new form, please use vue.js to build out the page, this will enable the full use of all components we have implemented.
+                </p>
+
+                <div class="alert alert-static bs-alert alert-primary py-3">
+                  <div class="font-weight-normal">
+                    <p>
+                      Please note the use of <code>.invalid</code> in the following examples...
+                    </p>
+                    <p>
+                      The <code>.invalid</code> class should be applied conditionally to the <code>&lt;form&gt;</form></code> based on the presence of errors after attempting to submit.
+                    </p>
+                    <p class="mb-0">
+                      Wherever the <code>::invalid</code> state is un-usable (because the input is nested inside the element we want to style) an additional <code>.invalid</code> class must be applied
+                      to the appropriate parent.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Text Input -->
+                <div class="py-3">
+                  <h5  class="my-3">Text Input</h5>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <label for="text1" class="font-caption letter-spacing text-black-60 text-uppercase">Example 1</label>
+
+                      <input id="text" name="text" v-model="form.text1" class="form__input form__input-lg" maxlength="150" type="text" placeholder="Example text input" required />
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12 invalid">
+                      <label for="text2" class="font-caption letter-spacing text-black-60 text-uppercase">Example 2 <span class="badge badge-greylight text-capitalize">Required</span></label>
+
+                      <input id="text2" name="text" v-model="form.text2" class="form__input form__input-lg" maxlength="150" type="text" placeholder="Example text input" required />
+
+                      <div class="text-danger" v-if="!form.text2">
+                        This is an error message
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[inputExample]]</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Select input -->
+                <div class="py-3">
+                  <h5  class="my-3">Select</h5>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 1</label>
+
+                      <v-select placeholder="Select option" :options="selectOptions" label="label" v-model="form.select1" :reduce="option => option.name">
+                        <template #search="{attributes, events}">
+                          <input
+                            class="vs__search"
+                            v-bind="attributes"
+                            v-on="events"
+                          />
+                        </template>
+                        <template v-slot:option="option">
+                          <span class="font-weight-semibold">[[ option.label ]]</span>
+                        </template>
+                      </v-select>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12 invalid">
+                      <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 2 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span></label>
+
+                      <v-select placeholder="Select option" :options="selectOptions" label="label" v-model="form.select2" :reduce="option => option.name" multiple>
+                        <template #search="{attributes, events}">
+                          <input
+                            class="vs__search"
+                            :required="!form.select2.length"
+                            v-bind="attributes"
+                            v-on="events"
+                          />
+                        </template>
+                        <template v-slot:option="option">
+                          <span class="font-weight-semibold">[[ option.label ]]</span>
+                        </template>
+                      </v-select>
+
+                      <div class="text-danger" v-if="!form.select2.length">
+                        This is an error message
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[selectExample]]</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Radio input -->
+                <div class="py-3">
+                  <h5 class="my-3">Radio</h5>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 1</span>
+
+                      <div class="form__radio option">
+                        <input name="radio" v-model="form.radio" id="radio_option1" type="radio" value="open" val-ui="radio" required>
+                        <label class="filter-label" for="radio_option1">Option 1</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="radio" v-model="form.radio" id="radio_option2" type="radio" value="started" val-ui="radio" required>
+                        <label class="filter-label" for="radio_option2">Option 2</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12 invalid">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 2 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span></span>
+
+                      <div class="form__radio option">
+                        <input name="radio2" v-model="form.radio2" id="radio2_option1" type="radio" value="open" val-ui="radio2" required>
+                        <label class="filter-label" for="radio2_option1">Option 1</label>
+                      </div>
+
+                      <div class="form__radio option">
+                        <input name="radio2" v-model="form.radio2" id="radio2_option2" type="radio" value="started" val-ui="radio2" required>
+                        <label class="filter-label" for="radio2_option2">Option 2</label>
+                      </div>
+
+                      <div class="text-danger" v-if="!form.radio2">
+                        This is an error message
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[radioExample]]</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Checkbox input -->
+                <div class="py-3">
+                  <h5 class="my-3">Checkbox</h5>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 1</span>
+
+                      <div class="checkbox_container">
+                        <input name="checkbox" v-model="form.checkbox" id="checkbox-checkbox1" type="checkbox" value="1" />
+                        <span class="checkbox"></span>
+                        <div class="filter-label display-inline">
+                          <label for="checkbox-checkbox1">Option 1</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12 invalid">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 2 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span></span>
+
+                      <div class="checkbox_container">
+                        <input name="checkbox2" v-model="form.checkbox2" id="checkbox2-checkbox1" type="checkbox" value="1" required />
+                        <span class="checkbox" ></span>
+                        <div class="filter-label display-inline">
+                          <label for="checkbox2-checkbox1">Option 1</label>
+                        </div>
+                      </div>
+
+                      <div class="text-danger" v-if="!form.checkbox2">
+                        This is an error message
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[checkboxExample]]</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Button Radio Input(s) -->
+                <div class="py-3">
+                  <h5 class="my-3">Btn-radio</h5>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 1</span>
+
+                      <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnRadio === '1'}">
+                          <input type="radio" name="btn-radio" id="btn-radio-1" value="1" v-model="form.btnRadio">Option 1
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnRadio === '2'}">
+                          <input type="radio" name="btn-radio" id="btn-radio-2" value="2" v-model="form.btnRadio">Option 2
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnRadio === '3'}">
+                          <input type="radio" name="btn-radio" id="btn-radio-3" value="3" v-model="form.btnRadio">Option 3
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 2 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span></span>
+
+                      <div :class="`btn-group-toggle d-flex flex-column flex-lg-row flex-wrap ${!form.btnRadio2 ? 'invalid' : ''}`">
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnRadio2 === '1'}">
+                          <input type="radio" name="btn-radio" id="btn-radio-2-1" value="1" v-model="form.btnRadio2" required>Option 1
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnRadio2 === '2'}">
+                          <input type="radio" name="btn-radio" id="btn-radio-2-2" value="2" v-model="form.btnRadio2" required>Option 2
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnRadio2 === '3'}">
+                          <input type="radio" name="btn-radio" id="btn-radio-2-3" value="3" v-model="form.btnRadio2" required>Option 3
+                        </label>
+                      </div>
+
+                      <div class="text-danger" v-if="!form.btnRadio2">
+                        This is an error message
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[btnRadioExample]]</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Button Checkbox Input(s) -->
+                <div class="py-3">
+                  <h5 class="my-3">Btn-checkbox</h5>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 1</span>
+
+                      <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnCheckbox.includes('1')}">
+                          <input type="checkbox" name="btn-checkbox-1" id="btn-checkbox-1" value="1" v-model="form.btnCheckbox">Option 1
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnCheckbox.includes('2')}">
+                          <input type="checkbox" name="btn-checkbox-2" id="btn-checkbox-2" value="2" v-model="form.btnCheckbox">Option 2
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnCheckbox.includes('3')}">
+                          <input type="checkbox" name="btn-checkbox-3" id="btn-checkbox-3" value="3" v-model="form.btnCheckbox">Option 3
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <span class="font-caption letter-spacing text-black-60 text-uppercase" for="">Example 2 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span></span>
+
+                      <div :class="`btn-group-toggle d-flex flex-column flex-lg-row flex-wrap ${!form.btnCheckbox2.length ? 'invalid' : ''}`">
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnCheckbox2.includes('1')}">
+                          <input type="checkbox" name="btn-checkbox2-1" id="btn-checkbox-2-1" value="1" v-model="form.btnCheckbox2" required>Option 1
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnCheckbox2.includes('2')}">
+                          <input type="checkbox" name="btn-checkbox2-2" id="btn-checkbox-2-2" value="2" v-model="form.btnCheckbox2" required>Option 2
+                        </label>
+
+                        <label class="btn btn-radio d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.btnCheckbox2.includes('3')}">
+                          <input type="checkbox" name="btn-checkbox2-3" id="btn-checkbox-2-3" value="3" v-model="form.btnCheckbox2" required>Option 3
+                        </label>
+                      </div>
+
+                      <div class="text-danger" v-if="!form.btnCheckbox2.length">
+                        This is an error message
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[btnCheckboxExample]]</code></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Rich Text Editor (Quill) -->
+                <div class="py-3">
+                  <h5  class="my-3">Rich text editor</h5>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <label for="rich_editor" class="font-caption letter-spacing text-black-60 text-uppercase">Example 1</label>
+
+                      <quill-editor
+                        ref="quillEditorExample"
+                        v-model="form.rich_editor"
+                        :class="`editor ${!form.rich_editor.length ? 'invalid' : ''}`"
+                        :options="editorOptionPrio"
+                      ></quill-editor>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12 invalid">
+                      <label for="rich_editor2" class="font-caption letter-spacing text-black-60 text-uppercase">Example 2 <span class="badge badge-greylight text-capitalize">Required</span></label>
+
+                      <quill-editor
+                        ref="quillEditorExample"
+                        v-model="form.rich_editor2"
+                        :class="`editor ${!form.rich_editor2 ? 'invalid' : ''}`"
+                        :options="editorOptionPrio"
+                      ></quill-editor>
+
+                      <div class="text-danger" v-if="!form.rich_editor2">
+                        This is an error message
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-12">
+                      <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[richEditorExample]]</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr/>
+
+              <!-- Alerts -->
+              <div class="py-3">
+                <h4>Alerts</h4>
+                <div class="mt-4">
+                  <div class="alert alert-static bs-alert alert-primary d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body">
+                    <div class="message">
+                      <div class="content">Message</div>
+                    </div>
+                    <span class="closebtn">×</span>
+                  </div>
+
+                  <div class="alert alert-static bs-alert alert-dark d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body">
+                    <div class="message">
+                      <div class="content">Message</div>
+                    </div>
+                    <span class="closebtn">×</span>
+                  </div>
+
+                  <div class="alert alert-static bs-alert alert-success d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body">
+                    <div class="message">
+                      <div class="content">Message</div>
+                    </div>
+                    <span class="closebtn">×</span>
+                  </div>
+
+                  <div class="alert alert-static bs-alert alert-warning d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body">
+                    <div class="message">
+                      <div class="content">Message</div>
+                    </div>
+                    <span class="closebtn">×</span>
+                  </div>
+
+                  <div class="alert alert-static bs-alert alert-danger d-flex justify-content-between align-items-center shadow-sm py-3 font-weight-semibold font-body">
+                    <div class="message">
+                      <div class="content">Message</div>
+                    </div>
+                    <span class="closebtn">×</span>
+                  </div>
+
+                  <button class="btn btn-outline-primary m-1" @click="openAlert('primary')">alert-primary</button>
+                  <button class="btn btn-outline-dark m-1" @click="openAlert('dark')">alert-dark</button>
+                  <button class="btn btn-outline-success m-1" @click="openAlert('success')">alert-success</button>
+                  <button class="btn btn-outline-warning m-1" @click="openAlert('warning')">alert-warning</button>
+                  <button class="btn btn-outline-danger m-1" @click="openAlert('danger')">alert-danger</button>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[alertExample]]</code></pre>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[alertExample2]]</code></pre>
+                  </div>
+                </div>
+              </div>
+
+              <hr/>
+
+              <!-- Accordion -->
+              <div class="py-3">
+                <h4>Accordion</h4>
+                <div class="m-4 mt-5">
+                  <div class="accordion-group gc-accordion" id="accordion-group">
+                    <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
+                      <span class="accordion-title">
+                        Accordion Title 1
+                      </span>
+                    </h5>
+                    <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet mi suscipit, vehicula augue a, convallis leo. Suspendisse luctus non ante vel faucibus. Morbi consectetur augue sed augue aliquet, quis pellentesque leo tempus. Sed a ultrices dolor. Donec vestibulum quam non condimentum pharetra. Quisque nec neque ultrices, semper odio quis, varius risus. Duis ut felis quis purus lacinia dignissim sollicitudin a diam. Sed eget consequat mauris. Nam consequat, diam in cursus consectetur, lacus ligula porta dolor, vel condimentum orci sem sit amet purus. Donec semper tristique massa a pellentesque. Praesent in pulvinar ante. In eleifend, ante id volutpat aliquet, nisl eros porta lectus, quis vestibulum magna lorem in lectus. Nam a laoreet enim. Nulla metus lectus, faucibus sit amet dolor vel, pretium rhoncus massa.</p>
+                    </div>
+
+                    <h5 class="accordion collapsed" id="headingTwo" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseTwo" aria-controls="collapseTwo">
+                      <span class="accordion-title">
+                        Accordion Title 2
+                      </span>
+                    </h5>
+                    <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseTwo" aria-labelledby="headingTwo" data-parent="#accordion-group">
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet mi suscipit, vehicula augue a, convallis leo. Suspendisse luctus non ante vel faucibus. Morbi consectetur augue sed augue aliquet, quis pellentesque leo tempus. Sed a ultrices dolor. Donec vestibulum quam non condimentum pharetra. Quisque nec neque ultrices, semper odio quis, varius risus. Duis ut felis quis purus lacinia dignissim sollicitudin a diam. Sed eget consequat mauris. Nam consequat, diam in cursus consectetur, lacus ligula porta dolor, vel condimentum orci sem sit amet purus. Donec semper tristique massa a pellentesque. Praesent in pulvinar ante. In eleifend, ante id volutpat aliquet, nisl eros porta lectus, quis vestibulum magna lorem in lectus. Nam a laoreet enim. Nulla metus lectus, faucibus sit amet dolor vel, pretium rhoncus massa.</p>
+                    </div>
+
+                    <h5 class="accordion collapsed" id="headingThree" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseThree" data-target="#collapseThree">
+                      <span class="accordion-title">
+                        Accordion Title 3
+                      </span>
+                    </h5>
+                    <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseThree" aria-labelledby="headingThree" data-parent="#accordion-group">
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet mi suscipit, vehicula augue a, convallis leo. Suspendisse luctus non ante vel faucibus. Morbi consectetur augue sed augue aliquet, quis pellentesque leo tempus. Sed a ultrices dolor. Donec vestibulum quam non condimentum pharetra. Quisque nec neque ultrices, semper odio quis, varius risus. Duis ut felis quis purus lacinia dignissim sollicitudin a diam. Sed eget consequat mauris. Nam consequat, diam in cursus consectetur, lacus ligula porta dolor, vel condimentum orci sem sit amet purus. Donec semper tristique massa a pellentesque. Praesent in pulvinar ante. In eleifend, ante id volutpat aliquet, nisl eros porta lectus, quis vestibulum magna lorem in lectus. Nam a laoreet enim. Nulla metus lectus, faucibus sit amet dolor vel, pretium rhoncus massa.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[accordionExample]]</code></pre>
+                  </div>
+                </div>
+              </div>
+
+              <hr/>
+
+              <!-- Tabs -->
+              <div class="py-3">
+                <h4>Tabs</h4>
+                <div class="mt-4 mb-4">
+                  <b-tabs content-class="mt-3" v-model="tabSelected" >
+                    <b-tab :title-link-class="'nav-line'">
+                      <template v-slot:title>Tab 1</template>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet mi suscipit, vehicula augue a, convallis leo. Suspendisse luctus non ante vel faucibus. Morbi consectetur augue sed augue aliquet, quis pellentesque leo tempus. Sed a ultrices dolor. Donec vestibulum quam non condimentum pharetra. Quisque nec neque ultrices, semper odio quis, varius risus. Duis ut felis quis purus lacinia dignissim sollicitudin a diam. Sed eget consequat mauris. Nam consequat, diam in cursus consectetur, lacus ligula porta dolor, vel condimentum orci sem sit amet purus. Donec semper tristique massa a pellentesque. Praesent in pulvinar ante. In eleifend, ante id volutpat aliquet, nisl eros porta lectus, quis vestibulum magna lorem in lectus. Nam a laoreet enim. Nulla metus lectus, faucibus sit amet dolor vel, pretium rhoncus massa.</p>
+                    </b-tab>
+
+                    <b-tab :title-link-class="'nav-line'">
+                      <template v-slot:title>Tab 2</template>
+                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet mi suscipit, vehicula augue a, convallis leo. Suspendisse luctus non ante vel faucibus. Morbi consectetur augue sed augue aliquet, quis pellentesque leo tempus. Sed a ultrices dolor. Donec vestibulum quam non condimentum pharetra. Quisque nec neque ultrices, semper odio quis, varius risus. Duis ut felis quis purus lacinia dignissim sollicitudin a diam. Sed eget consequat mauris. Nam consequat, diam in cursus consectetur, lacus ligula porta dolor, vel condimentum orci sem sit amet purus. Donec semper tristique massa a pellentesque. Praesent in pulvinar ante. In eleifend, ante id volutpat aliquet, nisl eros porta lectus, quis vestibulum magna lorem in lectus. Nam a laoreet enim. Nulla metus lectus, faucibus sit amet dolor vel, pretium rhoncus massa.</p>
+                    </b-tab>
+                  </b-tabs>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <pre style="white-space: pre-wrap;" class="p-3 bg-light"><code class="text-grey-400">[[tabsExample]]</code></pre>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include 'shared/footer.html' %}
+
+    </div>
+  </body>
+
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
+
+  <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8"></script>
+  <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
+  <script src="{% static "v2/js/pages/styleguide-components.js" %}"></script>
+</html>

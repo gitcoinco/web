@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 """Define the application WSGI.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -27,4 +27,5 @@ if os.environ.get('ENV') in ['prod', 'stage']:
     from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
     application = Sentry(get_wsgi_application())
 else:
-    application = get_wsgi_application()
+    from dj_static import Cling
+    application = Cling(get_wsgi_application())

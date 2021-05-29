@@ -1,0 +1,60 @@
+section#footernavigation{
+
+  margin: 0em 3em;
+  margin-top: 6em;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 3em;
+
+	
+
+  // border-top: 2px solid var(--cosmicteal);
+	
+
+
+  div{
+
+    h2{
+      margin-bottom: 2em;
+    }
+
+    a{
+      display: block;
+      text-decoration: none;
+      color: var(--starwhite);
+      margin-bottom: 1em;
+
+      &:hover{
+        color: var(--cosmicteal);
+      }
+    }
+
+  }
+
+
+
+}
+
+
+@media #{$phone} { 
+  section#footernavigation{
+
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+
+    grid-template-columns: repeat(2, 1fr);
+    grid-row-gap: 3em;
+    grid-column-gap: 3em;
+
+  }
+}
+
+
+
+
+
+
+
+
+

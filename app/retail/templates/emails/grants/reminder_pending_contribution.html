@@ -1,0 +1,51 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load i18n static humanize %}
+{% block content %}
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .zksync {
+    width: 160px;
+  }
+</style>
+
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
+  <h1 style="text-transform: none;">{% trans "Complete Grant Contribution Checkout" %}</h1>
+  <p>Contribute to the projects you care about!</p>
+  <div>
+    <img class="zksync" src="{% static "v2/images/grants/zksync.png" %}" alt="">
+    <p>Hey, {{ contribution.subscription.contributor_profile }}</p>
+    <p>Looks like your transactions on zkSync grants checkout are not completed yet. To complete checkout,
+      please visit the link below.</p>
+
+    <p>
+      <a href="{% url 'grants:cart' %}?{{ utm_tracking }}" class="btn"
+        style="display: inline-block; margin-top:10px;">{% trans "Complete Checkout" %}</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

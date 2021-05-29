@@ -3,10 +3,11 @@
 {% trans "New Grant Created" %}
 
 {% trans "You've created a new grant!" %}
+{% trans "It would take 1-2 business days for your grant to approved." %}
 {% trans "Get ready to buidl and push forward open source!" %}
 
 {% trans "Title" %} : {{ grant.title }}
 
 {% trans "Description" %} : {{ grant.description }}
 
-{% trans "The details of your grant can be seen here:" %} {{ grant.reference_url }}
+{% trans "The details of your grant can be seen here:" %} {{ grant.reference_url }}?{{ utm_tracking }}

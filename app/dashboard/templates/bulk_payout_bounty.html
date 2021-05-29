@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,245 +14,248 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     {% include 'shared/current_profile.html' %}
-    <link rel="stylesheet" type="text/css" href="{% static "v2/css/bulk_payout_bounty.css" %}">
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% bundle css file bulk_payout_bounty %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bulk_payout_bounty.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+    {% endbundle %}
   </head>
 
   <body class="interior {{ active }} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
-    </div>
-    <div class="container-fluid">
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_issue_error.html' with page='payout_bounty' %}
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-          {% include 'shared/connect_metamask.html' %}
-        </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav.html' %}
       </div>
-
-      <div class="row text-center mt-5" id="success_container" style="display: none;">
-        <div class="col col-md-5 mx-auto my-5">
-          <h3 class="mb-5">Payment Sent</h3>
-          <img src="{% static "v2/images/modals/persona-choose.svg" %}" height="160">
-          <p>
-            <a class="btn btn-gc-blue mt-4 text-center" href="{{ bounty.url }}" >
-              <i class="fas fa-chevron-left font-body mr-2"></i>{% trans "Back to Bounty" %}
-            </a>
-          </p>
+      <div class="container-fluid">
+        <div class="row no-gutters metamask-banner">
+          <div class="col-12">
+            {% include 'shared/no_issue_error.html' with page='payout_bounty' %}
+            {% include 'shared/no_metamask_error.html' %}
+            {% include 'shared/zero_balance_error.html' %}
+            {% include 'shared/unlock_metamask.html' %}
+            {% include 'shared/connect_metamask.html' %}
+          </div>
         </div>
-      </div>
 
-      <div class="row content">
-        <div class="col-12 body">
-          <div class="row font-smaller-2" id="form_container">
-            <div class="col col-lg-10 col-xl-6 mx-auto" id="primary_form">
-              <div class="mt-5" id="primary_subform">
-                <div class="text-center mb-5">
-                  <h3>{% trans "Advanced Payout" %}</h3>
-                  <p>
-                    <a class="d-block" href="{{ bounty.url }}">
-                      <i class="fas fa-chevron-left mr-1" style="font-size: 10px; position: relative;top: -1px;"></i>
-                      Back to Bounty
-                    </a>
-                    <a href="{{action_urls.accept}}">{% trans "Switch to Basic Payout" %}</a>
-                  </p>
-                </div>
-                <div>
-                  <label for="issueURL">{% trans "Issue Title" %}</label>
-                  <p name="issueTitle" class="font-subheader">{{ bounty.title }}</p>
-                </div>
-                <div>
-                  <label for="issueURL">{% trans "Issue URL" %}</label>
-                  <p id="issueURL" name="issueURL" class="font-subheader">{{ bounty.github_url }}</p>
-                </div>
-                <div>
-                  <label for="amount">{% trans "Amount" %}</label>
-                  <p name="amount" class="font-subheader">
-                    <span id="amount">{{ bounty.value_true }}</span>
-                    <span id="token_name">{{ bounty.token_name }}</span>
-                  </p>
-                </div>
+        <div class="row text-center mt-5" id="success_container" style="display: none;">
+          <div class="col col-md-8 mx-auto my-5">
+            <h3 class="mb-5">Payment Sent</h3>
+            <img src="{% static "v2/images/modals/persona-choose.svg" %}" height="160">
+            <p>
+              <a class="btn btn-primary mt-4 text-center" href="{{ bounty.url }}" >
+                <i class="fas fa-chevron-left font-body mr-2"></i>{% trans "Back to Bounty" %}
+              </a>
+            </p>
+          </div>
+        </div>
 
-                {% if bounty.additional_funding_summary %}
+        <div class="row content">
+          <div class="col-12 body">
+            <div class="row font-smaller-2" id="form_container">
+              <div class="col col-lg-10 col-xl-6 mx-auto" id="primary_form">
+                <div class="mt-5" id="primary_subform">
+                  <div class="text-center mb-5">
+                    <h3>{% trans "Advanced Payout" %}</h3>
+                    <p>
+                      <a class="d-block" href="{{ bounty.url }}">
+                        <i class="fas fa-chevron-left mr-1" style="font-size: 10px; position: relative;top: -1px;"></i>
+                        Back to Bounty
+                      </a>
+                      <a href="{{action_urls.accept}}">{% trans "Switch to Basic Payout" %}</a>
+                    </p>
+                  </div>
                   <div>
-                    <label for="crowdfundedAmount">{% trans "Crowdfunded Amount" %}</label>
-                    {% for key, token in bounty.additional_funding_summary.items %}
-                      <p name='crowdfundedAmount' class="font-body mb-0">
-                        <span>{{ token.amount }}</span>
-                        <span>{{ key }}</span>
-                      </p>
-                    {% endfor %}
+                    <label for="issueURL">{% trans "Issue Title" %}</label>
+                    <p name="issueTitle" class="font-subheader">{{ bounty.title }}</p>
                   </div>
-
-                  <div class="row btn-metamask mt-4 mx-1 py-3 br-2">
-                    <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
-                    <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
-                      {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
+                  <div>
+                    <label for="issueURL">{% trans "Issue URL" %}</label>
+                    <p id="issueURL" name="issueURL" class="font-subheader">{{ bounty.github_url }}</p>
+                  </div>
+                  <div>
+                    <label for="amount">{% trans "Amount" %}</label>
+                    <p name="amount" class="font-subheader">
+                      <span id="amount">{{ bounty.value_true }}</span>
+                      <span id="token_name">{{ bounty.token_name }}</span>
                     </p>
                   </div>
-                {% endif %}
 
-                <div class="my-4">
-                  <div class="form__radio option d-inline">
-                    <input name="pay_with" id="pay_with_bounty" type="radio" value="bounty" val-ui='Pay using bounty funds' checked />
-                    <label class="filter-label w-auto pl-3" for=pay_with_bounty>
-                      <div class="position-relative">
-                        Pay using bounty funds
-                        <i class="fa fa-info-circle gc-text-blue font-caption ml-1" data-toggle="tooltip" data-placement="right" data-html="true" title="
-                          <p class='font-body font-weight-bold ml-2 pt-3'>PAY USING BOUNTY FUNDS</p>
-                          <ul>
-                            <li><strong>Payment Source:</strong>Bounty Funds</li>
-                            <li><strong>Bounty Status after payment:</strong> COMPLETED
-                            <li>If you choose to exceed {{ bounty.value_true }} {{ bounty.token_name }}, the remainder amount would be deducted from your
-                              web3 wallet and paid out using Gitcoin Tips</li>
-                            <li>Bounty will be closed once this mode of payment is chosen</li>
-                            <li class='font-italic'>
-                              Ensure you have enough {{ bounty.token_name }} if you decide to payout
-                              more than the bounty amount for a job well done.
-                            </li>
-                          </ul>
-                        "></i>
-                      </div>
-                    </label>
-                  </div>
-
-                  <div class="form__radio option d-inline ml-3">
-                    <input name="pay_with" id="pay_with_wallet" type="radio" value="wallet" val-ui='Pay directly from wallet' />
-                    <label class="filter-label w-auto pl-3" for=pay_with_wallet>
-                      <div class="position-relative">
-                        Pay from wallet
-                        <i class="fa fa-info-circle font-caption ml-1 gc-text-blue" data-toggle="tooltip" data-placement="right" data-html="true" title="
-                          <p class='font-body font-weight-bold ml-2 pt-3'>PAY USING WALLET</p>
-                          <ul>
-                            <li><strong>Payment Source:</strong> Your web3 wallet (using Gitcoin Tips)
-                            <li><strong>Bounty Status after payment:</strong> OPEN (enables multiple payouts at different points in time)
-                            <li><strong>Bounty Funds:</strong> Will not be used as the entire amount would come from your wallet</li>
-                            <li class='font-italic'>Ensure you have enough tokens in your wallet before using this mode</li>
-                          <ul>
-                        "></i>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-
-                <div class="w-100 my-4 pt-3">
-                  <label for=bountyFulfillment>{% trans "Payout" %}</label>
-                  <label class="float-right gc-text-blue font-weight-semibold">
-                    {% trans "Where is my Eth going? " %}
-                    <i class="fa fa-info-circle font-caption ml-1" data-toggle="tooltip" data-placement="right" data-html="true" title="
-                      <p class='font-weight-bold ml-2 pt-3'>WHERE IS MY {{ bounty.token_name }} GOING?</p>
-                      <ul>
-                        <li>
-                          <strong>Verifed Users:</strong>
-                          Users have an eth address associated on our platform, so the funds would be
-                          transferred into that addressed.
-                        </li>
-                        <li>
-                          <strong>Unverified Users:</strong> (no eth address associated)
-                          A secure proxy address will hold the funds until the recipient claims them.
-                          This address is generated by gitcoin’s website, but we don't have its private keys,
-                          and the only person who can access the funds is the recipient.
-                        </li>
-                      </ul>
-                    "></i>
-                  </label>
-
-                  <div class="mt-2 pb-3 overflow-auto">
-                    {% include 'shared/bulk_payout_form.html' %}
-                  </div>
-
-                  <div class="w-100 paymentAlert overageAlert">
+                  {% if bounty.additional_funding_summary %}
                     <div>
-                      <img src="{% static "v2/images/warning.svg" %}">
+                      <label for="crowdfundedAmount">{% trans "Crowdfunded Amount" %}</label>
+                      {% for key, token in bounty.additional_funding_summary.items %}
+                        <p name='crowdfundedAmount' class="font-body mb-0">
+                          <span>{{ token.amount }}</span>
+                          <span>{{ key }}</span>
+                        </p>
+                      {% endfor %}
                     </div>
-                    <div class="my-0 py-0">
-                      <p class="my-2">
-                        {% trans "You have exceeded the bounty's funded amount. The difference of " %}
-                        <span id="total_overage"></span>
-                        {% trans "will be paid from your wallet" %}
-                        <span id="address_ending"></span>
+
+                    <div class="row btn-metamask mt-4 mx-1 py-3 br-2">
+                      <i class="col-3 col-lg-2 fas fa-exclamation-triangle font-title-xl my-auto text-center"></i>
+                      <p class="col-9 col-lg-10 pl-lg-0 font-body my-auto font-weight-semibold">
+                        {% trans "To include crowdfunding as part of this payout, please use Basic Payout." %}
                       </p>
                     </div>
-                  </div>
-                  <div class="w-100 paymentAlert tipAlert">
-                    <div>
-                      <img src="{% static "v2/images/warning.svg" %}">
+                  {% endif %}
+
+                  <div class="my-4">
+                    <div class="form__radio option d-inline">
+                      <input name="pay_with" id="pay_with_bounty" type="radio" value="bounty" val-ui='Pay using bounty funds' checked />
+                      <label class="filter-label w-auto pl-3" for=pay_with_bounty>
+                        <div class="position-relative">
+                          Pay using bounty funds
+                          <i class="fa fa-info-circle gc-text-blue font-caption ml-1" data-toggle="tooltip" data-placement="right" data-html="true" title="
+                            <p class='font-body font-weight-bold ml-2 pt-3'>PAY USING BOUNTY FUNDS</p>
+                            <ul>
+                              <li><strong>Payment Source:</strong>Bounty Funds</li>
+                              <li><strong>Bounty Status after payment:</strong> COMPLETED
+                              <li>If you choose to exceed {{ bounty.value_true }} {{ bounty.token_name }}, the remainder amount would be deducted from your
+                                web3 wallet and paid out using Gitcoin Tips</li>
+                              <li>Bounty will be closed once this mode of payment is chosen</li>
+                              <li class='font-italic'>
+                                Ensure you have enough {{ bounty.token_name }} if you decide to payout
+                                more than the bounty amount for a job well done.
+                              </li>
+                            </ul>
+                          "></i>
+                        </div>
+                      </label>
                     </div>
-                    <div class="my-0 py-0">
-                      <p class="my-2">
-                        You are not paying using bounty funds. The amount of
-                        <span id="total_tip_overage"></span>
-                        will be paid from your wallet
-                        <span id="address_tip_ending"></span>
+
+                    <div class="form__radio option d-inline ml-3">
+                      <input name="pay_with" id="pay_with_wallet" type="radio" value="wallet" val-ui='Pay directly from wallet' />
+                      <label class="filter-label w-auto pl-3" for=pay_with_wallet>
+                        <div class="position-relative">
+                          Pay from wallet
+                          <i class="fa fa-info-circle font-caption ml-1 gc-text-blue" data-toggle="tooltip" data-placement="right" data-html="true" title="
+                            <p class='font-body font-weight-bold ml-2 pt-3'>PAY USING WALLET</p>
+                            <ul>
+                              <li><strong>Payment Source:</strong> Your web3 wallet (using Gitcoin Tips)
+                              <li><strong>Bounty Status after payment:</strong> OPEN (enables multiple payouts at different points in time)
+                              <li><strong>Bounty Funds:</strong> Will not be used as the entire amount would come from your wallet</li>
+                              <li class='font-italic'>Ensure you have enough tokens in your wallet before using this mode</li>
+                            <ul>
+                          "></i>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+
+                  <div class="w-100 my-4 pt-3">
+                    <label for=bountyFulfillment>{% trans "Payout" %}</label>
+                    <label class="float-right gc-text-blue font-weight-semibold">
+                      {% trans "Where is my Eth going? " %}
+                      <i class="fa fa-info-circle font-caption ml-1" data-toggle="tooltip" data-placement="right" data-html="true" title="
+                        <p class='font-weight-bold ml-2 pt-3'>WHERE IS MY {{ bounty.token_name }} GOING?</p>
+                        <ul>
+                          <li>
+                            <strong>Verifed Users:</strong>
+                            Users have an eth address associated on our platform, so the funds would be
+                            transferred into that addressed.
+                          </li>
+                          <li>
+                            <strong>Unverified Users:</strong> (no eth address associated)
+                            A secure proxy address will hold the funds until the recipient claims them.
+                            This address is generated by gitcoin’s website, but we don't have its private keys,
+                            and the only person who can access the funds is the recipient.
+                          </li>
+                        </ul>
+                      "></i>
+                    </label>
+
+                    <div class="mt-2 pb-3 overflow-auto">
+                      {% include 'shared/bulk_payout_form.html' %}
+                    </div>
+
+                    <div class="w-100 paymentAlert overageAlert">
+                      <div>
+                        <img src="{% static "v2/images/warning.svg" %}">
+                      </div>
+                      <div class="my-0 py-0">
+                        <p class="my-2">
+                          {% trans "You have exceeded the bounty's funded amount. The difference of " %}
+                          <span id="total_overage"></span>
+                          {% trans "will be paid from your wallet" %}
+                          <span id="address_ending"></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="w-100 paymentAlert tipAlert">
+                      <div>
+                        <img src="{% static "v2/images/warning.svg" %}">
+                      </div>
+                      <div class="my-0 py-0">
+                        <p class="my-2">
+                          You are not paying using bounty funds. The amount of
+                          <span id="total_tip_overage"></span>
+                          will be paid from your wallet
+                          <span id="address_tip_ending"></span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="my-5 py-4 px-3 preview_payment">
+                      <h5 class="font-weight-semibold font-header gc-text-green">{% trans 'Payout Preview' %}</h5>
+                      <p class="mb-1 summary_bounty_info">
+                        Payout from bounty funds:
+                        <span id="summary_bounty_amount" class="font-weight-bold"></span>
+                        <span class="font-weight-bold">{{ bounty.token_name }}</span>
                       </p>
+                      <p class="mb-0 summary_wallet_info">
+                        Payout from your wallet
+                        (<span id="summary_wallet_address"></span>):
+                        <span id="summary_wallet_amount" class="font-weight-bold"></span>
+                        <span class="font-weight-bold">{{ bounty.token_name }}</span>
+                      </p>
+
+                      <p class="my-3 font-weight-bold">
+                        You will have to approve <span id="metamask-txn-count">0</span> wallet transactions:
+                      </p>
+
+                      {% if bounty.additional_funding_summary %}
+                        <p class="my-2"><b>{% trans 'Note' %}</b> {% trans 'Crowdfunded alocation % is internally based on bounty payment allocation.' %}</p>
+                      {% endif %}
+
+                      <table id="transaction_registry" class="w-100">
+                      </table>
                     </div>
+
+                    {% include 'shared/bounty_actions_hidden_vars.html' %}
+
+                    <div class="w-100 mt-4 terms_container">
+                      <input name='terms' id='terms' type="checkbox" value=1 required />
+                      <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
+                    </div>
+                    <div class="w-100 mt-2 text-center">
+                      <a id="acceptBounty" class="btn btn-primary text-center font-subheader js-submit mt-3 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
+                        {% trans "Payout Bounty" %}
+                      </a>
+                    </div>
+                    <input type="hidden" name="bounty_id" id="bountyId" value="{{ bounty.id }}">
+                    <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
+                    <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
+                    <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   </div>
-
-                  <div class="my-5 py-4 px-3 preview_payment">
-                    <h5 class="font-weight-semibold font-header gc-text-green">{% trans 'Payout Preview' %}</h5>
-                    <p class="mb-1 summary_bounty_info">
-                      Payout from bounty funds:
-                      <span id="summary_bounty_amount" class="font-weight-bold"></span>
-                      <span class="font-weight-bold">{{ bounty.token_name }}</span>
-                    </p>
-                    <p class="mb-0 summary_wallet_info">
-                      Payout from your wallet
-                      (<span id="summary_wallet_address"></span>):
-                      <span id="summary_wallet_amount" class="font-weight-bold"></span>
-                      <span class="font-weight-bold">{{ bounty.token_name }}</span>
-                    </p>
-
-                    <p class="my-3 font-weight-bold">
-                      You will have to approve <span id="metamask-txn-count">0</span> wallet transactions:
-                    </p>
-
-                    {% if bounty.additional_funding_summary %}
-                      <p class="my-2"><b>{% trans 'Note' %}</b> {% trans 'Crowdfunded alocation % is internally based on bounty payment allocation.' %}</p>
-                    {% endif %}
-
-                    <table id="transaction_registry" class="w-100">
-                    </table>
-                  </div>
-
-                  {% include 'shared/bounty_actions_hidden_vars.html' %}
-
-                  <div class="w-100 mt-4 terms_container">
-                    <input name='terms' id='terms' type="checkbox" value=1 required />
-                    <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
-                  </div>
-                  <div class="w-100 mt-2 text-center">
-                    <a id="acceptBounty" class="btn btn-gc-blue font-weight-semibold text-center font-subheader js-submit mt-3 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
-                      {% trans "Payout Bounty" %}
-                    </a>
-                  </div>
-                  <input type="hidden" name="bounty_id" id="bountyId" value="{{ bounty.id }}">
-                  <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
-                  <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
-                  <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
     </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
 
   </body>
   <script src="{% static "v2/js/rating.js" %}"></script>

@@ -9,8 +9,8 @@ const payWithPYPL = (fulfillment_id, fulfiller_identifier, ele, vm, modal) => {
       },
       createOrder: function(data, actions) {
         return actions.order.create({
-          application_context : {
-            shipping_preference: "NO_SHIPPING"
+          application_context: {
+            shipping_preference: 'NO_SHIPPING'
           },
           purchase_units: [{
             payee: {
@@ -45,22 +45,22 @@ const payWithPYPL = (fulfillment_id, fulfiller_identifier, ele, vm, modal) => {
               vm.fetchBounty();
               modal.closeModal();
               $(ele).html('');
-              _alert('Payment Successful');
+              _alert('Payment Successful', 'success');
 
             } else {
-              _alert('Unable to make payout bounty. Please try again later', 'error');
+              _alert('Unable to make payout bounty. Please try again later', 'danger');
               console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
             }
           }).catch(function(error) {
-            _alert('Unable to make payout bounty. Please try again later', 'error');
+            _alert('Unable to make payout bounty. Please try again later', 'danger');
             console.log(error);
           });
 
         }).catch(function(error) {
-          _alert('Unable to make payout bounty. Please try again later', 'error');
-          console.log(error)
+          _alert('Unable to make payout bounty. Please try again later', 'danger');
+          console.log(error);
         });
       }
     }
   ).render(ele);
-}
+};

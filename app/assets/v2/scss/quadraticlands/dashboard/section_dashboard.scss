@@ -1,0 +1,42 @@
+section.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: auto;
+  margin: 0em 1.5em;
+  grid-gap: 2em;
+
+  .section {
+    background-color: var(--space_light_alpha);
+
+    &.full {
+      grid-column: 1 / span 2;
+    }
+  }
+
+  .header {
+    background-color: var(--space_pink);
+    display: flex;
+    align-items: center;
+    height: 90px;
+    user-select: none;
+  }
+
+  .content {
+    margin: 50px 30px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+@media #{$tablet} {
+  section.dashboard {
+    grid-template-columns: 1fr;
+    .section {
+      &.full {
+        grid-column: initial;
+      }
+    }
+  }
+}

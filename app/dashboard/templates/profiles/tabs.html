@@ -6,13 +6,8 @@
         <button type="button" id="nav-description" href="{{profile.url}}/activity" class="text-center section-tab {% if tab == "activity" %} active {% endif %}">
           {% trans "ACTIVITY" %}
         </button>
-        {% if profile.is_org %}
-          <button type="button" id="nav-description" href="{{profile.url}}/tribe" class="text-center section-tab {% if tab == "tribe" %} active {% endif %}">
-            {% trans "TRIBE" %}{%if not profile.is_org %}S <span class="nav-badge">({{profile.tribe_members.count}})</span>{% endif %}
-          </button>
-        {% endif %}
-        <button type="button" id="nav-description" href="{{profile.url}}/follow" class="text-center section-tab {% if tab == "follow" %} active {% endif %}">
-          {% trans "FOLLOWERS" %}
+        <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
+          {% trans "PEOPLE" %}
         </button>
         {% if show_resume_tab %}
           <button type="button" id="nav-description" href="{{profile.url}}/resume" class="text-center section-tab {% if tab == "resume" %} active {% endif %}">
@@ -46,12 +41,6 @@
             <span  class="nav-badge">({{profile.organizations|length}})</span>
           </button>
         {% endif %}
-        {% if profile.is_org %}
-          <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
-            {% trans "PEOPLE" %}
-            <span  class="nav-badge">({{team|length}})</span>
-          </button>
-        {% endif %}
         {% if total_grant_actions %}
           <button type="button" id="nav-description" href="{{profile.url}}/grants" class="text-center section-tab {% if tab == "grants" %} active {% endif %}">
             {% trans "GRANTS" %}
@@ -74,6 +63,12 @@
           <button type="button" id="nav-description" href="{{profile.url}}/hackathons" class="text-center section-tab {% if tab == "hackathons" %} active {% endif %}">
             {% trans "HACKATHONS" %}
             {% if projects_count %}<span class="nav-badge">({{projects_count}})</span>{% endif %}
+        {% endif %}
+        {% if is_staff and personal_tokens_count %}
+          <button type="button" id="nav-description" href="{{profile.url}}/ptokens" class="text-center section-tab {% if tab == "ptokens" %} active {% endif %}">
+            {% trans "TIME TOKENS" %}
+            {% if personal_tokens_count %}<span  class="nav-badge">({{personal_tokens_count}})</span>{%endif%}
+          </button>
         {% endif %}
         {% if is_editable and profile.viewed_by.count %}
           <button type="button" id="nav-description" href="{{profile.url}}/viewers" class="text-center section-tab {% if tab == "viewers" %} active {% endif %}">
@@ -144,8 +139,10 @@
             {% include 'profiles/tab_quests.html' %}
           {% elif tab == 'hackathons' %}
             {% include 'profiles/tab_hackathons.html' %}
+          {% elif tab == 'ptokens' %}
+            {% include 'profiles/tab_ptokens.html' %}
           {% elif tab == 'trust' %}
-            {% include 'profiles/tab_trust.html' %}
+            {% include 'profiles/trust-vue.html' %}
           {% endif %}
         </div>
       </div>

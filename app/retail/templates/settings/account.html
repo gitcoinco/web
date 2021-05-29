@@ -95,18 +95,18 @@
     <small id="preferred_payout_addresshelp" class="form__input-help">{% trans "so we know where to send tips to you." %}</small>
   </div>
   {% csrf_token %}
-  <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
+  <input class='btn btn-primary' type='submit' name='submit' value="{% trans "Save" %}">
 </form>
 <div class="col-md-8 m-auto">
   <div class="form-group">
-    <h4 class="font-title mb-4 text-left">{% trans "Account Financials" %}</h4>
+    <h4 id=financials class="font-title mb-4 text-left">{% trans "Account Financials" %}</h4>
   </div>
   <div class="form-group mb-4">
     <div class="major_button_container">
       <form id="export" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="earnings">
-        <input type="submit" class="button button--primary" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" name="export" value="Export">
       </form>
       <h5 class="font-subheader">{% trans "Export Earnings" %} ({{profile.earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your earnings for @" %}{{ github_handle }}</p>
@@ -117,7 +117,7 @@
       <form id="export" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="sent">
-        <input type="submit" class="button button--primary" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" name="export" value="Export">
       </form>
       <h5 class="font-subheader">{% trans "Export Spending" %} ({{profile.sent_earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your spending for @" %}{{ github_handle }}</p>
@@ -130,7 +130,7 @@
     </div>
     <div class="col-12 col-md-7 row">
       <div class="col-12 mt-2 mb-2">
-        <button id="use_github_avatar" type="button" class="button button--primary-o">
+        <button id="use_github_avatar" type="button" class="btn btn-primary-o">
           <i class="mr-2 fab fa-github"></i>{% trans "Use Github Avatar" %}
         </button>
       </div>
@@ -138,7 +138,7 @@
         <form id="build_avatar" method="GET" action="/onboard/contributor">
           {% csrf_token %}
           <input type="hidden" name="steps" value="avatar" />
-          <button type="submit" class="button button--primary-o">
+          <button type="submit" class="btn btn-primary-o">
             <i class="mr-2 fas fa-wrench"></i>{% trans "Build Your Avatar" %}
           </button>
         </form>
@@ -152,7 +152,7 @@
     <div class="major_button_container">
       <form id="disconnect" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
-        <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
+        <input type="submit" class="btn btn-primary" name="disconnect" value="Disconnect">
       </form>
       <h5 class="font-subheader">{% trans "Github" %}</h5>
       <p class="font-body">{% trans "Connected as " %}{{ github_handle }}</p>
@@ -162,8 +162,8 @@
     <div class="major_button_container">
       <form id="delete" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
-        <a id="delete_account" class="button button--primary warning">{% trans "Delete" %}</a>
-        <input type='hidden' class="button button--primary warning" name="delete" value="Delete">
+        <a id="delete_account" class="btn btn-primary warning">{% trans "Delete" %}</a>
+        <input type='hidden' class="btn btn-primary warning" name="delete" value="Delete">
       </form>
       <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
       <p class="font-body">{% trans "This action deletes all of your data" %}</p>
@@ -197,8 +197,8 @@
               '<p>' + gettext('Your data will not be removed from the Ethereum blockchain, which is immutable. However, this will no longer tie to your Gitcoin account.') + '</p>' +
             '</div>' +
             '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
-              '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">Cancel</a>' +
-              '<button class="modal-delete button button--warning">Delete</button>' +
+              '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="btn btn-primary-o mr-3">Cancel</a>' +
+              '<button class="modal-delete btn btn-warning">Delete</button>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -225,7 +225,7 @@
           if(response.responseJSON && response.responseJSON.message) {
             text = response.responseJSON.message;
           }
-          _alert({ message: text}, 'error');
+          _alert({ message: text}, 'danger');
         }
       });
     });

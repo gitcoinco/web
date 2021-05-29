@@ -1,40 +1,44 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+Copyright (C) 2019 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 
 {% endcomment %}
 {% load i18n humanize %}
 {% load static %}
 
 {% block content %}
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
 
-<h1>{% trans "A Worker was Auto Approved" %}</h1>
-<div style="text-align: left! important">
-  <p>
-    {% trans "Hello" %},
-  </p>
-  <p>
-    <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "was automatically approved to work on "%}<a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "Please work together to complete the project." %}
-  </p>
-  <br>
-  {% include 'emails/bounty.html' with bounty=bounty  %}
-  <p>
-    {% blocktrans %}
-    - Gitcoin Team
-    {% endblocktrans %}
-  </p>
+  <h1>{% trans "A Worker was Auto Approved" %}</h1>
+  <div style="text-align: left! important">
+    <p>
+      {% trans "Hello" %},
+    </p>
+    <p>
+      <a href="{{interest.profile.url}}?{{ utm_tracking }}">@{{interest.profile.handle}}</a> {% trans "was automatically approved to work on "%}<a href="{{bounty.url}}?{{ utm_tracking }}">{% trans "this bounty" %}</a>. {% trans "Please work together to complete the project." %}
+    </p>
+    <br>
+    {% include 'emails/bounty.html' with bounty=bounty %}
+    <p>
+      {% blocktrans %}
+      - Gitcoin Team
+      {% endblocktrans %}
+    </p>
+  </div>
 </div>
 {% endblock %}

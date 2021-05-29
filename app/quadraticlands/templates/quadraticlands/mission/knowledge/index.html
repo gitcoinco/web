@@ -1,0 +1,36 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="grid">
+
+  <figure class="intro">
+    <img src='{% static "v2/images/quadraticlands/mission/proof-of-know-start.svg" %}' />
+  </figure>
+
+  <div>
+    <h3><span>#</span>Chapter 1 of 3</h3>
+    <h1>Proof of knowledge</h1>
+    <p>Watch this video and play our quiz to complete this mission. Good luck!</p>
+    <a href="/quadraticlands/mission/knowledge/intro" class="btn" data-kinetics-attraction
+      data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">
+      I am ready
+    </a>
+  </div>
+
+</section>
+
+
+{% endblock %}
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+{% endblock %}

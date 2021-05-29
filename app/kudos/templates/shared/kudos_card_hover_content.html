@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -43,9 +43,19 @@
     </div>
   {% endif %}
   <div class="flip-card__extra-data">
-    {% if tk.github_url %}
-      <a href="{{tk.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
+    {% if kt.github_url %}
+      <a href="{{kt.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
     {% endif %}
-    <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
+    {% if kt.receive_txid == 'pending_celery' %}
+      Pending Issuance on Chain 
+    {% else %}
+      <a title="{% trans 'tx on block explorer' %}" href="{{kt.receive_tx_blockexplorer_link}}" target="_blank" class="mb-1 block_explorer_link">{{ kt.receive_txid|humanize_address }}</a>
+    {% endif %}
+    {% if kt.receive_txid == 'pending_celery' or kt.receive_tx_status == 'dropped'  or kt.receive_tx_status == 'unknown' %}
+      {% if github_handle == kt.username or github_handle == kt.from_username or 1 %}
+        <div><i class="fas fa-sync" data-id="{{kt.id}}" data-owned='{{kt.kudos_token_cloned_from.is_owned_by_gitcoin}}'></i></div> 
+      {% endif %}
+    {% endif %}
+
   </div>
 {% endfor %}

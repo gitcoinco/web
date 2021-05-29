@@ -6,10 +6,10 @@ from .models import Quest, QuestAttempt, QuestFeedback, QuestPointAward
 
 
 class QuestAdmin(admin.ModelAdmin):
-    raw_id_fields = ['kudos_reward', 'unlocked_by_quest', 'unlocked_by_hackathon', 'creator']
+    raw_id_fields = ['kudos_reward', 'unlocked_by_quest', 'unlocked_by_hackathon', 'creator', 'reward_tip']
     ordering = ['-id']
     list_display = ['created_on', '__str__']
-    readonly_fields = ['feedback','background_preview']
+    readonly_fields = ['feedback', 'background_preview']
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect

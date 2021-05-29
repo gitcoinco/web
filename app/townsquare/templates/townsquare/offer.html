@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load humanize static i18n %}
+{% load humanize static i18n bundle %}
 {% comment %}
 Copyright (C) 2018 Gitcoin Core
 
@@ -21,9 +21,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endblock %}
 
 {% block body %}
-<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/actions.css" %}" />
-
+{% bundle css file townsquare_offer %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/actions.scss" %} />
+{% endbundle %}
 <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
   <div class="container">
     <img src="{{offer.persona.preview_img_url}}" />
@@ -52,7 +53,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         Expires: {{offer.valid_to | naturaltime}}
     </p>
 
-    <a class="accept hero-p-mobile btn btn-gc-blue my-2" target="_blank" href="{{offer.go_url}}">
+    <a class="accept hero-p-mobile btn btn-primary my-2" target="_blank" href="{{offer.go_url}}">
       Go
     </a>
     <BR>

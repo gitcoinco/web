@@ -1,0 +1,47 @@
+{% load humanize i18n %}
+<div class=" overflow-hidden">
+  <div class="container">
+    <div class="subheading font-weight-bold d-flex justify-content-between" @click="toggleActiveCLRs">
+      <span>{% trans "Active CLR Rounds" as filts %}{{ filts|upper }}</span>
+      <span class=" fa fa-fw fa-chevron-down" v-if="!show_active_clrs"></span>
+      <span class=" fa fa-fw fa-chevron-up" v-if="show_active_clrs"></span>
+    </div>
+    <b-collapse :visible="show_active_clrs" id="active_clrs_collapse" >
+
+      <div class="d-flex">
+        {% for active_round in active_rounds %}
+
+
+                <div class="d-flex flex-column">
+                  <img class="img-responsive" src="{{active_round.logo.url}}" />
+                  <!-- <div class=" mr-3 overflow-hidden" style="width: 56px; height: 56px; border-radius: 100px;">
+                    <img class="img-responsive" src="/dynamic/avatar/{{ active_round.owner.handle | default:'gitcoinco'}}" />
+                  </div> -->
+                  <h5 class="font-weight-bold my-auto">
+                    <a href="/grants/clr{% if active_round.customer_name %}/{{ active_round.customer_name }}{% endif %}{% if active_round.round_num %}/{{ active_round.round_num }}{% endif %}{% if active_round.sub_round_slug %}/{{ active_round.sub_round_slug }}{% endif %}">
+                      {% if active_round.display_text %}
+                        {{ active_round.display_text|upper }}
+                      {% elif active_round.customer_name %}
+                        {{ active_round.customer_name|upper }} - {{ active_round.round_num }}
+                      {% elif active_round.sub_round_slug %}
+                        {{ active_round.sub_round_slug|upper }} - {{ active_round.round_num }}
+                      {% else %}
+                        {{ active_round.round_num }}
+                      {% endif %}
+                    </a>
+                    <br />
+                    <small class="font-body font-weight-semibold">
+                      {{active_round.start_date | date:'m/Y'}} - {{active_round.end_date | date:'m/Y'}}
+                    </small>
+                  </h5>
+                  <p class="my-auto font-weight-semibold">${{ active_round.total_pot|floatformat:"0"|intcomma }}</p>
+                </div>
+
+
+
+        {% endfor %}
+      </div>
+    </b-collapse>
+
+  </div>
+</div>

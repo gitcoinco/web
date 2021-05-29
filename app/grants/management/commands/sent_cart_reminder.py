@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant subminer management command.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -25,7 +25,6 @@ from django.db.models import F, Max
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
-from grants.clr import predict_clr
 from grants.models import CartActivity, Contribution, Grant, Subscription
 from grants.views import next_round_start, round_end  # TODO-SELF-SERVICE: REMOVE THIS
 from marketing.mails import remember_your_cart, warn_subscription_failed
@@ -51,7 +50,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--hours',
             type=int,
-            help="Should the cart being delivered partially"
+            help="how many hours forward to full to look"
         )
 
 

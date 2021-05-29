@@ -1,5 +1,5 @@
 {% load humanize %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% comment %}
     Copyright (C) 2019 Gitcoin Core
 
@@ -18,38 +18,39 @@
 
 {% endcomment %}
 
-
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">  <head>
-    <meta charset="utf-8">
-    <script src="{% static "v2/js/lib/jquery.js" %}"></script>
-    <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
-    <style>
+<head>
+  <meta charset="utf-8">
+  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
+  {% bundle css file admin_dashboard %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
+  {% endbundle %}
+  <style>
     .colMS{
-        margin-right: 0px;
+      margin-right: 0px;
     }
+
     .link {
       stroke: #aaa;
     }
 
     .node text {
-    stroke:#333;
-    cursor:pointer;
-    font-size: 10px;
+      stroke:#333;
+      cursor:pointer;
+      font-size: 10px;
     }
 
     .node circle{
-    stroke:#fff;
-    stroke-width:3px;
+      stroke:#fff;
+      stroke-width:3px;
     }
 
-rect {
-  fill: none;
-  pointer-events: all;
-}
-
-    </style>
-  </head>
-
+    rect {
+      fill: none;
+      pointer-events: all;
+    }
+  </style>
+</head>
 
 <body id="body" style="zoom: 1;">
 

@@ -1,0 +1,7 @@
+{% load i18n %}
+
+New Redemption Request
+
+📥 @{{ redeem.redemption_requester.handle }} asked to redeem {{ redeem.total }} {{ ptoken.token_symbol }}
+
+{{ redeem.reason }}

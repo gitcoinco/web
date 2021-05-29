@@ -1,9 +1,0 @@
-  {% if chat_id or show_even_if_no_chat_id %}
-    {% if show_even_if_offline or last_chat_status == 'online' or last_chat_status == 'away' %}
-      <span class="chat_presence_indicator {{additionalclasses}} {{last_chat_status}}" {% if not suppress_click %} data-openchat="{{handle}}" {% endif %}>
-        <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: {{last_chat_status|title}}">
-          •
-        </span>
-      </span>
-    {% endif %}
-  {% endif %}

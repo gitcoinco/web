@@ -3,14 +3,8 @@ Vue.mixin({
     const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
 
     return {
-      isMobile,
-      chatURL: document.chatURL || 'https://chat.gitcoin.co'
+      isMobile
     };
-  },
-  methods: {
-    chatWindow: function(channel) {
-      window.chatSidebar.chatWindow(channel);
-    }
   }
 });
 
@@ -39,12 +33,13 @@ Vue.component('hackathon-sponsor-dashboard', {
 });
 
 Vue.component('modal', {
-  props: [ 'user', 'size', 'id', 'issueDetails' ],
-  template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  props: [ 'user', 'size', 'id', 'issueDetails', 'hideClose', 'backdrop', 'keyboard' ],
+  template: `<div class="vue-modal modal fade" :id="id" :data-backdrop="propBackdrop" :data-keyboard="propKeyboard" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
           <div class="modal-content">
             <div class="modal-header border-0">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <slot name="top"></slot>
+              <button type="button" class="close" data-dismiss="modal" v-show="showClose" aria-label="Close">
                 <span aria-hidden="true">×</span>
               </button>
             </div>
@@ -68,9 +63,36 @@ Vue.component('modal', {
 
     vm.jqEl = $(this.$el);
   },
+  computed: {
+    showClose() {
+      if (!this.hideClose) {
+        return true;
+      }
+
+      return false;
+    },
+    propKeyboard() {
+      if (!this.keyboard) {
+        return true;
+      }
+
+      return this.keyboard;
+    },
+    propBackdrop() {
+      if (!this.backdrop) {
+        return true;
+      }
+
+      return this.backdrop;
+
+    }
+  },
   methods: {
     closeModal() {
       this.jqEl.bootstrapModal('hide');
+    },
+    openModal() {
+      this.jqEl.bootstrapModal('show');
     }
   }
 
@@ -78,15 +100,21 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength', 'sorter' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
-
-    $(vm.$el).select2({
+    let select2Options = {
       data: vm.options,
       placeholder: vm.placeholder !== null ? vm.placeholder : 'filter here',
-      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1})
+      minimumInputLength: vm.inputlength !== null ? vm.inputlength : 1
+    };
+
+    if (vm.sorter) {
+      select2Options['sorter'] = vm.sorter;
+    }
+
+    $(vm.$el).select2(select2Options)
       .val(vm.value)
       .trigger('change')
       .on('change', function() {
@@ -126,7 +154,7 @@ Vue.component('loading-screen', {
 
 
 Vue.component('qrcode', {
-  props: ['string'],
+  props: [ 'string', 'size' ],
   template: '<div class="qrcode"></div>',
   data() {
     return {
@@ -138,7 +166,17 @@ Vue.component('qrcode', {
     let vm = this;
 
     vm.jqEl = $(this.$el);
-    vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+
+    if (vm.size) {
+      vm.qrcode = new QRCode(vm.jqEl[0], {
+        text: vm.string,
+        width: vm.size,
+        height: vm.size
+      });
+
+    } else {
+      vm.qrcode = new QRCode(vm.jqEl[0], vm.string);
+    }
     return vm.qrcode;
 
     // document.getElementsByClassName("qrcode")[0].innerHTML = qr.createImgTag();
@@ -229,7 +267,7 @@ Vue.component('manage-mentors', {
       $.when(updateBountyMentor).then((response) => {
         _alert({message: gettext(response.message)}, 'success');
       }).catch((error) => {
-        _alert({message: gettext(error.message)}, 'error');
+        _alert({message: gettext(error.message)}, 'danger');
       });
     }
   },
@@ -402,6 +440,68 @@ Vue.component('project-directory', {
 });
 
 
+Vue.component('events', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: function() {
+    return {
+      events: []
+    };
+  },
+  methods: {
+    nth: function(d) {
+      if (d > 3 && d < 21)
+        return 'th';
+      switch (d % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    },
+    fetchEvents: async function() {
+      const response = await fetchData(`/api/v0.1/hackathon/${document.hackathonObj.id}/events/`, 'GET');
+
+      this.$set(this, 'events', response.events.events);
+    },
+    formatDate: function(event) {
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      const date = event.date_start.split('/');
+      const time = event.date_start_time;
+      const newDate = new Date(`${date[2]}-${date[0]}-${date[1]}T${time}`);
+      const month = monthNames[newDate.getMonth()];
+      const day = newDate.getDay();
+      const hours = newDate.getHours();
+      const ampm = event.date_start_ampm.toLowerCase();
+
+      return `${month} ${day}${this.nth(newDate.getDay())}, ${hours} ${ampm}  ET`;
+    },
+    eventTag: function(event) {
+      const text = event.eventname;
+
+      if (text.includes('formation')) {
+        return 'formation';
+      } else if (text.includes('pitch')) {
+        return 'pitch';
+      } else if (text.includes('check')) {
+        return 'check';
+      } else if (text.includes('office')) {
+        return 'office';
+      } else if (text.includes('demo')) {
+        return 'demo';
+      }
+
+      return 'workshop';
+    }
+  },
+  mounted() {
+    this.fetchEvents();
+  }
+});
+
 Vue.component('showcase', {
   delimiters: [ '[[', ']]' ],
   props: [],
@@ -527,33 +627,16 @@ Vue.component('project-card', {
     }
   },
   methods: {
-    markWinner: function($event, project) {
-      let vm = this;
-
-      const url = '/api/v0.1/hackathon_project/set_winner/';
-      const markWinner = fetchData(url, 'POST', {
-        project_id: project.pk,
-        winner: $event ? 1 : 0
-      }, {'X-CSRFToken': vm.csrf});
-
-      $.when(markWinner).then(response => {
-        if (response.message) {
-          alert(response.message);
-        }
-      }).catch(err => {
-        console.log(err);
-      });
-    },
     projectModal() {
       let project = this.$props.project;
 
       projectModal(project.bounty.pk, project.pk);
     }
   },
-  template: `<div class="card card-user shadow-sm border-0">
+  template: `<div class="card card-user border-0">
     <div class="card card-project">
-      <b-form-checkbox v-if="is_staff" switch v-model="project.winner" style="padding:0;float:left;" @change="markWinner($event, project)">mark winner</b-form-checkbox>
-      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <button v-on:click="projectModal" class="position-absolute btn btn-success btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <img v-if="project.grant_obj" class="position-absolute" style="left: 1rem" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>
       <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
       <div class="card-bg rounded-top">
         <div v-if="project.winner" class="ribbon ribbon-top-right"><span>winner</span></div>
@@ -561,17 +644,17 @@ Vue.component('project-card', {
         <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
       </div>
       <div class="card-body">
-        <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+        <h5 class="card-title font-weight-bold text-left" v-html="project.name"></h5>
         <div class="my-2">
           <p class="text-left text-muted font-smaller-1">
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-            <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-            <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
+            <a :href="project_url" target="_blank" class="btn btn-sm btn-primary font-smaller-2">View Project</a>
+            <a :href="project.bounty.url" class="btn btn-sm btn-outline-primary font-smaller-2">View Bounty</a>
+            <b-dropdown variant="outline-primary" toggle-class="btn" split-class="btn-primary">
             <template v-slot:button-content>
-              <i class='fas fa-comment-dots'></i>
+              <i class="fas fa-comment-dots" style="padding-top: 0.4em;padding-bottom: 0.3em;"></i>
             </template>
             <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
               @ [[ profile.handle ]]
@@ -697,8 +780,8 @@ Vue.component('suggested-profile', {
   template: `
 <b-media tag="li" class="row mx-auto mx-md-n1 mb-1">
   <template v-slot:aside>
-    <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
-      <b-img :src="avatar_url" class="nav_avatar"></b-img>
+    <a :href="profile_url" class="d-flex nav-link nav-line px-0 mr-0">
+      <b-img :src="avatar_url" class="profile-header__avatar mr-2"></b-img>
     </a>
   </template>
   <div class="col">
@@ -709,8 +792,8 @@ Vue.component('suggested-profile', {
         </p>
     </span>
     <p class="row font-caption mb-0 mt-1">
-      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" class="btn btn-outline-green font-smaller-5">following</b-button>
-      <b-button v-else @click="followTribe(profile.handle, $event)" class="btn btn-gc-blue font-smaller-5">follow</b-button>
+      <b-button v-if="follow" @click="followTribe(profile.handle, $event)" variant="success" class="btn font-smaller-5">following</b-button>
+      <b-button v-else @click="followTribe(profile.handle, $event)" variant="primary" class="btn font-smaller-5">follow</b-button>
     </p>
   </div>
 </b-media>
@@ -758,4 +841,65 @@ Vue.component('date-range-picker', {
     });
   }
 
+});
+
+
+Vue.component('copy-clipboard', {
+  props: ['string'],
+  template: '<button @click="copy()" type="button"><slot>Copy</slot></button>',
+  data() {
+    return {
+
+    };
+  },
+  methods: {
+    copy() {
+      if (!navigator.clipboard) {
+        _alert('Could not copy text to clipboard', 'danger', 5000);
+      } else {
+        navigator.clipboard.writeText(this.string).then(function() {
+          _alert('Text copied to clipboard', 'success', 4000);
+        }, function(err) {
+          _alert('Could not copy text to clipboard', 'danger', 5000);
+        });
+      }
+    }
+  }
+});
+
+
+Vue.component('render-quill', {
+  props: ['delta'],
+  template: '<div>{{this.renderHtml}}</div>',
+  data() {
+    return {
+      jqEl: null,
+      renderHtml: ''
+
+    };
+  },
+  methods: {
+    transform: function() {
+      let vm = this;
+
+      if (!vm.delta) {
+        return;
+      }
+
+      vm.jqEl = this.$el;
+      const quill = new Quill(vm.jqEl);
+
+      quill.enable(false);
+      vm.renderHtml = quill.setContents(JSON.parse(vm.delta));
+    }
+
+  },
+  mounted() {
+    this.transform();
+  },
+  watch: {
+    delta: function() {
+      return this.transform();
+    }
+  }
 });

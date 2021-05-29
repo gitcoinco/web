@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define dashboard specific DRF API routes.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -209,12 +209,15 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
     bounty = BountySerializer()
     profiles = ProfileSerializer(many=True)
     hackathon = HackathonEventSerializer()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_obj', 'admin_url', 'comments',)
         depth = 1
 
+    def get_comments(self, obj):
+        return Activity.objects.filter(activity_type='wall_post', project=obj).count()
 
 class HackathonProjectsPagination(PageNumberPagination):
     page_size = 10
@@ -252,16 +255,25 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 hackathon_event = HackathonEvent.objects.last()
 
             queryset = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
 
             if sponsor:
                 queryset = queryset.filter(
                     Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
-            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
+            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle=sponsor.lower()) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_obj', order_by, 'id')
+
+            projects = []
+            for project in queryset:
+                bounty = project.bounty
+                org_name = bounty.org_name
+                if org_name != sponsor:
+                    projects.append(project.pk)
+
+            queryset = queryset.exclude(pk__in=projects)
 
         if q:
             queryset = queryset.filter(
@@ -274,7 +286,6 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 Q(profiles__keywords__icontains=skills)
             )
-
         if rating:
             queryset = queryset.filter(
                 Q(rating__gte=rating)
@@ -283,6 +294,10 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         if 'winners' in filters:
             queryset = queryset.filter(
                 Q(winner=True)
+            )
+        if 'grants' in filters:
+            queryset = queryset.filter(
+                Q(grant_obj__isnull=False)
             )
         if 'lfm' in filters:
             queryset = queryset.filter(
@@ -307,7 +322,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories'
+            'bounty_categories', 'metadata'
         )
 
 
@@ -499,7 +514,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
 
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
-                is_featured=self.request.query_params.get('is_featured'),
+                is_featured=bool(self.request.query_params.get('is_featured')),
                 is_open=True,
             )
 
@@ -513,19 +528,23 @@ class BountiesViewSet(viewsets.ModelViewSet):
             if order_by == 'recently_marketed':
                 queryset = queryset.order_by(F('last_remarketed').desc(nulls_last = True), '-web3_created')
             else:
+                order_by_options = ['-web3_created', 'web3_created', '-_val_usd_db', '_val_usd_db']
+                if order_by not in order_by_options:
+                    order_by = '-web3_created'
                 queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
 
         # offset / limit
         if 'is_featured' not in param_keys:
-            limit = int(self.request.query_params.get('limit', 5))
+            limit = self.request.query_params.get('limit', '5')
+            limit = 5 if not limit.isdigit() else int(limit)
             max_bounties = 100
             if limit > max_bounties:
                 limit = max_bounties
-            offset = self.request.query_params.get('offset', 0)
+            offset = self.request.query_params.get('offset', '0')
             if limit:
-                start = int(offset)
+                start = int(offset) if offset.isdigit() else 0
                 end = start + int(limit)
                 queryset = queryset[start:end]
 

@@ -114,7 +114,7 @@ $(document).ready(function() {
   $('#textarea, #btn_post').click(function(e) {
     if (!document.contxt.github_handle) {
       e.preventDefault();
-      _alert('Please login first.', 'error');
+      _alert('Please login first.', 'danger');
       return;
     }
   });
@@ -407,7 +407,7 @@ $(document).ready(function() {
     } else if (len > 4) {
       $('#btn_post').attr('disabled', false);
       $(this).removeClass('red');
-      if ($('#textarea').is(':focus') && !e.shiftKey && e.keyCode == 13) {
+      if ($('#textarea').is(':focus') && e.shiftKey && e.keyCode == 13) {
         submitStatusUpdate();
         e.preventDefault();
       }
@@ -588,7 +588,7 @@ $(document).ready(function() {
         success_callback,
         failure_callback,
         false,
-        true, // No available user to send tip at this moment
+        true // No available user to send tip at this moment
       );
 
     } else {

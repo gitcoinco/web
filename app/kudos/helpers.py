@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define helper functions.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -99,3 +99,73 @@ def reconcile_kudos_preferred_wallet(profile):
         profile.save()
 
     return profile.preferred_kudos_wallet
+
+
+def re_send_kudos_transfer(kt, override_with_xdai_okay):
+    from dashboard.utils import get_web3, has_tx_mined
+    from gas.utils import recommend_min_gas_price_to_confirm_in_time
+    from kudos.utils import kudos_abi
+    from web3 import Web3
+    from kudos.models import KudosTransfer
+    from django.utils import timezone
+
+    gas_clear_within_mins = 1
+    gas_multiplier = 1.2
+
+    if not kt.kudos_token_cloned_from.is_owned_by_gitcoin:
+        print(f'{kt.id} => not owned by gitcoin')
+        return
+
+    network = kt.network
+    if network == 'mainnet':
+        if kt.kudos_token_cloned_from.on_xdai and override_with_xdai_okay:
+            network = 'xdai'
+            kt.network = 'xdai'
+            kt.kudos_token_cloned_from = kt.kudos_token_cloned_from.on_xdai
+            kt.save()
+    w3 = get_web3(network)
+    kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
+    if network == 'xdai':
+        kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_XDAI)
+    kudos_owner_address = Web3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+    nonce = w3.eth.getTransactionCount(kudos_owner_address)
+
+    token_id = kt.kudos_token_cloned_from.token_id
+    address = kt.receive_address
+    if not address:
+        address = kt.recipient_profile.preferred_payout_address
+    if not address:
+        address = kt.recipient_profile.last_observed_payout_address
+    price_finney = kt.kudos_token_cloned_from.price_finney
+
+    try:
+
+        contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
+        gasPrice = int(gas_multiplier * float(recommend_min_gas_price_to_confirm_in_time(gas_clear_within_mins)) * 10**9)
+        if network == 'xdai':
+            gasPrice = 1 * 10**9
+        tx = contract.functions.clone(Web3.toChecksumAddress(address), token_id, 1).buildTransaction({
+            'nonce': nonce,
+            'gas': 500000,
+            'gasPrice': gasPrice,
+            'value': int(price_finney / 1000.0 * 10**18),
+        })
+
+        signed = w3.eth.account.signTransaction(tx, settings.KUDOS_PRIVATE_KEY)
+        txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        nonce += 1
+        print(f'sent tx nonce:{nonce} for kt:{kt.id} on {network}')
+        kt.txid = txid
+        kt.receive_txid = txid
+        kt.tx_status = 'pending'
+        kt.receive_tx_status = 'pending'
+        kt.network = network
+        kt.tx_time = timezone.now()
+        kt.receive_tx_time = timezone.now()
+        kt.save()
+        return txid
+
+    except Exception as e:
+        print(e)
+        error = "Could not redeem your kudos.  Please try again soon."
+    return None

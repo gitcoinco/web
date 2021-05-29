@@ -73,11 +73,7 @@ class MarketingMailTest(TestCase):
 
     @mock.patch("premailer.premailer.requests") 
     def test_funder_payout_reminder(self, mocked_requests):
-        with open(settings.BASE_DIR + '/assets/v2/css/lib/typography.css') as f:
-            mocked_requests.get.return_value.ok = True
-            mocked_requests.get.return_value.body = f.read()
-            mocked_requests.get.return_value.text = f.read()
-            html = funder_payout_reminder("user1@gitcoin.co", bounty=Bounty.objects.last(), github_username="samplegitcoindeveloper1", live=False)
-            assert 'There is a currently pending claim against this funded issue.' in html
-            assert "Please make sure you process them!" in html
-            assert 'foo' in html
+        html = funder_payout_reminder("user1@gitcoin.co", bounty=Bounty.objects.last(), github_username="samplegitcoindeveloper1", live=False)
+        assert 'There is a currently pending claim against this funded issue.' in html
+        assert "Please make sure you process them!" in html
+        assert 'foo' in html

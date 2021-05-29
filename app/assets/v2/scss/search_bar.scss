@@ -1,0 +1,103 @@
+.order_by {
+  color: #000;
+  font-weight: 600;
+  position: relative;
+  bottom: 2px;
+  text-align: right;
+}
+
+.search-area,
+.order_by {
+  display: inline-block;
+}
+
+.search-area {
+  position: relative;
+  margin-top: 15px;
+}
+
+.order_by .heading {
+  color: #5B5C5C;
+}
+
+
+.ui-selectmenu-button.ui-button {
+  width: 9rem;
+}
+
+.order_by .sort_option.selected {
+  border-bottom: 2px solid #000;
+}
+
+.filter-tags {
+  margin-top: 9px;
+  margin-bottom: 9px;
+}
+
+.filter-tag {
+  margin: 2px;
+  text-transform: lowercase;
+  background-color: #6F3FF5;
+  color: white !important;
+  border-radius: 2px;
+  font-size: 12px;
+  padding: 4px 5px;
+  display: inline-block;
+}
+
+.filter-tag i {
+  margin-left: 7px;
+  font-size: 9px;
+}
+
+.ui-autocomplete {
+  height: 33.33%;
+  overflow-y: scroll;
+}
+
+#results-count {
+  color: #666666;
+}
+
+.search_bar {
+  border-bottom: 1px solid #D8D8D8;
+}
+
+/* Remove IE default X */
+#keywords::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@media (max-width: 767.98px) {
+
+  .title-row {
+    display: inline-block;
+  }
+
+  .title-row .bounty-info {
+    margin-bottom: 10px;
+  }
+
+  .title-row .bounty-info #modifiers {
+    padding-left: 20px;
+  }
+
+  .search-area {
+    margin-bottom: 10px;
+    margin-left: 0;
+  }
+
+  .order_by {
+    margin-top: 0;
+  }
+
+  .order_by .sort_option:last-child {
+    margin-right: 0;
+  }
+
+  .search_bar div {
+    padding-right: 15px;
+  }
+}

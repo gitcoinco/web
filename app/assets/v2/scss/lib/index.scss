@@ -1,0 +1,15 @@
+// bootstrap and bootstrap-vue must be included within the same context
+@import 'bootstrap';
+
+@import 'bootstrap-vue/index';
+
+@import 'vue-select/vue-select';
+
+@import 'typography';
+
+@import 'fontawesome/fontawesome';
+
+@import "fontawesome/regular";
+@import "fontawesome/light";
+@import "fontawesome/solid";
+@import "fontawesome/brands";

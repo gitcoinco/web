@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant subminer management command.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -40,9 +40,9 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
 
     print(total_pot)
 
-    grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+    grants, contributions = fetch_data(clr_round, network)
 
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions,  clr_round)
 
     # calculate clr analytics output
     for grant in grants:
@@ -54,7 +54,8 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
             v_threshold,
             uv_threshold
         )
-        debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
+        # debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
+        debug_output.append([grant.id, grant.title, grant.positive_round_contributor_count, float(grant.amount_received_in_round), clr_amount])
 
     return debug_output
 
@@ -81,14 +82,14 @@ class Command(BaseCommand):
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
-                print(f"calculating CLR results for round: {clr_round.round_num}")
+                print(f"calculating CLR results for round: {clr_round.round_num} {clr_round.sub_round_slug}")
                 analytics = analytics_clr(
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
                 print(analytics)
-                print(f"finished CLR results for round: {clr_round.round_num}")
+                print(f"finished CLR results for round: {clr_round.round_num} {clr_round.sub_round_slug}")
 
         else:
             print("No active CLRs found")

@@ -1,11 +1,11 @@
 {% load humanize static i18n %}
 <div class="container-fluid pt-2 grants-search" id="content_navbar">
   <div class="container">
-    <form method="POST" id="search_form">
+    <form>
       {% csrf_token %}
 
       {% if is_staff %}
-        <div class="row font-caption font-weight-semibold">
+        <div class="row font-caption font-weight-semibold alpha-warning" v-if="credentials.is_staff">
           <div class="col-12">
             {% trans "[ Admin ] Choose Network :" %}
             <span class="network-container">
@@ -14,6 +14,7 @@
                 <option value="rinkeby">Rinkeby</option>
               </select>
             </span>
+            <button class="btn btn-sm btn-primary" @click="credentials.is_staff = !credentials.is_staff">see as user</button>
           </div>
         </div>
       {% endif %}
@@ -44,7 +45,7 @@
                 My Grants <i class="fas fa-external-link-alt"></i>
               </a>
             {% endif %}
-            <a data-type="type" target="new"href='/wiki/grants' class="mr-1 px-1 ">
+            <a data-type="type" target="new" href='/grants/quickstart' class="mr-1 px-1 ">
               FAQ <i class="fas fa-external-link-alt"></i>
             </a>
           </ul>

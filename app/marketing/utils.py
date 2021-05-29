@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -347,6 +347,62 @@ def handle_marketing_callback(_input, request):
                 group.user_set.add(request.user)
             else:
                 messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
+
+
+def generate_hackathon_email_intro(sponsors_prizes):
+    sponsor_names = [sponsor['sponsor'].name for sponsor in sponsors_prizes]
+    if (len(sponsors_prizes) > 2):
+        return  f"{', '.join(sponsor_names)} are"
+    elif (len(sponsors_prizes) == 2):
+        return  f"{' and '.join(sponsor_names)} are"
+    else:
+        return f"{sponsors_prizes[0]['sponsor'].name} is"
+
+
+def handle_bounty_feedback(bounty):
+    from dashboard.models import Bounty, BountyFulfillment
+
+    to_fulfiller = to_funder = False
+    fulfiller_previous_bounties = funder_previous_bounties = None
+    statuses = ['done', 'cancelled']
+
+    # identity
+    submitter_email = bounty.bounty_owner_email
+    is_fulfiller_and_funder_same_person = False
+    
+    # send email to the fulfiller
+    accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
+
+    if accepted_fulfillments.exists() and bounty.status == 'done':
+        accepted_fulfillment = accepted_fulfillments.first()
+        fulfiller_email = accepted_fulfillment.fulfiller_email
+        is_fulfiller_and_funder_same_person = (fulfiller_email == submitter_email)
+        fulfillment_pks = [
+            fulfillment.pk for fulfillment in BountyFulfillment.objects.filter(accepted=True) \
+                if fulfillment.fulfiller_email == fulfiller_email
+        ]
+        previous_bounties = Bounty.objects.current().filter(
+            idx_status__in=statuses,
+            fulfillments__pk__in=fulfillment_pks
+        ).exclude(pk=bounty.pk).distinct()
+        has_been_sent_before_to_persona = previous_bounties.count()
+        if not has_been_sent_before_to_persona and not is_fulfiller_and_funder_same_person:
+            to_fulfiller = True
+            fulfiller_previous_bounties = previous_bounties
+
+    # send email to the funder
+    previous_bounties = Bounty.objects.filter(
+        idx_status__in=statuses,
+        bounty_owner_email=submitter_email,
+        current_bounty=True
+    ).exclude(pk=bounty.pk).distinct()
+    has_been_sent_before_to_persona = previous_bounties.count()
+
+    if not has_been_sent_before_to_persona and not is_fulfiller_and_funder_same_person:
+        to_funder = True
+        funder_previous_bounties = previous_bounties
+
+    return (to_fulfiller, to_funder, fulfiller_previous_bounties, funder_previous_bounties)
 
 
 def func_name():

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the marketing models and related logic.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -418,6 +418,10 @@ class RoundupEmail(SuperModel):
 
 class UpcomingDate(SuperModel):
     """Define the upcoming date model"""
+    # These fields are meant to use for update UpcomingDate based on the icalendar updates
+    uid = models.CharField(max_length=255, null=True, blank=True)
+    last_modified = models.DateTimeField(db_index=True)
+    sequence = models.SmallIntegerField(default=0)
 
     title = models.CharField(max_length=255)
     date = models.DateTimeField(db_index=True)
@@ -435,3 +439,19 @@ class UpcomingDate(SuperModel):
 
     def __str__(self):
         return f"{self.title}"
+
+
+class EmailInventory(SuperModel):
+
+    path = models.CharField(max_length=255)
+    email_tag = models.CharField(max_length=255, blank=True)
+    type = models.CharField(max_length=255, blank=True)
+    reason = models.CharField(max_length=255, blank=True)
+    product = models.CharField(max_length=255, blank=True)
+    era = models.CharField(max_length=255, blank=True)
+    comment = models.TextField(max_length=255, default='', blank=True)
+    url = models.URLField(db_index=True, blank=True)
+    stats = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.path}"

@@ -1,0 +1,25 @@
+/* some little modules / playground ^^ */
+
+.hide {
+  display: none !important;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.mission-proof-of-receive-address {
+  margin: 2em 0em !important;
+  padding: 0.5em 1em !important;
+  margin-bottom: 4em !important;
+  text-align: left !important;
+
+  color: var(--aqua_light);
+  background-color: var(--smoke);
+
+  span {
+    font-family: "Space Mono", monospace;
+    font-size: 100%;
+    word-break: break-all;
+  }
+}

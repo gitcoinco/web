@@ -78,10 +78,10 @@
                     </div>
                   </div>
                 </div>
-                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'open'), fetchApplicants(bounty.id, key, 'open')" class="btn text-primary text-primary-hover hover-underline">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'open')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
                 <div class="d-flex flex-column justify-content-center" v-else>
-                  <a :href="`/bounty/change/${bounty.id}`" target="_blank" title="Feature bounty" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-star pr-2"></i> Feature Bounty</a>
-                  <a :href="`/users?skills=${bounty.keywords}`" target="_blank" title="Invite contributors" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-user pr-2"></i> Invite Contributors</a>
+                  <a :href="`/bounty/change/${bounty.id}`" target="_blank" title="Feature bounty" class="btn btn-primary btn-sm m-2"> <i class="fas fa-star pr-2"></i> Feature Bounty</a>
+                  <a :href="`/users?skills=${bounty.keywords}`" target="_blank" title="Invite contributors" class="btn btn-primary btn-sm m-2"> <i class="fas fa-user pr-2"></i> Invite Contributors</a>
                 </div>
               </div>
               <div v-show="isExpanded(key, 'open')">
@@ -107,18 +107,18 @@
                         </div>
                       </div>
                       <div class="d-flex flex-column flex-md-row" v-if="contributor.interest.pending">
-                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
-                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</a>
+                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" title="Approve worker" class="btn btn-sm btn-primary m-2"><i class="fas fa-check"></i> Accept</a>
+                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" title="Reject worker" class="btn btn-sm btn-outline-primary m-2"><i class="fas fa-times"></i> Reject</a>
                       </div>
                       <div v-else>
-                        <button @click="removeWorker(key, bounty.id, contributor.id, 'bounties', 'open')" class="btn btn-sm btn-outline-gc-blue m-2" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
+                        <button @click="removeWorker(key, bounty.id, contributor.id, 'bounties', 'open')" class="btn btn-sm btn-outline-primary m-2" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
                       </div>
                     </div>
                     <div class="comment-plan">[[ contributor.interest.issue_message]]</div>
                   </li>
                   <li class="text-center">
                     <p class="font-smaller-2 mb-2">Couldn’t find the right contributor?</p>
-                    <a :href="`/users?skills=${bounty.keywords}`" title="Go to user directory" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
+                    <a :href="`/users?skills=${bounty.keywords}`" title="Go to user directory" class="btn btn-outline-primary w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
                   </li>
                 </ul>
                 <loading-screen v-if="isLoading.openContrib"></loading-screen>
@@ -130,8 +130,8 @@
                 You don't have any open issues right now!
               </h4>
               <p class="text-black-70"><a title="Fund an issue" href="{% url 'new_funding' %}">Fund an Issue</a> or check out our <a href="{% url 'quickstart' %}">Funders Guide</a> to start getting contributors for your project! </p>
-              <p class="text-black-70">Have any question? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
-              <a href="{% url 'new_funding' %}" title="Fund an Issue" class="btn btn-gc-blue">Fund an Issue</a>
+              <p class="text-black-70">Have any questions? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
+              <a href="{% url 'new_funding' %}" title="Fund an Issue" class="btn btn-primary">Fund an Issue</a>
             </li>
           </ul>
           <loading-screen v-if="isLoading.open"></loading-screen>
@@ -174,10 +174,10 @@
                     </div>
                   </div>
                 </div>
-                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'started'), fetchApplicants(bounty.id, key, 'started')" class="btn blue">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'started')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'started'), fetchApplicants(bounty.id, key, 'started')" class="btn text-primary text-primary-hover hover-underline">View Applicants <i class="fa fa-fw" :class="isExpanded(key, 'started')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
                 <div class="d-flex flex-column justify-content-center" v-else>
-                  <a :href="`/bounty/change/${bounty.id}`" target="_blank" title="Feature bounty" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-star pr-2"></i> Feature Bounty</a>
-                  <a :href="`/users?skills=${bounty.keywords}`" target="_blank" title="Invite contributors" class="btn btn-gc-blue btn-sm m-2"> <i class="fas fa-user pr-2"></i> Invite Contributors</a>
+                  <a :href="`/bounty/change/${bounty.id}`" target="_blank" title="Feature bounty" class="btn btn-primary btn-sm m-2"> <i class="fas fa-star pr-2"></i> Feature Bounty</a>
+                  <a :href="`/users?skills=${bounty.keywords}`" target="_blank" title="Invite contributors" class="btn btn-primary btn-sm m-2"> <i class="fas fa-user pr-2"></i> Invite Contributors</a>
                 </div>
               </div>
               <div v-show="isExpanded(key, 'started')">
@@ -203,18 +203,18 @@
                         </div>
                       </div>
                       <div class="d-flex flex-column flex-md-row" v-if="contributor.interest.pending">
-                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2"><i class="fas fa-check"></i> Accept</a>
-                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2"><i class="fas fa-times"></i> Reject</a>
+                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=approve&worker=${contributor.handle}`" title="Approve worker" class="btn btn-sm btn-primary m-2"><i class="fas fa-check"></i> Accept</a>
+                        <a target="_blank" :href="`${bounty.absolute_url}?mutate_worker_action=reject&worker=${contributor.handle}`" title="Reject worker" class="btn btn-sm btn-outline-primary m-2"><i class="fas fa-times"></i> Reject</a>
                       </div>
                       <div v-else>
-                        <button @click="removeWorker(key, bounty.id, contributor.id, 'bounties', 'started')" class="btn btn-sm btn-outline-gc-blue m-2" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
+                        <button @click="removeWorker(key, bounty.id, contributor.id, 'bounties', 'started')" class="btn btn-sm btn-outline-primary m-2" title="Stop work" :disabled="key === disabledBtn">Stop Work</button>
                       </div>
                     </div>
                     <div class="comment-plan">[[ contributor.interest.issue_message]]</div>
                   </li>
                   <li class="text-center">
                     <p class="font-smaller-2 mb-2">Couldn’t find the right contributor?</p>
-                    <a :href="`/users?skills=${bounty.keywords}`" title="Go to user directory" class="btn btn-outline-gc-blue w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
+                    <a :href="`/users?skills=${bounty.keywords}`" title="Go to user directory" class="btn btn-outline-primary w-75 font-smaller-2 gc-letter-spacing">EXPLORE USER DIRECTORY</a>
                   </li>
                 </ul>
                 <loading-screen v-if="isLoading.startedContrib"></loading-screen>
@@ -264,7 +264,7 @@
                     </div>
                   </div>
                 </div>
-                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'submitted'), fetchApplicants(bounty.id, key, 'submitted')" class="btn blue">View Submissions <i class="fa fa-fw" :class="isExpanded(key, 'submitted')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
+                <button v-if="bounty.users_count > 0" @click="toggleCollapse(key, 'submitted'), fetchApplicants(bounty.id, key, 'submitted')" class="btn text-primary text-primary-hover hover-underline">View Submissions <i class="fa fa-fw" :class="isExpanded(key, 'submitted')? 'fa-chevron-up': 'fa-chevron-down'"></i></button>
               </div>
               <div v-show="isExpanded(key, 'submitted')">
                 <ul class="list-unstyled m-5">
@@ -283,7 +283,7 @@
                           </div>
                         </div>
                       </div>
-                      <a :href="`/issue/payout?pk=${bounty.id}`" title="Payout bounty" class="btn btn-sm btn-gc-blue m-2">Payout bounty</a>
+                      <a :href="`/issue/payout?pk=${bounty.id}`" title="Payout bounty" class="btn btn-sm btn-primary m-2">Payout bounty</a>
                     </div>
                     <div class="comment-plan"> <a :href="contributor.fulfiller_metadata.data.payload.fulfiller.githubPRLink" title="Go to PR">[[ contributor.fulfiller_metadata.data.payload.fulfiller.githubPRLink ]]</a></div>
                   </li>
@@ -335,7 +335,7 @@
                   </div>
                 </div>
                 <div class="d-flex flex-column justify-content-center">
-                  <a :href="bounty.absolute_url" title="Extend bounty expiration" class="btn btn-sm btn-gc-blue m-2"> <i class="fas fa-clock"></i> Extend Expiration</a>
+                  <a :href="bounty.absolute_url" title="Extend bounty expiration" class="btn btn-sm btn-primary m-2"> <i class="fas fa-clock"></i> Extend Expiration</a>
                 </div>
               </div>
             </li>
@@ -354,7 +354,7 @@
         <p>
           If you also want to check your finished and cancelled bounties, you can find them here:
         </p>
-        <a class="btn btn-gc-blue" href="/explorer?bounty_filter=createdByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
+        <a class="btn btn-primary" href="{% url 'explorer' %}?bounty_filter=createdByMe&network=mainnet&order_by=-web3_created">Check my bounties in the explorer</a>
       </div>
     </div>
   </section>

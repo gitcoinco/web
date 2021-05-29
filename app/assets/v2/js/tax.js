@@ -2,7 +2,7 @@ var locationComponent = {};
 var addressComponent = '';
 const save_tax_settings = function() {
   if (!document.contxt.github_handle) {
-    _alert('No profile', 'error');
+    _alert('No profile', 'danger');
   }
   const formData = new FormData();
 
@@ -26,10 +26,10 @@ const save_tax_settings = function() {
     if (response.status == 200) {
       _alert(response.message, 'info');
     } else {
-      _alert(response.message, 'error');
+      _alert(response.message, 'danger');
     }
   }).fail(function(error) {
-    _alert(error, 'error');
+    _alert(error, 'danger');
   });
 };
 
@@ -70,7 +70,7 @@ function initPlacecomplete() {
 
   autocompleteAddress.addListener('place_changed', function() {
     let address = autocompleteAddress.getPlace();
-    
+
     addressComponent = address.formatted_address;
   });
 }

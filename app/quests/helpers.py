@@ -97,6 +97,11 @@ def get_base_quest_view_params(user, quest):
     profile = user.profile if user.is_authenticated else None
     attempts = quest.attempts.filter(profile=profile) if profile else QuestAttempt.objects.none()
     is_owner = quest.creator.pk == user.profile.pk if user.is_authenticated else False
+    title = "Play the *" + quest.title + "* Gitcoin Quest"
+    if quest.kudos_reward:
+        title += f" and win a *{quest.kudos_reward.humanized_name}* Kudos"
+    if quest.reward_tip:
+        title = f"[WIN {quest.reward_tip.value_true} {quest.reward_tip.tokenName}] " + title
     params = {
         'quest': quest,
         'hide_col': True,
@@ -105,7 +110,7 @@ def get_base_quest_view_params(user, quest):
         'is_owner': is_owner,
         'is_owner_or_staff': is_owner or user.is_staff,
         'body_class': 'quest_battle',
-        'title': "Play the *" + quest.title + (f"* Gitcoin Quest and win a *{quest.kudos_reward.humanized_name}* Kudos" if quest.kudos_reward else ""),
+        'title': title,
         'avatar_url': quest.avatar_url_png,
         'card_desc': quest.description,
         'seconds_per_question': quest.game_schema.get('seconds_per_question', 30),
@@ -172,6 +177,39 @@ def process_start(request, quest):
     record_quest_activity(quest, request.user.profile, 'played_quest')
 
 
+def get_or_create_prize_url(quest, profile):
+    tweet_url = f"{settings.BASE_URL}{quest.url}".replace('gitcoin.co//', 'gitcoin.co/') #total hack but prevents https://github.com/gitcoinco/web/issues/5298#issuecomment-545657239
+    reward = f"{quest.kudos_reward.humanized_name} Kudos" if quest.kudos_reward else f"{quest.reward_tip.value_true} {quest.reward_tip.tokenName}"
+    add_params = f"?cb=ref:{profile.ref_code}&tweet_url={tweet_url}&tweet=I just won a {reward} by beating the '{quest.title} Quest' on @gitcoin quests."
+    if quest.reward_tip:
+        return f"{quest.reward_tip.receive_url}{add_params}"
+    else:
+        btc = None
+        btcs = BulkTransferCoupon.objects.filter(
+            token=quest.kudos_reward,
+            tag='quest',
+            metadata__recipient=profile.pk)
+        if btcs.exists():
+            btc = btcs.first()
+        else:
+            btc = BulkTransferCoupon.objects.create(
+                token=quest.kudos_reward,
+                tag='quest',
+                num_uses_remaining=1,
+                num_uses_total=1,
+                current_uses=0,
+                secret=random.randint(10**19, 10**20),
+                comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
+                sender_profile=get_profile('gitcoinbot'),
+                metadata={
+                    'recipient': profile.pk,
+                },
+            )
+        prize_url = f"{btc.url}{add_params}"
+        return prize_url
+
+
+
 def process_win(request, qa):
     """
     Processes the win on behalf of the user
@@ -184,30 +222,7 @@ def process_win(request, qa):
     was_already_beaten = quest.is_beaten(request.user)
     first_time_beaten = not was_already_beaten
     record_quest_activity(quest, request.user.profile, 'beat_quest')
-    btcs = BulkTransferCoupon.objects.filter(
-        token=quest.kudos_reward,
-        tag='quest',
-        comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
-        metadata__recipient=request.user.profile.pk)
-    btc = None
-    if btcs.exists():
-        btc = btcs.first()
-    else:
-        btc = BulkTransferCoupon.objects.create(
-            token=quest.kudos_reward,
-            tag='quest',
-            num_uses_remaining=1,
-            num_uses_total=1,
-            current_uses=0,
-            secret=random.randint(10**19, 10**20),
-            comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
-            sender_profile=get_profile('gitcoinbot'),
-            metadata={
-                'recipient': request.user.profile.pk,
-            },
-            make_paid_for_first_minutes=1,
-            )
-    prize_url = tweetify_prize_url(btc.url, quest, request.user)
+    prize_url = get_or_create_prize_url(quest, request.user.profile)
     qa.success = True
     qa.save()
     if not qa.quest.visible:

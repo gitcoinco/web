@@ -1,6 +1,6 @@
 {% extends 'transaction/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -64,7 +64,7 @@
       <input type="text" class="form-control" id="numClonesAllowedInput" aria-describedby="emailHelp" placeholder="Enter number" value="10">
     </div>
     <div class="d-flex justify-content-center">
-      <a href="{% url "send_tip_2" %}" id="neweth" class="btn btn-gc-purple">{% trans "Mint Kudos" %} <span class="emoji">💰</span></a>
+      <a href="{% url "send_tip_2" %}" id="neweth" class="btn btn-dark">{% trans "Mint Kudos" %} <span class="emoji">💰</span></a>
     </div>
   </form>
 </section>

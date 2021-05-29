@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,159 +14,165 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    {% bundle css file quickstart %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+    {% endbundle %}
   </head>
   <body class="interior {{active}} quickstart g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'shared/nav.html' %}
-    </div>
-    <div class="container-fluid content my-3 text-left">
-      <h4 class="title text-center">{% trans "Funder Guide" %}</h4>
-      <div class="dont-show text-center col-12">
-        <div class="checkbox_container">
-          <input name="dontshow" id="dontshow" type="checkbox" />
-          <span class="checkbox"></span>
-          <div class="filter-label display-inline">
-            <label for=dontshow>{% trans "Don't show again" %}</label>
-          </div>
-        </div>
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'shared/nav.html' %}
       </div>
-      <div class="row col-12 offset-xl-2 col-xl-8 mt-2 mb-5 pb-4 steps-container">
-        <div class="col-md-4 col-sm-12 my-auto text-center p-2 image-container">
-          <img src="{% static 'v2/images/quickstart-box.svg' %}" />
-        </div>
-        <div class="col-md-7 col-sm-12 p-5 steps-list">
-          <ol class="font-subheader list-unstyled">
-            <li>{% trans "1) Create a Github Issue, you'll need the issue URL" %}</li>
-            <li>{% trans "2) Select the type of issue to fund" %}</li>
-            <li>{% trans '3) Complete the form and press "Fund Issue"' %}</li>
-            <li>{% trans "4) Confirm the transaction in your web3 wallet" %}</li>
-          </ol>
-          <p class="mb-4">
-            {% trans "Once confirmed on blockchain, your bounty is posted to Gitcoin! Wait for developers across the world to discover your bounty and start working on your issue." %}
-          </p>
-          <a href="#" class="show_video">
-            <i class="far fa-play-circle"></i>
-            <span >{% trans "Watch 90 second video" %}</span>
-          </a>
-        </div>
-        <div class="col-12 text-center">
-          <a href="{% url 'new_funding' %}" class="btn btn-gc-blue font-subheader font-weight-semibold px-5 py-3 shadow-none text-white btn-closeguide">
-            {% trans "Ok, I'm ready" %}
-          </a>
-        </div>
-      </div>
-
-      <div class="bounty-tips pt-3 pb-5">
-        <h4 class="subheading font-weight-semibold my-4 pb-3 text-center">
-          {% trans "Creating Great Bounties" %}
-        </h4>
-
-        <div class="row mx-0 mx-lg-auto col-12 col-lg-10 offset-xl-2 col-xl-8 mt-2 bounty-tips mb-3">
-          {% for bounty_tip in bounty_tips %}
-            <div class="col-12 col-lg-6 px-xl-5 mb-4 row mx-0 mx-lg-auto">
-              <div class="col-12 card row mx-0">
-                <div class="col-3 col-xl-2 text-right my-auto">
-                  <img src="{{ bounty_tip.img }}" alt="{{ bounty_tip.title }}" />
-                </div>
-                <div class="col-9 col-xl-10 text-left my-auto">
-                  <h5 class="font-weight-bolder title">{{ bounty_tip.title }}</h5>
-                  <p class="font-subheader">{{ bounty_tip.description |safe }}</p>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 issuetypes-container text-center mx-0 mx-lg-auto">
-        <h4 class="subheading font-weight-semibold mt-5 mb-4">
-          {% trans "Other Repo Maintainers are funding these types of issues" %}
-        </h4>
-
-        {% for issue_type in good_issue_types %}
-          <div class="row col-12 col-sm-6 col-lg-4 px-xl-5 mt-4 pt-3 mx-0">
-            <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right">
-              <img src="{{ issue_type.img }}" alt="{{ issue_type.title }}" />
-            </div>
-            <div class="col-8 col-lg-12 col-xl-8 text-left text-lg-center text-xl-left">
-              <h5 class="font-weight-bolder">{{ issue_type.title }}</h5>
-              <p class="font-subheader">{{ issue_type.description }}</p>
-              {% if issue_type.good_first_bounty %}
-                <p class="font-weight-bold font-caption">
-                  <span class="first-bounty">Good First Bounty</span>
-                </p>
-              {% endif %}
-            </div>
-          </div>
-        {% endfor %}
-
-        {% if activities|length %}
-          <div class="container-fluid py-5 px-lg-5 activity">
-            <div class="bounty-activity activity_stream row py-5 col-12">
-              <h3 class="subheading font-weight-semibold mt-2 mb-4">Latest Bounties Created</h3>
-              <div class="container infinite-container" id="activity_stream">
-                <div class="mb-4 col-12 text-center text-md-left">
-                  {% for row in activities %}
-                    {% include 'shared/activity.html' %}
-                  {% endfor %}
-                </div>
+        <div class="content my-3 text-left">
+          <h4 class="title text-center">{% trans "Funder Guide" %}</h4>
+          <div class="dont-show text-center col-12">
+            <div class="checkbox_container">
+              <input name="dontshow" id="dontshow" type="checkbox" />
+              <span class="checkbox"></span>
+              <div class="filter-label display-inline">
+                <label for=dontshow>{% trans "Don't show again" %}</label>
               </div>
             </div>
           </div>
-        {% endif %}
-
-        <h4 class="subheading font-weight-semibold mt-5 mb-4">
-          {% blocktrans %}In our experience, the following are
-          <span class="red-text">not</span> good candidates for bounties:{% endblocktrans %}
-        </h4>
-
-        {% for issue_type in bad_issue_types %}
-          <div class="row col-12 col-md-4 px-lg-5 mt-4 pt-3 mx-0 mx-lg-auto">
-            <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right">
-              <img src="{{ issue_type.img }}" alt="{{ issue_type.title }}" />
+          <div class="row col-12 offset-xl-2 col-xl-8 mt-2 mb-5 pb-4 steps-container">
+            <div class="col-md-4 col-sm-12 my-auto text-center p-2 image-container">
+              <img src="{% static 'v2/images/quickstart-box.svg' %}" />
             </div>
-            <div class="col-8 col-lg-12 col-xl-8 text-left text-lg-center text-xl-left">
-              <h5 class="font-weight-bolder">{{ issue_type.title }}</h5>
-              <p class="font-subheader">{{ issue_type.description }}</p>
+            <div class="col-md-7 col-sm-12 p-5 steps-list">
+              <ol class="font-subheader list-unstyled">
+                <li>{% trans "1) Create a Github Issue, you'll need the issue URL" %}</li>
+                <li>{% trans "2) Select the type of issue to fund" %}</li>
+                <li>{% trans '3) Complete the form and press "Fund Issue"' %}</li>
+                <li>{% trans "4) Confirm the transaction in your web3 wallet" %}</li>
+              </ol>
+              <p class="mb-4">
+                {% trans "Once confirmed on blockchain, your bounty is posted to Gitcoin! Wait for developers across the world to discover your bounty and start working on your issue." %}
+              </p>
+              <a href="#" class="show_video">
+                <i class="far fa-play-circle"></i>
+                <span >{% trans "Watch 90 second video" %}</span>
+              </a>
+            </div>
+            <div class="col-12 text-center">
+              <a href="{% url 'new_funding' %}" class="btn btn-primary btn-lg text-white px-5 py-3 btn-closeguide">
+                {% trans "Ok, I'm ready" %}
+              </a>
             </div>
           </div>
-        {% endfor %}
 
-        <p class="text-center font-subheader w-100 font-weight-semibold mt-5">
-          {% trans "If you're unsure, please reach out to a Gitcoin Core Team member on" %}
-          <a href="{% url 'slack' %}">Slack</a>
-        </p>
+          <div class="bounty-tips pt-3 pb-5">
+            <h4 class="subheading font-weight-semibold my-4 pb-3 text-center">
+              {% trans "Creating Great Bounties" %}
+            </h4>
+
+            <div class="row mx-0 mx-lg-auto col-12 col-lg-10 offset-xl-2 col-xl-8 mt-2 bounty-tips mb-3">
+              {% for bounty_tip in bounty_tips %}
+                <div class="col-12 col-lg-6 px-xl-5 mb-4 row mx-0 mx-lg-auto">
+                  <div class="col-12 card row mx-0" style="min-height: 170px">
+                    <div class="col-3 col-xl-2 text-right my-auto pt-3 px-md-0 px-lg-0 py-md-0 py-lg-0">
+                      <img src="{{ bounty_tip.img }}" alt="{{ bounty_tip.title }}" />
+                    </div>
+                    <div class="col-9 col-xl-10 text-left my-auto">
+                      <h5 class="font-weight-bolder title">{{ bounty_tip.title }}</h5>
+                      <p class="font-subheader">{{ bounty_tip.description |safe }}</p>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 issuetypes-container text-center mx-0 mx-lg-auto">
+            <h4 class="subheading font-weight-semibold mt-5 mb-4">
+              {% trans "Other Repo Maintainers are funding these types of issues" %}
+            </h4>
+
+            {% for issue_type in good_issue_types %}
+              <div class="row col-12 col-sm-6 col-lg-4 px-xl-5 mt-4 pt-3 mx-0">
+                <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right px-0">
+                  <img src="{{ issue_type.img }}" alt="{{ issue_type.title }}" />
+                </div>
+                <div class="col-8 col-lg-12 col-xl-8 text-left text-lg-center text-xl-left">
+                  <h5 class="font-weight-bolder">{{ issue_type.title }}</h5>
+                  <p class="font-subheader">{{ issue_type.description }}</p>
+                  {% if issue_type.good_first_bounty %}
+                    <p class="font-weight-bold font-caption">
+                      <span class="first-bounty pr-0">Good First Bounty</span>
+                    </p>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+
+            {% if activities|length %}
+              <div class="container-fluid py-5 px-lg-5 activity">
+                <div class="bounty-activity activity_stream row py-5 col-12">
+                  <h3 class="subheading font-weight-semibold mt-2 mb-4">Latest Bounties Created</h3>
+                  <div class="container infinite-container px-0" id="activity_stream">
+                    <div class="mb-4 col-12 text-center text-md-left">
+                      {% for row in activities %}
+                        {% include 'shared/activity.html' %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            <h4 class="subheading font-weight-semibold mt-5 mb-4">
+              {% blocktrans %}In our experience, the following are
+              <span class="red-text">not</span> good candidates for bounties:{% endblocktrans %}
+            </h4>
+
+            {% for issue_type in bad_issue_types %}
+              <div class="row col-12 col-md-4 px-lg-5 mt-4 pt-3 mx-0 mx-lg-auto">
+                <div class="col-4 col-lg-12 col-xl-4 text-right text-lg-center text-xl-right">
+                  <img src="{{ issue_type.img }}" alt="{{ issue_type.title }}" />
+                </div>
+                <div class="col-8 col-lg-12 col-xl-8 text-left text-lg-center text-xl-left">
+                  <h5 class="font-weight-bolder">{{ issue_type.title }}</h5>
+                  <p class="font-subheader">{{ issue_type.description }}</p>
+                </div>
+              </div>
+            {% endfor %}
+
+            <p class="text-center font-subheader w-100 font-weight-semibold mt-5">
+              {% trans "If you're unsure, please reach out to a Gitcoin Core Team member on" %}
+              <a href="mailto:support@gitcoin.co">email</a>
+            </p>
+          </div>
+        </div>
+
+        {% include 'shared/analytics.html' %}
+        {% include 'shared/footer_scripts.html' with slim=1 %}
+        {% include 'shared/footer.html' %}
       </div>
+
+      <script src="/dynamic/js/tokens_dynamic.js"></script>
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+      <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
+      <script src="{% static "v2/js/activity.js" %}"></script>
+      {% if keywords %}
+        <script>
+          document.keywords = {{ keywords|safe }};
+        </script>
+      {% endif %}
+      <style type="text/css">
+        .activity_main .activity-tags {
+          display: none;
+        }
+      </style>
     </div>
-
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-
-    <script src="/dynamic/js/tokens_dynamic.js"></script>
-    <script src="{% static "v2/js/tokens.js" %}"></script>
-    <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
-    {% if keywords %}
-      <script>
-        document.keywords = {{ keywords|safe }};
-      </script>
-    {% endif %}
-  <style type="text/css">
-    .activity_main .activity-tags {
-      display: none;
-    }
-  </style>
   </body>

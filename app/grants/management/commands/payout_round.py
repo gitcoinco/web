@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -29,8 +29,7 @@ from dashboard.abi import erc20_abi as abi
 from dashboard.models import Activity, Earning, Profile
 from dashboard.utils import get_tx_status, get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from grants.models import CLRMatch, Contribution, Grant, Subscription
-from grants.views import clr_round  # TODO-SELF-SERVICE: REMOVE THIS
+from grants.models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
 from marketing.mails import (
     grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
 )
@@ -47,7 +46,19 @@ class Command(BaseCommand):
         parser.add_argument('what',
             default='finalize',
             type=str,
-            help="what do we do? (finalize, payout_test, payout_dai, prepare_final_payout)"
+            help="what do we do? (finalize, payout_test, prepare_final_payout, payout_dai)"
+            )
+
+        parser.add_argument('clr_pks',
+            default='',
+            type=str,
+            help="what CLR PKs should we payout? (eg 1,2,3,4)"
+            )
+
+        parser.add_argument('clr_round',
+            default='',
+            type=int,
+            help="what CLR round number is this? eg 7"
             )
 
 
@@ -61,16 +72,29 @@ class Command(BaseCommand):
         from_pk = settings.GRANTS_PAYOUT_PRIVATE_KEY
         DECIMALS = 18
         what = options['what']
+        clr_round = options['clr_round']
         DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7'
-        CLR_TOKEN_ADDRESS = '0xed8306f10a5aa548d09c1d9c622f3f58dd9f2144' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
+        CLR_TOKEN_ADDRESS = '0xe4101d014443af2b7f6f9f603e904adc9faf0de5' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
 
         # get data
+        clr_pks = options['clr_pks'].split(',')
+        gclrs = GrantCLR.objects.filter(pk__in=clr_pks)
+        pks = []
+        for gclr in gclrs:
+            pks += gclr.grants.values_list('pk', flat=True)
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
-        grants = Grant.objects.filter(active=True, network='mainnet', link_to_new_grant__isnull=True)
+        grants = Grant.objects.filter(active=True, network='mainnet', link_to_new_grant__isnull=True, pk__in=pks)
+        print(f"got {grants.count()} grants")
 
         # finalize rankings
         if what == 'finalize':
-            total_owed_grants = sum(grant.clr_match_estimate_this_round for grant in grants)
+            total_owed_grants = 0
+            for grant in grants:
+                try:
+                    for gclr in grant.clr_calculations.filter(grantclr__in=gclrs, latest=True):
+                        total_owed_grants += gclr.clr_prediction_curve[0][1]
+                except:
+                    pass
             total_owed_matches = sum(sm.amount for sm in scheduled_matches)
             print(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
             print(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
@@ -79,7 +103,7 @@ class Command(BaseCommand):
             if user_input != 'y':
                 return
             for grant in grants:
-                amount = grant.clr_match_estimate_this_round
+                amount = sum(ele.clr_prediction_curve[0][1] for ele in grant.clr_calculations.filter(grantclr__in=gclrs, latest=True))
                 has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
                 if not amount:
                     continue

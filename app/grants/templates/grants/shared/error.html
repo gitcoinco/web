@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -63,7 +63,7 @@
           <p class="font-title text"> {{ subtext|safe }}</p>
         </div>
         <div class="col-12 mt-0">
-          <a class="button-lg btn-gc btn-gc-blue py-3 px-5" href="{% url 'grants:details' grant.id grant.slug %}">
+          <a class="btn-lg btn-primary py-3 px-5" href="{% url 'grants:details' grant.id grant.slug %}">
             {% if button_txt %}
               {{ button_txt }}
               <i class="fas fa-chevron-right ml-2"></i>

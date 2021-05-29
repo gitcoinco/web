@@ -28,6 +28,11 @@ Vue.mixin({
         return;
       }
 
+      if (url.indexOf('/pull/') > 0) {
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url and not a PR');
+        return;
+      }
+
       let ghIssueUrl = new URL(url);
 
       vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
@@ -67,12 +72,20 @@ Vue.mixin({
         vm.tokens = response;
         vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
-        vm.injectProvider(vm.form.token.symbol);
 
       }).catch((err) => {
         console.log(err);
       });
 
+    },
+    getBinanceSelectedAccount: async function() {
+      let vm = this;
+
+      try {
+        vm.form.funderAddress = await binance_utils.getSelectedAccount();
+      } catch (error) {
+        vm.funderAddressFallback = true;
+      }
     },
     getAmount: function(token) {
       let vm = this;
@@ -91,37 +104,6 @@ Vue.mixin({
         console.log(err);
       });
     },
-    injectProvider: function(token) {
-      let vm = this;
-      const chainId = vm.chainId;
-
-      if (!token || !chainId) {
-        return;
-      }
-
-      switch (chainId) {
-        case '58': {
-          let polkadot_endpoint;
-
-          if (token == 'KSM') {
-            polkadot_endpoint = KUSAMA_ENDPOINT;
-          } else if (token == 'DOT') {
-            polkadot_endpoint = POLKADOT_ENDPOINT;
-          }
-
-          polkadot_utils.connect(polkadot_endpoint).then(res =>{
-            console.log(res);
-            polkadot_extension_dapp.web3Enable('gitcoin');
-          }).catch(err => {
-            console.log(err);
-          });
-          break;
-        }
-
-        default:
-          break;
-      }
-    },
     calcValues: function(direction) {
       let vm = this;
 
@@ -139,11 +121,26 @@ Vue.mixin({
 
       vm.form.keywords.push(item);
     },
+    validateBtc: function() {
+      let vm = this;
+
+      const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
+      const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
+      const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
+      const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
+
+      if (valid_legacy || valid_segwit) {
+        return true;
+      }
+
+      return false;
+    },
     checkForm: async function(e) {
       let vm = this;
 
       vm.submitted = true;
       vm.errors = {};
+
 
       if (!vm.form.keywords.length) {
         vm.$set(vm.errors, 'keywords', 'Please select the prize keywords');
@@ -162,6 +159,10 @@ Vue.mixin({
       }
       if (!vm.form.funderAddress) {
         vm.$set(vm.errors, 'funderAddress', 'Fill the owner wallet address');
+      }
+      // validate BTC address
+      if (vm.chainId == 0 && !vm.validateBtc()) {
+        vm.$set(vm.errors, 'funderAddress', 'Please enter a valid BTC address');
       }
       if (!vm.form.project_type) {
         vm.$set(vm.errors, 'project_type', 'Select the project type');
@@ -188,8 +189,30 @@ Vue.mixin({
           // ethereum
           type = 'web3_modal';
           break;
+        case '30':
+          // rsk
+          type = 'rsk_ext';
+          break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
+        case '59':
         case '58':
+          // 58 - polkadot, 59 - kusama
           type = 'polkadot_ext';
+          break;
+        case '56':
+          // binance
+          type = 'binance_ext';
+          break;
+        case '1000':
+          // harmony
+          type = 'harmony_ext';
+          break;
+        case '1001':
+          // algorand
+          type = 'algorand_ext';
           break;
         case '666':
           // paypal
@@ -198,6 +221,7 @@ Vue.mixin({
         case '0': // bitcoin
         case '61': // ethereum classic
         case '102': // zilliqa
+        case '600': // filecoin
         case '42220': // celo mainnet
         case '44786': // celo alfajores tesnet
         case '717171': // other
@@ -224,7 +248,19 @@ Vue.mixin({
         await vm.getUser(null, params.get('reserved'), true);
       }
 
+      let url;
 
+      if (params.has('url')) {
+        url = params.get('url');
+        vm.form.issueUrl = url;
+        vm.getIssueDetails(url);
+      }
+
+      if (params.has('source')) {
+        url = params.get('source');
+        vm.form.issueUrl = url;
+        vm.getIssueDetails(url);
+      }
     },
     showQuickStart: function(force) {
       let quickstartDontshow = localStorage['quickstart_dontshow'] ? JSON.parse(localStorage['quickstart_dontshow']) : false;
@@ -234,14 +270,16 @@ Vue.mixin({
           .then(function(response) {
             return response.text();
           }).then(function(html) {
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(html, 'text/html');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const guide = doc.querySelector('.btn-closeguide');
 
             doc.querySelector('.show_video').href = 'https://www.youtube.com/watch?v=m1X0bDpVcf4';
             doc.querySelector('.show_video').target = '_blank';
-            doc.querySelector('.btn-closeguide').dataset.dismiss = 'modal';
 
-            let docArticle = doc.querySelector('.content').innerHTML;
+            guide.dataset.dismiss = 'modal';
+
+            const docArticle = doc.querySelector('.content').innerHTML;
             const content = $.parseHTML(
               `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-xl" style="max-width:95%">
@@ -253,7 +291,7 @@ Vue.mixin({
                     </div>
                     ${docArticle}
                     <div class="col-12 my-4 d-flex justify-content-around">
-                      <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Close</button>
                     </div>
                   </div>
                 </div>
@@ -356,20 +394,20 @@ Vue.mixin({
       }
       return new Promise(resolve =>
         web3.eth.sendTransaction({
-          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          to: '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
           from: selectedAccount,
           value: web3.utils.toWei(String(vm.ethFeaturedPrice), 'ether'),
           gas: web3.utils.toHex(318730),
           gasLimit: web3.utils.toHex(318730)
         }, function(error, result) {
           if (error) {
-            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'danger');
             console.log(error);
           } else {
             saveAttestationData(
               result,
               vm.ethFeaturedPrice,
-              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
               'featuredbounty'
             );
             resolve();
@@ -379,7 +417,7 @@ Vue.mixin({
     },
     payFees: async function() {
       let vm = this;
-      const toAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      const toAddress = '0x88c62f1695DD073B43dB16Df1559Fda841de38c6';
 
       if (!provider) {
         onConnect();
@@ -397,13 +435,13 @@ Vue.mixin({
             console.log(txnHash, errors);
 
             if (errors) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
             } else {
               vm.form.feeTxId = txnHash;
               saveAttestationData(
                 txnHash,
                 vm.totalAmount.totalFee,
-                '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+                '0x88c62f1695DD073B43dB16Df1559Fda841de38c6',
                 'bountyfee'
               );
               resolve();
@@ -417,7 +455,7 @@ Vue.mixin({
           token_contract.methods.transfer(toAddress, web3.utils.toHex(amountAsString)).send({from: selectedAccount},
             function(error, txnId) {
               if (error) {
-                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
               } else {
                 resolve();
               }
@@ -534,16 +572,16 @@ Vue.mixin({
           console.log('success', response);
           window.location.href = response.bounty_url;
         } else if (response.status == 304) {
-          _alert('Bounty already exists for this github issue.', 'error');
+          _alert('Bounty already exists for this github issue.', 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         } else {
-          _alert(`Unable to create a bounty. ${response.message}`, 'error');
+          _alert(`Unable to create a bounty. ${response.message}`, 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         }
 
       }).catch((err) => {
         console.log(err);
-        _alert('Unable to create a bounty. Please try again later', 'error');
+        _alert('Unable to create a bounty. Please try again later', 'danger');
       });
 
     }
@@ -622,7 +660,6 @@ Vue.mixin({
       const vm = this;
       let result;
 
-      vm.form.token = {};
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
@@ -630,7 +667,6 @@ Vue.mixin({
           return String(item.chainId) === vm.chainId;
         });
       }
-      vm.$set(vm.form, 'token', result[0]);
       return result;
     }
   },
@@ -648,6 +684,10 @@ Vue.mixin({
     chainId: async function(val) {
       if (!provider && val === '1') {
         await onConnect();
+      }
+
+      if (val === '56') {
+        this.getBinanceSelectedAccount();
       }
 
       this.getTokens();
@@ -668,6 +708,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
+        funderAddressFallback: false,
         checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': true, 'hiringRightNow': false },
         expandedGroup: {'reserve': [], 'featuredBounty': []},
         errors: {},
@@ -675,7 +716,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         bountyFee: document.FEE_PERCENTAGE,
         orgSelected: '',
         subscriptions: document.subscriptions,
-        subscriptionActive: document.subscriptions.length,
+        subscriptionActive: document.subscriptions.length || document.contxt.is_pro,
         coinValue: null,
         usdFeaturedPrice: 12,
         ethFeaturedPrice: null,

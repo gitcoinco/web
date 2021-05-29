@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : <<'END'
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -56,14 +56,17 @@ find . -name \*.pyc -delete
 
 if [ "$UPDATE_CRONTAB" ] && [ "$JOBS_NODE" ]; then
     echo "- updating crontab"
-    crontab scripts/crontab
+    crontab scripts/$CRONTABFILE
 fi
 
 mkdir -p /home/ubuntu/gitcoin/coin/app/static/wallpapers
 
 cd app || echo "Cannot find app directory!"
+
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
+    python3 manage.py bundle;
+    yarn run build;
     python3 manage.py collectstatic --noinput -i other;
 fi
 
@@ -83,14 +86,14 @@ fi
 # let gunicorn know its ok to restart
 if ! [ "$JOBS_NODE" ]; then
     if ! [ "$CELERY_NODE"  ]; then
-      echo "- gunicorn"
-      for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
-      sudo kill -1 $pid
-      sleep 1.5
-      done
+        echo "- gunicorn"
+        for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
+        sudo kill -1 $pid
+        sleep 1.5
+        done
     else
-      echo "- celery"
-      sudo systemctl restart celery.service
+        echo "- celery"
+        sudo systemctl restart celery.service
     fi
 fi
 
@@ -104,6 +107,9 @@ fi
 # ping google
 cd ~/gitcoin/coin || echo "Cannot find coin directory!"
 bash scripts/run_management_command.bash ping_google https://gitcoin.co/sitemap.xml
+
+# set datetime of the server to prevent
+sudo date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"
 
 if [ "$ENV" = "prod" ] && [ "$JOBS_NODE" ]; then
     # Handle sentry deployment

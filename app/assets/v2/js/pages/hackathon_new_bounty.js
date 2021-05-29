@@ -54,13 +54,21 @@ Vue.mixin({
         vm.tokens = response;
         vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
-        vm.injectProvider(vm.form.token.symbol);
 
       }).catch((err) => {
         console.log(err);
         // vm.errorIssueDetails = err.responseJSON.message;
       });
 
+    },
+    getBinanceSelectedAccount: async function() {
+      let vm = this;
+
+      try {
+        vm.form.funderAddress = await binance_utils.getSelectedAccount();
+      } catch (error) {
+        vm.funderAddressFallback = true;
+      }
     },
     getAmount: function(token) {
       let vm = this;
@@ -78,38 +86,6 @@ Vue.mixin({
       }).catch((err) => {
         console.log(err);
       });
-    },
-    injectProvider: function(token) {
-      let vm = this;
-      const chainId = vm.chainId;
-
-      if (!token || !chainId) {
-        return;
-      }
-
-      switch (chainId) {
-        case '58': {
-          let polkadot_endpoint;
-
-          if (token == 'KSM') {
-            polkadot_endpoint = KUSAMA_ENDPOINT;
-          } else if (token == 'DOT') {
-            polkadot_endpoint = POLKADOT_ENDPOINT;
-          }
-
-          polkadot_utils.connect(polkadot_endpoint).then(res =>{
-            console.log(res);
-            polkadot_extension_dapp.web3Enable('gitcoin');
-          }).catch(err => {
-            console.log(err);
-          });
-          break;
-        }
-
-        default:
-          break;
-
-      }
     },
     calcValues: function(direction) {
       let vm = this;
@@ -174,9 +150,29 @@ Vue.mixin({
           // ethereum
           type = 'web3_modal';
           break;
+        case '30':
+          // rsk
+          type = 'rsk_ext';
+          break;
+        case '50':
+          // xinfin
+          type = 'xinfin_ext';
+          break;
         case '58':
           // polkadot
           type = 'polkadot_ext';
+          break;
+        case '56':
+          // binance
+          type = 'binance_ext';
+          break;
+        case '1000':
+          // harmony
+          type = 'harmony_ext';
+          break;
+        case '1001':
+          // algorand
+          type = 'algorand_ext';
           break;
         case '666':
           // paypal
@@ -185,6 +181,7 @@ Vue.mixin({
         case '0': // bitcoin
         case '61': // ethereum classic
         case '102': // zilliqa
+        case '600': // filecoin
         case '42220': // celo mainnet
         case '44786': // celo alfajores tesnet
           type = 'qr';
@@ -294,16 +291,16 @@ Vue.mixin({
           console.log('success', response);
           window.location.href = response.bounty_url;
         } else if (response.status == 304) {
-          _alert('Bounty already exists for this github issue.', 'error');
+          _alert('Bounty already exists for this github issue.', 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         } else {
-          _alert(`Unable to create a bounty. ${response.message}`, 'error');
+          _alert(`Unable to create a bounty. ${response.message}`, 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         }
 
       }).catch((err) => {
         console.log(err);
-        _alert('Unable to create a bounty. Please try again later', 'error');
+        _alert('Unable to create a bounty. Please try again later', 'danger');
       });
 
     }
@@ -338,7 +335,6 @@ Vue.mixin({
       const vm = this;
       let result;
 
-      vm.form.token = {};
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
@@ -346,7 +342,6 @@ Vue.mixin({
           return String(item.chainId) === vm.chainId;
         });
       }
-      vm.form.token = result[0];
       return result;
     }
   },
@@ -355,6 +350,11 @@ Vue.mixin({
       if (!provider && val === '1') {
         await onConnect();
       }
+
+      if (val === '56') {
+        this.getBinanceSelectedAccount();
+      }
+
       this.getTokens();
       await this.checkForm();
     }
@@ -373,6 +373,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
+        funderAddressFallback: false,
         terms: false,
         hackathonSlug: document.hackathon.slug,
         hackathonEndDate: document.hackathon.endDate,

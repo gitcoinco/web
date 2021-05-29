@@ -1,0 +1,212 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+
+
+{% block 'content' %}
+
+<!-- proof_of_receive & user.id & user.profile.id available in jscript via data-atributes -->
+
+<div id="receive_check" class="hide"
+  data-proof_of_receive="{% if proof_of_receive %}true{% else %}false{% endif %}"
+  data-user_profile_id="{{user.profile.id}}" >
+</div>
+
+
+{% if total_claimable_gtc > 0 %}
+
+  <!--token distribution-->
+  <section class="introduction" style="margin-bottom: 3em;">
+    <h1>Token Distribution</h1>
+    <p style="animation: colorcycle-text 1s ease-in-out infinite;">Complete all 3 missions to receive your tokens.</p>
+  </section>
+
+
+  <!--token distribution missions-->
+  <section class="mission">
+
+    <!-- PROOF OF KNOWLEDGE CARD -->
+    <!-- no dependencies in other missions -->
+    <!-- add in with proof_of_knowledge=false to simulate available mission -->
+
+    {% with name="1. Proof of Knowledge" %}
+
+      {% if not proof_of_knowledge %}
+        {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-know-start.svg" url="mission/knowledge" %}
+      {% else %}
+        {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-know-end.svg" done="true" locked="true" %}
+      {% endif %}
+
+    {% endwith %}
+
+
+    <!-- PROOF OF USE CARD -->
+    <!-- user have to finish proof_of_knowledge first -->
+    <!-- add in with proof_of_use=false to simulate available mission -->
+
+    {% with name="2. Proof of Use" %}
+
+      {% if not proof_of_knowledge %}
+
+        <!-- User can not this mission yet -->
+        {% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-use-start.svg" locked="true" %}
+
+      {% else %}
+
+        <!-- User can Play -->
+        {% if not proof_of_use %}
+          {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-use-start.svg" url="mission/use" %}
+        {% else %}
+          {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-use-end.svg" done="true" locked="true" %}
+        {% endif %}
+
+      {% endif %}
+
+    {% endwith %}
+
+
+    <!-- PROOF OF RECEIVE CARD -->
+    <!-- user have to finish proof_of_use first -->
+    <!-- add in with proof_of_receive=false to simulate available mission -->
+
+    {% with name="3. Proof of Receive" %}
+
+      {% if not proof_of_use %}
+
+        <!-- User can not this mission yet -->
+        {% include 'quadraticlands/mission/card.html' with message="locked" svg="proof-of-receive-start.svg" tokens=total_claimable_gtc locked="true" %}
+
+      {% else %}
+
+        <!-- User can Play -->
+        {% if not proof_of_receive %}
+          {% include 'quadraticlands/mission/card.html' with playable="true" message="available" svg="proof-of-receive-start.svg" url="mission/receive" tokens=total_claimable_gtc %}
+        {% else %}
+          {% include 'quadraticlands/mission/card.html' with message="completed" svg="proof-of-receive-end.svg" done="true" locked="true" %}
+        {% endif %}
+
+      {% endif %}
+
+    {% endwith %}
+
+  </section>
+
+{% else %}
+
+  <!--no token distribution-->
+  <section class="introduction" style="margin-bottom: 3em;">
+    <h1>Token Distribution</h1>
+    <p>There are no GTC associated with your account. If you think this is in error, please reach out on <a href="{% url "discord" %}">Discord</a>. Otherwise join a workstream to participate in Gitcoin governance!</p>
+  </section>
+
+{% endif %}
+
+
+
+
+<section class="introduction" style="margin-bottom: 3em;">
+  <h1>Governance Missions</h1>
+</section>
+
+<!-- upcoming missions-->
+<section class="mission">
+
+  <!-- Discourse Forum -->
+  {% with name="Discourse Forum" %}
+    {% include 'quadraticlands/mission/card.html' with svg="discourse.svg" message="available" playable="true" url="https://gov.gitcoin.co" external="true" %}
+  {% endwith %}
+
+  <!-- Snapshot.page -->
+  {% with name="Snapshot.page" %}
+    {% include 'quadraticlands/mission/card.html' with svg="snapshot.svg" message="available" playable="true" url="https://snapshot.org/#/gitcoindao.eth" external="true" %}
+  {% endwith %}
+
+  <!-- Empower a Steward -->
+  {% with name="Empower a Steward" %}
+  {% include 'quadraticlands/mission/card.html' with svg="stewards.svg" message="available" playable="true" url="stewards" %}
+  {% endwith %}
+
+
+</section>
+
+<section class="introduction" style="margin-bottom: 3em;">
+  <h1>Take Action</h1>
+</section>
+
+
+
+<!-- upcoming missions-->
+<section class="mission">
+
+
+  <!-- Join a Workstream -->
+  {% with name="Join a Workstream" %}
+    {% include 'quadraticlands/mission/card.html' with svg="workstream.svg" message="available" playable="true" url="workstream" %}
+  {% endwith %}
+
+  <!-- Postcard Generator Game -->
+  {% with name="Postcard Generator" %}
+    {% include 'quadraticlands/mission/card.html' with svg="governance.svg" message="available" playable="true" url="mission/postcard" %}
+  {% endwith %}
+
+
+  <!-- Lore Comic + Audio -->
+  {% with name="Gitcoin Lore" %}
+    {% if completed_missions == 3 %}
+      {% include 'quadraticlands/mission/card.html' with svg="moloch-vs-bot.svg" message="available" playable="true" url="/quadraticlands/mission/ql-lore"  %}
+    {% else %}
+      {% include 'quadraticlands/mission/card.html' with svg="moloch-vs-bot.svg" locked="true" message="locked" pending=True %}
+    {% endif%}
+  {% endwith %}
+
+
+  <!-- Swag Store -->
+  {% with name="Gitcoin Collectibles" %}
+    {% if completed_missions == 3 %}
+      {% include 'quadraticlands/mission/card.html' with svg="swag.svg" message="available" playable="true" url="/quadraticlands/mission/schwag" %}
+    {% else %}
+      {% include 'quadraticlands/mission/card.html' with svg="swag.svg" locked="true" message="locked" pending=True %}
+    {% endif%}
+  {% endwith %}
+
+    <!-- Quadratic Diplomacy -->
+  {% with name="Quadratic Diplomacy" %}
+  {% include 'quadraticlands/mission/card.html' with svg="antisybil.svg" playable="true" message="available" url="/governance/diplomacy/" %}
+  {% endwith %}
+
+
+  <!-- Propose a Mission -->
+  {% with name="Propose a Mission" %}
+    {% include 'quadraticlands/mission/card.html' with svg="propose.svg" locked="true" message="available" playable="true" url="https://gov.gitcoin.co" external="true" %}
+  {% endwith %}
+
+
+</section>
+
+<section class="introduction" style="margin-bottom: 3em;">
+  <h1>Coming Soon</h1>
+</section>
+
+
+<!-- upcoming missions-->
+<section class="mission">
+
+  <!-- SybilHunt -->
+  {% with name="SybilHunt" %}
+  {% include 'quadraticlands/mission/card.html' with svg="sybilhunt.svg" message="Coming soon" locked="true" %}
+  {% endwith %}
+
+</section>
+
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- mission receive check -->
+<script src="{% static "v2/js/quadraticlands/mission/mission_receive_check.js" %}"></script>
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+{% endblock %}

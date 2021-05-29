@@ -1,26 +1,27 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
 {% load i18n humanize %}
 
 {% block content %}
 
 <style>
-  .arrow-up{
+  .arrow-up {
     width: 0;
     height: 0;
     border-left: 15px solid transparent;
@@ -35,45 +36,51 @@
     margin-bottom: 15px;
   }
 
-  #founder_announce a{
+  #founder_announce a {
     font-weight: bold;
   }
 </style>
 
-<div>
-  <h1 class="text-centre">{% trans "Your cart is waiting for you" %}</h1>
-</div>
+<div id="content-body">
 
-<a href="https://gitcoin.co/owocki">
-<img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
-</a>
-<div class="arrow-up">&nbsp;</div>
-<div id="founder_announce" style="border: 1px solid #ddd; max-width: 500px; text-align: center; margin-left: auto; margin-right: auto; margin-bottom: 25px;">
-<p style="margin: 5px; border-radius: 5px;">
-  {{desc|safe}}
-</p>
-</div>
-
-<HR>
-
-<div>
-  <p style="margin: 5px; border-radius: 5px;">
-    You have the following {{grants|length}} grants in your cart:
-  </p>
-  <ol>
-    {% for grant in grants %}
-      <li><b>{{ grant.grant_title }}</b> ({{ grant.grant_donation_amount|default:5 }} {{ grant.grant_donation_currency|default:"DAI" }})</li>
-    {% endfor %}
-  </ol>
-</div>
-
-<HR>
-
-<a href={{base_url}}>
-  <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button large" href="{{base_url}}{%  url 'grants:grants_bulk_add' cart_query %}">{% trans "Go to cart" %}</a>
+  <div>
+    <h1 class="text-centre">{% trans "Your cart is waiting for you" %}</h1>
   </div>
-</a>
+
+  <a href="https://gitcoin.co/owocki?{{ utm_tracking }}">
+    <img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
+  </a>
+  <div class="arrow-up">&nbsp;</div>
+  <div id="founder_announce"
+    style="border: 1px solid #ddd; max-width: 500px; text-align: center; margin-left: auto; margin-right: auto; margin-bottom: 25px;">
+    <p style="margin: 5px; border-radius: 5px;">
+      {{desc|safe}}
+    </p>
+  </div>
+
+  <HR>
+
+  <div>
+    <p style="margin: 5px; border-radius: 5px;">
+      You have the following {{grants|length}} grants in your cart:
+    </p>
+    <ol>
+      {% for grant in grants %}
+      <li><b>{{ grant.grant_title }}</b> ({{ grant.grant_donation_amount|default:5 }} {{
+        grant.grant_donation_currency|default:"DAI" }})</li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <HR>
+
+  <a href="{{base_url}}?{{ utm_tracking }}">
+    <div style="margin-bottom: 2em; margin-top: 2em;">
+      <a class="button large" href="{{base_url}}{%  url 'grants:grants_bulk_add' cart_query %}">{% trans "Go to cart" %}</a>
+    </div>
+  </a>
+
+</div>
 
 
 {% endblock %}

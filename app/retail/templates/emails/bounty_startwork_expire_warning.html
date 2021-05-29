@@ -1,63 +1,67 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
-<h1>🕐 {% trans "Are you still working on this?" %}" ... 🕐</h1>
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/bounties.png' %}">
+
+  <h1>🕐 {% trans "Are you still working on this?" %}" ... 🕐</h1>
 
 
-<p>
-  {% trans "Hey there, " %}
+  <p>
+    {% trans "Hey there, " %}
+
+    <br>
+    <br>
+
+    You <strong>started work on</strong> a funded issue {{ interest.created|naturaltime }}. But we haven't heard from
+    you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
+
+    <br>
+    <br>
+
+    {% trans "Do you still want to work on this? Please let us know so we can find someone else to work on it if not!" %}
+
+    <br>
+    <br>
+
+    {% trans "If so, please leave a comment on the github thread to check in." %}
+    <br>
+    -{% trans "OR" %}-
+    <br>
+    {% blocktrans %}If not, click 'Stop Work' on the <a href="{{ bounty.absolute_url }}?{{ utm_tracking }}">issue detail
+      page</a>.{% endblocktrans %}
+
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="{% url 'slack' %}?{{ utm_tracking }}">on slack</a>.
+
+    <br>
+  <h1>{% trans "Funded Issue Details" %}</h1>
+  </p>
 
   <br>
-  <br>
 
-    You <strong>started work on</strong> a funded issue {{ interest.created|naturaltime }}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{ time_delta_days }} days{% endif %}.
+  {% include 'emails/bounty.html' with bounty=bounty %}
 
-  <br>
-  <br>
-
-  {% trans "Do you still want to work on this?  Please let us know so we can find someone else to work on it if not!" %}
-
-  <br>
-  <br>
-
-  {% trans "If so, please leave a comment on the github thread to check in." %}
-  <br>
-  -{% trans "OR" %}-
-  <br>
-  {% blocktrans %}If not, click 'Stop Work' on the <a href="{{ bounty.absolute_url }}">issue detail page</a>.{% endblocktrans %}
-
-  <br>
-  <br>
-  {% blocktrans %}If you have any questions, feel free to reach out <a href="{% url 'slack' %}">on slack</a>.{% endblocktrans %}
-
-  <br>
-  <h5>{% trans "Funded Issue Details" %}</h5>
-</p>
-
-<br>
-
-{% include 'emails/bounty.html' with bounty=bounty %}
-
-<p>
-  {% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
-</p>
+</div>
 
 {% endblock %}

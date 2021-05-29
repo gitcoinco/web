@@ -1,6 +1,6 @@
 {% extends 'onepager/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -62,7 +62,7 @@
       </div>
       <div>
         <br>
-        <input id="receive" type='submit' class="button button--primary" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{% endif %} >
+        <input id="receive" type='submit' class="btn btn-primary" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{% endif %} >
         <br>
       </div>
     </form>

@@ -69,7 +69,6 @@ const renderPopOverData = function(data) {
       'strings': stringsOverwrite
     };
   }
-
   let tips_total = data.profile_dict.total_tips_sent + data.profile_dict.total_tips_received;
   let bounties_total = data.profile_dict.funded_bounties_count + data.profile_dict.count_bounties_completed;
   let grants_total = data.profile_dict.total_grant_created + data.profile_dict.total_grant_contributions;
@@ -82,6 +81,14 @@ const renderPopOverData = function(data) {
     '#89CD69',
     '#BFE1AF',
     {'type': 'Tips', 'sent': 'Sent', 'received': 'Received'}
+  );
+  let token_total_percent = objSetup(
+    data.profile.purchased_count || 0,
+    data.profile.redeemed_count || 0,
+    total,
+    '#D8C667',
+    '#FFED90',
+    {'type': 'Token', 'sent': 'Purch', 'received': 'Redeem'}
   );
   let bounties_total_percent = objSetup(
     data.profile_dict.funded_bounties_count,
@@ -101,6 +108,12 @@ const renderPopOverData = function(data) {
   );
 
   let mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
+
+  if (data.profile.has_ptoken) {
+    mount_graph.push(token_total_percent);
+  }
+
+
   let graphs = mount_graph.map((graph) => {
     return `<circle class="donut-segment" cx="50%" cy="50%" r="38%" fill="transparent" stroke="${graph.color}" stroke-width="8%" stroke-dasharray="${graph.percent} ${100 - graph.percent}" stroke-dashoffset="${graph.dashoffset}"></circle>`;
   }).join(' ');
@@ -149,9 +162,9 @@ const renderPopOverData = function(data) {
 
   const followBtn = function(data) {
     if (data.is_following) {
-      return `<button class="btn btn-gc-blue btn-sm px-2 font-caption" data-follow="${data.profile.handle}">Unfollow <i class="fas fa-user-minus font-smaller-4"></i></button>`;
+      return `<button class="btn btn-primary btn-sm px-2 font-caption" data-follow="${data.profile.handle}">Unfollow <i class="fas fa-user-minus font-smaller-4"></i></button>`;
     }
-    return `<button class="btn btn-gc-blue btn-sm px-2 font-caption" data-follow="${data.profile.handle}">Follow <i class="fas fa-user-plus font-smaller-4"></i></button>`;
+    return `<button class="btn btn-primary btn-sm px-2 font-caption" data-follow="${data.profile.handle}">Follow <i class="fas fa-user-plus font-smaller-4"></i></button>`;
   };
 
   return `
@@ -171,23 +184,20 @@ const renderPopOverData = function(data) {
       <a href="/${data.profile.handle}" class="font-body font-weight-semibold">@${data.profile.handle}</a>
 
       <div class="my-2">
-        <button class="btn btn-outline-gc-blue btn-sm font-smaller-5" data-openchat="${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Chat @${data.profile.handle}">
-          <i class="fas fa-fw fa-comment-dots"></i>
-        </button>
 
-        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="/tip?username=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Tip @${data.profile.handle}">
+        <a class="btn btn-outline-primary btn-sm font-smaller-5" href="/tip?username=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Tip @${data.profile.handle}">
           <i class="fab fa-fw fa-ethereum"></i>
         </a>
 
-        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="/kudos/send?username=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Kudos @${data.profile.handle}">
+        <a class="btn btn-outline-primary btn-sm font-smaller-5" href="/kudos/send?username=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Kudos @${data.profile.handle}">
           <i class="fas fa-fw fa-dice-d6"></i>
         </a>
 
-        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="/users?invite=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Invite @${data.profile.handle} to Bounty">
+        <a class="btn btn-outline-primary btn-sm font-smaller-5" href="/users?invite=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Invite @${data.profile.handle} to Bounty">
           <i class="fas fa-fw fa-envelope-open-text"></i>
         </a>
         |
-        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="https://github.com/${data.profile.handle}?tab=repositories" target="_blank" rel="noopener noreferrer" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="@${data.profile.handle} on Github">
+        <a class="btn btn-outline-primary btn-sm font-smaller-5" href="https://github.com/${data.profile.handle}?tab=repositories" target="_blank" rel="noopener noreferrer" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="@${data.profile.handle} on Github">
           <i class="fab fa-fw fa-github"></i>
         </a>
       </div>

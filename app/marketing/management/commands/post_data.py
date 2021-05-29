@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the GDPR reconsent command for EU users.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -59,6 +59,40 @@ def do_post(text, comment=None):
             activity=activity,
             comment=comment)
 
+def quest():
+    from marketing.views import quest_of_the_day
+    quest = quest_of_the_day()
+    text = f"Quest of the Day: {quest.title}: {quest.url}"
+    print(text)
+
+    profile = Profile.objects.filter(handle='gitcoinbot').first()
+    metadata = {
+        'title': text,
+        'resource': {
+            'id': quest.enemy_img_url,
+            'type': "gif",
+            'provider': "giphy"
+        }
+    }
+    activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
+
+def kudos():
+    from marketing.views import kudos_of_the_day
+    kudos = kudos_of_the_day()
+    text = f"Kudos of the Day: {kudos.ui_name}: {kudos.url.replace('http://localhost:8000','https://gitcoin.co')}"
+    print(text)
+
+    profile = Profile.objects.filter(handle='gitcoinbot').first()
+    metadata = {
+        'title': text,
+        'resource': {
+            'id': kudos.img_url,
+            'type': "gif",
+            'provider': "giphy"
+        }
+    }
+    activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
+
 def quote():
     quotes = [
     [ ('Open source software has become a relevant part of the software industry and a number of software ecosystems. It has become an alternative to commercial software in various areas and is already included in many commercial software products.'), 'March 2017 Report by the EU' ],
@@ -87,12 +121,12 @@ def quote():
     ]
     quote = random.choice(quotes)
     quote = f"{quote[0]}\n\n{quote[1]}"
-    pprint(f"Open Source Quote of the Day: {quote}")
+    pprint(f"Open Source Quote of the Week: {quote}")
     do_post(text)
 
 
 def welcome():
-    hours = 6 if not settings.DEBUG else 1000
+    hours = 24 if not settings.DEBUG else 1000
     limit = 30
     prompts = [
         'How is everyone doing today?',
@@ -133,8 +167,10 @@ def welcome():
 
     from townsquare.models import Announcement
     announcement = Announcement.objects.filter(key='founders_note_daily_email', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).first()
-    if announcement:
-        prompt2 = f"{announcement.title} - {announcement.desc}"
+    # TODO: workaround for transposing hte HTML from the announcement object into plaintext
+    # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1601979424112000
+    # if announcement:
+    #    prompt2 = f"{announcement.title} - {announcement.desc}"
 
     welcome_to = ", ".join(welcome_to)
     pprint(f"Welcome to {welcome_to} - {prompt1}")
@@ -191,7 +227,7 @@ def pluralize(num):
     return "s"
 
 
-def earners():
+def earners(days, cadence):
     hours = 24 if not settings.DEBUG else 1000
     limit = 10
 
@@ -221,7 +257,7 @@ def earners():
     amounts = sorted(amounts.items(), key=operator.itemgetter(1), reverse=True)
 
     pprint("================================")
-    pprint("== Congrats to the Daily Top Earners 👇")
+    pprint(f"== Congrats to the {cadence} Top Earners 👇")
     pprint("================================")
     pprint("")
     counter = 0
@@ -245,34 +281,37 @@ def earners():
 
 def grants():
 
-    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+    active_clr_rounds = GrantCLR.objects.filter(is_active=True, customer_name='ethereum', start_date__lt=timezone.now(), end_date__gt=timezone.now())
     if not active_clr_rounds.exists():
         return
 
     ############################################################################3
     # total stats
     ############################################################################3
-
-    start = active_clr_rounds.first().start_date
-    end = active_clr_rounds.first().end_date
-    day = (timezone.now() - start).days
+    aclr = active_clr_rounds.first()
     pprint("")
     pprint("================================")
     pprint(f"== BEEP BOOP BOP ⚡️          ")
-    pprint(f"== Grants Round ({start.strftime('%m/%d/%Y')} ➡️ {end.strftime('%m/%d/%Y')})")
+    pprint(f"== *{aclr.customer_name.title()} Round {aclr.round_num}* Grants Stats ({aclr.start_date.strftime('%m/%d/%Y')} ➡️ {aclr.end_date.strftime('%m/%d/%Y')})")
+    start = aclr.start_date
+    end = aclr.end_date
+    day = (timezone.now() - start).days
     pprint(f"== Day {day} Stats 💰🌲👇 ")
     pprint("================================")
     pprint("")
 
     must_be_successful = True
+    #grants_pks = []
+    #for aclr in active_clr_rounds:
+    #    grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
 
-    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)#, subscription__grant__in=grants_pks)
     if must_be_successful:
         contributions = contributions.filter(success=True)
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
     total = contributions.count() + pfs.count()
 
-    current_carts = CartActivity.objects.filter(latest=True)
+    current_carts = CartActivity.objects.filter(created_on__gt=start, latest=True)#, grant__in=grants_pks)
     num_carts = 0
     amount_in_carts = {}
     discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000
@@ -405,11 +444,21 @@ def grants():
     pprint("=======================")
     pprint("")
     pprint("Misc Stats:")
+    idena_contributor_count = contributions.filter(subscription__contributor_profile__is_idena_verified=True).distinct('subscription__contributor_profile').count()
     brightid_contributor_count = contributions.filter(subscription__contributor_profile__is_brightid_verified=True).distinct('subscription__contributor_profile').count()
     sms_contributor_count = contributions.filter(subscription__contributor_profile__sms_verification=True).distinct('subscription__contributor_profile').count()
+    twitter_contributor_count = contributions.filter(subscription__contributor_profile__is_twitter_verified=True).distinct('subscription__contributor_profile').count()
+    google_contributor_count = contributions.filter(subscription__contributor_profile__is_google_verified=True).distinct('subscription__contributor_profile').count()
+    poap_contributor_count = contributions.filter(subscription__contributor_profile__is_poap_verified=True).distinct('subscription__contributor_profile').count()
+    poh_contributor_count = contributions.filter(subscription__contributor_profile__is_poh_verified=True).distinct('subscription__contributor_profile').count()
     contributor_count = contributions.distinct('subscription__contributor_profile').count()
+    poap_contributor_pct = round(100 * poap_contributor_count / contributor_count)
+    google_contributor_pct = round(100 * google_contributor_count / contributor_count)
+    twitter_contributor_pct = round(100 * twitter_contributor_count / contributor_count)
+    idena_contributor_pct = round(100 * idena_contributor_count / contributor_count)
     sms_contributor_pct = round(100 * sms_contributor_count / contributor_count)
     brightid_contributor_pct = round(100 * brightid_contributor_count / contributor_count)
+    poh_contributor_pct = round(100 * poh_contributor_count / contributor_count)
 
     zksync_contribution_count = contributions.filter(validator_comment__icontains='zkSync').count()
     contribution_count = contributions.count()
@@ -417,8 +466,13 @@ def grants():
     sms_contribution_pct = round(100 * sms_contributor_count / contribution_count)
 
     pprint(f"- {zksync_contribution_count} ZkSync Contributions/{contribution_count} Total Contributions ({zksync_contribution_pct}%) ")
+    pprint(f"- {idena_contributor_count} Idena Verified Contributors/{contributor_count} Total Contributors ({idena_contributor_pct}%) ")
+    pprint(f"- {poap_contributor_count} POAP Verified Contributors/{contributor_count} Total Contributors ({poap_contributor_pct}%) ")
+    pprint(f"- {google_contributor_count} Google Verified Contributors/{contributor_count} Total Contributors ({google_contributor_pct}%) ")
+    pprint(f"- {twitter_contributor_count} Twitter Verified Contributors/{contributor_count} Total Contributors ({twitter_contributor_pct}%) ")
     pprint(f"- {brightid_contributor_count} BrightID Verified Contributors/{contributor_count} Total Contributors ({brightid_contributor_pct}%) ")
     pprint(f"- {sms_contributor_count} SMS Verified Contributors/{contributor_count} Total Contributors ({sms_contributor_pct}%) ")
+    pprint(f"- {poh_contributor_count} POH Verified Contributors/{contributor_count} Total Contributors ({poh_contributor_pct}%) ")
 
     ############################################################################3
     # new feature stats for round {clr_round}
@@ -458,6 +512,8 @@ def grants():
 
     global text
     do_post(text)
+
+
 class Command(BaseCommand):
 
     help = 'puts grants stats on town suqare'
@@ -474,8 +530,12 @@ class Command(BaseCommand):
             results()
         elif options['what'] == 'quote':
             quote()
+        elif options['what'] == 'quest':
+            quest()
+        elif options['what'] == 'kudos':
+            kudos()
         elif options['what'] == 'earners':
-            earners()
+            earners(1, 'Daily')
         elif options['what'] == 'grants':
             grants()
         elif options['what'] == 'welcome':

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Dashboard related utilities and miscellaneous logic.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -21,12 +21,14 @@ import base64
 import json
 import logging
 import re
+import time
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
 from django.urls import URLPattern, URLResolver
 from django.utils import timezone
 
+import ens
 import ipfshttpclient
 import requests
 from app.utils import sync_profile
@@ -37,15 +39,24 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import (
     Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
 )
+from dashboard.sync.algorand import sync_algorand_payout
+from dashboard.sync.binance import sync_binance_payout
 from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
+from dashboard.sync.filecoin import sync_filecoin_payout
+from dashboard.sync.harmony import sync_harmony_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
+from dashboard.sync.rsk import sync_rsk_payout
+from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
+from ens.auto import ns
+from ens.utils import name_to_hash
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
+from graphqlclient import GraphQLClient
 from hexbytes import HexBytes
 from ipfshttpclient.exceptions import CommunicationError
 from pytz import UTC
@@ -61,11 +72,12 @@ logger = logging.getLogger(__name__)
 SEMAPHORE_BOUNTY_SALT = '1'
 SEMAPHORE_BOUNTY_NS = 'bounty_processor'
 
+GRAPHQL_CLIENTS = {}
 
 def all_sendcryptoasset_models():
-    from revenue.models import DigitalGoodPurchase
     from dashboard.models import Tip
     from kudos.models import KudosTransfer
+    from revenue.models import DigitalGoodPurchase
 
     return [DigitalGoodPurchase, Tip, KudosTransfer]
 
@@ -303,10 +315,46 @@ def get_web3(network, sockets=False):
         if network == 'rinkeby':
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         return w3
+    elif network == 'xdai':
+        if sockets:
+            provider = WebsocketProvider(f'wss://rpc.xdaichain.com/wss')
+        else:
+            provider = HTTPProvider(f'https://dai.poa.network/')
+        return Web3(provider)
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
     raise UnsupportedNetworkException(network)
+
+
+def get_graphql_client(uri):
+    """Get a graphQL client attached to the given uri
+
+    Returns:
+        GraphQLClient: an established GraphQLClient assoicated with the given uri
+    """
+
+    # memoize
+    if uri not in GRAPHQL_CLIENTS:
+        GRAPHQL_CLIENTS[uri] = GraphQLClient(uri)
+
+    # return the client connection
+    return GRAPHQL_CLIENTS.get(uri)
+
+
+def get_graphql_result(uri, query):
+    """Get result of the query from the uri
+
+    Returns:
+        dict: result of the graphQL query
+    """
+
+    # get connection to uri
+    client = get_graphql_client(uri)
+    # pull the result
+    result = client.execute(query)
+
+    return json.loads(result)
 
 
 def get_profile_from_referral_code(code):
@@ -381,6 +429,100 @@ def getBountyContract(network):
     getBountyContract = web3.eth.contract(standardbounties_addr, abi=bounty_abi)
     return getBountyContract
 
+
+def get_poap_tokens(uri, address):
+
+    # query the tokens held for an address
+    return get_graphql_result(uri, '''
+    {
+        account(id: "%s") {
+            tokens(orderBy: id, orderDirection: asc){
+                id
+            }
+        }
+    }
+    ''' % address)
+
+
+def get_poap_transfers(uri, address):
+
+    # query the transfers associated with an address (oldest token first then most recent transfer first)
+    return get_graphql_result(uri, '''
+    {
+        account(id: "%s") {
+            tokens(orderBy: id, orderDirection: asc){
+                id
+                transfers(orderBy: timestamp, orderDirection: desc, where: { to: "%s" }){
+                    timestamp
+                }
+            }
+        }
+    }
+    ''' % (address, address))
+
+
+def get_poap_earliest_owned_token_timestamp(network, address):
+    # returning None when no tokens are held for address
+    timestamp = None
+    # must query the graph using lowercase address
+    address = address.lower()
+
+    # graphQL api uri
+    uri = 'https://api.thegraph.com/subgraphs/name/poap-xyz/poap%s' % ('-xdai' if network == 'xdai' else '')
+
+    # get all tokens held by this address
+    poap_tokens = get_poap_tokens(uri, address)
+
+    try:
+        # check if the address has tokens
+        has_tokens = poap_tokens['data']['account']
+        poap_tokens = has_tokens['tokens'] if has_tokens else None
+
+        # if the address holds no tokens then stop
+        if not has_tokens or len(poap_tokens) == 0:
+            pass
+        else:
+            # flatten tokenIds into a dict
+            tokens_dict = list()
+            for token in poap_tokens:
+                tokens_dict.append(token['id'])
+
+            # pull the transfers so that we can check timestamps
+            poap_transfers = get_poap_transfers(uri, address)
+            tokens_transfered = poap_transfers['data']['account']['tokens']
+
+            # check the earliest received token that is still owned by the address
+            for token in tokens_transfered:
+                # token still owned by the address?
+                if token['id'] in tokens_dict:
+                    # use timestamp of most recent transfer
+                    timestamp = int(token['transfers'][0]['timestamp'])
+                    break
+    except:
+        # returning 0 will print a failed (try again) error
+        timestamp = 0
+
+    return timestamp
+
+
+def get_ens_contract_addresss(network, legacy=False):
+    if network == 'mainnet':
+        if not legacy:
+            return to_checksum_address('0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e')
+        return to_checksum_address('0x314159265dd8dbb310642f98f50c066173c1259b')
+    raise UnsupportedNetworkException(network)
+
+
+def get_ens_resolver_contract(network, node):
+    web3 = get_web3(network)
+    ens_resolver_json = '[{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"a","type":"address"}],"name":"AddrChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"coinType","type":"uint256"},{"indexed":false,"name":"newAddress","type":"bytes"}],"name":"AddressChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"name","type":"string"}],"name":"NameChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":true,"name":"contentType","type":"uint256"}],"name":"ABIChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"x","type":"bytes32"},{"indexed":false,"name":"y","type":"bytes32"}],"name":"PubkeyChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":true,"name":"indexedKey","type":"string"},{"indexed":false,"name":"key","type":"string"}],"name":"TextChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"hash","type":"bytes"}],"name":"ContenthashChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"node","type":"bytes32"},{"indexed":false,"name":"hash","type":"bytes32"}],"name":"ContentChanged","type":"event"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"},{"name":"contentTypes","type":"uint256"}],"name":"ABI","outputs":[{"name":"","type":"uint256"},{"name":"","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"},{"name":"coinType","type":"uint256"}],"name":"addr","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"addr","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"contenthash","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"dnsrr","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"pubkey","outputs":[{"name":"x","type":"bytes32"},{"name":"y","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"},{"name":"key","type":"string"}],"name":"text","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"},{"name":"interfaceID","type":"bytes4"}],"name":"interfaceImplementer","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"contentType","type":"uint256"},{"name":"data","type":"bytes"}],"name":"setABI","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"addr","type":"address"}],"name":"setAddr","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"coinType","type":"uint256"},{"name":"a","type":"bytes"}],"name":"setAddr","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"hash","type":"bytes"}],"name":"setContenthash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"data","type":"bytes"}],"name":"setDnsrr","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"_name","type":"string"}],"name":"setName","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"x","type":"bytes32"},{"name":"y","type":"bytes32"}],"name":"setPubkey","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"key","type":"string"},{"name":"value","type":"string"}],"name":"setText","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"interfaceID","type":"bytes4"},{"name":"implementer","type":"address"}],"name":"setInterface","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"interfaceID","type":"bytes4"}],"name":"supportsInterface","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"data","type":"bytes[]"}],"name":"multicall","outputs":[{"name":"results","type":"bytes[]"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"content","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"node","type":"bytes32"}],"name":"multihash","outputs":[{"name":"","type":"bytes"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"hash","type":"bytes32"}],"name":"setContent","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"node","type":"bytes32"},{"name":"hash","type":"bytes"}],"name":"setMultihash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]'
+    ens_addr = get_ens_contract_addresss(network)
+    ens_resolver_abi = json.loads(ens_resolver_json)
+    ens_registry = ens.ENS.fromWeb3(web3, ens_addr)
+    resolver_address = ens_registry.ens.resolver(name_to_hash(node))
+
+    ens_resolver_contract = web3.eth.contract(resolver_address, abi=ens_resolver_abi)
+    return ens_resolver_contract
 
 def get_bounty(bounty_enum, network):
     if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
@@ -506,9 +648,26 @@ def sync_payout(fulfillment):
             sync_celo_payout(fulfillment)
         elif token_name == 'ZIL':
             sync_zil_payout(fulfillment)
+        elif token_name == 'FIL':
+            sync_filecoin_payout(fulfillment)
 
     elif fulfillment.payout_type == 'polkadot_ext':
-         sync_polkadot_payout(fulfillment)
+        sync_polkadot_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'binance_ext':
+        sync_binance_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'harmony_ext':
+        sync_harmony_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'rsk_ext':
+        sync_rsk_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'xinfin_ext':
+        sync_xinfin_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'algorand_ext':
+        sync_algorand_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -713,8 +872,8 @@ def clean_bounty_url(url):
 
 def generate_pub_priv_keypair():
     # Thanks https://github.com/vkobel/ethereum-generate-wallet/blob/master/LICENSE.md
-    from ecdsa import SigningKey, SECP256k1
     import sha3
+    from ecdsa import SECP256k1, SigningKey
 
     def checksum_encode(addr_str):
         keccak = sha3.keccak_256()
@@ -806,17 +965,26 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     return profile
 
+
 def is_valid_eth_address(eth_address):
     return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
+
 def get_tx_status(txid, network, created_on):
+    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on)
+    return status, timestamp
+
+
+def get_tx_status_and_details(txid, network, created_on):
     from django.utils import timezone
-    from dashboard.utils import get_web3
+
     import pytz
+    from dashboard.utils import get_web3
 
     DROPPED_DAYS = 4
 
     # get status
+    tx = {}
     status = None
     if txid == 'override':
         return 'success', None #overridden by admin
@@ -853,7 +1021,7 @@ def get_tx_status(txid, network, created_on):
             timestamp = timezone.datetime.fromtimestamp(timestamp).replace(tzinfo=pytz.UTC)
     except:
         pass
-    return status, timestamp
+    return status, timestamp, tx
 
 
 def is_blocked(handle):
@@ -890,8 +1058,8 @@ def get_nonce(network, address, ignore_db=False):
     # this function solves the problem of 2 pending tx's writing over each other
     # by checking both web3 RPC *and* the local DB for the nonce
     # and then using the higher of the two as the tx nonce
-    from perftools.models import JSONStore
     from dashboard.utils import get_web3
+    from perftools.models import JSONStore
     w3 = get_web3(network)
 
     # web3 RPC node: nonce
@@ -1126,9 +1294,18 @@ def set_hackathon_event(type, event):
             {
                 'absolute_url': sponsor.absolute_url,
                 'avatar_url': sponsor.avatar_url,
+                'handle': sponsor.handle,
             }
             for sponsor in event.sponsor_profiles.all()
         ],
         'display_showcase': event.display_showcase,
         'show_results': event.show_results,
     }
+
+
+def tx_id_to_block_explorer_url(txid, network):
+    if network == 'xdai':
+        return f"https://blockscout.com/xdai/mainnet/tx/{txid}"
+    if network == 'mainnet':
+        return f"https://etherscan.io/tx/{txid}"
+    return f"https://{network}.etherscan.io/tx/{txid}"

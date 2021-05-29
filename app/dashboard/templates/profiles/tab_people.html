@@ -1,27 +1,171 @@
 {% load i18n static avatar_tags humanize %}
 {% if not hidden %}
+<div id="profile-tabs" class="tab-container font-body mt-3 mb-4">
+  <button id="nav-description" href="{{profile.url}}/people?sub=followers" class="text-center section-tab {% if foltab == "followers" %} active {% endif %}">
+    {% trans "FOLLOWERS" %} <span  class="nav-badge">({{all_followers.count}})</span>
+  </button>
+  <button id="nav-description" href="{{profile.url}}/people?sub=following" class="text-center section-tab {% if foltab == "following" %} active {% endif %}">
+    {% trans "FOLLOWING" %} <span  class="nav-badge">({{all_following.count}})</span>
+  </button>
+  {% if profile.is_org %}
+  <button id="nav-description" href="{{profile.url}}/people?sub=core_team" class="text-center section-tab {% if foltab == "core_team" %} active {% endif %}">
+    {% trans "CORE TEAM" %} <span  class="nav-badge">({{team|length}})</span>
+  </button>
+  <button id="nav-description" href="{{profile.url}}/people?sub=leaderboard" class="text-center section-tab {% if foltab == "leaderboard" %} active {% endif %}">
+    {% trans "LEADERBOARD" %}
+  </button>
+  {% endif %}
+</div>
+{% endif %}
 
-  <div class="tab-projects d-flex flex-column mb-4">
-    <h3 class="font-body mb-3">Core Team</h3>
-    {% if team|length == 0 %}
-      <p class="text-center">No Members</p>
-    {% endif %}
-    {% for org in team %}
-      <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} py-2 my-auto">
-        <div class="activity-avatar ml-5">
-          <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% avatar_url org %}" />
+<div class="tab-projects d-flex flex-column">
+
+  {% if foltab == 'core_team' %}
+    <!-- This shows core team of Org-->
+  {% if team|length == 0 %}
+    <p class="text-center">No Members</p>
+  {% endif %}
+  {% for member in team %}
+    <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
+      <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+        <a href="/{{member}}">
+        <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ member }}" alt="">
+        </a>
+      </div>
+      <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
+        <div class="d-flex flex-column">
+          <div class="font-weight-semibold font-header">{{member}}</div>
+          <a href="/{{member}}">
+            <div class="text-highlight-gc-blue  font-smaller-1">{{member}}</div>
+          </a>
         </div>
-        <div class="tab-projects__item-details ml-5 my-auto w-100">
-          <div class="font-body d-inline">
-            <a class="font-body" href="/profile/{{org}}">
-              {{org}}
+      </div>
+      <div class="mb-0 mt-1 col-5 d-flex flex-row align-items-center">
+        <div class="d-flex align-items-center" style="height: fit-content">
+        {%  with followers=member.mutual_following|slice:":4" %}
+            <div style="width: 60px" class="{% if followers|length > 1 %}d-flex flex-row align-items-center{% endif %}">
+              {% for follower in followers %}
+                {% if forloop.last %}
+                  <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ follower.org.handle }}" alt="">
+                {% else %}
+                  <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px " src="/dynamic/avatar/{{ follower.org.handle }}" alt="">
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% if followers|length >= 1 %}
+            <p class="text-muted font-smaller-4 my-0">Followed by {% for follower in followers %}
+              {{ follower.org.handle }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}</p>
+            {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+  {% elif foltab == 'followers' %}
+    <!-- Show This users followers-->
+    {% for user in followers %}
+      <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
+        <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+          <a href="/{{user.profile.handle}}">
+            <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.profile.handle }}" alt="">
+          </a>
+        </div>
+        <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
+          <div class="d-flex flex-column">
+            <div class="font-weight-semibold font-header">{{user.profile.name}}</div>
+              <a href="/{{user.profile.handle}}">
+                <div class="text-highlight-gc-blue  font-smaller-1">{{user.profile.handle}}</div>
+              </a>
+          </div>
+        </div>
+        <div class="mb-0 mt-1 col-5 d-flex flex-row align-items-center">
+          <div style="height: fit-content">
+            <a class="btn btn-outline-primary btn-sm flex-grow-1 mr-5 font-smaller-5 position-relative quick-link btn-outline-primary" href="https://gitcoin.co/users?invite={{user.profile.handle}}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Invite {{ user.profile.handle }} to Bounty">
+              <i class="fas fa-envelope-open-text"></i>
             </a>
+          </div>
+          <div class="d-flex align-items-center" style="height: fit-content">
+            {% with followers=user.mutual_following|slice:":4" %}
+              <div style="width: 60px" class="{% if followers|length > 1 %}d-flex flex-row align-items-center{% endif %}">
+                {% for follower in followers %}
+                  {% if forloop.last %}
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ follower.org.handle }}" alt="">
+                  {% else %}
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px " src="/dynamic/avatar/{{ follower.org.handle }}" alt="">
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% if followers|length >= 1 %}
+              <p class="text-muted font-smaller-4 my-0">Followed by {% for follower in followers %} {{ follower.org.handle }}{% if not forloop.last %}, {% endif %} {% endfor %}</p>
+              {% endif %}
+            {% endwith %}
           </div>
         </div>
       </div>
     {% endfor %}
-  </div>
 
-  {% include 'profiles/leaderboard.html' with leaderboard=profile.org_leaderboard %}
+    {% elif foltab == 'following' %}
+      <!-- Show which users this one is following-->
+      {% for user in following %}
+      <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
+        <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+          <a href="/{{user.org.handle}}">
+            <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.org.handle }}" alt="">
+          </a>
+        </div>
+        <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
+          <div class="d-flex flex-column">
+              <div class="font-weight-semibold font-header">{{user.org.name}}</div>
+              <a href="/{{user.org.handle}}">
+                <div class="text-highlight-gc-blue  font-smaller-1">{{user.org.handle}}</div>
+              </a>
+          </div>
+        </div>
+        <div class="mb-0 mt-1 col-5 d-flex flex-row align-items-center">
+          <div class="d-flex align-items-center" style="height: fit-content">
+            {%  with followers=user.mutual_follower|slice:":4" %}
+              <div style="width: 60px" class="{% if followers|length > 1 %} d-flex flex-row align-items-center{% endif %}">
+                {% for follower in followers %}
+                  {% if forloop.last %}
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ follower.profile.handle }}" alt="">
+                  {% else %}
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px " src="/dynamic/avatar/{{ follower.profile.handle }}" alt="">
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% if followers|length >= 1 %}
+              <p class="text-muted font-smaller-4 my-0">Followed by {% for follower in followers %}
+                {{ follower.profile.handle }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}</p>
+              {% endif %}
+            {% endwith %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
 
-{% endif %}    
+      {% elif foltab == 'leaderboard' %}
+      {% include 'profiles/leaderboard.html' with leaderboard=profile.org_leaderboard %}
+
+</div>
+{% endif %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?sub={{foltab}}&page=1">&laquo; first</a>
+            <a href="?sub={{foltab}}&page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?sub={{foltab}}&page={{ page_obj.next_page_number }}">next</a>
+            <a href="?sub={{foltab}}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>

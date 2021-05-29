@@ -176,7 +176,7 @@ $(document).ready(function() {
           text = response.responseJSON.message;
         }
         $('#later-button').show();
-        _alert({ message: text}, 'error');
+        _alert({ message: text}, 'danger');
       }
     });
   }

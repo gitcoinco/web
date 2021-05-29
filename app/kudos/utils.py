@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define utility functions.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -288,7 +288,7 @@ class KudosContract:
         kudos['contract'] = contract
 
         try:
-            kudos_token = Token.objects.get(token_id=kudos_id)
+            kudos_token = Token.objects.get(token_id=kudos_id, contract__network=self.network)
             if kudos_token.suppress_sync:
                 logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
                 return
@@ -367,6 +367,8 @@ class KudosContract:
             return to_checksum_address(settings.KUDOS_CONTRACT_MAINNET)
         if self.network == 'ropsten':
             return to_checksum_address(settings.KUDOS_CONTRACT_ROPSTEN)
+        if self.network == 'xdai':
+            return to_checksum_address(settings.KUDOS_CONTRACT_XDAI)
         if self.network == 'rinkeby':
             return to_checksum_address(settings.KUDOS_CONTRACT_RINKEBY)
         if self.network == 'localhost' or self.network == 'custom network':

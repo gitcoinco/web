@@ -1,0 +1,13 @@
+{% load i18n  %}
+
+{% trans "New Grant Approved" %}
+
+{% trans "Hurray! Your grant has been approved!" %}
+{% trans "Share the Grant URL with your friends/followers to raise your first tokens." %}
+{% trans "Get ready to buidl and push forward open source!" %}
+
+{% trans "Title" %} : {{ grant.title }}
+
+{% trans "Description" %} : {{ grant.description }}
+
+{% trans "The details of your grant can be seen here:" %} {{ grant.reference_url }}

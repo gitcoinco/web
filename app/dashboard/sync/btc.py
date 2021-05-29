@@ -1,9 +1,12 @@
+import logging
+
 from django.utils import timezone
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
-from oogway import Net
+from oogway import Net, validate
 
+logger = logging.getLogger(__name__)
 
 def find_txn_on_btc_explorer(fulfillment, network='mainnet'):
     funderAddress = fulfillment.bounty.bounty_owner_address
@@ -13,21 +16,26 @@ def find_txn_on_btc_explorer(fulfillment, network='mainnet'):
     n = Net(provider='Blockstream', network=network)
     txlist = n.txs(funderAddress)
 
-    if network == 'mainnet':
-        blockstream_url = 'https://blockstream.info/api/tx/'
+    # validate BTC address
+    is_valid = validate.is_valid_address(funderAddress)
+    if is_valid == False:
+        logger.error(f'error: invalid BTC address - {funderAddress}')
     else:
-        blockstream_url = 'https://blockstream.info/testnet/api/tx/'
+        if network == 'mainnet':
+            blockstream_url = 'https://blockstream.info/api/tx/'
+        else:
+            blockstream_url = 'https://blockstream.info/testnet/api/tx/'
 
-    if txlist != []:
-        for txn in txlist:
-            blockstream_response = requests.get(blockstream_url+txn).json()
-            if (
-                blockstream_response['vin'][0]['prevout']['scriptpubkey_address'] == str(funderAddress) and
-                blockstream_response['vout'][0]['scriptpubkey_address'] == str(payeeAddress) and
-                float(blockstream_response['vout'][0]['value']) == float(amount) and
-                not txn_already_used(txn, 'BTC')
-            ):
-                return txn
+        if txlist != []:
+            for txn in txlist:
+                blockstream_response = requests.get(blockstream_url+txn).json()
+                if (
+                    blockstream_response['vin'][0]['prevout']['scriptpubkey_address'] == str(funderAddress) and
+                    blockstream_response['vout'][0]['scriptpubkey_address'] == str(payeeAddress) and
+                    float(blockstream_response['vout'][0]['value']) == float(amount) and
+                    not txn_already_used(txn, 'BTC')
+                ):
+                    return txn
     return None
 
 
@@ -53,7 +61,7 @@ def sync_btc_payout(fulfillment):
         txn = find_txn_on_btc_explorer(fulfillment)
         fulfillment.payout_tx_id = txn
 
-    if fulfillment.payout_tx_id:
+    if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_btc_txn_status(fulfillment.payout_tx_id)
         if txn_status:
             fulfillment.payout_status = 'done'

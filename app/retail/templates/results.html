@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize i18n static %}
+{% load humanize i18n static bundle %}
 {% load kudos_extras %}
 
 <!DOCTYPE html>
@@ -25,593 +25,585 @@
   <head>
     <meta name="title" content="Gitcoin Platform Stats & Testimonials | Gitcoin">
     <meta name="description" content="See the Cumulative Bounty History of Gitcoin in USD, Bounty Completion Rate, Median Bounty Turnaround Time, Testimonials and more.">
-    <link rel="stylesheet" href="{% static "v2/css/results.css" %}" />
+    {% bundle css file results %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/results.scss" %} />
+    {% endbundle %}
   </head>
   <body class="{{ active }} g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'home/nav.html' %}
+      <div class="header">
+        {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
+      </div>
+      <div style="font-size: 12px; text-align: center; background-color: white;
+    border-top: #eee 1px solid;" class="p-2">
+        This page is automatically updated every 3 hours. Last updated {{updated|naturaltime}} - <a href="https://github.com/gitcoinco/web/blob/master/app/retail/utils.py#L414">[View Code]</a>.
+      </div>
+      <div id=gmv class="content-block content-block--white">
+        <div class="container">
+          <h2 class="content-block__title">
+            ${{ universe_total_usd|floatformat:0|intcomma }} of {% blocktrans %}
+            Funding for Open Source Software
+            {% endblocktrans %}
+            {% if keyword %}({{keyword}}){% endif %}
+          </h2>
 
-    {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    {% include 'home/nav.html' %}
-    <div class="container-fluid header">
-      {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
-    </div>
-    <div style="font-size: 12px; text-align: center; background-color: #eee;" class="p-2">
-      This page is automatically updated every 3 hours. Last updated {{updated|naturaltime}} - <a href="https://github.com/gitcoinco/web/blob/master/app/retail/utils.py#L414">[View Code]</a>.
-    </div>
-    <div id=gmv class="content-block content-block--white">
-      <div class="container">
-        <h2 class="content-block__title">
-          ${{ universe_total_usd|floatformat:0|intcomma }} of {% blocktrans %}
-           Gross Marketplace Value
-          {% endblocktrans %}
-          {% if keyword %}({{keyword}}){% endif %}
-        </h2>
-
-        <div class="value-container">
-          <div class="chart_container chart_container--big">
-            <h3 class="chart_container__title">{% trans "Broken Down by Month" %}</h3>
-            <div class="chart_container__content">
-              <div id="bounty_universe_chart"></div>
+          <div class="value-container">
+            <div class="chart_container chart_container--big">
+              <h3 class="chart_container__title">{% trans "Broken Down by Quarter" %}</h3>
+              <div class="chart_container__content">
+                <div id="bounty_universe_chart"></div>
+              </div>
             </div>
-          </div>
 
-          <div class="chart_container">
-            <h3 class="chart_container__title" style="margin-right:2rem;">{% trans "and by Type" %}</h3>
-            <div class="chart_container__content chart_container--flex">
-              <div class="bounty-status-list">
-                <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp;{% trans "Bounties" %}</p>
-                <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp;{% trans "Tips" %}</p>
-                <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp;{% trans "Grants" %}</p>
-                <p><span class="box box_4"></span> &nbsp;&nbsp;&nbsp;{% trans "Kudos" %}</p>
-                <p><span class="box box_5"></span> &nbsp;&nbsp;&nbsp;{% trans "Ads" %}</p>
-                <p><span class="box box_6"></span> &nbsp;&nbsp;&nbsp;{% trans "Ecosystem" %}</p>
+            <div class="chart_container">
+              <h3 class="chart_container__title" style="margin-right:2rem;">{% trans "and by Type" %}</h3>
+              <div class="chart_container__content chart_container--flex">
+                <div class="bounty-status-list">
+                  <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp;{% trans "Bounties" %}</p>
+                  <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp;{% trans "Tips" %}</p>
+                  <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp;{% trans "Grants" %}</p>
+                  <p><span class="box box_4"></span> &nbsp;&nbsp;&nbsp;{% trans "Kudos" %}</p>
+                  <p><span class="box box_5"></span> &nbsp;&nbsp;&nbsp;{% trans "Ads" %}</p>
+                  <p><span class="box box_6"></span> &nbsp;&nbsp;&nbsp;{% trans "Ecosystem" %}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <script>
-          document.max_bounty_history = {{max_bounty_history}};
-          document.bounty_history = {{bounty_history|safe}};
-        </script>
-      </div>
-    </div>
-
-    <div class="content-block content-block--grey">
-      <div class="container">
-        <p class="promo-text">
-          In <span style="margin: 3px 3px; font-weight: bold;">{{prev_month_name}}</span>, Gitcoin facilitated $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount|floatformat:0}}k in value transfer</span>.  That's about $<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount_hourly|floatformat:0}}/hour</span>, for every hour during {{prev_month_name_short}} ($<span style="margin: 3px 3px;font-weight: bold;">{{last_month_amount_hourly_business_hours|floatformat:0}}/business-hour</span>).
-        </p>
-        <p class="promo-text" style="margin-top: 20px;">
-          Since its <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank">launch</a>
-          in <b>November 2017</b>, Gitcoin has helped <b>{{funders|intcomma}}</b> funders reach an audience of
-          <b>{{audience|intcomma}}</b> developers.  Gitcoin has facilitated <b>{{transactions|intcomma}}</b> complete transactions
-          to <b>{{recipients|intcomma}}</b> unique coders.
-        </p>
-      </div>
-    </div>
-
-    <div class="content-block content-block--blue-grey">
-      <div class="container" id="results_hero">
-        <h2 class="content-block__title">{% trans "Gitcoin Platform-Wide Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <div class="platform-stats-container">
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
-            <p class="single-stat__subtitle">{% trans "Monthly Active Developers" %}</p>
-            <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
-            <h3 class="single-stat__title">{{ total_gmv_rounded }}</h3>
-            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
-            <p class="single-stat__fineprint">({{transactions|intcomma}} Transactions)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
-            <h3 class="single-stat__title">${{last_month_amount_hourly_business_hours|floatformat:0}}</h3>
-            <p class="single-stat__subtitle">{% trans "Value Created/Business-Hour" %}</p>
-            <p class="single-stat__fineprint">(assumes 40 business hours per week⚡️)</p>
-          </div>
+          <script>
+            document.max_bounty_history = {{max_bounty_history}};
+            document.bounty_history = {{bounty_history|safe}};
+          </script>
         </div>
       </div>
-    </div>
 
-    <div class="content-block content-block--blue-grey">
-      <div class="container" id="results_hero">
-        <h2 class="content-block__title mb-0">{% trans "Gitcoin Bounties Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <h5 class="mt-0 pt-1">Bounties are a way of delegating development work to the Gitcoin community.  Place a bounty and do more faster, today.</h5>
-        <div class="platform-stats-container">
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/media-start-time.svg" %}" />
-            <h3 class="single-stat__title">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
-            <p class="single-stat__subtitle">{% trans "Median Bounty Start Time" %}</p>
-            <p class="single-stat__fineprint">(after Funding)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/median-turnaround-time.svg" %}" />
-            <h3 class="single-stat__title">{{ bounty_average_turnaround }}</h3>
-            <p class="single-stat__subtitle">{% trans "Median Bounty Turnaround Time" %}</p>
-            <p class="single-stat__fineprint">(after Start Work)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
-            <h3 class="single-stat__title">${{ bounties_gmv }}</h3>
-            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
-            <p class="single-stat__fineprint">(from {{no_bounties}} bounties + {{no_tips}} tips)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/hourly-rate-distribution.svg" %}" />
-            <h3 class="single-stat__title">{{ hourly_rate_distribution }}</h3>
-            <p class="single-stat__subtitle">{% trans "Hourly Rate Distribution" %}</p>
-            <p class="single-stat__fineprint">(for most bounties; <a href="#price_per_hour">more details here</a>)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/bounty-completion-rate.svg" %}" />
-            <h3 class="single-stat__title">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
-            <p class="single-stat__subtitle">{% trans "Bounty Completion Rate" %}</p>
-            <p class="single-stat__fineprint">(after Start Work)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/length.svg" %}" />
-            <h3 class="single-stat__title">{{ hours|floatformat:0|intcomma }}</h3>
-            <p class="single-stat__subtitle">{% trans "Hours Worked" %}</p>
-            <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
+      <div class="content-block content-block--grey">
+        <div class="container">
+          <p class="promo-text">
+            In <span style="margin: 3px 3px; font-weight: bold;">{{prev_quarter_name}}</span>, Gitcoin facilitated $<span style="margin: 3px 3px;font-weight: bold;">{{last_quarter_amount|floatformat:1}}m in value transfer</span>.  That's about $<span style="margin: 3px 3px;font-weight: bold;">{{last_quarter_amount_hourly|floatformat:0}}/hour</span>, for every hour during {{prev_quarter_name_short}} ($<span style="margin: 3px 3px;font-weight: bold;">{{last_quarter_amount_hourly_business_hours|floatformat:0}}/business-hour</span>).
+          </p>
+          <p class="promo-text" style="margin-top: 20px;">
+            Since its <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank">launch</a>
+            in <b>November 2017</b>, Gitcoin has helped <b>{{funders|intcomma}}</b> funders reach an audience of
+            <b>{{audience|intcomma}}</b> earners.  Gitcoin has facilitated <b>{{transactions|intcomma}}</b> complete transactions
+            to <b>{{recipients|intcomma}}</b> unique earners.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="content-block content-block--blue-grey">
+        <div class="container" id="results_hero">
+          <h2 class="content-block__title">{% trans "Gitcoin Platform-Wide Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+          <div class="platform-stats-container">
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
+              <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
+              <p class="single-stat__subtitle">{% trans "Monthly Active Developers" %}</p>
+              <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+              <h3 class="single-stat__title">{{ total_gmv_rounded }}</h3>
+              <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+              <p class="single-stat__fineprint">({{transactions|intcomma}} Transactions)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
+              <h3 class="single-stat__title">${{last_quarter_amount_hourly_business_hours|floatformat:0}}</h3>
+              <p class="single-stat__subtitle">{% trans "Value Created/Business-Hour" %}</p>
+              <p class="single-stat__fineprint">(assumes 40 business hours per week⚡️)</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-
-    <div class="content-block content-block--blue-grey">
-      <div class="container" id="results_hero">
-        <h2 class="content-block__title mb-1">{% trans "Gitcoin Grants Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <h5 class="mt-0 pt-1">Gitcoin Grants is like a crypto-style patreon.  Raise money from supporters large & small, and earn even more from our quarterly matching rounds!</h5>
-        <div class="platform-stats-container">
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/GMV.svg" %}" />
-            <h3 class="single-stat__title">{{ num_grants }}</h3>
-            <p class="single-stat__subtitle">{% trans "Grants" %}</p>
-            <p class="single-stat__fineprint"></p>
+      <div class="content-block content-block--blue-grey">
+        <div class="container" id="results_hero">
+          <h2 class="content-block__title mb-0">{% trans "Gitcoin Bounties Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+          <h5 class="mt-0 pt-1">Bounties are a way of delegating development work to the Gitcoin community.  Place a bounty and do more faster, today.</h5>
+          <div class="platform-stats-container">
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/media-start-time.svg" %}" />
+              <h3 class="single-stat__title">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
+              <p class="single-stat__subtitle">{% trans "Median Bounty Start Time" %}</p>
+              <p class="single-stat__fineprint">(after Funding)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/median-turnaround-time.svg" %}" />
+              <h3 class="single-stat__title">{{ bounty_average_turnaround }}</h3>
+              <p class="single-stat__subtitle">{% trans "Median Bounty Turnaround Time" %}</p>
+              <p class="single-stat__fineprint">(after Start Work)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+              <h3 class="single-stat__title">${{ bounties_gmv }}</h3>
+              <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+              <p class="single-stat__fineprint">(from {{no_bounties}} bounties + {{no_tips}} tips)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/hourly-rate-distribution.svg" %}" />
+              <h3 class="single-stat__title">{{ hourly_rate_distribution }}</h3>
+              <p class="single-stat__subtitle">{% trans "Hourly Rate Distribution" %}</p>
+              <p class="single-stat__fineprint">(for most bounties; <a href="#price_per_hour">more details here</a>)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/bounty-completion-rate.svg" %}" />
+              <h3 class="single-stat__title">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
+              <p class="single-stat__subtitle">{% trans "Bounty Completion Rate" %}</p>
+              <p class="single-stat__fineprint">(after Start Work)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/length.svg" %}" />
+              <h3 class="single-stat__title">{{ hours|floatformat:0|intcomma }}</h3>
+              <p class="single-stat__subtitle">{% trans "Hours Worked" %}</p>
+              <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
+            </div>
           </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
-            <h3 class="single-stat__title">${{ grants_gmv }}</h3>
-            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
-            <p class="single-stat__fineprint">({{ no_contributions }} Contributions)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/matching_rounds.svg" %}" />
-            <h3 class="single-stat__title">{{ num_matching_rounds|floatformat:0 }}</h3>
-            <p class="single-stat__subtitle">{% trans "No. Matching Rounds" %}</p>
-            <p class="single-stat__fineprint">(<a href="https://twitter.com/owocki/status/1279092094720598017" target="new">see the growth of these matching rounds</a>)</p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
-            <h3 class="single-stat__title">${{ median_contribution }}</h3>
-            <p class="single-stat__subtitle">{% trans "Median Contribution" %}</p>
-            <p class="single-stat__fineprint">(${{ avg_contribution }} Average)</p>
-          </div>
+        </div>
       </div>
-    </div>
-    </div>
 
 
-    <div class="row mt-2 pb-2 text-center">
-      <div class="col">
-        <h2>Leaderboards</h2>
+      <div class="content-block content-block--blue-grey">
+        <div class="container" id="results_hero">
+          <h2 class="content-block__title mb-1">{% trans "Gitcoin Grants Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+          <h5 class="mt-0 pt-1">Gitcoin Grants is like a crypto-style patreon.  Raise money from supporters large & small, and earn even more from our quarterly matching rounds!</h5>
+          <div class="platform-stats-container">
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/GMV.svg" %}" />
+              <h3 class="single-stat__title">{{ num_grants }}</h3>
+              <p class="single-stat__subtitle">{% trans "Grants" %}</p>
+              <p class="single-stat__fineprint"></p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+              <h3 class="single-stat__title">${{ grants_gmv }}</h3>
+              <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+              <p class="single-stat__fineprint">({{ no_contributions }} Contributions)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/matching_rounds.svg" %}" />
+              <h3 class="single-stat__title">{{ num_matching_rounds|floatformat:0 }}</h3>
+              <p class="single-stat__subtitle">{% trans "No. Matching Rounds" %}</p>
+              <p class="single-stat__fineprint">(<a href="https://twitter.com/owocki/status/1375278049420144645" target="new">see the growth of these matching rounds</a>)</p>
+            </div>
+            <div class="single-stat">
+              <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
+              <h3 class="single-stat__title">${{ median_contribution }}</h3>
+              <p class="single-stat__subtitle">{% trans "Median Contribution" %}</p>
+              <p class="single-stat__fineprint">(${{ avg_contribution }} Average)</p>
+            </div>
+        </div>
       </div>
-    </div>
-
-    <nav id="leaderboard_nav" class="nav nav-tabs">
-      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Earners</a>
-      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/payers?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Funders</a>
-      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/tokens?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Tokens</a>
-      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/keywords?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Keywords</a>
-      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/countries?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Countries</a>
-      <a class="nav-link" href="#top-kudos-artists">Kudos Artists</a>
-      <a class="nav-link" href="#top-kudos-collectors">Kudos Collectors</a>
-      <a class="nav-link" href="#top-kudos-senders">Kudos Senders</a>
-    </nav>
-
-    <div id="leaderboard" class="activity_stream container">
-
-    <div class="row mt-3 pb-2 text-center align-items-center always_show hidden">
-      <div class="col">
-        <a class="button button--primary" role="button" href='{% url "_leaderboard" %}'
-           target="_blank" rel="noopener noreferrer">{% trans "View Leaderboard" %}</a>
-        <a class="button button--primary" role="button" href='/users'
-           target="_blank" rel="noopener noreferrer">{% trans "User Directory" %}</a>
       </div>
-    </div>
 
-    <div id="general_leaderboard" class="leaderboard_target mt-2" style="text-align: center;">
-        Click a tab above to see a leaderboard
-    </div>
-    {% if not keyword and kudos_tokens %}
-      <div id="kudos_leaderboard" class="content-block content-block--white text-align-center">
-        <div class="" id="">
+      <div class="row mt-2 pb-2 text-center">
+        <div class="col">
+          <h2>Gitcoin Grants: The Growth Engine that Could</h2>
+        </div>
+      </div>
 
-          <div class="row">
-            <div class="col-md-12 p-1">
-              {% for kudos_leaderboard in kudos_leaderboards %}
-            <div id="{{kudos_leaderboard.0|slugify}}" class="col-md-12 p-1 hidden leaderboard_target">
-              <div class="justify-content-center align-items-center p-3 pt-1 mt-1 ">
-                <p style="text-align: center; font-size: 0.9rem;">Kudos is a digital collectible + a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
-              </div>
+      <div class="row mt-2 pb-2 text-center">
+        <div class="col">
+  <iframe    src="https://metabase.gitcoin.co/public/question/437a0ed4-bcb7-41eb-af63-e67c0965d200"    frameborder="0"    width="100%"    height="600"    allowtransparency></iframe>
+        </div>
+      </div>
 
-              <h4 class="m-1 p-1">{{kudos_leaderboard.0}}</h4>
+      <div class="row mt-2 pb-2 text-center">
+        <div class="col">
+          <h2>Quarterly Leaderboard</h2>
+        </div>
+      </div>
 
-                {% for kudos in kudos_leaderboard.1 %}
-                  <p>
-                    <a href="/{{kudos.0}}/kudos">
-                    <img style="height: 40px;
-                      width: 40px; border-radius: 20px;" data-src="/dynamic/avatar/{{kudos.0}}">
-                      @{{kudos.0}}
-                    </a>
-                    has {{kudos_leaderboard.2}} {{kudos.2|length}} Kudos that have been sold for {{kudos.1}} ETH in {{kudos.3}} kudo transactions:
-                    <div>
+      <nav id="leaderboard_nav" class="nav nav-tabs">
+        <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard?cadence=quarterly&keyword=all&product=all' data-targetsearch='table.table'>Earners</a>
+        <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/payers?cadence=quarterly&keyword=all&product=all' data-targetsearch='table.table'>Funders</a>
+        <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/tokens?cadence=quarterly&keyword=all&product=all' data-targetsearch='table.table'>Tokens</a>
+        <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/keywords?cadence=quarterly&keyword=all&product=all' data-targetsearch='table.table'>Keywords</a>
+        <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/countries?cadence=quarterly&keyword=all&product=all' data-targetsearch='table.table'>Countries</a>
+        <a class="nav-link" href="#top-kudos-artists">Kudos Artists</a>
+        <a class="nav-link" href="#top-kudos-collectors">Kudos Collectors</a>
+        <a class="nav-link" href="#top-kudos-senders">Kudos Senders</a>
+      </nav>
+
+      <div id="leaderboard" class="activity_stream container">
+
+      <div class="row mt-3 pb-2 text-center align-items-center always_show hidden">
+        <div class="col">
+          <a class="btn btn-primary" role="button" href='{% url "_leaderboard" %}'
+            target="_blank" rel="noopener noreferrer">{% trans "View Leaderboard" %}</a>
+          <a class="btn btn-primary" role="button" href='/users'
+            target="_blank" rel="noopener noreferrer">{% trans "User Directory" %}</a>
+        </div>
+      </div>
+
+      <div id="general_leaderboard" class="leaderboard_target mt-2" style="text-align: center;">
+          Click a tab above to see a leaderboard
+      </div>
+      {% if not keyword and kudos_tokens %}
+        <div id="kudos_leaderboard" class="content-block content-block--white text-align-center">
+          <div class="" id="">
+
+            <div class="row">
+              <div class="col-md-12 p-1">
+                {% for kudos_leaderboard in kudos_leaderboards %}
+              <div id="{{kudos_leaderboard.0|slugify}}" class="col-md-12 p-1 hidden leaderboard_target">
+                <div class="justify-content-center align-items-center p-3 pt-1 mt-1 ">
+                  <p style="text-align: center; font-size: 0.9rem;">Kudos is a digital collectible + a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
+                </div>
+
+                <h4 class="m-1 p-1">{{kudos_leaderboard.0}}</h4>
+
+                  {% for kudos in kudos_leaderboard.1 %}
+                    <p>
                       <a href="/{{kudos.0}}/kudos">
-                        {% for ele in kudos.2|slice:"0:50" %}
-                        <img style="height: 40px;
-                        width: 40px;" data-src="/dynamic/kudos/{{ele}}/slug">
-                        {% endfor %}
+                      <img style="height: 40px;
+                        width: 40px; border-radius: 20px;" data-src="/dynamic/avatar/{{kudos.0}}">
+                        @{{kudos.0}}
                       </a>
-                    </div>
-                  </p>
+                      has {{kudos_leaderboard.2}} {{kudos.2|length}} Kudos that have been sold for {{kudos.1}} ETH in {{kudos.3}} kudo transactions:
+                      <div>
+                        <a href="/{{kudos.0}}/kudos">
+                          {% for ele in kudos.2|slice:"0:50" %}
+                          <img style="height: 40px;
+                          width: 40px;" data-src="/dynamic/kudos/{{ele}}/slug">
+                          {% endfor %}
+                        </a>
+                      </div>
+                    </p>
+                  {% endfor %}
+                </div>
                 {% endfor %}
               </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+
+      </div>
+
+
+      <div class="content-block content-block--grey">
+        <div class="container" >
+          <h2 class="content-block__title">{{hackathons | length }} {% trans "Virtual Hackathons" %} worth ${{hackathon_total|floatformat:0|intcomma}}.</h2>
+
+          <div class="hackathon-breakdown">
+            {% for hackathon in hackathons %}
+              <div class="{% if forloop.counter > 7 %}hidden{%endif%}" >
+                {% if hackathon.1.logo %}
+                  <img data-src="{{hackathon.1.logo}}"/>
+                {%else %}
+                  <img data-src="/dynamic/avatar/gitcoinbot"/>
+                {%endif %}
+                <h4>{{hackathon.0.name}}</h4>
+                {% if hackathon.1.num_bounties and hackathon.1.total_volume > 1 %}
+                  <p>{{hackathon.1.num_bounties}} Bounties</p>
+                  <p>${{hackathon.1.total_volume|floatformat:0|intcomma}} In Prizes</p>
+                {% endif %}
+                <p>{{hackathon.1.range}}</p>
+                <a href="{% url 'hackathon' hackathon.0.slug %}">View Prize Explorer</a>
+              </div>
+            {% endfor %}
+            <h4>
+            <a class="btn btn-primary view_more" role="button" href="#">{% trans "See more" %}</a>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row mt-5 pb-5 text-center">
+        <div class="col">
+          <h2>Platform Activities</h2>
+          {% bundle css file activity_stream %}
+            <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+          {% endbundle %}
+        </div>
+      </div>
+      <div id="activities" class="activity_stream container">
+        {% include 'shared/activity_container.html' %}
+      </div>
+
+      <div class="row mt-5 pb-5 text-center">
+        <div class="col">
+          <a class="btn btn-primary" role="button" href="/activity">{% trans "See more activity" %}</a>
+        </div>
+      </div>
+
+      {% if not keyword %}
+        <div class="content-block content-block--white">
+          <div class="container" id="price_per_hour">
+            <h2 class="content-block__title">{% trans "Hourly Rates of Bounties" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+
+            <div class="row mt-5 pb-5 text-center">
+              <div class="col">
+                <iframe src="{% url 'viz_sscatterplot' %}?keyword={{keyword}}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
+              </div>
+            </div>
+
+            <h2 class="bounty-list-title">{% trans "Hourly Rates Vary by Bounty Size" %}</h2>
+            <div class="bounty-grid">
+              {% for the_title, hrd in hourly_rate_distribution_by_range.items %}
+                {% if hrd %}
+                  <div class="single-bounty">
+                    <div class="single-bounty__title">{{the_title | title}}</div>
+                    <div class="single-bounty__label">{% trans "Bounties Pay" %}</div>
+                    <div class="single-bounty__payout">{{hrd}}/hr</div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <h2 class="bounty-list-title">{% trans "And By Skill" %}</h2>
+            <div class="bounty-grid">
+              {% for the_title, hrd in skill_rate_distribution_by_range.items %}
+                {% if hrd %}
+                  <div class="single-bounty">
+                    <div class="single-bounty__title">{{the_title | title}}</div>
+                    <div class="single-bounty__label">{% trans "Bounties Pay" %}</div>
+                    <div class="single-bounty__payout">{{hrd}}/hr</div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="row mt-5 pb-5 text-center">
+              <div class="col">
+                <a class="btn btn-primary" role="button" href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/"
+                  target="_blank" rel="noopener noreferrer">{% trans "Read More about Pricing on Gitcoin" %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+
+      {% if not keyword and top_quests %}
+        <div class="content-block content-block--grey">
+          <div class="container" id="bounty_universe">
+            <h2 class="content-block__title">{% trans "Top Quests" %}</h2>
+
+            <div class="row">
+              <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center p-3 ">
+                <p style="text-align: center; font-size: 0.9rem;">Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
+                Want to give it a shot? <a href="/quests">Explore Quests Today!</a>
+              </p>
+              </div>
+              <div class="col-md-12 p-3">
+                <div>
+                  {% for quest in top_quests %}
+                    <a href="{{quest.url}}" title="{{quest.title}}">
+                      <img data-src="{{quest.img}}" alts="{{quest.title}}: {{quest.plays}} plays" title="{{quest.title}}: {{quest.plays}} plays"  style="max-width: 100px; max-height: 100px; margin: 5px;">
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="content-block content-block--blue-grey">
+        <div class="container" id="testimonials" style="max-height: 700px; overflow-y: scroll;">
+          <h2 class="content-block__title content-block__title--small-margin">{% trans "Testimonials" %}</h2>
+          <p class="content-block__subtitle">from real Gitcoin community members</p>
+          <div class="row py-1">
+            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+              <iframe style="width:100%; max-width: 600px; height: 400px; " src="https://www.youtube.com/embed/hpqHJCiqXzA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <div id=tweets>
+          </div>
+
+
+          {% comment %}
+          <div class="row py-1">
+            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            </div>
+          </div>
+          {% endcomment %}
+
+
+        </div>
+      </div>
+
+      <div class="content-block content-block--white">
+        <div class="container" id="bounty_jdi">
+          <h2 class="content-block__title">{% trans "Joe Dominance Index" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+          <div class="row py-1">
+            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+              <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and the name of Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
+            </div>
+            <script>
+              document.jdi_ticks = [0, 20, 40, 60, 80, 100];
+              document.jdi_history = {{jdi_history|safe}};
+            </script>
+
+            <div class="col-12">
+              <div id="jdi_chart" height="600"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block content-block--white">
+        <div class="container" id="bounty_jdi">
+          <h2 class="content-block__title">{% trans "Reviews" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+          <div class="row py-1">
+            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+              <p style="text-align: center; font-size: 0.9rem;">Feedback is a gift.  Here are some anonymized reviews left from & to users on the Gitcoin network   </p>
+            </div>
+            <div class="col-12" style="font-size: 14px; max-height: 700px; overflow-y: scroll;">
+              {% for review in reviews %}
+                <div class="pt-2 pb-2" style="{% cycle 'background-color: #eee;' '' %}">
+                  <span style="font-style: italic;">{{review.1}}</span>
+                  |
+                  <span class="static-stars my-3">
+                    {% for i in ratings %}
+                      <i class="far fa-star {% if review.0 != 0 and i <= review.0 %}fas{% endif %}"></i>
+                    {% endfor %}
+                    |
+                    <small class="text-muted">several days ago</small>
+                  </span>
+                </div>
               {% endfor %}
             </div>
           </div>
         </div>
       </div>
-    {% endif %}
 
+      <div class="content-block content-block--white" id="repo_transaction">
+        <div class="container" >
+          <h2 class="content-block__title">{% trans "Coder Engagement Breakdown" %} {% if keyword %}({{keyword}}){% endif %}</h2>
 
-    </div>
-
-
-    <div class="content-block content-block--grey">
-      <div class="container" >
-        <h2 class="content-block__title">{{hackathons | length }} {% trans "Virtual Hackathons" %} worth ${{hackathon_total|floatformat:0|intcomma}}.</h2>
-
-        <div class="hackathon-breakdown">
-          {% for hackathon in hackathons %}
-            <div class="{% if forloop.counter > 7 %}hidden{%endif%}" >
-              {% if hackathon.1.logo %}
-                <img src="{{hackathon.1.logo}}"/>
-              {%else %}
-                <img src="/dynamic/avatar/gitcoinbot"/>
-              {%endif %}
-              <h4>{{hackathon.0.name}}</h4>
-              {% if hackathon.1.num_bounties and hackathon.1.total_volume > 1 %}
-                <p>{{hackathon.1.num_bounties}} Bounties</p>
-                <p>${{hackathon.1.total_volume|floatformat:0|intcomma}} In Prizes</p>
-              {% endif %}
-              <p>{{hackathon.1.range}}</p>
-              <a href="{% url 'hackathon' hackathon.0.slug %}">View Prize Explorer</a>
+          <div class="bounty-status-breakdown">
+            <div id="repo_chart"></div>
+            <div class="bounty-status-list">
+              {% blocktrans %}
+                <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_inactive }}% inactive </p>
+              {% endblocktrans %}
+              {% blocktrans %}
+                <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_active_30d }}% active last 30d</p>
+              {% endblocktrans %}
+              {% blocktrans %}
+                <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp; {{ pct_active_90d }}% more active last 90d </p>
+              {% endblocktrans %}
             </div>
-          {% endfor %}
-          <h4>
-          <a class="button button--primary view_more" role="button" href="#">{% trans "See more" %}</a>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="row mt-5 pb-5 text-center">
-      <div class="col">
-        <h2>Platform Activities</h2>
-        <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-      </div>
-    </div>
-    <div id="activities" class="activity_stream container">
-      {% include 'shared/activity_container.html' %}
-    </div>
-
-    <div class="row mt-5 pb-5 text-center">
-      <div class="col">
-        <a class="button button--primary" role="button" href="/activity">{% trans "See more activity" %}</a>
-      </div>
-    </div>
-
-    <div class="content-block content-block--blue-grey">
-      <div class="container">
-        <h2 class="content-block__title">
-          {% trans "Top Tribes" %} {% if keyword %}({{keyword}}){% endif %}
-        </h2>
-        <div class="col-md-12 align-items-center">
-          <div id="repo_repos">
-            {% for org in top_orgs %}
-              <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" />
-              </a>
-            {% endfor %}
           </div>
-        </div>
-        <div class="row mt-5 pb-3 text-center">
-          <div class="col">
-            <a class="button button--primary" role="button" href="/tribes">{% trans "See more Tribes" %}</a>
-          </div>
-        </div>
 
-
+          <script>
+            document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Active Last 30 Days', {{ count_active_30d }}],  [ 'Active Last 90 Days', {{ count_active_90d }}],  [ 'Inactive', {{ count_inactive }} ] ];
+          </script>
+        </div>
       </div>
-    </div>
 
-
-    {% if not keyword %}
       <div class="content-block content-block--white">
-        <div class="container" id="price_per_hour">
-          <h2 class="content-block__title">{% trans "Hourly Rates of Bounties" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <div class="container" id="">
+          <h2 class="content-block__title">{% trans "Coder Community Growth" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+          <div class="row py-5">
+            <script>
+              document.slack_ticks = {{slack_ticks|safe}};
+              document.members_history = {{members_history|safe}};
+            </script>
 
-          <div class="row mt-5 pb-5 text-center">
-            <div class="col">
-              <iframe src="{% url 'viz_sscatterplot' %}?keyword={{keyword}}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
+            <div class="col-12">
+              <div id="community_chart" height="600"></div>
             </div>
-          </div>
-
-          <h2 class="bounty-list-title">{% trans "Hourly Rates Vary by Bounty Size" %}</h2>
-          <div class="bounty-grid">
-            {% for the_title, hrd in hourly_rate_distribution_by_range.items %}
-              {% if hrd %}
-                <div class="single-bounty">
-                  <div class="single-bounty__title">{{the_title | title}}</div>
-                  <div class="single-bounty__label">{% trans "Bounties Pay" %}</div>
-                  <div class="single-bounty__payout">{{hrd}}/hr</div>
-                </div>
-              {% endif %}
-            {% endfor %}
-          </div>
-
-          <h2 class="bounty-list-title">{% trans "And By Skill" %}</h2>
-          <div class="bounty-grid">
-            {% for the_title, hrd in skill_rate_distribution_by_range.items %}
-              {% if hrd %}
-                <div class="single-bounty">
-                  <div class="single-bounty__title">{{the_title | title}}</div>
-                  <div class="single-bounty__label">{% trans "Bounties Pay" %}</div>
-                  <div class="single-bounty__payout">{{hrd}}/hr</div>
-                </div>
-              {% endif %}
-            {% endfor %}
           </div>
 
           <div class="row mt-5 pb-5 text-center">
+            <div class="col ">
+              <p class="mt-5 mb-5"> {% trans "Meet software developers, futurists, and funders who are building web3" %} </p>
+              <a class="btn btn-primary" role="button" href="{% url "slack" %}">{% trans "Join Our Slack" %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-block content-block--white" id="repo_transaction">
+        <div class="container" >
+          <h2 class="content-block__title">{% trans "The Path to Break-Even" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+              <p style="text-align: center; font-size: 0.9rem;">We believe that companies, even those in the blockchain-ecosystem, should fully prove out their founder-mission-product-market fit & have revenue.  We believe that software developers at Gitcoin Core need to put food on the table, pay their mortages, and buy extra hard drives -- and that we can do it while living our values; especially without become a rent-seeking-monopolistic intermediary.  We're a little crazy like that! 😜 As such, we are founding members of the <a href="https://bit.ly/web3businessmodels">ETHMagicians Business Models Ring</a> and are practicing what we preach; building a network that makes money to cover it's burn.  Follow our path to a breakeven monthly runrate below: </p>
+            </div>
+
+          <div class="bounty-status-breakdown">
+            <div id="breakeven_chart"></div>
+            <div class="bounty-status-list">
+              {% blocktrans %}
+                <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_breakeven }}% burn covered by revenue</p>
+              {% endblocktrans %}
+              {% blocktrans %}
+                <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_not_breakeven }}% burn not covered by revenue</p>
+              {% endblocktrans %}
+            </div>
+          </div>
+
+          <script>
+            document.breakeven_stats = [  [ 'Repo', 'Bounties' ], [ 'Burn not covered by revenue', {{ pct_not_breakeven }}],  [ 'burn covered by revenue', {{ pct_breakeven }}] ];
+          </script>
+        </div>
+      </div>
+      <div class="content-block content-block--white">
+        <div class="container" id="3d_humans_container">
+        <h2 class="content-block__title">{% trans "By & For 3-Dimensional Humans" %}</h2>
+        <p style="margin-bottom: 10px;">
+          Each user of Gitcoin is a 3-dimensional human, with a different background, skillset, life experience, communication patterns, and biases.  Our <a href="/mission">Mission</a> is to provide new & better economic opportunities to 3-dimensional humans, inclusive of all cultures and geographies, across the world.  BUIDLing is global!
+        </p>
+          <div class="row mt-2 pb-2 text-center">
+            <div class="col" style="">
+              <div id="mesh_network_jobs_holder">
+                <img data-src="{% static 'v2/images/animated_avatars.gif' %}" id="3d_humans" style="border-radius: 100px; max-width: 100%;">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2 pb-5 text-center">
             <div class="col">
-              <a class="button button--primary" role="button" href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/"
-                target="_blank" rel="noopener noreferrer">{% trans "Read More about Pricing on Gitcoin" %}</a>
+              <p class="mt-2 mb-5"> {% trans "We've invested in some fun & engaging tools to allow you to represent yourself fully online, like an avatar builder, a fully customizable profile, and a social network share it with! Want to get started customizing your profile?" %} </p>
+              <a class="btn btn-primary" role="button" href="/profile/">{% trans "View your Profile" %}</a>
             </div>
           </div>
         </div>
       </div>
-    {% endif %}
 
-
-    {% if not keyword and top_quests %}
-      <div class="content-block content-block--grey">
-        <div class="container" id="bounty_universe">
-          <h2 class="content-block__title">{% trans "Top Quests" %}</h2>
-
-          <div class="row">
-            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center p-3 ">
-              <p style="text-align: center; font-size: 0.9rem;">Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
-              Want to give it a shot? <a href="/quests">Explore Quests Today!</a>
-            </p>
-            </div>
-            <div class="col-md-12 p-3">
-              <div>
-                {% for quest in top_quests %}
-                  <a href="{{quest.url}}" title="{{quest.title}}">
-                    <img data-src="{{quest.img}}" alts="{{quest.title}}: {{quest.plays}} plays" title="{{quest.title}}: {{quest.plays}} plays"  style="max-width: 100px; max-height: 100px; margin: 5px;">
-                  </a>
-                {% endfor %}
+      <div class="content-block content-block--white">
+        <div class="container" id="mesh_network_jobs">
+        <h2 class="content-block__title">{% trans "TLDR - We're building a Mesh Network of" %} {{keyword|title}} {% trans "Jobs" %}</h2>
+        <p style="margin-bottom: 10px;">
+          Each node in this visualization below is a person who has engaged on Gitcoin, and  each edge in our is a transaction between two people on the network.
+        </p>
+          <div class="row mt-2 pb-2 text-center">
+            <div class="col" style="height: 600px;">
+              <div id="mesh_network_jobs_holder">
+                <img data-src="{% static 'v2/images/results/mesh_network.gif' %}" id="mesh_preview" style=" max-width: 100%;">
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    {% endif %}
 
-    <div class="content-block content-block--blue-grey">
-      <div class="container" id="testimonials" style="max-height: 700px; overflow-y: scroll;">
-        <h2 class="content-block__title content-block__title--small-margin">{% trans "Testimonials" %}</h2>
-        <p class="content-block__subtitle">from real Gitcoin community members</p>
-        <div class="row py-1">
-          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <iframe style="width:100%; max-width: 600px; height: 400px; " src="https://www.youtube.com/embed/hpqHJCiqXzA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-        </div>
-
-        <div id=tweets>
-        </div>
-
-
-        {% comment %}
-        <div class="row py-1">
-          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-          </div>
-        </div>
-        {% endcomment %}
-
-
-      </div>
-    </div>
-
-    <div class="content-block content-block--white">
-      <div class="container" id="bounty_jdi">
-        <h2 class="content-block__title">{% trans "Joe Dominance Index" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <div class="row py-1">
-          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and the name of Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
-          </div>
-          <script>
-            document.jdi_ticks = [0, 20, 40, 60, 80, 100];
-            document.jdi_history = {{jdi_history|safe}};
-          </script>
-
-          <div class="col-12">
-            <div id="jdi_chart" height="600"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-block content-block--white">
-      <div class="container" id="bounty_jdi">
-        <h2 class="content-block__title">{% trans "Reviews" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <div class="row py-1">
-          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <p style="text-align: center; font-size: 0.9rem;">Feedback is a gift.  Here are some anonymized reviews left from & to users on the Gitcoin network   </p>
-          </div>
-          <div class="col-12" style="font-size: 14px; max-height: 700px; overflow-y: scroll;">
-            {% for review in reviews %}
-              <div class="pt-2 pb-2" style="{% cycle 'background-color: #eee;' '' %}">
-                <span style="font-style: italic;">{{review.1}}</span>
-                |
-                <span class="static-stars my-3">
-                  {% for i in ratings %}
-                    <i class="far fa-star {% if review.0 != 0 and i <= review.0 %}fas{% endif %}"></i>
-                  {% endfor %}
-                  |
-                  <small class="text-muted">several days ago</small>
-                </span>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-block content-block--white" id="repo_transaction">
-      <div class="container" >
-        <h2 class="content-block__title">{% trans "Coder Engagement Breakdown" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-
-        <div class="bounty-status-breakdown">
-          <div id="repo_chart"></div>
-          <div class="bounty-status-list">
-            {% blocktrans %}
-              <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_inactive }}% inactive </p>
-            {% endblocktrans %}
-            {% blocktrans %}
-              <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_active_30d }}% active last 30d</p>
-            {% endblocktrans %}
-            {% blocktrans %}
-              <p><span class="box box_3"></span> &nbsp;&nbsp;&nbsp; {{ pct_active_90d }}% more active last 90d </p>
-            {% endblocktrans %}
-          </div>
-        </div>
-
-        <script>
-          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Active Last 30 Days', {{ count_active_30d }}],  [ 'Active Last 90 Days', {{ count_active_90d }}],  [ 'Inactive', {{ count_inactive }} ] ];
-        </script>
-      </div>
-    </div>
-
-    <div class="content-block content-block--white">
-      <div class="container" id="">
-        <h2 class="content-block__title">{% trans "Coder Community Growth" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <div class="row py-5">
-          <script>
-            document.slack_ticks = {{slack_ticks|safe}};
-            document.members_history = {{members_history|safe}};
-          </script>
-
-          <div class="col-12">
-            <div id="community_chart" height="600"></div>
-          </div>
-        </div>
-
-        <div class="row mt-5 pb-5 text-center">
-          <div class="col ">
-            <p class="mt-5 mb-5"> {% trans "Meet software developers, futurists, and funders who are building web3" %} </p>
-            <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "Join Our Slack" %}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-block content-block--white" id="repo_transaction">
-      <div class="container" >
-        <h2 class="content-block__title">{% trans "The Path to Break-Even" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <p style="text-align: center; font-size: 0.9rem;">We believe that companies, even those in the blockchain-ecosystem, should fully prove out their founder-mission-product-market fit & have revenue.  We believe that software developers at Gitcoin Core need to put food on the table, pay their mortages, and buy extra hard drives -- and that we can do it while living our values; especially without become a rent-seeking-monopolistic intermediary.  We're a little crazy like that! 😜 As such, we are founding members of the <a href="https://bit.ly/web3businessmodels">ETHMagicians Business Models Ring</a> and are practicing what we preach; building a network that makes money to cover it's burn.  Follow our path to a breakeven monthly runrate below: </p>
-          </div>
-
-        <div class="bounty-status-breakdown">
-          <div id="breakeven_chart"></div>
-          <div class="bounty-status-list">
-            {% blocktrans %}
-              <p><span class="box box_2"></span> &nbsp;&nbsp;&nbsp; {{ pct_breakeven }}% burn covered by revenue</p>
-            {% endblocktrans %}
-            {% blocktrans %}
-              <p><span class="box box_1"></span> &nbsp;&nbsp;&nbsp; {{ pct_not_breakeven }}% burn not covered by revenue</p>
-            {% endblocktrans %}
-          </div>
-        </div>
-
-        <script>
-          document.breakeven_stats = [  [ 'Repo', 'Bounties' ], [ 'Burn not covered by revenue', {{ pct_not_breakeven }}],  [ 'burn covered by revenue', {{ pct_breakeven }}] ];
-        </script>
-      </div>
-    </div>
-    <div class="content-block content-block--white">
-      <div class="container" id="3d_humans_container">
-      <h2 class="content-block__title">{% trans "By & For 3-Dimensional Humans" %}</h2>
-      <p style="margin-bottom: 10px;">
-        Each user of Gitcoin is a 3-dimensional human, with a different background, skillset, life experience, communication patterns, and biases.  Our <a href="/mission">Mission</a> is to provide new & better economic opportunities to 3-dimensional humans, inclusive of all cultures and geographies, across the world.  BUIDLing is global!
-      </p>
-        <div class="row mt-2 pb-2 text-center">
-          <div class="col" style="">
-            <div id="mesh_network_jobs_holder">
-              <img data-src="{% static 'v2/images/animated_avatars.gif' %}" id="3d_humans" style="border-radius: 100px; max-width: 100%;">
+          <div class="row mt-5 pb-5 text-center">
+            <div class="col">
+              <p class="mt-2 mb-5"> {% trans "Want to learn more about where our little web3 pirate ship is going?" %} </p>
+              <a class="btn btn-primary" role="button" href="https://gitcoin.co/blog/open-source-money-will-buidl-the-open-source-ecosystem/">{% trans "Get Mesh-ey; Read our Vision" %}</a>
             </div>
           </div>
         </div>
-
-        <div class="row mt-2 pb-5 text-center">
-          <div class="col">
-            <p class="mt-2 mb-5"> {% trans "We've invested in some fun & engaging tools to allow you to represent yourself fully online, like an avatar builder, a fully customizable profile, and a social network share it with! Want to get started customizing your profile?" %} </p>
-            <a class="button button--primary" role="button" href="/profile/">{% trans "View your Profile" %}</a>
-          </div>
-        </div>
       </div>
-    </div>
 
-    <div class="content-block content-block--white">
-      <div class="container" id="mesh_network_jobs">
-      <h2 class="content-block__title">{% trans "TLDR - We're building a Mesh Network of" %} {{keyword|title}} {% trans "Jobs" %}</h2>
-      <p style="margin-bottom: 10px;">
-        Each node in this visualization below is a person who has engaged on Gitcoin, and  each edge in our is a transaction between two people on the network.
-      </p>
-        <div class="row mt-2 pb-2 text-center">
-          <div class="col" style="height: 600px;">
-            <div id="mesh_network_jobs_holder">
-              <img data-src="{% static 'v2/images/results/mesh_network.gif' %}" id="mesh_preview" style=" max-width: 100%;">
-            </div>
-          </div>
-        </div>
-
-        <div class="row mt-5 pb-5 text-center">
-          <div class="col">
-            <p class="mt-2 mb-5"> {% trans "Want to learn more about where our little web3 pirate ship is going?" %} </p>
-            <a class="button button--primary" role="button" href="https://gitcoin.co/blog/open-source-money-will-buidl-the-open-source-ecosystem/">{% trans "Get Mesh-ey; Read our Vision" %}</a>
-          </div>
-        </div>
+      <div style="font-size: 12px; text-align: center;" class="p-2">
+        Disclaimer: The numbers on this page are good-faith representations of the Gitcoin network, but are provided without warranty.  While we strive to provide these numbers as accurately as possible, we cannot guarantee their 100% accuracy. Do not make any financial, legal, or other decisions based upon these numbers.
       </div>
+
+      {% include 'shared/footer.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'shared/footer_scripts.html' %}
+
+
+      <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
     </div>
-
-    <div style="font-size: 12px; text-align: center;" class="p-2">
-      Disclaimer: The numbers on this page are good-faith representations of the Gitcoin network, but are provided without warranty.  While we strive to provide these numbers as accurately as possible, we cannot guarantee their 100% accuracy. Do not make any financial, legal, or other decisions based upon these numbers.
-    </div>
-
-    {% include 'shared/footer.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-
-
-    <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
-
   </body>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>

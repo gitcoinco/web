@@ -12,6 +12,7 @@ if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dar
 document.addEventListener('DOMContentLoaded', subscribe, false);
 
 function subscribe() {
+
   if (!document.contxt['github_handle']) {
     return;
   }
@@ -58,7 +59,14 @@ function activateDarkMode() {
 
 function activateMode(mode) {
   CURRENT_MODE = mode;
-
+  // reference the nav
+  const nav = document.getElementsByClassName('navbar');
   // Toggle root dark-mode class
+
   document.documentElement.classList.toggle('dark-mode', mode === DARK_MODE);
+  // Toggle class definition on nav
+  nav[0].className = nav[0].className.replace(
+    (mode === DARK_MODE ? 'navbar-light' : 'navbar-dark'),
+    (mode === DARK_MODE ? 'navbar-dark' : 'navbar-light')
+  );
 }

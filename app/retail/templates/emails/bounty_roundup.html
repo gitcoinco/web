@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -19,6 +19,10 @@
 {% block content %}
 <style type="text/css"> #outlook a{padding: 0;}.ReadMsgBody{width: 100%;}.ExternalClass{width: 100%;}.ExternalClass *{line-height: 100%;}body{margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}table, td{border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;}img{border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}p{display: block; margin: 13px 0;}</style> <style type="text/css"> .hidden{display: none !important; width: 0 !important; height: 0 !important; max-height: 0 !important;}@media all and (max-width: 480px){.mj-column-per-19{width: 100% !important;}.mj-column-per-32{width: 100% !important;}.mj-column-per-100{width: 100% !important;}.desktop-labels{display: none !important; width: 0 !important; height: 0 !important; max-height: 0 !important;}.opinionScale>table>tbody>tr>td{padding: 0px 25px !important;}.titleText div{font-size: 19px !important;}.description{padding: 0px !important;}.descriptionText{font-size: 14px !important;}.opinionScaleStep{padding: 5px 0px !important;}.opinionScaleStep a{line-height: 50px !important;}.opinionScaleStep table tbody tr td tbody tr td{font-size: 16px !important; border-right: 1px solid #94AE89 !important; border-radius: 2px !important;}.mobile-label{display: block !important; width: auto !important; height: auto !important; max-height: none !important; padding: 10px 0px 5px 0px !important;}}</style> <style type="text/css"> @media only screen and (min-width:480px){.mj-column-per-100{width: 100% !important;}.mj-column-per-19{width: 19.2% !important;}.mj-column-per-32{width: 32% !important;}}</style>
 <style>
+  body {
+    background-color: #E0FDDF !important;
+  }
+
   .intro li{
     margin-top: 15px;
     margin-bottom: 15px;
@@ -32,7 +36,7 @@
   }
 
   .intro a{
-    color: #3E00FF;
+    color: #6F3FF5;
   }
 
   .text-left {
@@ -49,7 +53,7 @@
   }
 
   .highlight li a{
-    color:#3E00FF;
+    color:#6F3FF5;
     text-decoration:none;
     font-size:16px;
     line-height:26px;
@@ -76,7 +80,16 @@
   }
 
   #footer {
-    background-color: rgb(22, 125, 86) !important;
+    background-color: #5ECA82 !important;
+    color: white !important;
+  }
+
+  #copyright p , #legal-contact p{
+    color: white !important;
+  }
+
+  #footer a {
+    color: #489D68 !important;
   }
 </style>
 
@@ -95,7 +108,7 @@
   </div>
       <div class="full-width text-center" style="padding:20px 0; background-color: #f2f6f9; text-align: center; margin: 0 auto;">
         <div class="sponsor-text" style="margin-left: auto; margin-right: auto;">
-        <p style=" color: #000000;">Sponsored by <a href="{{ sponsor.link }}" style=" color: #3E00FF;">{{ sponsor.name }}</a></p>
+        <p style=" color: #000000;">Sponsored by <a href="{{ sponsor.link }}" style=" color: #6F3FF5;">{{ sponsor.name }}</a></p>
         <a href="{{ sponsor.link }}" style="text-align: center; color: #000000; font-weight: bold; font-size: 16px; display: block; text-decoration: none; line-height: 19px;">{{ sponsor.title }}</a>
         {% for paragraph in sponsor.body %}
           <p style="font-size: 14px; text-align: center; line-height: 18px;">{{ paragraph | safe }}</p>
@@ -118,18 +131,18 @@
   {% for new in news %}
   <div style="text-align: left">
     <h4 style="padding-top:40px; font-weight:500; text-transform:capitalize; font-size:1.1rem; text-align:left; margin-top:10px">
-      <a href="{{ new.link }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">
+      <a href="{{ new.link }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">
         {{ new.title }}
       </a>
     </h4>
     <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em;">
       {{ new.description }}
     </p>
-    <code>via <a href="{% if new.profile_url %}{{ new.profile_url }}{% else %}https://gitcoin.co/{{ new.via }}{% endif %}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">@{{ new.via }}</a> {% if new.source %} / <a href="{{ new.source_url }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ new.source }}</a>{% endif %}</code>
+    <code>via <a href="{% if new.profile_url %}{{ new.profile_url }}{% else %}https://gitcoin.co/{{ new.via }}{% endif %}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">@{{ new.via }}</a> {% if new.source %} / <a href="{{ new.source_url }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ new.source }}</a>{% endif %}</code>
   </div>
   {% endfor %}
   <center>
-    <br><strong>Got something to share? <a href="https://forms.gle/G5LJkVWaFYTyqesA9" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Submit it here</a>.</strong>
+    <br><strong>Got something to share? <a href="https://forms.gle/G5LJkVWaFYTyqesA9" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Submit it here</a>.</strong>
   </center>
   <br>
 
@@ -147,10 +160,10 @@
       {% for hackathon in updates.hackathons.active %}
       <div>
         <h3 style="font-weight:bold; text-transform:capitalize; line-height:30px; color:#000; margin-bottom:10px; margin-top:40px; font-size:1.4rem; text-align: left">
-          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
+          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
         </h3>
         <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em; text-align: left">
-        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>.{% endif %}
+        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>.{% endif %}
         </p>
         <br>
         <center>
@@ -163,10 +176,10 @@
       {% for hackathon in updates.hackathons.coming_soon %}
       <div class="text-left">
         <h3 style="font-weight:bold; text-transform:capitalize; line-height:30px; color:#000; margin-bottom:10px; margin-top:40px; font-size:1.4rem; text-align: left">
-          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
+          {{ hackathon.icon }} <a href="{{ hackathon.url }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">{{ hackathon.title }}</a>
         </h3>
         <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em; text-align: left">
-        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>{% endif %}.
+        {{ hackathon.description }} {% if hackathon.read_more %}<a href="{{ hackathon.read_more }}" style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">Read more</a>{% endif %}.
         </p>
         <br>
         <center>
@@ -217,8 +230,8 @@
       {% for highlight in highlights %}
         <li style="margin-top: 2.5em; text-align: left;">
           <p>
-          - <a style="color:#3E00FF; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>:
-            {{ highlight.what }} {% if highlight.id %}<a style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em" href="https://gitcoin.co/townsquare?tab=activity:{{ highlight.id }}">Like or comment</a>{% endif %}
+          - <a style="color:#6F3FF5; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>:
+            {{ highlight.what }} {% if highlight.id %}<a style="color:#6F3FF5; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em" href="https://gitcoin.co/townsquare?tab=activity:{{ highlight.id }}">Like or comment</a>{% endif %}
           </p>
         </li>
       {% endfor %}
@@ -237,7 +250,7 @@
     {% for kudos in new_kudos %}
       <a href='{{ kudos.airdrop }}'>
         <img style="max-width: 100%; border-style:none; vertical-align:middle" valign="middle" src="{{ kudos.img_url }}" width="300px" alt="{{kudos.name}}">
-        <p style="color:#3E00FF; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">  <strong>Get Your Kudos</strong></p>
+        <p style="color:#6F3FF5; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">  <strong>Get Your Kudos</strong></p>
       </a>
 
     {% endfor %}
@@ -247,4 +260,16 @@
   </div>
 
   <div class="mj-container container" style="border-radius: 5px; background-color: #FFFFFF; width: 100%;"> <div style="margin:0px auto;max-width:600px;background:#FFFFFF;"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; background: #FFFFFF; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:30px 0px 10px 0px;"> <div style="margin: 0px auto; max-width: 600px; width: 96%;" class="title"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:0px 28px 20px 28px;"> <div class="mj-column-per-100 outlook-group-fix" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 100%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr class="titleText"> <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="left"> <div style="cursor:auto;color:#000000;font-family:Font, 'System font', Helvetica, Arial;font-size:22px;line-height:1.4;text-align:left;"> Rate this issue</div></td></tr></tbody> </table> </div></td></tr></tbody> </table> </div><div style="margin: 0px auto; max-width: 600px; width: 96%;" class="hidden description"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:0px 28px 20px 28px;"> <div class="mj-column-per-100 outlook-group-fix" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 100%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr class="descriptionText"> <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="left"> <div style="cursor:auto;color:#000000;font-family:Font, 'System font', Helvetica, Arial;font-size:16px;line-height:22px;text-align:left;"> </div></td></tr></tbody> </table> </div></td></tr></tbody> </table> </div><div style="margin: 0px auto; max-width: 600px; display: none; width: 0; height: 0; max-height: 0;" class="mobile-label"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:0px 0px 5px 0px;"> <div style="cursor:auto;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:13px;font-weight:200;line-height:22px;text-align:center;"> Yuk 🤮 </div></td></tr></tbody> </table> </div><div style="margin:0px auto;max-width:600px;" class="opinionScale"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:0px 28px;"> <div class="mj-column-per-19 outlook-group-fix opinionScaleStep" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 19.2%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="center"> <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="border:none;border-bottom:1px solid #94AE89;border-left:1px solid #94AE89;border-radius:3px 0px 0px 3px;border-top:1px solid #94AE89;color:#94AE89;cursor:auto;padding:0px;" align="center" valign="middle" bgcolor="#f9faf9"><a href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=1" style="text-decoration:none;background:#f9faf9;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:15px;font-weight:normal;line-height:4;text-transform:none;margin:0;padding:0;display:block;" target="_blank">1</a></td></tr></tbody> </table> </td></tr></tbody> </table> </div><div class="mj-column-per-19 outlook-group-fix opinionScaleStep" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 19.2%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="center"> <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="border:none;border-bottom:1px solid #94AE89;border-left:1px solid #94AE89;border-radius:0px;border-top:1px solid #94AE89;color:#94AE89;cursor:auto;padding:0px;" align="center" valign="middle" bgcolor="#f9faf9"><a href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=2" style="text-decoration:none;background:#f9faf9;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:15px;font-weight:normal;line-height:4;text-transform:none;margin:0;padding:0;display:block;" target="_blank">2</a></td></tr></tbody> </table> </td></tr></tbody> </table> </div><div class="mj-column-per-19 outlook-group-fix opinionScaleStep" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 19.2%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="center"> <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="border:none;border-bottom:1px solid #94AE89;border-left:1px solid #94AE89;border-radius:0px;border-top:1px solid #94AE89;color:#94AE89;cursor:auto;padding:0px;" align="center" valign="middle" bgcolor="#f9faf9"><a href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=3" style="text-decoration:none;background:#f9faf9;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:15px;font-weight:normal;line-height:4;text-transform:none;margin:0;padding:0;display:block;" target="_blank">3</a></td></tr></tbody> </table> </td></tr></tbody> </table> </div><div class="mj-column-per-19 outlook-group-fix opinionScaleStep" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 19.2%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="center"> <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="border:none;border-bottom:1px solid #94AE89;border-left:1px solid #94AE89;border-radius:0px;border-top:1px solid #94AE89;color:#94AE89;cursor:auto;padding:0px;" align="center" valign="middle" bgcolor="#f9faf9"><a href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=4" style="text-decoration:none;background:#f9faf9;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:15px;font-weight:normal;line-height:4;text-transform:none;margin:0;padding:0;display:block;" target="_blank">4</a></td></tr></tbody> </table> </td></tr></tbody> </table> </div><div class="mj-column-per-19 outlook-group-fix opinionScaleStep" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 19.2%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:0px;" align="center"> <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse: separate; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="border:none;border-bottom:1px solid #94AE89;border-left:1px solid #94AE89;border-radius:0px 3px 3px 0px;border-right:1px solid #94AE89;border-top:1px solid #94AE89;color:#94AE89;cursor:auto;padding:0px;" align="center" valign="middle" bgcolor="#f9faf9"><a href="https://gitcoin.typeform.com/to/QrU9WYH9?prefilled_answer=5" style="text-decoration:none;background:#f9faf9;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:15px;font-weight:normal;line-height:4;text-transform:none;margin:0;padding:0;display:block;" target="_blank">5</a></td></tr></tbody> </table> </td></tr></tbody> </table> </div></td></tr></tbody> </table> </div><div style="margin: 0px auto; max-width: 600px; display: none; width: 0; height: 0; max-height: 0;" class="mobile-label"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:5px;"> <div style="cursor:auto;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:13px;font-weight:200;line-height:22px;text-align:center;"> Awesome! 🤩 </div></td></tr></tbody> </table> </div><div style="margin: 0px auto; max-width: 600px; word-break: break-all;" class="desktop-labels"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:0px;"> <div class="mj-column-per-32 outlook-group-fix" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 32%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:10px 0px 10px 28px;" align="left"> <div style="cursor:auto;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:13px;font-weight:200;line-height:22px;text-align:left;"> Yuk 🤮</div></td></tr></tbody> </table> </div><div class="mj-column-per-32 outlook-group-fix" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 32%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:10px 0px;" align="center"> <div style="cursor:auto;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:13px;font-weight:200;line-height:22px;text-align:center;"> Meh 😬</div></td></tr></tbody> </table> </div><div class="mj-column-per-32 outlook-group-fix" style="vertical-align: top; display: inline-block; direction: ltr; font-size: 13px; text-align: left; width: 32%;"> <table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0" style="border-spacing: 0px;"> <tbody> <tr> <td style="word-wrap:break-word;font-size:0px;padding:10px 28px 10px 0px;" align="right"> <div style="cursor:auto;color:#94AE89;font-family:Font, 'System font', Helvetica, Arial;font-size:13px;font-weight:200;line-height:22px;text-align:right;"> Awesome! 🤩</div></td></tr></tbody> </table> </div></td></tr></tbody> </table> </div></td></tr></tbody> </table> </div><div style="margin:0px auto;max-width:600px;background:#FFFFFF;"> <table role="presentation" cellpadding="0" cellspacing="0" style="font-size: 0px; width: 100%; background: #FFFFFF; border-spacing: 0px;" align="center" border="0" width="100%"> <tbody> <tr> <td style="text-align:center;vertical-align:top;direction:ltr;font-size:0px;padding:0px 0px 20px 0px;"> <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border-spacing: 0px;" align="center" border="0"> <tbody> <tr> <td style="width:1px;"><img alt height="1px" src="https://api.segment.io/v1/pixel/track?data=eyJ3cml0ZUtleSI6IjVDSEZpcE9WUzcxNUd1M2NSMkp0SkZQck1IYzM1aDRrIiwidXNlcklkIjoxMzc0MzAxOCwiZXZlbnQiOiJwcmVzZW50X2NvbnZlcnNhdGlvbiIsInByb3BlcnRpZXMiOnsiYWNjb3VudF9pZCI6IjAxRDhKWDcyTkpSQzdaQlJNWkc5V1A0VjhFIiwid3Nfb3duZXJfYWNjb3VudF9pZCI6MCwiZm9ybV9pZCI6IlFyVTlXWUg5IiwiZm9ybV91aWQiOiJRclU5V1lIOSIsImRpc3RyaWJ1dGlvbl9jaGFubmVsIjoiZW1haWwifX0=" style="border:none;border-radius:0px;display:block;font-size:13px;outline:none;text-decoration:none;width:100%;height:1px;" width="1"></td></tr></tbody> </table> </td></tr></tbody> </table> </div></div>
+{% endblock %}
+
+{% block footer_links %}
+  <a href="https://www.twitter.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/twitter-mint.png" %}"></a>
+
+  <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium-mint.png" %}"></a>
+
+  <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook-mint.png" %}"></a>
+
+  <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit-mint.png" %}"></a>
+
+  <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack-mint.png" %}"></a>
 {% endblock %}

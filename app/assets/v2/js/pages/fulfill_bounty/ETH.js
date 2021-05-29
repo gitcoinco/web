@@ -125,7 +125,9 @@ const ethFulfillBounty = data => {
             document.ipfsDataHash
           ).send({
             from: selectedAccount
-          }).then((result) => {web3Callback(result)}).catch(err => {
+          }).then((result) => {
+            web3Callback(result);
+          }).catch(err => {
             web3Callback(undefined, err);
             console.log(err);
           });
@@ -133,5 +135,6 @@ const ethFulfillBounty = data => {
       }
     }
   };
+
   ipfs.addJson(ipfsFulfill, _callback);
-}
+};

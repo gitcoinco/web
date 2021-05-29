@@ -1,0 +1,163 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+    {% bundle css file grants_simple %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
+    {% endbundle %}
+  </head>
+
+  <body class="interior {{ active }} grant g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash px-0">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'grants/nav.html' %}
+      </div>
+
+      <grants-ingest-contributions class="container-fluid bg-lightblue pb-5 pt-5" v-cloak id="gc-grants-ingest-contributions" inline-template>
+        <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
+          <div class="text-center">
+            <img style="width:6rem;" src="{% static "v2/images/grants/torchbearer.svg" %}">
+          </div>
+
+          <div class="container mt-3 mb-3 bg-white position-relative rounded col-lg-6 mx-auto">
+            <div class="row p-4 p-md-5">
+
+              <div class="col-12 text-center mb-4">
+                <h1 class="text-center font-title-xl">Add Missing Contributions</h1>
+                <p class="text-center font-smaller-1 text-black-60">
+                  If you completed a Gitcoin Grants checkout, but don't see evidence of this in your
+                  email or the Gitcoin interface, you can use this form to fix that! This form supports both L1 transactions and L2 transactions (on zkSync).
+                </p>
+              </div>
+
+              {% csrf_token %}
+
+              <!-- Instructions -->
+              <div class="col-12 mb-2">
+                <h5 class="mt-4">Instructions</h5>
+                <hr>
+              </div>
+
+              <!-- Amount -->
+              <div class="col-12 mb-3">
+                <p class="font-body mb-1">
+                  <ul>
+                    <li>Make sure your wallet is connected to mainnet with the same address you used to checkout</li>
+                    <li>If you donated using L1 (Standard Checkout), please enter the transaction hash</li>
+                    <li>If you donated using L2 (zkSync Checkout), please enter your wallet address</li>
+                    <li>Only enter one of these at a time</li>
+                  </ul>
+                </p>
+              </div>
+
+              <!-- Collect Information -->
+              <div class="col-12 mb-2">
+                <h5 class="mt-4">Contribution Data</h5>
+                <hr>
+              </div>
+
+              <!-- Transaction hash -->
+              <div class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">Transaction Hash (for Standard Checkout on L1)</label>
+                <input id="amount" v-model="form.txHash" name="amount" class="form__input form__input-lg" />
+              </div>
+              <div class="col-12 text-danger" v-if="errors.txHash">
+                [[errors.txHash]]
+              </div>
+
+              <!-- User address -->
+              <div class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">Wallet Address (for zkSync Checkout)</label>
+                <input id="amount" v-model="form.userAddress" name="amount" class="form__input form__input-lg" />
+              </div>
+              <div class="col-12 text-danger" v-if="errors.address">
+                [[errors.address]]
+              </div>
+
+              <!-- Profile to ingest for, only usable by staff -->
+              {% if is_staff %}
+                <div class="col-12 mb-3">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase">Profile Handle</label>
+                  <p>
+                    <span class="font-weight-bold">NOTE</span>:
+                    This field is only viewable to staff. Enter the username of the user you are ingesting for
+                    <span class="font-weight-bold">OR</span>
+                    enter your own username to ingest your own contributions.
+                  </p>
+                  <input id="amount" v-model="form.handle" name="amount" class="form__input form__input-lg" />
+                </div>
+                <div class="col-12 text-danger" v-if="errors.handle">
+                  [[errors.handle]]
+                </div>
+              {% endif %}
+
+              <div class="col-12 text-danger" v-if="errors.invalidForm">
+                [[errors.invalidForm]]
+              </div>
+
+            </div>
+          </div>
+
+          <div class="container mt-5">
+            <div class="row">
+              <div class="col-12 text-center">
+                <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="ingest($event)">Add Contributions</button>
+              </div>
+              <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
+                Please review the form errors and try again.
+              </div>
+              <div class="col-12 text-center" v-else-if="submitted">
+                Processing your contributions. This may take a minute or two...
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </grants-ingest-contributions>
+
+      {% include 'shared/footer.html' %}
+      {% include 'shared/current_profile.html' %}
+      {% include 'shared/analytics.html' %}
+      {% include 'grants/shared/shared_scripts.html' %}
+      {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+
+      <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+      <script src="{% static "v2/js/grants/ingest-missing-contributions.js" %}"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8"></script>
+
+      <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+      <script src="{% static "v2/js/ipfs.js" %}"></script>
+      <script src="{% static "v2/js/abi.js" %}"></script>
+
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+      <script src="{% static "v2/js/grants/shared.js" %}"></script>
+
+      <script src="{% static "v2/js/grants/new_match.js" %}"></script>
+    </div>
+  </body>
+
+<html>

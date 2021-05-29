@@ -1,46 +1,98 @@
 {% extends 'admin/change_form.html' %}
 
 {% block submit_buttons_bottom %}
-    {{ block.super }}
-    <div class="submit-row">
-        {% if 'dashboard/profile' in request.build_absolute_uri %}
-            <input type="submit" value="Impersonate" name="_impersonate" value="1">
-            {% if not original.squelches.exists %}
-                <input type="submit" value="Squelch Sybil" name="_squelch_sybil" value="1">
-            {% else %}
-                <input type="submit" value="Unsquelch Sybil" name="_unsquelch_sybil" value="1">
-            {% endif %}
-            <input type="submit" value="Recalculate Sybil Investigation" name="_recalc_sybil" value="1">
-            <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
-        {% elif 'dashboard/activity' in request.build_absolute_uri %}
-            <input type="submit" value="Make Into Nano Bounty" name="_make_nano_bounty" value="1">
-        {% elif 'arketing/roundupemail' in request.build_absolute_uri %}
-            <input type="submit" value="Send Roundup Email to myself" name="_send_roundup_email_myself" value="1">
-            <input type="submit" value="Send Roundup Email to EVERYONE (WARNING: BE CAREFUL!)" name="_send_roundup_email_everyone" onclick='javascript:if(!confirm("are you sure")){return false};' value="1">
-        {% elif 'townsquare/offer/' in request.build_absolute_uri %}
-            <input type="submit" value="Schedule Offer" name="_schedule_offer" value="1">
-            <input type="submit" value="Copy Offer" name="_copy_offer" value="1">
-        {% elif 'dashboard/tip/' in request.build_absolute_uri %}
-            <input type="submit" value="Reset Tip Redemption Status" name="_reset_tip_redemption" value="1">
-        {% elif 'economy/token/' in request.build_absolute_uri %}
-            <input type="submit" value="Approve Request" name="_approve_token" value="1">
-        {% elif 'grants/flag/' in request.build_absolute_uri %}
-            <input type="submit" value="Post Activity Feed" name="_post_flag" value="1">
-            <input type="submit" value="Post Tweet" name="_tweet" value="1">
-        {% elif 'kudos/token/' in request.build_absolute_uri %}
-            <input type="submit" value="Make into Bulk Transfer Coupon" name="btc_coupon" value="1">
-        {% elif 'grants/contribution' in request.build_absolute_uri %}
-            <input type="submit" value="Pull Contrib Status" name="_update_tx_status" value="1">
-            {% if not original.success %}
-                <input type="submit" value="Notify User of Contribution Failure" name="_notify_contribution_failure" value="1">
-            {% endif %}
-        {% elif 'kudos/tokenrequest' in request.build_absolute_uri %}
-            <input type="submit" value="Change Owner + Mint + Sync Kudos" name="_change_owner_mint_kudos" value="1">
-            <input type="submit" value="Mint + Sync Kudos" name="_mint_kudos" value="1">
-            <input type="submit" value="Reject Kudos" name="_reject_kudos" value="1">
-            <input type="submit" value="Change Owner to Gitcoin" name="_change_owner" value="1">
-        {% elif 'quests/quest' in request.build_absolute_uri %}
-            <input type="submit" value="Approve Request" name="_approve_quest" value="1">
-        {% endif %}
-    </div>
+{{ block.super }}
+  <div class="submit-row">
+    {% if 'dashboard/profile' in request.build_absolute_uri %}
+      Abuse Prevention Stuff:
+      <input type="submit" value="Block User" name="_block_user" value="1">
+      <input type="submit" value="Block User IPs" name="_block_ips" value="1">
+      {% if not original.squelches.exists %}
+          <input type="submit" value="ShadowBan" name="_squelch_sybil" value="1">
+      {% else %}
+          <input type="submit" value="UnshadowBan" name="_unsquelch_sybil" value="1">
+      {% endif %}
+      <br>
+      <hr>
+      <br>
+      Admin Stuff:
+      <input type="submit" value="Impersonate" name="_impersonate" value="1">
+      <br>
+      <hr>
+      <br>
+      Maintenance Stuff:
+      <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
+      <input type="submit" value="Recalculate Sybil Investigation" name="_recalc_sybil" value="1">
+    {% elif 'kudostransfer' in request.build_absolute_uri %}
+      {% if original.txid == 'pending_celery' or original.tx_status == 'dropped' or original.tx_status == 'pending' %}
+        <input type="submit" value="Broadcast Txn" name="_broadcast_txn" value="1">
+      {% endif %}
+    {% elif 'dashboard/activity' in request.build_absolute_uri %}
+      <input type="submit" value="Make Into Nano Bounty" name="_make_nano_bounty" value="1">
+    {% elif 'marketing/roundupemail' in request.build_absolute_uri %}
+      <input type="submit" value="Send Roundup Email to myself" name="_send_roundup_email_myself" value="1">
+      <input type="submit" value="Send Roundup Email to EVERYONE (WARNING: BE CAREFUL!)" name="_send_roundup_email_everyone" onclick='javascript:if(!confirm("are you sure")){return false};' value="1">
+    {% elif 'townsquare/offer/' in request.build_absolute_uri %}
+      <input type="submit" value="Schedule Offer" name="_schedule_offer" value="1">
+      <input type="submit" value="Copy Offer" name="_copy_offer" value="1">
+    {% elif 'dashboard/tip/' in request.build_absolute_uri %}
+      <input type="submit" value="Reset Tip Redemption Status" name="_reset_tip_redemption" value="1">
+      <input type="submit" value="Make into MultiTip & Halve Tip to {{original.metadata.max_redemptions}}x2 Redemptions"
+        name="halve_tip"
+        onclick='javascript:if(!confirm("are you sure?  this will make the tip be able to redeemed 2x the times as it currently can, and will cut the tip size in half.")){return false};'
+        value="1">
+    {% elif 'economy/token/' in request.build_absolute_uri %}
+      <input type="submit" value="Approve Request" name="_approve_token" value="1">
+    {% elif 'grants/flag/' in request.build_absolute_uri %}
+      <input type="submit" value="Post Activity Feed" name="_post_flag" value="1">
+    {% elif 'grants/grant/' in request.build_absolute_uri %}
+      Recalc
+      {% if  original.is_clr_eligible %}
+        <input type="submit" value="Recalculate CLR" name="_calc_clr" value="1">
+      {% endif %}
+      <br>
+      <hr>
+      <br>
+      Abuse Prevention Stuff:
+      <input type="submit" value="Mark as Fraud" name="_mark_fraud" value="1">
+      <br>
+      <hr>
+      <br>
+      Approval Stuff:
+      {% if not original.active %}
+        <textarea name="more_info" style="background-color:white; color: black; border: 1px solid;">Can you prove your ownership of this brand?</textarea>
+        <input type="submit" value="Request More Info" name="_request_more_info" value="1">
+        | 
+        <input type="submit" value="Approve Grant" name="_approve_grant" value="1">
+      {% else %}
+      N/A
+      {% endif %}
+    {% elif 'grantcollection/' in request.build_absolute_uri %}
+      <input type="submit" value="Generate Cache" name="_generate_cache" value="1">
+    {% elif 'grantclr/' in request.build_absolute_uri %}
+      <input type="submit" value="Recalculate CLR" name="_recalculate_clr" value="1">
+      <input type="submit" value="Reset CLR calculations for this round" name="_set_current_grant_clr_calculations_to_false" value="1">
+      <input type="submit" value="Reset all CLR calculations for all rounds" name="_set_all_grant_clr_calculations_to_false" value="1">
+    {% elif 'granttype/' in request.build_absolute_uri %}
+      <input type="submit" value="Refresh grants type cache" name="_refresh_grants_type_cache" value="1">
+      <input type="submit" value="Refresh grants clr cache" name="_refresh_grant_clr_cache" value="1">
+      <input type="submit" value="Refresh grants category size cache" name="_refresh_grant_category_size_cache" value="1">
+    {% elif 'kudos/token/' in request.build_absolute_uri %}
+      <input type="submit" value="Make into Bulk Transfer Coupon" name="btc_coupon" value="1">
+    {% elif 'grants/contribution' in request.build_absolute_uri %}
+      <input type="submit" value="Pull Contrib Status" name="_update_tx_status" value="1">
+      {% if not original.success %}
+        <input type="submit" value="Notify User of Contribution Failure" name="_notify_contribution_failure" value="1">
+      {% endif %}
+    {% elif 'kudos/tokenrequest' in request.build_absolute_uri %}
+      <input type="submit" value="Change Owner + Mint + Sync Kudos" name="_change_owner_mint_kudos" value="1">
+      <input type="submit" value="Mint + Sync Kudos" name="_mint_kudos" value="1">
+      <input type="submit" value="Reject Kudos" name="_reject_kudos" value="1">
+      <input type="submit" value="Change Owner to Gitcoin" name="_change_owner" value="1">
+    {% elif 'quests/quest' in request.build_absolute_uri %}
+      <input type="submit" value="Approve Request" name="_approve_quest" value="1">
+    {% elif 'dashboard/hackathonevent/' in request.build_absolute_uri %}
+      <input type="submit" value="Update Related Bounties Expiry Date" name="_bulk_update_expiry" value="1">
+    {% endif %}
+  </div>
 {% endblock %}
