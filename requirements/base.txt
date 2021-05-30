@@ -118,3 +118,4 @@ docutils==0.17.1
 unidecode==1.2.0
 drf-flex-fields==0.9.1
 pandas
+didkit==0.2.1

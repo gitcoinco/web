@@ -1,5 +1,7 @@
+import didkit
 import json
 import uuid
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -101,3 +103,78 @@ def passport(request, pattern):
         ],
     }
     return JsonResponse(context)
+
+
+def verifiable_credential(request):
+    passport = None
+
+    player = request.GET.get('coinbase')
+    network = request.GET.get('network')
+
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'error', 'msg': 'You must login'})
+
+    cost_of_forgery = round((request.user.profile.trust_bonus - 1) * 100, 1)
+    personhood_score = cost_of_forgery
+    
+    did = 'did:pkh:eth:' + player
+    issuer = 'did:web:home.theosirian.com'
+    issuance_date = datetime.utcnow().replace(microsecond=0)
+    expiration_date = issuance_date + timedelta(weeks=4)
+
+    credential = {
+        "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            {
+                "ProofOfPersonhood": {
+                    "@id": "https://gitcoin.co/ProofOfPersonhood",
+                    "@context": {
+                        "@protected": True,
+                        "@version": 1.1,
+                        "passport": {
+                            "@id": "https://gitcoin.co/passport",
+                            "@type": "https://gitcoin.co/ProofOfPersonhoodPassport",
+                        },
+                    },
+                },
+                "ProofOfPersonhoodPassport": {
+                    "@id": "https://gitcoin.co/ProofOfPersonhoodPassport",
+                    "@context": {
+                        "@version": 1.1,
+                        "@protected": True,
+                        "personhood_score": "https://gitcoin.co/personhood_score",
+                        "cost_of_forgery": "https://gitcoin.co/cost_of_forgery",
+                    },
+                },
+            },
+        ],
+        "type": ["VerifiableCredential", "ProofOfPersonhood"],
+        "issuer": issuer,
+        "issuanceDate": issuance_date.isoformat() + "Z",
+        "expirationDate": expiration_date.isoformat() + "Z",
+        "credentialSubject": {
+            "id": did,
+        },
+        "passport": {
+            "type": ["ProofOfPersonhoodPassport"],
+            "personhood_score": personhood_score,
+            "cost_of_forgery": cost_of_forgery,
+        },
+    }
+
+    options = {
+        "proofPurpose": "assertionMethod",
+        "verificationMethod": issuer + "#default",
+    }
+
+    signed = didkit.issueCredential(
+        json.dumps(credential),
+        json.dumps(options),
+        json.dumps(settings.DIDKIT_KEY_JWK),
+    )
+
+    response = {
+        "vc":json.loads(signed),
+    }
+
+    return JsonResponse(response)

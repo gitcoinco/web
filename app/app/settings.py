@@ -911,3 +911,4 @@ CELERY_NODE = env.bool('CELERY_NODE', default=False)
 # GTC Token Distribution
 GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
 GTC_DIST_KEY = env('GTC_DIST_KEY', default='')
+DIDKIT_KEY_JWK = env.json('DIDKIT_KEY_JWK', default={})
