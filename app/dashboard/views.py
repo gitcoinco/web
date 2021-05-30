@@ -4908,7 +4908,7 @@ def hackathon_get_project(request, bounty_id, project_id=None):
 
     try:
         bounty = Bounty.objects.get(id=bounty_id)
-        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
+        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache() if profile else None
     except HackathonProject.DoesNotExist:
         pass
 
