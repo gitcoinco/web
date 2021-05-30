@@ -2246,4 +2246,48 @@ $(document).ready(function() {
 
     });
   });
+
+  $(document).on('click', '#3box_integration', function(e) {
+
+    const _3BOX_SPACE = 'gitcoin';
+    const _3BOX_FIELD = 'popp';
+
+    e.preventDefault();
+    if (document.web3network != 'rinkeby' && document.web3network != 'mainnet') {
+      _alert('Please connect your web3 wallet to mainnet + unlock it', 'danger', 1000);
+      return;
+    }
+    const accounts = web3.eth.getAccounts();
+
+    $.when(accounts).then(async(result) => {
+      const ethAddress = result[0];
+      const ethProvider = web3.currentProvider;
+
+      const box = await Box.openBox(ethAddress, ethProvider);
+      const space = await box.openSpace(_3BOX_SPACE);
+
+      await space.syncDone;
+
+      let params = {
+        'network': document.web3network
+        'coinbase': ethAddress
+      };
+
+      $.get('/passport-vc/', params, async function(response) {
+        let status = response['status'];
+
+        if (status == 'error') {
+          _alert(response['msg'], 'danger', 5000);
+          return;
+        }
+
+        const json = JSON.stringify(response.vc);
+
+        await space.public.set(_3BOX_FIELD, json);
+
+        _alert('You passport has been uploaded to 3Box', 'success', 5000);
+      });
+    });
+  });
+
 });
