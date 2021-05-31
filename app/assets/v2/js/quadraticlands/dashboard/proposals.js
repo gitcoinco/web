@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   // snapshot
-  const snapshot_api = 'https://hub.snapshot.page/api/gitcoindao/proposals';
+  const snapshot_api = 'https://hub.snapshot.page/api/gitcoindao.eth/proposals';
 
   fetch(snapshot_api).then(res => res.json()).then(data => updateSnapshotStats(data));
 
