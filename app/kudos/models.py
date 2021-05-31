@@ -222,7 +222,11 @@ class Token(SuperModel):
             float or int:  price in eth.
 
         """
-        return self.price_finney / 1000
+        price = self.price_finney
+        if self.contract.network == 'xdai':
+            from economy.utils import convert_token_to_usdt
+            price = price / convert_token_to_usdt('ETH')
+        return price / 1000
 
     @property
     def price_in_wei(self):
@@ -246,6 +250,8 @@ class Token(SuperModel):
 
     @property
     def price_in_usdt(self):
+        if self.network == 'xdai':
+            return self.price_in_eth
         from economy.utils import ConversionRateNotFoundError, convert_token_to_usdt
         if hasattr(self, 'price_usdt'):
             return self.price_usdt

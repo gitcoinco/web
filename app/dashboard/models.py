@@ -1777,6 +1777,8 @@ class SendCryptoAsset(SuperModel):
             return None
 
     def value_in_usdt_at_time(self, at_time):
+        if self.network == 'xdai' and self.tokenName == 'ETH':
+            return self.amount
         decimals = 1
         if self.tokenName in settings.STABLE_COINS:
             return float(self.amount)
