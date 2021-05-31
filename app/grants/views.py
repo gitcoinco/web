@@ -597,7 +597,6 @@ def get_grants(request):
 
     pks = list([grant.pk for grant in grants])
     if len(pks):
-        print(request.user)
         increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
     has_next = False
@@ -872,7 +871,7 @@ def grants_landing(request):
 
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
-    print(request)
+
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
@@ -906,24 +905,9 @@ def grants_by_grant_type(request, grant_type):
         if grant_stats.exists():
             grant_amount = lazy_round_number(grant_stats.first().val)
 
-    # _grants = None
-    # try:
-    #     _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category)
-    # except Exception as e:
-    #     print(e)
-    #     return redirect('/grants')
-
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
 
     now = datetime.datetime.now()
-
-    # paginator = Paginator(_grants, limit)
-    # grants = paginator.get_page(page)
-
-    # record view
-    # pks = list([grant.pk for grant in grants])
-    # if len(pks):
-    #     increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
@@ -991,9 +975,6 @@ def grants_by_grant_type(request, grant_type):
         'type': grant_type,
         'mid_back': mid_back,
         'bottom_back': bottom_back,
-        'current_partners_fund': current_partners_fund,
-        'current_partners': current_partners,
-        'past_partners': past_partners,
         'card_desc': f'{live_now}',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
         'card_type': 'summary_large_image',
