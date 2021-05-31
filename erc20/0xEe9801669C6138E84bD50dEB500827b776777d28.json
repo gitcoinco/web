@@ -1,0 +1,22 @@
+{
+  "symbol": "O3",
+  "address": "0xEe9801669C6138E84bD50dEB500827b776777d28",
+  "overview":{
+        "en": "O3 Swap Token (O3) is a governance token issued by O3 Swap. It is an important mediator to promote the development of the O3 Swap network. All participants and developers are encouraged to participate in the maintenance of the overall ecological network by staking, voting, etc. we are committed to providing a one-stop aggregation & exchange platform for users and offering developers access to an open, distributed, friendly, and secure trading environment.",
+        "zh": "O3 Swap Token（O3）是 O3Swap 发行的治理令牌。它是促进 O3 交换网络发展的重要介质。鼓励所有参与者和开发者通过入股、投票等方式参与到整体生态网络的维护中来。致力于为用户提供一站式的聚合与交流平台，为开发者提供开放、分布式、友好、安全的交易环境。"
+  },
+  "email": "contact@o3swap.com",
+  "website": "https://o3swap.com",
+  "whitepaper": "https://docs.o3swap.com/o3-swap-litepaper",
+  "state": "NORMAL",
+  "published_on": "2021-05-11",
+  "initial_price":{
+        "USD":"1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/O3_Labs",
+    "telegram": "https://t.me/O3LabsOfficial",
+    "github": "https://github.com/O3Labs",
+    "medium": "https://medium.com/o3-labs-o3-wallet"
+  }
+}
