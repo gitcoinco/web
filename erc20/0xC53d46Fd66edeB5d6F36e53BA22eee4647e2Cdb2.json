@@ -1,0 +1,19 @@
+{
+    "symbol": "ZKTR",
+    "address": "0xC53d46Fd66edeB5d6F36e53BA22eee4647e2Cdb2",
+    "overview": {
+        "en": "ZKTube is a project built and developed on Layer2 using PLONK protocol based on ZK rollup technology. It can improve scalability by converting batch transfers into a single transaction. Its essence is to compress the user state on the chain and store it in a Merkle tree and transfer the user state change to the chain, while ensuring the correctness of the user state change process under the chain through a zero-knowledge proof mechanism. The cost of directly processing user state changes on the chain is relatively high, but only using the smart contract on the chain to verify the correctness of a zero-knowledge proof PROOF is relatively low. In addition, the required remittance information is transmitted to the contract along with the certificate, which is convenient for users to verify accounts."
+    },
+    "email": "work@zktube.io",
+    "website": "https://zktube.io/",
+    "whitepaper": "https://zktube.medium.com/zktube1-0-whitepaper-8d942cbd30a3",
+    "state": "NORMAL",
+    "links": {
+        "blog": "https://discord.gg/ZhcSuxhX4S/",
+        "twitter": "https://twitter.com/zktubeofficial",
+        "telegram": "https://t.me/zkTubeGlobal",
+        "github": "https://github.com/zktube",
+        "facebook": "https://www.facebook.com/zkTube.official",
+        "medium": "https://zktube.medium.com/"
+    }
+}
