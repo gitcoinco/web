@@ -61,7 +61,7 @@ def whitepaper_new(request, ratelimited=False):
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
     if ratelimited:
-        context['msg'] = _("You're ratelimited. Please contact founders@gitcoin.co")
+        context['msg'] = _("You're ratelimited. Please contact support@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     context['role'] = request.POST.getlist('role')
