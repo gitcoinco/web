@@ -6,7 +6,7 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
 
   // 1. init rsk provider
   // const rskHost = "https://public-node.testnet.rsk.co";
-  const rskHost = 'https://public-node.rsk.co';
+  const rskHost = token_name == 'SOV' ? 'https://mainnet.sovryn.app/rpc' : 'https://public-node.rsk.co';
   const rskClient = new Web3();
 
   rskClient.setProvider(
@@ -58,7 +58,9 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
 
   } else {
 
-    tokenContract = new rskClient.eth.Contract(token_abi, token.addr);
+    const token_address = token.addr.toLowerCase();
+
+    tokenContract = new rskClient.eth.Contract(token_abi, token_address);
 
     balance = tokenContract.methods.balanceOf(
       ethereum.selectedAddress).call({ from: ethereum.selectedAddress });
@@ -74,7 +76,7 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
     data = tokenContract.methods.transfer(to_address.toLowerCase(), amountAsString).encodeABI();
 
     txArgs = {
-      to: token.addr,
+      to: token_address,
       from: ethereum.selectedAddress,
       gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
       gas: rskClient.utils.toHex(318730),
