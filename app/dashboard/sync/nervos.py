@@ -23,9 +23,8 @@ def get_nervos_txn_status(txnid, network='mainnet'):
 
     tx_response = requests.get(explorer_url, headers=HEADERS)
 
-    tx_data = tx_response.json()['data']['attributes']
-
     if tx_response.status_code == 200:
+        tx_data = tx_response.json()['data']['attributes']
         tip_block_number = requests.get(
             tip_block_number_url, headers=HEADERS
         ).json()['data']['attributes']['tip_block_number']
