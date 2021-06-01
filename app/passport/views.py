@@ -118,7 +118,8 @@ def verifiable_credential(request):
     personhood_score = cost_of_forgery
     
     did = 'did:pkh:eth:' + player
-    issuer = 'did:web:home.theosirian.com'
+
+    issuer = settings.POPP_VC_ISSUER
     issuance_date = datetime.utcnow().replace(microsecond=0)
     expiration_date = issuance_date + timedelta(weeks=4)
 

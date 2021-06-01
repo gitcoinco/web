@@ -2247,33 +2247,171 @@ $(document).ready(function() {
     });
   });
 
-  $(document).on('click', '#3box_integration', function(e) {
+  const passportCredential = (() => {
 
     const _3BOX_SPACE = 'gitcoin';
     const _3BOX_FIELD = 'popp';
 
-    e.preventDefault();
-    if (document.web3network != 'rinkeby' && document.web3network != 'mainnet') {
-      _alert('Please connect your web3 wallet to mainnet + unlock it', 'danger', 1000);
-      return;
-    }
-    const accounts = web3.eth.getAccounts();
+    const messages = {
+      auth: [
+        'Authenticate with 3Box',
+        'Authenticating with 3Box',
+        'Authenticated with 3Box'
+      ],
+      storage: [
+        `Open '${_3BOX_SPACE}' storage space on 3Box`,
+        `Opening '${_3BOX_SPACE}' storage space on 3Box`,
+        `Opened '${_3BOX_SPACE}' storage space on 3Box`
+      ],
+      request: [
+        'Issue passport credential',
+        'Issuing passport credential',
+        'Issued passport credential'
+      ],
+      variable: [
+        `Save passport credential as '${_3BOX_FIELD}'`,
+        `Saving passport credential as '${_3BOX_FIELD}'`,
+        `Saved passport credential as '${_3BOX_FIELD}'`
+      ]
+    };
 
-    $.when(accounts).then(async(result) => {
-      const ethAddress = result[0];
-      const ethProvider = web3.currentProvider;
+    const getMessage = (source, state) => {
+      if (state === true) {
+        return '<s>' + source[2] + '</s>';
+      } else if (state === false) {
+        return '<strong>' + source[1] + '</strong>';
+      }
+      return '<em>' + source[0] + '</em>';
+    };
 
-      const box = await Box.openBox(ethAddress, ethProvider);
-      const space = await box.openSpace(_3BOX_SPACE);
+    const downloadLink = () => {
+      const str = JSON.stringify(JSON.parse(credential), null, 2);
+      const encoded = encodeURIComponent(str);
 
-      await space.syncDone;
+      return `data:application/json;charset=utf-8,${encoded}`;
+    };
 
-      let params = {
-        'network': document.web3network
-        'coinbase': ethAddress
-      };
+    const title = `
+      <p><strong>3Box integration:</strong> you can save a POPP credential to 3Box.</p>
+    `;
 
-      $.get('/passport-vc/', params, async function(response) {
+    const getBody = (auth, storage, request, variable) => {
+      let list = '<ul>';
+
+      list += '<li>';
+      list += getMessage(messages.auth, auth);
+      list += '</li>';
+
+      list += '<li>';
+      list += getMessage(messages.storage, storage);
+      list += '</li>';
+
+      list += '<li>';
+      list += getMessage(messages.request, request);
+      list += '</li>';
+
+      list += '<li>';
+      list += getMessage(messages.variable, variable);
+      list += '</li>';
+
+      list += '</ul>';
+
+      if (typeof credential === 'string' && credential !== '') {
+        const renewButton = '<button type="button" id="3box_renew" class="btn btn-info">Renew Passport</button>';
+        const href = downloadLink();
+        const downloadButton = `<a href="${href}" target="_blank" class="btn btn-link">Download Passport</button>`;
+
+        return `
+          <div>
+            ${title}
+            ${list}
+            <hr/>
+            <p>You already have a passport saved on 3Box.</p>
+            <div style="display: flex;">
+              ${renewButton}
+              ${downloadButton}
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div>
+          ${title}
+          ${list}
+        </div>
+      `;
+    };
+
+    let ethAddress;
+    let ethProvider;
+    let storageBox;
+    let storageSpace;
+    let credential;
+
+    const params = () => ({
+      'network': document.web3network,
+      'coinbase': ethAddress
+    });
+
+    const modalBody = $('.modal-body .subbody');
+
+    const connect = (e) => {
+      e.preventDefault();
+      if (document.web3network != 'rinkeby' && document.web3network != 'mainnet') {
+        _alert('Please connect your web3 wallet to mainnet + unlock it', 'danger', 1000);
+        return;
+      }
+
+      modalBody.html(getBody());
+
+      const accounts = web3.eth.getAccounts();
+
+      $.when(accounts).then(async(result) => {
+        ethAddress = result[0];
+        ethProvider = web3.currentProvider;
+      
+        modalBody.html(getBody(false));
+
+        storageBox = await Box.openBox(ethAddress, ethProvider);
+
+        modalBody.html(getBody(true, false));
+
+        storageSpace = await storageBox.openSpace(_3BOX_SPACE);
+
+        await storageSpace.syncDone;
+
+        const data = await storageSpace.public.get(_3BOX_FIELD);
+
+        if (typeof data === 'string' && data !== '') {
+          // TODO: verify with DIDKit
+          // const result = DIDKit.verifyCredential(vc, JSON.stringify({
+          // proofPurpose: 'assertionMethod'
+          // }));
+          const result = {errors: []};
+
+          credential = data;
+          modalBody.html(getBody(true, true));
+
+          if (result.errors.length > 0) {
+            _alert('Your current passport has failed verification', 'danger', 5000);
+          } else {
+            _alert('You already have a valid passport on 3Box', 'warning', 5000);
+          }
+        } else {
+          issue('Your passport has been uploaded to 3Box');
+        }
+      });
+    };
+
+    const renew = () => {
+      issue('A new passport has been uploaded to 3Box');
+    };
+
+    const issue = (message) => {
+      modalBody.html(getBody(true, true, false));
+
+      $.get('/passport-vc/', params(), async function(response) {
         let status = response['status'];
 
         if (status == 'error') {
@@ -2281,13 +2419,22 @@ $(document).ready(function() {
           return;
         }
 
+        modalBody.html(getBody(true, true, true, false));
+
         const json = JSON.stringify(response.vc);
 
-        await space.public.set(_3BOX_FIELD, json);
+        await storageSpace.public.set(_3BOX_FIELD, json);
 
-        _alert('You passport has been uploaded to 3Box', 'success', 5000);
+        modalBody.html(getBody(true, true, true, true));
+
+        _alert(message, 'success', 5000);
       });
-    });
-  });
+    };
+
+    return { connect, renew };
+  })();
+
+  $(document).on('click', '#3box_integration', passportCredential.connect);
+  $(document).on('click', '#3box_renew', passportCredential.renew);
 
 });
