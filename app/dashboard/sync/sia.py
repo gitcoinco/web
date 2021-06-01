@@ -1,7 +1,7 @@
 from django.utils import timezone
 
 import requests
-from dashboard.sync.helpers import record_payout_activity
+from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
 BASE_URL = 'https://siastats.info:3500/navigator-api'
 
@@ -9,9 +9,8 @@ BASE_URL = 'https://siastats.info:3500/navigator-api'
 def find_txn_on_sia_explorer(fulfillment):
     token_name = fulfillment.token_name
 
-    funderAddress = fulfillment.bounty.bounty_owner_address
+    funderAddress = fulfillment.funder_address
     amount = fulfillment.payout_amount
-    payeeAddress = fulfillment.fulfiller_address
 
     if token_name != 'SC':
         return None
@@ -20,17 +19,17 @@ def find_txn_on_sia_explorer(fulfillment):
 
     response = requests.get(url).json()
 
-    last100_txns = response[1]['last100Transactions']
-
-    if response and response[0]['Type'] == 'address' and last100_txns:
-        for txn in last100_txns:
-            if (
-                txn['TxType'] == 'ScTx'
-                and txn['ScChange'] < 0
-                and abs(txn['ScChange']) / 10 ** 24 == amount / 10 ** 24
-                and not txn_already_used(txn['MasterHash'], token_name)
-            ):
-                return txn
+    if response:
+        last100_txns = response[1]['last100Transactions']
+        if response[0]['Type'] == 'address' and last100_txns:
+            for txn in last100_txns:
+                if (
+                    txn['TxType'] == 'ScTx'
+                    and txn['ScChange'] < 0
+                    and abs(txn['ScChange']) / 10 ** 24 == amount / 10 ** 24
+                    and not txn_already_used(txn['MasterHash'], token_name)
+                ):
+                    return txn
     return None
 
 
