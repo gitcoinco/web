@@ -4291,12 +4291,12 @@ def change_bounty(request, bounty_id):
                 value_in_token = params.get('value_in_token')
                 bounty.value_in_token = value_in_token
                 bounty.balance = value_in_token
+                bounty_increased = True
                 try:
                     bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
                     bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
                     bounty.value_in_usdt_now = bounty.value_in_usdt
                     bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
-                    bounty_increased = True
                 except ConversionRateNotFoundError as e:
                     logger.debug(e)
 
