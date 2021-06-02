@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const navbarEls = document.querySelectorAll('.gc-navbar-nav');
 
+  [...navbarEls].forEach((navbarEl) => {
+    makeMenu(navbarEl);
+  });
+});
+
+// feed in the navBarEl
+const makeMenu = (navbarEl) => {
   // debounce actions to avoid measuring too often/losing focus
   let debounceClose = false;
   let debounceMeasure = false;
@@ -18,6 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     company: {
       moveX: -80
+    },
+    profile: {
+      moveX: -300
     }
   };
 
@@ -28,17 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const $navbarSupportedContent = $('#navbarSupportedContent');
 
   // reference constant els used in the menu
-  const navbarEl = document.querySelector('.gc-navbar-nav');
   const navbarContainerEl = document.querySelector('.navbar');
-  const menuContainerEl = document.querySelector('.gc-menu-container');
   const navItemEls = document.querySelectorAll('.gc-nav-item');
-  const navLinkEls = document.querySelectorAll('.gc-nav-link');
-  const menuEls = document.querySelectorAll('.gc-menu-wrap');
   const spacerEls = document.querySelectorAll('.gc-mobile-spacer');
-  const contentEl = document.querySelector('.gc-menu-content');
-  const caretEl = document.querySelector('.gc-menu-caret');
-  const backgroundEl = document.querySelector('.gc-menu-background');
-  const submenuEls = document.querySelectorAll('.gc-menu-submenu-wrap');
+  const menuEls = document.querySelectorAll('.gc-menu-wrap');
+
+  const menuContainerEl = navbarEl.querySelector('.gc-menu-container');
+  const navLinkEls = navbarEl.querySelectorAll('.gc-nav-link');
+  const contentEl = navbarEl.querySelector('.gc-menu-content');
+
+  const caretEl = navbarEl.querySelector('.gc-menu-caret');
+  const backgroundEl = navbarEl.querySelector('.gc-menu-background');
+
+  const submenuEls = navbarEl.querySelectorAll('.gc-menu-submenu-wrap');
+
   const mobileToggleEl = document.querySelector('.navbar-toggler-icon');
 
   // fill these based on what we find in the submenuEls
@@ -55,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return [...from].reduce((carr, el) => {
       const attr = el.dataset[dataAttr];
-      const dest = document.querySelector(`.${className}-${attr}`);
+      const dest = navbarEl.querySelector(`.${className}-${attr}`);
 
       // record the dest by attr value
       carr[attr] = dest;
@@ -119,20 +133,34 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // measure the submenu's dimensions
-  const getSubmenuDimensions = (menu) => {
+  const getSubmenuDimensions = (menu, direction) => {
     showMenuContainerEl();
 
-    // position of the upperRight boundary
-    dimensions[`${menu}Submenu-decreasingCorner`] = {
-      x: dimensions[menu].menuX + menuElsByName[menu].clientWidth,
-      y: dimensions[menu].menuY - 400
-    };
-
-    // position of the lowerRight boundary
-    dimensions[`${menu}Submenu-increasingCorner`] = {
-      x: dimensions[menu].menuX + menuElsByName[menu].clientWidth,
-      y: dimensions[menu].menuY + menuElsByName[menu].clientHeight + 400
-    };
+    if (direction === false) {
+      console.log("direction is rtl");
+      // position of the lowerLeft boundary
+      dimensions[`${menu}Submenu-decreasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft,
+        y: dimensions[menu].menuY + menuElsByName[menu].clientHeight + 400
+      };
+      // position of the upperLeft boundary
+      dimensions[`${menu}Submenu-increasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft,
+        y: dimensions[menu].menuY - 400
+      };
+    } else {
+      console.log("direction is ltr")
+      // position of the upperRight boundary
+      dimensions[`${menu}Submenu-decreasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft + menuElsByName[menu].clientWidth,
+        y: dimensions[menu].menuY - 400
+      };
+      // position of the lowerRight boundary
+      dimensions[`${menu}Submenu-increasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft + menuElsByName[menu].clientWidth,
+        y: dimensions[menu].menuY + menuElsByName[menu].clientHeight + 400
+      };
+    }
 
     hideMenuContainerEl();
   };
@@ -151,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
     // get the dimensions for each submenu
-    [...submenuEls].forEach((el) => getSubmenuDimensions(el.dataset.submenu));
+    [...submenuEls].forEach((el) => getSubmenuDimensions(el.dataset.submenu, el.dataset.direction == "ltr"));
   };
 
   // remove isVisible transitions to reduce jank
@@ -210,7 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // add open to set opacity and to transition the rotateX
       menuContainerEl.classList.add('open');
       // remove prev active state
-      menuEls.forEach(el => el.classList.remove('active'));
+      menuEls.forEach(el => {
+        if (el.parentElement == menuElsByName[menu].parentElement) {
+          el.classList.remove('active');
+        }
+      });
       // mark this menu as active
       menuElsByName[menu].classList.add('active');
 
@@ -296,8 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const pushMousePosition = (e, menu) => {
     // ensure that the mouse is always offset by whatever is above the nav
     const navbarOffset = navbarContainerEl.getBoundingClientRect();
-    // push the positions taken from the event
 
+    // push the positions taken from the event
     mousePositions[menu].push({
       x: e.clientX,
       y: e.clientY - navbarOffset.y
@@ -318,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // show/hide submenu
     submenuMenuEls[menu].forEach(el => el.classList.remove('active'));
     submenuMenuElsByName[menu][submenuToggle.dataset.submenu].classList.add('active');
+    console.log("add active", menu, submenuToggle.dataset.submenu, submenuMenuElsByName[menu][submenuToggle.dataset.submenu])
   };
 
   // check to ensure that the mouse movement was a deliberate attempt to open a submenu
@@ -335,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // check if we should delay the change of menu
       if (decreasingSlope < prevDecreasingSlope && increasingSlope > prevIncreasingSlope) {
-        debounceSubmenuFocus[menu] = setTimeout(() => showSubmenu(e, menu, submenuToggle), 300);
+        debounceSubmenuFocus[menu] = setTimeout(() => showSubmenu(e, menu, submenuToggle), 1000);
       } else {
         showSubmenu(e, menu, submenuToggle);
       }
@@ -482,4 +515,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-});
+};

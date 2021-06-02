@@ -10,6 +10,8 @@
   --gc-menu-padding: 10px;
   --gc-menu-products-height: auto;
   --gc-menu-products-width: 650px;
+  --gc-menu-profile-height: auto;
+  --gc-menu-profile-width: 400px;
   --gc-menu-transition-duration: 300ms;
   --gc-menu-yPos: 60px;
 }
@@ -145,6 +147,14 @@
     position: relative!important;
   }
 
+  .gc-navbar-nav:hover {
+    z-index: 1;
+  }
+
+  .gc-navbar-auth {
+    perspective: 240px;
+  }
+
   // gc-menu
   .gc-menu-container {
     display: none;
@@ -167,7 +177,6 @@
   }
 
   .gc-menu-caret {
-    background: white;
     box-shadow: -3px -3px 5px rgba(80, 90, 120, 0.05);
     height: 12px;
     left: 0;
@@ -282,7 +291,17 @@
     width: var(--gc-menu-company-width);
   }
 
-  // submenu (used on products menu)
+  // profile
+  .gc-menu-wrap.gc-menu-wrap-profile {
+    height: var(--gc-menu-profile-height);
+    width: var(--gc-menu-profile-width);
+
+    & > .gc-menu-inner {
+      padding: 0 var(--gc-menu-padding) 0 0;
+    }
+  }
+
+  // submenu (used on products & profile menu)
   .gc-menu-submenu {
     opacity: 0;
     transition: opacity var(--gc-menu-transition-duration);
@@ -290,6 +309,10 @@
     left: 0px;
     right: 0px;
     padding: 0 calc(var(--gc-menu-padding) + 15px) 0 var(--gc-menu-padding);
+  }
+
+  .rtl .gc-menu-submenu {
+    padding: 0 var(--gc-menu-padding) 0 calc(var(--gc-menu-padding) + 15px);
   }
 
   .gc-menu-submenu.active {
@@ -355,6 +378,11 @@
   .gc-menu-padding-col {
     padding: var(--gc-menu-padding);
     padding-left: 15px;
+  }
+
+  .rtl .gc-menu-padding-col {
+    padding-left: var(--gc-menu-padding);
+    padding-right: 15px;
   }
 }
 
