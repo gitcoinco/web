@@ -11,7 +11,7 @@ if (!localStorage.getItem('ql-banner')) {
   const bannerInnerRow = document.querySelector('#ql-banner-inner .row');
 
   // show the banner
-  banner.style.display = "flex"
+  banner.style.display = 'flex';
 
   // set up the kinetics (using custom implementation to contain the particles in a single el)
   const kinetics = new Kinetics({
@@ -51,10 +51,10 @@ if (!localStorage.getItem('ql-banner')) {
   // close the banner
   const closeBanner = () => {
     // hide on click
-    banner.style.display = "none";
+    banner.style.display = 'none';
     // keep the banner hidden
     localStorage.setItem('ql-banner', true);
-  }
+  };
 
   // wait a tick to display to avoid flashing the wrong position
   setTimeout(() => {
