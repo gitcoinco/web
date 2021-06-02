@@ -39,6 +39,7 @@ class Command(BaseCommand):
         from quests.models import Quest
         from kudos.models import Token
         kudos_ids = options['kudos_ids'].split(',')
+        kudos_ids = (Token.objects.filter(pk__in=kudos_ids, num_clones_available__gt=0).values_list('pk',flat=True))
 
         for quest in Quest.objects.filter(visible=True):
             kudos_id = int(random.choice(kudos_ids))
