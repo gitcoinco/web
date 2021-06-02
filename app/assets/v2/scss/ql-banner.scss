@@ -21,8 +21,8 @@
 }
 
 #ql-banner-h1 {
-  max-width: 700px;
-  min-width: 630px;
+  max-width: 730px;
+  min-width: 730px;
   font-size: 1.5rem;
 }
 
@@ -128,8 +128,8 @@ body:not(.navbar-menu-open) .sticky-nav {
   }
 
   #ql-banner-inner h1 {
-    min-width: unset;
-    font-size: 1.5rem;
+    min-width: 530px;
+    font-size: 1.2rem;
   }
 
   #ql-banner-h1 span {
@@ -150,6 +150,7 @@ body:not(.navbar-menu-open) .sticky-nav {
 
 @media (max-width: 557px) {
   #ql-banner-inner h1 {
+    min-width: unset;
     font-size: 1.1rem;
   }
 }
