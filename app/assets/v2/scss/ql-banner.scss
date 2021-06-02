@@ -1,15 +1,13 @@
 #ql-banner {
   align-items: center;
   background-color:$gc-grey-500;
-  display: flex;
-  height: 400px;
+  display: none;
+  height: 160px;
   overflow: hidden;
-  top: -240px;
   z-index: 4;
 }
 
 #ql-banner-inner {
-  margin-top: -240px;
   height: 160px;
 }
 
@@ -25,7 +23,7 @@
 #ql-banner-h1 {
   max-width: 700px;
   min-width: 630px;
-  font-size: 3rem;
+  font-size: 1.5rem;
 }
 
 #ql-banner-h1 span {
@@ -34,7 +32,8 @@
 
 #ql-banner-hero {
   margin-bottom: 1px;
-
+  min-width: 258px;
+  max-width: 258px;
 }
 
 #ql-banner-h1, #ql-banner-hero {
@@ -42,7 +41,14 @@
 }
 
 #ql-banner-rhs {
-  max-height: 400px;
+  max-height: 160px;
+}
+
+#ql-banner-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
 }
 
 #ql-banner-btn {
@@ -109,19 +115,21 @@ body:not(.navbar-menu-open) .sticky-nav {
 
 @media (max-width: 768px) {
   #ql-banner {
-    height: 600px;
-    top: -440px;
+    height: 160px;
     z-index: 4;
+
+    .row {
+      height: 100%;
+    }
   }
 
   #ql-banner-inner {
-    margin-top: -440px;
     height: 160px;
   }
 
   #ql-banner-inner h1 {
     min-width: unset;
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   #ql-banner-h1 span {
@@ -137,5 +145,11 @@ body:not(.navbar-menu-open) .sticky-nav {
     top: 70px;
     max-width: 60px;
     margin-top: -12%;
+  }
+}
+
+@media (max-width: 557px) {
+  #ql-banner-inner h1 {
+    font-size: 1.1rem;
   }
 }
