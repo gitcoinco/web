@@ -348,8 +348,8 @@ const makeMenu = (navbarEl) => {
       menuEl.classList.add('show');
       // get the dimensions for just this menu (doing this each call so that the expanded (active) state is measured)
       const dimension = getDimension(navLink, menuEl);
-      // mark the submenu
 
+      // mark the submenu
       if (isSubMenu && spacerElsByName[parentMenu]) {
         // fix/remove hover state on toggle
         navLink.classList.add('gc-menu-submenu-toggle-active');

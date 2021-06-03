@@ -154,6 +154,10 @@
 
   .gc-navbar-auth {
     perspective: 300px;
+
+    .gc-menu-container {
+      margin-top: -12px;
+    }
   }
 
   // gc-menu
