@@ -241,7 +241,7 @@
 
               <div class="d-none d-md-flex col-5 col-lg-4 bg-lighter gc-menu-inner">
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-bounties position-absolute {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Bounties" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Bounties" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'new_bounty' %}">{% trans "Fund Issue" %}</a>
@@ -258,7 +258,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-hackathons position-absolute {% if '/hackathon' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Hackathons" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Hackathons" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
@@ -269,7 +269,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-grants position-absolute {% if '/grants' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants' %}">{% trans "Explore Grants" %}</a>
@@ -283,7 +283,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute {% if '/quests' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Quests" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Quests" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'quests_index' %}">{% trans "Explore Quests" %}</a>
@@ -294,7 +294,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kudos position-absolute {% if '/kudos' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kudos" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Kudos" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'kudos_marketplace' %}">{% trans "Explore Kudos" %}</a>
@@ -308,7 +308,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kernel position-absolute {% if '/kernel' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kernel" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Kernel" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="https://kernel.community">{% trans "Explore Kernel" %}</a>
@@ -516,15 +516,15 @@
             <div class="gc-menu-inner text-grey-500">
               <div class="row">
 
-                <div class="d-none d-md-flex col-md-6 bg-lighter gc-menu-inner">
+                <div class="d-md-flex col-md-6 bg-lighter gc-menu-inner">
                   <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-bounties position-absolute">
-                    <b class="gc-menu-submenu-title d-block px-3 pt-1 pb-2">{% trans "My Bounties" %}</b>
-                    <ul class="list-unstyled">
+                    <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Bounties" %}</b>
+                    <ul class="list-unstyled mb-0">
                       <li>
                         <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=startedByMe">{% trans "In Progress" %}</a>
                       </li>
                       <li>
-                        <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?fulfilledByMe">{% trans "Completed" %}</a>
+                        <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=fulfilledByMe">{% trans "Completed" %}</a>
                       </li>
                       <li>
                         <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=reservedForMe">{% trans "Reserved for Me" %}</a>
@@ -540,23 +540,23 @@
                   </div>
 
                   <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-hackathons position-absolute">
-                    <b class="gc-menu-submenu-title d-block px-3 pt-1 pb-2">{% trans "My Hackathons" %}</b>
-                    <ul class="list-unstyled">
+                    <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Hackathons" %}</b>
+                    <ul class="list-unstyled mb-0">
                       <li>
-                        <a class="dropdown-item dropdown-item-small" href="{% url 'dashboard' %}">{% trans "Participating" %}</a>
+                        <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=startedByMe&keywords=hackathon">{% trans "Participating" %}</a>
                       </li>
                       <li>
-                        <a class="dropdown-item dropdown-item-small" href="{% url 'dashboard' %}">{% trans "Projects" %}</a>
+                        <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/hackathons">{% trans "Projects" %}</a>
                       </li>
                       <li>
-                        <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/hackathons">{% trans "Completed" %}</a>
+                        <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=fulfilledByMe&keywords=hackathon">{% trans "Completed" %}</a>
                       </li>
                     </ul>
                   </div>
 
                   <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-grants position-absolute">
-                    <b class="gc-menu-submenu-title d-block px-3 pt-1 pb-2">{% trans "My Grants" %}</b>
-                    <ul class="list-unstyled">
+                    <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Grants" %}</b>
+                    <ul class="list-unstyled mb-0">
                       <li>
                         <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}me">{% trans "Projects" %}</a>
                       </li>
@@ -577,8 +577,8 @@
                   </div>
 
                   <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute">
-                    <b class="gc-menu-submenu-title d-block px-3 pt-1 pb-2">{% trans "My Quests" %}</b>
-                    <ul class="list-unstyled">
+                    <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Quests" %}</b>
+                    <ul class="list-unstyled mb-0">
                       <li>
                         <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/quests">{% trans "Played" %}</a>
                       </li>
@@ -590,8 +590,8 @@
                   </div>
 
                   <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-kudos position-absolute">
-                    <b class="gc-menu-submenu-title d-block px-3 pt-1 pb-2">{% trans "My Kudos" %}</b>
-                    <ul class="list-unstyled">
+                    <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Kudos" %}</b>
+                    <ul class="list-unstyled mb-0">
                       <li>
                         <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/kudos#mykudos">{% trans "Received" %}</a>
                       </li>
@@ -609,8 +609,8 @@
                   </div>
 
                   <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-account position-absolute">
-                    <b class="gc-menu-submenu-title d-block px-3 pt-1 pb-2">{% trans "My Account" %}</b>
-                    <ul class="list-unstyled">
+                    <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Account" %}</b>
+                    <ul class="list-unstyled mb-0">
                       <li>
                         <a class="dropdown-item dropdown-item-small" href="{% url 'dashboard' %}">{% trans "Dashboard" %}</a>
                       </li>
@@ -640,7 +640,7 @@
 
                 <div class="col-12 col-md-6 gc-menu-submenu-toggles gc-menu-padding-col gc-menu-scroll">
 
-                  <a data-submenu="bounties" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle gc-menu-submenu-toggle-active">
+                  <a data-submenu="bounties" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
                     <div class="row py-2">
                       <div class="col align-self-center" style="max-width: 2.25rem;">
                         <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="30">
@@ -648,8 +648,12 @@
                       <div class="col m-auto">
                         <b class="gc-megamenu-title d-block">{% trans "My Bounties" %}</b>
                       </div>
+                      <div class="col m-auto text-right d-block d-md-none">
+                        <span class="sub-menu-caret"></span>
+                      </div>
                     </div>
                   </a>
+                  <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-bounties gc-menu-background-clr d-none"></div>
 
                   <a data-submenu="hackathons" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
                     <div class="row py-2">
@@ -659,8 +663,12 @@
                       <div class="col m-auto">
                         <b class="gc-megamenu-title d-block">{% trans "My Hackathons" %}</b>
                       </div>
+                      <div class="col m-auto text-right d-block d-md-none">
+                        <span class="sub-menu-caret"></span>
+                      </div>
                     </div>
                   </a>
+                  <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-hackathons gc-menu-background-clr d-none"></div>
 
                   <a data-submenu="grants" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
                     <div class="row py-2">
@@ -670,8 +678,12 @@
                       <div class="col m-auto">
                         <b class="gc-megamenu-title d-block">{% trans "My Grants" %}</b>
                       </div>
+                      <div class="col m-auto text-right d-block d-md-none">
+                        <span class="sub-menu-caret"></span>
+                      </div>
                     </div>
                   </a>
+                  <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-grants gc-menu-background-clr d-none"></div>
 
                   <a data-submenu="quests" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
                     <div class="row py-2">
@@ -681,8 +693,12 @@
                       <div class="col m-auto">
                         <b class="gc-megamenu-title d-block">{% trans "My Quests" %}</b>
                       </div>
+                      <div class="col m-auto text-right d-block d-md-none">
+                        <span class="sub-menu-caret"></span>
+                      </div>
                     </div>
                   </a>
+                  <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-quests gc-menu-background-clr d-none"></div>
 
                   <a data-submenu="kudos" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
                     <div class="row py-2">
@@ -692,8 +708,12 @@
                       <div class="col m-auto">
                         <b class="gc-megamenu-title d-block">{% trans "My Kudos" %}</b>
                       </div>
+                      <div class="col m-auto text-right d-block d-md-none">
+                        <span class="sub-menu-caret"></span>
+                      </div>
                     </div>
                   </a>
+                  <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-kudos gc-menu-background-clr d-none"></div>
 
                   <a data-submenu="account" class="dropdown-item cursor-pointer text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-profile-toggle">
                     <div class="row py-3">
@@ -706,8 +726,13 @@
                       <div class="col m-auto">
                         <b class="gc-megamenu-title d-block">{% trans "My Account" %}</b>
                       </div>
+                      <div class="col m-auto text-right d-block d-md-none">
+                        <span class="sub-menu-caret"></span>
+                      </div>
                     </div>
                   </a>
+                  <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-account gc-menu-background-clr d-none"></div>
+
                 </div>
 
 

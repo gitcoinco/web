@@ -58,7 +58,9 @@ const makeMenu = (navbarEl) => {
   // fill these based on what we find in the submenuEls
   const submenuToggleEls = {};
   const submenuMenuEls = {};
+  const submenuSpacerEls = {};
   const submenuMenuElsByName = {};
+  const submenuSpacerElsByName = {};
   const debounceSubmenuFocus = [];
 
   // record mousePositions when interacting with submenus
@@ -86,7 +88,9 @@ const makeMenu = (navbarEl) => {
   [...submenuEls].forEach((el) => {
     submenuToggleEls[el.dataset.submenu] = el.querySelectorAll('.gc-menu-submenu-toggle');
     submenuMenuEls[el.dataset.submenu] = el.querySelectorAll('.gc-menu-submenu');
+    submenuSpacerEls[el.dataset.submenu] = el.querySelectorAll('.gc-mobile-submenu-spacer');
     submenuMenuElsByName[el.dataset.submenu] = indexElsByName(submenuToggleEls[el.dataset.submenu], 'gc-menu-submenu', 'submenu');
+    submenuSpacerElsByName[el.dataset.submenu] = indexElsByName(submenuToggleEls[el.dataset.submenu], 'gc-mobile-submenu-spacer', 'submenu');
   });
 
   // remove transform (rotate()) during measure so that the height/width isn't skewed
@@ -137,7 +141,6 @@ const makeMenu = (navbarEl) => {
     showMenuContainerEl();
 
     if (direction === false) {
-      console.log("direction is rtl");
       // position of the lowerLeft boundary
       dimensions[`${menu}Submenu-decreasingCorner`] = {
         x: dimensions[menu].menuX + navbarEl.offsetLeft,
@@ -149,7 +152,6 @@ const makeMenu = (navbarEl) => {
         y: dimensions[menu].menuY - 400
       };
     } else {
-      console.log("direction is ltr")
       // position of the upperRight boundary
       dimensions[`${menu}Submenu-decreasingCorner`] = {
         x: dimensions[menu].menuX + navbarEl.offsetLeft + menuElsByName[menu].clientWidth,
@@ -179,7 +181,7 @@ const makeMenu = (navbarEl) => {
       };
     });
     // get the dimensions for each submenu
-    [...submenuEls].forEach((el) => getSubmenuDimensions(el.dataset.submenu, el.dataset.direction == "ltr"));
+    [...submenuEls].forEach((el) => getSubmenuDimensions(el.dataset.submenu, el.dataset.direction == 'ltr'));
   };
 
   // remove isVisible transitions to reduce jank
@@ -217,6 +219,25 @@ const makeMenu = (navbarEl) => {
     caretEl.style.cssText = 'transition:unset;';
   };
 
+  // clean up the state of a submenu selection on mobile
+  const cleanUpSubmenu = (menu, keepSelection) => {
+    if (!keepSelection) {
+      [...submenuMenuEls[menu]].forEach((el) => {
+        el.classList.remove('show');
+        el.classList.remove('active');
+      });
+    }
+    [...submenuToggleEls[menu]].forEach((el) => {
+      el.classList.remove('active');
+      el.classList.remove('gc-menu-submenu-toggle-focus');
+      el.classList.remove('gc-menu-submenu-toggle-active');
+    });
+    [...submenuSpacerEls[menu]].forEach((el) => {
+      el.classList.remove('active');
+      el.style.height = '0px';
+    });
+  };
+
   // toggle display of menu dropdown (triggered on hover - content is moved and background is scaled)
   const showMenu = (navLink) => {
     // get menu name from navLink
@@ -231,6 +252,11 @@ const makeMenu = (navbarEl) => {
     // mark first .gc-menu-submenu as .active (if .active is not set on pageload)
     if (menuElsByName[menu].dataset.submenu && menuElsByName[menu].querySelectorAll('.gc-menu-submenu.active').length == 0) {
       menuElsByName[menu].querySelector('.gc-menu-submenu').classList.add('active');
+    }
+
+    // remove active state on first load
+    if (submenuToggleEls[menu]) {
+      cleanUpSubmenu(menu, true);
     }
 
     // wait for .show paint (waiting for display: block)
@@ -282,17 +308,36 @@ const makeMenu = (navbarEl) => {
   };
 
   // toggle display of menus for mobile
-  const showMenuMobile = (navLink) => {
+  const showMenuMobile = (navLink, isSubMenu) => {
+    // discover the parents details for subMenus
+    let parentWrap; let
+        parentMenu;
+
+    // grab the parent if working a submenu
+    if (isSubMenu) {
+      parentWrap = navLink.closest('.gc-menu-wrap');
+      parentMenu = parentWrap.dataset.submenu;
+    }
+
     // get menu name from navLink
-    const menu = navLink.dataset.menu;
+    const menu = (isSubMenu ? navLink.dataset.submenu : navLink.dataset.menu);
     // get menuEl + menuSpacer so we can move menuEl into menuSpacer space
-    const menuEl = menuElsByName[menu];
-    const menuSpacer = spacerElsByName[menu];
+    const menuEl = (isSubMenu ? submenuMenuElsByName[parentMenu][menu] : menuElsByName[menu]);
+    const menuSpacer = (isSubMenu ? submenuSpacerElsByName[parentMenu][menu] : spacerElsByName[menu]);
     // check if its already been opened (is .active)
     const isActive = menuSpacer.classList.contains('active');
 
-    // remove prev .active state(s)
-    cleanUp();
+    // cleanup the prev state
+    if (!isSubMenu) {
+      // remove prev .active state(s)
+      cleanUp();
+      // remove active state on first load
+      if (submenuToggleEls[menu]) {
+        cleanUpSubmenu(menu);
+      }
+    } else {
+      cleanUpSubmenu(parentMenu);
+    }
 
     // hide bs dropdowns
     $('.nav-link.dropdown-toggle').dropdown('hide');
@@ -303,13 +348,19 @@ const makeMenu = (navbarEl) => {
       menuEl.classList.add('show');
       // get the dimensions for just this menu (doing this each call so that the expanded (active) state is measured)
       const dimension = getDimension(navLink, menuEl);
+      // mark the submenu
 
+      if (isSubMenu && spacerElsByName[parentMenu]) {
+        // fix/remove hover state on toggle
+        navLink.classList.add('gc-menu-submenu-toggle-active');
+        // set the height according to parent
+        spacerElsByName[parentMenu].style.height = `${ dimension.height + getDimension(parentWrap, menuElsByName[parentMenu]).height }px`;
+      }
       // set spacers height
       menuSpacer.style.height = `${ dimension.height }px`;
       // cleanUp menuEl before adding new css
       menuEl.style.cssText = '';
       // resize and position content (on top of the spacer)
-      menuEl.style.top = `${ dimension.menuY + navbarContainerEl.scrollTop }px`;
       menuEl.style.height = `${ dimension.height }px`;
       // wait for .show to paint
       window.requestAnimationFrame(() => {
@@ -317,7 +368,14 @@ const makeMenu = (navbarEl) => {
         menuEl.classList.add('active');
         menuSpacer.classList.add('active');
         navLink.parentElement.classList.add('active');
+        // cleanUp menuEl before adding new css
+        menuEl.style.cssText = '';
+        // position the top after showing to gather the right position
+        menuEl.style.top = (isSubMenu ? `${ menuSpacer.offsetTop }px` : `${ dimension.menuY + navbarContainerEl.scrollTop }px`);
       });
+    } else if (spacerElsByName[parentMenu]) {
+      // set the height according to parent (close the gap)
+      spacerElsByName[parentMenu].style.height = `${ getDimension(parentWrap, menuElsByName[parentMenu]).height }px`;
     }
   };
 
@@ -350,7 +408,6 @@ const makeMenu = (navbarEl) => {
     // show/hide submenu
     submenuMenuEls[menu].forEach(el => el.classList.remove('active'));
     submenuMenuElsByName[menu][submenuToggle.dataset.submenu].classList.add('active');
-    console.log("add active", menu, submenuToggle.dataset.submenu, submenuMenuElsByName[menu][submenuToggle.dataset.submenu])
   };
 
   // check to ensure that the mouse movement was a deliberate attempt to open a submenu
@@ -511,6 +568,12 @@ const makeMenu = (navbarEl) => {
       // stop hysteresisCheck from activating menus after we'e left the submenuToggle area
       submenuToggle.addEventListener('mouseleave', (e) => {
         clearTimeout(debounceSubmenuFocus[menu]);
+      });
+      // click event for mobile submenus
+      submenuToggle.addEventListener('click', (e) => {
+        if (window.innerWidth < breakpoint_md) {
+          showMenuMobile(submenuToggle, true);
+        }
       });
     });
   });
