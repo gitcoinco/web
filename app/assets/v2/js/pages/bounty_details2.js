@@ -826,13 +826,7 @@ Vue.mixin({
 
       vm.errors = {};
 
-      switch (token_name) {
-        case 'SC': {
-          // TODO
-        }
-
-        // include validation for other tokens here
-      }
+      // include validation for tokens here - switch statement
 
       if (hasError) {
         vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${token_name} address`);
