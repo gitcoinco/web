@@ -24,7 +24,7 @@ from quadraticlands.helpers import claim, set_mission_status, vote
 from quadraticlands.views import (
     base, base_auth, dashboard_index, handler400, handler403, handler404, handler500, index, mission_answer,
     mission_base, mission_index, mission_lore, mission_postcard, mission_postcard_svg, mission_process,
-    mission_question, mission_schwag, mission_state, workstream_base, workstream_index,
+    mission_question, mission_schwag, mission_state, workstream_base, workstream_index, mission_diplomacy, mission_diplomacy_room
 )
 
 app_name = 'quadraticlands'
@@ -57,6 +57,11 @@ urlpatterns = [
     re_path(r'^mission/postcard/svg$', mission_postcard_svg, name='mission_postcard_svg'),
     re_path(r'^mission/ql-lore$', mission_lore, name='mission_lore'),
     re_path(r'^mission/schwag$', mission_schwag, name='mission_schwag'),
+
+    #richard test to build new interface stuff
+    re_path(r'^mission/diplomacy/?$', mission_diplomacy, name='mission_diplomacy'),
+    re_path(r'^mission/diplomacy/room/?$', mission_diplomacy, name='mission_diplomacy_room'),
+
 ]
 
 
