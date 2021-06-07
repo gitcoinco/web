@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  console.debug("DIPLOMACY ROOMLIST");
+  console.debug('DIPLOMACY ROOMLIST');
 
   // create hyperlinks to rooms
   rooms = document.querySelectorAll('[data-roomlink]');
   rooms.forEach(room => {
     room.addEventListener('click', () => {
-        window.location.href = room.dataset.roomlink;
+      window.location.href = room.dataset.roomlink;
     });
   });
 
@@ -16,11 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const create_room_button = document.getElementById('create_room_button');
 
   create_room.addEventListener('input', () => {
-    if(create_room.value =="" ) { create_room_button.classList.add('disabled'); }
-    else{ create_room_button.classList.remove('disabled'); }
-  });  
-
-
+    if (create_room.value == '') {
+      create_room_button.classList.add('disabled');
+    } else {
+      create_room_button.classList.remove('disabled');
+    }
+  });
 
 
   // random floor polygones coloring / lights of town
