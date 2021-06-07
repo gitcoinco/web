@@ -1,0 +1,114 @@
+.diplomacy-roomlist{
+
+	margin: auto;
+	margin: 0em 1.5em;
+
+	.room{
+
+	    display: grid;
+	    grid-template-columns: 1.2fr 0.8fr;
+	    grid-column-gap: 1em;
+	    margin: auto;
+	    background-color: var(--space_light);
+	    align-items: center;
+	    margin-bottom: 2em;
+
+	    cursor:pointer;
+
+	    &:hover{
+	    	animation: colorcycle-shadow 1s ease-in-out infinite;
+	    };
+
+	    &.invite{
+	    	cursor:inherit;
+	    	background-color: transparent;
+	    	animation: colorcycle-border 1s ease-in-out infinite;
+
+	    	&:hover{ 
+	    		animation: colorcycle-border 1s ease-in-out infinite;
+	    	};
+	    }
+
+	}
+
+
+	.room .info{
+
+		padding: 2em;
+		
+		.membercount{
+			margin-left: 10px;
+			color: var(--aqua);
+			&:before { content: "("; }
+			&:after { content: ")"; }
+		}
+
+		.name{
+			font-weight: 500;
+			color: var(--white);
+		}
+
+		.actions{
+			margin-top: 2em;
+		}
+
+		.status{
+			span.admin{
+				&:after { content: " (you)"; }
+			}
+		}
+
+	}
+
+
+
+	.room .members{
+
+		padding: 2em;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+
+		img{
+			display: block;
+			width: 64px;
+			height: 64px;
+			border-radius: 64px;
+			margin: 0.1em;
+		}
+
+	}
+
+
+
+}
+
+
+
+@media #{$tablet} {
+	.diplomacy-roomlist{
+		.room{
+			grid-template-columns: 1fr;
+		}
+	}
+}
+
+@media #{$phone} {
+	.diplomacy-roomlist{
+		.room .members img{
+			width: 40px;
+			height: 40px;
+			border-radius: 40px;
+			margin: 5px;
+		}
+		.room .info, .room .members, {
+			padding: 1em;
+		}
+	}
+}
+
+
+
+
+
+

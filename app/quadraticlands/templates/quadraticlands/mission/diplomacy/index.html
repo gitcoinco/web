@@ -13,7 +13,7 @@
 {% block 'content' %}
 
 
-<!-- Hero -->
+<!-- Diplomacy Hero -->
 <section class="hero knightrider" data-kinetics-mode data-kinetics-mode-type="rain" data-kinetics-mode-speed="5"
   data-kinetics-mode-boundery="endless">
 
@@ -28,6 +28,94 @@
   </div>
 
 </section>
+
+
+<!-- Diplomacy Intro & Description -->
+<article data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
+
+  <section class="column">
+
+    <div class="intro purple">Optional.</div>
+    <p>this is a paragraph. its the regular way to use text on the page. this here is the place to talk about what this diplomacy is about and what a user can do in general with it. it do not have to be super long - short is good.</p>
+
+  </section>
+</article>
+
+
+<article>
+
+  <section class="diplomacy-roomlist">
+
+    {% comment %} @kev : check if user comes from an invite link - then display this extra room + accept button {% endcomment %}
+
+    <!-- room example : user got invited to a room-->
+    <div class="room invite">
+      <div class="info">
+        <div class="name">Crypto Nerds<span class="membercount">2</span></div>
+        <div class="status">You got invited by <span>Richard</span> to join this Room.</div>
+        <div class="actions"><a class="btn aqua" href="#">Join Room</a></div>
+      </div>
+      <div class="members">
+          <img src="/dynamic/avatar/scco">
+          <img src="/dynamic/avatar/scco">             
+      </div>
+    </div>
+
+
+    {% comment %} @kev : loop trough all regular .rooms for a user {% endcomment %}
+
+    <!-- room example : user is member of room -->
+    <div class="room" data-roomlink="/quadraticlands/mission/diplomacy/4954-devilhunters">
+      <div class="info">
+        <div class="name">Devilhunters<span class="membercount">3</span></div>
+        <div class="status">Created by <span>Kevin</span>.</div>
+      </div>
+      <div class="members">
+          <img src="/dynamic/avatar/scco">
+          <img src="/dynamic/avatar/scco">
+          <img src="/dynamic/avatar/scco">                         
+      </div>
+    </div>
+
+    <!-- room example : user is member of room, user is admin of room -->
+    <div class="room" data-roomlink="/quadraticlands/mission/diplomacy/6847-kevins-dreamteam">
+      <div class="info">
+        <div class="name">Kevins Dreamteam<span class="membercount">6</span></div>
+        <div class="status">Created by <span class="admin">Kevin</span>.</div>
+      </div>
+      <div class="members">
+          <img src="/dynamic/avatar/scco">
+          <img src="/dynamic/avatar/scco">
+          <img src="/dynamic/avatar/scco">                         
+          <img src="/dynamic/avatar/scco">
+          <img src="/dynamic/avatar/scco">
+          <img src="/dynamic/avatar/scco">
+      </div>
+    </div>
+
+  </section>
+
+
+  {% comment %} @kev : creating a new room - always there {% endcomment %}
+
+  <form action="">
+    <section class="diplomacy-create-room">
+      <div class="wrapper">
+        <div class="info">
+          Create a new room
+        </div>
+        <div class="input">
+          <input id="create_room" type="text" placeholder="enter a Roomname">
+          <button class="disabled" id="create_room_button">Create Room</button>
+        </div>
+      </div>
+    </section>
+  </form>
+
+
+
+</article>
+
 
 
 
