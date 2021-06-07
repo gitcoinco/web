@@ -306,7 +306,7 @@ class Grant(SuperModel):
         ('southeast_asia', 'Southeast Asia')
     ]
 
-    EXNTERNAL_FUNDING = [
+    EXTERNAL_FUNDING = [
         ('yes', 'Yes'),
         ('no', 'No'),
         ('unknown', 'Unknown')
@@ -563,7 +563,7 @@ class Grant(SuperModel):
     has_external_funding = models.CharField(
         max_length=8,
         default='unknown',
-        choices=EXNTERNAL_FUNDING,
+        choices=EXTERNAL_FUNDING,
         help_text="Does this grant have external funding"
     )
 
