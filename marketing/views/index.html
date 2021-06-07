@@ -1987,6 +1987,16 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     * Maybe migrate keyword information to Profile instead of using ES?</p>
 <p>Returns:
     TemplateResponse: The populated matching template.</p>
+<h2 id="marketing.views.set_mautic_dnc">set_mautic_dnc</h2>
+
+<pre><code class="python">set_mautic_dnc(profile, es, form)
+</code></pre>
+
+<p>Places contact on the DNC list on mautic</p>
+<p>Args:
+    profile (Profile): The user who is being unsubscribed
+    es (EmailSubscriber): The details of the subscription
+    form (dict): email_type: bool</p>
 <h2 id="marketing.views.email_settings">email_settings</h2>
 
 <pre><code class="python">email_settings(request, key)
