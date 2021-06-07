@@ -1,6 +1,8 @@
 
 // check if the banner has been closed
 if (!localStorage.getItem('ql-banner')) {
+  // get body
+  const body = document.querySelector('body');
   // grab the elements
   const banner = document.getElementById('ql-banner');
   // grab the elements
@@ -11,7 +13,7 @@ if (!localStorage.getItem('ql-banner')) {
   const bannerInnerRow = document.querySelector('#ql-banner-inner .row');
 
   // show the banner
-  banner.style.display = 'flex';
+  body.classList.add('ql-banner-visible');
 
   // set up the kinetics (using custom implementation to contain the particles in a single el)
   const kinetics = new Kinetics({

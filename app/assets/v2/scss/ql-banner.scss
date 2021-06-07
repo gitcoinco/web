@@ -7,6 +7,10 @@
   z-index: 4;
 }
 
+body.ql-banner-visible #ql-banner {
+  display: flex;
+}
+
 #ql-banner-inner {
   height: 160px;
 }
@@ -79,7 +83,7 @@
   z-index: 0;
 }
 
-body:not(.navbar-menu-open) .sticky-nav {
+body.ql-banner-visible:not(.navbar-menu-open) .sticky-nav {
   top: 160px;
 }
 
