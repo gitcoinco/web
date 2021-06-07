@@ -63,6 +63,9 @@ mkdir -p /home/ubuntu/gitcoin/coin/app/static/wallpapers
 
 cd app || echo "Cannot find app directory!"
 
+# remove extraneous files
+rm -f output/w*_*.pdf; rm -f assets/other/wp.pdf;
+
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
     python3 manage.py bundle;

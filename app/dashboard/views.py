@@ -3984,7 +3984,7 @@ def labs(request):
         "class": "fab fa-slack fa-2x"
     }, {
         "name": _("Contact the Team"),
-        "link": "mailto:founders@gitcoin.co",
+        "link": "mailto:support@gitcoin.co",
         "class": "fa fa-envelope fa-2x"
     }]
 
@@ -6790,7 +6790,7 @@ def verify_user_poap(request, handle):
     timestamp = None
 
     for network in ['mainnet', 'xdai']:
-        timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
+        timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
         # only break if we find a token that has been held for longer than 15 days
         if timestamp and timestamp <= fitteen_days_ago_ts:
             break
@@ -6816,6 +6816,7 @@ def verify_user_poap(request, handle):
         'ok': True,
         'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
     })
+
 
 @login_required
 @require_POST

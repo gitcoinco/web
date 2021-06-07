@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle binance sync related tests.
 
-Copyright (C) 2019 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
