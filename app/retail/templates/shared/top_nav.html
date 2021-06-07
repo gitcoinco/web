@@ -34,9 +34,9 @@
 
 <header id="ql-banner" class="sticky-top">
   <div id="ql-banner-inner" class="w-100">
-    <div class="row px-lg-5" style="height: 400px;">
-      <div id="ql-banner-lhs" class="col-12 col-md-8 col-lg-7 m-auto p-5 py-4 sticky-top">
-        <h1 id="ql-banner-h1" class="text-white pb-3 line-height-1 mb-1"><span>Shape the Future Of Digital Public Goods with Gitcoin’s Governance Token.</span></h1>
+    <div class="row px-lg-5">
+      <div id="ql-banner-lhs" class="col-12 col-md-8 col-lg-7 m-auto px-5 sticky-top">
+        <h1 id="ql-banner-h1" class="text-white pb-3 line-height-1 mb-1"><span>The Gitcoin DAO Has Officially Started. Shape the Future Of Digital Public Goods with Gitcoin’s Governance Token.</span></h1>
         <a id="ql-banner-btn" class="btn btn-lg col-12 col-md-auto btn-lg font-weight-bold" href="{% url "quadraticlands:quadraticlands" %}" data-kinetics-attraction data-kinetics-attraction-mode="bee" data-kinetics-attraction-chance="0.5" >
           {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is not True %}
             Claim {{total_claimable_gtc | token_format | intcomma}} GTC
@@ -46,7 +46,7 @@
         </a>
       </div>
 
-      <div id="ql-banner-rhs" class="d-md-flex col-12 col-md-4 col-lg-5 justify-content-around pt-0 pt-md-4">
+      <div id="ql-banner-rhs" class="d-none d-md-flex col-md-4 col-lg-5 justify-content-around pt-0">
         <div id="ql-banner-hero" class="mt-auto w-100">
           <div id="ql-banner-coin" class="coin spin-3d mx-auto">
             <svg viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,6 +59,18 @@
             {% include "quadraticlands/_inlinesvg/hero_town.svg" %}
           </div>
         </div>
+      </div>
+      <div id="ql-banner-close" class="cursor-pointer" data-kinetics-attraction data-kinetics-attraction-mode="bee" data-kinetics-attraction-chance="0.5">
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0)">
+            <path d="M7.78521 10.0001L11.8247 5.79229C12.0583 5.54893 12.0583 5.154 11.8247 4.91025L10.8861 3.93252C10.6525 3.68916 10.2733 3.68916 10.0393 3.93252L6.00021 8.14072L1.96071 3.93291C1.72708 3.68955 1.34796 3.68955 1.11396 3.93291L0.175707 4.91025C-0.057918 5.15361 -0.057918 5.54854 0.175707 5.79229L4.21521 10.0001L0.175707 14.2079C-0.057918 14.4513 -0.057918 14.8462 0.175707 15.0899L1.11433 16.0677C1.34796 16.311 1.72708 16.311 1.96108 16.0677L6.00021 11.8595L10.0397 16.0673C10.2733 16.3106 10.6525 16.3106 10.8865 16.0673L11.8251 15.0896C12.0587 14.8462 12.0587 14.4513 11.8251 14.2075L7.78521 10.0001Z" fill="white"></path>
+          </g>
+          <defs>
+            <clipPath id="clip0">
+              <rect width="12" height="20" fill="white"></rect>
+            </clipPath>
+          </defs>
+        </svg>
       </div>
     </div>
   </div>
