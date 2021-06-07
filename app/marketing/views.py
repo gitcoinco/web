@@ -43,13 +43,14 @@ from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
+from dashboard.views import mautic_proxy_backend
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_github_primary_email
 from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
-from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
+from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
 from quests.models import Quest
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
@@ -283,6 +284,23 @@ def feedback_settings(request):
     return TemplateResponse(request, 'settings/feedback.html', context)
 
 
+def set_mautic_dnc(profile, es, form):
+    """Places contact on the DNC list on mautic
+
+        Args:
+            profile (Profile): The user who is being unsubscribed
+            es (EmailSubscriber): The details of the subscription
+            form (dict): email_type: bool
+    """
+    preferences = es.preferences.get('suppression_preferences', {})
+    # ensure contact is marked as DNC in mautic (this wont be in sync if the user unsubscribes by following the link in the email)
+    # todo: add a cronjob to keep this state in sync with mautic or place unsubscribe logic in django and include gitcoin.co links in emails
+    if bool(form['marketing']) == True and preferences['marketing'] == False:
+        mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/add', b'{"reason":3}')
+    elif bool(form['marketing']) == False and preferences['marketing'] == True:
+        mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/remove', b'{"reason":3}')
+
+
 def email_settings(request, key):
     """Display email settings.
 
@@ -319,6 +337,8 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
+            if email_type == 'marketing':
+                set_mautic_dnc(profile, es, unsubscribed_email_type)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
@@ -364,6 +384,7 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
 
+                set_mautic_dnc(profile, es, form)
                 es.build_email_preferences(form)
                 es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)
@@ -564,7 +585,7 @@ def account_settings(request):
             profile.save()
 
             # remove email
-            delete_user_from_mailchimp(es.email)
+            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/add', b'{"reason":3}')
 
             if es:
                 es.delete()
@@ -643,7 +664,7 @@ def job_settings(request):
             profile.save()
 
             # remove email
-            delete_user_from_mailchimp(es.email)
+            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/add', b'{"reason":3}')
 
             if es:
                 es.delete()

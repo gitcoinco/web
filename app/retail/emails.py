@@ -77,7 +77,13 @@ NOTIFICATION_EMAILS = [
     ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
+
+MAUTIC_EMAILS = [
+    ('marketing', _('General Marketing Emails'), _('as it comes')),
+]
+
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS + MAUTIC_EMAILS
 
 
 def premailer_transform(html):
@@ -699,7 +705,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     counter += 1
     print(counter, time.time())
     foo = render_to_string("emails/new_bounty.html", params)
-    
+
     print(counter, time.time())
     response_html = premailer_transform(foo)
     print(counter, time.time())
@@ -1588,7 +1594,7 @@ def bounty_feedback(request):
     if to_fulfiller:
         response_html, _ = render_bounty_feedback(bounty, 'fulfiller', fulfiller_previous_bounties)
         return HttpResponse(response_html)
-    
+
     if to_funder:
         response_html, _ = render_bounty_feedback(bounty, 'funder', funder_previous_bounties)
         return HttpResponse(response_html)
