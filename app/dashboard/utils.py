@@ -694,7 +694,6 @@ def get_bounty_id(issue_url, network):
 
 
 def get_bounty_id_from_db(issue_url, network):
-    issue_url = normalize_url(issue_url)
     bounties = Bounty.objects.filter(
         github_url=issue_url,
         network=network,
