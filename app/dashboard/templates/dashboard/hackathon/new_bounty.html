@@ -187,6 +187,10 @@
                       <input type="radio" name="bounty_chain" id="50_chain" value="50" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/xinfin.svg' %}" alt="" width="16"> Xinfin
                     </label>
 
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1995'}">
+                      <input type="radio" name="bounty_chain" id="1995_chain" value="1995" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/nervos.svg' %}" alt="" width="16"> Nervos
+                    </label>
+
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1001'}">
                       <input type="radio" name="bounty_chain" id="1001_chain" value="1001" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16"> Algorand
                     </label>
@@ -198,6 +202,7 @@
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
                       <input type="radio" name="bounty_chain" id="717171_chain" value="717171" v-model="chainId"> Other
                     </label>
+
 
                   </div>
                   <div class="text-danger" v-if="errors.chainId && !form.chainId">

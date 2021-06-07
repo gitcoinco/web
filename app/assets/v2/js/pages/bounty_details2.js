@@ -144,6 +144,10 @@ Vue.mixin({
           url = `https://explorer.rsk.co/tx/${txn}`;
           break;
 
+        case 'CKB':
+          url = `https://explorer.nervos.org/transaction/${txn}`;
+          break;
+
         case 'XDC':
           url = `https://explorer.xinfin.network/tx/${txn}`;
           break;
@@ -212,6 +216,10 @@ Vue.mixin({
         case 'RIF':
         case 'SOV':
           url = `https://explorer.rsk.co/address/${address}`;
+          break;
+
+        case 'CKB':
+          url = `https://explorer.nervos.org/address/${address}`;
           break;
 
         case 'XDC':
@@ -450,6 +458,11 @@ Vue.mixin({
         case 'RIF':
         case 'SOV':
           tenant = 'RSK';
+          break;
+
+        case 'CKB':
+          tenant = 'NERVOS';
+          vm.canChangeFunderAddress = true;
           break;
 
         case 'XDC':
@@ -768,6 +781,7 @@ Vue.mixin({
       switch (fulfillment.payout_type) {
         case 'qr':
         case 'manual':
+        case 'nervos_ext':
         case 'sia_ext':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
           vm.getTenant(vm.bounty.token_name, fulfillment.payout_type);
@@ -826,7 +840,18 @@ Vue.mixin({
 
       vm.errors = {};
 
-      // include validation for tokens here - switch statement
+      switch (token_name) {
+        case 'CKB': {
+          const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
+          const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
+    
+          if (!isNervosValid && !address.toLowerCase().startsWith('0x')) {
+            hasError = true;
+          }
+        }
+
+        // include validation for other tokens here
+      }
 
       if (hasError) {
         vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${token_name} address`);

@@ -296,6 +296,7 @@ class Bounty(SuperModel):
         ('harmony_ext', 'Harmony Ext'),
         ('rsk_ext', 'RSK Ext'),
         ('xinfin_ext', 'Xinfin Ext'),
+        ('nervos_ext', 'Nervos Ext'),
         ('algorand_ext', 'Algorand Ext'),
         ('sia_ext', 'Sia Ext'),
         ('fiat', 'Fiat'),
@@ -1416,6 +1417,7 @@ class BountyFulfillment(SuperModel):
         ('harmony_ext', 'harmony_ext'),
         ('rsk_ext', 'rsk_ext'),
         ('xinfin_ext', 'xinfin_ext'),
+        ('nervos_ext', 'nervos_ext'),
         ('algorand_ext', 'algorand_ext'),
         ('sia_ext', 'sia_ext'),
         ('manual', 'manual')
@@ -1434,6 +1436,7 @@ class BountyFulfillment(SuperModel):
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
         ('XINFIN', 'XINFIN'),
+        ('NERVOS', 'NERVOS'),
         ('ALGORAND', 'ALGORAND'),
         ('SIA', 'SIA'),
         ('OTHERS', 'OTHERS')
