@@ -214,6 +214,10 @@ Vue.mixin({
           // algorand
           type = 'algorand_ext';
           break;
+        case '1935':
+          // sia
+          type = 'sia_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';

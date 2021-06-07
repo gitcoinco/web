@@ -297,6 +297,7 @@ class Bounty(SuperModel):
         ('rsk_ext', 'RSK Ext'),
         ('xinfin_ext', 'Xinfin Ext'),
         ('algorand_ext', 'Algorand Ext'),
+        ('sia_ext', 'Sia Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1416,6 +1417,7 @@ class BountyFulfillment(SuperModel):
         ('rsk_ext', 'rsk_ext'),
         ('xinfin_ext', 'xinfin_ext'),
         ('algorand_ext', 'algorand_ext'),
+        ('sia_ext', 'sia_ext'),
         ('manual', 'manual')
     ]
 
@@ -1433,6 +1435,7 @@ class BountyFulfillment(SuperModel):
         ('RSK', 'RSK'),
         ('XINFIN', 'XINFIN'),
         ('ALGORAND', 'ALGORAND'),
+        ('SIA', 'SIA'),
         ('OTHERS', 'OTHERS')
     ]
 
