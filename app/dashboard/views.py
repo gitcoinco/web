@@ -2231,11 +2231,6 @@ def user_card(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if not settings.DEBUG:
-        network = 'mainnet'
-    else:
-        network = 'rinkeby'
-
     if request.user.is_authenticated:
         is_following = True if TribeMember.objects.filter(profile=request.user.profile, org=profile).count() else False
     else:

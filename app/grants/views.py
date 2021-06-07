@@ -1566,6 +1566,11 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: description is a mandatory parameter'
             return JsonResponse(response)
 
+        has_external_funding = request.POST.get('has_external_funding', 'unknown')
+        if has_external_funding == 'unknown':
+            response['message'] = 'error: choose if grant has external funding or not'
+            return JsonResponse(response)
+
         description_rich = request.POST.get('description_rich', None)
         if not description_rich:
             description_rich = description
@@ -1681,6 +1686,7 @@ def grant_edit(request, grant_id):
         grant.title = title
         grant.description = description
         grant.description_rich = description_rich
+        grant.has_external_funding = has_external_funding
         grant.last_update = timezone.now()
         grant.hidden = False
 
@@ -1762,6 +1768,11 @@ def grant_new(request):
         if not description_rich:
             description_rich = description
 
+        has_external_funding = request.POST.get('has_external_funding', 'unknown')
+        if has_external_funding == 'unknown':
+            response['message'] = 'error: has_external_funding is a mandatory parameter'
+            return JsonResponse(response)
+
         eth_payout_address = request.POST.get('eth_payout_address', request.POST.get('admin_address'))
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
         celo_payout_address = request.POST.get('celo_payout_address', None)
@@ -1842,6 +1853,7 @@ def grant_new(request):
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
+            'has_external_funding': has_external_funding
         }
 
         grant = Grant.objects.create(**grant_kwargs)

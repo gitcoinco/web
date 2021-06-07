@@ -138,6 +138,9 @@ Vue.mixin({
       if (vm.form.description_rich.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
+      if (!vm.form.has_external_funding) {
+        vm.$set(vm.errors, 'has_external_funding', 'Please select if grant has external funding');
+      }
 
       if (Object.keys(vm.errors).length) {
         return false; // there are errors the user must correct
@@ -176,7 +179,8 @@ Vue.mixin({
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
         'network': form.network,
-        'region': form.region
+        'region': form.region,
+        'has_external_funding': form.has_external_funding
       };
 
       console.log(params);
@@ -312,6 +316,11 @@ const grant_regions = [
   { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
 ];
 
+const externalFundingOptions = [
+  {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
+  {'key': 'no', 'value': 'No, this project has not raised external funding.'}
+];
+
 if (document.getElementById('gc-new-grant')) {
   appFormBounty = new Vue({
     delimiters: [ '[[', ']]' ],
@@ -324,6 +333,7 @@ if (document.getElementById('gc-new-grant')) {
         chainId: '',
         grant_types: document.grant_types,
         grant_regions: grant_regions,
+        externalFundingOptions: externalFundingOptions,
         usersOptions: [],
         network: 'mainnet',
         logo: null,
