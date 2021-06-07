@@ -1,0 +1,14 @@
+{
+  "symbol": "SACKS",
+  "address": "0xa6610Ed604047e7B76C1DA288172D15BcdA57596",
+  "overview":{
+        "en": "A tokenized Hackey sack.",
+  },
+  "email": "founders@gitcoin.co",
+  "website": "http://sacks.exchange/",
+  "state": "NORMAL",
+  "published_on": "2021-06-06",
+  "links": {
+    "twitter": "https://twitter.com/owocki/status/1398003164645789698",
+  }
+}
