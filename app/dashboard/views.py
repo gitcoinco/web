@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -303,8 +303,16 @@ def create_new_interest_helper(bounty, user, issue_message):
 @csrf_exempt
 def gh_login(request):
     """Attempt to redirect the user to Github for authentication."""
-    return redirect('social:begin', backend='github')
 
+    if not request.GET.get('next'):
+        return redirect('social:begin', backend='github')
+
+    login_redirect = redirect('social:begin', backend='github')
+    redirect_url = f'?next={request.scheme}://{request.get_host()}{request.GET.get("next")}'
+
+    redirect_url = login_redirect.url + redirect_url
+
+    return redirect(redirect_url, backend='github')
 
 @csrf_exempt
 def gh_org_login(request):
@@ -2168,6 +2176,9 @@ def quickstart(request):
 def load_banners(request):
     """Load profile banners"""
     images = load_files_in_directory('wallpapers')
+    show_only_2021_banners = request.GET.get('all', '0') == '0'
+    if show_only_2021_banners:
+        images = [image for image in images if image[0:5] == '2021_']
     response = {
         'status': 200,
         'banners': images
@@ -3973,7 +3984,7 @@ def labs(request):
         "class": "fab fa-slack fa-2x"
     }, {
         "name": _("Contact the Team"),
-        "link": "mailto:founders@gitcoin.co",
+        "link": "mailto:support@gitcoin.co",
         "class": "fa fa-envelope fa-2x"
     }]
 
@@ -4280,12 +4291,12 @@ def change_bounty(request, bounty_id):
                 value_in_token = params.get('value_in_token')
                 bounty.value_in_token = value_in_token
                 bounty.balance = value_in_token
+                bounty_increased = True
                 try:
                     bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
                     bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
                     bounty.value_in_usdt_now = bounty.value_in_usdt
                     bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
-                    bounty_increased = True
                 except ConversionRateNotFoundError as e:
                     logger.debug(e)
 
@@ -4897,7 +4908,7 @@ def hackathon_get_project(request, bounty_id, project_id=None):
 
     try:
         bounty = Bounty.objects.get(id=bounty_id)
-        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
+        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache() if profile else None
     except HackathonProject.DoesNotExist:
         pass
 
@@ -6142,7 +6153,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6259,8 +6270,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6326,7 +6337,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6779,7 +6790,7 @@ def verify_user_poap(request, handle):
     timestamp = None
 
     for network in ['mainnet', 'xdai']:
-        timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
+        timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
         # only break if we find a token that has been held for longer than 15 days
         if timestamp and timestamp <= fitteen_days_ago_ts:
             break
@@ -6805,6 +6816,7 @@ def verify_user_poap(request, handle):
         'ok': True,
         'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
     })
+
 
 @login_required
 @require_POST
@@ -6840,7 +6852,8 @@ def verify_user_poh(request):
             'msg': 'Ethereum address is already registered.',
         })
 
-    if not is_registered_on_poh(signer):
+    web3 = get_web3('mainnet')
+    if not is_registered_on_poh(web3, signer):
         return JsonResponse({
             'ok': False,
             'msg': 'Ethereum address is not registered on Proof of Humanity, please try after registration.',

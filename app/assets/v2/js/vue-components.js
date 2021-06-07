@@ -780,8 +780,8 @@ Vue.component('suggested-profile', {
   template: `
 <b-media tag="li" class="row mx-auto mx-md-n1 mb-1">
   <template v-slot:aside>
-    <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
-      <b-img :src="avatar_url" class="nav_avatar"></b-img>
+    <a :href="profile_url" class="d-flex nav-link nav-line px-0 mr-0">
+      <b-img :src="avatar_url" class="profile-header__avatar mr-2"></b-img>
     </a>
   </template>
   <div class="col">

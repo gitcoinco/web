@@ -400,6 +400,9 @@
   body.navbar-menu-open .navbar {
     height: 100vh;
     overflow: auto;
+    position: fixed;
+    top: 0px;
+    z-index: 1;
 
     .collapsing {
       height: 0;

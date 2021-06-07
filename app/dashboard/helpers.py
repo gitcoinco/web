@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle dashboard helpers and related logic.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -55,10 +55,10 @@ from .models import Profile
 logger = logging.getLogger(__name__)
 
 def load_files_in_directory(dir_name):
-    path = os.path.join(settings.STATIC_ROOT, dir_name)
+    path = os.path.join(settings.BASE_DIR, 'assets', dir_name)
     images = []
     for f in os.listdir(path):
-        if f.endswith('jpg') or f.endswith('png') or f.endswith('jpeg'):
+        if f.endswith('jpg') or f.endswith('png') or f.endswith('svg') or f.endswith('jpeg'):
             images.append("%s" % (f))
     return images
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -298,6 +298,7 @@ class Bounty(SuperModel):
         ('xinfin_ext', 'Xinfin Ext'),
         ('nervos_ext', 'Nervos Ext'),
         ('algorand_ext', 'Algorand Ext'),
+        ('sia_ext', 'Sia Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1418,6 +1419,7 @@ class BountyFulfillment(SuperModel):
         ('xinfin_ext', 'xinfin_ext'),
         ('nervos_ext', 'nervos_ext'),
         ('algorand_ext', 'algorand_ext'),
+        ('sia_ext', 'sia_ext'),
         ('manual', 'manual')
     ]
 
@@ -1436,6 +1438,7 @@ class BountyFulfillment(SuperModel):
         ('XINFIN', 'XINFIN'),
         ('NERVOS', 'NERVOS'),
         ('ALGORAND', 'ALGORAND'),
+        ('SIA', 'SIA'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -3391,6 +3394,7 @@ class Profile(SuperModel):
             import random
             try:
                 wallpapers = load_files_in_directory('wallpapers')
+                wallpapers = [image for image in wallpapers if image[0:5] == '2021_']
                 self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
             except Exception as e:
                 # fix for travis, which has no static dir

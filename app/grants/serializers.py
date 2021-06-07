@@ -96,28 +96,6 @@ class CLRPayoutsSerializer(serializers.Serializer):
 
         fields = ('amount', 'asset', 'usd_value', 'timestamp', 'round')
 
-class GranteeSerializer(serializers.Serializer):
-    """Handle serializing Grantee information."""
-
-    grant_name = serializers.CharField(source='title')
-    transactions = serializers.SerializerMethodField()
-    clr_payouts = serializers.SerializerMethodField()
-
-    def get_transactions(self, obj):
-        return TransactionsSerializer(
-            Contribution.objects.filter(subscription__grant__pk=obj.pk), many=True
-        ).data
-    
-    def get_clr_payouts(self, obj):
-        return CLRPayoutsSerializer(
-            CLRMatch.objects.filter(grant__pk=obj.pk), many=True
-        ).data
-    
-    class Meta:
-        """Define the Grantee serializer metadata."""
-
-        fields = ('grant_name', 'transactions', 'clr_payout')
-
 class DonorSerializer(serializers.Serializer):
     """Handle serializing Donor information."""
 

@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import datetime
 import json
 import logging
 import re
@@ -49,6 +50,7 @@ from dashboard.models import (
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
+from grants.models import Grant
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, EmailInventory, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
@@ -80,8 +82,11 @@ def index(request):
     context = {
         'title': 'Build and Fund the Open Web Together',
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
-        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.'
+        'card_desc': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
+
     try:
         data = JSONStore.objects.get(view='results').data
         data_results = {
@@ -192,7 +197,7 @@ def funder_bounties(request):
 
     onboard_slides = [
         {
-            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a developer or designer?'),
             'subtitle': _('Contribute to exciting OSS project and get paid!'),
             'type': 'contributor',
@@ -200,7 +205,7 @@ def funder_bounties(request):
             'more': '/bounties/contributor'
         },
         {
-            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a funder or project organizer?'),
             'subtitle': _('Fund your OSS bounties and get work done!'),
             'type': 'funder',
@@ -269,7 +274,7 @@ def contributor_bounties(request, tech_stack):
 
     onboard_slides = [
         {
-            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a funder or project organizer?'),
             'subtitle': _('Fund your OSS bounties and get work done!'),
             'type': 'funder',
@@ -277,7 +282,7 @@ def contributor_bounties(request, tech_stack):
             'more': '/bounties/funder'
         },
         {
-            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a developer or designer?'),
             'subtitle': _('Contribute to exciting OSS project and get paid!'),
             'type': 'contributor',
@@ -473,236 +478,86 @@ def robotstxt(request):
 
 
 def about(request):
-    core_team = [
-        (
-            "Kevin Owocki",
-            "All the things",
-            "owocki",
-            "owocki",
-            "The Community",
-            "Avocado Toast",
-            "kevin",
-            "Summoner of Bots",
-            "owocki",
-            True
-        ),
-        (
-            "Joe Lubin",
-            "Consensys",
-            "",
-            "",
-            "Meshiness",
-            "",
-            "joe",
-            "Harbringer of Decentralization",
-            "ethereumJoseph",
-            True
-        ),
-        (
-            "Alisa March",
-            "User Experience Design",
-            "PixelantDesign",
-            "pixelant",
-            "Tips",
-            "Apple Cider Doughnuts",
-            "alisa",
-            "Pixel Mage",
-            "pixelant",
-            True
-        ),
-        (
-            "Vivek Singh",
-            "Community Buidl-er",
-            "vs77bb",
-            "vivek-singh-b5a4b675",
-            "Gitcoin Requests",
-            "Tangerine Gelato",
-            "vivek",
-            "Campfire StoryTeller",
-            "vsinghdothings",
-            True
-        ),
-        (
-            "Aditya Anand M C",
-            "Engineering",
-            "thelostone-mc",
-            "aditya-anand-m-c-95855b65",
-            "The Community",
-            "Cocktail Samosa",
-            "aditya",
-            "Block Welder",
-            "thelostone_mc",
-            True
-        ),
-        (
-            "Scott Moore",
-            "Biz Dev",
-            "ceresstation",
-            "scott-moore-a2970075",
-            "Issue Explorer",
-            "Teriyaki Chicken",
-            "scott",
-            "Phase Shifter",
-            "notscottmoore",
-            True
-        ),
-        (
-            "Octavio Amuchástegui",
-            "Front End Dev",
-            "octavioamu",
-            "octavioamu",
-            "The Community",
-            "Homemade italian pasta",
-            "octavio",
-            "Bugs Breeder",
-            "octavioamu",
-            True
-        ),
-        (
-            "Frank Chen",
-            "Data & Product",
-            "frankchen07",
-            "frankchen07",
-            "Kudos!",
-            "Crispy pork belly",
-            "frank",
-            "Hashed Scout",
-            "",
-            True
-        ),
-        (
-            "Connor O'Day",
-            "DevRel",
-            "connoroday",
-            "connoroday",
-            "the lols",
-            "Robertas Pizza",
-            "connor",
-            "Druid of The Chain",
-            "connoroday0",
-            True
-        ),
-        (
-            "solexplorer",
-            "Wannabe community Star",
-            "solexplorer",
-            '',
-            "Community",
-            "Pizza",
-            "",
-            "Community leader",
-            "rachid_eth",
-            True
-        ),
-        (
-            "nglglhtr",
-            "DevRel Mage",
-            "nglglhtr",
-            '',
-            "Quests",
-            "Quinoa",
-            "",
-            "",
-            "angelagilhotra",
-            True
-        ),
-        (
-            "chibie",
-            "Engineer",
-            "chibie",
-            '',
-            "Grants",
-            "semovita with afang soup",
-            "",
-            "OSS Freedom Fighter",
-            "stchibie",
-            True
-        ),
-        (
-            "scco",
-            "Design",
-            "scco",
-            '',
-            "grants",
-            "boeuf bourguignon",
-            "",
-            "Mage",
-            "schumanncombo",
-            True
-        ),
-        (
-            "thesachinmittal",
-            "DevRel SuperSstar",
-            "thesachinmittal",
-            '',
-            "KERNEL",
-            "",
-            "",
-            "Druid",
-            "sm_judge",
-            True
-        ),
-        (
-            "octaviaan",
-            "Design",
-            "octaviaan",
-            '',
-            "Kudos",
-            "",
-            "",
-            "Rainbow Unicorn",
-            "",
-            True
-        ),
-        (
-            "Kyle Weiss",
-            "People, Product and Value Capture",
-            "kweiss",
-            "kweiss",
-            "The Community",
-            "Porkbelly Ramen",
-            "",
-            "",
-            "kweiss",
-            True
-        ),
-        (
-            "gitcoinbot",
-            "beep boop bop",
-            "gitcoinbot",
-            None,
-            "everything that's automated",
-            "bits",
-            "gitcoinbot",
-            "Loveable Companion",
-            "",
-            False
-        )
 
-    ]
-    exclude_community = ['kziemiane', 'owocki', 'mbeacom']
-    community_members = [
-    ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, product='all', leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
-    for lr in leadeboardranks:
-        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
-        community_members.append(package)
+    data_about = JSONStore.objects.get(view='about', key='general').data
 
-    alumnis = [
-    ]
-    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco').cache():
-        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
-        alumnis.append(package)
+    try:
+        kernel = JSONStore.objects.get(view='about', key='kernel').data
+
+    except JSONStore.DoesNotExist:
+        kernel = [{
+            "img": "harshricha.jpg",
+            "name": "Harsh & Richa",
+            "position": "Founders",
+            "company": "EPNS"
+        },
+        {
+            "img": "tomgreenaway.jpg",
+            "name": "Tom Greenaway",
+            "position": "Senior Dev Advocate",
+            "company": "Google"
+        },
+        {
+            "img": "sparrowread.jpg",
+            "name": "Sparrow Read",
+            "position": "Cofounder",
+            "company": "DADA, WOCA"
+        },
+        {
+            "img": "colinfortuner.jpg",
+            "name": "Colin Fortuner",
+            "position": "Indie Game Developer",
+            "company": "ex-Twitch"
+        },
+        {
+            "img": "shreyashariharan.jpg",
+            "name": "Shreyas Hariharan",
+            "position": "Founder",
+            "company": "Llama Community"
+        },
+        {
+            "img": "ramanshalupau.jpg",
+            "name": "Raman Shalupau",
+            "position": "Founder",
+            "company": "CryptoJobList"
+        },
+        {
+            "img": "omergoldberg.jpg",
+            "name": "Omer Goldberg",
+            "position": "Founder",
+            "company": "devclass.io, ex-Instagram"
+        },
+        {
+            "img": "kristiehuang.jpg",
+            "name": "Kristie Huang ",
+            "position": "Member",
+            "company": "Pantera Capital, she256"
+        }]
 
     context = {
-        'core_team': core_team,
-        'community_members': community_members,
-        'alumni': alumnis,
-        'total_alumnis': str(Alumni.objects.count()),
-        'active': 'about',
-        'title': 'About',
-        'is_outside': True,
+        'title': 'Gitcoin - Support open web development.',
+        'card_title': 'Gitcoin - Support open web development.',
+        'card_desc': "We are the community of builders, creators, and protocols at the center of the open web.",
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
+        'data': data_about if data_about else None,
+        'kernel': kernel if kernel else None,
     }
+
+    try:
+        data = JSONStore.objects.get(view='results').data
+        data_results = {
+            'universe_total_usd': data['universe_total_usd'] if data['universe_total_usd'] else 0,
+            'mau': data['mau'] if data['mau'] else 0,
+            'num_grants': data['num_grants'] if data['num_grants'] else 0
+        }
+    except:
+        data_results = {
+            'universe_total_usd': 18874053.680999957,
+            'mau': 161205.0,
+            'num_grants': 1606,
+        }
+    context.update(data_results)
     return TemplateResponse(request, 'about.html', context)
 
 
@@ -712,25 +567,19 @@ def mission(request):
     context = {
         'is_outside': True,
         'active': 'mission',
-        'card_type': 'summary_large_image',
         'avatar_width': 2614,
         'avatar_height': 1286,
-        'title': 'Mission',
-        'card_title': _('Gitcoin is a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
-        'avatar_url': static('v2/images/mission.png'),
+        'title': 'Gitcoin - Support open web development.',
+        'card_title': _('Gitcoin - Support open web development.'),
+        'card_desc': _('We empower open source builders.'),
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
     return TemplateResponse(request, 'mission.html', context)
 
 
 def jobs(request):
-    job_listings = Job.objects.filter(active=True)
-    context = {
-        'active': 'jobs',
-        'title': 'Jobs',
-        'job_listings': job_listings
-    }
-    return TemplateResponse(request, 'jobs.html', context)
+    return redirect('https://angel.co/company/gitcoin/jobs')
 
 
 def avatar(request):
@@ -780,7 +629,7 @@ def products(request):
             'name': 'Discord',
             'heading': _("Reach your favorite Gitcoiner's in realtime.."),
             'description': _("Gitcoin Chat is hosted on Discord, and is an option to connect with your favorite Gitcoiners in realtime."),
-            'link': 'https://discord.gg/jWUzf7b8Yr',
+            'link': 'https://discord.gg/gitcoin',
             'img': static('v2/images/products/chat.png'),
             'logo': static('v2/images/helmet.svg'),
             'service_level': '',
@@ -1177,7 +1026,7 @@ def grant_redir(request):
 
 
 def help(request):
-    return redirect('/wiki/')
+    return redirect('/support/')
 
 
 def verified(request):
@@ -1196,45 +1045,78 @@ def presskit(request):
 
     brand_colors = [
         (
-            "Cosmic Teal",
-            "#25e899",
-            "37, 232, 153"
-        ),
-        (
-            "Dark Cosmic Teal",
-            "#0fce7c",
-            "15, 206, 124"
-        ),
-        (
-            "Milky Way Blue",
-            "#15003e",
-            "21, 0, 62"
-        ),
-        (
-            "Stardust Yellow",
-            "#FFCE08",
-            "255,206, 8"
-        ),
-        (
-            "Polaris Blue",
+            "Violet",
             "#6F3FF5",
-            "62, 0, 255"
+            "11, 63, 245",
+            "256, 90, 60"
         ),
         (
-            "Vinus Purple",
-            "#8E2ABE",
-            "142, 42, 190"
+            "Teal",
+            "#02E2AC",
+            "2, 226, 172",
+            "166, 98, 45"
         ),
         (
-            "Regulus Red",
-            "#F9006C",
-            "249, 0, 108"
+            "Pink",
+            "#F3587D",
+            "243, 88, 125",
+            "346, 87, 65"
         ),
         (
-            "Star White",
-            "#FFFFFF",
-            "23, 244, 238"
+            "Yellow",
+            "#FFCC00",
+            "255, 204, 0",
+            "48, 100, 50"
         ),
+        (
+            "Light Violet",
+            "#8C65F7",
+            "140, 101, 247",
+            "256, 90, 68"
+        ),
+        (
+            "Light Teal",
+            "#5BF1CD",
+            "91, 241, 205",
+            "166, 84, 65"
+        ),
+        (
+            "Light Pink",
+            "#F579A6",
+            "245, 121, 166",
+            "338, 86, 72"
+        ),
+        (
+            "Light Yellow",
+            "#FFDB4C",
+            "255, 219, 76",
+            "48, 100, 65"
+        ),
+        (
+            "Dark Violet",
+            "#5932C4",
+            "89, 50, 196",
+            "256, 59, 48"
+        ),
+        (
+            "Dark Teal",
+            "#11BC92",
+            "17, 188, 146",
+            "165, 83, 40"
+        ),
+        (
+            "Dark Pink",
+            "#D44D6E",
+            "212, 77, 110",
+            "345, 61, 57"
+        ),
+        (
+            "Dark Yellow",
+            "#E1B815",
+            "255, 184, 21",
+            "48, 83, 48"
+        ),
+        
     ]
 
     context = {
@@ -1300,19 +1182,19 @@ def wallpaper(request):
 
 
 def help_dev(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_pilot(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_repo(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def help_faq(request):
-    return redirect('/wiki')
+    return redirect('/support')
 
 
 def browser_extension_chrome(request):
@@ -1336,30 +1218,7 @@ def schwag(request):
 
 
 def slack(request):
-    context = {
-        'active': 'slack',
-        'msg': None,
-        'nav': 'home',
-    }
-
-    if request.POST:
-        email = request.POST.get('email')
-        context['msg'] = _('You must provide an email address')
-        if email:
-            context['msg'] = _('Your invite has been sent.')
-            context['success'] = True
-            try:
-                validate_email(email)
-                get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
-                response = invite_to_slack(email, True)
-
-                if not response.get('ok'):
-                    context['msg'] = response.get('error', _('Unknown error'))
-                context['success'] = False
-            except ValidationError:
-                context['msg'] = _('Invalid email')
-
-    return TemplateResponse(request, 'slack.html', context)
+    return discord(request)
 
 
 @csrf_exempt
@@ -1413,7 +1272,7 @@ def twitter(request):
 
 
 def discord(request):
-    return redirect('https://discord.gg/jWUzf7b8Yr')
+    return redirect('https://discord.gg/gitcoin')
 
 
 def telegram(request):
@@ -1446,6 +1305,10 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def support(request):
+    return redirect('https://support.gitcoin.co/')
 
 
 @cached_view(timeout=60)
@@ -1591,7 +1454,9 @@ def jtbd_template(request, template, title, card_title, card_desc):
     context = {
         'title': _(title),
         'card_title': _(card_title),
-        'card_desc': _(card_desc)
+        'card_desc': _(card_desc),
+        'card_type': 'summary_large_image',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/twitter-landing-large.png')),
     }
     context.update(data)
     return TemplateResponse(request, 'jtbd/' + template + '.html', context)

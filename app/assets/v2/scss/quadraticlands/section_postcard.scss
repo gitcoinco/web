@@ -1,0 +1,62 @@
+section.postcard {
+  figure {
+    display: grid;
+    background-color: var(--space_light_alpha);
+    overflow-x: auto;
+    padding: 2em;
+
+    img {
+      display: block;
+      margin: 0 auto;
+      padding: 0;
+      max-width: 1400px;
+      max-height: 500px;
+    }
+  }
+  .btn[selected=selected]{
+    background-color:#f5a9d6 !important;
+  }
+
+  .btn.sm {
+    padding: 0.2rem 0.7em;
+    font-size: 60%;
+  }
+
+
+  .input {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .textarea-wrapper {
+    background-color: var(--space_light_alpha);
+    padding: 2em;
+
+    textarea {
+      display: block;
+      padding: 0em;
+      margin: 0em;
+
+      width: 100%;
+      height: auto;
+
+      font-family: "Space Mono", monospace;
+
+      font-size: 100%;
+      resize: none;
+
+      word-break: break-all;
+      border: none;
+      outline: none;
+
+      color: var(--aqua_light);
+      background-color: transparent;
+    }
+  }
+}

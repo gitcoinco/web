@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -39,6 +39,7 @@ class Command(BaseCommand):
         from quests.models import Quest
         from kudos.models import Token
         kudos_ids = options['kudos_ids'].split(',')
+        kudos_ids = (Token.objects.filter(pk__in=kudos_ids, num_clones_available_counting_indirect_send__gt=0).values_list('pk',flat=True))
 
         for quest in Quest.objects.filter(visible=True):
             kudos_id = int(random.choice(kudos_ids))

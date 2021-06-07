@@ -139,7 +139,8 @@ def add_contributors(repo_data):
     params = {}
     url = repo_data['contributors_url']
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-    if response.status_code == 204:  # no content
+
+    if response.status_code in [204, 404] :  # no content
         return repo_data
 
     response_data = response.json()
@@ -253,11 +254,12 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
         for repo in profile.repos_data_lite:
-            language = repo.get('language') if repo.get('language') else ''
-            _keywords = language.split(',')
-            for key in _keywords:
-                if key != '' and key not in keywords:
-                    keywords.append(key)
+            if type(repo) == dict:
+                language = repo.get('language') if repo.get('language') else ''
+                _keywords = language.split(',')
+                for key in _keywords:
+                    if key != '' and key not in keywords:
+                        keywords.append(key)
 
         profile.keywords = keywords
         profile.save()

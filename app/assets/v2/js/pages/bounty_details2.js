@@ -158,6 +158,10 @@ Vue.mixin({
           url = `https://algoexplorer.io/tx/${txn}`;
           break;
 
+        case 'SC':
+          url = `https://siastats.info/navigator?search=${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -226,6 +230,10 @@ Vue.mixin({
         case 'USDTa':
         case 'USDCa':
           url = `https://algoexplorer.io/tx/${address}`;
+          break;
+
+        case 'SC':
+          url = `https://siastats.info/navigator?search=${address}`;
           break;
 
         default:
@@ -465,6 +473,11 @@ Vue.mixin({
         case 'USDTa':
         case 'USDCa':
           tenant = 'ALGORAND';
+          break;
+
+        case 'SC':
+          tenant = 'SIA';
+          vm.canChangeFunderAddress = true;
           break;
 
         default:
@@ -769,6 +782,7 @@ Vue.mixin({
         case 'qr':
         case 'manual':
         case 'nervos_ext':
+        case 'sia_ext':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
           vm.getTenant(vm.bounty.token_name, fulfillment.payout_type);
           break;

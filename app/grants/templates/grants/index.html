@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
@@ -70,25 +70,8 @@ along with this program. If not, see
         <div class="row grants-details-parent mx-0">
           <div id="grants-details" :class="`no-gutters w-100 ${view == 'list' ? 'list-view' : 'grid-view'}`">
             <div style="background-size: contain;" id="grant-background-image-mount-point">
-              <div
-                style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px;">
-                {% if prev_grants.count %}
-                <div class="row">
-                  <div class="col-12 mt-3">
-                    <div class="info-box large mx-auto p-3">
-                      <a class="btn btn-primary cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for prev_grant in prev_grants %}{{prev_grant.pk}},{% endfor %}">+
-                        Add to Cart</a>
-                      <p class="mb-2">Want to contribute to <a href="https://vitalik.ca/general/2020/04/30/round5.html" target="_blank">stability of ecosystem funding</a>? You funded {{prev_grants.count}} grant{{ prev_grants.count|pluralize }} last time. Fund
-                        them again?</p>
-                      <span class="font-smaller-3">{% for prev_grant in prev_grants %}
-                      <a href="{{prev_grant.url}}">{{prev_grant.title}}</a>
-                      {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
-                      {%endfor%}</span>
-                    </div>
-                  </div>
-                </div>
-                {% endif %}
-                <div >
+              <div style="background-color: rgba(255, 255, 255, 0.92);  padding-bottom: 20px;">
+                <div>
                   <div class="row mx-0">
                     <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
                       {% include 'grants/shared/sidebar_search.html' %}
@@ -96,9 +79,6 @@ along with this program. If not, see
 
                     <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
                       {% include 'grants/shared/landing_navbar.html' %}
-
-                      <!-- TODO : REMOVE -->
-                      <!-- {% include 'grants/shared/landing_clr.html' %} -->
 
                       <template v-if="'activity' == current_type">
                         {% include 'grants/shared/landing_activity.html' %}

@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -78,6 +78,17 @@
               All Grants
             </a>
           </li>
+          <li>
+            <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+              <template v-if="idle_grants">
+                Hide Idle Grants
+                <i class="fas fa-times font-smaller-4 ml-1"></i>
+              </template>
+              <template v-else>
+                Show Idle Grants
+              </template>
+            </span>
+          </li>
 
           <template v-for="grant_type in grant_types" v-if="grant_type.is_visible || round_num">
             <li class="mr-1 d-flex">
@@ -141,18 +152,6 @@
               </li>
 
               <li>
-                <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
-                  <template v-if="idle_grants">
-                    Hide Idle Grants
-                    <i class="fas fa-times font-smaller-4 ml-1"></i>
-                  </template>
-                  <template v-else>
-                    Show Idle Grants
-                  </template>
-                </span>
-              </li>
-
-              <li>
                 <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-2 ml-0 pl-0 text-left text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
                   My Contributions
                   <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
@@ -196,7 +195,7 @@
             </a>
           </li>
           <li>
-            <a target="new" href='/wiki/grants' class="mr-1 pr-1 ">
+            <a target="new" href='/grants/quickstart' class="mr-1 pr-1 ">
               FAQ <i class="fas fa-external-link-alt"></i>
             </a>
           </li>
