@@ -906,7 +906,7 @@ Vue.component('render-quill', {
 
 
 Vue.component('countdown', {
-  props: ['startdate', 'enddate'],
+  props: [ 'startdate', 'enddate' ],
   template: `
     <div>
       <slot :time="time">{{time.days}}d {{time.hours}}h {{time.minutes}}m {{time.seconds}}s </slot>
@@ -916,7 +916,7 @@ Vue.component('countdown', {
       time: {},
       start: '',
       end: '',
-      timeinterval: undefined,
+      timeinterval: undefined
     };
   },
   methods: {
@@ -925,7 +925,7 @@ Vue.component('countdown', {
 
       vm.updateClock();
       vm.timeinterval = setInterval(vm.updateClock, 1000);
-      return vm.time
+      return vm.time;
     },
     updateClock() {
       let vm = this;
@@ -941,7 +941,7 @@ Vue.component('countdown', {
       } else if (distance < 0 && passTime > 0) {
         t = this.getTimeRemaining(passTime);
         vm.$set(vm.time, 'statusType', 'running');
-      } else if ( distance > 0 && passTime > 0 ) {
+      } else if (distance > 0 && passTime > 0) {
         t = this.getTimeRemaining(distance);
         vm.$set(vm.time, 'statusType', 'upcoming');
       }
