@@ -3630,6 +3630,9 @@ def profile(request, handle, tab=None):
     user_only_tabs = ['viewers', 'earnings', 'spent', 'trust']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
+    if not request.user.is_authenticated and tab in ['people', 'manage']:
+        tab = default_tab
+
     context = {}
     context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
     # get this user
@@ -3693,9 +3696,9 @@ def profile(request, handle, tab=None):
             active_tab = 0
         elif tab == "projects":
             active_tab = 1
-        elif tab == "people":
-            active_tab = 2
         elif tab == "bounties":
+            active_tab = 2
+        elif tab == "people":
             active_tab = 3
         elif tab == "ptokens":
             active_tab = 4
@@ -3724,7 +3727,6 @@ def profile(request, handle, tab=None):
             context['profile_handle'] = profile.handle
             context['title'] = profile.handle
             context['card_desc'] = profile.desc
-
 
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:

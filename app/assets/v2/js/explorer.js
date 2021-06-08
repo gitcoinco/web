@@ -212,6 +212,8 @@ Vue.component('bounty-explorer', Vue.extend({
     };
   },
   mounted() {
+    let vm = this;
+
     vm.bounties = [];
     vm.featuredBounties = [];
     if (this.tribe && this.tribe.handle) {
