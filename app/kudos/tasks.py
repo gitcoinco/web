@@ -31,7 +31,8 @@ def mint_token_request(self, token_req_id, send_notif_email=True, retry=False):
     :param token_req_id:
     :return:
     """
-    with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
+    #with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
+    if True:
         with redis.lock("tasks:token_req_id:%s" % token_req_id, timeout=LOCK_TIMEOUT):
             from kudos.management.commands.mint_all_kudos import sync_latest
             from gas.utils import recommend_min_gas_price_to_confirm_in_time

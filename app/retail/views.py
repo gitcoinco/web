@@ -197,7 +197,7 @@ def funder_bounties(request):
 
     onboard_slides = [
         {
-            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a developer or designer?'),
             'subtitle': _('Contribute to exciting OSS project and get paid!'),
             'type': 'contributor',
@@ -205,7 +205,7 @@ def funder_bounties(request):
             'more': '/bounties/contributor'
         },
         {
-            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a funder or project organizer?'),
             'subtitle': _('Fund your OSS bounties and get work done!'),
             'type': 'funder',
@@ -274,7 +274,7 @@ def contributor_bounties(request, tech_stack):
 
     onboard_slides = [
         {
-            'img': static("v2/images/presskit/illustrations/regulus-white.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a funder or project organizer?'),
             'subtitle': _('Fund your OSS bounties and get work done!'),
             'type': 'funder',
@@ -282,7 +282,7 @@ def contributor_bounties(request, tech_stack):
             'more': '/bounties/funder'
         },
         {
-            'img': static("v2/images/presskit/illustrations/prime.svg"),
+            'img': static("v2/images/prime.png"),
             'title': _('Are you a developer or designer?'),
             'subtitle': _('Contribute to exciting OSS project and get paid!'),
             'type': 'contributor',
