@@ -903,3 +903,73 @@ Vue.component('render-quill', {
     }
   }
 });
+
+
+Vue.component('countdown', {
+  props: ['startdate', 'enddate'],
+  template: `
+    <div>
+      <slot :time="time">{{time.days}}d {{time.hours}}h {{time.minutes}}m {{time.seconds}}s </slot>
+    </div>`,
+  data() {
+    return {
+      time: {},
+      start: '',
+      end: '',
+      timeinterval: undefined,
+    };
+  },
+  methods: {
+    initializeClock() {
+      let vm = this;
+
+      vm.updateClock();
+      vm.timeinterval = setInterval(vm.updateClock, 1000);
+      return vm.time
+    },
+    updateClock() {
+      let vm = this;
+      const now = new Date().getTime();
+      const distance = vm.start - now;
+      const passTime = vm.end - now;
+      let t;
+
+      if (distance < 0 && passTime < 0) {
+        vm.$set(vm.time, 'statusType', 'expired');
+        clearInterval(this.timeinterval);
+        return;
+      } else if (distance < 0 && passTime > 0) {
+        t = this.getTimeRemaining(passTime);
+        vm.$set(vm.time, 'statusType', 'running');
+      } else if ( distance > 0 && passTime > 0 ) {
+        t = this.getTimeRemaining(distance);
+        vm.$set(vm.time, 'statusType', 'upcoming');
+      }
+
+      this.$set(vm.time, 'days', t.days);
+      this.$set(vm.time, 'hours', ('0' + t.hours).slice(-2));
+      this.$set(vm.time, 'minutes', ('0' + t.minutes).slice(-2));
+      this.$set(vm.time, 'seconds', ('0' + t.seconds).slice(-2));
+
+    },
+
+    getTimeRemaining(dist) {
+      const seconds = Math.floor((dist / 1000) % 60);
+      const minutes = Math.floor((dist / 1000 / 60) % 60);
+      const hours = Math.floor((dist / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(dist / (1000 * 60 * 60 * 24));
+
+      return {
+        days,
+        hours,
+        minutes,
+        seconds
+      };
+    }
+  },
+  mounted() {
+    this.start = new Date(this.startdate).getTime();
+    this.end = new Date(this.enddate).getTime();
+    this.initializeClock();
+  }
+});
