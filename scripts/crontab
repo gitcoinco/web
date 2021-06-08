@@ -43,6 +43,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_db_space  >> /var/log/gitcoin/cleanup_db_space.log  2>&1
 15 6 * * * cd gitcoin/coin; bash scripts/run_management_command.bash clearsessions  >> /var/log/gitcoin/clearsessions.log  2>&1
 16 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash warn_when_wallet_out_of_eth  >> /var/log/gitcoin/warn_when_wallet_out_of_eth.log  2>&1
+14 7 * * * cd gitcoin/coin; bash scripts/run_management_command.bash migrate_deadbeat_quests db >> /var/log/gitcoin/migrate_deadbeat_quests.log  2>&1
 15 7 * * * cd gitcoin/coin; bash scripts/run_management_command.bash find_deadbeat_quests  >> /var/log/gitcoin/find_deadbeat_quests.log  2>&1
 15 7 * * * cd gitcoin/coin; bash scripts/run_management_command.bash find_deadbeat_grants  >> /var/log/gitcoin/find_deadbeat_grants.log  2>&1
 35 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash update_popularity  >> /var/log/gitcoin/update_popularity.log  2>&1
