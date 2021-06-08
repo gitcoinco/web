@@ -197,10 +197,10 @@ const loadDynamicScript = (callback, url, id) => {
               newPathName = 'projects';
               break;
             case 2:
-              newPathName = 'people';
+              newPathName = 'bounties';
               break;
             case 3:
-              newPathName = 'bounties';
+              newPathName = 'people';
               break;
             case 4:
               newPathName = 'manage';
