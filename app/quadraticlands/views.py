@@ -297,9 +297,9 @@ def error(request, code):
     return TemplateResponse(request, f'quadraticlands/error.html', context, status=code)
 
 
-
 def mission_diplomacy(request):
     return TemplateResponse(request, 'quadraticlands/mission/diplomacy/index.html')
+
+
 def mission_diplomacy_room(request):
     return TemplateResponse(request, 'quadraticlands/mission/diplomacy/room.html')
-
