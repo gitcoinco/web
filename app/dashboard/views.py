@@ -3696,9 +3696,9 @@ def profile(request, handle, tab=None):
             active_tab = 0
         elif tab == "projects":
             active_tab = 1
-        elif tab == "people":
-            active_tab = 2
         elif tab == "bounties":
+            active_tab = 2
+        elif tab == "people":
             active_tab = 3
         elif tab == "ptokens":
             active_tab = 4
