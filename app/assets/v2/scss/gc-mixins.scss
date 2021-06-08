@@ -59,3 +59,40 @@
     }
   }
 }
+
+// define spacers to match designers model
+@mixin spacers($spacers...) {
+
+  @each $breakpoint in map-keys($grid-breakpoints) {
+
+    @include media-breakpoint-up($breakpoint) {
+
+      $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+      @each $prop, $abbrev in (margin: m, padding: p) {
+        @each $i in $spacers {
+          // set margins for spacer
+          .spacer-#{$abbrev}#{$infix}-#{nth($i, 1)} {
+            #{$prop}: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}t#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}y#{$infix}-#{nth($i, 1)} {
+            #{$prop}-top: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}b#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}y#{$infix}-#{nth($i, 1)} {
+            #{$prop}-bottom: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}l#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}x#{$infix}-#{nth($i, 1)} {
+            #{$prop}-left: #{nth($i, 2)};
+          }
+          .spacer-#{$abbrev}r#{$infix}-#{nth($i, 1)},
+          .spacer-#{$abbrev}x#{$infix}-#{nth($i, 1)} {
+            #{$prop}-right: #{nth($i, 2)};
+          }
+        }
+      }
+    }
+  }
+}

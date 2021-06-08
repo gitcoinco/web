@@ -228,3 +228,15 @@
     stroke: #FFFFFF;
   }
 }
+
+// .spacer-[m,mt,mb,ml,mr,p,pt,pb,pl,pr]-[1-8]
+@include spacers(
+  '1' 0.25rem,
+  '2' 0.5rem,
+  '3' 1rem,
+  '4' 1.5rem,
+  '5' 3rem,
+  '6' 6rem,
+  '7' 9rem,
+  '8' 12rem
+);
