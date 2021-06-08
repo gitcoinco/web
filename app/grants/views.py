@@ -592,6 +592,10 @@ def get_grants(request):
             del grant_json['weighted_risk_score']
         grants_array.append(grant_json)
 
+    pks = list([grant.pk for grant in grants])
+    if len(pks):
+        increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
+
     has_next = False
     if paginator:
         try:
@@ -867,6 +871,7 @@ def grants_landing(request):
 
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
+
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
@@ -900,28 +905,9 @@ def grants_by_grant_type(request, grant_type):
         if grant_stats.exists():
             grant_amount = lazy_round_number(grant_stats.first().val)
 
-    _grants = None
-    try:
-        _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category)
-    except Exception as e:
-        print(e)
-        return redirect('/grants')
-
-    all_grants_count = Grant.objects.filter(
-        network=network, hidden=False, active=True
-    ).count()
-
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
 
     now = datetime.datetime.now()
-
-    paginator = Paginator(_grants, limit)
-    grants = paginator.get_page(page)
-
-    # record view
-    pks = list([grant.pk for grant in grants])
-    if len(pks):
-        increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
@@ -933,24 +919,17 @@ def grants_by_grant_type(request, grant_type):
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
     grant_types = get_grant_type_cache(network)
 
-    cht = []
-    chart_list = ''
-
     try:
         what = 'all_grants'
         pinned = PinnedPost.objects.get(what=what)
     except PinnedPost.DoesNotExist:
         pinned = None
 
-    prev_grants = Grant.objects.none()
     grants_following = Favorite.objects.none()
     collections = []
 
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
-        # KO 9/10/2020
-        # prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
-        # rev_grants = Grant.objects.filter(pk__in=prev_grants)
         allowed_collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
             {
@@ -1000,21 +979,12 @@ def grants_by_grant_type(request, grant_type):
         'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
-        'cht': cht,
-        'chart_list': chart_list,
         'bottom_back': bottom_back,
-        'categories': categories,
-        'prev_grants': prev_grants,
-        'grant_types': grant_types,
-        'current_partners_fund': current_partners_fund,
-        'current_partners': current_partners,
-        'past_partners': past_partners,
         'card_desc': f'{live_now}',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
-        'grants': grants,
         'what': what,
         'all_styles': all_styles,
         'all_routing_policies': get_all_routing_policies(request),
@@ -1026,7 +996,6 @@ def grants_by_grant_type(request, grant_type):
             'bg_size': bg_size,
             'bg_color': bg_color
         },
-        'bg': bg,
         'grant_bg': get_branding_info(request),
         'announcement': Announcement.objects.filter(key='grants', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('-rank').first(),
         'keywords': get_keywords(),
@@ -1601,6 +1570,11 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: description is a mandatory parameter'
             return JsonResponse(response)
 
+        has_external_funding = request.POST.get('has_external_funding', 'unknown')
+        if has_external_funding == 'unknown':
+            response['message'] = 'error: choose if grant has external funding or not'
+            return JsonResponse(response)
+
         description_rich = request.POST.get('description_rich', None)
         if not description_rich:
             description_rich = description
@@ -1716,6 +1690,7 @@ def grant_edit(request, grant_id):
         grant.title = title
         grant.description = description
         grant.description_rich = description_rich
+        grant.has_external_funding = has_external_funding
         grant.last_update = timezone.now()
         grant.hidden = False
 
@@ -1797,6 +1772,11 @@ def grant_new(request):
         if not description_rich:
             description_rich = description
 
+        has_external_funding = request.POST.get('has_external_funding', 'unknown')
+        if has_external_funding == 'unknown':
+            response['message'] = 'error: has_external_funding is a mandatory parameter'
+            return JsonResponse(response)
+
         eth_payout_address = request.POST.get('eth_payout_address', request.POST.get('admin_address'))
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
         celo_payout_address = request.POST.get('celo_payout_address', None)
@@ -1877,6 +1857,7 @@ def grant_new(request):
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
+            'has_external_funding': has_external_funding
         }
 
         grant = Grant.objects.create(**grant_kwargs)
@@ -3444,7 +3425,7 @@ def ingest_contributions(request):
                     .order_by("-positive_round_contributor_count")
                     .first()
                 )
-                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
             except Exception as e:
                 logger.exception(e)
                 logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
@@ -3518,7 +3499,7 @@ def ingest_contributions(request):
                         logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
                         logger.warning("Skipping unknown grant\n")
                         continue
-                    logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                    logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
                 except Exception as e:
                     logger.exception(e)
                     logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")

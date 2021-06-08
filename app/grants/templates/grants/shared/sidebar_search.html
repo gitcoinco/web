@@ -78,6 +78,17 @@
               All Grants
             </a>
           </li>
+          <li>
+            <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+              <template v-if="idle_grants">
+                Hide Idle Grants
+                <i class="fas fa-times font-smaller-4 ml-1"></i>
+              </template>
+              <template v-else>
+                Show Idle Grants
+              </template>
+            </span>
+          </li>
 
           <template v-for="grant_type in grant_types" v-if="grant_type.is_visible || round_num">
             <li class="mr-1 d-flex">
@@ -137,18 +148,6 @@
                 <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0 ${ following ? 'text-primary' : 'text-black'}`">
                   Starred Grants
                   <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
-                </span>
-              </li>
-
-              <li>
-                <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-2 text-decoration-none text-left ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
-                  <template v-if="idle_grants">
-                    Hide Idle Grants
-                    <i class="fas fa-times font-smaller-4 ml-1"></i>
-                  </template>
-                  <template v-else>
-                    Show Idle Grants
-                  </template>
                 </span>
               </li>
 

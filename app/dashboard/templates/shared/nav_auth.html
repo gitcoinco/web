@@ -22,6 +22,7 @@
   <a class="btn btn-primary py-2 px-4 mr-md-3 my-3 my-md-0 ml-md-3" target="_blank" href="mailto:sales@gitcoin.co">Contact Sales</a>
 {% endif %}
 {% if user.is_authenticated %}
+
   <div class="nav-item dropdown interior">
 
     <a class="nav-link dropdown-toggle dropdown-toggle-md-no-caret px-3 pl-md-2 pr-0 pr-md-4" href="#" id="navbarDropdownWallet" role="button"
@@ -54,97 +55,262 @@
   <div id="templates" style="display: none">
     <template id="template-balance">
       <div class="wallet-option" data-toggle="tooltip" title="Click to select this wallet">
-      	<div class="wallet-address"></div>
-      	<small class="wallet-balance"></small>
+        <div class="wallet-address"></div>
+        <small class="wallet-balance"></small>
       </div>
     </template>
   </div>
+
 
   <div id="nav_auth_profile_wrap">
     <a href="{{ profile_url }}" id="nav_auth_profile" class="nav_avatar d-block"
       data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
     </a>
   </div>
-  <div id="nav_auth_user" class="nav-item dropdown interior">
-    <a class="nav-link dropdown-toggle ml-5 ml-md-0" href="#" id="navbarDropdown" role="button"
-      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <div id="nav_auth_user" class="nav-item gc-nav-item dropdown interior my-auto">
+    <a class="nav-link gc-nav-link ml-5 ml-md-0" href="#" id="dropdownProfile" role="button" data-menu="profile" aria-haspopup="true" aria-expanded="false">
       {{ user }}
     </a>
-    <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 shadow-lg gc-menu-padding" aria-labelledby="navbarDropdown">
-      {% if source == 'authed' %}
-        <a class="dropdown-item" href="{% url 'new_funding' %}">
-          <i class="fab fa-ethereum"></i>
-          {% trans "Fund Issue" %}
-        </a>
-        <a class="dropdown-item" href="{% url 'tip' %}">
-          <i class="far fa-paper-plane"></i>
-          {% trans "Send Tip" %}
-        </a>
-        <a class="dropdown-item" href="{% url 'kudos_marketplace' %}">
-          <i class="fas"><img src="{% static 'v2/images/kudos/IconKudos.svg' %}"></i>
-          {% trans "Send Kudos" %}
-        </a>
-        <a class="dropdown-item" href="{% url 'grants:new' %}">
-        <i class="fas fa-money-check-alt"></i>
-          {% trans "Create Grant" %}
-        </a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" data-gtm="profile" href="{{ profile_url }}">
-          <i class="fas fa-user"></i>
-          {% trans "My Profile" %}
-        </a>
-        <a class="dropdown-item" href="{% url 'dashboard' %}">
-          <i class="fas fa-tachometer-alt"></i>
-          {% trans "My Dashboard" %}
-        </a>
-      {% else %}
-        <a class="dropdown-item" data-gtm="get started" href="{% url 'get_gitcoin' %}">
-          <i class="fas fa-bolt"></i>
-          {% trans "Get Started" %}
-        </a>
-      {% endif %}
+    <div class="gc-mobile-spacer gc-mobile-spacer-profile gc-menu-background-clr d-none"></div>
+  </div>
+  <div class="gc-menu-container position-md-absolute">
+    <div class="gc-menu-content position-md-absolute overflow-hidden">
 
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url 'email_settings' email_key %}">
-        <i class="fas fa-cog"></i>
-        {% trans "Manage Settings" %}
-      </a>
-      {% if unclaimed_tips %}
-        <div class="dropdown-divider"></div>
-        {% for tip in unclaimed_tips %}
-          <a class="dropdown-item" href="{{ tip.receive_url }}">
-            <i class="fas fa-dollar-sign"></i>
-            {% trans "Claim" %} ${{ tip.value_in_usdt_now }} {% trans "Tip" %}
-          </a>
-        {% endfor %}
-      {% endif %}
-      {% if unclaimed_kudos %}
-        <div class="dropdown-divider"></div>
-        {% for kudos in unclaimed_kudos %}
-          <a class="dropdown-item" href="{{ kudos.receive_url }}">
-            <i class="fas fa-gift"></i>
-            {% trans "Claim Kudos" %}
-          </a>
-        {% endfor %}
-      {% endif %}
-      {% if user.is_staff %}
-        <a class="dropdown-item" href="{% url 'admin:index' %}">
-          <i class="fas fa-user-secret"></i>
-          {% trans "Administration" %}
-        </a>
-      {% endif %}
-      <div class="dropdown-divider"></div>
-      {% if is_townsquare %}
-        {% include 'shared/theme_switcher.html' with source='authed' %}
-      {% endif %}
-      <a class="dropdown-item" data-gtm="logout" href="{% url 'logout' %}?next={{ request.get_full_path }}">
-        <i class="fas fa-lock"></i>
-        {% trans "Log Out" %}
-      </a>
+      <section class="gc-menu-wrap gc-menu-wrap-profile gc-menu-submenu-wrap position-md-absolute rtl" data-submenu="profile" data-direction="rtl">
+        <div class="gc-menu-inner text-grey-500">
+          <div class="row">
+
+            <div class="d-md-flex col-md-6 bg-lighter gc-menu-inner">
+              <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-bounties position-absolute">
+                <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Bounties" %}</b>
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=startedByMe">{% trans "In Progress" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=fulfilledByMe">{% trans "Completed" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=reservedForMe">{% trans "Reserved for Me" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=createdByMe">{% trans "Created by Me" %}</a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'new_bounty' %}">{% trans "Create a Bounty" %}</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-hackathons position-absolute">
+                <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Hackathons" %}</b>
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=startedByMe&keywords=hackathon">{% trans "Participating" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/hackathons">{% trans "Projects" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=fulfilledByMe&keywords=hackathon">{% trans "Completed" %}</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-grants position-absolute">
+                <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Grants" %}</b>
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}me">{% trans "Projects" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}collections?keyword={{ user }}">{% trans "Collections" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?only_contributions=true">{% trans "Contributions" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?following=true">{% trans "Starred Grants" %}</a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:new' %}">{% trans "Create a Grant" %}</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute">
+                <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Quests" %}</b>
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/quests">{% trans "Played" %}</a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'newquest' %}">{% trans "Create a Quest" %}</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-kudos position-absolute">
+                <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Kudos" %}</b>
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/kudos#mykudos">{% trans "Received" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/kudos#sentkudos">{% trans "Sent" %}</a>
+                  </li>
+                  <hr />
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'kudos_marketplace' %}">{% trans "Send a Kudos" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'newkudos' %}">{% trans "Mint a Kudos" %}</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="gc-profile-submenu gc-menu-submenu gc-menu-submenu-account position-absolute">
+                <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Account" %}</b>
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'dashboard' %}">{% trans "Dashboard" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{{ profile_url }}">{% trans "Profile" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'email_settings' email_key %}">{% trans "Settings" %}</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'tip' %}">{% trans "Send Tip" %}</a>
+                  </li>
+                  {% if user.is_staff %}
+                    <li>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'admin:index' %}">{% trans "Administration" %}</a>
+                    </li>
+                  {% endif %}
+                  <hr/>
+                  <li>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'logout' %}?next={{ request.get_full_path }}">{% trans "Log Out" %}</a>
+                  </li>
+                </ul>
+              </div>
+
+
+            </div>
+
+            <div class="col-12 col-md-6 gc-menu-submenu-toggles gc-menu-padding-col gc-menu-scroll">
+
+              <a data-submenu="bounties" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
+                <div class="row py-2">
+                  <div class="col align-self-center" style="max-width: 2.25rem;">
+                    <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="30">
+                  </div>
+                  <div class="col m-auto">
+                    <b class="gc-megamenu-title d-block">{% trans "My Bounties" %}</b>
+                  </div>
+                  <div class="col m-auto text-right d-block d-md-none">
+                    <span class="sub-menu-caret"></span>
+                  </div>
+                </div>
+              </a>
+              <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-bounties gc-menu-background-clr d-none"></div>
+
+              <a data-submenu="hackathons" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
+                <div class="row py-2">
+                  <div class="col align-self-center" style="max-width: 2.25rem;">
+                    <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="30">
+                  </div>
+                  <div class="col m-auto">
+                    <b class="gc-megamenu-title d-block">{% trans "My Hackathons" %}</b>
+                  </div>
+                  <div class="col m-auto text-right d-block d-md-none">
+                    <span class="sub-menu-caret"></span>
+                  </div>
+                </div>
+              </a>
+              <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-hackathons gc-menu-background-clr d-none"></div>
+
+              <a data-submenu="grants" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
+                <div class="row py-2">
+                  <div class="col align-self-center" style="max-width: 2.25rem;">
+                    <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/grants-symbol-pos.svg' %}" alt="Grants" height="27">
+                  </div>
+                  <div class="col m-auto">
+                    <b class="gc-megamenu-title d-block">{% trans "My Grants" %}</b>
+                  </div>
+                  <div class="col m-auto text-right d-block d-md-none">
+                    <span class="sub-menu-caret"></span>
+                  </div>
+                </div>
+              </a>
+              <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-grants gc-menu-background-clr d-none"></div>
+
+              <a data-submenu="quests" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
+                <div class="row py-2">
+                  <div class="col align-self-center" style="max-width: 2.25rem;">
+                    <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="30">
+                  </div>
+                  <div class="col m-auto">
+                    <b class="gc-megamenu-title d-block">{% trans "My Quests" %}</b>
+                  </div>
+                  <div class="col m-auto text-right d-block d-md-none">
+                    <span class="sub-menu-caret"></span>
+                  </div>
+                </div>
+              </a>
+              <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-quests gc-menu-background-clr d-none"></div>
+
+              <a data-submenu="kudos" class="dropdown-item cursor-pointer text-grey-500 px-3 py-1 gc-menu-submenu-toggle gc-profile-toggle">
+                <div class="row py-2">
+                  <div class="col align-self-center" style="max-width: 2.25rem;">
+                    <img class="logo-static d-block m-auto p-1" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="30">
+                  </div>
+                  <div class="col m-auto">
+                    <b class="gc-megamenu-title d-block">{% trans "My Kudos" %}</b>
+                  </div>
+                  <div class="col m-auto text-right d-block d-md-none">
+                    <span class="sub-menu-caret"></span>
+                  </div>
+                </div>
+              </a>
+              <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-kudos gc-menu-background-clr d-none"></div>
+
+              <a data-submenu="account" class="dropdown-item cursor-pointer text-grey-500 px-3 py-0 gc-menu-submenu-toggle gc-profile-toggle">
+                <div class="row py-3">
+                  <div class="col align-self-center" style="max-width: 2.25rem;">
+                    <svg class="logo-static d-block m-auto p-1" height="25" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M14.882 10.2313L14.1406 10.0195C15.1804 8.57426 15.3281 7.1119 15.3281 6.32812C15.3281 2.83532 12.4975 0 9 0C5.50719 0 2.67188 2.83064 2.67188 6.32812C2.67188 7.11207 2.81946 8.57405 3.85942 10.0195L3.11804 10.2313C0.748125 10.9085 0 13.0637 0 14.365V15.2679C0 16.7744 1.22562 18 2.73213 18H15.2678C16.7744 18 18 16.7744 18 15.2679V14.365C18 13.0907 17.2714 10.914 14.882 10.2313ZM9 1.6875C11.563 1.6875 13.6406 3.7652 13.6406 6.32812C13.6406 8.89105 11.563 10.9688 9 10.9688C6.43704 10.9688 4.35938 8.89105 4.35938 6.32812C4.35938 3.7652 6.43704 1.6875 9 1.6875ZM16.3125 15.2679C16.3125 15.8448 15.8448 16.3125 15.2679 16.3125H2.73213C2.15522 16.3125 1.6875 15.8448 1.6875 15.2679V14.365C1.6875 13.199 2.46048 12.1742 3.58165 11.8539L5.20246 11.3908C5.71932 11.7794 7.04626 12.6562 9 12.6562C10.9537 12.6562 12.2807 11.7794 12.7975 11.3908L14.4184 11.8539C15.5395 12.1743 16.3125 13.199 16.3125 14.365V15.2679Z" fill="black"/>
+                    </svg>
+
+                  </div>
+                  <div class="col m-auto">
+                    <b class="gc-megamenu-title d-block">{% trans "My Account" %}</b>
+                  </div>
+                  <div class="col m-auto text-right d-block d-md-none">
+                    <span class="sub-menu-caret"></span>
+                  </div>
+                </div>
+              </a>
+              <div class="gc-mobile-submenu-spacer gc-mobile-submenu-spacer-account gc-menu-background-clr d-none"></div>
+
+            </div>
+
+
+          </div>
+        </div>
+      </section>
     </div>
+
+    <div class="gc-menu-background gc-menu-background-clr shadow-lg bg-white position-md-absolute"></div>
+    <div class="gc-menu-caret bg-white position-md-absolute"></div>
+
   </div>
 {% else %}
-  <a class="btn btn-outline-primary login interior px-5 py-3 py-md-2 mx-2 my-4 my-md-0" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
+  <a class="btn btn-outline-primary login interior px-4 py-3 py-md-2 mx-3 my-4 my-md-0" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M2.47893 10.0111C2.47872 10.0111 2.47851 10.011 2.44531 10.4268L2.47849 10.011L2.46167 10.0097L2.44479 10.0095C2.32438 10.008 2.20574 10.0156 2.09677 10.0408C1.99479 10.0644 1.84625 10.116 1.72817 10.2452C1.58926 10.3971 1.55616 10.5847 1.58149 10.7412C1.60309 10.8748 1.66404 10.9772 1.70486 11.0364C1.78838 11.1576 1.90002 11.2559 1.96552 11.31C2.00267 11.3407 2.03603 11.3661 2.06038 11.384C2.07267 11.3931 2.08295 11.4004 2.09064 11.4059L2.10022 11.4126L2.10346 11.4148L2.10468 11.4156L2.10518 11.416L2.1054 11.4161C2.1055 11.4162 2.10559 11.4163 2.33886 11.0738L2.10561 11.4163L2.14113 11.4405L2.18026 11.4582C2.29471 11.5103 2.45248 11.6828 2.60522 11.9371C2.67324 12.0504 2.72782 12.1586 2.76541 12.2388C2.78404 12.2786 2.79811 12.3106 2.80719 12.3319L2.81497 12.3504C3.15444 13.3482 4.10512 13.6257 4.78051 13.6899C5.04943 13.7154 5.30518 13.7115 5.51765 13.6974C5.51856 13.8983 5.51977 14.1049 5.52098 14.2962C5.5217 14.4112 5.52243 14.5205 5.52308 14.6197C5.52405 14.7651 5.52487 14.8891 5.52535 14.9783C2.56707 13.9465 0.5 11.1224 0.5 7.82039C0.5 3.65627 3.69352 0.5 7.89677 0.5C12.1172 0.5 15.5 3.6729 15.5 7.82039C15.5 11.1294 13.4895 13.9489 10.5293 14.9723C10.5298 14.867 10.5305 14.7163 10.5315 14.5341C10.5322 14.3934 10.533 14.2338 10.5339 14.0619C10.5363 13.5597 10.5387 12.9546 10.5387 12.4133C10.5387 11.994 10.4701 11.6288 10.3501 11.3217C11.0189 11.2193 11.7178 11.0461 12.2982 10.6536C13.1757 10.0604 13.6935 9.04278 13.6935 7.3845C13.6935 6.87962 13.6014 6.47213 13.4195 6.10298C13.2867 5.83361 13.1129 5.59952 12.9231 5.3771C13.0381 4.92384 13.1295 4.11072 12.7421 3.13582L12.6542 2.91464L12.4271 2.84339C12.111 2.74421 11.7665 2.80898 11.5031 2.88705C11.2209 2.97071 10.9327 3.10079 10.6831 3.22916C10.4307 3.3589 10.203 3.49456 10.0393 3.59706C10.0119 3.61419 9.98624 3.63046 9.96243 3.64569C9.33743 3.49212 8.67853 3.4134 8.02581 3.4134C7.37295 3.4134 6.71392 3.49216 6.08881 3.64578C6.06497 3.63057 6.03925 3.61432 6.01184 3.59721C5.84813 3.49499 5.62049 3.35969 5.36826 3.23021C5.11866 3.10208 4.83072 2.97223 4.54876 2.88848C4.28564 2.81033 3.94198 2.74529 3.62658 2.84275L3.39821 2.91332L3.30972 3.13536C2.92146 4.10962 3.01382 4.92534 3.1291 5.37893C2.93884 5.60811 2.77656 5.84683 2.65712 6.12335C2.49734 6.49326 2.42903 6.89558 2.42903 7.3845C2.42903 8.78845 2.78742 9.7359 3.42423 10.3553C3.31076 10.2815 3.19891 10.2236 3.095 10.1784C2.93172 10.1073 2.78548 10.0664 2.67766 10.0429C2.62349 10.0311 2.57824 10.0235 2.54441 10.0187C2.52747 10.0163 2.51331 10.0145 2.50224 10.0133L2.48796 10.0119L2.48261 10.0114L2.48039 10.0112L2.4794 10.0111L2.47893 10.0111ZM3.79192 10.6567C4.35836 11.0474 5.04103 11.2208 5.70051 11.3228C5.66117 11.4224 5.62703 11.528 5.59885 11.6394C5.42308 11.6949 5.2095 11.7355 4.99586 11.7165C4.71157 11.6913 4.38743 11.5601 4.11807 11.0884L4.11808 11.0884L4.11651 11.0857C4.01939 10.9181 3.90864 10.7764 3.79192 10.6567Z" />
     </svg> {% trans "Sign in" %}

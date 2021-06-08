@@ -47,8 +47,10 @@ from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.harmony import sync_harmony_payout
+from dashboard.sync.nervos import sync_nervos_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.rsk import sync_rsk_payout
+from dashboard.sync.sia import sync_sia_payout
 from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
 from ens.auto import ns
@@ -463,7 +465,7 @@ def get_poap_transfers(uri, address):
 
 def get_poap_earliest_owned_token_timestamp(network, address):
     # returning None when no tokens are held for address
-    timestamp = None
+    tokens_timestamps = []
     # must query the graph using lowercase address
     address = address.lower()
 
@@ -483,9 +485,9 @@ def get_poap_earliest_owned_token_timestamp(network, address):
             pass
         else:
             # flatten tokenIds into a dict
-            tokens_dict = list()
+            tokens_list = []
             for token in poap_tokens:
-                tokens_dict.append(token['id'])
+                tokens_list.append(token['id'])
 
             # pull the transfers so that we can check timestamps
             poap_transfers = get_poap_transfers(uri, address)
@@ -494,15 +496,18 @@ def get_poap_earliest_owned_token_timestamp(network, address):
             # check the earliest received token that is still owned by the address
             for token in tokens_transfered:
                 # token still owned by the address?
-                if token['id'] in tokens_dict:
+                if token['id'] in tokens_list:
                     # use timestamp of most recent transfer
-                    timestamp = int(token['transfers'][0]['timestamp'])
-                    break
+                    tokens_timestamps.append(int(token['transfers'][0]['timestamp']))
     except:
         # returning 0 will print a failed (try again) error
-        timestamp = 0
+        tokens_timestamps[0] = 0
 
-    return timestamp
+    # sort to discover earliest
+    tokens_timestamps.sort()
+
+    # return the earliest timestamp
+    return tokens_timestamps[0] if len(tokens_timestamps) else None
 
 
 def get_ens_contract_addresss(network, legacy=False):
@@ -666,8 +671,14 @@ def sync_payout(fulfillment):
     elif fulfillment.payout_type == 'xinfin_ext':
         sync_xinfin_payout(fulfillment)
 
+    elif fulfillment.payout_type == 'nervos_ext':
+        sync_nervos_payout(fulfillment)
+
     elif fulfillment.payout_type == 'algorand_ext':
         sync_algorand_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'sia_ext':
+        sync_sia_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -694,7 +705,6 @@ def get_bounty_id(issue_url, network):
 
 
 def get_bounty_id_from_db(issue_url, network):
-    issue_url = normalize_url(issue_url)
     bounties = Bounty.objects.filter(
         github_url=issue_url,
         network=network,

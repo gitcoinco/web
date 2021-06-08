@@ -89,7 +89,7 @@ html.dark-mode {
 }
 
 .notifications__list {
-  max-height: 328px;
+  max-height: unquote("min(328px, calc(60vh - 112px))");
   overflow-y: auto;
   padding: 0;
   position: relative;
@@ -287,5 +287,11 @@ html.dark-mode {
 @media (min-width:768px) {
   .notifications__box {
     min-width: 430px!important;
+  }
+}
+
+@media (max-width:767.98px) {
+  .notifications__list {
+    max-height: unset;
   }
 }
