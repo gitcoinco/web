@@ -101,12 +101,13 @@ def get_clr_rounds_metadata():
         CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
 
         clr_round = CLR_ROUND_DATA['round_num']
-        start_date = CLR_ROUND_DATA['start_date']
-        end_date = CLR_ROUND_DATA['end_date']
+        start_date = CLR_ROUND_DATA['round_start']
+        end_date = CLR_ROUND_DATA['round_end']
 
         # timezones are in UTC
-        round_start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        round_end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%M.%S')
+
     except:
         # setting defaults
         clr_round=1
