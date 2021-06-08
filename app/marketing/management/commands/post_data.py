@@ -30,7 +30,7 @@ from dashboard.models import Activity, Earning, Profile
 from economy.utils import convert_token_to_usdt
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
-from grants.views import clr_round, next_round_start, round_end  # TODO-SELF-SERVICE: REMOVE THIS
+from grants.views import get_clr_rounds_metadata
 from townsquare.models import Comment
 
 text = ''
@@ -281,6 +281,7 @@ def earners(days, cadence):
 
 def grants():
 
+    clr_round, _, _ = get_clr_rounds_metadata()
     active_clr_rounds = GrantCLR.objects.filter(is_active=True, customer_name='ethereum', start_date__lt=timezone.now(), end_date__gt=timezone.now())
     if not active_clr_rounds.exists():
         return

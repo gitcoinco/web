@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import datetime
 import hashlib
 import html
 import json
@@ -26,7 +25,7 @@ import math
 import re
 import time
 import uuid
-from decimal import Decimal
+from datetime import datetime
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -37,7 +36,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
-from django.db.models import Avg, Count, Max, Q, Subquery
+from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -60,61 +59,62 @@ from app.settings import (
     TWITTER_CONSUMER_SECRET,
 )
 from app.utils import get_profile
-from avatar.utils import convert_img
 from bs4 import BeautifulSoup
 from cacheops import cached_view
-from chartit import PivotChart, PivotDataPool
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
-from dashboard.utils import get_web3, has_tx_mined
+from dashboard.utils import get_web3
 from economy.models import Token as FTokens
-from economy.utils import convert_amount, convert_token_to_usdt
+from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCollection, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantCollection, GrantType, MatchPledge, Subscription,
 )
 from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_user_code, is_grant_team_member,
     sync_payout,
 )
-from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
-from marketing.mails import (
-    grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_grant_match_pledge, new_supporter,
-    subscription_terminated, support_cancellation, thank_you_for_supporting,
-)
+from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Announcement, Comment, Favorite, PinnedPost
+from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
-# Round Schedule
-# from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
-# Round 5 - March 23th — April 7th 2020
-# Round 6 - June 15th — June 29th 2020
-# Round 7 - September 15th 9am MST — Oct 2nd 2020 at 5pm MST
-# Round 8: December 2nd — December 18th 2020
 
-# TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
-clr_round=9
-last_round_start = timezone.datetime(2020, 12, 1, 15, 0)
-last_round_end = timezone.datetime(2020, 12, 17, 16, 0) #tz=utc, not mst
-next_round_start = timezone.datetime(2021, 3, 10, 1, 0) #tz=utc, not mst
-round_end = timezone.datetime(2021, 3, 25, 1, 0) #tz=utc, not mst
-after_that_next_round_begin = timezone.datetime(2021, 5, 2, 12, 0)
+def get_clr_rounds_metadata():
+    '''
+        Fetches default CLR round metadata for stats/marketing flows.
+        This is configured when multiple rounds are running
+    '''
+    try:
+        CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
 
-round_types = ['media', 'tech', 'change']
-# TODO-SELF-SERVICE: END
+        clr_round = CLR_ROUND_DATA['round_num']
+        start_date = CLR_ROUND_DATA['round_start']
+        end_date = CLR_ROUND_DATA['round_end']
+
+        # timezones are in UTC
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%M.%S')
+
+    except:
+        # setting defaults
+        clr_round=1
+        round_start_date = timezone.now()
+        round_end_date = timezone.now()
+
+    return clr_round, round_start_date, round_end_date
+
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
@@ -846,7 +846,7 @@ def get_all_routing_policies(request):
 def grants_landing(request):
     network = request.GET.get('network', 'mainnet')
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
-    now = datetime.datetime.now()
+    now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
 
@@ -907,7 +907,7 @@ def grants_by_grant_type(request, grant_type):
 
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
 
-    now = datetime.datetime.now()
+    now = datetime.now()
 
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
@@ -1145,9 +1145,7 @@ def grants_by_grant_clr(request, clr_round):
         'keyword': keyword,
         'type': grant_type,
         'grant_label': grant_label if grant_type else grant_type,
-        'round_end': round_end,
         'next_round_start': next_round_start,
-        'after_that_next_round_begin': after_that_next_round_begin,
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,

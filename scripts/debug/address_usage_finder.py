@@ -3,16 +3,15 @@ import operator
 from django.utils import timezone
 
 from grants.models import *
-from grants.models import Contribution, PhantomFunding
-from grants.views import next_round_start, round_end
+from grants.models import Contribution, PhantomFunding, Subscription
+from grants.views import get_clr_rounds_metadata
 
 # total stats
 
-start = next_round_start
-end = round_end
+_, round_start_date, round_end_date = get_clr_rounds_metadata()
 
-contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True)
-pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
+contributions = Contribution.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date, success=True)
+pfs = PhantomFunding.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date)
 total = contributions.count() + pfs.count()
 
 contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
@@ -69,12 +68,7 @@ print(subs.filter(is_postive_vote=False).count())
 
 # all contributions
 
-
-
-start = next_round_start
-end = round_end
-
-contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
+contributions = Contribution.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date, success=True, subscription__network='mainnet')[0:100]
 print("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
 for contribution in contributions:
     print(contribution.tx_id, 
