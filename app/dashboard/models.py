@@ -4494,7 +4494,6 @@ class Profile(SuperModel):
         context['avg_rating_scaled'] = profile.get_average_star_rating(20)
         context['verification'] = bool(profile.get_my_verified_check)
         context['avg_rating'] = profile.get_average_star_rating()
-        context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
         context['total_kudos_sent_count'] = profile.sent_kudos.count()
         context['total_kudos_received_count'] = profile.received_kudos.count()
