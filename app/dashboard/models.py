@@ -299,6 +299,7 @@ class Bounty(SuperModel):
         ('nervos_ext', 'Nervos Ext'),
         ('algorand_ext', 'Algorand Ext'),
         ('sia_ext', 'Sia Ext'),
+        ('tezos_ext', 'Tezos Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1420,6 +1421,7 @@ class BountyFulfillment(SuperModel):
         ('nervos_ext', 'nervos_ext'),
         ('algorand_ext', 'algorand_ext'),
         ('sia_ext', 'sia_ext'),
+        ('tezos_ext', 'tezos_ext'),
         ('manual', 'manual')
     ]
 
