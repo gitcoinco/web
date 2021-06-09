@@ -176,7 +176,8 @@ def verifiable_credential(request):
     )
 
     response = {
-        "vc":json.loads(signed),
+        "vc": json.loads(signed),
+        "verifier": settings.POPP_VC_VERIFIER,
     }
 
     return JsonResponse(response)
