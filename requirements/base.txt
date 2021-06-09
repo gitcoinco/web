@@ -88,7 +88,6 @@ websocket-client
 bleach
 python-magic
 django-oauth-toolkit
-ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
 wiki==0.7.3
