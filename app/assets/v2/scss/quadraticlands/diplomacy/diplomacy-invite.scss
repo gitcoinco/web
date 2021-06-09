@@ -1,8 +1,7 @@
-.diplomacy-delete-room{
+.diplomacy-invite{
 
   margin: auto;
   margin: 0em 1.5em;
-  margin-bottom: 1em;
 
   background-color: var(--space_light);
 
@@ -85,7 +84,7 @@
 
 
 @media #{$phone} {
-  .diplomacy-delete-room{
+  .diplomacy-invite{
     .wrapper{
       padding: 1em;
     }

@@ -3,7 +3,7 @@
   margin: auto;
   margin: 0em 1.5em;
   margin-bottom: 1em;
-
+  
   background-color: var(--space_light);
 
   .wrapper{
@@ -13,6 +13,11 @@
   .info{
     font-weight: 500;
     color: var(--white);
+
+    span{
+      color: var(--pink);
+    }
+
   }
 
   .input{
@@ -24,13 +29,16 @@
     margin: auto;
     padding: 1em 1.5em;
     margin-top: 1em;
+    &.warning{
+      animation: colorcycle-border 300ms ease-in-out infinite;
+    }
   }
 
   input{
     background-color: transparent;
     border: none;
     outline: none;
-    color: var(--aqua);
+    color: var(--pink);
     font-family: 'Poppins', sans-serif;
     font-size: 120%;
     width: 100%;

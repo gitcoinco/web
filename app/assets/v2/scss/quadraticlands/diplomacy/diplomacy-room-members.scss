@@ -1,0 +1,118 @@
+.diplomacy-room-members{
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(256px, 1fr));
+  grid-gap: 1em;
+
+  margin: auto;
+  margin: 0em 1.5em;
+
+  ::placeholder{ color: var(--stone); }
+
+
+  .member{
+
+    margin-bottom: 2em;
+	
+    figure{
+
+      margin-bottom: 1em;
+
+      img{
+        border-radius: 180px;
+        max-width: 180px;
+        margin:auto;
+      }			
+    }
+
+
+    .username{
+      color: var(--white);
+      text-align: center;
+    }
+
+    .tokens{
+      color: var(--aqua);
+      text-align: center;
+      &:after {
+        content: " GTC";
+      }
+    }
+
+
+    input{
+
+      width: 100%;
+      padding: 1em 0.2em;
+      margin-top: 0.5em;
+
+      text-align: center;
+      color: var(--aqua);
+      font-family: 'Poppins', sans-serif;
+      font-size: 120%;
+
+      border: 1px solid var(--smoke);
+      background-color: var(--space);
+      outline: none;
+
+      &:focus{
+        border: 1px solid var(--smoke);
+        outline: none;
+        animation: colorcycle-shadow 1s ease-in-out infinite;
+      }		
+
+    }
+
+
+    &.self{
+
+      input{
+        pointer-events: none;
+        color: var(--smoke);
+      }
+
+      .username{
+        &:after {
+          content: " (you)";
+        }				
+      }
+
+      ::placeholder{ color: var(--smoke); }
+
+    }
+
+
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+@media #{$tablet} {
+  .diplomacy-room-members {
+    .member figure img{
+      border-radius: 128px;
+      max-width: 128px;  		
+    }
+  }
+}
+
+@media #{$phone} {
+  .diplomacy-room-members {
+    .member figure img{
+      border-radius: 90px;
+      max-width: 90px;  		
+    }
+  }
+}
+
+
+
+

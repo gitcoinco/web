@@ -1,0 +1,84 @@
+.diplomacy-member-admin{
+	
+  margin: auto;
+  margin: 0em 1.5em;
+
+  margin-top: 1em;
+
+  .member{
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    margin-bottom: 1em;
+
+    background-color: var(--space_light);
+    padding: 1.3em 1.5em;
+
+
+    img{
+      width: 64px;
+      height: 64px;
+      border-radius: 64px;
+      margin-right: 1em;
+    }
+
+    .username{
+      color: var(--white);
+    }
+
+    .action{
+
+      margin-left: auto;
+
+      .btn{ 
+        margin: 0px; 
+      }
+
+    }
+
+
+    &.self{
+      .action{
+
+        font-weight: 500;
+        color: var(--white);
+
+        .btn{
+          display: none;
+        }
+
+        &:after {
+          content: "(you)";
+        }
+      }
+    }
+
+
+  }
+
+
+
+
+}
+
+
+
+
+
+@media #{$tablet} {
+  .diplomacy-member-admin {
+    .member{ padding: 0.5em 1em; }
+  }
+}
+
+@media #{$phone} {
+  .diplomacy-member-admin {
+    .member{ padding: 1em; }  
+    .member img{ display: none; }  	
+  }
+}
+
+
+
