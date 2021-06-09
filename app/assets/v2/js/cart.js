@@ -1003,7 +1003,7 @@ Vue.component('grants-cart', {
     // POSTs donation data to database. Wrapped in a try/catch, and if it fails, we fallback to the manual ingestion script
     async postToDatabase(txHash, contractAddress, userAddress) {
       try {
-        // this.grantsByTenant is the array used for donations
+        // this.grantsByTenant is the array used for donations, and this.donationInputs is computed from it
         // We loop through each donation to configure the payload then POST the required data
         const donations = this.donationInputs;
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -1053,7 +1053,7 @@ Vue.component('grants-cart', {
         };
 
         for (let i = 0; i < donations.length; i += 1) {
-          // Get URL to POST to
+          // Get donation information
           const donation = donations[i];
           const grantId = donation.grant.grant_id;
 
