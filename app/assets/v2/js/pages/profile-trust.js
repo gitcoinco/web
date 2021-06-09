@@ -2411,7 +2411,7 @@ $(document).ready(function() {
     const issue = (message) => {
       modalBody.html(getBody(true, true, false));
 
-      $.get('/passport-vc/', params(), async function(response) {
+      $.get('/passport-vc', params(), async function(response) {
         let status = response['status'];
 
         if (status == 'error') {
