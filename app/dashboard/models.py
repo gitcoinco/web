@@ -4172,7 +4172,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url)
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
