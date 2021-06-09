@@ -309,7 +309,7 @@ urlpatterns = [
 
     #passport
     re_path(r'^passport/$', passport.views.index, name='passport_gen'),
-    re_path(r'^passport-vc/$', passport.views.verifiable_credential, name='passport_vc'),
+    re_path(r'^passport-vc$', passport.views.verifiable_credential, name='passport_vc'),
     path('passport/<str:pattern>', passport.views.passport, name='view_passport'),
 
     # Contributor dashboard

@@ -1,4 +1,3 @@
-import didkit
 import json
 import uuid
 from datetime import datetime, timedelta
@@ -6,6 +5,8 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.http import JsonResponse
 
+import didkit
+import web3
 from dashboard.utils import get_web3
 from eth_account.messages import defunct_hash_message
 
@@ -108,16 +109,16 @@ def passport(request, pattern):
 def verifiable_credential(request):
     passport = None
 
-    player = request.GET.get('coinbase')
-    network = request.GET.get('network')
+    player = request.GET.get("coinbase")
+    network = request.GET.get("network")
 
     if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'msg': 'You must login'})
+        return JsonResponse({"status": "error", "msg": "You must login"})
 
     cost_of_forgery = round((request.user.profile.trust_bonus - 1) * 100, 1)
     personhood_score = cost_of_forgery
     
-    did = 'did:pkh:eth:' + player
+    did = "did:pkh:eth:" + player
 
     issuer = settings.POPP_VC_ISSUER
     issuance_date = datetime.utcnow().replace(microsecond=0)
