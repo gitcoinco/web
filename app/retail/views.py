@@ -427,7 +427,12 @@ def contributor_bounties(request, tech_stack):
         return redirect('new_funding_short')
 
     try:
-        new_context = JSONStore.objects.get(view='contributor_landing_page', key=tech_stack).data
+        store = JSONStore.objects.filter(view='contributor_landing_page', key=tech_stack).first()
+
+        if not store:
+            store = JSONStore.objects.get(view='contributor_landing_page', key='')
+
+        new_context = store.data
 
         for key, value in new_context.items():
             context[key] = value
