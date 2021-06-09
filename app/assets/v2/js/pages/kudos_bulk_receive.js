@@ -24,7 +24,7 @@ $(document).ready(function() {
       return;
     }
 
-    if (!web3) {
+    if (!web3 || !web3.eth) {
       _alert({ message: gettext('Please connect to a web3 wallet.')}, 'danger');
       return;
     }
