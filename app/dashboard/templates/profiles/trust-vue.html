@@ -133,7 +133,7 @@
             <template v-slot:description>
               {% if is_idena_connected %}
                 {% if not is_idena_verified %}
-                  Take part in the Idena validation ceremony {{ idena_next_validation }} GMT <br>
+                  <a href="https://www.idena.io/gitcoin" target="blank">Take part</a> in the Idena validation ceremony {{ idena_next_validation }} GMT <br>
                 {% endif %}
                   {% if is_idena_verified %}
                     <span style="color:limegreen"><i class="fas fa-circle"></i>
@@ -144,7 +144,7 @@
                   <a href={{ recheck_idena_status }} id="recheck-idena-status" class="text-nowrap">Re-Check.</a>
                   <a href={{ logout_idena_url }} id="disconnect-idena-link" class="text-nowrap">Disconnect.</a>
               {% else %}
-                  <a href="https://idena.io/" target="blank">Idena</a> is a Proof-Of-Person Blockchain <br><br> Install <a href="https://idena.io/?view=download" target="_blank">Idena app</a> to verify your account.
+                Idena is a Proof-Of-Person Blockchain <br><br> <a href="https://idena.io/gitcoin" target="blank">Validate your Idena account</a>
               {% endif %}
             </template>
             <template v-slot:verify>
@@ -153,7 +153,7 @@
                     <span style="color:orange"><i class="fal fa-exclamation-circle"></i> Pending Validation</span>
                   {% endif %}
               {% else %}
-                <a href="{{ login_idena_url }}" role="button" id="connect-idena-link" class="btn btn-primary text-nowrap">Connect</a>
+                <a href="{{ login_idena_url }}" target="blank" role="button" id="connect-idena-link" class="btn btn-primary text-nowrap">Connect</a>
               {% endif %}
             </template>
           </active-trust-row-template>

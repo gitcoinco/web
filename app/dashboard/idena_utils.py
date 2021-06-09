@@ -48,7 +48,7 @@ def idena_callback_url(request, profile):
 
     idena_token = create_idena_token(profile.handle)
 
-    return f'dna://signin/v1?token={idena_token}&'\
+    return f'https://app.idena.io/dna/signin/v1?token={idena_token}&'\
            f'callback_url={callback_url}&' \
            f'nonce_endpoint={nonce_endpoint}&' \
            f'authentication_endpoint={authentication_endpoint}&' \
