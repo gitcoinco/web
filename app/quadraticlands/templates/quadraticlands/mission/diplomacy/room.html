@@ -76,18 +76,20 @@
 	and populate the divs via the #ids -->
 
 	<div class="col">
-		<p>Wallet</p>
-		<div id="diplomacy_wallet_balance">504949.00</div>
+		<p>Wallet <span id="diplomacy_wallet_address"></span></p>
+		<div id="diplomacy_wallet_balance"></div>
 	</div>
 
 	<div class="col">
 		<p>Used</p>
-		<div id="diplomacy_wallet_used">50494.00</div>
+		<!-- @kev: put the amount from db here. in the data-atrib and the div itself! -->
+		<div id="diplomacy_wallet_used" data-used="500">500</div>
 	</div>
 
 	<div class="col">
 		<p>Available</p>
-		<div id="diplomacy_wallet_available">50494.00</div>
+		<!-- @kev: will be calculated by current wallet - in database used -->
+		<div id="diplomacy_wallet_available"></div>
 	</div>
 
 	<div class="col">
@@ -351,6 +353,9 @@ what hides the remove button + adds a (you) instead.
 {% endblock %}
 
 {% block 'scripts' %}
+
+<!-- force web3modal to popup automatically when no provider selected-->
+<script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
 
 <!-- sfx library-->
 <script src="{% static "v2/js/lib/quadraticlands/tone.js" %}"></script>

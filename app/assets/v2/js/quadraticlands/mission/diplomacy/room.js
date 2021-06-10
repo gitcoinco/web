@@ -2,6 +2,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.debug('DIPLOMACY ROOM');
 
+  //fetch balance of users wallet + display it
+  const diplomacy_wallet_address = document.getElementById('wallet_address');
+  const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
+  document.addEventListener('dataWalletReady', diplomacyWallet);
+
+  //fetch diplomacy_wallet_available from dom (comes from database)
+  const used = document.getElementById('diplomacy_wallet_used');
+  window.used = used.dataset.used;
+  console.debug("USED", window.used)
+
   // copy room link to clipboard
   const room_link = document.getElementById('room_link');
   const room_link_button = document.getElementById('room_link_button');
@@ -11,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.execCommand('copy');
     flashMessage('copied to clipboard', 10000);
   });
-
 
   // delete room UI
   // show delete button + warning on enter the room name what is fetched
@@ -49,13 +58,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+
   // vouche button trigger function vouche()
   //
   const vouche_button = document.getElementById('vouche_button');
-
   vouche_button.addEventListener('click', () => {
     vouche();
   });
+
 
   // vouche bar validations
   inputs = document.querySelectorAll('.member input');
@@ -64,18 +74,31 @@ document.addEventListener('DOMContentLoaded', function() {
       if (i.value < 0) {
         i.value = 0;
       }
+
       updateVoucheBar();
+
+      console.debug("USED", window.used)
+      console.debug("USE", window.use)
+      console.debug("AWAILABLE", (window.walletbalance - window.used) )
+
+      if (window.use > (window.walletbalance - window.used) )
+      {
+        console.debug("you can not use so much gtc");
+        i.value = 0;
+        updateVoucheBar();
+      }
+
     });
   });
 
 });
 
 
-function updateVoucheBar() {
+function updateVoucheBar(){
 
   window.use = 0;
-
   inputs = document.querySelectorAll('.member input');
+
   inputs.forEach(i => {
     if (i.value > 0) {
       window.use += Number(i.value);
@@ -85,7 +108,36 @@ function updateVoucheBar() {
   diplomacy_wallet_use = document.getElementById('diplomacy_wallet_use');
   diplomacy_wallet_use.innerHTML = window.use;
 
+  diplomacy_wallet_available = document.getElementById('diplomacy_wallet_available');
+  diplomacy_wallet_available.innerHTML = window.walletbalance - window.used;
+  console.debug("updateVouceBar");
+
 }
+
+// fetch the gtc balance
+async function diplomacyWallet(){
+  console.debug("diplomacy wallet");
+  try {
+
+    let balance = await getTokenBalances(gtc_address());
+
+    diplomacy_wallet_balance.innerHTML = balance.balance.toFixed(2);
+    diplomacy_wallet_address.innerHTML = truncate(selectedAccount);
+    window.walletbalance = balance.balance.toFixed(2);
+    console.debug("walletbalance", window.walletbalance)
+
+    // to calc available balance
+    updateVoucheBar();
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+// reads all the members input fields and generate a nice
+// array of objects to do a "sign" + a "safe to db"
+// not sure how to do this part.
 
 function vouche() {
 
@@ -97,7 +149,7 @@ function vouche() {
   // define a result array
   const result = [];
 
-  // push all vouche data of a member to the result
+  // push all vouche data of each member to the result
   members.forEach(member => {
     var entry = {
       userid: member.dataset.userid,
@@ -108,7 +160,8 @@ function vouche() {
     result.push(entry);
   });
 
-  // do something with the result ( sign, safe, whatever)
+  // @kev : do something with the result ( sign, safe, whatever)
+  // this is how far i could come. now your turn :)
   console.log(result);
 
 }
