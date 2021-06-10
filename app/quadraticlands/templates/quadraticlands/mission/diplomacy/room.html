@@ -27,20 +27,32 @@
 <section class="diplomacy-room-members">
 
 	<!-- @kev : loop div.member with users of room
-			+ autofill value of input of last vote -->
+			+ autofill value of input of last vote 
+			see i added data-atributes you need to populate
+			so javascript can use it if we realy wana go for
+			a sign message . btw im unsure if sign message is
+			the right way of doing it. maybe just database
+			is enough - lets talk about it in chat -->
 
 	<div class="member">
 		<figure><img src="/dynamic/avatar/scco"></figure>
 		<div class="username">owocki</div>
 		<div class="tokens">999.49</div>
-		<input type="number" placeholder="0" value="">
+		<input data-member data-userid="43" data-username="owocki" type="number" placeholder="0" value="">
 	</div>
 
 	<div class="member">
 		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">scco</div>
+		<div class="username">scco2</div>
 		<div class="tokens">312.49</div>
-		<input type="number" placeholder="0" value="">
+		<input data-member data-userid="332" data-username="scco2" type="number" placeholder="0" value="">
+	</div>
+
+	<div class="member">
+		<figure><img src="/dynamic/avatar/scco"></figure>
+		<div class="username">scco3</div>
+		<div class="tokens">12.49</div>
+		<input data-member data-userid="4323" data-username="scco3" type="number" placeholder="0" value="">
 	</div>
 
 	<!-- add class .self if member = current user in this loop - 
@@ -49,7 +61,7 @@
 		<figure><img src="/dynamic/avatar/scco"></figure>
 		<div class="username">scco</div>
 		<div class="tokens">49343.49</div>
-		<input type="number" placeholder="0" value="">
+		<input data-member data-userid="756" data-username="scco" type="number" placeholder="0" value="">
 	</div>
 
 </section>
@@ -65,26 +77,26 @@
 
 	<div class="col">
 		<p>Wallet</p>
-		<div id="diplomacy-wallet-balance">504949.00</div>
+		<div id="diplomacy_wallet_balance">504949.00</div>
 	</div>
 
 	<div class="col">
 		<p>Used</p>
-		<div id="diplomacy-wallet-used">50494.00</div>
+		<div id="diplomacy_wallet_used">50494.00</div>
 	</div>
 
 	<div class="col">
 		<p>Available</p>
-		<div id="diplomacy-wallet-available">50494.00</div>
+		<div id="diplomacy_wallet_available">50494.00</div>
 	</div>
 
 	<div class="col">
 		<p>Use</p>
-		<div id="diplomacy-wallet-use">0</div>
+		<div id="diplomacy_wallet_use">0</div>
 	</div>
 
 	<div class="col">
-		<a class="btn aqua">Vouche</a>
+		<a id="vouche_button" class="btn aqua">Vouche</a>
 	</div>
 
 </section>

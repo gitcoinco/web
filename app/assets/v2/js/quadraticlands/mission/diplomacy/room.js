@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-
   // leave room UI
   // show leave button + warning on enter the room name what is fetched
   // by data-attribute data-phrase
@@ -50,6 +49,66 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  
+  // vouche button trigger function vouche()
+  //
+  const vouche_button = document.getElementById('vouche_button');
+
+  vouche_button.addEventListener('click', () => {
+    vouche();
+  });
+
+  // vouche bar validations
+  inputs = document.querySelectorAll('.member input');
+  inputs.forEach(i => {
+    i.addEventListener('input', input => {
+      if (i.value < 0) {
+        i.value = 0;
+      }
+      updateVoucheBar();
+    });
+  });
+
 });
 
+
+function updateVoucheBar() {
+
+  window.use = 0;
+
+  inputs = document.querySelectorAll('.member input');
+  inputs.forEach(i => {
+    if (i.value > 0) {
+      window.use += Number(i.value);
+    }
+  });
+
+  diplomacy_wallet_use = document.getElementById('diplomacy_wallet_use');
+  diplomacy_wallet_use.innerHTML = window.use;
+
+}
+
+function vouche() {
+
+  console.debug('VOUCHE');
+
+  // read all input fields what have data-member
+  members = document.querySelectorAll('[data-member]');
+
+  // define a result array
+  const result = [];
+
+  // push all vouche data of a member to the result
+  members.forEach(member => {
+    var entry = {
+      userid: member.dataset.userid,
+      username: member.dataset.username,
+      value: member.value
+    };
+
+    result.push(entry);
+  });
+
+  // do something with the result ( sign, safe, whatever)
+  console.log(result);
+
+}
