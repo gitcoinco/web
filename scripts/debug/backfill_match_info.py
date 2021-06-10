@@ -2,7 +2,6 @@ from django.db.models import Count
 from django.utils import timezone
 
 from grants.models import *
-from grants.views import clr_round as round_num
 
 
 def round_num_to_dates(round_id):

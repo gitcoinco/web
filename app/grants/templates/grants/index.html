@@ -152,7 +152,7 @@ along with this program. If not, see
     document.keyword = "{{ keyword }}";
     document.following = {{ following|yesno:'true,false' }};
     document.idle_grants = {{ idle_grants|yesno:'true,false' }};
-    document.show_contributions = {{ show_contributions|yesno:'true,false' }};
+    document.show_contributions = {{ only_contributions|yesno:'true,false' }};
     document.featured = {{ featured|yesno:'true,false' }};
     document.collection_id = {{ collection_id|default:'null' }};
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
