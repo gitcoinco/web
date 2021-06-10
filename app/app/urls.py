@@ -571,8 +571,8 @@ urlpatterns = [
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
     # token distribution event
-    re_path(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
-    re_path(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
+    # re_path(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
+    # re_path(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
     # faucet views
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
@@ -820,6 +820,19 @@ urlpatterns = [
 
 if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+
+urlpatterns += [
+    re_path(
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        dashboard.views.profile,
+        name='profile_min'
+    ),
+    re_path(
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
+        dashboard.views.profile,
+        name='profile_min'
+    ),
+]
 
 if not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

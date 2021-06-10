@@ -2231,11 +2231,6 @@ def user_card(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if not settings.DEBUG:
-        network = 'mainnet'
-    else:
-        network = 'rinkeby'
-
     if request.user.is_authenticated:
         is_following = True if TribeMember.objects.filter(profile=request.user.profile, org=profile).count() else False
     else:
@@ -3630,6 +3625,9 @@ def profile(request, handle, tab=None):
     user_only_tabs = ['viewers', 'earnings', 'spent', 'trust']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
+    if not request.user.is_authenticated and tab in ['people', 'manage']:
+        tab = default_tab
+
     context = {}
     context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
     # get this user
@@ -3693,9 +3691,9 @@ def profile(request, handle, tab=None):
             active_tab = 0
         elif tab == "projects":
             active_tab = 1
-        elif tab == "people":
-            active_tab = 2
         elif tab == "bounties":
+            active_tab = 2
+        elif tab == "people":
             active_tab = 3
         elif tab == "ptokens":
             active_tab = 4
@@ -3724,7 +3722,6 @@ def profile(request, handle, tab=None):
             context['profile_handle'] = profile.handle
             context['title'] = profile.handle
             context['card_desc'] = profile.desc
-
 
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:
@@ -3984,7 +3981,7 @@ def labs(request):
         "class": "fab fa-slack fa-2x"
     }, {
         "name": _("Contact the Team"),
-        "link": "mailto:founders@gitcoin.co",
+        "link": "mailto:support@gitcoin.co",
         "class": "fa fa-envelope fa-2x"
     }]
 
@@ -4291,12 +4288,12 @@ def change_bounty(request, bounty_id):
                 value_in_token = params.get('value_in_token')
                 bounty.value_in_token = value_in_token
                 bounty.balance = value_in_token
+                bounty_increased = True
                 try:
                     bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
                     bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
                     bounty.value_in_usdt_now = bounty.value_in_usdt
                     bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
-                    bounty_increased = True
                 except ConversionRateNotFoundError as e:
                     logger.debug(e)
 
@@ -4908,7 +4905,7 @@ def hackathon_get_project(request, bounty_id, project_id=None):
 
     try:
         bounty = Bounty.objects.get(id=bounty_id)
-        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
+        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache() if profile else None
     except HackathonProject.DoesNotExist:
         pass
 
@@ -6153,7 +6150,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6270,8 +6267,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / algorand_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6337,7 +6334,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6790,7 +6787,7 @@ def verify_user_poap(request, handle):
     timestamp = None
 
     for network in ['mainnet', 'xdai']:
-        timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
+        timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
         # only break if we find a token that has been held for longer than 15 days
         if timestamp and timestamp <= fitteen_days_ago_ts:
             break
@@ -6816,6 +6813,7 @@ def verify_user_poap(request, handle):
         'ok': True,
         'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
     })
+
 
 @login_required
 @require_POST

@@ -41,7 +41,7 @@
   }
 
   /* claimable token ammount*/
-  span.claimable {
+  .claimable {
     background-color: var(--aqua_light);
     color: var(--space);
     animation: colorcycle-shadow 3s ease-in-out infinite;

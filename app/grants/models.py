@@ -306,6 +306,12 @@ class Grant(SuperModel):
         ('southeast_asia', 'Southeast Asia')
     ]
 
+    EXTERNAL_FUNDING = [
+        ('yes', 'Yes'),
+        ('no', 'No'),
+        ('unknown', 'Unknown')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
@@ -552,7 +558,14 @@ class Grant(SuperModel):
         help_text=_('The Grants Sybil Score'),
     )
 
+    # TODO-GRANTS: remove funding_info
     funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded?'))
+    has_external_funding = models.CharField(
+        max_length=8,
+        default='unknown',
+        choices=EXTERNAL_FUNDING,
+        help_text="Does this grant have external funding"
+    )
 
     clr_prediction_curve = ArrayField(
         ArrayField(
@@ -952,7 +965,8 @@ class Grant(SuperModel):
                 'funding_info': self.funding_info,
                 'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
-                'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
+                'has_external_funding': self.has_external_funding
             }
 
     def favorite(self, user):

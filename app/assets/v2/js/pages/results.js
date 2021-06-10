@@ -5,6 +5,9 @@ google.charts.setOnLoadCallback(communityChart);
 google.charts.setOnLoadCallback(jdiChart);
 
 function drawChart() {
+  if (!document.bounty_history) {
+    document.bounty_history = [];
+  }
   var data = google.visualization.arrayToDataTable(document.bounty_history);
 
   var view = new google.visualization.DataView(data);
