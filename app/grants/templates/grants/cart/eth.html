@@ -256,7 +256,7 @@
       </grants-cart-ethereum-zksync>
     
       <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
-        @click="standardCheckout" :disabled="isCheckoutOngoing || grantsByTenant.length > maxCartItems"
+        @click="standardCheckout" :disabled="isCheckoutOngoing"
         v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
       >
         Standard Checkout
@@ -265,10 +265,10 @@
   </div>
 
   <small class="row justify-content-end mt-2">
-    <div v-if="grantsByTenant.length > maxCartItems">
-    Cart must have a maximum of [[maxCartItems]] items, but has [[ grantsByTenant.length ]] items.
-    Please remove [[ grantsByTenant.length - maxCartItems ]] item<span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
-    from your cart to continue checkout.
+    <div v-if="grantsByTenant.length > maxCartItems" class="text-right">
+      Zksync Checkout supports only [[maxCartItems]] items.<br>
+      Please remove [[ grantsByTenant.length - maxCartItems ]] item<span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
+      from your cart to use zksync checkout / use standard checkout instead.
     </div>
     <div v-else-if="isZkSyncDown">
       zkSync is down at the moment, so if you'd like to checkout now you may need to use standard checkout
