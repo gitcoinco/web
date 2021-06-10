@@ -1441,6 +1441,7 @@ class BountyFulfillment(SuperModel):
         ('NERVOS', 'NERVOS'),
         ('ALGORAND', 'ALGORAND'),
         ('SIA', 'SIA'),
+        ('TEZOS', 'TEZOS'),
         ('OTHERS', 'OTHERS')
     ]
 
