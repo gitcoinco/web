@@ -17,7 +17,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#pay_gas').change(function() {
+  $('#pay_gas').change(async function() {
     var checked = $(this).is(':checked');
 
     if (!checked) {
@@ -26,6 +26,13 @@ $(document).ready(function() {
 
     if (!web3 || !web3.eth) {
       _alert({ message: gettext('Please connect to a web3 wallet.')}, 'danger');
+      return;
+    }
+
+    const from_account = await web3.eth.getCoinbase();
+
+    if (!web3.eth.defaultAccount && !from_account) {
+      _alert({ message: gettext('Please unlock your web3 wallet.')}, 'danger');
       return;
     }
 
