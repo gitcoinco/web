@@ -480,6 +480,10 @@ Vue.mixin({
           vm.canChangeFunderAddress = true;
           break;
 
+        case 'XTZ':
+          tenant = 'TEZOS';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -793,6 +797,7 @@ Vue.mixin({
         case 'rsk_ext':
         case 'xinfin_ext':
         case 'algorand_ext':
+        case 'tezos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
