@@ -48,7 +48,7 @@
     <div class="nav-item gc-nav-item dropdown px-md-2 px-lg-3 interior my-auto">
       <a class="nav-link gc-nav-link px-3 px-md-0" href="#" id="dropdownCompany" role="button"
       data-menu="company" aria-haspopup="true" aria-expanded="false">
-        {% trans "Company" %}
+        {% trans "Organization" %}
       </a>
       <div class="gc-mobile-spacer gc-mobile-spacer-company gc-menu-background-clr d-none"></div>
     </div>
@@ -162,7 +162,7 @@
         </section>
 
         <!-- Products -->
-        <section class="gc-menu-wrap gc-menu-wrap-products gc-menu-submenu-wrap position-md-absolute" data-submenu="products">
+        <section class="gc-menu-wrap gc-menu-wrap-products gc-menu-submenu-wrap position-md-absolute" data-submenu="products" data-direction="ltr">
           <div class="gc-menu-inner text-grey-500">
             <div class="row">
               <div class="col-12 col-md-7 col-lg-8 gc-menu-submenu-toggles gc-menu-padding-col gc-menu-scroll">
@@ -241,7 +241,7 @@
 
               <div class="d-none d-md-flex col-5 col-lg-4 bg-lighter gc-menu-inner">
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-bounties position-absolute {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Bounties" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Bounties" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'new_bounty' %}">{% trans "Fund Issue" %}</a>
@@ -258,7 +258,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-hackathons position-absolute {% if '/hackathon' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Hackathons" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Hackathons" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
@@ -269,7 +269,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-grants position-absolute {% if '/grants' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants' %}">{% trans "Explore Grants" %}</a>
@@ -283,7 +283,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute {% if '/quests' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Quests" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Quests" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'quests_index' %}">{% trans "Explore Quests" %}</a>
@@ -294,7 +294,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kudos position-absolute {% if '/kudos' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kudos" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Kudos" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'kudos_marketplace' %}">{% trans "Explore Kudos" %}</a>
@@ -308,7 +308,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kernel position-absolute {% if '/kernel' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kernel" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Kernel" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="https://kernel.community">{% trans "Explore Kernel" %}</a>
@@ -441,20 +441,20 @@
       </div>
 
       <div class="gc-menu-background gc-menu-background-clr shadow-lg bg-white position-md-absolute"></div>
-      <div class="gc-menu-caret position-md-absolute"></div>
+      <div class="gc-menu-caret bg-white position-md-absolute"></div>
 
     </div>
   </nav>
 
   <nav class="navbar-nav navbar-icons d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}
-    {% include 'shared/notifications.html' %}
-    {% include 'shared/search.html' %}
-    {% include 'shared/cart_nav.html' %}
+      {% include 'shared/notifications.html' %}
+      {% include 'shared/search.html' %}
+      {% include 'shared/cart_nav.html' %}
     {% endif %}
   </nav>
 
-  <nav class="navbar-nav d-flex align-items-md-center">
-    {% include 'shared/nav_auth.html' with source='authed' %}
+  <nav class="navbar-nav gc-navbar-nav d-flex align-items-md-center gc-navbar-auth">
+    {% include 'shared/nav_auth.html' %}
   </nav>
 </div>

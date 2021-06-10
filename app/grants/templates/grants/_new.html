@@ -402,6 +402,22 @@
                 </div>
 
 
+                <!-- External Funding -->
+                <div class="mb-3 col-12">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase">External Funding (VC Funding / Token Sale)</label>
+                  <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                  <v-select placeholder="Yes/No" :options="externalFundingOptions" label="value" v-model="form.has_external_funding" :reduce="state => state.key">
+                    <template v-slot:option="option">
+                      <span class="font-weight-semibold">[[ option.value ]]</span>
+                    </template>
+                  </v-select>
+
+                  <div class="text-danger" v-if="errors.has_external_funding">
+                    [[errors.has_external_funding]]
+                  </div>
+                </div>
+
                 <!-- Categorization -->
                 <div class="mb-3 col-12">
                   <h5 class="mt-4">Categorization Information</h5>

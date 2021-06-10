@@ -172,7 +172,6 @@ def preprocess(request):
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'is_pro': profile.is_pro if profile else False,
-        'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
             'host': settings.JS_IPFS_HOST,
             'port': settings.IPFS_API_PORT,

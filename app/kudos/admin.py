@@ -56,7 +56,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
             try:
                 obj.rejection_reason = 'n/a'
                 obj.save()
-                mint_token_request.delay(obj.id)
+                mint_token_request(obj.id)
                 self.message_user(request, f"Mint/sync submitted to chain")
             except Exception as e:
                 self.message_user(request, str(e))

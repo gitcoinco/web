@@ -96,19 +96,28 @@ const is_valid_address = (address) => {
       }
       return true;
 
-
     case 'polkadot_ext':
       if (address.toLowerCase().startsWith('0x')) {
         return false;
       }
       return true;
 
-
     case 'xinfin_ext':
       if (!address.toLowerCase().startsWith('xdc')) {
         return false;
       }
       return true;
+
+    case 'nervos_ext': {
+      const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
+      const isNervosValid = ADDRESS_REGEX.test(address);
+
+      if (isNervosValid || address.toLowerCase().startsWith('0x')) {
+        return true;
+      }
+
+      return false;
+    }
 
     case 'qr':
 

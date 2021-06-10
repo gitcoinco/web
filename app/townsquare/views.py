@@ -573,7 +573,14 @@ def api(request, activity_id):
 
     # deletion request
     if request.POST.get('method') == 'delete':
-        activity.delete()
+        has_perms = False
+        if request.user.is_authenticated:
+            if activity.profile and request.user.profile.pk == activity.profile.pk:
+                has_perms = True
+            if activity.other_profile and request.user.other_profile.pk == activity.other_profile.pk:
+                has_perms = True
+        if has_perms:
+            activity.delete()
 
     # deletion request
     if request.POST.get('method') == 'vote':

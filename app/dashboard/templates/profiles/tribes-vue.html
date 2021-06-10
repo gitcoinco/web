@@ -570,264 +570,6 @@
                     </div>
                   </project-directory>
                 </b-tab>
-                <b-tab class="col-12" v-if="online" title-item-class="navigation" lazy>
-                  <template v-slot:title>
-                    <div class="mt-3">
-                      {% trans "People" %}
-                    </div>
-                  </template>
-                  <user-directory v-bind:is_my_org="is_my_org" inline-template v-bind:tribe="tribe.handle">
-                    <div class="sidebar-container flex-column flex-lg-row">
-                        <a class="mt-3 mx-3 col-11 d-md-none btn text-primary text-primary-hover hover-underline d-flex justify-content-between align-items-center text-muted font-weight-semibold" style="letter-spacing: 1.5px;" @click="showFilters = !showFilters">Filter
-                          <i class="fas fa-caret-down" v-if="!showFilters"></i>
-                          <i class="fas fa-caret-up" v-if="showFilters"></i>
-                        </a>
-                        <transition name="fade">
-                          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-                            <div class="pb-4 border-bottom form-group">
-                              <div class="d-flex flex-grow-1" id="search">
-                                <form class="form-inline my-2 flex-fill justify-content-center">
-                                  <div class="input-group w-100">
-                                    <input class="form-control" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                                    <div class="input-group-append">
-                                      <button type="submit" class="btn input-group-text text-primary bg-white border-left-0" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
-                              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                                <span class="font-weight-bold">[[ numUsers ]] Tribes members </span> found
-                              </p>
-                              {% if is_staff %}
-                              <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-caption btn btn-primary" id="bulk-invite-modal">
-                                {% trans "Invite all to bounty" %}
-                              </button>
-                              {% endif %}
-                            </div>
-                            <div class="col-12 left-ribbon font-body">
-                              {% trans "Filter People" %}
-                            </div>
-                            <b-form-group>
-                              <b-form-radio-group
-                                v-model="params.user_filter"
-                                :options="userFilter.options"
-                                name="people-filter"
-                                class="font-caption mt-3"
-                                stacked
-                              ></b-form-radio-group>
-                            </b-form-group>
-                            <div class="g-multiselect pb-4 border-bottom form-group">
-                              <label for="skills" class="font-weight-bold">Skills</label>
-                              <div class="form__select2">
-                                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                                  <option disabled value="0">Select one</option>
-                                </select2>
-                              </div>
-                            </div>
-                            <button class="btn text-primary text-primary-hover hover-underline font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
-                          </nav>
-                        </transition>
-                        <div class="container-fluid pt-4 bg-white" @scroll.passive="onScroll($event)">
-                          <button v-if="!hideFilterButton" class="d-none d-md-block btn text-primary text-primary-hover hover-underline font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-
-                          <div class="py-5 mt-4">
-                            <div v-if="noResults" class="text-center">
-                              <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
-                              <p class="mt-4 font-weight-bold mb-0">No users found</p>
-                              <button class="btn text-primary text-primary-hover hover-underline" @click="params = {}; searchUsers()">Reset Filters</button>
-                            </div>
-                            <div class="grid-4">
-                              <div v-for="user in users" class="card card-user shadow-sm border-0 bg-lightblue" :key=`"user-${user.handle}"`>
-                                <div class="d-flex flex-column py-1">
-                                  <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
-                                  <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
-                                    <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
-                                      <i class="fab fa-ethereum mr-2"></i>
-                                      Fund Bounty
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                    <a :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
-                                      <i class="fas fa-user mr-2"></i>
-                                      View profile
-                                    </a>
-                                  </div>
-                                  <a :href="`/profile/${ user.handle }`" class="mx-auto">
-                                    <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
-                                  </a>
-                                  <h5 class="text-center card-user_name">
-                                    [[ user.name || user.handle ]]
-                                    <span v-if="user.verification">
-                                      <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
-                                    </span>
-                                  </h5>
-                                  <a :href="`/profile/${ user.handle }`" v-bind:data-usercard="[[ user.handle ]]" class="text-center d-block">
-                                    @[[ user.handle ]]
-                                  </a>
-                                  <div v-if="!user.is_org" class="card-user_stars text-center my-2">
-                                    <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
-                                    ([[ user.avg_rating.total_rating ]] ratings)
-                                  </div>
-                                  <small class="text-center pb-1" v-if="user.previously_worked">
-                                    <i class="far fa-handshake mr-1"></i>Worked with you
-                                  </small>
-                                </div>
-                                <div class="card-body d-flex flex-column justify-content-between">
-                                  <!-- TRIBE -->
-                                  <template v-if="user.is_org">
-                                    <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
-                                    </div>
-                                    <div class="text-center">
-                                      <span v-if="user.rank_org > 0"><b>#[[ user.rank_org ]]</b> Tribe</span>
-                                    </div>
-                                    <div class="text-center">
-                                      <p class="mb-0">
-                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
-                                        <b>[[ user.follower_count ]]</b> followers
-                                      </p>
-                                      <p class="mb-0">
-                                        <i class="fas fa-trophy font-smaller-4 mr-1"></i>
-                                        <b>[[ user.count_bounties_on_repo ]]</b> Bounties Funded
-                                        (<b>[[ user.sum_eth_on_repos ]] ETH</b>)
-                                      </p>
-                                    </div>
-                                  </template>
-
-                                  <!-- User : Funder / Contributor-->
-                                  <template v-else>
-                                    <div v-if="user.keywords" class="text-center">
-                                      <template v-for="keyword in user.keywords">
-                                        <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
-                                      </template>
-                                    </div>
-                                    <div class="text-center my-1 font-smaller-1">
-                                      <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
-                                        <i class="fab fa-github"></i>
-                                      </a>
-                                      <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
-                                        <i class="fas fa-home"></i>
-                                      </a>
-                                      <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
-                                        <i class="fab fa-linkedin-in"></i>
-                                      </a>
-                                    </div>
-                                    <div class="text-center" id="job_status" v-if="user.show_job_status">
-                                      <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
-                                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
-                                      </a>
-                                    </div>
-                                    <div class="text-center">
-                                      <p class="mb-0">
-                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
-                                        <b>[[ user.follower_count ]]</b> followers
-                                      </p>
-                                      <p v-if="!isFunder" class="mb-0">
-                                        <b>[[ user.work_done ]]</b> bounties completed
-                                      </p>
-                                      <p class="mb-0">
-                                        <span v-if="user.position_contributor > 0">
-                                          <b>#[[ user.position_contributor ]]</b> contributor
-                                        </span>
-                                        <span v-if="user.position_funder > 0">
-                                          <b>#[[ user.position_funder ]]</b> funder
-                                        </span>
-                                      </p>
-                                    </div>
-                                    <div class="text-center mt-2">
-                                      <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-primary btn-block" @click="openBounties(user)">Invite to Bounty</button>
-                                    </div>
-                                  </template>
-
-                                  <div class="text-center mt-2">
-
-                                    <b-button variant="noop" v-bind:class="[user.is_following ? 'btn-success' : 'btn-primary', 'btn btn-sm btn-block']" @click="joinTribe(user, $event)">
-                                      <i v-bind:class="[user.is_following ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> [[ user.is_following ? "following" : "follow" ]]
-                                    </b-button>
-                                  </div>
-
-                                </div>
-                              </div>
-                            </div>
-                            <loading-screen v-if="isLoading"></loading-screen>
-                          </div>
-                        </div>
-                        <modal ref="user-modal" id="userModal">
-                          <div slot="header" v-if="userSelected.handle">
-                            <div class="d-flex flex-column align-items-center">
-                              <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
-                              <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
-                              <span>[[ userSelected.name ]]</span>
-                              <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
-                                [[ userSelected.handle ]]
-                              </a>
-                            </div>
-                          </div>
-                          <div slot="body" v-if="userSelected.handle">
-                            <div v-if="funderBounties.length">
-                              <div class="my-2 text-center">
-                                <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
-                              </div>
-                              <div class="bounties-box">
-                                <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-primary': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
-                                  <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
-                                  <p class="line-clamp font-smaller-2 my-0 mx-2">
-                                    [[ bounty.title ]]
-                                  </p>
-                                  <div class="ml-auto flex-shrink-0">
-                                    <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
-                                    <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div v-else class="text-center font-subheader mt-4">
-                              <p class="font-weight-semibold">You've got NO open bounties</p>
-                              <p class="font-body">
-                                <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
-                                to invite [[ userSelected.handle ]]
-                              </p>
-                            </div>
-                          </div>
-                          <div slot="footer" class="d-flex align-items-center flex-fill">
-                            <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
-                            <div class="ml-auto">
-                              <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                              <button  v-if="funderBounties.length" class="btn btn-primary" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
-                            </div>
-                          </div>
-                        </modal>
-                        <modal v-if="orgOwner" ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
-                            <div slot="header">
-                              <div class="d-flex flex-column align-items-center">
-                                <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
-                              </div>
-                            </div>
-                            <div slot="body">
-                              <div class="form-group">
-                                <label class="font-weight-semibold">Github Issue URL</label>
-                                <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
-                              </div>
-                              <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
-                              <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
-                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
-                                [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
-                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
-                                [[issueDetails.issue_description_text]]
-                              </div>
-                              <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
-                              <div class="alert-warning p-3" v-if="errorIssueDetails">
-                                [[errorIssueDetails]]
-                              </div>
-                            </div>
-                            <div slot="footer" class="d-flex align-items-center flex-fill">
-                              <div class="ml-auto">
-                                <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
-                                <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-primary" @click="sendInviteAll(issueDetails.pk)">Invite</button>
-                              </div>
-                            </div>
-                          </modal>
-                      </div>
-                  </user-directory>
-                </b-tab>
                 <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-3">
@@ -1146,6 +888,264 @@
                       </div>
                     </div>
                   </bounty-explorer>
+                </b-tab>
+                <b-tab class="col-12" v-if="online" title-item-class="navigation" lazy>
+                  <template v-slot:title>
+                    <div class="mt-3">
+                      {% trans "People" %}
+                    </div>
+                  </template>
+                  <user-directory v-bind:is_my_org="is_my_org" inline-template v-bind:tribe="tribe.handle">
+                    <div class="sidebar-container flex-column flex-lg-row">
+                        <a class="mt-3 mx-3 col-11 d-md-none btn text-primary text-primary-hover hover-underline d-flex justify-content-between align-items-center text-muted font-weight-semibold" style="letter-spacing: 1.5px;" @click="showFilters = !showFilters">Filter
+                          <i class="fas fa-caret-down" v-if="!showFilters"></i>
+                          <i class="fas fa-caret-up" v-if="showFilters"></i>
+                        </a>
+                        <transition name="fade">
+                          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
+                            <div class="pb-4 border-bottom form-group">
+                              <div class="d-flex flex-grow-1" id="search">
+                                <form class="form-inline my-2 flex-fill justify-content-center">
+                                  <div class="input-group w-100">
+                                    <input class="form-control" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                    <div class="input-group-append">
+                                      <button type="submit" class="btn input-group-text text-primary bg-white border-left-0" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                                <span class="font-weight-bold">[[ numUsers ]] Tribes members </span> found
+                              </p>
+                              {% if is_staff %}
+                              <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-caption btn btn-primary" id="bulk-invite-modal">
+                                {% trans "Invite all to bounty" %}
+                              </button>
+                              {% endif %}
+                            </div>
+                            <div class="col-12 left-ribbon font-body">
+                              {% trans "Filter People" %}
+                            </div>
+                            <b-form-group>
+                              <b-form-radio-group
+                                v-model="params.user_filter"
+                                :options="userFilter.options"
+                                name="people-filter"
+                                class="font-caption mt-3"
+                                stacked
+                              ></b-form-radio-group>
+                            </b-form-group>
+                            <div class="g-multiselect pb-4 border-bottom form-group">
+                              <label for="skills" class="font-weight-bold">Skills</label>
+                              <div class="form__select2">
+                                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                                  <option disabled value="0">Select one</option>
+                                </select2>
+                              </div>
+                            </div>
+                            <button class="btn text-primary text-primary-hover hover-underline font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
+                          </nav>
+                        </transition>
+                        <div class="container-fluid pt-4 bg-white" @scroll.passive="onScroll($event)">
+                          <button v-if="!hideFilterButton" class="d-none d-md-block btn text-primary text-primary-hover hover-underline font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+
+                          <div class="py-5 mt-4">
+                            <div v-if="noResults" class="text-center">
+                              <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                              <p class="mt-4 font-weight-bold mb-0">No users found</p>
+                              <button class="btn text-primary text-primary-hover hover-underline" @click="params = {}; searchUsers()">Reset Filters</button>
+                            </div>
+                            <div class="grid-4">
+                              <div v-for="user in users" class="card card-user shadow-sm border-0 bg-lightblue" :key=`"user-${user.handle}"`>
+                                <div class="d-flex flex-column py-1">
+                                  <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                                  <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
+                                    <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
+                                      <i class="fab fa-ethereum mr-2"></i>
+                                      Fund Bounty
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
+                                      <i class="fas fa-user mr-2"></i>
+                                      View profile
+                                    </a>
+                                  </div>
+                                  <a :href="`/profile/${ user.handle }`" class="mx-auto">
+                                    <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
+                                  </a>
+                                  <h5 class="text-center card-user_name">
+                                    [[ user.name || user.handle ]]
+                                    <span v-if="user.verification">
+                                      <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
+                                    </span>
+                                  </h5>
+                                  <a :href="`/profile/${ user.handle }`" v-bind:data-usercard="[[ user.handle ]]" class="text-center d-block">
+                                    @[[ user.handle ]]
+                                  </a>
+                                  <div v-if="!user.is_org" class="card-user_stars text-center my-2">
+                                    <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
+                                    ([[ user.avg_rating.total_rating ]] ratings)
+                                  </div>
+                                  <small class="text-center pb-1" v-if="user.previously_worked">
+                                    <i class="far fa-handshake mr-1"></i>Worked with you
+                                  </small>
+                                </div>
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                  <!-- TRIBE -->
+                                  <template v-if="user.is_org">
+                                    <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
+                                    </div>
+                                    <div class="text-center">
+                                      <span v-if="user.rank_org > 0"><b>#[[ user.rank_org ]]</b> Tribe</span>
+                                    </div>
+                                    <div class="text-center">
+                                      <p class="mb-0">
+                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                        <b>[[ user.follower_count ]]</b> followers
+                                      </p>
+                                      <p class="mb-0">
+                                        <i class="fas fa-trophy font-smaller-4 mr-1"></i>
+                                        <b>[[ user.count_bounties_on_repo ]]</b> Bounties Funded
+                                        (<b>[[ user.sum_eth_on_repos ]] ETH</b>)
+                                      </p>
+                                    </div>
+                                  </template>
+
+                                  <!-- User : Funder / Contributor-->
+                                  <template v-else>
+                                    <div v-if="user.keywords" class="text-center">
+                                      <template v-for="keyword in user.keywords">
+                                        <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
+                                      </template>
+                                    </div>
+                                    <div class="text-center my-1 font-smaller-1">
+                                      <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
+                                        <i class="fab fa-github"></i>
+                                      </a>
+                                      <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                                        <i class="fas fa-home"></i>
+                                      </a>
+                                      <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
+                                        <i class="fab fa-linkedin-in"></i>
+                                      </a>
+                                    </div>
+                                    <div class="text-center" id="job_status" v-if="user.show_job_status">
+                                      <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                                      </a>
+                                    </div>
+                                    <div class="text-center">
+                                      <p class="mb-0">
+                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                        <b>[[ user.follower_count ]]</b> followers
+                                      </p>
+                                      <p v-if="!isFunder" class="mb-0">
+                                        <b>[[ user.work_done ]]</b> bounties completed
+                                      </p>
+                                      <p class="mb-0">
+                                        <span v-if="user.position_contributor > 0">
+                                          <b>#[[ user.position_contributor ]]</b> contributor
+                                        </span>
+                                        <span v-if="user.position_funder > 0">
+                                          <b>#[[ user.position_funder ]]</b> funder
+                                        </span>
+                                      </p>
+                                    </div>
+                                    <div class="text-center mt-2">
+                                      <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-primary btn-block" @click="openBounties(user)">Invite to Bounty</button>
+                                    </div>
+                                  </template>
+
+                                  <div class="text-center mt-2">
+
+                                    <b-button variant="noop" v-bind:class="[user.is_following ? 'btn-success' : 'btn-primary', 'btn btn-sm btn-block']" @click="joinTribe(user, $event)">
+                                      <i v-bind:class="[user.is_following ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> [[ user.is_following ? "following" : "follow" ]]
+                                    </b-button>
+                                  </div>
+
+                                </div>
+                              </div>
+                            </div>
+                            <loading-screen v-if="isLoading"></loading-screen>
+                          </div>
+                        </div>
+                        <modal ref="user-modal" id="userModal">
+                          <div slot="header" v-if="userSelected.handle">
+                            <div class="d-flex flex-column align-items-center">
+                              <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
+                              <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
+                              <span>[[ userSelected.name ]]</span>
+                              <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
+                                [[ userSelected.handle ]]
+                              </a>
+                            </div>
+                          </div>
+                          <div slot="body" v-if="userSelected.handle">
+                            <div v-if="funderBounties.length">
+                              <div class="my-2 text-center">
+                                <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
+                              </div>
+                              <div class="bounties-box">
+                                <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-primary': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                                  <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
+                                  <p class="line-clamp font-smaller-2 my-0 mx-2">
+                                    [[ bounty.title ]]
+                                  </p>
+                                  <div class="ml-auto flex-shrink-0">
+                                    <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                                    <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div v-else class="text-center font-subheader mt-4">
+                              <p class="font-weight-semibold">You've got NO open bounties</p>
+                              <p class="font-body">
+                                <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
+                                to invite [[ userSelected.handle ]]
+                              </p>
+                            </div>
+                          </div>
+                          <div slot="footer" class="d-flex align-items-center flex-fill">
+                            <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
+                            <div class="ml-auto">
+                              <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                              <button  v-if="funderBounties.length" class="btn btn-primary" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+                            </div>
+                          </div>
+                        </modal>
+                        <modal v-if="orgOwner" ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
+                            <div slot="header">
+                              <div class="d-flex flex-column align-items-center">
+                                <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
+                              </div>
+                            </div>
+                            <div slot="body">
+                              <div class="form-group">
+                                <label class="font-weight-semibold">Github Issue URL</label>
+                                <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
+                              </div>
+                              <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
+                              <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
+                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
+                                [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
+                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
+                                [[issueDetails.issue_description_text]]
+                              </div>
+                              <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
+                              <div class="alert-warning p-3" v-if="errorIssueDetails">
+                                [[errorIssueDetails]]
+                              </div>
+                            </div>
+                            <div slot="footer" class="d-flex align-items-center flex-fill">
+                              <div class="ml-auto">
+                                <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
+                                <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-primary" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                              </div>
+                            </div>
+                          </modal>
+                      </div>
+                  </user-directory>
                 </b-tab>
                 <b-tab v-if="is_my_org || is_staff" class="col-12" title-item-class="navigation">
                   <template v-slot:title>

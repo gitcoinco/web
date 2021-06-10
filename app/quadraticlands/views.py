@@ -247,8 +247,8 @@ def mission_postcard_svg(request):
 @login_required
 @ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
 def mission_lore(request):
-    from perftools.models import JSONStore
-    data = JSONStore.objects.get(view='QLLORE', key='QLLORE').data
+    from perftools.models import StaticJsonEnv
+    data = StaticJsonEnv.objects.get(key='QLLORE').data
     MOLOCH_COMIC_LINK = data['MOLOCH_COMIC_LINK']
     QL_SONG_LINK = data['QL_SONG_LINK']
     params = {
