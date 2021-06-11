@@ -3080,6 +3080,7 @@ def logout_idena(request, handle):
         'address': profile.idena_address,
         'status': profile.idena_status,
         'is_connected': profile.is_idena_connected,
+        'login_url': idena_callback_url(request, profile),
         'is_verified': profile.is_idena_verified,
         'next_validation': None,
         'icon_path': static('/v2/images/project_logos/idena.svg'),
