@@ -249,12 +249,6 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     activity=activity,
                     comment=comment)
 
-        # emails to grant owner
-        try:
-            new_supporter(grant, subscription)
-        except Exception as e:
-            logger.exception(e)
-
         # emails to contributor
         if send_supporter_mail:
             grants_with_subscription = [{

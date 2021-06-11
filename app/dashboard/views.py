@@ -29,7 +29,6 @@ import logging
 import re
 import time
 import uuid
-
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
