@@ -1,4 +1,4 @@
-{% load humanize static i18n %}
+{% load humanize static i18n tz %}
 <div class="container bg-white">
   <!--  Header section -->
   <div class="row justify-content-between align-items-center my-5">
@@ -47,6 +47,29 @@
           </div>
         </div>
         {% endcomment %}
+        <div class="d-flex justify-content-between countdown-color h4">
+          {% if now < round_start_date or now < round_end_date and round_end_date|timeuntil <= "2 days"  %}
+          <countdown :startdate="{{round_start_date|date:'U' }}*1000" :enddate="{{round_end_date|date:'U' }}*1000" class="countdown gc-font-heading">
+            <template v-slot="slotProps">
+              <div v-if="slotProps.time.statusType === 'upcoming'">
+                Round starts in
+              </div>
+              <div v-else-if="slotProps.time.statusType === 'running' && slotProps.time.days <= 2">
+                Round ends in
+              </div>
+              <span>[[slotProps.time.days]]d</span>
+              <span>[[slotProps.time.hours]]h</span>
+              <span>[[slotProps.time.minutes]]m</span>
+              <span>[[slotProps.time.seconds]]s</span>
+            </template>
+          </countdown>
+          {% endif %}
+          <div>
+            {% timezone "US/Mountain" %}
+              {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
+            {% endtimezone %}
+          </div>
+        </div>
 
       </div>
     </div>

@@ -652,14 +652,6 @@ Vue.component('project-card', {
           <div class="text-left">
             <a :href="project_url" target="_blank" class="btn btn-sm btn-primary font-smaller-2">View Project</a>
             <a :href="project.bounty.url" class="btn btn-sm btn-outline-primary font-smaller-2">View Bounty</a>
-            <b-dropdown variant="outline-primary" toggle-class="btn" split-class="btn-primary">
-            <template v-slot:button-content>
-              <i class="fas fa-comment-dots" style="padding-top: 0.4em;padding-bottom: 0.3em;"></i>
-            </template>
-            <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
-              @ [[ profile.handle ]]
-            </b-dropdown-item-button>
-            </b-dropdown>
           </div>
         </div>
 
@@ -901,5 +893,75 @@ Vue.component('render-quill', {
     delta: function() {
       return this.transform();
     }
+  }
+});
+
+
+Vue.component('countdown', {
+  props: [ 'startdate', 'enddate' ],
+  template: `
+    <div>
+      <slot :time="time">{{time.days}}d {{time.hours}}h {{time.minutes}}m {{time.seconds}}s </slot>
+    </div>`,
+  data() {
+    return {
+      time: {},
+      start: '',
+      end: '',
+      timeinterval: undefined
+    };
+  },
+  methods: {
+    initializeClock() {
+      let vm = this;
+
+      vm.updateClock();
+      vm.timeinterval = setInterval(vm.updateClock, 1000);
+      return vm.time;
+    },
+    updateClock() {
+      let vm = this;
+      const now = new Date().getTime();
+      const distance = vm.start - now;
+      const passTime = vm.end - now;
+      let t;
+
+      if (distance < 0 && passTime < 0) {
+        vm.$set(vm.time, 'statusType', 'expired');
+        clearInterval(this.timeinterval);
+        return;
+      } else if (distance < 0 && passTime > 0) {
+        t = this.getTimeRemaining(passTime);
+        vm.$set(vm.time, 'statusType', 'running');
+      } else if (distance > 0 && passTime > 0) {
+        t = this.getTimeRemaining(distance);
+        vm.$set(vm.time, 'statusType', 'upcoming');
+      }
+
+      this.$set(vm.time, 'days', t.days);
+      this.$set(vm.time, 'hours', ('0' + t.hours).slice(-2));
+      this.$set(vm.time, 'minutes', ('0' + t.minutes).slice(-2));
+      this.$set(vm.time, 'seconds', ('0' + t.seconds).slice(-2));
+
+    },
+
+    getTimeRemaining(dist) {
+      const seconds = Math.floor((dist / 1000) % 60);
+      const minutes = Math.floor((dist / 1000 / 60) % 60);
+      const hours = Math.floor((dist / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(dist / (1000 * 60 * 60 * 24));
+
+      return {
+        days,
+        hours,
+        minutes,
+        seconds
+      };
+    }
+  },
+  mounted() {
+    this.start = new Date(this.startdate).getTime();
+    this.end = new Date(this.enddate).getTime();
+    this.initializeClock();
   }
 });

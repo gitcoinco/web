@@ -37,6 +37,15 @@ along with this program. If not, see
       padding: 0;
       max-width: 136px;
     }
+    .countdown-color {
+      color: var(--gc-blue-hover);
+    }
+    .countdown{
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
   </style>
   <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
@@ -101,7 +110,6 @@ along with this program. If not, see
     </div>
 
   {% include 'shared/footer.html' %}
-  {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' with slim=1 %}
   {% include 'grants/shared/shared_scripts.html' %}
   {{collections|json_script:"collections-object"}}

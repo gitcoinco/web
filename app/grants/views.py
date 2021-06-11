@@ -103,9 +103,9 @@ def get_clr_rounds_metadata():
         start_date = CLR_ROUND_DATA['round_start']
         end_date = CLR_ROUND_DATA['round_end']
 
-        # timezones are in UTC
-        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%M.%S')
-        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%M.%S')
+        # timezones are in UTC (format example: 2021-06-16:15.00.00)
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
 
     except:
         # setting defaults
@@ -849,6 +849,8 @@ def grants_landing(request):
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
+    clr_round, round_start_date, round_end_date = get_clr_rounds_metadata()
+
 
     params = {
         'active': 'grants_landing',
@@ -864,6 +866,9 @@ def grants_landing(request):
         'active_rounds': active_rounds,
         'sponsors': sponsors,
         'featured': True,
+        'round_start_date': round_start_date,
+        'round_end_date': round_end_date,
+        'now': now
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -965,6 +970,7 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
+    clr_round, round_start_date, round_end_date = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_explorer',
@@ -973,6 +979,10 @@ def grants_by_grant_type(request, grant_type):
         'network': network,
         'keyword': keyword,
         'type': grant_type,
+        'grant_label': grant_label if grant_type else grant_type,
+        'round_end': round_end_date,
+        'next_round_start': round_start_date,
+        'now': timezone.now(),
         'mid_back': mid_back,
         'bottom_back': bottom_back,
         'card_desc': f'{live_now}',
@@ -1137,7 +1147,7 @@ def grants_by_grant_clr(request, clr_round):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    _, next_round_start, _ = get_clr_rounds_metadata()
+    clr_round, round_start_date, round_end_date = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_landing',
@@ -1147,7 +1157,8 @@ def grants_by_grant_clr(request, clr_round):
         'keyword': keyword,
         'type': grant_type,
         'grant_label': grant_label if grant_type else grant_type,
-        'next_round_start': next_round_start,
+        'round_end': round_end_date,
+        'next_round_start': round_start_date,
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,
@@ -1277,6 +1288,7 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
 
+
     try:
         grant = None
         try:
@@ -1370,8 +1382,10 @@ def grant_details(request, grant_id, grant_slug):
     try:
         # If the user viewing the page is team member or admin, check if grant has match funds available
         # to withdraw
+        clr_round, round_start_date, round_end_date = get_clr_rounds_metadata()
+
         is_match_available_to_claim = False
-        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 4, 30, 12, 0).replace(tzinfo=pytz.utc)
+        is_within_payout_period_for_most_recent_round = timezone.now(), round_start, timezone.datetime(2021, 4, 30, 12, 0).replace(tzinfo=pytz.utc)
         is_staff = request.user.is_authenticated and request.user.is_staff
 
         # Check if this grant needs to complete KYC before claiming match funds

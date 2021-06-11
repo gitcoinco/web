@@ -136,7 +136,6 @@ along with this program. If not, see
       {% include 'shared/footer.html' %}
     </div>
   </div>
-  {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
   {% include 'grants/shared/shared_scripts.html' %}
   {{collections|json_script:"collections-object"}}
