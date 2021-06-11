@@ -2362,7 +2362,7 @@ $(document).ready(function() {
         ethAddress = result[0];
         ethProvider = web3.currentProvider;
 
-        $.get('/passport-vc', params(), async function(response) {
+        $.get('/passport/verifiable-credential', params(), async function(response) {
           let status = response['status'];
 
           if (status == 'error') {
