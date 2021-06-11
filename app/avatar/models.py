@@ -131,11 +131,12 @@ class BaseAvatar(SuperModel):
             use_svg (bool): Whether or not to use SVG format.
 
         """
-        if not use_svg:
+        if not use_svg and bool(self.png):
             return self.png.file, 'image/png'
-        else:
+        elif bool(self.svg):
             return self.svg.file, 'image/svg+xml'
 
+        return None
 
 class CustomAvatar(BaseAvatar):
     recommended_by_staff = models.BooleanField(default=False)

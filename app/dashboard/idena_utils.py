@@ -76,7 +76,7 @@ def signature_address(nonce, signature):
 def parse_datetime_from_iso(iso):
     return timezone.make_aware(
         timezone.datetime.strptime(
-            iso, 
+            iso,
             '%Y-%m-%dT%H:%M:%SZ',
         ),
         UTC
