@@ -1,24 +1,15 @@
 {% load i18n humanize %}
 
-{% trans "New Supporter." %}
+{% trans "New Contributions to Your Grant" %}
 
-{% trans "You have a new supporter!" %}
+{{ hours_ago }} hours</span>, your grant has earned approximately:
 
-{{ subscriber.contributor_profile.avatar_url }}?{{ utm_tracking }}
+${{ amount_raised|floatformat:2|intcomma }}
 
-{{ subscriber.contributor_profile }}
+from {{ num_of_contributors }} contributor{{ num_of_contributors|pluralize }}
 
-{{ subscription.subscription_hash }}
+{{ grant.title }}
 
-{{ subscription.amount_per_period|floatformat:4|intcomma }}
+{% trans "For more information, go to your grants page." %}
 
-{% trans " has contributed" %}
-
-{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
-
-{% trans "You can see the transaction on Etherscan" %} at
-{% if subscription.network == 'mainnet' %}
-  http://etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
-{% else %}
-  http://{{ grant.network }}.etherscan.io/tx/{{ subscription.sub_new_approve_tx_id }}
-{% endif %}
+{{grant.url}}?{{ utm_tracking }}
