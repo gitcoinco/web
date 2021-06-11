@@ -6778,12 +6778,16 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
                 'msg': pv.validation_comment
             }, status=401)
 
-    if delivery_method == 'email':
-        twilio.verify.verifications.create(to=user.profile.email, channel='email')
-    else:
-        twilio.verify.verifications.create(to=phone, channel='sms')
+    try:
+        if delivery_method == 'email':
+            twilio.verify.verifications.create(to=user.profile.email, channel='email')
+        else:
+            twilio.verify.verifications.create(to=phone, channel='sms')
+        pv.validation_passed = True
+    except Exception:
+        pv.validation_passed = False
+        pv.validation_comment = 'Unable to create record'
 
-    pv.validation_passed = True
     pv.save()
 
     profile.last_validation_request = timezone.now()
