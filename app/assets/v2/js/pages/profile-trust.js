@@ -1,5 +1,5 @@
 // handle from contxt
-const trustHandle = document.contxt.github_handle
+const trustHandle = document.contxt.github_handle;
 
 // convert round dates to expected format
 const parseDate = (given) => {
@@ -27,7 +27,7 @@ const apiCall = (url, givenPayload) => {
     $.when(verificationRequest).then(response => {
       resolve(response);
     }).catch((err) => {
-      reject(err)
+      reject(err);
     });
   });
 };
@@ -61,7 +61,7 @@ Vue.component('why-this-matters-modal', {
     dismissModal() {
       // localStorage.setItem('dismiss-sms-validation', true);
       this.$emit('modal-dismissed');
-    },
+    }
   }
 });
 
@@ -316,6 +316,7 @@ Vue.component('sms-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_sms`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
@@ -366,7 +367,7 @@ Vue.component('twitter-verify-modal', {
       return `https://twitter.com/intent/tweet?text=${this.encodedTweetText}`;
     },
     step() {
-      return this.forceStep || this.validationStep
+      return this.forceStep || this.validationStep;
     }
   },
   template: `
@@ -464,7 +465,7 @@ Vue.component('twitter-verify-modal', {
       this.$emit('modal-dismissed');
       setTimeout(() => {
         this.forceStep = false;
-      }, 1000)
+      }, 1000);
     },
     clickedSendTweet(event) {
       this.forceStep = 'validate-tweet';
@@ -531,6 +532,7 @@ Vue.component('twitter-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_twitter`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
@@ -540,7 +542,7 @@ Vue.component('twitter-verify-modal', {
         this.awaitingResponse = false;
         this.dismissVerification();
       }
-    },
+    }
   }
 });
 
@@ -569,11 +571,11 @@ Vue.component('poap-verify-modal', {
     validationStep: {
       type: String,
       required: true
-    },
+    }
   },
   computed: {
     step() {
-      return this.forceStep || this.validationStep
+      return this.forceStep || this.validationStep;
     }
   },
   template: `
@@ -745,6 +747,7 @@ Vue.component('poap-verify-modal', {
           'eth_address': this.ethAddress,
           'signature': this.signature
         });
+
         if (response.ok) {
           this.forceStep = 'validation-complete';
           this.service.is_verified = true;
@@ -765,6 +768,7 @@ Vue.component('poap-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_poap`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
@@ -975,6 +979,7 @@ Vue.component('poh-verify-modal', {
           eth_address: this.ethAddress,
           signature: this.signature
         });
+
         if (response.ok) {
           this.forceStep = 'validation-complete';
           this.service.is_verified = true;
@@ -992,6 +997,7 @@ Vue.component('poh-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_poh`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
@@ -1001,7 +1007,7 @@ Vue.component('poh-verify-modal', {
         this.awaitingResponse = false;
         this.dismissVerification();
       }
-    },
+    }
   }
 });
 
@@ -1042,7 +1048,7 @@ Vue.component('brightid-verify-modal', {
       return `brightid://link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${this.brightidUuid}`;
     },
     step() {
-      return this.forceStep || this.validationStep
+      return this.forceStep || this.validationStep;
     }
   },
   template: `
@@ -1181,6 +1187,7 @@ Vue.component('brightid-verify-modal', {
       this.verifying = true;
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/verify_user_brightid`);
+
         if (response.ok) {
           this.service._status = response.msg;
           if (this.service._status == 'verified') {
@@ -1191,7 +1198,7 @@ Vue.component('brightid-verify-modal', {
             this.service._state = 'verify-brightid';
             this.service.status = 'Awaiting Verification';
             // alert pending
-            _alert("Pending Validation...", "danger", 2000);
+            _alert('Pending Validation...', 'danger', 2000);
           }
         }
       } catch (err) {
@@ -1205,6 +1212,7 @@ Vue.component('brightid-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_brightid`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
@@ -1214,7 +1222,7 @@ Vue.component('brightid-verify-modal', {
         this.awaitingResponse = false;
         this.dismissVerification();
       }
-    },
+    }
   }
 });
 
@@ -1256,10 +1264,8 @@ Vue.component('idena-verify-modal', {
   },
   computed: {
     step() {
-      return this.forceStep || this.validationStep
+      return this.forceStep || this.validationStep;
     }
-  },
-  mounted() {
   },
   template: `
     <b-modal id="idena-modal" @hide="dismissVerification()" :visible="showValidation" size="lg" body-class="p-0" center hide-header hide-footer>
@@ -1345,6 +1351,7 @@ Vue.component('idena-verify-modal', {
       }
       try {
         const response = await apiCall(url);
+
         if (response.ok) {
           this.forceStep = false;
           this.service = Object.assign(this.service, response);
@@ -1354,14 +1361,12 @@ Vue.component('idena-verify-modal', {
       } finally {
         if (!checkingStatus) {
           this.dismissVerification();
-        } else {
-          if (!this.service.is_verified) {
-            _alert("Pending Validation...", "danger", 2000);
-          }
+        } else if (!this.service.is_verified) {
+          _alert('Pending Validation...', 'danger', 2000);
         }
         this.awaitingResponse = false;
       }
-    },
+    }
   }
 });
 
@@ -1482,7 +1487,7 @@ Vue.component('active-trust-manager', {
       round_end_date: parseDate(document.round_start_date),
       roadmap: document.roadmap || [],
       services: document.services || [],
-      coming_soon: document.coming_soon || [],
+      coming_soon: document.coming_soon || []
     };
   },
   computed: {
@@ -1490,7 +1495,7 @@ Vue.component('active-trust-manager', {
 
       return Math.min(150, this.services.reduce((total, service) => {
         return (service.is_verified ? service.match_percent : 0) + total;
-      }, 50))
+      }, 50));
     },
     serviceDict: function() {
 
@@ -1499,7 +1504,7 @@ Vue.component('active-trust-manager', {
         services[service.ref] = service;
 
         return services;
-      }, {})
+      }, {});
     }
   },
   methods: {
@@ -1657,7 +1662,7 @@ Vue.component('ens-verify-modal', {
       url: '',
       forceStep: false,
       verificationEthAddress: '',
-      awaitingResponse: false,
+      awaitingResponse: false
     };
   },
   props: {
@@ -1676,7 +1681,7 @@ Vue.component('ens-verify-modal', {
   },
   computed: {
     step() {
-      return this.forceStep || this.validationStep
+      return this.forceStep || this.validationStep;
     }
   },
   watch: {
@@ -1853,6 +1858,7 @@ Vue.component('ens-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_ens`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
@@ -1862,7 +1868,7 @@ Vue.component('ens-verify-modal', {
         this.awaitingResponse = false;
         this.dismissVerification();
       }
-    },
+    }
   }
 });
 
@@ -1891,7 +1897,7 @@ Vue.component('google-verify-modal', {
   },
   computed: {
     step() {
-      return this.forceStep || this.validationStep
+      return this.forceStep || this.validationStep;
     }
   },
   template: `
@@ -1946,16 +1952,16 @@ Vue.component('google-verify-modal', {
       }, 1000);
     },
     verifyGoogle() {
-      const form = document.createElement("form");
-      const csrf = document.createElement("input"); 
+      const form = document.createElement('form');
+      const csrf = document.createElement('input');
 
-      form.method = "POST";
-      form.action = `/api/v0.1/profile/${trustHandle}/request_verify_google`;   
+      form.method = 'POST';
+      form.action = `/api/v0.1/profile/${trustHandle}/request_verify_google`;
 
       csrf.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      csrf.name="csrfmiddlewaretoken";
+      csrf.name = 'csrfmiddlewaretoken';
 
-      form.appendChild(csrf); 
+      form.appendChild(csrf);
 
       document.body.appendChild(form);
 
@@ -1966,6 +1972,7 @@ Vue.component('google-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_google`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
@@ -2004,7 +2011,7 @@ Vue.component('facebook-verify-modal', {
   },
   computed: {
     step() {
-      return this.forceStep || this.validationStep
+      return this.forceStep || this.validationStep;
     }
   },
   template: `
@@ -2059,16 +2066,16 @@ Vue.component('facebook-verify-modal', {
       }, 1000);
     },
     verifyFacebook() {
-      const form = document.createElement("form");
-      const csrf = document.createElement("input"); 
+      const form = document.createElement('form');
+      const csrf = document.createElement('input');
 
-      form.method = "POST";
-      form.action = `/api/v0.1/profile/${trustHandle}/request_verify_facebook`;   
+      form.method = 'POST';
+      form.action = `/api/v0.1/profile/${trustHandle}/request_verify_facebook`;
 
       csrf.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      csrf.name="csrfmiddlewaretoken";
+      csrf.name = 'csrfmiddlewaretoken';
 
-      form.appendChild(csrf); 
+      form.appendChild(csrf);
 
       document.body.appendChild(form);
 
@@ -2079,6 +2086,7 @@ Vue.component('facebook-verify-modal', {
       this.forceStep = 'disconnect';
       try {
         const response = await apiCall(`/api/v0.1/profile/${trustHandle}/disconnect_user_facebook`);
+
         if (response.ok) {
           this.service = Object.assign(this.service, response);
         }
