@@ -651,7 +651,6 @@ urlpatterns = [
     ),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_grant_approved', retail.emails.new_grant_approved, name='admin_new_grant_approved'),
-    path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
     path('_administration/email/new_contributions', retail.emails.new_contributions, name='admin_new_contributions'),
     path(
         '_administration/email/thank_you_for_supporting',

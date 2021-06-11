@@ -35,7 +35,7 @@ def txn_already_used(txn, token_symbol):
 
 def record_contribution_activity(contribution):
     from dashboard.models import Activity
-    from marketing.mails import new_supporter, thank_you_for_supporting, successful_contribution
+    from marketing.mails import thank_you_for_supporting, successful_contribution
     from grants.tasks import update_grant_metadata
 
     try:
