@@ -3,7 +3,9 @@ import uuid
 from datetime import datetime, timedelta
 
 from django.conf import settings
-from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.http import Http404, JsonResponse
+from django.shortcuts import render
 
 import didkit
 import web3
@@ -105,16 +107,10 @@ def passport(request, pattern):
     }
     return JsonResponse(context)
 
-
+@login_required
 def verifiable_credential(request):
-    passport = None
-
     player = request.GET.get("coinbase")
     network = request.GET.get("network")
-
-    if not request.user.is_authenticated:
-        return JsonResponse({"status": "error", "msg": "You must login"})
-
     cost_of_forgery = round((request.user.profile.trust_bonus - 1) * 100, 1)
     personhood_score = cost_of_forgery
     
