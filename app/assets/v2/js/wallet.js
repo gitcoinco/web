@@ -119,6 +119,7 @@ async function fetchAccountData(provider) {
 
   // MetaMask does not give you all accounts, only the selected account
   console.log('Got accounts', accounts);
+  // FOR TESTING ONLY
   selectedAccount = '0x1402e01ba957e030200ec21e1417dc32c11e486b'; //accounts[0] || provider.account;
   cb_address = selectedAccount;
 

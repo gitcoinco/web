@@ -332,6 +332,12 @@ def mission_diplomacy_helper(request, invited_to_game=None):
                     f'Your Game has been created successfully'
                 )
                 return redirect(game.url)
+    else:
+        if request.POST:
+            messages.error(
+                request,
+                f'You must login to create a game.'
+            )
 
 
 

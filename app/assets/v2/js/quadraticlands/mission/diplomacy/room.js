@@ -44,19 +44,22 @@ document.addEventListener('DOMContentLoaded', function() {
   // show leave button + warning on enter the room name what is fetched
   // by data-attribute data-phrase
   const leave_room = document.getElementById('leave_room');
-  const leave_room_button = document.getElementById('leave_room_button');
-  const leave_room_interface = document.getElementById('leave_room_interface');
-  const phrase = leave_room.dataset.phrase;
+  if(leave_room){
+    const leave_room_button = document.getElementById('leave_room_button');
+    const leave_room_interface = document.getElementById('leave_room_interface');
+    const phrase = leave_room.dataset.phrase;
 
-  leave_room.addEventListener('input', () => {
-    if (leave_room.value == phrase) {
-      leave_room_button.classList.remove('disabled');
-      leave_room_interface.classList.add('warning');
-    } else {
-      leave_room_button.classList.add('disabled');
-      leave_room_interface.classList.remove('warning');
-    }
-  });
+    leave_room.addEventListener('input', () => {
+      if (leave_room.value == phrase) {
+        leave_room_button.classList.remove('disabled');
+        leave_room_interface.classList.add('warning');
+      } else {
+        leave_room_button.classList.add('disabled');
+        leave_room_interface.classList.remove('warning');
+      }
+    });
+
+  }
 
 
   // vouche button trigger function vouche()
@@ -139,7 +142,7 @@ async function diplomacyWallet(){
 // array of objects to do a "sign" + a "safe to db"
 // not sure how to do this part.
 
-function vouche() {
+async function vouche() {
 
   console.debug('VOUCHE');
 
@@ -162,6 +165,11 @@ function vouche() {
 
   // @kev : do something with the result ( sign, safe, whatever)
   // this is how far i could come. now your turn :)
-  console.log(result);
+  const accounts = await web3.eth.getAccounts();
+  let signature = web3.eth.sign(JSON.stringify(result), accounts[0], function(foo){
+    console.log(foo);
+  }).then(console.log);
+  console.log('there');
+  console.log(signature);
 
 }

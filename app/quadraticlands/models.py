@@ -402,7 +402,7 @@ class GamePlayer(SuperModel):
     )
 
     def __str__(self):
-        return f"{self.game} / {self.profile.handle} / Admin: {self.admin} / Admin: {self.active}"
+        return f"{self.game} / {self.profile.handle} / Admin: {self.admin} / Active: {self.active}"
 
     @property
     def tokens_in(self):
