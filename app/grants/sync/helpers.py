@@ -74,7 +74,6 @@ def record_contribution_activity(contribution):
         # note: commenting out for optimistic UI
         # successful_contribution(grant, subscription, contribution)
         # update_grant_metadata.delay(grant.pk)
-        new_supporter(grant, subscription)
         grants_with_subscription = [{
             'grant': grant,
             'subscription': subscription
