@@ -37,6 +37,19 @@
       &:after {
         content: " GTC";
       }
+      &:before {
+        content: "Incoming: ";
+      }
+    }
+    .tokens_out{
+      color: var(--stone);
+      text-align: center;
+      &:after {
+        content: " GTC";
+      }
+      &:before {
+        content: "Outgoing: ";
+      }
     }
 
 

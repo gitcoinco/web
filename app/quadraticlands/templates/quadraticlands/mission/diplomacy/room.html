@@ -13,11 +13,25 @@
 {% block 'content' %}
 
 
+<!-- Diplomacy Hero -->
+<section class="hero knightrider" data-kinetics-mode data-kinetics-mode-type="rain" data-kinetics-mode-speed="5"
+  data-kinetics-mode-boundery="endless">
+
+  <div class="background">
+    <!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+    {% include "quadraticlands/_inlinesvg/hero-diplomacy.svg" %}
+  </div>
+
+  <div class="content centered" data-kinetics-attraction data-kinetics-attraction-chance=".6"
+    data-kinetics-attraction-force="3" data-kinetics-attraction-grow="5">
+    <h1><a href="/quadraticlands/mission/diplomacy">Quadratic Diplomacy</a> &gt; Room Name</h1>
+  </div>
+
+</section>
 
 <!-- intro-->
 <section class="introduction" style="margin-bottom: 3em;">
-	<h1>Room Name</h1>
-	<p>NO Breaks. NO Bulletpoints. 1-2 Sentences! Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+	<p>This room was created on TIME by PERSON and is adminsitered by PERSON; it has NUMBER people in it & represents AMOUNT of GTC and has created AMOUNT of Sybil Resistence on Gitcoin.</p>
 </section>
 
 
@@ -38,6 +52,7 @@
 		<figure><img src="/dynamic/avatar/scco"></figure>
 		<div class="username">owocki</div>
 		<div class="tokens">999.49</div>
+		<div class="tokens_out">999.49</div>
 		<input data-member data-userid="43" data-username="owocki" type="number" placeholder="0" value="">
 	</div>
 
@@ -98,7 +113,7 @@
 	</div>
 
 	<div class="col">
-		<a id="vouche_button" class="btn aqua">Vouche</a>
+		<a id="vouche_button" class="btn aqua">Vouch</a>
 	</div>
 
 </section>

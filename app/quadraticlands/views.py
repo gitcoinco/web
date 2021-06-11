@@ -301,5 +301,5 @@ def mission_diplomacy(request):
     return TemplateResponse(request, 'quadraticlands/mission/diplomacy/index.html')
 
 
-def mission_diplomacy_room(request):
+def mission_diplomacy_room(request, id, name):
     return TemplateResponse(request, 'quadraticlands/mission/diplomacy/room.html')
