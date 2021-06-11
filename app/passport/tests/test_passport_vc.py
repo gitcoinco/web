@@ -46,6 +46,6 @@ class PassportVCTest(TestCase):
                 json.dumps(options))
 
         verify = json.loads(verifyStr)
-        self.assertTrue(not verify["errors"])
+        self.assertFalse(verify["errors"])
 
         pass
