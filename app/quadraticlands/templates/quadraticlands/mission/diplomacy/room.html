@@ -47,37 +47,15 @@
 			a sign message . btw im unsure if sign message is
 			the right way of doing it. maybe just database
 			is enough - lets talk about it in chat -->
-
+	{% for player in game.active_players.all %}
 	<div class="member">
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">owocki</div>
-		<div class="tokens">999.49</div>
-		<div class="tokens_out">999.49</div>
-		<input data-member data-userid="43" data-username="owocki" type="number" placeholder="0" value="">
+		<figure><img src="/dynamic/avatar/{{player.profile.handle}}"></figure>
+		<div class="username">@{{player.profile.handle}}</div>
+		<div class="tokens">{{player.tokens_in}}</div>
+		<div class="tokens_out">{{player.tokens_out}}</div>
+		<input {% if player.profile.handle == github_handle %}readonly{% endif %} data-member data-userid="{{player.profile.id}}" data-username="{{player.profile.handle}}" type="number" placeholder="0" value="">
 	</div>
-
-	<div class="member">
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">scco2</div>
-		<div class="tokens">312.49</div>
-		<input data-member data-userid="332" data-username="scco2" type="number" placeholder="0" value="">
-	</div>
-
-	<div class="member">
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">scco3</div>
-		<div class="tokens">12.49</div>
-		<input data-member data-userid="4323" data-username="scco3" type="number" placeholder="0" value="">
-	</div>
-
-	<!-- add readonly on inputfield + .self if member = current user in this loop - 
-		to block him from vouche on himself -->
-	<div class="member self">
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">scco</div>
-		<div class="tokens">49343.49</div>
-		<input readonly type="number" placeholder="0" value="">
-	</div>
+	{% endfor %}
 
 </section>
 
@@ -136,7 +114,13 @@
 			<span class="username">{{feed.player.profile.handle}}</span>
 		</span>
 
-		<span class="action">{{feed.data.action}}</span>
+		<span class="action">
+
+			{{feed.data.action}}
+
+			{{feed.data.chat}}
+
+		</span>
 		<!--
 		<span class="member">
 			<img src="/dynamic/avatar/scco">
@@ -161,27 +145,40 @@
 	</div>
 	{% endfor %}
 
+<form method="POST" action="{{game.url}}#chat">
+<section class="diplomacy-chat-room" id="chat">
+	<div class="wrapper">
+		<div class="info">
+			Type a message
+		</div>
+		<div id="chat_room_interface" class="input">
+			{% csrf_token %}
+				<input id="chat_room" name="chat" type="text" placeholder="never gonna give you up">
+				<button  id="send_chat_button">Send</button>
+		</div>
+	</div>
+</section>
+</form>
+
 
 
 </section>
 
 
 
+{% if is_admin %}
+
 <!-- administration headline -->
-<!-- @kev : this part is for owner of room only.-->
 <section class="introduction" style="margin-bottom: 3em;">
   <h1>Administration</h1>
 </section>
 
 
-
-
 <!-- diplomacy invite -->
-<!-- @kev : this part is for owner of room only.-->
 <section class="diplomacy-invite">
   <div class="wrapper">
     <div class="info">
-      [{{self.active_players | length}}/8 Players] Invite up to 8 players with this Link
+      [{{game.active_players | length}} Player{{game.active_players | pluralize}} Active /8 Slots] Invite up to 8 total players with this Link
     </div>
     <div class="input">
       <input id="room_link" type="text" readonly value="https://gitcoin.co/quadraticlands/mission/diplomacy/4934-devilhunters">
@@ -189,6 +186,7 @@
     </div>
   </div>
 </section>
+{% endif %}
 
 
 
@@ -232,7 +230,6 @@
 {% else %}
 
 <!-- danger zone for members - but NOT the admin-->
-	a user the leave-button -->
 <section class="diplomacy-leave-room">
 	<div class="wrapper">
 		<div class="info">

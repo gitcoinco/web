@@ -318,6 +318,17 @@ class Game(SuperModel):
                 'stakes': stakes,
             },
             )
+
+    def chat(self, handle, chat):
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'chatted',
+                'chat': chat,
+            },
+            )
     
     def leave_game(self, handle):
 
@@ -386,9 +397,6 @@ class GamePlayer(SuperModel):
     admin = models.BooleanField(
         default=False
     )
-    accepted = models.BooleanField(
-        default=False
-    )
     active = models.BooleanField(
         default=False
     )
@@ -396,3 +404,11 @@ class GamePlayer(SuperModel):
     def __str__(self):
         return f"{self.game} / {self.profile.handle} / Admin: {self.admin} / Admin: {self.active}"
 
+    @property
+    def tokens_in(self):
+        return 'TODO'
+
+    @property
+    def tokens_out(self):
+        return 'TODO'
+    

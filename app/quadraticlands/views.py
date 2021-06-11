@@ -390,6 +390,9 @@ def mission_diplomacy_room_helper(request, game):
         )
         return redirect('/quadraticlands/mission/diplomacy')
 
+    # delete game
+    if is_member and request.POST.get('chat'):
+        game.chat(request.user.profile.handle, request.POST.get('chat'))
 
     # game view
     params = {

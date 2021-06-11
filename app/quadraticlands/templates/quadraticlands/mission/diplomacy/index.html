@@ -84,11 +84,11 @@
       <div class="room" data-roomlink="{{game.url}}">
         <div class="info">
           <div class="name">{{game.title}}<span class="membercount">{{game.active_players.count}}</span></div>
-          <div class="status">Created by <span>{{invite.admin.profile.handle}}</span>.</div>
+          <div class="status">Created by <span>@{{game.admin.profile.handle}}</span>.</div>
         </div>
         <div class="members">
-          {% for player in invite.active_players %}
-            <img src="/dynamic/avatar/{{player.handle}}">
+          {% for player in game.active_players %}
+            <img src="/dynamic/avatar/{{player.profile.handle}}">
           {% endfor %}
         </div>
       </div>
