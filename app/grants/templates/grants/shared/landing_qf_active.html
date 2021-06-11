@@ -65,7 +65,7 @@
           </countdown>
           {% endif %}
           <div>
-            {% timezone "MST" %}
+            {% timezone "US/Mountain" %}
               {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
             {% endtimezone %}
           </div>
