@@ -21,8 +21,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+import uuid
 
 from app.utils import get_upload_filename
+from economy.models import SuperModel
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django_extensions.db.fields import AutoSlugField
+from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from dashboard.models import Profile
 
 
 class Uint256Field(models.DecimalField):
@@ -198,3 +206,97 @@ class SchwagCoupon(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.discount_type}, {self.coupon_code}, {self.profile}'
+
+
+class Game(SuperModel):
+
+    title = models.CharField(max_length=500, blank=True)
+    _type = models.CharField(
+        default='',
+        db_index=True,
+        max_length=255,
+    )
+    uuid=models.UUIDField(default=uuid.uuid4, unique=True)
+    slug = AutoSlugField(populate_from='title')
+
+    def get_absolute_url(self):
+        return f'/quadraticlands/mission/diplomacy/{self.pk}/{self.slug}'
+
+    def add_player(self, handle):
+
+        return GameFeed.objects.create(
+            game=self,
+            sender=Profile.objects.get(handle=handle),
+            data={
+                'type': 'joined',
+            },
+            )
+
+    def __str__(self):
+        return self.title
+
+
+@receiver(pre_save, sender=Game, dispatch_uid="psave_game")
+def psave_game(sender, instance, **kwargs):
+    pass
+
+class GameFeed(SuperModel):
+
+    game = models.ForeignKey(
+        'quadraticlands.Game',
+        related_name='feed',
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_('Link to Game')
+    )
+    player = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='game_feed',
+        on_delete=models.CASCADE,
+        help_text=_('The game feed update creators\'s profile.'),
+        null=True,
+    )
+    data = JSONField(default=dict)
+
+    @property
+    def message(self):
+        msg = f'[{self.created_on.strftime("%H:%M")}]'
+        if self.data['type'] == 'msg':
+            msg += f"{self.player.handle}: {self.data['message']}"
+        if self.data['type'] == 'move':
+            msg += f"{self.player.handle} moved TODO"
+        if self.data['type'] == 'joined':
+            msg += f"{self.player.handle} has joined the game"
+        return msg
+
+    def __str__(self):
+        return self.message
+
+
+class GamePlayer(SuperModel):
+
+    game = models.ForeignKey(
+        'quadraticlands.Game',
+        related_name='players',
+        on_delete=models.CASCADE,
+        help_text=_('The Game')
+    )
+    player = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='players',
+        on_delete=models.CASCADE,
+        help_text=_('The player of the game.'),
+    )
+    admin = models.BooleanField(
+        default=False
+    )
+    accepted = models.BooleanField(
+        default=False
+    )
+    active = models.BooleanField(
+        default=False
+    )
+
+    def __str__(self):
+        return f"{self.game} / {self.player}"
+

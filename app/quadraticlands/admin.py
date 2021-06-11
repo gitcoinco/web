@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from quadraticlands.models import (
     GTCSteward, InitialTokenDistribution, MissionStatus, QLVote, QuadLandsFAQ, SchwagCoupon,
+    GamePlayer, GameFeed, Game
 )
 
 
@@ -37,7 +38,21 @@ class SchwagCouponAdmin(admin.ModelAdmin):
     search_fields = ['profile__handle', 'coupon_code', 'discount_type']
     list_display = ['id', 'discount_type', 'coupon_code', 'profile']
 
+class GamePlayerAdmin(admin.ModelAdmin):
+    raw_id_fields = ['player', 'game']
+    search_fields = ['player__handle', 'game__title']
 
+class GameFeedAdmin(admin.ModelAdmin):
+    raw_id_fields = ['player', 'game']
+    search_fields = ['player__handle', 'game__title']
+
+class GameAdmin(admin.ModelAdmin):
+    search_fields = ['title']
+
+
+admin.site.register(Game, GameAdmin)
+admin.site.register(GamePlayer, GamePlayerAdmin)
+admin.site.register(GameFeed, GameFeedAdmin)
 admin.site.register(InitialTokenDistribution, InitialTokenDistributionAdmin)
 admin.site.register(MissionStatus, MissionStatusAdmin)
 admin.site.register(QuadLandsFAQ, QuadLandsFAQAdmin)
