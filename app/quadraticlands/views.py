@@ -22,18 +22,21 @@ import logging
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
+from django.contrib import messages
 
 from quadraticlands.helpers import (
     get_coupon_code, get_FAQ, get_initial_dist, get_initial_dist_breakdown, get_mission_status, get_stewards,
 )
 from ratelimit.decorators import ratelimit
+from .models import Game, GameFeed, GamePlayer, create_game_helper
+
 
 logger = logging.getLogger(__name__)
 
@@ -298,8 +301,100 @@ def error(request, code):
 
 
 def mission_diplomacy(request):
-    return TemplateResponse(request, 'quadraticlands/mission/diplomacy/index.html')
+    return mission_diplomacy_helper(request)
+
+def mission_diplomacy_helper(request, invited_to_game=None):
+    games = []
+    max_games = 4
+
+    # check for what games the user is in
+    if request.user.is_authenticated:
+        players = GamePlayer.objects.filter(active=True, profile=request.user.profile)
+        games = Game.objects.filter(pk__in=players.values_list("game"))
+
+        # handle the creation of a new game.
+        if request.POST:
+            if games.count() > max_games:
+                messages.info(
+                    request,
+                    f'You are already in the maximum number of games'
+                )
+            else:
+                title = request.POST.get('title', '')
+                if not title:
+                    messages.info(
+                        request,
+                        f'Please enter a title'
+                    )
+                game = create_game_helper(request.user.profile.handle, title)
+                messages.success(
+                    request,
+                    f'Your Game has been created successfully'
+                )
+                return redirect(game.url)
 
 
-def mission_diplomacy_room(request, id, name):
-    return TemplateResponse(request, 'quadraticlands/mission/diplomacy/room.html')
+
+    # return the vite
+    params = {
+        'title': 'Quadratic Diplomacy',
+        'games': games,
+        'invite': invited_to_game,
+    }
+    return TemplateResponse(request, 'quadraticlands/mission/diplomacy/index.html', params)
+
+
+@login_required
+def mission_diplomacy_room(request, uuid, name):
+    # get the game
+    try:
+        game = Game.objects.get(uuid=uuid)
+    except:
+        raise Http404
+    return mission_diplomacy_room_helper(request, game)
+
+def mission_diplomacy_room_helper(request, game):
+
+    # handle invites
+    players = GamePlayer.objects.filter(active=True, profile=request.user.profile)
+    games = Game.objects.filter(pk__in=players.values_list("game"))
+    if game not in games:
+        if request.user.is_authenticated:
+            game.add_player(request.user.handle)
+            return mission_diplomacy_helper(request, invited_to_game=game)
+        else:
+            messages.info(
+                request,
+                f'Please login to join this game.'
+            )
+
+    # in game experience
+    is_member = game.is_active_player(request.user.profile.handle)
+    is_admin = players.filter(admin=True, profile=request.user.profile).exists()
+    if is_admin:
+        if request.GET.get('remove'):
+            remove_this_fool = request.GET.get('remove')
+            for player in players.filter(active=True, profile=remove_this_fool):
+                game.remove_player(player.profile.handle)
+                messages.info(
+                    request,
+                    f'{remove_this_fool} has been removed'
+                )
+    
+    # delete game
+    if is_member and request.GET.get('delete'):
+        game.remove_player(request.user.profile.handle)
+        messages.info(
+            request,
+            f'You have left this game.'
+        )
+        return redirect('/quadraticlands/mission/diplomacy')
+
+
+    # game view
+    params = {
+        'title': game.title,
+        'game': game,
+        'is_admin': is_admin,
+    }
+    return TemplateResponse(request, 'quadraticlands/mission/diplomacy/room.html', params)

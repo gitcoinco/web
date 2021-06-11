@@ -39,8 +39,8 @@ class SchwagCouponAdmin(admin.ModelAdmin):
     list_display = ['id', 'discount_type', 'coupon_code', 'profile']
 
 class GamePlayerAdmin(admin.ModelAdmin):
-    raw_id_fields = ['player', 'game']
-    search_fields = ['player__handle', 'game__title']
+    raw_id_fields = ['profile', 'game']
+    search_fields = ['profile__handle', 'game__title']
 
 class GameFeedAdmin(admin.ModelAdmin):
     raw_id_fields = ['player', 'game']

@@ -63,5 +63,13 @@
 
 {% block 'scripts' %}
 {% endblock %}
-
+  <script>
+  {% block messages %}
+    {% if messages %}
+      {% for message in messages %}
+        alert('{{ message|capfirst }}');
+      {% endfor %}
+    {% endif %}
+  {% endblock messages %}
+  </script>
 </html>

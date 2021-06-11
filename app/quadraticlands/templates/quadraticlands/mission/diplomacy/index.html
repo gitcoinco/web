@@ -4,10 +4,10 @@
 {% block 'twittercard' %}
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@gitcoin" />
-<meta name="twitter:title" content="Gitcoin Quadratic Lands - Workstream" />
+<meta name="twitter:title" content="Quadratic Diplomacy" />
 <meta name="twitter:description"
-  content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web." />
-<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/default.png" %}" />
+  content="Use your GTC to make Gitcoin more sybil resistent." />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/diplomacy.png" %}" />
 {% endblock %}
 
 {% block 'content' %}
@@ -51,71 +51,61 @@
   </section>
 </article>
 
-
 <article>
 
   <section class="diplomacy-roomlist">
 
-    {% comment %} @kev : check if user comes from an invite link - then display this extra room + accept button {% endcomment %}
+  <h1> Your Games </h1>
 
-    <!-- room example : user got invited to a room-->
+    {% if invite %}
     <div class="room invite">
       <div class="info">
-        <div class="name">Crypto Nerds<span class="membercount">2</span></div>
-        <div class="status">You got invited by <span>Richard</span> to join this Room.</div>
-        <div class="actions"><a class="btn aqua" href="#">Join Room</a></div>
+        <div class="name">{{invite.title}}<span class="membercount">2</span></div>
+        <div class="status">You got invited by <span>{{invite.admin.profile.handle}}</span> to join this Room.</div>
+        <div class="actions"><a class="btn aqua" href="{{invite.title}}/join/TODO">Join Room</a></div>
       </div>
       <div class="members">
-          <img src="/dynamic/avatar/scco">
-          <img src="/dynamic/avatar/scco">             
+        {% for player in invite.active_players %}
+          <img src="/dynamic/avatar/{{player.handle}}">
+        {% endfor %}
       </div>
     </div>
+    {% endif %}
 
+    {% if not games %}
+      You have no game, and also no games.  
+      <br>
+      <br>
+      Create a game below, or ask your mates for an invite to theirs.
+      <br></br>
+    {% endif %}
 
-    {% comment %} @kev : loop trough all regular .rooms for a user {% endcomment %}
-
-    <!-- room example : user is member of room -->
-    <div class="room" data-roomlink="/quadraticlands/mission/diplomacy/4954-devilhunters">
-      <div class="info">
-        <div class="name">Devilhunters<span class="membercount">3</span></div>
-        <div class="status">Created by <span>Kevin</span>.</div>
+    {% for game in games %}
+      <div class="room" data-roomlink="{{game.url}}">
+        <div class="info">
+          <div class="name">{{game.title}}<span class="membercount">{{game.active_players.count}}</span></div>
+          <div class="status">Created by <span>{{invite.admin.profile.handle}}</span>.</div>
+        </div>
+        <div class="members">
+          {% for player in invite.active_players %}
+            <img src="/dynamic/avatar/{{player.handle}}">
+          {% endfor %}
+        </div>
       </div>
-      <div class="members">
-          <img src="/dynamic/avatar/scco">
-          <img src="/dynamic/avatar/scco">
-          <img src="/dynamic/avatar/scco">                         
-      </div>
-    </div>
-
-    <!-- room example : user is member of room, user is admin of room -->
-    <div class="room" data-roomlink="/quadraticlands/mission/diplomacy/6847-kevins-dreamteam">
-      <div class="info">
-        <div class="name">Kevins Dreamteam<span class="membercount">6</span></div>
-        <div class="status">Created by <span class="admin">Kevin</span>.</div>
-      </div>
-      <div class="members">
-          <img src="/dynamic/avatar/scco">
-          <img src="/dynamic/avatar/scco">
-          <img src="/dynamic/avatar/scco">                         
-          <img src="/dynamic/avatar/scco">
-          <img src="/dynamic/avatar/scco">
-          <img src="/dynamic/avatar/scco">
-      </div>
-    </div>
+    {% endfor %}
 
   </section>
 
 
-  {% comment %} @kev : creating a new room - always there {% endcomment %}
-
-  <form action="">
+  <form action="" method="POST">
     <section class="diplomacy-create-room">
       <div class="wrapper">
         <div class="info">
           Create a new room
         </div>
         <div class="input">
-          <input id="create_room" type="text" placeholder="Enter a Roomname">
+          {%csrf_token%}
+          <input id="create_room" type="text" name="title" placeholder="Enter a Roomname">
           <button class="disabled" id="create_room_button">Create Room</button>
         </div>
       </div>

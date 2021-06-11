@@ -4,10 +4,10 @@
 {% block 'twittercard' %}
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@gitcoin" />
-<meta name="twitter:title" content="Gitcoin Quadratic Lands - Workstream" />
+<meta name="twitter:title" content="{{game.title}} - Quadratic Diplomacy" />
 <meta name="twitter:description"
-  content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web." />
-<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/default.png" %}" />
+  content="Join {{game.players_text}} playing Quadratic Diplomacy.  Bring your GTC" />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/diplomacy.png" %}" />
 {% endblock %}
 
 {% block 'content' %}
@@ -24,14 +24,14 @@
 
   <div class="content centered" data-kinetics-attraction data-kinetics-attraction-chance=".6"
     data-kinetics-attraction-force="3" data-kinetics-attraction-grow="5">
-    <h1><a href="/quadraticlands/mission/diplomacy">Quadratic Diplomacy</a> &gt; Room Name</h1>
+    <h1><a href="/quadraticlands/mission/diplomacy">Quadratic Diplomacy</a> &gt; {{game.title}}</h1>
   </div>
 
 </section>
 
 <!-- intro-->
 <section class="introduction" style="margin-bottom: 3em;">
-	<p>This room was created on TIME by PERSON and is adminsitered by PERSON; it has NUMBER people in it & represents AMOUNT of GTC and has created AMOUNT of Sybil Resistence on Gitcoin.</p>
+	<p>This room was created {{game.created_on | naturaltime}} by @{{game.admin.profile.handle}} and is admin'd by @{{game.admin.profile.handle}}; it has {{game.active_players.count}} people in it & represents {{game.gtc_used}} of GTC and has created {{game.sybil_created}} of Sybil Resistence on Gitcoin.</p>
 </section>
 
 
@@ -127,22 +127,17 @@
 <!-- diplomacy roomlog -->
 <section class="diplomacy-roomlog" style="margin-top:3em;">
 
-
-	<!-- @kev : every .entry is one event - build together by building blocks 
-		you see a member can have optional a span for received .tokens 
-		and .actions can be "vouched, invited, has joined, created the room ... "
-		you so you just have to loop all entrys and build the lego together :)
-		-->
+	{% for feed in game.feed.all %}
 
 	<div class="entry">
 
 		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">scco</span>
+			<img src="/dynamic/avatar/{{feed.player.profile.handle}}">
+			<span class="username">{{feed.player.profile.handle}}</span>
 		</span>
 
-		<span class="action">vouched</span>
-
+		<span class="action">{{feed.data.action}}</span>
+		<!--
 		<span class="member">
 			<img src="/dynamic/avatar/scco">
 			<span class="username">peter schiff</span>
@@ -160,101 +155,11 @@
 			<span class="username">superlongusername</span>
 			<span class="tokens">312323.32</span>
 		</span>
-
-		<span class="time">14m</span>
-
-	</div>
-
-
-
-	<div class="entry">
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">scco</span>
-		</span>
-
-		<span class="action">vouched</span>
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">peter schiff</span>
-			<span class="tokens">3123.32</span>
-		</span>	
-
-		<span class="time">23h</span>
+		-->
+		<span class="time">{{feed.created_on | naturaltime}}</span>
 
 	</div>
-
-
-
-	<div class="entry">
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">kevin</span>
-		</span>
-
-		<span class="action">invited</span>
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">octavian</span>
-		</span>	
-
-		<span class="time">1d</span>
-
-	</div>
-
-
-
-	<div class="entry">
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">kevin</span>
-		</span>
-
-		<span class="action">kicked</span>
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">peter</span>
-		</span>	
-
-		<span class="time">3d</span>
-
-	</div>
-
-
-
-	<div class="entry">
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">zach</span>
-		</span>
-
-		<span class="action">has joined</span>
-
-		<span class="time">5d</span>
-
-	</div>
-
-
-
-	<div class="entry">
-
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">kevin</span>
-		</span>
-
-		<span class="action">created the room</span>
-
-		<span class="time">5d</span>
-
-	</div>
+	{% endfor %}
 
 
 
@@ -276,7 +181,7 @@
 <section class="diplomacy-invite">
   <div class="wrapper">
     <div class="info">
-      Invite your Buddy’s with this Link
+      [{{self.active_players | length}}/8 Players] Invite up to 8 players with this Link
     </div>
     <div class="input">
       <input id="room_link" type="text" readonly value="https://gitcoin.co/quadraticlands/mission/diplomacy/4934-devilhunters">
@@ -287,37 +192,20 @@
 
 
 
-
-<!-- diplomacy member admin -->
-<!-- @kev : this part is for owner of room only. loop throu all members to
-give him the option to delete a user . see i added a class .self on .member
-what hides the remove button + adds a (you) instead.
--->
-
+{% if is_admin %}
 <section class="diplomacy-member-admin">
 
-	<!-- loop .members -->
-
-	<div class="member self">
-		<img src="/dynamic/avatar/scco">
-		<span class="username">Kevin</span>
-		<div class="action"><a class="btn pink">Remove</a></div>
+	{% for player in game.active_players %}
+	<div class="member {% if player.admin %} self {% endif %}">
+		<img src="/dynamic/avatar/{{player.profile.handle}}">
+		<span class="username">@{{player.profile.handle}}</span>
+		<div class="action"><a class="btn pink" href="{{game.url}}?remove={{player.profile.handle}}">Remove</a></div>
 	</div>
+	{% endfor %}
 
-	<div class="member">
-		<img src="/dynamic/avatar/scco">
-		<span class="username">Richard</span>
-		<div class="action"><a class="btn pink">Remove</a></div>
-	</div>
-
-	<div class="member">
-		<img src="/dynamic/avatar/scco">
-		<span class="username">Superlongusername</span>
-		<div class="action"><a class="btn pink">Remove</a></div>
-	</div>
 
 </section>
-
+{% endif %}
 
 
 
@@ -326,26 +214,24 @@ what hides the remove button + adds a (you) instead.
   <h1>Danger Zone</h1>
 </section>
 
+{% if is_admin %}
 
 <!-- danger zone admin : delete room -->
-<!-- @kev see on input the data-atribute data-roomname - what needs to get populated with the roomname
-	so the js will just show delete button when roomname==inputvalue . i put devilhunters in to test -->
 <section class="diplomacy-delete-room">
 	<div class="wrapper">
 		<div class="info">
-			Enter your Roomname <span>devilhunters</span> to delete it
+			Enter your Roomname <span>{{game.title}}</span> to delete it
 		</div>
 		<div id="delete_room_interface" class="input">
-			<input id="delete_room" type="text" placeholder="Roomname" data-roomname="devilhunters">
-			<button class="disabled" id="delete_room_button">Delete Room</button>
+			<input id="delete_room" type="text" placeholder="Roomname" data-roomname="{{game.title}}">
+			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="delete_room_button">Delete Room</button>
 		</div>
 	</div>
 </section>
 
-
+{% else %}
 
 <!-- danger zone for members - but NOT the admin-->
-<!-- @kev see on input the data-atribut data-phrase - that have to match the input to show 
 	a user the leave-button -->
 <section class="diplomacy-leave-room">
 	<div class="wrapper">
@@ -354,10 +240,12 @@ what hides the remove button + adds a (you) instead.
 		</div>
 		<div id="leave_room_interface" class="input">
 			<input id="leave_room" type="text" placeholder="leave Room" data-phrase="live long and prosper">
-			<button class="disabled" id="leave_room_button">Leave Room</button>
+			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="leave_room_button">Leave Room</button>
 		</div>
 	</div>
 </section>
+
+{% endif %}
 
 
 

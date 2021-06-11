@@ -207,6 +207,28 @@ class SchwagCoupon(models.Model):
         """String for representing the Model object."""
         return f'{self.discount_type}, {self.coupon_code}, {self.profile}'
 
+def create_game_helper(handle, title):
+    game = Game.objects.create(
+        _type = 'diplomacy',
+        title = title,
+        )
+    player = GamePlayer.objects.create(
+        game = game,
+        profile = Profile.objects.get(handle=handle),
+        active = True,
+        admin = True
+        )
+    game.players.add(player)
+
+    GameFeed.objects.create(
+            game=game,
+            player=player,
+            data={
+                'action': 'created the game',
+            },
+            )
+    game.add_player(player.profile.handle)
+    return game
 
 class Game(SuperModel):
 
@@ -219,21 +241,105 @@ class Game(SuperModel):
     uuid=models.UUIDField(default=uuid.uuid4, unique=True)
     slug = AutoSlugField(populate_from='title')
 
+    def players_text(self):
+        return ", ".join([player.profile.handle for player in self.players.all()])
+
     def get_absolute_url(self):
-        return f'/quadraticlands/mission/diplomacy/{self.pk}/{self.slug}'
+        return f'/quadraticlands/mission/diplomacy/{self.uuid}/{self.slug}'
+    
+    @property
+    def url(self):
+        return self.get_absolute_url()
+
+    @property
+    def gtc_used(self):
+        return 'TODO'
+
+    @property
+    def sybil_created(self):
+        return 'TODO'
+
+    def is_active_player(self, handle):
+        return self.active_players.filter(profile__handle=handle).exists()
 
     def add_player(self, handle):
+        profile = Profile.objects.get(handle=handle)
+        if not self.is_active_player(handle):
+            GamePlayer.objects.create(profile=profile, active=True, game=game)
 
         return GameFeed.objects.create(
             game=self,
-            sender=Profile.objects.get(handle=handle),
+            player=self.players.get(profile__handle=handle),
             data={
-                'type': 'joined',
+                'action': 'joined',
+            },
+            )
+
+    def remove_player(self, handle):
+        player = self.players.filter(profile__handle=handle).first()
+        player.active = False
+        player.save()
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'left the game',
+            },
+            )
+
+        if player.admin:
+            player.admin = False 
+            player.save()
+
+            # promote someone new to admin
+            self.promote_admin()
+
+    def promote_admin(self):
+        if not self.active_players.exists():
+            return False
+
+        player = self.active_players.first()
+        return GameFeed.objects.create(
+            game=self,
+            player=player,
+            data={
+                'action': 'was promoted to admin',
+            },
+            )
+
+    def make_move(self, handle, stakes):
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'vouched',
+                'stakes': stakes,
+            },
+            )
+    
+    def leave_game(self, handle):
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'left the game',
             },
             )
 
     def __str__(self):
         return self.title
+
+
+    @property
+    def admin(self):
+        return self.players.filter(admin=True).first()
+
+    @property
+    def active_players(self):
+        return self.players.filter(active=True)
 
 
 @receiver(pre_save, sender=Game, dispatch_uid="psave_game")
@@ -250,7 +356,7 @@ class GameFeed(SuperModel):
         help_text=_('Link to Game')
     )
     player = models.ForeignKey(
-        'dashboard.Profile',
+        'quadraticlands.GamePlayer',
         related_name='game_feed',
         on_delete=models.CASCADE,
         help_text=_('The game feed update creators\'s profile.'),
@@ -258,19 +364,9 @@ class GameFeed(SuperModel):
     )
     data = JSONField(default=dict)
 
-    @property
-    def message(self):
-        msg = f'[{self.created_on.strftime("%H:%M")}]'
-        if self.data['type'] == 'msg':
-            msg += f"{self.player.handle}: {self.data['message']}"
-        if self.data['type'] == 'move':
-            msg += f"{self.player.handle} moved TODO"
-        if self.data['type'] == 'joined':
-            msg += f"{self.player.handle} has joined the game"
-        return msg
 
     def __str__(self):
-        return self.message
+        return f"{self.game}, {self.player.profile.handle}: {self.data}"
 
 
 class GamePlayer(SuperModel):
@@ -281,7 +377,7 @@ class GamePlayer(SuperModel):
         on_delete=models.CASCADE,
         help_text=_('The Game')
     )
-    player = models.ForeignKey(
+    profile = models.ForeignKey(
         'dashboard.Profile',
         related_name='players',
         on_delete=models.CASCADE,
@@ -298,5 +394,5 @@ class GamePlayer(SuperModel):
     )
 
     def __str__(self):
-        return f"{self.game} / {self.player}"
+        return f"{self.game} / {self.profile.handle} / Admin: {self.admin} / Admin: {self.active}"
 

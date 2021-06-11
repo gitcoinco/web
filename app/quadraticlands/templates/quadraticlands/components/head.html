@@ -104,4 +104,4 @@
 
 <link rel="icon" type="image/png" sizes="32x32" href='{% static "v2/images/quadraticlands/favicon.png" %}'>
 
-<title>Quadratic Lands</title>
+<title>{% if title %}{{title}}{%else%}Quadratic Lands{%endif%}</title>

@@ -60,8 +60,8 @@ urlpatterns = [
     re_path(r'^mission/schwag$', mission_schwag, name='mission_schwag'),
 
     #richard test to build new interface stuff
-    path('mission/diplomacy/<int:id>-<str:name>/', mission_diplomacy_room, name='mission_diplomacy_room'),
-    path('mission/diplomacy/<int:id>-<str:name>', mission_diplomacy_room, name='mission_diplomacy_room'),
+    path('mission/diplomacy/<str:uuid>/<str:name>/', mission_diplomacy_room, name='mission_diplomacy_room'),
+    path('mission/diplomacy/<str:uuid>/<str:name>', mission_diplomacy_room, name='mission_diplomacy_room'),
     re_path(r'^mission/diplomacy/?', mission_diplomacy, name='mission_diplomacy'),
 
 ]
