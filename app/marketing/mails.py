@@ -326,6 +326,26 @@ def new_supporter(grant, subscription):
         translation.activate(cur_language)
 
 
+def new_contributions(grant):
+    from_email = settings.CONTACT_EMAIL
+    to_email = grant.admin_profile.email
+    if not to_email:
+        if grant.admin_profile:
+            to_email = grant.admin_profile.email
+        else:
+            return
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_new_supporter_email(grant)
+
+        if not should_suppress_notification_email(to_email, 'new_supporter'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
 def thank_you_for_supporting(grants_with_subscription):
     positive_subscriptions = list(filter(lambda gws: not gws["subscription"].negative, grants_with_subscription))
     if len(positive_subscriptions) == 0:
