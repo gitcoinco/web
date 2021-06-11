@@ -976,7 +976,6 @@ def grants_by_grant_type(request, grant_type):
         'grant_label': grant_label if grant_type else grant_type,
         'round_end': round_end,
         'next_round_start': round_start,
-        'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
         'bottom_back': bottom_back,
