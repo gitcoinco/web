@@ -150,6 +150,12 @@ def render_new_supporter_email(grant, subscription):
 
 
 def render_new_contributions_email(grant):
+    hours_ago = 12
+    contributions = grant.contributions.filter(
+        modified_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago)
+    )
+    amount_raised = sum(contributions.values_list('normalized_data__amount_per_period_usdt', flat=True))
+    num_of_contributors = len(set(contributions.values_list('profile_for_clr', flat=True)))
 
     params = {
         'grant': grant,
@@ -295,7 +301,7 @@ def new_supporter(request):
 @staff_member_required
 def new_contributions(request):
     subscription = Subscription.objects.last()
-    response_html, __, __ = render_new_contributions_email(subscription.grant, subscription)
+    response_html, __, __ = render_new_contributions_email(subscription.grant)
     return HttpResponse(response_html)
 
 

@@ -92,9 +92,9 @@ along with this program. If not, see
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
   <hr>
   <h1 style="text-transform: none; font-weight: normal; font-size: 36px;">New Contributions to Your Grant</h1>
-  <p style="font-size: 14px;">In the past <span class="font-weight: bold;">{{ hours_ago }}6 hours</span>, your grant has earned approximately:</p>
-  <p style="font-weight: bold; font-size: 24px; color: #11BC92;">${{ 1845|intcomma }}
-    <span style="font-weight: normal; font-size: 18px; color: #15003E;">from 123{{ num_of_contributors }} contributors</span>
+  <p style="font-size: 14px;">In the past <span style="font-weight: bold;">{{ hours_ago }} hours</span>, your grant has earned approximately:</p>
+  <p style="font-weight: bold; font-size: 24px; color: #11BC92;">${{ amount_raised|floatformat:2|intcomma }}
+    <span style="font-weight: normal; font-size: 18px; color: #15003E;">from {{ num_of_contributors }} contributor{{ num_of_contributors|pluralize }}</span>
   </p>
   <hr style="margin-left: 0;">
   <div style="display: inline-block; margin-top: 1.5em; margin-bottom: 2em; text-align: center;">
