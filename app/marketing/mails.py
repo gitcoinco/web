@@ -40,8 +40,8 @@ from retail.emails import (
     render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute,
     render_grant_txn_failed, render_grant_update, render_kudos_email, render_match_distribution, render_match_email,
     render_mention, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_grant_approved_email, render_new_grant_email, render_new_supporter_email,
-    render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
+    render_new_bounty_roundup, render_new_contributions_email, render_new_grant_approved_email, render_new_grant_email,
+    render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
     render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
     render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
     render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
@@ -338,9 +338,9 @@ def new_contributions(grant):
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_new_supporter_email(grant)
+        html, text, subject = render_new_contributions_email(grant)
 
-        if not should_suppress_notification_email(to_email, 'new_supporter'):
+        if not should_suppress_notification_email(to_email, 'new_contributions'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)

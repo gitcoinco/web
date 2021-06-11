@@ -14,7 +14,7 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
+from marketing.mails import new_contributions, new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
@@ -390,3 +390,12 @@ def save_contribution(self, contrib_id):
     from grants.models import Contribution
     contrib = Contribution.objects.get(pk=contrib_id)
     contrib.save()
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_new_contributions_email(self, grant_id):
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+        new_contributions(grant)
+    except Exception as e:
+        print(e)
