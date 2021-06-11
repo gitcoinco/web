@@ -103,9 +103,9 @@ def get_clr_rounds_metadata():
         start_date = CLR_ROUND_DATA['round_start']
         end_date = CLR_ROUND_DATA['round_end']
 
-        # timezones are in UTC
-        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%M.%S')
-        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%M.%S')
+        # timezones are in UTC (format example: 2021-06-30:22.20.00)
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
 
     except:
         # setting defaults

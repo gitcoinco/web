@@ -2,10 +2,10 @@
 
 <div class="tab-projects d-flex flex-column">
 
-  {% if buyed_ptokens.count == 0 %}
+  {% if purchased_ptokens.count == 0 %}
     No Time Tokens
   {% endif %}
-  {% for ptoken in buyed_ptokens %}
+  {% for ptoken in purchased_ptokens %}
     <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} pt-1 pb-1">
       <div class="activity-avatar ml-5">
       <img height="72" width="72" class="avatar card-rating__avatar rounded-circle" src="{% avatar_url ptoken.token_owner_profile.handle %}" />
