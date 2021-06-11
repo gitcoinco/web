@@ -149,6 +149,22 @@ def render_new_supporter_email(grant, subscription):
     return response_html, response_txt, subject
 
 
+def render_new_contributions_email(grant):
+
+    params = {
+        'grant': grant,
+        'hours_ago': hours_ago,
+        'amount_raised': amount_raised,
+        'num_of_contributors': num_of_contributors,
+        'media_url': settings.MEDIA_URL,
+        'utm_tracking': build_utm_tracking('new_contributions'),
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/new_contributions.html", params))
+    response_txt = render_to_string("emails/grants/new_contributions.txt", params)
+    subject = _("You have new Grant contributions!")
+    return response_html, response_txt, subject
+
+
 def render_thank_you_for_supporting_email(grants_with_subscription):
     params = {
         'grants_with_subscription': grants_with_subscription,
@@ -273,6 +289,13 @@ def thank_you_for_supporting(request):
 def new_supporter(request):
     subscription = Subscription.objects.last()
     response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_contributions(request):
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_contributions_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 
