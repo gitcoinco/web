@@ -71,7 +71,7 @@
 
       @each $prop, $abbrev in (margin: m, padding: p) {
         @each $i in $spacers {
-          // set margins for spacer
+          // set margins/paddings according to spacer's rem
           .spacer-#{$abbrev}#{$infix}-#{nth($i, 1)} {
             #{$prop}: #{nth($i, 2)};
           }

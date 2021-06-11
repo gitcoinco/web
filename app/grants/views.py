@@ -103,9 +103,9 @@ def get_clr_rounds_metadata():
         start_date = CLR_ROUND_DATA['round_start']
         end_date = CLR_ROUND_DATA['round_end']
 
-        # timezones are in UTC
-        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%M.%S')
-        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%M.%S')
+        # timezones are in UTC (format example: 2021-06-30:22.20.00)
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
 
     except:
         # setting defaults
@@ -385,7 +385,7 @@ def grants(request):
 
 def get_collections(user, keyword, sort='-shuffle_rank', collection_id=None, following=None,
                     idle_grants=None, only_contributions=None, featured=False):
-    three_months_ago = timezone.now() - datetime.timedelta(days=90)
+    three_months_ago = timezone.now() - timezone.timedelta(days=90)
 
     _collections = GrantCollection.objects.filter(hidden=False)
 
@@ -641,7 +641,7 @@ def build_grants_by_type(
 
     sort_by_clr_pledge_matching_amount = None
     profile = request.user.profile if request.user.is_authenticated else None
-    three_months_ago = timezone.now() - datetime.timedelta(days=90)
+    three_months_ago = timezone.now() - timezone.timedelta(days=90)
     _grants = Grant.objects.filter(network=network, hidden=False)
 
     if clr_round:
@@ -1136,6 +1136,8 @@ def grants_by_grant_clr(request, clr_round):
     for _type in grant_types:
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
+
+    _, next_round_start, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_landing',

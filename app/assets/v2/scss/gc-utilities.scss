@@ -64,6 +64,19 @@
 // .gap-[1-5]
 @include gap(1, 5);
 
+// .spacer-[m,mt,mb,ml,mr,p,pt,pb,pl,pr]-[1-8]
+@include spacers(
+  '0' 0rem,
+  '1' 0.25rem,
+  '2' 0.5rem,
+  '3' 1rem,
+  '4' 1.5rem,
+  '5' 3rem,
+  '6' 6rem,
+  '7' 9rem,
+  '8' 12rem
+);
+
 // lighter grey styling
 .bg-lighter {
   background-color: $gc-grey-100;
@@ -71,6 +84,10 @@
 
 .bg-violet-300 {
   background-color: $gc-violet-300;
+}
+
+.bg-violet-400 {
+  background-color: $gc-violet-400;
 }
 
 .bg-pink-300 {
@@ -186,26 +203,36 @@
 
 // media-queries to handle w-*-* (widths at breakpoints)
 @media (min-width: 768px) {
-  .w-md-100 {
-    width:100%;
-  }
-  .w-md-50 {
-    width: 50%;
-  }
-  .w-md-25 {
-    width: 25%;
+  body {
+    .w-md-100 {
+      width: 100%!important;
+    }
+    .w-md-50 {
+      width: 50%!important;
+    }
+    .w-md-25 {
+      width: 25%!important;
+    }
+    .w-md-auto {
+      width: auto!important;
+    }
   }
 }
 
 @media (min-width: 992px) {
-  .w-lg-100 {
-    width:100%;
-  }
-  .w-lg-50 {
-    width: 50%;
-  }
-  .w-lg-25 {
-    width: 25%;
+  body {
+    .w-lg-100 {
+      width:100%!important;
+    }
+    .w-lg-50 {
+      width: 50%!important;
+    }
+    .w-lg-25 {
+      width: 25%!important;
+    }
+    .w-lg-auto {
+      width: auto!important;
+    }
   }
 }
 
@@ -228,15 +255,3 @@
     stroke: #FFFFFF;
   }
 }
-
-// .spacer-[m,mt,mb,ml,mr,p,pt,pb,pl,pr]-[1-8]
-@include spacers(
-  '1' 0.25rem,
-  '2' 0.5rem,
-  '3' 1rem,
-  '4' 1.5rem,
-  '5' 3rem,
-  '6' 6rem,
-  '7' 9rem,
-  '8' 12rem
-);

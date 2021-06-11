@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals
 
 import asyncio
 import base64
+import calendar
 import getpass
 import hashlib
 import html
@@ -27,6 +28,8 @@ import json
 import logging
 import re
 import time
+import uuid
+
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -98,6 +101,7 @@ from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
 from grants.models import Grant
+from grants.views import get_clr_rounds_metadata
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
@@ -2887,7 +2891,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['sent_kudos_count'] = sent_kudos.count()
     elif tab == 'ptokens':
         tokens_list = PurchasePToken.objects.filter(token_holder_profile_id=profile.id).distinct('ptoken').values_list('ptoken', flat=True)
-        context['buyed_ptokens'] = PersonalToken.objects.filter(pk__in=tokens_list)
+        context['purchased_ptokens'] = PersonalToken.objects.filter(pk__in=tokens_list)
     elif tab == 'ratings':
         context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
         context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -2907,46 +2911,142 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
-        context['is_idena_connected'] = profile.is_idena_connected
-        if profile.is_idena_connected:
-            context['idena_address'] = profile.idena_address
-            context['logout_idena_url'] = reverse(logout_idena, args=(profile.handle,))
-            context['recheck_idena_status'] = reverse(recheck_idena_status, args=(profile.handle,))
-            context['is_idena_verified'] = profile.is_idena_verified
-            context['idena_status'] = profile.idena_status
-            if not context['is_idena_verified']:
-                context['idena_next_validation'] = localtime(next_validation_time())
-        else:
-            context['login_idena_url'] = idena_callback_url(request, profile)
 
-        today = datetime.today()
+        idena = {}
+        idena['is_connected'] = profile.is_idena_connected
+        # always pass in the urls so that we can easily switch state client side
+        idena['login_url'] = idena_callback_url(request, profile)
+        idena['logout_url'] = reverse('logout_idena', args=[profile.handle])
+        idena['check_status_url'] = reverse('recheck_idena_status', args=[profile.handle])
+        # construct verified state
+        if profile.is_idena_connected:
+            idena['address'] = profile.idena_address
+            idena['status'] = profile.idena_status
+            idena['is_verified'] = profile.is_idena_verified
+            if not idena['is_verified']:
+                idena['next_validation'] = str(localtime(next_validation_time()))
+
 
         # states:
         #0. not_connected - start state, user has no brightid_uuid
         #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
         #2. not_verified - connected, but not verified
         #3. verified - connected, and verified
-        context['brightid_status'] = 'not_connected'
+        brightid = {}
+        brightid['status'] = 'not_connected'
+        brightid['uuid'] = profile.brightid_uuid
         if profile.brightid_uuid:
-            context['brightid_status'] = 'unknown'
+            brightid['status'] = 'unknown'
         if profile.is_brightid_verified:
-            context['brightid_status'] = 'verified'
+            brightid['status'] = 'verified'
         if request.GET.get('pull_bright_id_status'):
-            context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
+            brightid['status'] = get_brightid_status(profile.brightid_uuid)
 
         try:
-            context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+            brightid['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
         except JSONStore.DoesNotExist:
-            context['upcoming_calls'] = []
+            brightid['upcoming_calls'] = []
 
-        context['is_sms_verified'] = profile.sms_verification
-        context['is_poap_verified'] = profile.is_poap_verified
-        context['is_twitter_verified'] = profile.is_twitter_verified
-        context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
-        context['is_google_verified'] = profile.is_google_verified
-        context['is_ens_verified'] = profile.is_ens_verified
-        context['is_facebook_verified'] = profile.is_facebook_verified
-        context['is_poh_verified'] = profile.is_poh_verified
+        # QF round info
+        _, round_start_date, round_end_date = get_clr_rounds_metadata()
+        # place clr dates (as unix ts)
+        context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
+        context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())
+
+        # detail available services
+        services = [
+            {
+                'ref': 'poh',
+                'name': 'Proof of Humanity',
+                'icon_path': static('/v2/images/project_logos/poh-min.svg'),
+                'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
+                'match_percent': 50,
+                'is_verified': profile.is_poh_verified
+            }, {
+                'ref': 'brightid',
+                'name': 'BrightID',
+                'icon_path': static('/v2/images/project_logos/brightid.png'),
+                'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
+                'match_percent': 50,
+                'is_verified': brightid['status'] == 'verified',
+                'status': "Awaiting Verification" if brightid['status'] == 'not_verified' else None,
+                '_status': brightid['status'],
+                'uuid': str(brightid['uuid']),
+                'upcoming_calls': brightid['upcoming_calls']
+            }, {
+                'ref': 'idena',
+                'name': 'Idena',
+                'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('/v2/images/project_logos/idena.svg'),
+                'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
+                'match_percent': 50,
+                'is_connected': idena['is_connected'],
+                'is_verified': idena['is_connected'] and idena['is_verified'],
+                'status': idena['status'] if idena['is_connected'] and not idena['is_verified'] else None,
+                '_status': idena['status'] if idena['is_connected'] else None,
+                'address': idena['address'] if idena['is_connected'] else None,
+                'login_url': idena['login_url'],
+                'logout_url': idena['logout_url'],
+                'check_status_url': idena['check_status_url'],
+                'next_validation': idena['next_validation'] if idena['is_connected'] and not idena['is_verified'] else None,
+            }, {
+                'ref': 'poap',
+                'name': 'POAP',
+                'icon_path': static('/v2/images/project_logos/poap.svg'),
+                'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
+                'match_percent': 25,
+                'is_verified': profile.is_poap_verified
+            }, {
+                'ref': 'ens',
+                'name': 'ENS',
+                'icon_path': static('/v2/images/project_logos/ens.svg'),
+                'desc': 'Get verified through the Ethereum Naming Service.',
+                'match_percent': 25,
+                'is_verified': profile.is_ens_verified
+            }, {
+                'ref': 'sms',
+                'name': 'SMS',
+                'icon_class': 'fa fa-mobile-alt fa-3x',
+                'desc': 'Get verified through text from your phone.',
+                'match_percent': 15,
+                'is_verified': profile.sms_verification
+            }, {
+                'ref': 'google',
+                'name': 'Google',
+                'icon_path': static('/v2/images/project_logos/google.png'),
+                'desc': 'Get verified by connecting to your Google account.',
+                'match_percent': 15,
+                'is_verified': profile.is_google_verified
+            }, {
+                'ref': 'twitter',
+                'name': 'Twitter',
+                'icon_style': {
+                    'color': 'rgb(0, 172, 237)'
+                },
+                'icon_class': 'fab fa-twitter fa-3x',
+                'desc': 'Get verified by connecting your Twitter account.',
+                'match_percent': 15,
+                'is_verified': profile.is_twitter_verified,
+                'verify_tweet_text': verify_text_for_tweet(profile.handle)
+            }, {
+                'ref': 'facebook',
+                'name': 'Facebook',
+                'icon_style': {
+                    'color': 'rgb(24, 119, 242)'
+                },
+                'icon_class': 'fab fa-facebook fa-3x',
+                'desc': 'Get verified by connecting your Facebook account.',
+                'match_percent': 15,
+                'is_verified': profile.is_facebook_verified
+            }
+        ]
+
+        # pass as JSON in the context
+        context['services'] = json.dumps(services)
+        # Tentatively Coming Soon
+        context['coming_soon'] = json.dumps(['Duniter'])
+        # Tentatively On the Roadmap
+        context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
+
     else:
         raise Http404
     return context
@@ -2975,7 +3075,15 @@ def logout_idena(request, handle):
         profile.is_idena_connected = False
         profile.save()
 
-    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+    return JsonResponse({
+        'ok': True,
+        'address': profile.idena_address,
+        'status': profile.idena_status,
+        'is_connected': profile.is_idena_connected,
+        'is_verified': profile.is_idena_verified,
+        'next_validation': None,
+        'icon_path': static('/v2/images/project_logos/idena.svg'),
+    })
 
 # Response model differ from rest of project because idena client excepts this shape:
 # Using {success, error} instead of {ok, msg}
@@ -3095,10 +3203,20 @@ def recheck_idena_status(request, handle):
             'msg': f'Request must be for the logged in user'
         })
 
-    profile = profile_helper(handle, True)
+    profile = request.user.profile
+
     profile.update_idena_status()
     profile.save()
-    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+
+    return JsonResponse({
+        'ok': True,
+        'address': profile.idena_address,
+        'status': profile.idena_status if profile.is_idena_connected and not profile.is_idena_verified else None,
+        'is_connected': profile.is_idena_connected,
+        'is_verified': profile.is_idena_verified,
+        'next_validation': str(localtime(next_validation_time())) if not profile.is_idena_verified else None,
+        'icon_path': 'https://robohash.org/%s' % profile.idena_address if profile.is_idena_connected else static('/v2/images/project_logos/idena.svg'),
+    })
 
 def verify_text_for_tweet(handle):
     url = 'https://gitcoin.co/' + handle
@@ -3106,6 +3224,7 @@ def verify_text_for_tweet(handle):
     full_text = msg + ' ' + url
 
     return full_text
+
 
 @login_required
 def verify_user_twitter(request, handle):
@@ -3209,6 +3328,28 @@ def verify_user_twitter(request, handle):
         'msg': full_text,
         'found': tweet_split,
         'expected': expected_split
+    })
+
+
+@login_required
+@require_POST
+def disconnect_user_twitter(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.twitter_handle = None
+    profile.is_twitter_verified = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False,
     })
 
 
@@ -3355,6 +3496,7 @@ def connect_google():
         redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_google)),
     )
 
+
 @login_required
 @require_POST
 def request_verify_google(request, handle):
@@ -3394,7 +3536,7 @@ def verify_user_google(request):
         messages.error(request, _(f'A user with this Google account already exists!'))
 
     else:
-        messages.success(request, _(f'Congratulations! You have successfully verified your Google account!'))
+        messages.success(request, _(f'Your Google verification was successful. Thank you for helping make Gitcoin more sybil resistant!'))
         profile = profile_helper(request.user.username, True)
         profile.is_google_verified = True
         profile.identity_data_google = identity_data_google
@@ -3403,9 +3545,90 @@ def verify_user_google(request):
 
     return redirect('profile_by_tab', 'trust')
 
+
 @login_required
-def verify_profile_with_ens(request):
+@require_POST
+def disconnect_user_google(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
     profile = request.user.profile
+
+    profile.is_google_verified = False
+    profile.identity_data_google = False
+    profile.google_user_id = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
+
+@login_required
+@require_POST
+def verify_user_brightid(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    status = get_brightid_status(profile.brightid_uuid)
+
+    if status == 'verified':
+        profile.is_brightid_verified = True
+        profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': status
+    })
+
+
+@login_required
+@require_POST
+def disconnect_user_brightid(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.brightid_uuid = uuid.uuid4()
+    profile.is_brightid_verified = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False,
+        'status': None,
+        '_status': 'unknown',
+        'uuid': profile.brightid_uuid
+    })
+
+
+@login_required
+def verify_user_ens(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+    
     default_address = profile.ens_verification_address or profile.preferred_payout_address
     if request.method == 'GET':
         user_address = request.GET.get('verification_address', default_address)
@@ -3500,6 +3723,28 @@ def verify_profile_with_ens(request):
     })
 
 
+@login_required
+@require_POST
+def disconnect_user_ens(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_ens_verified = False
+    profile.ens_verification_address = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
+
 def connect_facebook():
     import urllib.parse
 
@@ -3509,6 +3754,7 @@ def connect_facebook():
     )
 
     return facebook_compliance_fix(facebook)
+
 
 @login_required
 @require_POST
@@ -3527,6 +3773,7 @@ def request_verify_facebook(request, handle):
     facebook = connect_facebook()
     authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
     return redirect(authorization_url)
+
 
 @login_required
 @require_GET
@@ -3559,13 +3806,37 @@ def verify_user_facebook(request):
 
     else:
         profile = profile_helper(request.user.username, True)
-        messages.success(request, _(f'Congratulations! You have successfully verified your facebook account!'))
+        messages.success(request, _(f'Your Facebook verification was successful. Thank you for helping make Gitcoin more sybil resistant!'))
         profile.is_facebook_verified = True
         profile.identity_data_facebook = identity_data_facebook
         profile.facebook_user_id = identity_data_facebook['id']
         profile.save()
 
     return redirect('profile_by_tab', 'trust')
+
+
+@login_required
+@require_POST
+def disconnect_user_facebook(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_facebook_verified = False
+    profile.identity_data_facebook = False
+    profile.facebook_user_id = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
@@ -6524,7 +6795,14 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
 
 
 @login_required
-def send_verification(request):
+def send_verification(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
     user = request.user
     profile = user.profile
     phone = request.POST.get('phone')
@@ -6538,6 +6816,8 @@ def send_verification(request):
 
     if not has_previous_validation:
         response = validate_number(request.user, twilio, phone, redis, delivery_method)
+        if response.isValid == False:
+            response.msg = "Please provide a valid phone number"
         if response:
             return response
     else:
@@ -6567,7 +6847,14 @@ def send_verification(request):
 
 
 @login_required
-def validate_verification(request):
+def validate_verification(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
     redis = RedisService().redis
     twilio = TwilioService().verify
     code = request.POST.get('code')
@@ -6610,6 +6897,27 @@ def validate_verification(request):
         'success': False,
         'msg': 'No verification process associated'
     }, status=401)
+
+
+@login_required
+@require_POST
+def disconnect_sms(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.sms_verification = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
 
 
 @staff_member_required
@@ -6745,8 +7053,15 @@ def events(request, hackathon):
 @login_required
 @require_POST
 def verify_user_poap(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
 
-    profile = profile_helper(handle, True)
+    profile = request.user.profile
+
     if profile.is_poap_verified:
         return JsonResponse({
             'ok': True,
@@ -6817,9 +7132,37 @@ def verify_user_poap(request, handle):
 
 @login_required
 @require_POST
-def verify_user_poh(request):
-    handle = request.user.username
-    profile = profile_helper(handle, True)
+def disconnect_user_poap(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_poap_verified = False
+    profile.poap_owner_account = None
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
+
+@login_required
+@require_POST
+def verify_user_poh(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
     if profile.is_poh_verified:
         return JsonResponse({
             'ok': True,
@@ -6863,6 +7206,28 @@ def verify_user_poh(request):
     return JsonResponse({
         'ok': True,
         'msg': 'User is registered on POH',
+    })
+
+
+@login_required
+@require_POST
+def disconnect_user_poh(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_poh_verified = False
+    profile.poh_handle = None
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
     })
 
 
