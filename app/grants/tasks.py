@@ -14,7 +14,7 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
+from marketing.mails import new_grant, new_grant_admin, thank_you_for_supporting
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
@@ -248,12 +248,6 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     profile=_profile,
                     activity=activity,
                     comment=comment)
-
-        # emails to grant owner
-        try:
-            new_supporter(grant, subscription)
-        except Exception as e:
-            logger.exception(e)
 
         # emails to contributor
         if send_supporter_mail:
