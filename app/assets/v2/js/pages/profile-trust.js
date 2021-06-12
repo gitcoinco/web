@@ -1484,7 +1484,7 @@ Vue.component('active-trust-manager', {
       visibleModal: 'none',
       console: console,
       round_start_date: parseDate(document.round_start_date),
-      round_end_date: parseDate(document.round_start_date),
+      round_end_date: parseDate(document.round_end_date),
       roadmap: document.roadmap || [],
       services: document.services || [],
       coming_soon: document.coming_soon || []
