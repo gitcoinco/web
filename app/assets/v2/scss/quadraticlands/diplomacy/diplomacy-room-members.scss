@@ -16,15 +16,16 @@
 	
     figure{
 
+      position: relative;
       margin-bottom: 1em;
 
       img{
         border-radius: 180px;
         max-width: 180px;
         margin:auto;
-      }			
-    }
+      }     
 
+    }
 
     .username{
       color: var(--white);
@@ -32,24 +33,43 @@
     }
 
     .tokens{
-      color: var(--aqua);
+
       text-align: center;
-      &:after {
-        content: " GTC";
+      margin-top:1em;
+
+      .in{
+        cursor: pointer;
+        color: var(--aqua);
+        .detail{ display: none; }
+        &:hover{ .detail { display: block; } };
       }
-      &:before {
-        content: "Incoming: ";
+
+      .out{
+        cursor: pointer;
+        color: var(--pink);
+        .detail{ display: none; }
+        &:hover{ .detail { display: block; } };
       }
-    }
-    .tokens_out{
-      color: var(--stone);
-      text-align: center;
-      &:after {
-        content: " GTC";
+
+      .detail{
+        font-size: 80%;
+        padding-bottom: 1em;
+
+        div{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;   
+        }
+
+        .username {
+          margin:0;
+        }
+        .tokens{
+          margin:0;
+        }
       }
-      &:before {
-        content: "Outgoing: ";
-      }
+
+
     }
 
 
