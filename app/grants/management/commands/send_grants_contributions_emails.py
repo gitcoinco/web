@@ -32,7 +32,7 @@ class Command(BaseCommand):
         grant_ids = Contribution.objects.filter(
             modified_on__gt=timezone.now() - timezone.timedelta(hours=12),
             success=True
-        ).values_list('normalized_data__id', flat=True)
+        ).values_list('normalized_data__id', flat=True).distinct()
 
         for grant_id in grant_ids:
             process_new_contributions_email(grant_id)
