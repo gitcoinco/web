@@ -240,7 +240,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         if 'comment' in package:
             _profile = profile
             comment = package.get('comment')
-            if comment and activity:
+            if value_usdt >= 1 and comment and activity:
                 if profile.anonymize_gitcoin_grants_contributions:
                     _profile = Profile.objects.filter(handle='gitcoinbot').first()
                     comment = f"Comment from contributor: {comment}"
@@ -250,7 +250,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     comment=comment)
 
         # emails to contributor
-        if send_supporter_mail:
+        if value_usdt >= 1 and send_supporter_mail:
             grants_with_subscription = [{
                 'grant': grant,
                 'subscription': subscription
