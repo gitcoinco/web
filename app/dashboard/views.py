@@ -2947,7 +2947,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             brightid['upcoming_calls'] = []
 
         # QF round info
-        clr_round, round_start_date, round_end_date = get_clr_rounds_metadata()
+        clr_round, round_start_date, round_end_date, show_bannner = get_clr_rounds_metadata()
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
         context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())
@@ -3628,7 +3628,7 @@ def verify_user_ens(request, handle):
         })
 
     profile = request.user.profile
-    
+
     default_address = profile.ens_verification_address or profile.preferred_payout_address
     if request.method == 'GET':
         user_address = request.GET.get('verification_address', default_address)

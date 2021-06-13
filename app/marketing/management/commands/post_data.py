@@ -253,7 +253,7 @@ def earners(days, cadence):
         if source_type not in descs[handle].keys():
             descs[handle][source_type] = 0
         descs[handle][source_type] += 1
-            
+
     amounts = sorted(amounts.items(), key=operator.itemgetter(1), reverse=True)
 
     pprint("================================")
@@ -281,7 +281,7 @@ def earners(days, cadence):
 
 def grants():
 
-    clr_round, _, _ = get_clr_rounds_metadata()
+    clr_round, _, _, _ = get_clr_rounds_metadata()
     active_clr_rounds = GrantCLR.objects.filter(is_active=True, customer_name='ethereum', start_date__lt=timezone.now(), end_date__gt=timezone.now())
     if not active_clr_rounds.exists():
         return
