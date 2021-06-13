@@ -102,7 +102,7 @@ def get_clr_rounds_metadata():
         clr_round = CLR_ROUND_DATA['round_num']
         start_date = CLR_ROUND_DATA['round_start']
         end_date = CLR_ROUND_DATA['round_end']
-        round_active = CLR_ROUND_DATA['active']
+        show_bannner = CLR_ROUND_DATA['show_bannner']
 
         # timezones are in UTC (format example: 2021-06-16:15.00.00)
         round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
@@ -113,9 +113,9 @@ def get_clr_rounds_metadata():
         clr_round=1
         round_start_date = timezone.now()
         round_end_date = timezone.now() + timezone.timedelta(days=14)
-        round_active = True
+        show_bannner = True
 
-    return clr_round, round_start_date, round_end_date, round_active
+    return clr_round, round_start_date, round_end_date, show_bannner
 
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
@@ -851,7 +851,7 @@ def grants_landing(request):
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
-    clr_round, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+    clr_round, round_start_date, round_end_date, show_bannner = get_clr_rounds_metadata()
 
 
     params = {
@@ -871,7 +871,7 @@ def grants_landing(request):
         'round_start_date': round_start_date,
         'round_end_date': round_end_date,
         'now': now,
-        'round_active': round_active
+        'show_bannner': show_bannner
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
