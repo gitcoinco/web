@@ -2770,10 +2770,10 @@ def get_profile_tab(request, profile, tab, prev_context):
 
                 return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
-
-        all_activities = context.get('activities')
+        as_dict = profile.to_dict()
+        all_activities = as_dict.get('activities')
         tabs = []
-        counts = context.get('activities_counts', {'joined': 1})
+        counts = as_dict.get('activities_counts', {'joined': 1})
         for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does
