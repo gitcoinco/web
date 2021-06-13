@@ -35,7 +35,7 @@ def txn_already_used(txn, token_symbol):
 
 def record_contribution_activity(contribution):
     from dashboard.models import Activity
-    from marketing.mails import new_supporter, thank_you_for_supporting, successful_contribution
+    from marketing.mails import thank_you_for_supporting, successful_contribution
     from grants.tasks import update_grant_metadata
 
     try:
@@ -74,7 +74,6 @@ def record_contribution_activity(contribution):
         # note: commenting out for optimistic UI
         # successful_contribution(grant, subscription, contribution)
         # update_grant_metadata.delay(grant.pk)
-        new_supporter(grant, subscription)
         grants_with_subscription = [{
             'grant': grant,
             'subscription': subscription
