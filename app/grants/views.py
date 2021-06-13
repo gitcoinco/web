@@ -851,7 +851,7 @@ def grants_landing(request):
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
-    clr_round, round_start_date, round_end_date, show_bannner = get_clr_rounds_metadata()
+    _, round_start_date, round_end_date, show_bannner = get_clr_rounds_metadata()
 
 
     params = {
