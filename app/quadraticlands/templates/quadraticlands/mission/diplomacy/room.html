@@ -41,90 +41,113 @@
 	<!-- @kev : loop div.member with users of room
 			+ autofill value of input of last vote 
 			see i added data-atributes you need to populate
-			so javascript can use it if we realy wana go for
-			a sign message . btw im unsure if sign message is
-			the right way of doing it. maybe just database
-			is enough - lets talk about it in chat -->
+			so javascript can use it -->
 
-	<div class="member" data-kinetics-attraction>
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">owocki</div>
-		<div class="tokens">
-			<div class="in">+ 23.22 GTC
-				<div class="detail">
-					<div>kevin<span>143</span></div>
-					<div>peter<span>11</span></div>
-					<div>sabrina<span>13.21</span></div>
-				</div>
+	<div class="member-card">
+		<div class="front">
+			<figure><img src="/dynamic/avatar/scco"></figure>
+			<div class="username">catwoman</div>
+			<div class="tokens_in">4334</div>
+			<div class="tokens_out">4334</div>
+			<input data-kinetics-attraction data-member data-userid="1" data-username="catwoman" type="number" placeholder="0" value="">
+		</div>
+		<div class="back">
+			<div class="wrapper tokens_in">
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
 			</div>
-			<div class="out">- 0 GTC
+			<div class="wrapper tokens_out">
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
 			</div>
 		</div>
-		<input data-member data-userid="43" data-username="owocki" type="number" placeholder="0" value="">
 	</div>
 
-	<div class="member" data-kinetics-attraction>
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">catwoman</div>
-		<div class="tokens">
-			<div class="in">+ 0 GTC
-			</div>
-			<div class="out">- 3423.22 GTC
-				<div class="detail">
-					<div>longusername<span>11233</span></div>
-					<div>master of disaster<span>1213</span></div>
-					<div>peter<span>31.11</span></div>
-				</div>
-			</div>
+
+	<div class="member-card">
+		<div class="front">
+			<figure><img src="/dynamic/avatar/scco"></figure>
+			<div class="username">defi dad</div>
+			<div class="tokens_in">212</div>
+			<div class="tokens_out">0</div>
+			<input data-kinetics-attraction data-member data-userid="2" data-username="defi dad" type="number" placeholder="0" value="">
 		</div>
-		<input data-member data-userid="332" data-username="scco2" type="number" placeholder="0" value="">
+		<div class="back">
+			<div class="wrapper tokens_in">
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
+			</div>
+			<!-- as defi dad has no tokens out, we dont need to render tokens_out
+			<div class="wrapper tokens_out">
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
+			</div>
+			-->
+		</div>
 	</div>
 
-	<div class="member" data-kinetics-attraction>
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">sebastian43</div>
-		<div class="tokens">
-			<div class="in">+ 23.22 GTC
-				<div class="detail">
-					<div>kevin<span>143</span></div>
-					<div>peter<span>11</span></div>
-					<div>sabrina<span>13.21</span></div>
-				</div>
+
+	<div class="member-card">
+		<div class="front">
+			<figure><img src="/dynamic/avatar/scco"></figure>
+			<div class="username">kevin</div>
+			<div class="tokens_in">0</div>
+			<div class="tokens_out">33.33</div>
+			<input data-kinetics-attraction data-member data-userid="3" data-username="kevin" type="number" placeholder="0" value="">
+		</div>
+		<div class="back">
+			<!-- as kevin has no tokens in, we dont need to render tokens_in
+			<div class="wrapper tokens_in">
+				<h3>kevin</h3>
+				<div>catwoman<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
 			</div>
-			<div class="out">- 3423.22 GTC
-				<div class="detail">
-					<div>longusername<span>11233</span></div>
-					<div>master of disaster<span>1213</span></div>
-					<div>peter<span>31.11</span></div>
-				</div>
+			-->
+			<div class="wrapper tokens_out">
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
 			</div>
 		</div>
-		<input data-member data-userid="4323" data-username="scco3" type="number" placeholder="0" value="">
 	</div>
 
-	<!-- add readonly on inputfield + .self if member = current user in this loop - 
-		to block him from vouche on himself -->
-	<div class="member self" data-kinetics-attraction>
-		<figure><img src="/dynamic/avatar/scco"></figure>
-		<div class="username">superlongusername</div>
-		<div class="tokens">
-			<div class="in">+ 23.22 GTC
-				<div class="detail">
-					<div>kevin<span>143</span></div>
-					<div>peter<span>11</span></div>
-					<div>sabrina<span>13.21</span></div>
-				</div>
+
+	<!-- as peter is seeing his self here - we need to block him from vote on himself 
+		by adding .self to the .membercard  AND adding readonly to the input field-->
+	<div class="member-card self">
+		<div class="front">
+			<figure><img src="/dynamic/avatar/scco"></figure>
+			<div class="username">peter</div>
+			<div class="tokens_in">433</div>
+			<div class="tokens_out">33.33</div>
+			<input readonly data-kinetics-attraction data-member data-userid="4" data-username="peter" type="number" placeholder="0" value="">
+		</div>
+		<div class="back">
+			<div class="wrapper tokens_in">
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
+				<div>kevin<span>1433</span></div>
+				<div>peter<span>1131</span></div>
+				<div>superlongusername123456<span>1123312345612.21</span></div>
 			</div>
-			<div class="out">- 3423.22 GTC
-				<div class="detail">
-					<div>longusername<span>11233</span></div>
-					<div>master of disaster<span>1213</span></div>
-					<div>peter<span>31.11</span></div>
-				</div>
+			<div class="wrapper tokens_out">
+				<div>kevin<span>143</span></div>
+				<div>peter<span>11</span></div>
+				<div>sabrina<span>13.21</span></div>
 			</div>
 		</div>
-		<input readonly type="number" placeholder="0" value="">
 	</div>
+
+
 
 </section>
 
@@ -132,7 +155,7 @@
 
 
 <!-- diplomacy vouche bar -->
-<section class="diplomacy-vouche-bar glass">
+<section class="diplomacy-vouche-bar">
 
 	<!-- @kev : this is the place where we do some calculations in jscript
 	and populate the divs via the #ids -->

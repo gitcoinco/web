@@ -2,6 +2,7 @@
 	
   margin: auto;
   margin: 0em 1.5em;
+  margin-top: 2em;
 
   display: flex;
   flex-wrap: wrap;
@@ -10,7 +11,7 @@
   align-items: center;
 
 
-  background-color: var(--space_light_alpha);
+  background-color: var(--space_pink);
 
   .col{
 

@@ -19,6 +19,18 @@ document.addEventListener('DOMContentLoaded', function() {
   console.debug('ANIMATE DIPLOMACY');
   animate_diplomacy();
 
+
+  //member card toggle card front back - but not on click in the input field on front card
+  const membercards = document.querySelectorAll('.member-card');
+  membercards.forEach(card => {
+    card.addEventListener('click', (event) => {
+      if (event.target.tagName != "INPUT") {
+        card.classList.toggle("flip");
+      }
+    });    
+  });
+
+
   //fetch balance of users wallet + display it
   const diplomacy_wallet_address = document.getElementById('wallet_address');
   const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
@@ -85,7 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // vouche bar validations
-  inputs = document.querySelectorAll('.member input');
+  inputs = document.querySelectorAll('.member-card .front input');
+  console.debug(inputs)
   inputs.forEach(i => {
     i.addEventListener('input', input => {
       if (i.value < 0) {
@@ -114,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateVoucheBar(){
 
   window.use = 0;
-  inputs = document.querySelectorAll('.member input');
+  inputs = document.querySelectorAll('.member-card .front input');
 
   inputs.forEach(i => {
     if (i.value > 0) {
