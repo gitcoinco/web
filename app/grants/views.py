@@ -973,7 +973,7 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    clr_round, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_explorer',
@@ -1150,7 +1150,7 @@ def grants_by_grant_clr(request, clr_round):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    clr_round, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+    clr_round, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_landing',
