@@ -36,7 +36,7 @@
 
 
 <!-- members to vouche -->
-<section class="diplomacy-room-members">
+<section class="diplomacy-room-members" data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
 
 	<!-- @kev : loop div.member with users of room
 			+ autofill value of input of last vote 
@@ -46,7 +46,7 @@
 			the right way of doing it. maybe just database
 			is enough - lets talk about it in chat -->
 
-	<div class="member">
+	<div class="member" data-kinetics-attraction>
 		<figure><img src="/dynamic/avatar/scco"></figure>
 		<div class="username">owocki</div>
 		<div class="tokens">
@@ -63,7 +63,7 @@
 		<input data-member data-userid="43" data-username="owocki" type="number" placeholder="0" value="">
 	</div>
 
-	<div class="member">
+	<div class="member" data-kinetics-attraction>
 		<figure><img src="/dynamic/avatar/scco"></figure>
 		<div class="username">catwoman</div>
 		<div class="tokens">
@@ -80,7 +80,7 @@
 		<input data-member data-userid="332" data-username="scco2" type="number" placeholder="0" value="">
 	</div>
 
-	<div class="member">
+	<div class="member" data-kinetics-attraction>
 		<figure><img src="/dynamic/avatar/scco"></figure>
 		<div class="username">sebastian43</div>
 		<div class="tokens">
@@ -104,7 +104,7 @@
 
 	<!-- add readonly on inputfield + .self if member = current user in this loop - 
 		to block him from vouche on himself -->
-	<div class="member self">
+	<div class="member self" data-kinetics-attraction>
 		<figure><img src="/dynamic/avatar/scco"></figure>
 		<div class="username">superlongusername</div>
 		<div class="tokens">
@@ -132,7 +132,7 @@
 
 
 <!-- diplomacy vouche bar -->
-<section class="diplomacy-vouche-bar">
+<section class="diplomacy-vouche-bar glass">
 
 	<!-- @kev : this is the place where we do some calculations in jscript
 	and populate the divs via the #ids -->
@@ -160,7 +160,7 @@
 	</div>
 
 	<div class="col">
-		<a id="vouche_button" class="btn aqua">Vouch</a>
+		<a id="vouche_button" class="btn aqua" data-kinetics-attraction data-kinetics-attraction-grow="6">Vouch</a>
 	</div>
 
 </section>
