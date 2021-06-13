@@ -137,7 +137,14 @@
       </ul>
     </p>
   </div>
-
+  <div class="row justify-content-end mb-3">
+    <div v-if="grantsUnderMinimalContribution.length" class="col-auto text-danger">
+      <small>
+        [[ grantsUnderMinimalContribution.length ]] [[ 'contribution'|pluralize(grantsUnderMinimalContribution.length) ]] in your cart is below the minimum required amount. <br>
+        Increase your contribution to minimum 1 USD to proceed.
+      </small>
+    </div>
+  </div>
   <!-- Checkout recommendation -->
   <div class="row justify-content-end mb-3">
     <small class="col-auto bg-lightpurple p-2">

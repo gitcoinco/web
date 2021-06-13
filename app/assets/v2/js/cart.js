@@ -1401,7 +1401,6 @@ Vue.component('grants-cart', {
               : grant.grant_donation_currency;
 
             const amount = this.valueToDai(rawAmount, tokenName, tokenPrices);
-            console.log(amount)
 
             this.$set(this.grantData[i], 'grant_donation_amount_usd', amount);
 
