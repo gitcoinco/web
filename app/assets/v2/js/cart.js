@@ -110,7 +110,6 @@ Vue.component('grants-cart', {
     grantsUnderMinimalContribution() {
       let vm = this;
       let result;
-      console.log(vm.grantData)
 
       result = vm.grantData.filter((item)=>{
         return item.grant_donation_amount_usd < vm.UsdMinimalContribution;
@@ -475,7 +474,6 @@ Vue.component('grants-cart', {
       let vm = this;
 
       e.preventDefault();
-      console.log(e);
 
       // this.$refs.form.reportValidity()
       if (!e.target.reportValidity()) {
