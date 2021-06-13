@@ -62,6 +62,7 @@ Vue.component('grants-cart', {
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
       maxCartItems: 90, // Max supported items in cart at once
+      UsdMinimalContribution: 1,
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
@@ -101,6 +102,18 @@ Vue.component('grants-cart', {
 
       result = vm.grantData.filter((item)=>{
         return item.tenants.includes(vm.tabSelected);
+      });
+
+      return result;
+
+    },
+    grantsUnderMinimalContribution() {
+      let vm = this;
+      let result;
+      console.log(vm.grantData)
+
+      result = vm.grantData.filter((item)=>{
+        return item.grant_donation_amount_usd < vm.UsdMinimalContribution;
       });
 
       return result;
@@ -1388,6 +1401,10 @@ Vue.component('grants-cart', {
               : grant.grant_donation_currency;
 
             const amount = this.valueToDai(rawAmount, tokenName, tokenPrices);
+            console.log(amount)
+
+            this.$set(this.grantData[i], 'grant_donation_amount_usd', amount);
+
             const matchAmount = await this.predictCLRMatch(grant, amount);
 
             this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
