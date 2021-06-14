@@ -47,7 +47,7 @@
           </div>
         </div>
         {% endcomment %}
-        {% if show_bannner %}
+        {% if round_active %}
           <div class="d-flex justify-content-between countdown-color h4">
             {% if now < round_start_date or now < round_end_date and round_end_date|timeuntil <= "2 days"  %}
             <countdown :startdate="{{round_start_date|date:'U' }}*1000" :enddate="{{round_end_date|date:'U' }}*1000" class="countdown gc-font-heading">
