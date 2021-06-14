@@ -1,19 +1,6 @@
 // handle from contxt
 const trustHandle = document.contxt.github_handle;
 
-// convert round dates to expected format
-const parseDate = (given) => {
-  // parse date
-  const date = new Date(parseInt(given) * 1000);
-
-  // parse day/month (feed undefined to get local version)
-  const day = date.toLocaleDateString(undefined, {'day': 'numeric'});
-  const month = date.toLocaleDateString(undefined, {'month': 'long'});
-
-  // return required format
-  return `${month} ${day}`;
-};
-
 const apiCall = (url, givenPayload) => {
 
   return new Promise((resolve, reject) => {
@@ -31,40 +18,6 @@ const apiCall = (url, givenPayload) => {
     });
   });
 };
-
-
-Vue.component('why-this-matters-modal', {
-  delimiters: [ '[[', ']]' ],
-  props: {
-    showModal: {
-      type: Boolean,
-      required: false,
-      'default': false
-    }
-  },
-  template: `<b-modal id="why-this-matters-modal" @hide="dismissVerification()" :visible="showModal" size="lg" body-class="p-3" center hide-header hide-footer>
-              <template v-slot:default="{ hide }">
-                <div class="modal-content p-0">
-                  <div class="w-100">
-                    <button @click="dismissModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="py-4">
-                    <iframe src="https://www.youtube.com/embed/v1Dm7FI2AdU?rel=0" frameborder="0" allowfullscreen class="w-100" style="min-height: 60vh;"></iframe>
-                  </div>
-                </div>
-              </template>
-            </b-modal>`,
-
-  methods: {
-    dismissModal() {
-      // localStorage.setItem('dismiss-sms-validation', true);
-      this.$emit('modal-dismissed');
-    }
-  }
-});
-
 
 Vue.component('sms-verify-modal', {
   delimiters: [ '[[', ']]' ],
@@ -126,7 +79,7 @@ Vue.component('sms-verify-modal', {
               <p class="mb-4 text-left">
                 Gitcoin does NOT store your phone number. <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                 href="https://twitter.com/owocki/status/1271088915982675974">Read more</a> about why we are asking for account verification, or how Gitcoin <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
-                href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy</a>.                      
+                href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy</a>.
               </p>
               <div id='verify_offline_target' class="text-left" style="display:none;">
                 <strong>Verify Offline</strong>
@@ -422,7 +375,7 @@ Vue.component('twitter-verify-modal', {
                 <div v-if="validationError !== ''" style="color: red">
                   <small>[[validationError]]</small>
                 </div>
-                
+
                 <div class="d-flex justify-content-between mt-5 mb-2">
                   <span class="my-auto">
                     <a href="" v-if="validationError !== ''" @click="clickedGoBack">
@@ -434,7 +387,7 @@ Vue.component('twitter-verify-modal', {
                     Connect Twitter
                   </b-button>
                 </div>
-                
+
               </div>
               <div v-if="step === 'validation-complete'">
                 <div>Your Twitter verification was successful. Thank you for helping make Gitcoin more sybil resistant!</div>
@@ -1483,8 +1436,8 @@ Vue.component('active-trust-manager', {
     return {
       visibleModal: 'none',
       console: console,
-      round_start_date: parseDate(document.round_start_date),
-      round_end_date: parseDate(document.round_end_date),
+      round_start_date: parseMonthDay(document.round_start_date),
+      round_end_date: parseMonthDay(document.round_end_date),
       roadmap: document.roadmap || [],
       services: document.services || [],
       coming_soon: document.coming_soon || []
@@ -1706,8 +1659,8 @@ Vue.component('ens-verify-modal', {
             </div>
             <h3 class="my-4"> Connect ENS </h3>
           </div>
-          <div class="font-smaller-1 line-height-3 spacer-px-4 spacer-px-lg-6 spacer-py-5">        
-            
+          <div class="font-smaller-1 line-height-3 spacer-px-4 spacer-px-lg-6 spacer-py-5">
+
             <div v-if="!service.is_verified && step !== 'disconnect'">
               <div class="mb-3">
                 <p>
@@ -1911,12 +1864,12 @@ Vue.component('google-verify-modal', {
               </button>
             </div>
             <div class="bg-white d-flex mt-4 mx-auto p-1 rounded-circle" style="width: 74px; height: 74px;">
-              <img width="41" height="40" class="m-auto" src="/static/v2/images/project_logos/google.png">                   
+              <img width="41" height="40" class="m-auto" src="/static/v2/images/project_logos/google.png">
             </div>
             <h3 class="my-4"> Connect Google </h3>
           </div>
           <div class="font-smaller-1 line-height-3 spacer-px-4 spacer-px-lg-6 spacer-py-5">
-            
+
             <template v-if="step === 'connect'">
               <p>
                 Verify your Google account.

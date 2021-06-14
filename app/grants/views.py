@@ -26,6 +26,7 @@ import re
 import time
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -871,7 +872,8 @@ def grants_landing(request):
         'round_start_date': round_start_date,
         'round_end_date': round_end_date,
         'now': now,
-        'round_active': round_active
+        'round_active': round_active,
+        'trust_bonus': round(request.user.profile.trust_bonus * 100)
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -2314,7 +2316,8 @@ def get_replaced_tx(request):
 def grants_cart_view(request):
     context = {
         'title': 'Grants Cart',
-        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
+        'trust_bonus': round(request.user.profile.trust_bonus * 100)
     }
     if request.user.is_authenticated:
         profile = request.user.profile

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n bundle %}
+{% load humanize static i18n bundle tz %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -130,6 +130,8 @@ along with this program. If not, see
     document.collection_id = {{ collection_id|default:'null' }};
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
     document.activePage = "{{ active }}";
+    document.round_start_date = ({{round_start_date|date:'U' }}*1000);
+    document.round_end_date = ({{round_end_date|date:'U' }}*1000);
 
     {% if clr_round %}
       document.round_num = "{{clr_round.round_num}}";
@@ -161,9 +163,9 @@ along with this program. If not, see
   </script>
   {% include 'shared/activity_scripts.html' %}
 
-
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
   <script src="{% static "v2/js/grants/components.js" %}"></script>
   <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
   <script src="{% static "v2/js/grants/funding.js" %}"></script>
