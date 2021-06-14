@@ -1023,7 +1023,8 @@ def grants_by_grant_type(request, grant_type):
         'collection_id': collection_id,
         'collections': collections,
         'featured': featured,
-        'active_rounds': active_rounds
+        'active_rounds': active_rounds,
+        'trust_bonus': round(request.user.profile.trust_bonus * 100)
     }
 
     # log this search, it might be useful for matching purposes down the line
