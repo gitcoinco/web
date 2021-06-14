@@ -1183,7 +1183,7 @@ Vue.component('idena-verify-modal-content', {
   template: `
     <div class="font-smaller-1 line-height-3 spacer-px-4 spacer-px-lg-6 spacer-py-5">
       <p>Idena is the first proof-of-person blockchain based on democratic principles. Every node is linked to a cryptoidentity – one single person with equal voting power and mining income.</p>
-      <p>To start mining Idena, you need to prove you are a unique human. It does not require the disclosure of any personal data (no KYC). You have to appear online when the validation ceremony starts and solve a series of flip-tests (CAPTCHAs). <a href="https://www.idena.io/download">Get started by downloading Idena</a> or verify below if you have Idena.</p>
+      <p>To start mining Idena, you need to prove you are a unique human. It does not require the disclosure of any personal data (no KYC). Simply appear online when the validation ceremony starts and solve a series of flip-tests (CAPTCHAs).</p>
       <slot></slot>
     </div>
   `
