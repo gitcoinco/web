@@ -3046,26 +3046,27 @@ class Profile(SuperModel):
     @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
-        # trust bonus compounds for every new verification added
+        # trust bonus starts at 50% and compounds for every new verification added
+        # to a max of 150%
         tb = 0.5
         if self.is_poh_verified:
-            tb *= 1.50
+            tb += 0.50
         if self.is_brightid_verified:
-            tb *= 1.50
+            tb += 0.50
         if self.is_idena_verified:
-            tb *= 1.50
+            tb += 0.50
         if self.is_poap_verified:
-            tb *= 1.25
+            tb += 0.25
         if self.is_ens_verified:
-            tb *= 1.25
+            tb += 0.25
         if self.sms_verification:
-            tb *= 1.15
+            tb += 0.15
         if self.is_google_verified:
-            tb *= 1.15
+            tb += 0.15
         if self.is_twitter_verified:
-            tb *= 1.15
+            tb += 0.15
         if self.is_facebook_verified:
-            tb *= 1.15
+            tb += 0.15
         # if self.is_duniter_verified:
         #     tb *= 1.001
         return min(1.5, tb)
