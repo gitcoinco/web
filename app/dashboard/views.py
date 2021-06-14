@@ -6739,7 +6739,14 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
             'msg': 'The phone number has been associated with other account.'
         }, status=401)
 
-    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+    try:
+        validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+    except:
+        return JsonResponse({
+            'success': False,
+            'msg': 'phone number lookup failed'
+        }, status=401)
+
     country_code = validation.carrier['mobile_country_code'] if validation.carrier['mobile_country_code'] else 0
     pv = ProfileVerification.objects.create(profile=user.profile,
                                        caller_type=validation.caller_name[
