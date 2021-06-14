@@ -6,9 +6,21 @@ Vue.component('create-collection-modal', {
       collectionTitle: '',
       collectionDescription: '',
       collections: [],
+      imgURL: '',
       selectedCollection: null,
       showCreateCollection: false
     };
+  },
+  mounted: function() {
+    const checkoutData = CartData.loadCheckedOut();
+
+    let grant_ids = '';
+
+    for (let i = 0; i < checkoutData.length; i++) {
+      grant_ids = grant_ids + checkoutData[i]['grant_id'] + ',';
+    }
+
+    this.imgURL = '/dynamic/grants_cart_thumb/' + document.contxt['github_handle'] + '/' + grant_ids;
   },
   computed: {
     isValidCollection() {

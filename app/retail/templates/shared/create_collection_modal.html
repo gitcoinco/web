@@ -17,7 +17,7 @@
 {% endcomment %}
 
 <create-collection-modal ref="createCollection" inline-template>
-  <b-modal id="create-collection" @hide="showCreateCollection = false" :visible="showCreateCollection" hide-header hide-footer>
+  <b-modal id="create-collection" @hide="showCreateCollection = false" :visible="showCreateCollection" size="lg" center hide-header hide-footer>
     <template>
       <div class="mt-2 mb-3 mx-4">
         <div class="mb-4 mx-n2 row justify-content-end">
@@ -28,6 +28,9 @@
         <div class="mb-3 text-center">
           <h1 class="mb-5 font-bigger-4 font-weight-bold">Save Cart as Collection</h1>
         </div>
+        <div class="col-12 mb-5 text-center">
+          <img class="mx-auto" width="75%" style="max-width: 728px;" :src="imgURL" />
+        </div>
         <div class="mb-3">
           <p class="font-subheader">Collection Name.</p>
           <b-form-input v-model="collectionTitle" placeholder="What would your collection be called?"></b-form-input>
@@ -35,13 +38,7 @@
         <div class="mb-2">
           <p class="font-subheader">Description (Optional)</p>
           <b-form-textarea rows="3" max-rows="6" :state=" collectionDescription.length == 0 ? null : collectionDescription.length < 140" v-model="collectionDescription" placeholder="Short description about your collection"></b-form-textarea>
-          <p class="text-right">[[ collectionDescription.length ]]/140</p>
-        </div>
-
-        <div class="mb-3" v v-if="collections.length">
-          <h2 class="middle-line mb-3"><span class="text-muted font-body">or</span></h2>
-          <p class="font-subheader mt-3 mb-0">Save to existing collection</p>
-          <b-form-select v-model="selectedCollection" text-field="title" value-field="id" :options="collections" size="md" class="mt-3"></b-form-select>
+          <p class="text-right mt-2">[[ collectionDescription.length ]]/140</p>
         </div>
 
         <div class="d-flex justify-content-center justify-content-sm-end pt-1">
@@ -49,9 +46,32 @@
             @click="createCollection()"
             variant="primary"
             class="col-md-4 col-sm-12"
-            :disabled="!isValidCollection"
+            :disabled="selectedCollection || !isValidCollection"
           >
-            Save Collection
+            Create a Collection
+          </b-button>
+        </div>
+
+        <div class="mb-3" v v-if="collections.length">
+          <div class="hr my-5">
+            <span class="hr-text text-muted">or</span>
+          </div>
+          <p class="font-subheader mt-3 mb-0">Save to existing collection</p>
+          <b-form-select v-model="selectedCollection" text-field="title" value-field="id" :options="collections" size="md" class="mt-3">
+            <template #first>
+              <b-form-select-option :value="false">Please select an option...</b-form-select-option>
+            </template>
+          </b-form-select>
+        </div>
+
+        <div class="d-flex justify-content-center justify-content-sm-end pt-1">
+          <b-button
+            @click="createCollection()"
+            variant="outline-primary"
+            class="col-md-4 col-sm-12"
+            :disabled="!selectedCollection"
+          >
+            Save to Collection
           </b-button>
         </div>
         <br>
