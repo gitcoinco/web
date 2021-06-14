@@ -106,6 +106,11 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 # Round 8: December 2nd — December 18th 2020
 
 # TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
+last_round_start = timezone.datetime(2021, 3, 10, 1, 0)
+last_round_end = timezone.datetime(2021, 3, 25, 1, 0) #tz=utc, not mst
+next_round_start = timezone.datetime(2021, 6, 16, 15, 0) #tz=utc, not mst
+after_that_next_round_begin = timezone.datetime(2021, 9, 16, 12, 0)
+
 clr_round=10
 round_start = timezone.datetime(2021, 6, 16, 15, 0) #tz=utc, not mst
 round_end = timezone.datetime(2021, 7, 2, 0, 0) #tz=utc, not mst
@@ -975,6 +980,7 @@ def grants_by_grant_type(request, grant_type):
         'type': grant_type,
         'grant_label': grant_label if grant_type else grant_type,
         'round_end': round_end,
+        'after_that_next_round_begin': after_that_next_round_begin,
         'next_round_start': round_start,
         'now': timezone.now(),
         'mid_back': mid_back,
@@ -1151,6 +1157,7 @@ def grants_by_grant_clr(request, clr_round):
         'grant_label': grant_label if grant_type else grant_type,
         'round_end': round_end,
         'next_round_start': round_start,
+        'after_that_next_round_begin': after_that_next_round_begin,
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,
