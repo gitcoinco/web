@@ -28,7 +28,6 @@ Vue.component('contribution-thanks-modal', {
     },
     handleHide() {
       CartData.clearCheckedOut();
-      // this.$bvModal.show('trust-bonus');
     },
     showSaveAsCollection() {
       this.$bvModal.show('create-collection');
