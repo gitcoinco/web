@@ -38,6 +38,7 @@
           <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
             Apply to all
           </small>
+          <span class="text-danger" v-if="grant.grant_donation_amount_usd < UsdMinimalContribution">Minimum [[ grant.grant_donation_amount/grant.grant_donation_amount_usd || '' | formatNumberWithDecimal]] [[grant.grant_donation_currency]] required for contribution </span>
         </div>
       </div>
 
@@ -136,7 +137,14 @@
       </ul>
     </p>
   </div>
-
+  <div class="row justify-content-end mb-3">
+    <div v-if="grantsUnderMinimalContribution.length" class="col-auto text-danger">
+      <small>
+        [[ grantsUnderMinimalContribution.length ]] [[ 'contribution'|pluralize(grantsUnderMinimalContribution.length) ]] in your cart is below the minimum required amount. <br>
+        Increase your contribution to minimum 1 USD to proceed.
+      </small>
+    </div>
+  </div>
   <!-- Checkout recommendation -->
   <div class="row justify-content-end mb-3">
     <small class="col-auto bg-lightpurple p-2">
@@ -160,6 +168,7 @@
         :donation-inputs="donationInputs"
         :max-cart-items="maxCartItems"
         :grants-by-tenant="grantsByTenant"
+        :grants-under-minimal-contribution="grantsUnderMinimalContribution"
         :network="network"
       >
         <div class="w-100">
@@ -167,7 +176,7 @@
           <button
             @click="zksync.showModal = true"
             class="btn btn-outline-primary py-2 w-100 text-nowrap"
-            :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems"
+            :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
             id='js-zkSyncfundGrants-button'
             v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
           >
@@ -254,9 +263,9 @@
           </b-modal>
         </div>
       </grants-cart-ethereum-zksync>
-    
+
       <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
-        @click="standardCheckout" :disabled="isCheckoutOngoing"
+        @click="standardCheckout" :disabled="isCheckoutOngoing || grantsUnderMinimalContribution.length > 0"
         v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
       >
         Standard Checkout
