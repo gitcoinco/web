@@ -452,7 +452,6 @@ if (document.getElementById('grants-showcase')) {
       },
       showModal(modalName) {
         this.visibleModal = modalName;
-        console.log("showww modal", modalName);
       },
       hideModal() {
         this.visibleModal = 'none';
