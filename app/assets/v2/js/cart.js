@@ -993,9 +993,6 @@ Vue.component('grants-cart', {
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputsFiltered = this.getDonationInputs();
 
-      // Save off cart data
-      await this.manageEthereumCartJSONStore(userAddress, 'save');
-
       // Send transaction
       indicateMetamaskPopup();
       bulkTransaction.methods
@@ -1014,148 +1011,204 @@ Vue.component('grants-cart', {
         });
     },
 
-    // POSTs donation data to database
+    // POSTs donation data to database. Wrapped in a try/catch, and if it fails, we fallback to the manual ingestion script
     async postToDatabase(txHash, contractAddress, userAddress) {
-      // this.grantsByTenant is the array used for donations
-      // We loop through each donation to configure the payload then POST the required data
-      const donations = this.donationInputs;
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      try {
+        // this.grantsByTenant is the array used for donations, and this.donationInputs is computed from it
+        // We loop through each donation to configure the payload then POST the required data
+        const donations = this.donationInputs;
+        const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-      // If txHash has a length of one, stretch it so there's one hash for each donation
-      let txHashes = txHash;
+        // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's a zkSync checkout
+        const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
+        
+        // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
+        const txHashes = checkout_type === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
 
-      if (txHash.length === 1) {
-        txHashes = new Array(donations.length).fill(txHash[0]);
+        // Configure template payload
+        const saveSubscriptionPayload = {
+          // Values that are constant for all donations
+          checkout_type,
+          contributor_address: userAddress,
+          csrfmiddlewaretoken,
+          frequency_count: 1,
+          frequency_unit: 'rounds',
+          gas_price: 0,
+          gitcoin_donation_address: gitcoinAddress,
+          hide_wallet_address: this.hideWalletAddress,
+          anonymize_gitcoin_grants_contributions: false,
+          include_for_clr: this.include_for_clr,
+          match_direction: '+',
+          network: document.web3network,
+          num_periods: 1,
+          real_period_seconds: 0,
+          recurring_or_not: 'once',
+          signature: 'onetime',
+          splitter_contract_address: contractAddress,
+          subscription_hash: 'onetime',
+          visitorId: document.visitorId,
+          // Values that vary by donation
+          'gitcoin-grant-input-amount': [],
+          admin_address: [],
+          amount_per_period: [],
+          comment: [],
+          confirmed: [],
+          contract_address: [],
+          contract_version: [],
+          denomination: [],
+          grant_id: [],
+          split_tx_id: [], // Bulk donation hash for L1, or specific hash for L2
+          sub_new_approve_tx_id: [],
+          token_address: [],
+          token_symbol: []
+        };
+
+        for (let i = 0; i < donations.length; i += 1) {
+          // Get donation information
+          const donation = donations[i];
+          const grantId = donation.grant.grant_id;
+
+          // Get token information
+          const tokenName = donation.grant.grant_donation_currency;
+          const tokenDetails = this.getTokenByName(tokenName);
+
+          // Gitcoin uses the zero address to represent ETH, but the contract does not. Therefore we
+          // get the value of denomination and token_address using the below logic instead of
+          // using tokenDetails.addr
+          const isEth = tokenName === 'ETH';
+          const tokenAddress = isEth ? '0x0000000000000000000000000000000000000000' : tokenDetails.addr;
+
+          // Replace undefined comments with empty strings
+          const comment = donation.grant.grant_comments === undefined ? '' : donation.grant.grant_comments;
+
+          // For automatic contributions to Gitcoin, set 'gitcoin-grant-input-amount' to 100.
+          // Why 100? Because likely no one will ever use 100% or a normal grant, so using
+          // 100 makes it easier to search the DB to find which Gitcoin donations were automatic
+          const isAutomatic = donation.grant.isAutomatic;
+          const gitcoinGrantInputAmt = isAutomatic ? 100 : Number(this.gitcoinFactorRaw);
+
+          // Add the donation parameters
+          saveSubscriptionPayload.admin_address.push(donation.grant.grant_admin_address);
+          saveSubscriptionPayload.amount_per_period.push(Number(donation.grant.grant_donation_amount));
+          saveSubscriptionPayload.comment.push(comment);
+          saveSubscriptionPayload.confirmed.push(false);
+          saveSubscriptionPayload.contract_address.push(donation.grant.grant_contract_address);
+          saveSubscriptionPayload.contract_version.push(donation.grant.grant_contract_version);
+          saveSubscriptionPayload.denomination.push(tokenAddress);
+          saveSubscriptionPayload['gitcoin-grant-input-amount'].push(gitcoinGrantInputAmt);
+          saveSubscriptionPayload.grant_id.push(grantId);
+          saveSubscriptionPayload.split_tx_id.push(txHashes[i]);
+          saveSubscriptionPayload.sub_new_approve_tx_id.push(donation.tokenApprovalTxHash);
+          saveSubscriptionPayload.token_address.push(tokenAddress);
+          saveSubscriptionPayload.token_symbol.push(tokenName);
+        } // end for each donation
+
+        // to allow , within comments
+        saveSubscriptionPayload.comment = saveSubscriptionPayload.comment.join('_,_');
+
+        // Configure request parameters
+        const url = '/grants/bulk-fund';
+        const headers = {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        };
+        const saveSubscriptionParams = {
+          method: 'POST',
+          headers,
+          body: new URLSearchParams(saveSubscriptionPayload)
+        };
+
+        // Send saveSubscription request
+        const res = await fetch(url, saveSubscriptionParams);
+        const json = await res.json();
+
+        MauticEvent.createEvent({
+          'alias': 'products',
+          'data': [
+            {
+              'name': 'product',
+              'attributes': {
+                'product': 'grants',
+                'persona': 'grants-contributor',
+                'action': 'contribute'
+              }
+            }
+          ]
+        });
+
+      } catch (err) {
+        // Something went wrong, so we use the manual ingestion process instead
+        console.error(err);
+        console.log('Standard contribution ingestion failed, falling back to manual ingestion');
+        await this.postToDatabaseManualIngestion(txHash, userAddress);
       }
+    },
 
-      // TODO update celery task to manage this so we can remove these two server requests
-      // Update the JSON store with the transaction hashes. We append a timestamp to ensure it
-      // doesn't get overwritten by a subsequent checkout
-      await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save', txHashes);
-      // Once that's done, we can delete the old JSON store
-      await this.manageEthereumCartJSONStore(userAddress, 'delete');
+    // Alternative to postToDatabase that uses the manual ingestion process
+    async postToDatabaseManualIngestion(txHash, userAddress) {
+      // Determine if this was a zkSync checkout or standard L1 checkout. For this endpoint, we pass a txHash
+      // to ingest L1 contributions or an address to pass L2 contributions
+      const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
+      
+      txHash = checkout_type === 'eth_std' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
+      userAddress = checkout_type === 'eth_zksync' ? userAddress : '';
 
-      // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's
-      // a zkSync checkout
-      const checkout_type = txHashes[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
-
-      // Configure template payload
-      const saveSubscriptionPayload = {
-        // Values that are constant for all donations
-        checkout_type,
-        contributor_address: userAddress,
-        csrfmiddlewaretoken,
-        frequency_count: 1,
-        frequency_unit: 'rounds',
-        gas_price: 0,
-        gitcoin_donation_address: gitcoinAddress,
-        hide_wallet_address: this.hideWalletAddress,
-        anonymize_gitcoin_grants_contributions: false,
-        include_for_clr: this.include_for_clr,
-        match_direction: '+',
-        network: document.web3network,
-        num_periods: 1,
-        real_period_seconds: 0,
-        recurring_or_not: 'once',
-        signature: 'onetime',
-        splitter_contract_address: contractAddress,
-        subscription_hash: 'onetime',
-        visitorId: document.visitorId,
-        // Values that vary by donation
-        'gitcoin-grant-input-amount': [],
-        admin_address: [],
-        amount_per_period: [],
-        comment: [],
-        confirmed: [],
-        contract_address: [],
-        contract_version: [],
-        denomination: [],
-        grant_id: [],
-        split_tx_id: [], // Bulk donation hash for L1, or specific hash for L2
-        sub_new_approve_tx_id: [],
-        token_address: [],
-        token_symbol: []
-      };
-
-      for (let i = 0; i < donations.length; i += 1) {
-        // Get URL to POST to
-        const donation = donations[i];
-        const grantId = donation.grant.grant_id;
-
-        // Get token information
-        const tokenName = donation.grant.grant_donation_currency;
-        const tokenDetails = this.getTokenByName(tokenName);
-
-        // Gitcoin uses the zero address to represent ETH, but the contract does not. Therefore we
-        // get the value of denomination and token_address using the below logic instead of
-        // using tokenDetails.addr
-        const isEth = tokenName === 'ETH';
-        const tokenAddress = isEth ? '0x0000000000000000000000000000000000000000' : tokenDetails.addr;
-
-        // Replace undefined comments with empty strings
-        const comment = donation.grant.grant_comments === undefined ? '' : donation.grant.grant_comments;
-
-        // For automatic contributions to Gitcoin, set 'gitcoin-grant-input-amount' to 100.
-        // Why 100? Because likely no one will ever use 100% or a normal grant, so using
-        // 100 makes it easier to search the DB to find which Gitcoin donations were automatic
-        const isAutomatic = donation.grant.isAutomatic;
-        const gitcoinGrantInputAmt = isAutomatic ? 100 : Number(this.gitcoinFactorRaw);
-
-        // Add the donation parameters
-        saveSubscriptionPayload.admin_address.push(donation.grant.grant_admin_address);
-        saveSubscriptionPayload.amount_per_period.push(Number(donation.grant.grant_donation_amount));
-        saveSubscriptionPayload.comment.push(comment);
-        saveSubscriptionPayload.confirmed.push(false);
-        saveSubscriptionPayload.contract_address.push(donation.grant.grant_contract_address);
-        saveSubscriptionPayload.contract_version.push(donation.grant.grant_contract_version);
-        saveSubscriptionPayload.denomination.push(tokenAddress);
-        saveSubscriptionPayload['gitcoin-grant-input-amount'].push(gitcoinGrantInputAmt);
-        saveSubscriptionPayload.grant_id.push(grantId);
-        saveSubscriptionPayload.split_tx_id.push(txHashes[i]);
-        saveSubscriptionPayload.sub_new_approve_tx_id.push(donation.tokenApprovalTxHash);
-        saveSubscriptionPayload.token_address.push(tokenAddress);
-        saveSubscriptionPayload.token_symbol.push(tokenName);
-      } // end for each donation
-
-      // to allow , within comments
-      saveSubscriptionPayload.comment = saveSubscriptionPayload.comment.join('_,_');
-
-      // Configure request parameters
-      const url = '/grants/bulk-fund';
-      const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      };
-      const saveSubscriptionParams = {
-        method: 'POST',
-        headers,
-        body: new URLSearchParams(saveSubscriptionPayload)
-      };
+      // Get user's signature to prevent ingesting arbitrary transactions under your own username, then ingest
+      const { signature, message } = await this.signMessage(userAddress);
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const url = '/grants/ingest';
+      const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+      const network = document.web3network || 'mainnet';
+      const payload = { csrfmiddlewaretoken, txHash, userAddress, signature, message, network };
+      const postParams = { method: 'POST', headers, body: new URLSearchParams(payload) };
+      let json; // response
 
       // Send saveSubscription request
-      const res = await fetch(url, saveSubscriptionParams);
-      const json = await res.json();
+      try {
+        _alert('Please be patient, as manual ingestion may take 1-2 minutes', 'info', '3000');
+        const res = await fetch(url, postParams);
 
-      MauticEvent.createEvent({
-        'alias': 'products',
-        'data': [
-          {
-            'name': 'product',
-            'attributes': {
-              'product': 'grants',
-              'persona': 'grants-contributor',
-              'action': 'contribute'
-            }
-          }
-        ]
-      });
+        json = await res.json();
+        console.log('ingestion response: ', json);
+        if (!json.success) {
+          console.log('ingestion failed');
+          throw new Error(`Your transactions could not be processed. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`);
+        }
+      } catch (err) {
+        console.error(err);
+        const message = `Your contribution was successful, but was not recognized by our database. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`;
+        
+        _alert(message, 'error');
+        throw new Error(message);
+      }
+    },
+    
 
-      // if (json.failures.length > 0) {
-      //   // Something went wrong, so we create a backup of the users cart
-      //   await this.manageEthereumCartJSONStore(`${userAddress} - ${new Date().getTime()}`, 'save');
-      // }
+    // Asks user to sign a message as verification they own the provided address
+    async signMessage(userAddress) {
+      const baseMessage = 'Something went wrong, but we want to ensure your contributions are counted!\n\nSign this message as verification that you control the provided wallet address so we can process your contributions'; // base message that will be signed
+      const ethersProvider = new ethers.providers.Web3Provider(provider); // ethers provider instance
+      const signer = ethersProvider.getSigner(); // ethers signers
+      const { chainId } = await ethersProvider.getNetwork(); // append chain ID if not mainnet to mitigate replay attack
+      const message = chainId === 1 ? baseMessage : `${baseMessage}\n\nChain ID: ${chainId}`;
 
-      // // Clear JSON Store
-      // await this.manageEthereumCartJSONStore(userAddress, 'delete');
+      // Get signature from user
+      const isValidSignature = (sig) => ethers.utils.isHexString(sig) && sig.length === 132; // used to verify signature
+      let signature = await signer.signMessage(message); // prompt to user is here, uses eth_sign
+
+      // Fallback to personal_sign if eth_sign isn't supported (e.g. for Status and other wallets)
+      if (!isValidSignature(signature)) {
+        signature = await ethersProvider.send(
+          'personal_sign',
+          [ ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message)), userAddress.toLowerCase() ]
+        );
+      }
+
+      // Verify signature
+      if (!isValidSignature(signature)) {
+        throw new Error(`Invalid signature: ${signature}`);
+      }
+
+      return { signature, message };
     },
 
     /**
@@ -1266,63 +1319,6 @@ Vue.component('grants-cart', {
     },
 
     // ===================================== Helper functions ======================================
-
-    // For the provider address, an action of `save` will backup the user's Ethereum cart data with
-    // a JSON store before checkout, and validate that it was saved. An action of `delete` will
-    // delete that JSON store. The txHashes input must be undefined if no hashes are available, or
-    // or an array with the tx hash for each donation in this.donationInputs
-    async manageEthereumCartJSONStore(userAddress, action, txHashes = undefined) {
-      if (action !== 'save' && action !== 'delete') {
-        throw new Error("JSON Store action must be 'save' or 'delete'");
-      }
-      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const url = 'manage-ethereum-cart-data';
-      const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
-
-      // Configure data to save
-      let cartData;
-
-      if (!txHashes) {
-        // No transaction hashes were provided, so just save off the cart data directly
-        cartData = this.donationInputs;
-      } else {
-        // Add transaction hashes to each donation input object
-        if (txHashes.length !== this.donationInputs.length) {
-          throw new Error('Invalid length of transaction hashes array');
-        }
-        cartData = this.donationInputs.map((donation, index) => {
-          return {
-            ...donation,
-            txHash: txHashes[index]
-          };
-        });
-      }
-
-
-      // Send request
-      const payload = {
-        method: 'POST',
-        headers,
-        body: new URLSearchParams({
-          action,
-          csrfmiddlewaretoken,
-          ethereum_cart_data: action === 'save' ? JSON.stringify(cartData) : null,
-          user_address: userAddress
-        })
-      };
-      const postResponse = await fetch(url, payload);
-      const json = await postResponse.json();
-
-      if (action === 'save') {
-        // Validate that JSON store was created successfully
-        const validationResponse = await this.getEthereumCartJSONStore(userAddress);
-
-        if (!validationResponse) {
-          throw new Error('Something went wrong. Please try again.');
-        }
-      }
-      return true;
-    },
 
     // Returns Ethereum cart data if found in the JSON store for `userAddress`, and false otherw
     async getEthereumCartJSONStore(userAddress) {
