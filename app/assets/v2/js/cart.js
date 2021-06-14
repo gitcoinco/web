@@ -61,7 +61,7 @@ Vue.component('grants-cart', {
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
-      maxCartItems: 90, // Max supported items in cart at once
+      maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
