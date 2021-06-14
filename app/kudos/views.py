@@ -541,6 +541,9 @@ def send_4(request):
 
 
 def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
+    if not github_handle:
+        return
+
     kwargs = {
         'activity_type': event_name,
         'kudos_transfer': kudos_transfer,
