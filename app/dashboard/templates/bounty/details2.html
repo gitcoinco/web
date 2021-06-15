@@ -1151,6 +1151,11 @@
 
       <script src="{% static "v2/js/pages/bounty_detail/algorand_extension.js" %}"></script>
 
+    {% elif web3_type == 'tezos_ext' %}
+
+      <script src="{% static "v2/js/lib/tezos/walletbeacon.min.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/tezos_extension.js" %}"></script>
+
     {% elif web3_type == 'fiat' %}
 
       {% if PYPL_CLIENT_ID %}
