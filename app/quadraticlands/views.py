@@ -79,7 +79,7 @@ def mission_base(request, mission_name):
     context.update(game_status)
     if mission_name == 'use' and game_status["proof_of_knowledge"] == False:
         return redirect('/quadraticlands/mission')
-    if mission_name == 'receive': 
+    if mission_name == 'receive':
         if game_status["proof_of_knowledge"] == False or game_status["proof_of_use"] == False:
             return redirect('/quadraticlands/mission')
     return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
@@ -248,7 +248,7 @@ def mission_postcard_svg(request):
 @ratelimit(key='ip', rate='4/s', method=ratelimit.UNSAFE, block=True)
 def mission_lore(request):
     from perftools.models import StaticJsonEnv
-    data = StaticJsonEnv.objects.get(key='QLLORE').data
+    data = StaticJsonEnv.objects.get(key='QL_LORE').data
     MOLOCH_COMIC_LINK = data['MOLOCH_COMIC_LINK']
     QL_SONG_LINK = data['QL_SONG_LINK']
     params = {
