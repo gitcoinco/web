@@ -2957,14 +2957,14 @@ def get_profile_tab(request, profile, tab, prev_context):
             {
                 'ref': 'poh',
                 'name': 'Proof of Humanity',
-                'icon_path': static('/v2/images/project_logos/poh-min.svg'),
+                'icon_path': static('v2/images/project_logos/poh-min.svg'),
                 'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
                 'match_percent': 50,
                 'is_verified': profile.is_poh_verified
             }, {
                 'ref': 'brightid',
                 'name': 'BrightID',
-                'icon_path': static('/v2/images/project_logos/brightid.png'),
+                'icon_path': static('v2/images/project_logos/brightid.png'),
                 'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
                 'match_percent': 50,
                 'is_verified': brightid['status'] == 'verified',
@@ -2975,7 +2975,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             }, {
                 'ref': 'idena',
                 'name': 'Idena',
-                'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('/v2/images/project_logos/idena.svg'),
+                'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('v2/images/project_logos/idena.svg'),
                 'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
                 'match_percent': 50,
                 'is_connected': idena['is_connected'],
@@ -2990,14 +2990,14 @@ def get_profile_tab(request, profile, tab, prev_context):
             }, {
                 'ref': 'poap',
                 'name': 'POAP',
-                'icon_path': static('/v2/images/project_logos/poap.svg'),
+                'icon_path': static('v2/images/project_logos/poap.svg'),
                 'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
                 'match_percent': 25,
                 'is_verified': profile.is_poap_verified
             }, {
                 'ref': 'ens',
                 'name': 'ENS',
-                'icon_path': static('/v2/images/project_logos/ens.svg'),
+                'icon_path': static('v2/images/project_logos/ens.svg'),
                 'desc': 'Get verified through the Ethereum Naming Service.',
                 'match_percent': 25,
                 'is_verified': profile.is_ens_verified
@@ -3011,7 +3011,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             }, {
                 'ref': 'google',
                 'name': 'Google',
-                'icon_path': static('/v2/images/project_logos/google.png'),
+                'icon_path': static('v2/images/project_logos/google.png'),
                 'desc': 'Get verified by connecting to your Google account.',
                 'match_percent': 15,
                 'is_verified': profile.is_google_verified
@@ -3082,7 +3082,7 @@ def logout_idena(request, handle):
         'login_url': idena_callback_url(request, profile),
         'is_verified': profile.is_idena_verified,
         'next_validation': None,
-        'icon_path': static('/v2/images/project_logos/idena.svg'),
+        'icon_path': static('v2/images/project_logos/idena.svg'),
     })
 
 # Response model differ from rest of project because idena client excepts this shape:
@@ -3215,7 +3215,7 @@ def recheck_idena_status(request, handle):
         'is_connected': profile.is_idena_connected,
         'is_verified': profile.is_idena_verified,
         'next_validation': str(localtime(next_validation_time())) if not profile.is_idena_verified else None,
-        'icon_path': 'https://robohash.org/%s' % profile.idena_address if profile.is_idena_connected else static('/v2/images/project_logos/idena.svg'),
+        'icon_path': 'https://robohash.org/%s' % profile.idena_address if profile.is_idena_connected else static('v2/images/project_logos/idena.svg'),
     })
 
 def verify_text_for_tweet(handle):
