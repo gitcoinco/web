@@ -699,15 +699,14 @@
     scrollElements.forEach((element) => {
       element.addEventListener('click', function (e) {
         e.preventDefault();
-        console.log(e.target.hash)
-        document.querySelector(e.target.hash).scrollIntoView({
-          behavior: 'smooth'
-        });
-        return false;
+        if (e.target && document.querySelector(e.target.hash)) {        
+          document.querySelector(e.target.hash).scrollIntoView({
+            behavior: 'smooth'
+          });
+          return false;
+        }
       });
     })
-
-
 
   </script>
 </body>
