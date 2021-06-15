@@ -832,7 +832,7 @@ Vue.component('poh-verify-modal', {
             </div>
             <div v-if="step === 'validation-complete'">
               <div>
-                Your Proof of Humanity verification was sucessful. Thank you for helping make Gitcoin mroe sybil resistant!
+                Your Proof of Humanity verification was successful. Thank you for helping make Gitcoin mroe sybil resistant!
               </div>
               <b-button @click="dismissVerification" variant="primary" class="btn btn-primary mt-5 px-5 float-right">Done</b-button>
             </div>

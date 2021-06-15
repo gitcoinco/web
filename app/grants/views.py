@@ -2095,7 +2095,7 @@ def cancel_grant_v1(request, grant_id):
     response = {
         'status': 200,
         'pk': grant.pk,
-        'message': 'grant cancelled sucessfully'
+        'message': 'grant cancelled successfully'
     }
     return JsonResponse(response)
 

@@ -124,7 +124,7 @@ def is_valid_zcash_txn(contribution):
 
 
 def sync_zcash_payout(contribution):
-    is_sucessfull_txn = False
+    is_successfull_txn = False
 
     if not contribution.tx_id or contribution.tx_id == '0x0':
         # user entered t-addr.
@@ -132,12 +132,12 @@ def sync_zcash_payout(contribution):
         if txn:
             contribution.tx_id = txn
             contribution.save()
-            is_sucessfull_txn = is_zcash_txn_successful(contribution.tx_id)
+            is_successfull_txn = is_zcash_txn_successful(contribution.tx_id)
     else:
         # user entered txn-id or txn-id picked up by cron.
-        is_sucessfull_txn = is_valid_zcash_txn(contribution)
+        is_successfull_txn = is_valid_zcash_txn(contribution)
 
-    if is_sucessfull_txn:
+    if is_successfull_txn:
         contribution.success = True
         contribution.tx_cleared = True
         contribution.checkout_type = 'zcash_std'
