@@ -36,7 +36,7 @@ class GeneralAdmin(admin.ModelAdmin):
 class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['profile__handle', 'name']
-    list_display = ['pk', 'profile', 'network', 'created_on', '__str__']
+    list_display = ['preview_small', 'pk', 'profile', 'network', 'created_on', '__str__']
     raw_id_fields = ['profile']
     readonly_fields = ['preview']
 
@@ -72,6 +72,10 @@ class TokenRequestAdmin(admin.ModelAdmin):
 
     def preview(self, instance):
         html = f"<img style='max-width: 400px;' src='{instance.artwork_url}'>"
+        return mark_safe(html)
+
+    def preview_small(self, instance):
+        html = f"<a href={instance.admin_url}><img style='max-width: 50px;' src='{instance.artwork_url}'></a>"
         return mark_safe(html)
 
 
