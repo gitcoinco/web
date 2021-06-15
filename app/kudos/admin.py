@@ -56,11 +56,18 @@ class TokenRequestAdmin(admin.ModelAdmin):
             try:
                 obj.rejection_reason = 'n/a'
                 obj.save()
-                mint_token_request(obj.id)
+                mint_token_request(obj.id, num_sync=1)
                 self.message_user(request, f"Mint/sync submitted to chain")
             except Exception as e:
                 self.message_user(request, str(e))
             return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
+        if "_do_sync_kudos" in request.POST:
+            from kudos.management.commands.mint_all_kudos import sync_latest
+            num_sync = int(request.POST.get('num_sync', 5))
+            for i in range(0, num_sync):
+                sync_latest(i, network=obj.network)
+            self.message_user(request, f"Sync'c Kudos")
+            return redirect('/kudos/marketplace')
         return redirect(obj.admin_url)
 
     def preview(self, instance):
