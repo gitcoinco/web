@@ -140,7 +140,7 @@ def render_new_grant_approved_email(grant):
 def render_new_contributions_email(grant):
     hours_ago = 12
     contributions = grant.contributions.filter(
-        modified_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago)
+        created_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago)
     )
     amount_raised = sum(contributions.values_list('normalized_data__amount_per_period_usdt', flat=True))
     num_of_contributors = len(set(contributions.values_list('profile_for_clr', flat=True)))
