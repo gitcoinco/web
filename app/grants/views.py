@@ -873,7 +873,7 @@ def grants_landing(request):
         'round_end_date': round_end_date,
         'now': now,
         'round_active': round_active,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100)
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -1024,7 +1024,7 @@ def grants_by_grant_type(request, grant_type):
         'collections': collections,
         'featured': featured,
         'active_rounds': active_rounds,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100)
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -2318,11 +2318,11 @@ def grants_cart_view(request):
     context = {
         'title': 'Grants Cart',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100)
     }
     if request.user.is_authenticated:
         profile = request.user.profile
         context['username'] = profile.username
+        context['trust_bonus'] = round(request.user.profile.trust_bonus * 100)
 
         is_brightid_verified = ( 'verified' == get_brightid_status(profile.brightid_uuid) )
 
