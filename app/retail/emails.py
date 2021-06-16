@@ -34,7 +34,6 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
-
 from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
