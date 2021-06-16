@@ -1,5 +1,5 @@
 from grants.models import Grant
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 
 clr_round, _, _, _ = get_clr_rounds_metadata()
 

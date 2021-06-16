@@ -75,13 +75,13 @@ from grants.models import (
 )
 from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import (
-    emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_user_code, is_grant_team_member,
-    sync_payout,
+    emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
+    is_grant_team_member, sync_payout,
 )
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
-from perftools.models import JSONStore, StaticJsonEnv
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
@@ -90,33 +90,6 @@ from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-
-
-def get_clr_rounds_metadata():
-    '''
-        Fetches default CLR round metadata for stats/marketing flows.
-        This is configured when multiple rounds are running
-    '''
-    try:
-        CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
-
-        clr_round = CLR_ROUND_DATA['round_num']
-        start_date = CLR_ROUND_DATA['round_start']
-        end_date = CLR_ROUND_DATA['round_end']
-        round_active = CLR_ROUND_DATA['round_active']
-
-        # timezones are in UTC (format example: 2021-06-16:15.00.00)
-        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
-        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
-
-    except:
-        # setting defaults
-        clr_round=1
-        round_start_date = timezone.now()
-        round_end_date = timezone.now() + timezone.timedelta(days=14)
-        round_active = True
-
-    return clr_round, round_start_date, round_end_date, round_active
 
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]

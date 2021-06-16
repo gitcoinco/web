@@ -100,7 +100,7 @@ from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
 from grants.models import Grant
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp

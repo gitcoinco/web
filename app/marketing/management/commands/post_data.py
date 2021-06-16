@@ -30,7 +30,7 @@ from dashboard.models import Activity, Earning, Profile
 from economy.utils import convert_token_to_usdt
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from townsquare.models import Comment
 
 text = ''

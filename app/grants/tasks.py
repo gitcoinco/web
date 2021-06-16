@@ -14,7 +14,7 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
 from marketing.models import Stat
 from perftools.models import JSONStore
