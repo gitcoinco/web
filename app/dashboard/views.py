@@ -6827,9 +6827,9 @@ def send_verification(request, handle):
 
     if not has_previous_validation:
         response = validate_number(request.user, twilio, phone, redis, delivery_method)
-        if not response.get('isValid') or response.isValid == False:
-            response.msg = "Please provide a valid phone number"
         if response:
+            if response.get('isValid') and response.isValid == False:
+                response.msg = "Please provide a valid phone number"
             return response
     else:
         cooldown = has_previous_validation + timedelta(minutes=SMS_COOLDOWN_IN_MINUTES)
