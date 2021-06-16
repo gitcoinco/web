@@ -4,6 +4,7 @@ import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
 BASE_URL = 'https://api.tzkt.io/v1'
+# BASE_URL = 'https://api.edo2net.tzkt.io/v1'
 
 
 def find_txn_on_tezos_explorer(fulfillment):
@@ -60,9 +61,11 @@ def get_tezos_txn_status(fulfillment):
             and tx_response['amount'] == float(amount) * 10 ** 6
             and tx_response['status'] == 'applied'
         ):
-            return True
-        else:
-            return False
+            if tx_response['status'] == 'applied':
+                return 'success'
+            return 'expired'
+
+    return None
 
 
 def sync_tezos_payout(fulfillment):
@@ -74,9 +77,13 @@ def sync_tezos_payout(fulfillment):
             
     if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_tezos_txn_status(fulfillment)
-        if txn_status:
+
+        if txn_status == 'success':
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
             record_payout_activity(fulfillment)
+        elif txn_status == 'expired':
+            fulfillment.payout_status = 'expired'
+
         fulfillment.save()

@@ -69,7 +69,6 @@ def get_rsk_txn_status(fulfillment):
             if txn['success']:
                 return 'success'
             return 'expired'
-        
 
     return None
 
