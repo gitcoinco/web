@@ -86,7 +86,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.amount_received = 0
         instance.monthly_amount_subscribed = 0
         instance.sybil_score = 0
-        for subscription in instance.subscriptions.all():
+        for subscription in instance.subscriptions.filter(network=network):
 
             value_usdt = subscription.amount_per_period_usdt
 
@@ -99,7 +99,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                     subscription.save()
 
             # calcualte usdt value in aggregate
-            for contrib in subscription.subscription_contribution.filter(network=network, success=True):
+            for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
                     if contrib.created_on > round_start_date:
