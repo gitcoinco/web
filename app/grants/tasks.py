@@ -14,6 +14,7 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
+from grants.views import get_clr_rounds_metadata
 from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
 from marketing.models import Stat
 from perftools.models import JSONStore
@@ -22,9 +23,6 @@ from townsquare.models import Comment
 logger = get_task_logger(__name__)
 
 redis = RedisService().redis
-
-CLR_START_DATE = dt.datetime(2021, 3, 10, 1, 0) # TODO:SELF-SERVICE
-
 
 def lineno():
     """Returns the current line number in our program."""
@@ -46,7 +44,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     # setup
     print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
+
+    _, round_start_date, _, _ = get_clr_rounds_metadata()
+
     if instance.in_active_clrs.exists():
         gclr = instance.in_active_clrs.order_by('start_date').first()
         round_start_date = gclr.start_date
