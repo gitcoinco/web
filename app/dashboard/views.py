@@ -2770,7 +2770,7 @@ def get_profile_tab(request, profile, tab, prev_context):
 
                 return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
-        as_dict = profile.to_dict()
+        as_dict = profile.as_dict
         all_activities = as_dict.get('activities')
         tabs = []
         counts = as_dict.get('activities_counts', {'joined': 1})
@@ -3936,7 +3936,7 @@ def profile(request, handle, tab=None):
         return redirect(profile.url)
 
     # setup context for visit
-    if not len(profile.tribe_members) and tab == 'tribe':
+    if not profile.tribe_members.exists() and tab == 'tribe':
         tab = 'activity'
 
     # hack to make sure that if ur looking at ur own profile u see right online status
