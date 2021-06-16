@@ -3560,7 +3560,7 @@ def disconnect_user_google(request, handle):
 
     profile.is_google_verified = False
     profile.identity_data_google = False
-    profile.google_user_id = False
+    profile.google_user_id = None
     profile.save()
 
     return JsonResponse({
@@ -3829,7 +3829,7 @@ def disconnect_user_facebook(request, handle):
 
     profile.is_facebook_verified = False
     profile.identity_data_facebook = False
-    profile.facebook_user_id = False
+    profile.facebook_user_id = None
     profile.save()
 
     return JsonResponse({
