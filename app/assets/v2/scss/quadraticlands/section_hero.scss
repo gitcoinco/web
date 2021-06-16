@@ -15,6 +15,21 @@ section.hero {
     margin-left: 3em;
     user-select: none;
 
+    h1.big{
+      padding-top: 1rem;
+      font-size: 300%;
+      line-height: 1.2em;
+      word-break: break-all;
+    }
+
+    a{
+      text-decoration: none;
+    }
+
+    p{
+      margin-top:2em;
+    }
+
     &.pushdown {
       padding-top: 130px; /*navigation*/
     }
@@ -22,9 +37,15 @@ section.hero {
     &.centered {
       margin: auto;
 
-      h1 {
+      h1{
         margin: 0;
+        text-align: center;
       }
+
+      p{
+        text-align: center;
+      }
+
     }
 
     .btn {

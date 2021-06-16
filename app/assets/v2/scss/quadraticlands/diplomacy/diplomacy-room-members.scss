@@ -10,54 +10,90 @@
   ::placeholder{ color: var(--stone); }
 
 
-  .member{
+  .member-card{
 
-    margin-bottom: 2em;
-	
+    cursor: pointer;
+
+    .front{
+      display: block;
+    }
+    .back{
+    display: none;    
+    }
+
+    &.flip{
+      .front{
+        display: none;
+      }
+      .back{
+        display: block;
+      }
+    }
+
+
+    &.self{
+
+      .front{
+
+        input{
+          pointer-events: none;
+          color: var(--smoke);
+        }     
+
+        .username{
+          &:after {
+            content: " (you)";
+          }       
+        }
+
+        ::placeholder{ color: var(--smoke); }
+
+      }
+
+
+    }
+
+  }
+
+
+  .front{
+
+    background-color: var(--space_light);
+    text-align: center;
+    border-radius: 6px;
+
     figure{
-
-      margin-bottom: 1em;
+      padding: 1em 0em;
 
       img{
         border-radius: 180px;
         max-width: 180px;
         margin:auto;
-      }			
+      }
     }
-
 
     .username{
       color: var(--white);
-      text-align: center;
+      margin-bottom: 1em;
     }
 
-    .tokens{
+    .tokens_in{
       color: var(--aqua);
-      text-align: center;
-      &:after {
-        content: " GTC";
-      }
-      &:before {
-        content: "Incoming: ";
-      }
-    }
-    .tokens_out{
-      color: var(--stone);
-      text-align: center;
-      &:after {
-        content: " GTC";
-      }
-      &:before {
-        content: "Outgoing: ";
-      }
+      &:before { content: "+ "; }
+      &:after { content: " GTC"; } 
     }
 
+    .tokens_out{
+      color: var(--pink);
+      &:before { content: "- "; }
+      &:after { content: " GTC"; }
+    }
 
     input{
 
       width: 100%;
       padding: 1em 0.2em;
-      margin-top: 0.5em;
+      margin-top: 1em;
 
       text-align: center;
       color: var(--aqua);
@@ -72,32 +108,52 @@
         border: 1px solid var(--smoke);
         outline: none;
         animation: colorcycle-shadow 1s ease-in-out infinite;
-      }		
+      }   
 
     }
-
-
-    &.self{
-
-      input{
-        pointer-events: none;
-        color: var(--smoke);
-      }
-
-      .username{
-        &:after {
-          content: " (you)";
-        }				
-      }
-
-      ::placeholder{ color: var(--smoke); }
-
-    }
-
-
-
 
   }
+
+
+  .back{
+
+    background-color: var(--space_light);
+    padding: .75em 1em;
+    border-radius: 6px;
+
+    .wrapper{
+        font-size: 80%;
+        div{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          word-break: break-all;
+        }
+    }
+
+    .tokens_in{
+      &:before { 
+        content: "incomming"; 
+        color: var(--aqua);
+        font-weight: 600;
+      }
+      span{ color: var(--aqua); text-align: right; }
+      margin-bottom: 1em;
+    }
+
+    .tokens_out{
+      &:before { 
+        content: "outgoing"; 
+        color: var(--pink);
+        font-weight: 600;
+      }
+      span{ color: var(--pink); text-align: right;  }
+    }
+
+  }
+
+
+
 
 
 }
@@ -110,7 +166,7 @@
 
 @media #{$tablet} {
   .diplomacy-room-members {
-    .member figure img{
+    .member-card .front figure img{
       border-radius: 128px;
       max-width: 128px;  		
     }
@@ -119,12 +175,18 @@
 
 @media #{$phone} {
   .diplomacy-room-members {
-    .member figure img{
+    .member-vard .front figure img{
       border-radius: 90px;
       max-width: 90px;  		
     }
   }
 }
+
+
+
+
+
+
 
 
 

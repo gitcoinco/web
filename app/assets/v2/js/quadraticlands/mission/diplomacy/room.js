@@ -2,6 +2,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.debug('DIPLOMACY ROOM');
 
+  // random floor polygones coloring on diplomacy image
+  polygones = document.querySelectorAll('svg #hero polygon, svg #hero path');
+  polygones.forEach(p => {
+    p.setAttribute('data-kinetics-attraction', '');
+    p.setAttribute('data-kinetics-attraction-chance', getRandomFloat(0.3, 1));
+    p.setAttribute('data-kinetics-attraction-force', getRandomFloat(.7, 1.3));
+    p.setAttribute('data-kinetics-attraction-grow', getRandomInt(1, 4));
+    p.setAttribute('data-tone-click-random', '');
+    p.style.cursor = 'pointer';
+  });
+
+  initToneJs();
+  new Kinetics().interactionHook();
+  last = 0;
+  console.debug('ANIMATE DIPLOMACY');
+  animate_diplomacy();
+
+
+  //member card toggle card front back - but not on click in the input field on front card
+  const membercards = document.querySelectorAll('.member-card');
+  membercards.forEach(card => {
+    card.addEventListener('click', (event) => {
+      if (event.target.tagName != "INPUT") {
+        card.classList.toggle("flip");
+      }
+    });    
+  });
+
+
   //fetch balance of users wallet + display it
   const diplomacy_wallet_address = document.getElementById('wallet_address');
   const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
@@ -71,7 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // vouche bar validations
-  inputs = document.querySelectorAll('.member input');
+  inputs = document.querySelectorAll('.member-card .front input');
+  console.debug(inputs)
   inputs.forEach(i => {
     i.addEventListener('input', input => {
       if (i.value < 0) {
@@ -100,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateVoucheBar(){
 
   window.use = 0;
-  inputs = document.querySelectorAll('.member input');
+  inputs = document.querySelectorAll('.member-card .front input');
 
   inputs.forEach(i => {
     if (i.value > 0) {
@@ -173,3 +203,24 @@ async function vouche() {
   console.log(signature);
 
 }
+
+
+// animations for hero
+function animate_diplomacy(now) {
+
+  if (!last || now - last >= 60) {
+
+    // pick a random poly from hero-about.svg
+    // to randomly color up with a little animation
+    polygone = polygones[Math.floor(Math.random() * polygones.length)];
+    polygone.animate({ fill: [ '#9760FF', '#FA72AF', '#7AFFF7', '#9760FF' ] },
+      {
+        duration: 500, delay: 0, iterations: 1
+      });
+
+    last = now;
+  }
+
+  requestAnimationFrame(animate_diplomacy);
+}
+
