@@ -162,6 +162,10 @@ Vue.mixin({
           url = `https://siastats.info/navigator?search=${txn}`;
           break;
 
+        case 'XTZ':
+          url = `https://tzkt.io/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -234,6 +238,10 @@ Vue.mixin({
 
         case 'SC':
           url = `https://siastats.info/navigator?search=${address}`;
+          break;
+
+        case 'XTZ':
+          url = `https://tzkt.io/${address}/operations/`;
           break;
 
         default:
@@ -577,6 +585,10 @@ Vue.mixin({
 
         case 'algorand_ext':
           payWithAlgorandExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'tezos_ext':
+          payWithTezosExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
