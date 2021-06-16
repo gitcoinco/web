@@ -418,8 +418,8 @@ def build_stat_results(keyword=None):
     from dashboard.models import Bounty, HackathonEvent, Tip
     context = {
         'active': 'results',
-        'title': _('Results'),
-        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.'),
+        'title': 'Results',
+        'card_desc': 'Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.',
     }
     pp = PerformanceProfiler()
     pp.profile_time('start')
