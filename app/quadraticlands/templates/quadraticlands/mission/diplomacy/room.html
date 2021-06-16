@@ -13,6 +13,7 @@
 {% block 'content' %}
 
 
+{% csrf_token %}
 
 <!-- Diplomacy Room Hero -->
 <section class="hero knightrider" data-kinetics-mode data-kinetics-mode-type="rain" data-kinetics-mode-speed="5"
@@ -190,7 +191,7 @@
 <section class="diplomacy-invite">
   <div class="wrapper">
     <div class="info">
-      [{{game.active_players | length}} Player{{game.active_players | pluralize}} Active /8 Slots] Invite up to 8 total players with this Link
+      [{{game.active_players | length}} Player{{game.active_players | pluralize}} Active /{{max_players}} Slots] Invite up to {{max_players}} total players with this Link
     </div>
     <div class="input">
       <input id="room_link" type="text" readonly value="https://gitcoin.co/quadraticlands/mission/diplomacy/4934-devilhunters">

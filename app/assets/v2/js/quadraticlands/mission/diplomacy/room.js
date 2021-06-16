@@ -196,11 +196,33 @@ async function vouche() {
   // @kev : do something with the result ( sign, safe, whatever)
   // this is how far i could come. now your turn :)
   const accounts = await web3.eth.getAccounts();
-  let signature = web3.eth.sign(JSON.stringify(result), accounts[0], function(foo){
-    console.log(foo);
-  }).then(console.log);
-  console.log('there');
-  console.log(signature);
+  const account = accounts[0];
+  const package = {
+    'votes': result,
+    'balance': balance,
+    'account': account,
+  }
+  let signature = await web3.eth.personal.sign(JSON.stringify(package) , account);
+  const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
+  const params = {
+    package: package,
+    signature: signature,
+    csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+  }
+  const url = document.location.href;
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: params,
+    success: function(response){
+      alert("Vote submitted")
+      document.location.href = document.location.href + "#chat";
+    },
+    error: function(error){
+      alert('got an error - pls contact support@gitcoin.co');
+    },
+    dataType: 'json'
+  });
 
 }
 
