@@ -34,6 +34,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     if settings.FLUSH_QUEUE:
         return
 
+    network = 'mainnet'
+    if settings.DEBUG:
+        network = 'rinkeby'
 
     # KO hack 12/14/2020
     # this will prevent tasks on grants that have been issued from an app server from being immediately
@@ -96,7 +99,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                     subscription.save()
 
             # calcualte usdt value in aggregate
-            for contrib in subscription.subscription_contribution.filter(success=True):
+            for contrib in subscription.subscription_contribution.filter(network=network, success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
                     if contrib.created_on > round_start_date:
