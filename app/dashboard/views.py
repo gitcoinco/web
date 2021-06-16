@@ -6827,7 +6827,7 @@ def send_verification(request, handle):
 
     if not has_previous_validation:
         response = validate_number(request.user, twilio, phone, redis, delivery_method)
-        if response.isValid == False:
+        if not response.get('isValid') or response.isValid == False:
             response.msg = "Please provide a valid phone number"
         if response:
             return response
