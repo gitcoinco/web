@@ -759,6 +759,11 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
                           'denies_redemption_ptoken', 'incoming_redemption_ptoken', 'buy_ptoken']
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
+
+    network = request.GET.get('network', 'rinkeby')
+    if 'grant:' in what:
+        activities = activities.exclude(subscription__network=network)
+
     activities = activities.exclude(activity_type__in=only_profile_cards)
     view_count_threshold = 10
 

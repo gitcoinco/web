@@ -1429,6 +1429,7 @@ def grant_details(request, grant_id, grant_slug):
 @csrf_exempt
 def grant_details_contributors(request, grant_id):
     page = int(request.GET.get('page', 1))
+    network = request.GET.get('network', 'mainnet')
     limit = int(request.GET.get('limit', 30))
 
     try:
@@ -1436,10 +1437,18 @@ def grant_details_contributors(request, grant_id):
             pk=grant_id
         )
     except Grant.DoesNotExist:
-        response['message'] = 'error: grant cannot be found'
+        response = {
+            'message': 'error: grant cannot be found'
+        }
         return JsonResponse(response)
 
-    _contributors = set(Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True, anonymous=False).prefetch_related('subscription', 'profile_for_clr').values_list('profile_for_clr__handle', flat=True).order_by('-created_on'))
+    _contributors = set(Contribution.objects.filter(
+        subscription__grant=grant,
+        subscription__network=network,
+        subscription__is_postive_vote=True,
+        anonymous=False
+    ).prefetch_related('subscription', 'profile_for_clr').values_list('profile_for_clr__handle', flat=True).order_by('-created_on'))
+
     contributors = list(_contributors)
     all_pages = Paginator(contributors, limit)
     this_page = all_pages.page(page)
@@ -1464,6 +1473,7 @@ def grant_details_contributors(request, grant_id):
 @csrf_exempt
 def grant_details_contributions(request, grant_id):
     page = int(request.GET.get('page', 1))
+    network = request.GET.get('network', 'mainnet')
     limit = int(request.GET.get('limit', 10))
     try:
         grant = Grant.objects.prefetch_related('subscriptions').get(
@@ -1475,7 +1485,11 @@ def grant_details_contributions(request, grant_id):
         }
         return JsonResponse(response)
 
-    _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+    _contributions = Contribution.objects.filter(
+        subscription__grant=grant,
+        subscription__network=network,
+        subscription__is_postive_vote=True
+    ).prefetch_related('subscription', 'subscription__contributor_profile')
     contributions = list(_contributions.order_by('-created_on'))
     # print(contributions)
     all_pages = Paginator(contributions, limit)
