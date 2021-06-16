@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define additional context data to be passed to any request.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -22,6 +22,7 @@ import logging
 
 from django.conf import settings
 from django.core.cache import cache
+from django.http import HttpRequest
 from django.utils import timezone
 
 import requests
@@ -33,6 +34,7 @@ from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
 from perftools.models import JSONStore
 from ptokens.models import PersonalToken
+from quadraticlands.helpers import get_initial_dist, get_mission_status
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
@@ -170,7 +172,6 @@ def preprocess(request):
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'is_pro': profile.is_pro if profile else False,
-        'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
             'host': settings.JS_IPFS_HOST,
             'port': settings.IPFS_API_PORT,
@@ -197,6 +198,8 @@ def preprocess(request):
         'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
         'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
         'mautic_id': profile.mautic_id if profile else None,
+        'total_claimable_gtc': get_initial_dist(request)['total_claimable_gtc'],
+        'proof_of_receive': get_mission_status(request)['proof_of_receive'] if isinstance(request, HttpRequest) and request.method == "GET" else False
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

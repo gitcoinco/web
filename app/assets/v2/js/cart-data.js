@@ -1,4 +1,4 @@
-class CartData {
+this.CartData = class CartData {
 
   static hasItems() {
     return this.loadCart().length > 0;
@@ -269,4 +269,4 @@ class CartData {
   static clearCheckedOut() {
     localStorage.removeItem('contributions_were_successful');
   }
-}
+};

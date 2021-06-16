@@ -1,6 +1,6 @@
 {% extends 'onepager/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
@@ -46,9 +46,9 @@
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
-{% compress css file tooltip_hover %}
+{% bundle css file tooltip_hover %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tooltip_hover.scss" %} />
-{% endcompress %}
+{% endbundle %}
 <style>
   #ethinfo-tooltip {
     top: 19.5rem;
@@ -118,7 +118,7 @@
     border: 1px solid var(--gc-dark-grey);
     border-radius: 2px;
     padding: 3px;
-    
+
     top: 100%;
     left:50%;
     transform:translateX(-50%);
@@ -128,7 +128,7 @@
     position: absolute;
     z-index: 1;
     margin-top: 5px;
-    
+
     opacity: 0;
     transition: all 0.3s;
   }

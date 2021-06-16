@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Admin views.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -56,7 +56,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
             try:
                 obj.rejection_reason = 'n/a'
                 obj.save()
-                mint_token_request.delay(obj.id)
+                mint_token_request(obj.id)
                 self.message_user(request, f"Mint/sync submitted to chain")
             except Exception as e:
                 self.message_user(request, str(e))

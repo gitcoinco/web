@@ -1,0 +1,20 @@
+section.headline {
+  height: 130px;
+  margin-bottom: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .content {
+    h1 {
+      color: var(--white);
+      animation: inherit;
+      margin: 0;
+      padding: 0;
+
+      span {
+        background-color: var(--space);
+      }
+    }
+  }
+}

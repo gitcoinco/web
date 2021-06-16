@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,12 +23,12 @@
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
     <script src="//cdn.quilljs.com/1.3.6/quill.core.js"></script>
-    {% compress css file new_grant %}
+    {% bundle css file new_grant %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
 
   <body class="interior {{ active }} grant g-font-muli">
@@ -402,6 +402,22 @@
                 </div>
 
 
+                <!-- External Funding -->
+                <div class="mb-3 col-12">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase">External Funding (VC Funding / Token Sale)</label>
+                  <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                  <v-select placeholder="Yes/No" :options="externalFundingOptions" label="value" v-model="form.has_external_funding" :reduce="state => state.key">
+                    <template v-slot:option="option">
+                      <span class="font-weight-semibold">[[ option.value ]]</span>
+                    </template>
+                  </v-select>
+
+                  <div class="text-danger" v-if="errors.has_external_funding">
+                    [[errors.has_external_funding]]
+                  </div>
+                </div>
+
                 <!-- Categorization -->
                 <div class="mb-3 col-12">
                   <h5 class="mt-4">Categorization Information</h5>
@@ -471,7 +487,6 @@
 
       {% include 'shared/footer.html' %}
       {% include 'shared/current_profile.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'grants/shared/shared_scripts.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
 

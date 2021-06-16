@@ -1,15 +1,15 @@
 from django.utils import timezone
 
 from grants.models import *
-from grants.models import Contribution, PhantomFunding
-from grants.views import next_round_start, round_end
+from grants.models import Contribution
+from grants.views import get_clr_rounds_metadata
 
 # total stats
 
-start = next_round_start
-end = round_end
+_, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
-contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True)
+
+contributions = Contribution.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date, success=True)
 contributions = contributions.filter(subscription__grant__grant_type='health')
 
 stats = {}

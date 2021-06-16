@@ -19,6 +19,7 @@ class GrantSerializer(serializers.ModelSerializer):
             'active', 'title', 'slug', 'description', 'reference_url', 'logo', 'admin_address',
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
             'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
+            'clr_round_num', 'is_clr_active', 'amount_received_in_round', 'positive_round_contributor_count',
         )
 
 
@@ -94,28 +95,6 @@ class CLRPayoutsSerializer(serializers.Serializer):
         """Define the CLRPayout serializer metadata."""
 
         fields = ('amount', 'asset', 'usd_value', 'timestamp', 'round')
-
-class GranteeSerializer(serializers.Serializer):
-    """Handle serializing Grantee information."""
-
-    grant_name = serializers.CharField(source='title')
-    transactions = serializers.SerializerMethodField()
-    clr_payouts = serializers.SerializerMethodField()
-
-    def get_transactions(self, obj):
-        return TransactionsSerializer(
-            Contribution.objects.filter(subscription__grant__pk=obj.pk), many=True
-        ).data
-    
-    def get_clr_payouts(self, obj):
-        return CLRPayoutsSerializer(
-            CLRMatch.objects.filter(grant__pk=obj.pk), many=True
-        ).data
-    
-    class Meta:
-        """Define the Grantee serializer metadata."""
-
-        fields = ('grant_name', 'transactions', 'clr_payout')
 
 class DonorSerializer(serializers.Serializer):
     """Handle serializing Donor information."""

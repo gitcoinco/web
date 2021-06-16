@@ -1,0 +1,57 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="Gitcoin Quadratic Lands - Workstream" />
+<meta name="twitter:description"
+  content="Gitcoin is where builders, developers, and protocols come together to build and fund the open web." />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/default.png" %}" />
+{% endblock %}
+
+
+{% block 'content' %}
+
+<!-- subnavigation -->
+{% include 'quadraticlands/workstream/nav.html' %}
+
+
+<article>
+
+  <section class="column">
+    <h2>Special Projects / Gitcoin Labs</h2>
+    <p>Workstream Driver: <a target="_blank" href="https://twitter.com/austingriffith">Austin Griffith</a> and <a target="_blank" href="https://twitter.com/owocki">Kevin Owocki</a></p>
+    <div class="intro purple">We now have the internet of money; and we can program our values into our money. And we value public goods, so we are going to build programmable money experiments to create public goods awareness and to fund public goods. If you are a builder or creator who wants to meme for the public good or build for the public good, this workstream is for you.</div>
+
+  </section>
+
+  <section class="column">
+    <h3 class="aqua">Example Quests:</h3>
+    <li>Create experiments for funding public goods (eg: NFTs for public goods, Gitcoin.dance)</li>
+    <li>Help build prototypes of ideas that plug into new Gitcoin tools like our Proof of Personhood Passport</li>
+    <li>Build auxiliary tools to support our mission (<a target="_blank" href="https://quadraticvote.co">quadraticvote.co</a>, <a target="_blank" href="https://wtfisqf.com">wtfisqf.com</a>)</li>
+    <li>Embrace, partner with & support other QF protocols (CLRFund, Build Guild), and other public goods funding mechanisms (Radicle)</li>
+  </section>
+
+
+  <section class="column">
+    <a href="https://gov.gitcoin.co/t/workstream-suggestion-public-goods-prototyping/130" target="_blank" class="btn purple" data-kinetics-attraction
+      data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1"
+      data-kinetics-attraction-grow="7">Get Involved on Discourse</a>
+  </section>
+
+</article>
+
+{% endblock %}
+
+
+
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+{% endblock %}

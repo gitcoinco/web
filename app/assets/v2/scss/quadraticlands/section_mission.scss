@@ -1,0 +1,173 @@
+section.mission {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 0em 1.5em;
+  grid-column-gap: 2em;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+section.mission .card {
+  margin-bottom: 2em;
+  user-select: none;
+
+  .card-image {
+    background-color: var(--space_light_alpha);
+    border: 2px solid var(--space_light_alpha);
+
+    transition: all 200ms ease-in-out;
+    img,
+    svg {
+      width: 100%;
+    }
+  }
+
+  .card-body {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+
+    .card-text {
+      .card-title {
+        font-weight: 500;
+        color: var(--purple_light);
+      }
+
+      .card-subtitle {
+        font-weight: 400;
+        color: var(--stone);
+        font-size: 80%;
+
+        &.active {
+          color: var(--pink_light);
+        }
+
+        .additional-info {
+          font-size: 70%;
+        }
+      }
+    }
+
+    .card-badges {
+      display: flex;
+      align-items: center;
+      align-self: flex-start;
+
+      .card-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--space_pink);
+        padding: 0.5em;
+        margin-left: 0.5em;
+
+        svg {
+          width: 32px;
+          height: 32px;
+          fill: var(--space);
+        }
+
+        span {
+          font-size: 80%;
+          line-height: initial;
+          font-family: "Space Mono", monospace;
+          color: var(--white);
+          font-weight: 700;
+        }
+
+        &.gtc-token {
+          background-color: var(--aqua);
+
+          animation: colorcycle-shadow 3s ease-in-out infinite;
+          span {
+            color: var(--space);
+            white-space: nowrap;
+          }
+        }
+
+        &.done {
+          background-color: var(--aqua_light);
+          svg {
+            fill: none;
+            stroke: var(--space);
+            stroke-width: 4;
+          }
+        }
+      }
+    }
+  }
+
+  &:hover {
+    .card-body {
+      .card-text {
+        .card-title {
+          color: var(--white);
+        }
+      }
+    }
+  }
+
+  &.locked {
+    &:hover {
+      .card-body {
+        .card-text {
+          .card-title {
+            color: var(--purple_light);
+          }
+        }
+      }
+    }
+  }
+
+  &.done {
+    .card-body {
+      .card-text {
+        .card-title {
+          color: var(--aqua_light);
+        }
+      }
+    }
+
+    &:hover {
+      .card-body {
+        .card-text {
+          .card-title {
+            color: var(--aqua_light);
+          }
+        }
+      }
+    }
+  }
+
+  &.playable {
+    .card-image {
+      animation: colorcycle-border 1s ease-in-out infinite;
+    }
+
+    &:hover {
+      .card-image {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+@media #{$laptop} {
+  section.mission {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media #{$tablet} {
+  section.mission {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media #{$phone} {
+  section.mission {
+    grid-template-columns: 1fr;
+  }
+}

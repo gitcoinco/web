@@ -5,7 +5,7 @@ const djangoExample = `{% load i18n static compress %}
 
 ...
 
-{% compress css file example_name %}
+{% bundle css file example_name %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/*.scss" %} />
 {% endcompress %}`;
 

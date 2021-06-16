@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -127,7 +127,7 @@ along with this program. If not, see
         <div style="margin: 0 0 0 95px;">
           <p class="font-weight-bold mb-0" style="margin-block-start: 0; word-wrap: break-word;">{{event.name}}</p>
           <p style="margin-top: 0; margin-bottom: 0;">From {{event.start_date | date_fromisoformat:"m/j/Y"}} to {{event.end_date | date_fromisoformat:"m/j/Y"}}</p>
-          <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
+          <a href="{{base_url}}hackathon/{{event.slug}}?{{ utm_tracking }}">Read More</a>
         </div>
       </div>
       <br>
@@ -144,7 +144,7 @@ along with this program. If not, see
         <div style="margin: 0 0 0 95px;">
           <p class="font-weight-bold mb-0" style="margin-block-start: 0; word-wrap: break-word;">{{event.name}}</p>
           <p style="margin-top: 0; margin-bottom: 0;">From {{event.start_date | date_fromisoformat:"m/j/Y"}} to {{event.end_date | date_fromisoformat:"m/j/Y"}}</p>
-          <a href="{{event.url}}?{{ utm_tracking }}">Read More</a>
+          <a href="{{base_url}}/hackathon/{{event.slug}}?{{ utm_tracking }}">Read More</a>
         </div>
       </div>
       <br>

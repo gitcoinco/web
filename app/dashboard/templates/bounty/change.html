@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,15 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
-  {% compress css file bounty_change %}
+  {% bundle css file bounty_change %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 </head>
 <body class="interior submit_bounty g-font-muli">
   <div class="content__main min-vh-100 d-md-flex flex-column">
@@ -104,7 +104,6 @@
         </div>
       </div>
     </div>
-    {% include 'shared/analytics.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/current_profile.html' %}

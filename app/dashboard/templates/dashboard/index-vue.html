@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +26,7 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    {% compress css file dashboard_index_vue %}
+    {% bundle css file dashboard_index_vue %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/featured-bounties.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
@@ -39,7 +39,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/hackathons/explorer.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-vue-hackathon.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onboarding_v2.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
 
     <style type="text/css">
       .hackathon-logo {
@@ -103,7 +103,7 @@
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      <div class="header sticky-top dash">
+      <div class="header sticky-top sticky-nav dash">
         {% include 'shared/nav_hackathons.html' %}
       </div>
       {% if is_staff %}
@@ -776,7 +776,6 @@
 
       {% include 'shared/result.html' %}
       {% include 'shared/featured_bounty_cards.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' %}
       {% include 'shared/footer.html' %}
       <!-- hackathon modal temparilly disabled  -->

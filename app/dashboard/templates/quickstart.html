@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,28 +14,28 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    {% compress css file quickstart %}
+    {% bundle css file quickstart %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
   <body class="interior {{active}} quickstart g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
-      <div class="container-fluid header dash">
+      <div class="header dash">
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'shared/nav.html' %}
       </div>
-        <div class="container-fluid content my-3 text-left">
+        <div class="content my-3 text-left">
           <h4 class="title text-center">{% trans "Funder Guide" %}</h4>
           <div class="dont-show text-center col-12">
             <div class="checkbox_container">
@@ -155,7 +155,6 @@
           </div>
         </div>
 
-        {% include 'shared/analytics.html' %}
         {% include 'shared/footer_scripts.html' with slim=1 %}
         {% include 'shared/footer.html' %}
       </div>

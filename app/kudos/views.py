@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define view for the Kudos app.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -541,6 +541,9 @@ def send_4(request):
 
 
 def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
+    if not github_handle:
+        return
+
     kwargs = {
         'activity_type': event_name,
         'kudos_transfer': kudos_transfer,

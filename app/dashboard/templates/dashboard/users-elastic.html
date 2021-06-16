@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,19 +15,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    {% compress css file dashboard_users_elastic %}
+    {% bundle css file dashboard_users_elastic %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vue-innersearch.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
 
   <body id="{{ explore }}" class="interior {{active}} g-font-muli">
@@ -278,7 +278,6 @@
         </select>
       </script>
       {% include 'shared/footer.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' with slim="1" %}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.5.1/vuex.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/vue-innersearch@0.0.12/vue-innersearch.min.js"></script>

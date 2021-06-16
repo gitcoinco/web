@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -126,7 +126,7 @@
 
                       <div class="form__radio option">
                         <input name="canceled_bounty_reason" id="reason_7" type="radio" value="7 - Success but paid elsewhere" />
-                        <label class="filter-label" for=reason_7>{% trans "The bounty was completed successfully, I'm just paying it out elsewher." %}</label>
+                        <label class="filter-label" for=reason_7>{% trans "The bounty was completed successfully, I'm just paying it out elsewhere." %}</label>
                       </div>
 
 
@@ -166,7 +166,6 @@
       <script>
         const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
       </script>
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
       {% include 'shared/footer.html' %}
     </div>

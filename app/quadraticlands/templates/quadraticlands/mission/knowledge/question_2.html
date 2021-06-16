@@ -1,0 +1,133 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+
+
+<!--PROOF OF KNOWLEDGE -->
+
+<section class="background">
+  <img src='{% static "v2/images/quadraticlands/background/anim-9.svg" %}' />
+</section>
+
+<section class="quest">
+
+  <!-- quest content -->
+  <main>
+
+    <div class="quest-quiz">
+
+      <div class="question">
+        <h1>What can GTC be used for?</h1>
+      </div>
+
+      <form action="/quadraticlands/mission/knowledge/question/2/process" method="POST">
+
+        {% csrf_token %}
+
+        <div class="reply">
+
+          <button name="answer" type="submit" value="1"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>Manage a treasury</div>
+          </button>
+
+          <button name="answer" type="submit" value="2"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>Govern Grants Rounds</div>
+          </button>
+
+          <button name="answer" type="submit" value="3"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>Settle Disputes</div>
+          </button>
+
+          <button name="answer" type="submit" value="4"
+            data-kinetics-attraction
+            data-kinetics-attraction-chance=".3"
+            data-kinetics-attraction-force="1"
+            data-kinetics-attraction-grow="0.5"
+          >
+            <div>All of the above</div>
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+
+  <!-- timer / seperator -->
+  <div class="seperator">
+    <div id="progressbar"></div>
+  </div>
+
+
+  <!-- bottom navigation -->
+  <nav class="glass">
+
+    <div class="left">
+      <a href="/quadraticlands/"
+        data-kinetics-attraction
+        data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1"
+        data-kinetics-attraction-size="200"
+      >
+        Exit
+      </a>
+    </div>
+
+    <div class="center">
+      Question 2 of 2
+    </div>
+
+    <div class="right">
+      <div id="timeleft">15s</div>
+    </div>
+
+  </nav>
+
+
+
+</section>
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+<!-- set the countdown param -->
+<script>
+  const maxTime = 15;
+  const expiryLink = "/quadraticlands/mission/knowledge/question/2/timeout";
+</script>
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/mission/knowledge/kinetics_question.js" %}"></script>
+
+<!-- start countdown -->
+<script src="{% static "v2/js/quadraticlands/questCountdown.js" %}"></script>
+
+{% endblock %}

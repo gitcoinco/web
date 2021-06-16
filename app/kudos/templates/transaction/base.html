@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,15 +14,15 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags compress %}
+{% load i18n static cookielaw_tags bundle %}
 <!DOCTYPE HTML>
 <html>
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file kudos_styles %}
+    {% bundle css file kudos_styles %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <script>
       var static_url = "{{ STATIC_URL }}";
       var media_url = "{{ MEDIA_URL }}";
@@ -31,7 +31,6 @@
   </head>
   <body id="yge" class="transaction {{ class }}">
     {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/analytics.html' with suppress_sumo=1 %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% block 'world' %} {% endblock %}
 
@@ -50,7 +49,7 @@
       </footer>
     </main>
     <!-- Scripts -->
-    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer_scripts.html' with slim=1 onepager=1 %}
     {% block 'scripts' %}{% endblock %}
     <script>
       needWalletConnection();

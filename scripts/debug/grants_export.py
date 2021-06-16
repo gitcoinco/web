@@ -1,12 +1,14 @@
-from grants.models import *
-from grants.views import clr_round as round_num
+from grants.models import Grant
+from grants.views import get_clr_rounds_metadata
+
+clr_round, _, _, _ = get_clr_rounds_metadata()
 
 # total stats
 
-print(f"name, gitcoin url, project URL, created, category, sub-category, amount raised total, amount raised round {round_num}, amount matched round {round_num}, num contributors round {round_num}, grant_sybil_score")
+print(f"name, gitcoin url, project URL, created, category, sub-category, amount raised total, amount raised round {clr_round}, amount matched round {clr_round}, num contributors round {clr_round}, grant_sybil_score")
 for grant in Grant.objects.filter(active=True):
     amount_round = 0
-    try: 
+    try:
         amount_round = grant.clr_prediction_curve[0][1]
     except:
         pass

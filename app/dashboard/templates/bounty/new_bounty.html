@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static email_obfuscator add_url_schema avatar_tags compress %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,13 +24,13 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
     <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    {% compress css file new_bounty %}
+    {% bundle css file new_bounty %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <style>
 
       .issue_description {
@@ -122,9 +122,17 @@
                       <input type="radio" name="bounty_chain" id="50_chain" value="50" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/xinfin.svg' %}" alt="" width="16"> Xinfin
                     </label>
 
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1001'}">
+                      <input type="radio" name="bounty_chain" id="1001_chain" value="1001" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16"> Algorand
+                    </label>
+
                     {% if is_staff %}
-                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1001'}">
-                        <input type="radio" name="bounty_chain" id="1001_chain" value="1001" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16"> Algorand
+                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1995'}">
+                        <input type="radio" name="bounty_chain" id="1995_chain" value="1995" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/nervos.svg' %}" alt="" width="16"> Nervos
+                      </label>
+
+                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1935'}">
+                        <input type="radio" name="bounty_chain" id="1935_chain" value="1935" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/sia.svg' %}" alt="" width="16"> Sia
                       </label>
 
                       <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
@@ -696,7 +704,6 @@
         </div>
       </script>
 
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer.html' %}
       {% include 'shared/footer_scripts.html' with vue=True %}
       {% include 'shared/current_profile.html' %}

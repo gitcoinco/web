@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,12 +25,12 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    {% compress css file dashboard_sponsors %}
+    {% bundle css file dashboard_sponsors %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-hackathon.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard-vue-hackathon.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <style type="text/css">
       .hackathon-logo {
         height: 13rem;
@@ -124,7 +124,7 @@
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      <div class="header sticky-top dash">
+      <div class="header sticky-top sticky-nav dash">
         {% include 'shared/nav_hackathons.html' %}
       </div>
 
@@ -353,7 +353,6 @@
       </div>
 
 
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
       {% include 'shared/footer.html' %}
       {{user_orgs|json_script:"orgs-list"}}

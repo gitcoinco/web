@@ -1,0 +1,27 @@
+#burger {
+  display: none;
+  z-index: 9999;
+}
+
+@media #{$phone} {
+  #burger {
+    display: block;
+    margin-right: 0px;
+    align-self: center;
+    img,
+    svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+      align-self: center;
+      cursor: pointer;
+    }
+
+    .burgerIcon {
+      display: inline-block;
+    }
+    .closeIcon {
+      display: inline-block;
+    }
+  }
+}

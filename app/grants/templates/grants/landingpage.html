@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n compress %}
+{% load humanize static i18n bundle tz %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   {% include 'shared/head.html' with slim=1 %}
   {% include 'shared/cards_pic.html' %}
-  {% compress css file grants %}
+  {% bundle css file grants %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
@@ -27,7 +27,7 @@ along with this program. If not, see
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
   <style>
     .select2-selection .select2-selection--single {
       background: none;
@@ -37,6 +37,15 @@ along with this program. If not, see
       padding: 0;
       max-width: 136px;
     }
+    .countdown-color {
+      color: var(--gc-blue-hover);
+    }
+    .countdown{
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
   </style>
   <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
@@ -101,8 +110,7 @@ along with this program. If not, see
     </div>
 
   {% include 'shared/footer.html' %}
-  {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+  {% include 'shared/footer_scripts.html' with slim=1 %}
   {% include 'grants/shared/shared_scripts.html' %}
   {{collections|json_script:"collections-object"}}
   {{grant_bg.inline_css|json_script:"inline_css"}}
@@ -122,6 +130,8 @@ along with this program. If not, see
     document.collection_id = {{ collection_id|default:'null' }};
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
     document.activePage = "{{ active }}";
+    document.round_start_date = ({{round_start_date|date:'U' }}*1000);
+    document.round_end_date = ({{round_end_date|date:'U' }}*1000);
 
     {% if clr_round %}
       document.round_num = "{{clr_round.round_num}}";
@@ -153,9 +163,9 @@ along with this program. If not, see
   </script>
   {% include 'shared/activity_scripts.html' %}
 
-
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
   <script src="{% static "v2/js/grants/components.js" %}"></script>
   <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
   <script src="{% static "v2/js/grants/funding.js" %}"></script>

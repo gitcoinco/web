@@ -65,7 +65,7 @@ const loadDynamicScript = (callback, url, id) => {
           let data = new FormData();
 
           if (vm.$refs.quillEditorDesc) {
-            data['tribe_description'] = vm.tribe.tribe_description;
+            data.append('tribe_description', vm.tribe.tribe_description);
           }
 
           if (vm.$refs.quillEditorPriority) {
@@ -92,7 +92,7 @@ const loadDynamicScript = (callback, url, id) => {
           };
 
           $.when(sendSave(url, data)).then(function(response) {
-            _alert('Tribe has been updated');
+            _alert('Tribe has been updated', 'success');
             if (vm.headerFile) {
               vm.tribe.tribes_cover_image = vm.headerFilePreview;
               vm.$bvModal.hide('change-tribe-header');
@@ -197,10 +197,10 @@ const loadDynamicScript = (callback, url, id) => {
               newPathName = 'projects';
               break;
             case 2:
-              newPathName = 'people';
+              newPathName = 'bounties';
               break;
             case 3:
-              newPathName = 'bounties';
+              newPathName = 'people';
               break;
             case 4:
               newPathName = 'manage';

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant views.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import datetime
 import hashlib
 import html
 import json
@@ -26,6 +25,7 @@ import math
 import re
 import time
 import uuid
+from datetime import datetime
 from decimal import Decimal
 from urllib.parse import urlencode
 
@@ -37,7 +37,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
-from django.db.models import Avg, Count, Max, Q, Subquery
+from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -60,61 +60,64 @@ from app.settings import (
     TWITTER_CONSUMER_SECRET,
 )
 from app.utils import get_profile
-from avatar.utils import convert_img
 from bs4 import BeautifulSoup
 from cacheops import cached_view
-from chartit import PivotChart, PivotDataPool
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
-from dashboard.utils import get_web3, has_tx_mined
+from dashboard.utils import get_web3
 from economy.models import Token as FTokens
-from economy.utils import convert_amount, convert_token_to_usdt
+from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCollection, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantCollection, GrantType, MatchPledge, Subscription,
 )
 from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_user_code, is_grant_team_member,
     sync_payout,
 )
-from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
-from marketing.mails import (
-    grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_grant_match_pledge, new_supporter,
-    subscription_terminated, support_cancellation, thank_you_for_supporting,
-)
+from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Announcement, Comment, Favorite, PinnedPost
+from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
-# Round Schedule
-# from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
-# Round 5 - March 23th — April 7th 2020
-# Round 6 - June 15th — June 29th 2020
-# Round 7 - September 15th 9am MST — Oct 2nd 2020 at 5pm MST
-# Round 8: December 2nd — December 18th 2020
 
-# TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
-clr_round=9
-last_round_start = timezone.datetime(2020, 12, 1, 15, 0)
-last_round_end = timezone.datetime(2020, 12, 17, 16, 0) #tz=utc, not mst
-next_round_start = timezone.datetime(2021, 3, 10, 1, 0) #tz=utc, not mst
-round_end = timezone.datetime(2021, 3, 25, 1, 0) #tz=utc, not mst
-after_that_next_round_begin = timezone.datetime(2021, 5, 2, 12, 0)
+def get_clr_rounds_metadata():
+    '''
+        Fetches default CLR round metadata for stats/marketing flows.
+        This is configured when multiple rounds are running
+    '''
+    try:
+        CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
 
-round_types = ['media', 'tech', 'change']
-# TODO-SELF-SERVICE: END
+        clr_round = CLR_ROUND_DATA['round_num']
+        start_date = CLR_ROUND_DATA['round_start']
+        end_date = CLR_ROUND_DATA['round_end']
+        round_active = CLR_ROUND_DATA['round_active']
+
+        # timezones are in UTC (format example: 2021-06-16:15.00.00)
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
+
+    except:
+        # setting defaults
+        clr_round=1
+        round_start_date = timezone.now()
+        round_end_date = timezone.now() + timezone.timedelta(days=14)
+        round_active = True
+
+    return clr_round, round_start_date, round_end_date, round_active
+
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
@@ -385,7 +388,7 @@ def grants(request):
 
 def get_collections(user, keyword, sort='-shuffle_rank', collection_id=None, following=None,
                     idle_grants=None, only_contributions=None, featured=False):
-    three_months_ago = timezone.now() - datetime.timedelta(days=90)
+    three_months_ago = timezone.now() - timezone.timedelta(days=90)
 
     _collections = GrantCollection.objects.filter(hidden=False)
 
@@ -595,6 +598,10 @@ def get_grants(request):
             del grant_json['weighted_risk_score']
         grants_array.append(grant_json)
 
+    pks = list([grant.pk for grant in grants])
+    if len(pks):
+        increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
+
     has_next = False
     if paginator:
         try:
@@ -637,7 +644,7 @@ def build_grants_by_type(
 
     sort_by_clr_pledge_matching_amount = None
     profile = request.user.profile if request.user.is_authenticated else None
-    three_months_ago = timezone.now() - datetime.timedelta(days=90)
+    three_months_ago = timezone.now() - timezone.timedelta(days=90)
     _grants = Grant.objects.filter(network=network, hidden=False)
 
     if clr_round:
@@ -842,9 +849,11 @@ def get_all_routing_policies(request):
 def grants_landing(request):
     network = request.GET.get('network', 'mainnet')
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
-    now = datetime.datetime.now()
+    now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
+    _, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+
 
     params = {
         'active': 'grants_landing',
@@ -853,13 +862,18 @@ def grants_landing(request):
         'title': 'Grants',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
         'active_rounds': active_rounds,
         'sponsors': sponsors,
         'featured': True,
+        'round_start_date': round_start_date,
+        'round_end_date': round_end_date,
+        'now': now,
+        'round_active': round_active,
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -867,6 +881,7 @@ def grants_landing(request):
 
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
+
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
@@ -900,28 +915,9 @@ def grants_by_grant_type(request, grant_type):
         if grant_stats.exists():
             grant_amount = lazy_round_number(grant_stats.first().val)
 
-    _grants = None
-    try:
-        _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category)
-    except Exception as e:
-        print(e)
-        return redirect('/grants')
-
-    all_grants_count = Grant.objects.filter(
-        network=network, hidden=False, active=True
-    ).count()
-
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
 
-    now = datetime.datetime.now()
-
-    paginator = Paginator(_grants, limit)
-    grants = paginator.get_page(page)
-
-    # record view
-    pks = list([grant.pk for grant in grants])
-    if len(pks):
-        increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
+    now = datetime.now()
 
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
@@ -933,24 +929,17 @@ def grants_by_grant_type(request, grant_type):
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
     grant_types = get_grant_type_cache(network)
 
-    cht = []
-    chart_list = ''
-
     try:
         what = 'all_grants'
         pinned = PinnedPost.objects.get(what=what)
     except PinnedPost.DoesNotExist:
         pinned = None
 
-    prev_grants = Grant.objects.none()
     grants_following = Favorite.objects.none()
     collections = []
 
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
-        # KO 9/10/2020
-        # prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
-        # rev_grants = Grant.objects.filter(pk__in=prev_grants)
         allowed_collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
             {
@@ -986,6 +975,7 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
+    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_explorer',
@@ -995,27 +985,16 @@ def grants_by_grant_type(request, grant_type):
         'keyword': keyword,
         'type': grant_type,
         'grant_label': grant_label if grant_type else grant_type,
-        'round_end': round_end,
-        'next_round_start': next_round_start,
-        'after_that_next_round_begin': after_that_next_round_begin,
-        'all_grants_count': all_grants_count,
+        'round_end': round_end_date,
+        'next_round_start': round_start_date,
         'now': timezone.now(),
         'mid_back': mid_back,
-        'cht': cht,
-        'chart_list': chart_list,
         'bottom_back': bottom_back,
-        'categories': categories,
-        'prev_grants': prev_grants,
-        'grant_types': grant_types,
-        'current_partners_fund': current_partners_fund,
-        'current_partners': current_partners,
-        'past_partners': past_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
-        'grants': grants,
         'what': what,
         'all_styles': all_styles,
         'all_routing_policies': get_all_routing_policies(request),
@@ -1027,7 +1006,6 @@ def grants_by_grant_type(request, grant_type):
             'bg_size': bg_size,
             'bg_color': bg_color
         },
-        'bg': bg,
         'grant_bg': get_branding_info(request),
         'announcement': Announcement.objects.filter(key='grants', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('-rank').first(),
         'keywords': get_keywords(),
@@ -1045,7 +1023,8 @@ def grants_by_grant_type(request, grant_type):
         'collection_id': collection_id,
         'collections': collections,
         'featured': featured,
-        'active_rounds': active_rounds
+        'active_rounds': active_rounds,
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -1174,6 +1153,8 @@ def grants_by_grant_clr(request, clr_round):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
+    clr_round, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
+
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -1182,16 +1163,15 @@ def grants_by_grant_clr(request, clr_round):
         'keyword': keyword,
         'type': grant_type,
         'grant_label': grant_label if grant_type else grant_type,
-        'round_end': round_end,
-        'next_round_start': next_round_start,
-        'after_that_next_round_begin': after_that_next_round_begin,
+        'round_end': round_end_date,
+        'next_round_start': round_start_date,
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1314,6 +1294,7 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
 
+
     try:
         grant = None
         try:
@@ -1407,6 +1388,7 @@ def grant_details(request, grant_id, grant_slug):
     try:
         # If the user viewing the page is team member or admin, check if grant has match funds available
         # to withdraw
+
         is_match_available_to_claim = False
         is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 4, 30, 12, 0).replace(tzinfo=pytz.utc)
         is_staff = request.user.is_authenticated and request.user.is_staff
@@ -1427,7 +1409,7 @@ def grant_details(request, grant_id, grant_slug):
                 is_match_available_to_claim = True if amount_available > 0 else False
 
         # Determine if we should show the claim match button on the grant details page
-        should_show_claim_match_button = grant.is_active and (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
+        should_show_claim_match_button = grant.active and (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
 
     except Exception as e:
         logger.exception(e)
@@ -1603,6 +1585,11 @@ def grant_edit(request, grant_id):
             response['message'] = 'error: description is a mandatory parameter'
             return JsonResponse(response)
 
+        has_external_funding = request.POST.get('has_external_funding', 'unknown')
+        if has_external_funding == 'unknown':
+            response['message'] = 'error: choose if grant has external funding or not'
+            return JsonResponse(response)
+
         description_rich = request.POST.get('description_rich', None)
         if not description_rich:
             description_rich = description
@@ -1718,6 +1705,7 @@ def grant_edit(request, grant_id):
         grant.title = title
         grant.description = description
         grant.description_rich = description_rich
+        grant.has_external_funding = has_external_funding
         grant.last_update = timezone.now()
         grant.hidden = False
 
@@ -1799,6 +1787,11 @@ def grant_new(request):
         if not description_rich:
             description_rich = description
 
+        has_external_funding = request.POST.get('has_external_funding', 'unknown')
+        if has_external_funding == 'unknown':
+            response['message'] = 'error: has_external_funding is a mandatory parameter'
+            return JsonResponse(response)
+
         eth_payout_address = request.POST.get('eth_payout_address', request.POST.get('admin_address'))
         zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
         celo_payout_address = request.POST.get('celo_payout_address', None)
@@ -1879,6 +1872,7 @@ def grant_new(request):
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
+            'has_external_funding': has_external_funding
         }
 
         grant = Grant.objects.create(**grant_kwargs)
@@ -2101,7 +2095,7 @@ def cancel_grant_v1(request, grant_id):
     response = {
         'status': 200,
         'pk': grant.pk,
-        'message': 'grant cancelled sucessfully'
+        'message': 'grant cancelled successfully'
     }
     return JsonResponse(response)
 
@@ -2323,17 +2317,18 @@ def get_replaced_tx(request):
 def grants_cart_view(request):
     context = {
         'title': 'Grants Cart',
-        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
     }
     if request.user.is_authenticated:
         profile = request.user.profile
         context['username'] = profile.username
+        context['trust_bonus'] = round(request.user.profile.trust_bonus * 100)
 
         is_brightid_verified = ( 'verified' == get_brightid_status(profile.brightid_uuid) )
 
         context['is_fully_verified'] = (is_brightid_verified and profile.sms_verification and \
                                             profile.is_poap_verified and profile.is_twitter_verified and \
-                                            profile.is_google_verified)
+                                            profile.is_google_verified and profile.is_poh_verified)
     else:
         return redirect('/login/github/?next=' + request.get_full_path())
 
@@ -2424,9 +2419,9 @@ def profile(request):
 def quickstart(request):
     """Display quickstart guide."""
     params = {
-    'active': 'grants_quickstart',
-    'title': _('Quickstart'),
-    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'active': 'grants_quickstart',
+        'title': _('Quickstart'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
@@ -3446,7 +3441,7 @@ def ingest_contributions(request):
                     .order_by("-positive_round_contributor_count")
                     .first()
                 )
-                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
             except Exception as e:
                 logger.exception(e)
                 logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
@@ -3520,7 +3515,7 @@ def ingest_contributions(request):
                         logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
                         logger.warning("Skipping unknown grant\n")
                         continue
-                    logger.info(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+                    logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
                 except Exception as e:
                     logger.exception(e)
                     logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")

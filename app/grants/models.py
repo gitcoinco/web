@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant models.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -154,7 +154,7 @@ class GrantCLR(SuperModel):
         help_text="used to generate customer_name/round_num/sub_round_slug"
     )
     display_text = models.CharField(
-        max_length=15,
+        max_length=25,
         null=True,
         blank=True,
         help_text="sets the custom text in CLR banner on the landing page"
@@ -304,6 +304,12 @@ class Grant(SuperModel):
         ('india', 'India'),
         ('east_asia', 'East Asia'),
         ('southeast_asia', 'Southeast Asia')
+    ]
+
+    EXTERNAL_FUNDING = [
+        ('yes', 'Yes'),
+        ('no', 'No'),
+        ('unknown', 'Unknown')
     ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
@@ -552,7 +558,14 @@ class Grant(SuperModel):
         help_text=_('The Grants Sybil Score'),
     )
 
+    # TODO-GRANTS: remove funding_info
     funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded?'))
+    has_external_funding = models.CharField(
+        max_length=8,
+        default='unknown',
+        choices=EXTERNAL_FUNDING,
+        help_text="Does this grant have external funding"
+    )
 
     clr_prediction_curve = ArrayField(
         ArrayField(
@@ -952,7 +965,8 @@ class Grant(SuperModel):
                 'funding_info': self.funding_info,
                 'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
-                'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None
+                'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
+                'has_external_funding': self.has_external_funding
             }
 
     def favorite(self, user):
@@ -1182,7 +1196,7 @@ class Subscription(SuperModel):
         """Return the string representation of a Subscription."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
 
-        return f"id: {self.pk}; {round(self.amount_per_period,1)} {self.token_symbol} (${round(self.amount_per_period_usdt)}) {int(self.num_tx_approved)} times, created {naturaltime(self.created_on)} by {self.contributor_profile}"
+        return f"id: {self.pk}; {round(float(self.amount_per_period),1)} {self.token_symbol} (${round(float(self.amount_per_period_usdt))}) {int(self.num_tx_approved)} times, created {naturaltime(self.created_on)} by {self.contributor_profile}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -1914,7 +1928,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "to_profile":instance.subscription.grant.admin_profile,
                     "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(False),
                     "url":instance.subscription.grant.url,
-                    "network":instance.subscription.grant.network,
+                    "network":instance.subscription.network,
                     "txid":instance.subscription.split_tx_id,
                     "token_name":instance.subscription.token_symbol,
                     "token_value":instance.subscription.amount_per_period,

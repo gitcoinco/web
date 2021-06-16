@@ -11,7 +11,7 @@ assignees: ''
 Hello Gitcoiner!
 
 Please use the template below for bugs found within Gitcoin.
-If it is general support you need, reach out to us on [Discord](https://discord.com/invite/83BK5z55yB)
+If it is general support you need, reach out to us on [Discord](https://discord.gg/gitcoin)
 
 Provide a general summary of the issue in the title above and use relevant fields below to define the problem.
 
@@ -37,8 +37,8 @@ Provide a general summary of the issue in the title above and use relevant field
 
 **Smartphone (please complete the following information):**
 
-- Device: 
-- OS: 
+- Device:
+- OS:
 - Browser:
 - Version:
 

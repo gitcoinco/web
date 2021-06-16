@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize static i18n compress %}
+{% load humanize static i18n bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -24,12 +24,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    {% compress css file townsquare %}
+    {% bundle css file townsquare %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %}>
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %}>
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/theme_switcher.scss" %}>
-    {% endcompress %}
+    {% endbundle %}
     <style>
       img.hackathon-card-logo{
         max-height: 5rem;
@@ -93,7 +93,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="bg-white sticky-top">
+    <div class="bg-white sticky-top sticky-nav">
       {% include 'home/nav.html' %}
     </div>
     <div class="townsquare_main container-fluid">
@@ -286,7 +286,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
     </div>
     </div>
-    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/activity_scripts.html' %}
     <!-- Send direct tip on comments -->

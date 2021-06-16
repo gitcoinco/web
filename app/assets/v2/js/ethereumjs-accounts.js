@@ -96,7 +96,7 @@ Pad the given string with a prefix zero, if length is uneven.
 var formatHex = function(str){
     if(_.isUndefined(str))
         str = '00';
-    
+
     return String(str).length % 2 ? '0' + String(str) : String(str);
 };
 
@@ -299,42 +299,42 @@ Generate a new Ethereum account in browser with a passphrase that will encrypt t
 **/
 
 Accounts.prototype.new = function(passphrase){
-    var private = new Buffer(randomBytes(64), 'hex');
-    var public = ethUtil.privateToPublic(private);
-    var address = formatAddress(ethUtil.publicToAddress(public)
+    var privateKey = new Buffer(randomBytes(64), 'hex');
+    var publicKey = ethUtil.privateToPublic(privateKey);
+    var address = formatAddress(ethUtil.publicToAddress(publicKey)
                                 .toString('hex'));
     var accountObject = {
         address: address
         , encrypted: false
         , locked: false
-        , hash: ethUtil.sha3(public.toString('hex') + private.toString('hex')).toString('hex')
+        , hash: ethUtil.sha3(publicKey.toString('hex') + privateKey.toString('hex')).toString('hex')
     };
 
     // if passphrrase provided or required, attempt account encryption
     if((!_.isUndefined(passphrase) && !_.isEmpty(passphrase))
         || this.options.requirePassphrase){
         if(this.isPassphrase(passphrase)) {
-            private = CryptoJS.AES
-                .encrypt(private.toString('hex'), passphrase)
+            privateKey = CryptoJS.AES
+                .encrypt(privateKey.toString('hex'), passphrase)
                 .toString();
-            public = CryptoJS.AES
-                .encrypt(public.toString('hex'), passphrase)
+              publicKey = CryptoJS.AES
+                .encrypt(publicKey.toString('hex'), passphrase)
                 .toString();
             accountObject.encrypted = true;
             accountObject.locked = true;
         } else {
             this.log('The passphrase you tried to use was invalid.');
-            private = private.toString('hex')
-            public = public.toString('hex')
+            privateKey = privateKey.toString('hex')
+            publicKey = publicKey.toString('hex')
         }
     }else{
-        private = private.toString('hex')
-        public = public.toString('hex')
+        privateKey = privateKey.toString('hex')
+        publicKey = publicKey.toString('hex')
     }
 
     // Set account object private and public keys
-    accountObject.private = private;
-    accountObject.public = public;
+    accountObject.private = privateKey;
+    accountObject.public = publicKey;
     this.set(address, accountObject);
 
     this.log('New address created');
@@ -620,7 +620,7 @@ Accounts.prototype.signTransaction = function(tx_params, callback) {
 
     // convert string private key to a Buffer Object
     var privateKey = new Buffer(account.private, 'hex');
-    
+
     function signTx(err){
         // init new transaction object, and sign the transaction
         var tx = new Tx(rawTx);
@@ -632,7 +632,7 @@ Accounts.prototype.signTransaction = function(tx_params, callback) {
         // fire callback
         callback(err, serializedTx);
     };
-    
+
     // If the gas price is zero or null, get the gas price async
     if(rawTx.gasPrice == '00')
         web3.eth.getGasPrice(function(err, result){
@@ -640,7 +640,7 @@ Accounts.prototype.signTransaction = function(tx_params, callback) {
                 return signTx(err);
             else
                 rawTx.gasPrice = formatHex(ethUtil.stripHexPrefix(result));
-            
+
             signTx(null);
         });
     else
@@ -5748,7 +5748,7 @@ var Transaction = module.exports = function(data) {
     enumerable: false,
     configurable: true,
     get: function() {
-      if(this._from) 
+      if(this._from)
         return this._from
       return this._from = this.getSenderAddress()
     },
@@ -5781,9 +5781,9 @@ Transaction.prototype.hash = function(signature) {
   if (typeof signature === 'undefined')
     signature = true
 
-  if (signature) 
+  if (signature)
     toHash = this.raw
-  else 
+  else
     toHash = this.raw.slice(0, 6)
 
   //create hash
@@ -5829,7 +5829,7 @@ Transaction.prototype.getDataFee = function() {
   const data = this.raw[5]
   var cost = new BN(0)
   for (var i = 0; i < data.length; i++) {
-    if (data[i] === 0) 
+    if (data[i] === 0)
       cost.iaddn(fees.txDataZeroGas.v)
     else
       cost.iaddn(fees.txDataNonZeroGas.v)
@@ -15927,7 +15927,7 @@ hash.prototype.update = function (i) {
 }
 
 hash.prototype.digest = function (encoding) {
-  var result = Sha3[this.bitcount](this.content) 
+  var result = Sha3[this.bitcount](this.content)
   if(encoding === 'hex')
     return result
   else
@@ -15966,8 +15966,8 @@ module.exports = {
   var PADDING = [6, 1536, 393216, 100663296];
   var SHIFT = [0, 8, 16, 24];
   var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
-            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
-            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
+            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
+            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
             2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
             2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
 
@@ -16013,9 +16013,9 @@ module.exports = {
     }
 
     var block, code, end = false, index = 0, start = 0, length = message.length,
-        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
-        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
-        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
+        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
+        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17,
+        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33,
         b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
     var blockCount = (1600 - bits * 2) / 32;
     var byteCount = blockCount * 4;
@@ -16350,7 +16350,7 @@ module.exports = {
     }
     return hex;
   };
-  
+
   if(!root.JS_SHA3_TEST && NODE_JS) {
     module.exports = {
       sha3_512: sha3_512,
@@ -28709,12 +28709,12 @@ var LocalStore = module.exports = {
 
 var saveAs = saveAs || (function(view) {
     "use strict";
-    
+
     // If no view just quit, probably we are in node.js
     if(typeof view === "undefined") {
         return;
     }
-    
+
     // IE <10 is explicitly unsupported
     if (typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
         return;
@@ -40151,14 +40151,14 @@ function checkPrime(prime, generator) {
     return primeCache[hex];
   }
   var error = 0;
-  
+
   if (prime.isEven() ||
     !primes.simpleSieve ||
     !primes.fermatTest(prime) ||
     !millerRabin.test(prime)) {
     //not a prime so +1
     error += 1;
-    
+
     if (gen === '02' || gen === '05') {
       // we'd be able to check the generator
       // it would fail so +8
@@ -40188,9 +40188,9 @@ function checkPrime(prime, generator) {
       if (rem.cmp(THREE) && rem.cmp(SEVEN)) {
         // prime mod 10 needs to equal 3 or 7
         error += 8;
-      } 
+      }
       break;
-    default: 
+    default:
       error += 4;
   }
   primeCache[hex] = error;
@@ -40215,7 +40215,7 @@ function DH(prime, generator, malleable) {
   this._primeLen = prime.length;
   this._pub = void 0;
   this._priv = void 0;
-  
+
   if (malleable) {
     this.setPublicKey = setPublicKey;
     this.setPrivateKey = setPrivateKey;
@@ -40740,7 +40740,7 @@ module.exports = function privateDecrypt(private_key, enc, reverse) {
   } else {
     padding = 4;
   }
-  
+
   var key = parseKeys(private_key);
   var k = key.modulus.byteLength();
   if (enc.length > k || new bn(enc).cmp(key.modulus) >= 0) {
@@ -44310,13 +44310,13 @@ Script.prototype.runInContext = function (context) {
     if (!(context instanceof Context)) {
         throw new TypeError("needs a 'context' argument.");
     }
-    
+
     var iframe = document.createElement('iframe');
     if (!iframe.style) iframe.style = {};
     iframe.style.display = 'none';
-    
+
     document.body.appendChild(iframe);
-    
+
     var win = iframe.contentWindow;
     var wEval = win.eval, wExecScript = win.execScript;
 
@@ -44325,7 +44325,7 @@ Script.prototype.runInContext = function (context) {
         wExecScript.call(win, 'null');
         wEval = win.eval;
     }
-    
+
     forEach(Object_keys(context), function (key) {
         win[key] = context[key];
     });
@@ -44334,11 +44334,11 @@ Script.prototype.runInContext = function (context) {
             win[key] = context[key];
         }
     });
-    
+
     var winKeys = Object_keys(win);
 
     var res = wEval.call(win, this.code);
-    
+
     forEach(Object_keys(win), function (key) {
         // Avoid copying circular objects like `top` and `window` by only
         // updating existing context properties or new properties in the `win`
@@ -44353,9 +44353,9 @@ Script.prototype.runInContext = function (context) {
             defineProp(context, key, win[key]);
         }
     });
-    
+
     document.body.removeChild(iframe);
-    
+
     return res;
 };
 

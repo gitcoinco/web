@@ -1,7 +1,7 @@
 #!/bin/bash
 
 : <<'END'
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -63,10 +63,14 @@ mkdir -p /home/ubuntu/gitcoin/coin/app/static/wallpapers
 
 cd app || echo "Cannot find app directory!"
 
+# remove extraneous files
+rm -f output/w*_*.pdf; rm -f assets/other/wp.pdf;
+
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
+    python3 manage.py bundle;
+    yarn run build;
     python3 manage.py collectstatic --noinput -i other;
-    python3 manage.py compress;
 fi
 
 rm -Rf ~/gitcoin/coin/app/static/other

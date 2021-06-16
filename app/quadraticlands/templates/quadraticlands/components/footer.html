@@ -1,0 +1,11 @@
+<!-- footer -->
+<section id="footer">
+  <a href="/quadraticlands" {% if request.path == "/quadraticlands" %} aria-current="page" {% endif %} >Home</a>
+  <a href="/quadraticlands/about" {% if "about" in request.path %} aria-current="page" {% endif %} >About</a>
+  <a href="/quadraticlands/mission" {% if "mission" in request.path %} aria-current="page" {% endif %} >Mission</a>
+  <a href="/quadraticlands/workstream" {% if "workstream" in request.path %} aria-current="page" {% endif %} >Workstream</a>
+  <a href="/quadraticlands/faq" {% if "faq" in request.path %} aria-current="page" {% endif %} >FAQ</a>
+  <a href="https://gitcoin.co/legal/privacy" target="_blank">Privacy</a>
+  <a href="https://gitcoin.co/legal/terms" target="_blank">Terms</a>
+  <a href="https://gitcoin.co" target="_blank">made by Gitcoin</a>
+</section>

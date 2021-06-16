@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
@@ -12,14 +12,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see
 <http: //www.gnu.org/licenses />.
 {% endcomment %}
-{% load humanize static i18n compress %}
+{% load humanize static i18n bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   {% include 'shared/head.html' with slim=1 %}
   {% include 'shared/cards_pic.html' %}
-  {% compress css file grants %}
+  {% bundle css file grants %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
@@ -27,7 +27,7 @@ along with this program. If not, see
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/sidebar_search.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
   <style>
 
     #sidebar-quick-view header.b-sidebar-header > strong {
@@ -70,25 +70,8 @@ along with this program. If not, see
         <div class="row grants-details-parent mx-0">
           <div id="grants-details" :class="`no-gutters w-100 ${view == 'list' ? 'list-view' : 'grid-view'}`">
             <div style="background-size: contain;" id="grant-background-image-mount-point">
-              <div
-                style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px;">
-                {% if prev_grants.count %}
-                <div class="row">
-                  <div class="col-12 mt-3">
-                    <div class="info-box large mx-auto p-3">
-                      <a class="btn btn-primary cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for prev_grant in prev_grants %}{{prev_grant.pk}},{% endfor %}">+
-                        Add to Cart</a>
-                      <p class="mb-2">Want to contribute to <a href="https://vitalik.ca/general/2020/04/30/round5.html" target="_blank">stability of ecosystem funding</a>? You funded {{prev_grants.count}} grant{{ prev_grants.count|pluralize }} last time. Fund
-                        them again?</p>
-                      <span class="font-smaller-3">{% for prev_grant in prev_grants %}
-                      <a href="{{prev_grant.url}}">{{prev_grant.title}}</a>
-                      {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
-                      {%endfor%}</span>
-                    </div>
-                  </div>
-                </div>
-                {% endif %}
-                <div >
+              <div style="background-color: rgba(255, 255, 255, 0.92);  padding-bottom: 20px;">
+                <div>
                   <div class="row mx-0">
                     <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
                       {% include 'grants/shared/sidebar_search.html' %}
@@ -96,9 +79,6 @@ along with this program. If not, see
 
                     <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
                       {% include 'grants/shared/landing_navbar.html' %}
-
-                      <!-- TODO : REMOVE -->
-                      <!-- {% include 'grants/shared/landing_clr.html' %} -->
 
                       <template v-if="'activity' == current_type">
                         {% include 'grants/shared/landing_activity.html' %}
@@ -156,7 +136,6 @@ along with this program. If not, see
       {% include 'shared/footer.html' %}
     </div>
   </div>
-  {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
   {% include 'grants/shared/shared_scripts.html' %}
   {{collections|json_script:"collections-object"}}
@@ -172,7 +151,7 @@ along with this program. If not, see
     document.keyword = "{{ keyword }}";
     document.following = {{ following|yesno:'true,false' }};
     document.idle_grants = {{ idle_grants|yesno:'true,false' }};
-    document.show_contributions = {{ show_contributions|yesno:'true,false' }};
+    document.show_contributions = {{ only_contributions|yesno:'true,false' }};
     document.featured = {{ featured|yesno:'true,false' }};
     document.collection_id = {{ collection_id|default:'null' }};
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
@@ -222,7 +201,6 @@ along with this program. If not, see
   <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
   <script src="{% static "v2/js/grants/funding.js" %}"></script>
   <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
-  <script src="{% static "v2/js/grants/contribution-trust-bonus.js" %}"></script>
   <script src="{% static "v2/js/grants/grant-thanks-modal.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
 </body>

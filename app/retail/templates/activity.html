@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not,see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize i18n static compress %}
+{% load humanize i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,11 +22,11 @@
     <meta name="description" content="See open source development in real-time with the Gitcoin Activity Feed.">
     <link rel="canonical" href="{% url 'activity' %}">
     {% include 'shared/head.html' %}
-    {% compress css file activity %}
+    {% bundle css file activity %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
 
   <body class="{{ active }} g-font-muli">
@@ -45,9 +45,8 @@
       </div>
 
       {% include 'shared/footer.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' %}
-      
+
       {% include 'shared/activity_scripts.html' %}
     </div>
   </body>

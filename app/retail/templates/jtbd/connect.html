@@ -1,5 +1,5 @@
 {% comment %}
-Copyright (C) 2019 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -17,7 +17,7 @@ along with this program. If not,see
 
 {% endcomment %}
 
-{% load i18n static compress date_fromisoformat %}
+{% load i18n static bundle date_fromisoformat %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,9 +25,9 @@ along with this program. If not,see
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% compress css file jtbd %}
+  {% bundle css file jtbd %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
 </head>
 
 <body>
@@ -175,7 +175,7 @@ along with this program. If not,see
           If you were in a room with 250 of the brightest minds in Web3 for 8 weeks, what would you build?
         </h3>
         <h4 class="pl-3 w-100 mb-3">
-          Sucessful Projects
+          Successful Projects
         </h4>
         <div class="col-12 mb-5">
           <div class="row">
@@ -299,7 +299,7 @@ along with this program. If not,see
               <h2>Have questions before you start with Gitcoin?</h2>
               <p class="text-grey-400 font-bigger-2">Meet the Gitcoin community in Discord.</p>
               <div class="row mt-4 mx-0">
-                <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5" href="https://discord.com/invite/83BK5z55yB" target="_blank">Join Discord</a>
+                <a class="btn btn-primary btn-lg col-12 col-md-auto p-2 px-5" href="https://discord.gg/gitcoin" target="_blank">Join Discord</a>
               </div>
             </div>
             <div class="d-none d-md-inline col-md-3 p-0 align-self-center">
@@ -341,7 +341,6 @@ along with this program. If not,see
 
   </div>
 
-  {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' with slim=1 %}
 
   <script>

@@ -1,14 +1,14 @@
-{% load i18n static kudos_extras avatar_tags compress %}
+{% load i18n static kudos_extras avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file kudos_details %}
+    {% bundle css file kudos_details %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
@@ -30,7 +30,9 @@
       <div class="container py-5">
         <a href="{% url 'kudos_marketplace' %}">&lt; {% trans "Kudos Marketplace" %}</a>
       </div>
-
+      <!--
+        IMAGE URL: {{kudos.static_image}}
+      -->
       <section class="container my-2 pb-2">
         <div class="row justify-content-around">
           <div class="col-md-6 col-lg-5 mb-5">
@@ -49,7 +51,7 @@
             {% endif %}
             <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
             <div>
-              Network: {{kudos.contract.network}} 
+              Network: {{kudos.contract.network}}
 
               {% if kudos.on_other_networks|length %}
                 (Also available on
@@ -134,7 +136,7 @@
                   <BR>
                   <BR>
                   {% if reward_for|length %}
-                  or: 
+                  or:
                   {% endif %}
                   {% for quest in reward_for %}
                     <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
@@ -193,7 +195,6 @@
       </section>
 
       {% include 'shared/footer.html' %}
-      {% include 'shared/analytics.html' %}
       <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
       {% include 'shared/footer_scripts.html' with slim=1 %}
       <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
@@ -201,9 +202,9 @@
       <script src="{% static "v2/js/amounts.js" %}"></script>
       <script src="{% static "v2/js/eth-price.js" %}"></script>
       {% include 'shared/activity_scripts.html' %}
-      {% compress css file activity_stream %}
+      {% bundle css file activity_stream %}
         <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-      {% endcompress %}
+      {% endbundle %}
       <script src="{% static "v2/js/status.js" %}"></script>
       <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     </div>

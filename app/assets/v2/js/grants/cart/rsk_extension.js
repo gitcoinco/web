@@ -1,4 +1,4 @@
-const contributeWithRskExtension = async (grant, vm, modal) => {
+const contributeWithRskExtension = async(grant, vm, modal) => {
   const token_name = grant.grant_donation_currency;
   const amount = grant.grant_donation_amount;
   const to_address = grant.rsk_payout_address;
@@ -6,8 +6,9 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
 
   // 1. init rsk provider
   // const rskHost = "https://public-node.testnet.rsk.co";
-  const rskHost = "https://public-node.rsk.co";
+  const rskHost = token_name == 'SOV' ? 'https://mainnet.sovryn.app/rpc' : 'https://public-node.rsk.co';
   const rskClient = new Web3();
+
   rskClient.setProvider(
     new rskClient.providers.HttpProvider(rskHost)
   );
@@ -57,7 +58,9 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
 
   } else {
 
-    tokenContract = new rskClient.eth.Contract(token_abi, token.addr);
+    const token_address = token.addr.toLowerCase();
+
+    tokenContract = new rskClient.eth.Contract(token_abi, token_address);
 
     balance = tokenContract.methods.balanceOf(
       ethereum.selectedAddress).call({ from: ethereum.selectedAddress });
@@ -73,7 +76,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
     data = tokenContract.methods.transfer(to_address.toLowerCase(), amountAsString).encodeABI();
 
     txArgs = {
-      to: token.addr,
+      to: token_address,
       from: ethereum.selectedAddress,
       gasPrice: rskClient.utils.toHex(await rskClient.eth.getGasPrice()),
       gas: rskClient.utils.toHex(318730),
@@ -85,7 +88,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
   const txHash = await ethereum.request(
     {
       method: 'eth_sendTransaction',
-      params: [txArgs],
+      params: [txArgs]
     }
   );
 
@@ -110,7 +113,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
         }]
       };
 
-      const apiUrlBounty = `v1/api/contribute`;
+      const apiUrlBounty = 'v1/api/contribute';
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
@@ -133,7 +136,7 @@ const contributeWithRskExtension = async (grant, vm, modal) => {
           _alert('Unable to make contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function (error) {
+      }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
         _alert('Unable to make contribute to grant. Please try again later', 'danger');
         console.log(error);
