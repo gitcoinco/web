@@ -437,7 +437,7 @@ Vue.mixin({
           web3.eth.sendTransaction({
             to: toAddress,
             from: selectedAccount,
-            value: web3.utils.toWei(String(vm.totalAmount.totalFee), 'ether')
+            value: web3.utils.toWei(new web3.utils.BN(BigInt(vm.totalAmount.totalFee.toFixed(18) * 1.0 * Math.pow(10, 18))).toString(), 'wei')
           }).once('transactionHash', (txnHash, errors) => {
 
             console.log(txnHash, errors);
