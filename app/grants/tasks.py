@@ -102,7 +102,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
-                    if contrib.created_on > pytz.utc.localize(round_start_date):
+                    if contrib.created_on.replace(tzinfo=None) > round_start_date.replace(tzinfo=None):
                         instance.amount_received_in_round += Decimal(value_usdt)
                         instance.sybil_score += subscription.contributor_profile.sybil_score
 

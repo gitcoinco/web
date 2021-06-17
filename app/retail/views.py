@@ -760,7 +760,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
 
-    network = request.GET.get('network', 'mainnet')
+    network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'
 
     if 'grant:' in what:
@@ -1128,7 +1128,7 @@ def presskit(request):
             "255, 184, 21",
             "48, 83, 48"
         ),
-        
+
     ]
 
     context = {
