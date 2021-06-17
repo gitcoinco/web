@@ -21,6 +21,7 @@ from django.db.models import F
 from django.utils import timezone
 
 from dashboard.models import Profile, UserAction
+from dashboard.tasks import profile_dict
 
 
 class Command(BaseCommand):
@@ -34,5 +35,4 @@ class Command(BaseCommand):
         profiles = profiles.filter(modified_on__gt=F('last_calc_date'))
         print(profiles.count())
         for instance in profiles:
-            instance.calculate_all()
-            instance.save()
+            profile_dict.delay(instance.pk)
