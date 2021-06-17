@@ -83,9 +83,6 @@ along with this program. If not, see
                       <template v-if="'activity' == current_type">
                         {% include 'grants/shared/landing_activity.html' %}
                       </template>
-                      <template v-else-if="'about' == current_type">
-                        {% include 'grants/shared/landing_announce.html' %}
-                      </template>
                       <template v-else-if="'stats' == current_type">
                         <div id="insert_iframe">
                           <div style="background-color: #eee; font-size: 14px; text-align: center;">
