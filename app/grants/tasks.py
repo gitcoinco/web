@@ -13,7 +13,7 @@ from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
-from grants.models import Grant, Subscription
+from grants.models import Grant, GrantCollection, Subscription
 from grants.utils import get_clr_rounds_metadata
 from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
 from marketing.models import Stat
@@ -394,5 +394,14 @@ def process_new_contributions_email(self, grant_id):
     try:
         grant = Grant.objects.get(pk=grant_id)
         new_contributions(grant)
+    except Exception as e:
+        print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def generate_collection_cache(self, collection_id):
+    try:
+        collection = GrantCollection.objects.get(pk=collection_id)
+        collection.generate_cache()
     except Exception as e:
         print(e)
