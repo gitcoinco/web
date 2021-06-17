@@ -252,6 +252,10 @@ class Game(SuperModel):
         return self.get_absolute_url()
 
     @property
+    def relative_url(self):
+        return self.get_absolute_url()[1:]
+
+    @property
     def gtc_used(self):
         return self.current_votes_total
 
