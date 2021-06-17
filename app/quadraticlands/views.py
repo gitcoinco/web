@@ -414,7 +414,7 @@ def mission_diplomacy_room_helper(request, game):
     # make a move
     if is_member and request.POST.get('signature'):
         game.make_move(request.user.profile.handle, request.POST.dict())
-        return JsonResponse({'msg':'OK'})
+        return JsonResponse({'msg':'OK', 'url' : game.url})
 
     # game view
     params = {

@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+  document.refresh_page = function(url){
+      $.get(url, function(response){
+        $(document).find('.entries').replaceWith($(response).find('.entries'))
+        $(".diplomacy-roomlog .entries").animate({ scrollTop: $('.diplomacy-roomlog  .entries').prop("scrollHeight")}, 1000);
+        $('#chat_room').focus();
+      })
+  }
+
   console.debug('DIPLOMACY ROOM');
 
   // random floor polygones coloring on diplomacy image
@@ -96,6 +104,28 @@ document.addEventListener('DOMContentLoaded', function() {
   const vouche_button = document.getElementById('vouche_button');
   vouche_button.addEventListener('click', () => {
     vouche();
+  });
+
+  $("body").on('submit', '.diplomacy-chat-form', function(e){
+    e.preventDefault();
+    let params = {
+      csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+      chat: $("#chat_room").val(),
+    }
+    $('#chat_room').val('');
+    var url = $("#diplomacy-chat-form").attr('action');
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: params,
+      success: function(response){
+        alert("Message submitted");
+        document.refresh_page(url);
+      },
+      error: function(error){
+        alert('got an error - pls contact support@gitcoin.co');
+      },
+    });  
   });
 
 
@@ -216,7 +246,8 @@ async function vouche() {
     data: params,
     success: function(response){
       alert("Vote submitted")
-      document.location.href = document.location.href + "#chat";
+      document.refresh_page(url);
+      document.location.href = url + "#chat";
     },
     error: function(error){
       alert('got an error - pls contact support@gitcoin.co');

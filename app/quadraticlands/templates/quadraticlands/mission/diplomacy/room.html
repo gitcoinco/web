@@ -46,7 +46,7 @@
 	{% for player in game.active_players.all %}
 	<div class="member-card">
 		<div class="front">
-			<figure><img src="/dynamic/avatar/scco"></figure>
+			<figure><img src="/dynamic/avatar/{{player.profile.handle}}"></figure>
 			<div class="username">@{{player.profile.handle}}</div>
 			<div class="tokens_in">{{player.tokens_in}}</div>
 			<div class="tokens_out">{{player.tokens_out}}</div>
@@ -118,6 +118,7 @@
 <!-- diplomacy roomlog -->
 <section class="diplomacy-roomlog" style="margin-top:3em;">
 
+	<div class="entries" style=" max-height: 800px; overflow-y: scroll;">
 	{% for feed in game.feed.all %}
 
 	<div class="entry">
@@ -134,7 +135,6 @@
 			{{feed.data.chat}}
 
 		</span>
-		<!--
 		<span class="member">
 			<img src="/dynamic/avatar/scco">
 			<span class="username">peter schiff</span>
@@ -152,13 +152,13 @@
 			<span class="username">superlongusername</span>
 			<span class="tokens">312323.32</span>
 		</span>
-		-->
 		<span class="time">{{feed.created_on | naturaltime}}</span>
 
 	</div>
 	{% endfor %}
+	</div>
 
-<form method="POST" action="{{game.url}}#chat">
+<form method="POST" class="diplomacy-chat-form" action="{{game.url}}#chat">
 <section class="diplomacy-chat-room" id="chat">
 	<div class="wrapper">
 		<div class="info">
