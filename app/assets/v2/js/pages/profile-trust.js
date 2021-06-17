@@ -365,7 +365,7 @@ Vue.component('twitter-verify-modal', {
               </div>
               <div v-if="step === 'validate-tweet' || step == 'perform-validation'">
                 <p class="mb-4">
-                  Now we'll validate that you've sent the tweet. Enter your Twitter handle and press validate.
+                  Now we'll validate that you've sent the tweet. Enter your Twitter handle and press "Verify Tweet".
                 </p>
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -385,7 +385,7 @@ Vue.component('twitter-verify-modal', {
                   </span>
                   <b-button @click="clickedValidate" :disabled="step === 'perform-validation'" variant="primary" class="btn-primary  mt-3 mb-2">
                     <b-spinner small v-if="step === 'perform-validation'" type="grow"></b-spinner>
-                    Connect Twitter
+                    Verify Tweet
                   </b-button>
                 </div>
 
