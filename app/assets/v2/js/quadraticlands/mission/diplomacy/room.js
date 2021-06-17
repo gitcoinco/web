@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+  document.scroll_roomlog = function(){
+    $(".diplomacy-roomlog .entries").animate({ scrollTop: $('.diplomacy-roomlog  .entries').prop("scrollHeight")}, 1000);
+  }
   document.refresh_page = function(url){
       $.get(url, function(response){
         $(document).find('.entries').replaceWith($(response).find('.entries'))
-        $(".diplomacy-roomlog .entries").animate({ scrollTop: $('.diplomacy-roomlog  .entries').prop("scrollHeight")}, 1000);
+        document.scroll_roomlog();
         $('#chat_room').focus();
       })
   }
+  document.scroll_roomlog();
 
   console.debug('DIPLOMACY ROOM');
 
@@ -217,7 +221,7 @@ async function vouche() {
     var entry = {
       userid: member.dataset.userid,
       username: member.dataset.username,
-      value: member.value
+      value: member.value ? member.value : 0
     };
 
     result.push(entry);
@@ -235,7 +239,7 @@ async function vouche() {
   let signature = await web3.eth.personal.sign(JSON.stringify(package) , account);
   const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
   const params = {
-    package: package,
+    package: JSON.stringify(package),
     signature: signature,
     csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
   }
@@ -247,7 +251,9 @@ async function vouche() {
     success: function(response){
       alert("Vote submitted")
       document.refresh_page(url);
-      document.location.href = url + "#chat";
+    $('html, body').animate({
+        scrollTop: $("#chat_room_interface").offset().top
+     }, 500);
     },
     error: function(error){
       alert('got an error - pls contact support@gitcoin.co');

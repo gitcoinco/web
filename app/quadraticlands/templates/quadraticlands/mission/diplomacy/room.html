@@ -34,7 +34,7 @@
 
 <!-- intro-->
 <section class="introduction" style="margin-bottom: 3em;">
-	<p>This room was created {{game.created_on | naturaltime}} by @{{game.admin.profile.handle}} and is admin'd by @{{game.admin.profile.handle}}; it has {{game.active_players.count}} people in it & represents {{game.gtc_used}} of GTC and has created {{game.sybil_created}} of Sybil Resistence on Gitcoin.</p>
+	<p>This room was created {{game.created_on | naturaltime}} by @{{game.admin.profile.handle}} and is admin'd by @{{game.admin.profile.handle}}; it has {{game.active_players.count}} people in it & represents {{game.gtc_used}} of GTC and has created {{game.sybil_created}} TrustBonus of Sybil Resistence on Gitcoin.</p>
 </section>
 
 
@@ -54,15 +54,18 @@
 		</div>
 		<div class="back">
 			<div class="wrapper tokens_in">
-				<h3>kevin</h3>
-				<div>catwoman<span>143</span></div>
-				<div>peter<span>11</span></div>
-				<div>sabrina<span>13.21</span></div>
+				{% for username, value in player.votes_in.items %}
+					<div>@{{username}}<span>{{value}}</span></div>
+				{% endfor %}
 			</div>
 			<div class="wrapper tokens_out">
-				<div>kevin<span>143</span></div>
-				<div>peter<span>11</span></div>
-				<div>sabrina<span>13.21</span></div>
+			{% if player.last_move %}
+				{% for vote in player.last_move.votes %}
+					<div>@{{vote.username}}<span>{{vote.value}}</span></div>
+				{% endfor %}
+				{% else %}
+					<div>No moves yet.</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -135,23 +138,15 @@
 			{{feed.data.chat}}
 
 		</span>
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">peter schiff</span>
-			<span class="tokens">3123.32</span>
-		</span>	
 
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">kevin</span>
-			<span class="tokens">312323.32</span>
-		</span>
+		{% for item in feed.votes %}
+			<span class="member">
+				<img src="/dynamic/avatar/{{item.username}}">
+				<span class="username">{{item.username}}</span>
+				<span class="tokens">{{item.value}}</span>
+			</span>	
+		{% endfor %}
 
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">superlongusername</span>
-			<span class="tokens">312323.32</span>
-		</span>
 		<span class="time">{{feed.created_on | naturaltime}}</span>
 
 	</div>

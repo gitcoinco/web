@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
+import json
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -413,7 +414,11 @@ def mission_diplomacy_room_helper(request, game):
 
     # make a move
     if is_member and request.POST.get('signature'):
-        game.make_move(request.user.profile.handle, request.POST.dict())
+        data = {
+            'moves': json.loads(request.POST.get('package')),
+            'signature': request.POST.get('signature'),
+        }
+        game.make_move(request.user.profile.handle, data)
         return JsonResponse({'msg':'OK', 'url' : game.url})
 
     # game view
