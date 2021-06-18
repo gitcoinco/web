@@ -12,8 +12,7 @@ const makeMenu = (navbarEl) => {
   let debounceClose = false;
   let debounceMeasure = false;
 
-  // control the navPos when we open #navbarSupportedContent (mobile's collapse toggle)
-  let navPos = 0;
+  // control the anchored position when we open #navbarSupportedContent (mobile's collapse toggle)
   let anchored = 0;
 
   const isTouchDevice = ('ontouchstart' in window);
@@ -440,7 +439,9 @@ const makeMenu = (navbarEl) => {
       // scroll beyond the topNav and lock
       if (window.innerWidth >= breakpoint_md) {
         // close menu if we move into md
-        $navbarSupportedContent.collapse('hide');
+        if ($navbarSupportedContent) {
+          $navbarSupportedContent.collapse('hide');
+        }
         document.body.classList.remove('navbar-menu-open');
       }
     }
@@ -453,129 +454,132 @@ const makeMenu = (navbarEl) => {
     });
   };
 
+  // only init if required els are discovered/available
+  if (backgroundEl !== null && navItemEls.length > 0 && menuEls.length > 0) {
 
-  // set initial positions for each nav item
-  setDimensions();
+    // set initial positions for each nav item
+    setDimensions();
 
-
-  // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
-  $navbarSupportedContent.on('show.bs.collapse', () => {
-    anchored = window.scrollY;
-    document.body.classList.add('navbar-menu-open');
-    posMobileMenu();
-  }).on('hide.bs.collapse', () => {
-    document.body.classList.remove('navbar-menu-open');
-    window.scrollTo(0, anchored);
-    anchored = 0;
-  });
-
-  // bindPosMobileMenu for each eventName
-  [ 'resize', 'orientationchange' ].forEach((eventName) => {
-    bindPosMobileMenu(eventName);
-  });
-
-  // cleanUp on resize (remove active state and remeasure the dimensions)
-  window.addEventListener('resize', () => {
-    // debounce the measure
-    clearTimeout(debounceMeasure);
-    // reinit the cleanup
-    debounceMeasure = setTimeout(() => {
-      // cleanUp
-      cleanUp();
-      // only alter dimensions on resive for desktop version
-      if (window.innerWidth >= breakpoint_md) {
-        // set the new positions
-        setDimensions();
-      }
-    }, 30);
-  });
-
-  // set mouseenter events on each navLink
-  navLinkEls.forEach((navLink) => {
-    navLink.addEventListener('mouseenter', () => {
-      // show the selection
-      if (window.innerWidth >= breakpoint_md)
-        showMenu(navLink);
-    });
-    navLink.addEventListener('click', (e) => {
-      // prevent href from scrolling to top
-      e.preventDefault();
-      // show the selection
-      if (window.innerWidth >= breakpoint_md) {
-        showMenu(navLink);
-      } else {
-        showMenuMobile(navLink);
-      }
-    });
-  });
-
-  // cleanup and attach event to close gc-menu on bs-dropdown open
-  mobileToggleEl.addEventListener('click', () => {
-    // remove any open/active state
-    cleanUp();
-    // wait for vue to finish paint
-    window.requestAnimationFrame(() => {
-      // bind click event to hide items when bootstrap menu is opened (bind on toggle so that we're definately ready)
-      $('.nav-link.dropdown-toggle[data-toggle="dropdown"]').each((_, el) => {
-        $(el).off('click.gc-menu').on('click.gc-menu', () => window.innerWidth < breakpoint_md && cleanUp());
+    if ($navbarSupportedContent) {
+      // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
+      $navbarSupportedContent.on('show.bs.collapse', () => {
+        anchored = window.scrollY;
+        document.body.classList.add('navbar-menu-open');
+        posMobileMenu();
+      }).on('hide.bs.collapse', () => {
+        document.body.classList.remove('navbar-menu-open');
+        window.scrollTo(0, anchored);
+        anchored = 0;
       });
-    });
-  });
-
-  // set mouseleave event on whole navbar el (how long to stay open after mouseleave)
-  navbarEl.addEventListener('mouseleave', () => {
-    if (window.innerWidth >= breakpoint_md) {
-      debounceClose = setTimeout(() => {
-        // remove isVisible transitions to reduce jank
-        resetVisibility();
-      }, 1000);
     }
-  });
 
-  // if mouse re-enters the navbar clear the timeout
-  navbarEl.addEventListener('mouseenter', () => {
-    if (window.innerWidth >= breakpoint_md) {
-      // quit the close routine
-      clearTimeout(debounceClose);
-    }
-  });
-
-  // set-up each of the defined submenus
-  [...submenuEls].forEach((el) => {
-    // collect the submenu name (as data attr on .gc-menu-wrap el)
-    const menu = el.dataset.submenu;
-
-    // associate mousePos arr (collected for each menu)
-    mousePositions[menu] = [];
-
-    // record each mouseMove on the whole dropdown area
-    menuElsByName[menu].addEventListener('mousemove', (e) => {
-      pushMousePosition(e, menu);
+    // bindPosMobileMenu for each eventName
+    [ 'resize', 'orientationchange' ].forEach((eventName) => {
+      bindPosMobileMenu(eventName);
     });
 
-    // show submenu content on hover of gc-menu-submenu-toggle
-    submenuToggleEls[menu].forEach((submenuToggle) => {
-      submenuToggle.addEventListener((isTouchDevice ? 'touchstart' : 'mouseenter'), (e) => {
-        // disallow touch actions from following links unless its the second touch (submenu only applied to desktop)
+    // cleanUp on resize (remove active state and remeasure the dimensions)
+    window.addEventListener('resize', () => {
+      // debounce the measure
+      clearTimeout(debounceMeasure);
+      // reinit the cleanup
+      debounceMeasure = setTimeout(() => {
+        // cleanUp
+        cleanUp();
+        // only alter dimensions on resive for desktop version
         if (window.innerWidth >= breakpoint_md) {
-          if (!isTouchDevice) {
-            hysteresisCheck(e, menu, submenuToggle);
-          } else if (isTouchDevice && !submenuToggle.classList.contains('gc-menu-submenu-toggle-focus')) {
-            showSubmenu(e, menu, submenuToggle);
-          }
+          // set the new positions
+          setDimensions();
         }
+      }, 30);
+    });
+
+    // set mouseenter events on each navLink
+    navLinkEls.forEach((navLink) => {
+      navLink.addEventListener('mouseenter', () => {
+        // show the selection
+        if (window.innerWidth >= breakpoint_md)
+          showMenu(navLink);
       });
-      // stop hysteresisCheck from activating menus after we'e left the submenuToggle area
-      submenuToggle.addEventListener('mouseleave', (e) => {
-        clearTimeout(debounceSubmenuFocus[menu]);
-      });
-      // click event for mobile submenus
-      submenuToggle.addEventListener('click', (e) => {
-        if (window.innerWidth < breakpoint_md) {
-          showMenuMobile(submenuToggle, true);
+      navLink.addEventListener('click', (e) => {
+        // prevent href from scrolling to top
+        e.preventDefault();
+        // show the selection
+        if (window.innerWidth >= breakpoint_md) {
+          showMenu(navLink);
+        } else {
+          showMenuMobile(navLink);
         }
       });
     });
-  });
 
+    // cleanup and attach event to close gc-menu on bs-dropdown open
+    mobileToggleEl.addEventListener('click', () => {
+      // remove any open/active state
+      cleanUp();
+      // wait for vue to finish paint
+      window.requestAnimationFrame(() => {
+        // bind click event to hide items when bootstrap menu is opened (bind on toggle so that we're definately ready)
+        $('.nav-link.dropdown-toggle[data-toggle="dropdown"]').each((_, el) => {
+          $(el).off('click.gc-menu').on('click.gc-menu', () => window.innerWidth < breakpoint_md && cleanUp());
+        });
+      });
+    });
+
+    // set mouseleave event on whole navbar el (how long to stay open after mouseleave)
+    navbarEl.addEventListener('mouseleave', () => {
+      if (window.innerWidth >= breakpoint_md) {
+        debounceClose = setTimeout(() => {
+          // remove isVisible transitions to reduce jank
+          resetVisibility();
+        }, 1000);
+      }
+    });
+
+    // if mouse re-enters the navbar clear the timeout
+    navbarEl.addEventListener('mouseenter', () => {
+      if (window.innerWidth >= breakpoint_md) {
+        // quit the close routine
+        clearTimeout(debounceClose);
+      }
+    });
+
+    // set-up each of the defined submenus
+    [...submenuEls].forEach((el) => {
+      // collect the submenu name (as data attr on .gc-menu-wrap el)
+      const menu = el.dataset.submenu;
+
+      // associate mousePos arr (collected for each menu)
+      mousePositions[menu] = [];
+
+      // record each mouseMove on the whole dropdown area
+      menuElsByName[menu].addEventListener('mousemove', (e) => {
+        pushMousePosition(e, menu);
+      });
+
+      // show submenu content on hover of gc-menu-submenu-toggle
+      submenuToggleEls[menu].forEach((submenuToggle) => {
+        submenuToggle.addEventListener((isTouchDevice ? 'touchstart' : 'mouseenter'), (e) => {
+          // disallow touch actions from following links unless its the second touch (submenu only applied to desktop)
+          if (window.innerWidth >= breakpoint_md) {
+            if (!isTouchDevice) {
+              hysteresisCheck(e, menu, submenuToggle);
+            } else if (isTouchDevice && !submenuToggle.classList.contains('gc-menu-submenu-toggle-focus')) {
+              showSubmenu(e, menu, submenuToggle);
+            }
+          }
+        });
+        // stop hysteresisCheck from activating menus after we'e left the submenuToggle area
+        submenuToggle.addEventListener('mouseleave', (e) => {
+          clearTimeout(debounceSubmenuFocus[menu]);
+        });
+        // click event for mobile submenus
+        submenuToggle.addEventListener('click', (e) => {
+          if (window.innerWidth < breakpoint_md) {
+            showMenuMobile(submenuToggle, true);
+          }
+        });
+      });
+    });
+  }
 };
