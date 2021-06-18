@@ -56,12 +56,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // copy room link to clipboard
   const room_link = document.getElementById('room_link');
   const room_link_button = document.getElementById('room_link_button');
-
-  room_link_button.addEventListener('click', () => {
-    room_link.select();
-    document.execCommand('copy');
-    flashMessage('copied to clipboard', 10000);
-  });
+  if(room_link){
+    room_link_button.addEventListener('click', () => {
+      room_link.select();
+      document.execCommand('copy');
+      flashMessage('copied to clipboard', 10000);
+    });
+  }
 
   // delete room UI
   // show delete button + warning on enter the room name what is fetched
@@ -70,16 +71,17 @@ document.addEventListener('DOMContentLoaded', function() {
   const delete_room_button = document.getElementById('delete_room_button');
   const delete_room_interface = document.getElementById('delete_room_interface');
   const roomname = delete_room.dataset.roomname;
-
-  delete_room.addEventListener('input', () => {
-    if (delete_room.value == roomname) {
-      delete_room_button.classList.remove('disabled');
-      delete_room_interface.classList.add('warning');
-    } else {
-      delete_room_button.classList.add('disabled');
-      delete_room_interface.classList.remove('warning');
-    }
-  });
+  if(delete_room){  
+    delete_room.addEventListener('input', () => {
+      if (delete_room.value == roomname) {
+        delete_room_button.classList.remove('disabled');
+        delete_room_interface.classList.add('warning');
+      } else {
+        delete_room_button.classList.add('disabled');
+        delete_room_interface.classList.remove('warning');
+      }
+    });
+  }
 
   // leave room UI
   // show leave button + warning on enter the room name what is fetched
