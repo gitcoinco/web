@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const delete_room = document.getElementById('delete_room');
   const delete_room_button = document.getElementById('delete_room_button');
   const delete_room_interface = document.getElementById('delete_room_interface');
-  const roomname = delete_room.dataset.roomname;
   if(delete_room){  
+    const roomname = delete_room.dataset.roomname;
     delete_room.addEventListener('input', () => {
       if (delete_room.value == roomname) {
         delete_room_button.classList.remove('disabled');
