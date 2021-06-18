@@ -4,7 +4,6 @@ import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
 BASE_URL = 'https://api.tzkt.io/v1'
-# BASE_URL = 'https://api.edo2net.tzkt.io/v1'
 
 
 def find_txn_on_tezos_explorer(fulfillment):
@@ -47,12 +46,13 @@ def get_tezos_txn_status(fulfillment):
 
     if not txnid:
         return None
-    
-    tx_url = f'{BASE_URL}/operations/{txnid}'
 
-    tx_response = requests.get(tx_url).json()
+    tx_response = requests.get(f'{BASE_URL}/operations/{txnid}').json()
 
     if tx_response:
+        tx_response = tx_response[0]
+        block_tip = requests.get(f'{BASE_URL}/head').json()['level']
+        confirmations = block_tip - tx_response['level']
         if (
             tx_response['type'] == 'transaction'
             and tx_response['hash'].strip() == txnid
@@ -60,6 +60,7 @@ def get_tezos_txn_status(fulfillment):
             and tx_response['target']['address'] == payeeAddress
             and tx_response['amount'] == float(amount) * 10 ** 6
             and tx_response['status'] == 'applied'
+            and confirmations > 0
         ):
             if tx_response['status'] == 'applied':
                 return 'success'

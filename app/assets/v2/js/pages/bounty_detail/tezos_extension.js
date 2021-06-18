@@ -5,16 +5,11 @@ const payWithTezosExtension = async(fulfillment_id, to_address, vm, modal) => {
 
   let selectedAddress;
   
-  // const Tezos = new taquito.TezosToolkit("https://mainnet-tezos.giganode.io");
-  const Tezos = new taquito.TezosToolkit('https://edonet-tezos.giganode.io');
-  const wallet = new taquitoBeaconWallet.BeaconWallet({
-    name: 'Gitcoin',
-    preferredNetwork: beacon.NetworkType.EDONET
-  }); // Takes the same arguments as the DAppClient constructor
+  const Tezos = new taquito.TezosToolkit('https://mainnet-tezos.giganode.io');
+  const wallet = new taquitoBeaconWallet.BeaconWallet({ name: 'Gitcoin' });
   
   Tezos.setWalletProvider(wallet);
-  
-  await wallet.clearActiveAccount();
+
   const activeAccount = await wallet.client.getActiveAccount();
   
   if (activeAccount) {
@@ -22,64 +17,31 @@ const payWithTezosExtension = async(fulfillment_id, to_address, vm, modal) => {
     selectedAddress = activeAccount.address;
   } else {
     try {
-      await wallet.requestPermissions(
-        {
-          network: {
-            type: beacon.NetworkType.EDONET,
-            rpcUrl: 'https://edonet-tezos.giganode.io'
-          }
-        }
-      );
+      await wallet.requestPermissions();
       selectedAddress = await wallet.getPKH();
       console.log('New connection:', selectedAddress);
     } catch (e) {
       console.log(e);
     }
   }
-  
-  // if (token_name == 'XTZ') {
-    
-  //   // balanceInWei = await rskClient.eth.getBalance(ethereum.selectedAddress);
-    
-  //   // rbtcBalance = rskClient.utils.fromWei(balanceInWei, 'ether');
-    
-  //   // if (Number(rbtcBalance) < amount) {
-  //   //   _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'danger');
-  //   //   return;
-  //   // }
-      
-  // } else {
         
-  // }
-        
-  try {
-    console.log(Tezos);
-    let balanceInMutez = await Tezos.tz.getBalance(selectedAddress);
-    
-    console.log(balanceInMutez);
-    
-    const txHash = await wallet.sendOperations([
-      {
-        kind: beacon.TezosOperationType.TRANSACTION,
-        destination: selectedAddress, // Send to ourselves - should be to_address
-        amount: amount * 10 ** vm.decimals
-      }
-    ]);
-    
-    console.log('Operation Hash: ', txHash);
-    
-    const explorerLink = await wallet.client.blockExplorer.getTransactionLink(
-      txHash,
-      network
-    );
+  if (token_name == 'XTZ') {
+    try {
+      const txHash = await wallet.sendOperations([
+        {
+          kind: beacon.TezosOperationType.TRANSACTION,
+          destination: to_address,
+          amount: amount * 10 ** vm.decimals
+        }
+      ]);
 
-    console.log('Block Explorer:', explorerLink);
-
-    callback(null, selectedAddress, txHash);
-  } catch (e) {
-    modal.closeModal();
-    _alert({ message: `${e.title} - ${e.description}` }, 'danger');
-    console.log(e);
+      console.log('Operation Hash: ', txHash);
+      callback(null, selectedAddress, txHash);
+    } catch (e) {
+      modal.closeModal();
+      _alert({ message: `${e.title} - ${e.description}` }, 'danger');
+      console.log(e);
+    }
   }
   
   function callback(error, from_address, txn) {
