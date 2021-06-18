@@ -8,6 +8,7 @@ from kudos.management.commands.mint_all_kudos import sync_latest
 from kudos.models import TokenRequest
 from marketing.mails import notify_kudos_minted
 
+change_owner = True
 
 token_req_ids = [
     2465,
@@ -28,6 +29,8 @@ for token_req_id in token_req_ids:
     time.sleep(3)
     notify_kudos_minted(obj)
     obj.approved = True
+    if change_owner:
+        obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
     obj.save()
     time.sleep(1)
 

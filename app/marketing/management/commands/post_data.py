@@ -306,7 +306,7 @@ def grants():
     #for aclr in active_clr_rounds:
     #    grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
 
-    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)#, subscription__grant__in=grants_pks)
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, subscription_network='mainnet')#, subscription__grant__in=grants_pks)
     if must_be_successful:
         contributions = contributions.filter(success=True)
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
