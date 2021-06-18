@@ -270,7 +270,7 @@ class Game(SuperModel):
     def add_player(self, handle):
         profile = Profile.objects.get(handle=handle)
         if not self.is_active_player(handle):
-            GamePlayer.objects.create(profile=profile, active=True, game=game)
+            GamePlayer.objects.create(profile=profile, active=True, game=self)
 
         return GameFeed.objects.create(
             game=self,
