@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (navbarDropdownWallet) {
     navbarDropdownWallet.addEventListener('click', () => {
+      console.log("click")
       walletProvider.classList.toggle('active');
     });
 
@@ -25,6 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
       walletProvider.classList.toggle('active');
     });
   }
+
+  // make noprovider icon also open the menue.
+  const noproviderIcon = document.getElementById('noproviderIcon');
+  noproviderIcon.addEventListener('click', () => {
+    console.log("noprovider");
+    walletProvider.classList.toggle('active');
+  });
+
 
   // inside the wallet menu i reused the .provider class
   // what was initial there to display all providers
