@@ -1400,7 +1400,7 @@ Vue.component('grants-cart', {
 
             const matchAmount = await this.predictCLRMatch(grant, amount);
 
-            this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
+            this.$set(this.grantData[i], 'grant_donation_clr_match', matchAmount ? matchAmount.toFixed(2) : 0);
           }
         }
       },
