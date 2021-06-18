@@ -187,14 +187,19 @@ const makeMenu = (navbarEl) => {
   // remove isVisible transitions to reduce jank
   const resetVisibility = () => {
     // removing isVisible will reset transition to just opacity
-    backgroundEl.classList.remove('isVisible');
-    contentEl.classList.remove('isVisible');
-    caretEl.classList.remove('isVisible');
+    if (backgroundEl)
+      backgroundEl.classList.remove('isVisible');
+    if (contentEl)
+      contentEl.classList.remove('isVisible');
+    if (caretEl)
+      caretEl.classList.remove('isVisible');
     // close the dropdown to animate out
-    menuContainerEl.classList.remove('open');
+    if (menuContainerEl)
+      menuContainerEl.classList.remove('open');
     // remove .show after the transitions finishes
     setTimeout(() => {
-      menuContainerEl.classList.remove('show');
+      if (menuContainerEl)
+        menuContainerEl.classList.remove('show');
     }, transitionDuration);
   };
 
