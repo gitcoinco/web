@@ -329,7 +329,7 @@ const makeMenu = (navbarEl) => {
     const menuEl = (isSubMenu ? submenuMenuElsByName[parentMenu][menu] : menuElsByName[menu]);
     const menuSpacer = (isSubMenu ? submenuSpacerElsByName[parentMenu][menu] : spacerElsByName[menu]);
     // check if its already been opened (is .active)
-    const isActive = menuSpacer.classList.contains('active');
+    const isActive = menuSpacer ? menuSpacer.classList.contains('active') : false;
 
     // cleanup the prev state
     if (!isSubMenu) {
