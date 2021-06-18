@@ -12,11 +12,13 @@
 
 {% block 'content' %}
 
+<!-- NOTIFICATION : if room created : true -->
+<div class="hide" id="notification_room_created"></div>
+<!-- END NOTIFICATION -->
 
 
 <!-- Diplomacy Room Hero -->
-<section class="hero knightrider" data-kinetics-mode data-kinetics-mode-type="rain" data-kinetics-mode-speed="5"
-  data-kinetics-mode-boundery="endless">
+<section class="hero knightrider">
 
   <div class="background">
     <!-- svg needs preserveAspectRatio="xMidYMid slice" -->
@@ -40,7 +42,7 @@
 
 
 <!-- members to vouche -->
-<section class="diplomacy-room-members" data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
+<section class="diplomacy-room-members">
 
 	{% for player in game.active_players.all %}
 	<div class="member-card">
@@ -260,11 +262,9 @@
 
 
 
-
-
-
-
 {% endblock %}
+
+
 
 {% block 'scripts' %}
 

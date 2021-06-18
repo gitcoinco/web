@@ -14,8 +14,40 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   initToneJs();
-  new Kinetics().interactionHook();
+
+  window.kinetics = new Kinetics();
+  window.kinetics.interactionHook(); 
+  
+
+  // ROOM CREATED NOTIFICATION + PARTICLE FANYNESS
+  const notification_room_created = document.getElementById('notification_room_created');
+  if (notification_room_created)
+  {
+    console.log("ROOM CREATED");
+    flashMessage('Room successfull created', 7000);
+
+    // special particle fx
+    window.kinetics.set({
+      particles: {
+        sizes: { min: 200, max: 400 }, rotate: { speed: 5 },
+        mode:{ type: "party", speed: 40, boundery:"endless"}
+      }
+    });
+
+     // reset to normal after 7 seconds
+    setTimeout(function() {
+      window.kinetics.set({
+        particles: {
+          sizes: { min: 5, max: 20 }, rotate: { speed: 1.5 },
+          mode:{ type: "space", speed: 2, boundery:"endless"}
+        }
+      });      
+    }, 7000);
+  }
+
+
   last = 0;
+
   console.debug('ANIMATE DIPLOMACY');
   animate_diplomacy();
 
