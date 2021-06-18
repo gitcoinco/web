@@ -862,7 +862,7 @@ Vue.mixin({
           const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
           const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
     
-          if (!isNervosValid && !address.toLowerCase().startsWith('0x')) {
+          if (!isNervosValid && !vm.bounty.bounty_owner_address.toLowerCase().startsWith('0x')) {
             hasError = true;
           }
         }

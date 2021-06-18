@@ -121,26 +121,56 @@ Vue.mixin({
 
       vm.form.keywords.push(item);
     },
-    validateBtc: function() {
+    validateFunderAddress: function() {
       let vm = this;
+      let isValid = true;
 
-      const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
-      const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
-      const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
-      const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
+      switch (vm.chainId) {
+        case '1995': {
+          // nervos
+          const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
+          const isNervosValid = ADDRESS_REGEX.test(vm.form.funderAddress);
+    
+          if (!isNervosValid && !vm.form.funderAddress.toLowerCase().startsWith('0x')) {
+            isValid = false;
+          }
+          break;
+        }
 
-      if (valid_legacy || valid_segwit) {
-        return true;
+        case '50797': {
+          // tezos
+          const ADDRESS_REGEX = new RegExp('^(tz1|tz2|tz3)[0-9a-z]{33}$');
+          const isTezosValid = ADDRESS_REGEX.test(vm.form.funderAddress);
+
+          if (!isTezosValid) {
+            isValid = false;
+          }
+          break;
+        }
+
+        case '0': {
+          // btc
+          const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
+          const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
+          const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
+          const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
+    
+          if (!valid_legacy && !valid_segwit) {
+            isValid = false;
+          }
+          break;
+        }
+
+        // include validation for other chains here
       }
 
-      return false;
+      return isValid;
     },
     checkForm: async function(e) {
       let vm = this;
 
       vm.submitted = true;
       vm.errors = {};
-
 
       if (!vm.form.keywords.length) {
         vm.$set(vm.errors, 'keywords', 'Please select the prize keywords');
@@ -160,9 +190,8 @@ Vue.mixin({
       if (!vm.form.funderAddress) {
         vm.$set(vm.errors, 'funderAddress', 'Fill the owner wallet address');
       }
-      // validate BTC address
-      if (vm.chainId == 0 && !vm.validateBtc()) {
-        vm.$set(vm.errors, 'funderAddress', 'Please enter a valid BTC address');
+      if (!vm.validateFunderAddress()) {
+        vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${vm.form.token.symbol} address`);
       }
       if (!vm.form.project_type) {
         vm.$set(vm.errors, 'project_type', 'Select the project type');
