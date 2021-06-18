@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-if (bountyChainId !== '58') {
+if (bountyChainId === '1') {
   needWalletConnection();
 
   const fetchFromWeb3Wallet = () => {
