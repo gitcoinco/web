@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import logging
+import json
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -303,9 +304,10 @@ def error(request, code):
 def mission_diplomacy(request):
     return mission_diplomacy_helper(request)
 
+max_games = 4
+max_players_per_game = 16
 def mission_diplomacy_helper(request, invited_to_game=None):
     games = []
-    max_games = 4
 
     # check for what games the user is in
     if request.user.is_authenticated:
@@ -366,9 +368,19 @@ def mission_diplomacy_room_helper(request, game):
     games = Game.objects.filter(pk__in=players.values_list("game"))
     if game not in games:
         if request.user.is_authenticated:
-            game.add_player(request.user.handle)
+
+            # too many user condition
+            if game.active_players.count() >= max_players_per_game:
+                messages.info(
+                    request,
+                    f'There are already {max_players_per_game} in the game.  Wait for someone to leave + try again.'
+                )
+                return mission_diplomacy_helper(request)
+
+            game.add_player(request.user.profile.handle)
             return mission_diplomacy_helper(request, invited_to_game=game)
         else:
+            # logged out condition
             messages.info(
                 request,
                 f'Please login to join this game.'
@@ -396,14 +408,24 @@ def mission_diplomacy_room_helper(request, game):
         )
         return redirect('/quadraticlands/mission/diplomacy')
 
-    # delete game
+    # chat in game
     if is_member and request.POST.get('chat'):
         game.chat(request.user.profile.handle, request.POST.get('chat'))
+
+    # make a move
+    if is_member and request.POST.get('signature'):
+        data = {
+            'moves': json.loads(request.POST.get('package')),
+            'signature': request.POST.get('signature'),
+        }
+        game.make_move(request.user.profile.handle, data)
+        return JsonResponse({'msg':'OK', 'url' : game.url})
 
     # game view
     params = {
         'title': game.title,
         'game': game,
         'is_admin': is_admin,
+        'max_players': max_players_per_game,
     }
     return TemplateResponse(request, 'quadraticlands/mission/diplomacy/room.html', params)

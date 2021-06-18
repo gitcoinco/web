@@ -16,6 +16,7 @@
 <div class="hide" id="notification_room_created"></div>
 <!-- END NOTIFICATION -->
 
+{% csrf_token %}
 
 <!-- Diplomacy Room Hero -->
 <section class="hero knightrider">
@@ -50,7 +51,7 @@
 	{% for player in game.active_players.all %}
 	<div class="member-card">
 		<div class="front">
-			<figure><img src="/dynamic/avatar/scco"></figure>
+			<figure><img src="/dynamic/avatar/{{player.profile.handle}}"></figure>
 			<div class="username">@{{player.profile.handle}}</div>
 			<div class="tokens_in">{{player.tokens_in}}</div>
 			<div class="tokens_out">{{player.tokens_out}}</div>
@@ -58,15 +59,18 @@
 		</div>
 		<div class="back">
 			<div class="wrapper tokens_in">
-				<h3>kevin</h3>
-				<div>catwoman<span>143</span></div>
-				<div>peter<span>11</span></div>
-				<div>sabrina<span>13.21</span></div>
+				{% for username, value in player.votes_in.items %}
+					<div>@{{username}}<span>{{value}}</span></div>
+				{% endfor %}
 			</div>
 			<div class="wrapper tokens_out">
-				<div>kevin<span>143</span></div>
-				<div>peter<span>11</span></div>
-				<div>sabrina<span>13.21</span></div>
+			{% if player.last_move %}
+				{% for vote in player.last_move.votes %}
+					<div>@{{vote.username}}<span>{{vote.value}}</span></div>
+				{% endfor %}
+				{% else %}
+					<div>No moves yet.</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>
@@ -137,6 +141,7 @@
 <!-- diplomacy roomlog -->
 <section class="diplomacy-roomlog" style="margin-top:3em;">
 
+	<div class="entries" style=" max-height: 800px; overflow-y: scroll;">
 	{% for feed in game.feed.all %}
 
 	<div class="entry">
@@ -153,29 +158,20 @@
 			{{feed.data.chat}}
 
 		</span>
-		<!--
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">peter schiff</span>
-			<span class="tokens">3123.32</span>
-		</span>	
 
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">kevin</span>
-			<span class="tokens">312323.32</span>
-		</span>
+		{% for item in feed.votes %}
+			<span class="member">
+				<img src="/dynamic/avatar/{{item.username}}">
+				<span class="username">{{item.username}}</span>
+				<span class="tokens">{{item.value}}</span>
+			</span>	
+		{% endfor %}
 
-		<span class="member">
-			<img src="/dynamic/avatar/scco">
-			<span class="username">superlongusername</span>
-			<span class="tokens">312323.32</span>
-		</span>
-		-->
 		<span class="time">{{feed.created_on | naturaltime}}</span>
 
 	</div>
 	{% endfor %}
+	</div>
 
 
 </section>

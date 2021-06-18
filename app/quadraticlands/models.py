@@ -252,12 +252,17 @@ class Game(SuperModel):
         return self.get_absolute_url()
 
     @property
+    def relative_url(self):
+        return self.get_absolute_url()[1:]
+
+    @property
     def gtc_used(self):
-        return 'TODO'
+        return self.current_votes_total
 
     @property
     def sybil_created(self):
-        return 'TODO'
+        amount = self.current_votes_total * 0.007 # estimate of the GTC to trust bonus ratio
+        return amount
 
     def is_active_player(self, handle):
         return self.active_players.filter(profile__handle=handle).exists()
@@ -265,7 +270,7 @@ class Game(SuperModel):
     def add_player(self, handle):
         profile = Profile.objects.get(handle=handle)
         if not self.is_active_player(handle):
-            GamePlayer.objects.create(profile=profile, active=True, game=game)
+            GamePlayer.objects.create(profile=profile, active=True, game=self)
 
         return GameFeed.objects.create(
             game=self,
@@ -308,14 +313,14 @@ class Game(SuperModel):
             },
             )
 
-    def make_move(self, handle, stakes):
+    def make_move(self, handle, package):
 
         return GameFeed.objects.create(
             game=self,
             player=self.players.get(profile__handle=handle),
             data={
                 'action': 'vouched',
-                'stakes': stakes,
+                'package': package,
             },
             )
 
@@ -349,6 +354,10 @@ class Game(SuperModel):
         return self.players.filter(admin=True).first()
 
     @property
+    def current_votes_total(self):
+        return sum(player.tokens_in for player in self.active_players.all())
+
+    @property
     def active_players(self):
         return self.players.filter(active=True)
 
@@ -379,6 +388,10 @@ class GameFeed(SuperModel):
     def __str__(self):
         return f"{self.game}, {self.player.profile.handle}: {self.data}"
 
+    def votes(self):
+        if self.data['action'] != 'vouched':
+            return []
+        return self.data.get('package',{}).get('moves',{}).get('votes',[])
 
 class GamePlayer(SuperModel):
 
@@ -405,10 +418,39 @@ class GamePlayer(SuperModel):
         return f"{self.game} / {self.profile.handle} / Admin: {self.admin} / Active: {self.active}"
 
     @property
+    def last_action(self):
+        return self.game.feed.filter(player=self).order_by('-created_on').first()
+
+    @property
+    def last_move(self):
+        return self.game.feed.filter(player=self, data__action='vouched').order_by('-created_on').first()
+
+    def votes(self):
+        if self.data['action'] != 'vouched':
+            return []
+        return self.data.get('package',{}).get('moves',{}).get('votes',[])
+
+
+    @property
+    def votes_in(self):
+        return_dict = {
+
+        }
+        for player in self.game.active_players:
+            return_dict[player.profile.handle] = 0
+            last_move = player.last_move
+            if last_move:
+                for vote in last_move.votes():
+                    if vote['username'] == self.profile.handle:
+                        return_dict[player.profile.handle] += float(vote['value'])
+        return return_dict
+
+    @property
     def tokens_in(self):
-        return 'TODO'
+        return sum(ele for key, ele in self.votes_in.items())
 
     @property
     def tokens_out(self):
-        return 'TODO'
-    
+        if not self.last_move:
+            return 0
+        return sum(float(ele['value']) for ele in self.last_move.votes())
