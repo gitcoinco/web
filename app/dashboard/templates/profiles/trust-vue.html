@@ -33,299 +33,229 @@
     <active-trust-manager inline-template>
       <div>
 
+        <why-this-matters-modal
+          :show-modal="visibleModal === 'why-this-matters-modal'"
+          @modal-dismissed="hideModal()">
+        </why-this-matters-modal>
+
         <brightid-verify-modal
+          :service="serviceDict.brightid"
           :show-validation="visibleModal === 'brightid-modal'"
-          @modal-dismissed="hideModal()"
-          brightid-uuid="{{profile.brightid_uuid}}"
-          :validation-step="'{{brightid_status}}' === 'not_connected' ? 'connect-brightid' : ( '{{brightid_status}}' === 'unknown' ? 'pull_status' : 'verify-brightid')"
-          >
+          :brightid-uuid="serviceDict.brightid.uuid"
+          :validation-step="(serviceDict.brightid._status === 'not_connected' || serviceDict.brightid._status === 'unknown' ?
+            'connect-brightid' : (serviceDict.brightid._status !== 'verified' ?
+              'verify-brightid' : 'disconnect'
+            )
+          )"
+          @modal-dismissed="hideModal()">
         </brightid-verify-modal>
 
-        <sms-verify-modal
-          :show-validation="visibleModal === 'sms-modal'"
+        <idena-verify-modal
+          :service="serviceDict.idena"
+          :show-validation="visibleModal === 'idena-modal'"
+          :validation-step="(serviceDict.idena.is_verified ?
+            'verified' : (serviceDict.idena.is_connected ?
+              'connected' : 'connect'
+            )
+          )"
           @modal-dismissed="hideModal()">
-        </sms-verify-modal>
-
+        </idena-verify-modal>
 
         <sms-verify-modal
+          :service="serviceDict.sms"
           :show-validation="visibleModal === 'sms-modal'"
+          :validation-step="(!serviceDict.sms.is_verified ? 'intro' : 'disconnect')"
           @modal-dismissed="hideModal()">
         </sms-verify-modal>
 
         <twitter-verify-modal
+          :service="serviceDict.twitter"
           :show-validation="visibleModal === 'twitter-modal'"
+          :validation-step="(!serviceDict.twitter.is_verified ? 'send-tweet' : 'disconnect')"
           @modal-dismissed="hideModal()">
         </twitter-verify-modal>
 
         <poap-verify-modal
+          :service="serviceDict.poap"
           :show-validation="visibleModal === 'poap-modal'"
+          :validation-step="(!serviceDict.poap.is_verified ? 'validate-address' : 'disconnect')"
+          :service="serviceDict.poap"
           @modal-dismissed="hideModal()">
         </poap-verify-modal>
 
         <ens-verify-modal
+          :service="serviceDict.ens"
           :show-validation="visibleModal === 'ens-modal'"
+          :validation-step="(!serviceDict.ens.is_verified ? 0 : 'disconnect')"
           @modal-dismissed="hideModal()">
         </ens-verify-modal>
-        <duniter-verify-modal :show-validation="visibleModal === 'duniter-modal'" @modal-dismissed="hideModal()">
+
+        <duniter-verify-modal
+          :show-validation="visibleModal === 'duniter-modal'"
+          @modal-dismissed="hideModal()">
         </duniter-verify-modal>
+
         <poh-verify-modal
+          :service="serviceDict.poh"
           :show-validation="visibleModal === 'poh-modal'"
+          :validation-step="(!serviceDict.poh.is_verified ? 'validate-address' : 'disconnect')"
           @modal-dismissed="hideModal()">
         </poh-verify-modal>
 
+        <google-verify-modal
+          :service="serviceDict.google"
+          :show-validation="visibleModal === 'google-modal'"
+          :validation-step="(!serviceDict.google.is_verified ? 'connect' : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </google-verify-modal>
+
+        <facebook-verify-modal
+          :service="serviceDict.facebook"
+          :show-validation="visibleModal === 'facebook-modal'"
+          :validation-step="(!serviceDict.facebook.is_verified ? 'connect' : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </facebook-verify-modal>
+
         {% if is_staff %}
-        <div class="float-right text-right" style="padding: 5px;">
-          <img class="float-right p-2" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
-          <strong>STAFF ONLY</strong> Take your TrustBonus with you across the web <br>with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
-          <br>
-          <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="btn btn-primary float-right text-nowrap">Try It!</a>
+        <div class="row">
+          <div class="col-6 d-none d-lg-block col-xl-7"></div>
+          <div class="text-left position-relative col-12 col-lg-6 col-xl-5" style="padding: 5px; min-height: 115px;">
+            <img class="p-2 position-absolute left-0" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
+            <div style="padding-left: 100px;">
+              <strong class="pb-2 d-block">STAFF ONLY</strong> Take your TrustBonus with you across the web with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
+            </div>
+            <div class="text-right pt-2">
+              <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="bottom-0 btn btn-primary">Try It!</a>
+            </div>
+          </div>
         </div>
+        <hr>
         {% endif %}
 
-        <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
-        The higher the Trust
-        Bonus of a user is, the more we can be confident that the user is real. Higher
-        Trust Bonuses come with benefits, such as higher match for your grants contributions.
-        <hr>
-        Trust Bonus ensures that Gitcoin is sybil-resistant, which is important for <a href="https://wtfisqf.com/" target=new>Quadratic Voting</a> (and many other voting applications in web3!).
-        <br>
-        <br>
-        To increase your Trust Bonus, here are some steps you can take:
-        <div class="container mt-4">
-          <h5>Active Now</h5>
-
-          <active-trust-row-template
-            icon-type="image"
-            icon-path="/static/v2/images/project_logos/brightid.png"
-            :title="'{{brightid_status}}' === 'not_connected' ? 'Connect with BrightID' : 'Verify with BrightID'"
-            :match-percent=25
-            :is-verified="'{{brightid_status}}' === 'verified'"
-            :button-text="'{{brightid_status}}' === 'not_connected' ? 'Connect' : ('{{brightid_status}}' === 'unknown' ? 'Check' : 'Verify')"
-            @verify-button-pressed="showModal('brightid-modal')"
-            >
-            <template v-slot:description>
-              {% if brightid_status == 'not_connected' %}
-                Connect to <a href="https://brightid.org" target="new">BrightID</a> and verify yourself by connecting with other humans.
-              {% elif brightid_status == 'unknown' %}
-                Check your <a href="https://brightid.org" target="new">BrightID</a> verification status to continue.
-
-              {% elif brightid_status == 'not_verified' %}
-                Verify yourself on <a href="https://brightid.org" target="new">BrightID</a> by proving you're human to other humans. 
-
-                <br><br>Connect
-                with other users and join groups to meet the threshold.
-                
-              {% elif brightid_status == 'verified' %}
-                You're verified with <a href="https://brightid.org" target="new">BrightID</a>, the unique, decentralized digital identity solution.
-                <br><br>
-                This qualifies your grant donations for a trust bonus.
-              {% endif %}
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="image"
-            :icon-path="'{{is_idena_connected}}' === 'True' ? 'https://robohash.org/{{ idena_address }}' : '/static/v2/images/project_logos/idena.svg'"
-            :title="'{{is_idena_connected}}' === 'True' ? 'Idena {{ idena_address }}' : 'Verify with Idena'"
-            :match-percent=25
-            :is-verified="'{{is_idena_verified}}' === 'True'"
-          >
-            <template v-slot:description>
-              {% if is_idena_connected %}
-                {% if not is_idena_verified %}
-                  Take part in the Idena validation ceremony {{ idena_next_validation }} GMT <br>
-                {% endif %}
-                  {% if is_idena_verified %}
-                    <span style="color:limegreen"><i class="fas fa-circle"></i>
-                  {% else %}
-                    <span style="color:gray"><i class="fas fa-circle"></i>
-                  {% endif %}
-                  &nbsp; Status: {{ idena_status }}.
-                  <a href={{ recheck_idena_status }} id="recheck-idena-status" class="text-nowrap">Re-Check.</a>
-                  <a href={{ logout_idena_url }} id="disconnect-idena-link" class="text-nowrap">Disconnect.</a>
-              {% else %}
-                  <a href="https://idena.io/" target="blank">Idena</a> is a Proof-Of-Person Blockchain <br><br> Install <a href="https://idena.io/?view=download" target="_blank">Idena app</a> to verify your account.
-              {% endif %}
-            </template>
-            <template v-slot:verify>
-              {% if is_idena_connected %}
-                  {% if not is_idena_verified %}
-                    <span style="color:orange"><i class="fal fa-exclamation-circle"></i> Pending Validation</span>
-                  {% endif %}
-              {% else %}
-                <a href="{{ login_idena_url }}" role="button" id="connect-idena-link" class="btn btn-primary text-nowrap">Connect</a>
-              {% endif %}
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="image"
-            icon-path="/static/v2/images/project_logos/poap.svg"
-            title="Verify with POAP"
-            :match-percent=10
-            :is-verified="'{{is_poap_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('poap-modal')"
-            >
-            <template v-slot:description>
-              <a href="https://www.poap.xyz/" target="new">POAP</a> is The Proof of Attendance Protocol 
-              <br><br>
-              Verify your POAP badges.
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="markup"
-            title="Verify with Twitter"
-            :match-percent=5
-            :is-verified="'{{is_twitter_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('twitter-modal')"
-            >
-            <template v-slot:icon>
-              <span style="color: #00aced">
-                <i class="fab fa-twitter fa-3x" aria-hidden="true"></i>
-              </span>
-            </template>
-            <template v-slot:description>
-              Verify your Twitter account.
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="image"
-            icon-path="/static/v2/images/project_logos/google.png"
-            title="Verify with Google"
-            :match-percent=2
-            :is-verified="'{{is_google_verified}}' === 'True'"
-            button-text="Verify"
-            >
-            <template v-slot:description>
-              Verify your Google account.
-            </template>
-            {% if not is_google_verified %}
-              <template v-slot:verify>
-                <form method="post" action={% url 'request_verify_google' profile.handle.lower %}>
-                  {% csrf_token %}
-                  <input type="submit" value="Verify" class="btn btn-primary text-nowrap"/>
-                </form>
-              </template>
-            {% endif %}
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="markup"
-            title="Verify with SMS"
-            :match-percent=2
-            :is-verified="'{{is_sms_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('sms-modal')"
-            >
-            <template v-slot:icon>
-              <i class="fa fa-mobile-alt fa-3x" aria-hidden="true"></i>
-            </template>
-            <template v-slot:description>
-              To protect your privacy, <a href="https://twitter.com/owocki/status/1272149204287160320">Gitcoin doesn't store your phone number.
-              </a>
-              <br><br>
-              Verify your phone number through SMS. 
-            </template>
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="markup"
-            title="Verify with ENS"
-            :match-percent=0
-            :is-verified="'{{is_ens_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('ens-modal')"
-            >
-            <template v-slot:icon>
-              <img src="/static/v2/images/project_logos/ens.svg" alt="ENS Logo" class="img-fluid">
-            </template>
-            <template v-slot:description>
-              Verify with your ENS domain.
-            </template>
-          </active-trust-row-template>
-
-
-          <active-trust-row-template
-            icon-type="markup"
-            title="Verify with Facebook"
-            :match-percent=0
-            :is-verified="'{{is_facebook_verified}}' === 'True'"
-            button-text="Verify"
-            >
-            <template v-slot:icon>
-              <span style="color: #1877F2">
-                <i class="fab fa-facebook fa-3x" aria-hidden="true"></i>
-              </span>
-            </template>
-            <template v-slot:description>
-              Verify your Facebook account.
-            </template>
-            {% if not is_facebook_verified %}
-              <template v-slot:verify>
-                <form method="post" action={% url 'request_verify_facebook' profile.handle.lower %}>
-                  {% csrf_token %}
-                  <input type="submit" value="Verify" class="btn btn-primary text-nowrap" />
-                </form>
-              </template>
-            {% endif %}
-          </active-trust-row-template>
-
-          <active-trust-row-template
-            icon-type="image"
-            icon-path="/static/v2/images/project_logos/poh.svg"
-            title="Verify with Proof of Humanity"
-            :match-percent=25
-            :is-verified="'{{is_poh_verified}}' === 'True'"
-            button-text="Verify"
-            @verify-button-pressed="showModal('poh-modal')"
-          >
-            <template v-slot:description>
-              <a href="https://www.proofofhumanity.id/" target="new">POH</a> is the internet of humans.
-            </template>
-          </active-trust-row-template>
+        <div class="bg-violet-300 text-white spacer-p-4 spacer-mt-5">
+          <div class="row">
+            <div class="col-12 col-lg-9">
+              <h2>Increase Your Impact Up to 150%</h2>
+              <span class="font-smaller-1 line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
+              <div class="row spacer-mt-2 font-smaller-1 line-height-2">
+                <div class="col-12 col-lg-6 spacer-mt-2">
+                  <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[round_start_date]] - [[round_end_date]]</a>
+                </div>
+                <div class="col-12 col-lg-6 spacer-mt-2">
+                  <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2"></i> Why this matters</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-3 text-center text-lg-right">
+              <object class="spacer-mr-4 spacer-mt-3 spacer-mt-lg-0" type="image/svg+xml" data="{% static 'v2/images/trust/64x64.svg' %}" width="158" height="158"></object>
+            </div>
+          </div>
         </div>
 
-        <div class="container mt-4">
-          <h5>Coming Soon ™️</h5>
-          <p>
-            Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds.
-          </p>
+        <div class="row spacer-mt-6 text-grey-500 font-smaller-1">
+          <div class="col-12 col-lg-8 spacer-pb-3">
+            <h3>Trust Verification</h3>
+           <span class="line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
+          </div>
+          <div class="col-12 col-lg-4 mt-2 m-lg-auto">
+            <div class="spacer-mb-2">Verification Level</div>
+            <div class="progress rounded-0" style="height: 0.4rem;">
+              <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trust_bonus}%`}" :aria-valuenow="`${100/150 * trust_bonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="spacer-mt-2 font-weight-bold">You'll receive [[trust_bonus]]% of 150% Match</div>
+          </div>
+        </div>
+        <div class="row font-smaller-1" v-for="i in Math.ceil(services.length / 3)">
+          <div class="col-12 col-lg-4 spacer-mt-5" v-for="service in services.slice((i - 1) * 3, i * 3)">
+            <div class="card rounded-0 spacer-p-3" style="height: 100%; min-height:300px;">
+              <div class="row">
+                <div class="col-9">
+                  <span class="font-bigger-2 text-primary">[[service.name]]</span>
+                </div>
+                <div class="col-3 text-right">
+                  <img v-if="service.icon_path" width="41" height="40" :src="[[service.icon_path]]"/>
+                  <span v-else >
+                    <i :class="[[service.icon_class]]" v-bind:style="service.icon_style"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="row spacer-mb-3">
+                <div class="col-12">
+                  <span class="text-grey-300">[[service.match_percent]]% match</span>
+                </div>
+              </div>
+              <div class="row mb-lg-4 my-auto my-lg-0">
+                <div class="col">
+                  <span class="text-grey-400 line-height-4 line-clamp-3">[[service.desc]]</span>
+                </div>
+              </div>
+              <div class="row mt-auto">
+                <div class="col-6 m-auto text-success" :class="(service.is_verified || service.status ? 'd-flex' : 'd-none d-lg-flex')">
+                  <span v-if="service.is_verified">
+                    <i class="far fa-check-circle"></i> <i>Verified</i>
+                  </span>
+                  <span v-if="service.status" style="color: orange;">
+                    <i class="fal fa-exclamation-circle"></i> <i>[[service.status]]</i>
+                  </span>
+                </div>
+                <div class="text-right" :class="(service.is_verified || service.status ? 'col-6' : 'col-12 col-lg-6')">
+                  <button v-if="!service.is_verified" class="btn btn-primary w-100 w-md-auto px-md-3" @click="showModal(service.ref + '-modal')">Verify</button>
+                  <button v-else class="btn btn-outline-primary" @click="showModal(service.ref + '-modal')">Disconnect</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <!-- <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"
-            title="Verify with Duniter" :match-percent=0 :is-verified="'{{is_duniter_verified}}' === 'True'" button-text="Verify"
-            @verify-button-pressed="showModal('duniter-modal')">
-            <template v-slot:description>
-              Verify your Duniter Account
-            </template>
-          </active-trust-row-template> -->
-          {% include "profiles/trust_soon_row.html" with service="Duniter" when="Coming Soon" %}
+        <div class="row spacer-my-6">
+          <div class="col-auto">
+            <i class="far fa-life-ring text-primary" style="font-size: 46px"></i>
+          </div>
+          <div class="col">
+              <h3>Need help verifying identity?</h3>
+              <span>Please contact the services directly for any questions or support in getting your identity confirmed.</span>
+          </div>
+        </div>
 
+        <div class="accordion-group gc-accordion spacer-mb-7" style="margin-left: -27px;" id="accordion-group">
+          <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
+            <span class="accordion-title">
+              Coming Soon
+            </span>
+          </h5>
+          <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
+            <div class="container mt-4">
+              <p>
+                Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds.
+              </p>
+              <!-- <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"
+                title="Verify with Duniter" :match-percent=0 :is-verified="'{{is_duniter_verified}}' === 'True'" button-text="Verify"
+                @verify-button-pressed="showModal('duniter-modal')">
+                <template v-slot:description>
+                  Verify your Duniter Account
+                </template>
+              </active-trust-row-template> -->
+              <div v-for="service in coming_soon">
+                <inactive-trust-row-template :service="service" :when="'Coming Soon'"></inactive-trust-row-template>
+              </div>
+            </div>
+
+            <div>
+              <div class="container mt-4">
+                <h5>Roadmap</h5>
+                <a class="py-2 d-block" href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
+                <div v-for="service in roadmap">
+                  <inactive-trust-row-template :service="service" :when="'On the Roadmap'"></inactive-trust-row-template>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
     </active-trust-manager>
-    <div>
-      <div class="container mt-4">
-        <h5>Roadmap</h5>
-        <a class="py-2 d-block" href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
 
-        {% include "profiles/trust_soon_row.html" with service="Upala" when="On the Roadmap" %}
-        {% include "profiles/trust_soon_row.html" with service="PASS" when="On the Roadmap" %}
-        {% include "profiles/trust_soon_row.html" with service="Equality Protocol" when="On the Roadmap" %}
-        {% include "profiles/trust_soon_row.html" with service="Zero Knowledge KYC" when="On the Roadmap" %}
-        {% include "profiles/trust_soon_row.html" with service="Activity on Gitcoin" when="On the Roadmap" %}
-      </div>
-    </div>
+
   </div>
-
-  {{upcoming_calls | json_script:"calendarData" }}
-  <script>
-    const calendarData = JSON.parse(document.getElementById('calendarData').textContent);
-    const trustHandle = '{{profile.handle}}'.toLowerCase();
-    const verifyTweetText = '{{verify_tweet_text}}';
-  </script>
 
 {% endif %}

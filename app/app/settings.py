@@ -779,7 +779,7 @@ CSP_DEFAULT_SRC = False
 CSP_FRAME_ANCESTORS = ("'self'")
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
+CORS_ORIGIN_WHITELIST = ('googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
 CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN,)
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO

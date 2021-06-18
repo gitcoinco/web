@@ -51,7 +51,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        _, round_start_date, round_end_date = get_clr_rounds_metadata()
+        _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
         last_activity_by_user = CartActivity.objects.filter(latest=True, created_on__gt=round_start_date).exclude(metadata=[])
         count = 0

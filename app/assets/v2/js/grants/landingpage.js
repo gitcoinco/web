@@ -120,7 +120,9 @@ if (document.getElementById('grants-showcase')) {
       grantsNumPages,
       grantsHasNext,
       numGrants,
-      mainBanner: document.current_style
+      mainBanner: document.current_style,
+      visibleModal: false,
+      bannerCollapsed: false
     },
     methods: {
       toggleActiveCLRs() {
@@ -447,6 +449,17 @@ if (document.getElementById('grants-showcase')) {
         });
 
         this.grants = getGrants.grants;
+      },
+      showModal(modalName) {
+        this.visibleModal = modalName;
+      },
+      hideModal() {
+        this.visibleModal = 'none';
+      },
+      toggleBannerCollapse() {
+        this.bannerCollapsed = !this.bannerCollapsed;
+        // record into ls
+        localStorage.setItem('bannerCollapsed', this.bannerCollapsed);
       }
     },
     computed: {
@@ -468,6 +481,7 @@ if (document.getElementById('grants-showcase')) {
       const vm = this;
 
       vm.current_type = 'collections';
+      vm.bannerCollapsed = localStorage.getItem('bannerCollapsed') == 'true';
 
       vm.fetchGrants(vm.page);
 
