@@ -41,7 +41,7 @@ class Command(BaseCommand):
         kudos_ids = options['kudos_ids']
         if kudos_ids == 'db':
             from perftools.models import JSONStore
-            JSONStore.objects.get(key='refill_quests_kudos').data[0]
+            kudos_ids = JSONStore.objects.get(key='refill_quests_kudos').data[0]
         kudos_ids = kudos_ids.split(',')
         kudos_ids = (Token.objects.filter(pk__in=kudos_ids, num_clones_available_counting_indirect_send__gt=0).values_list('pk',flat=True))
 

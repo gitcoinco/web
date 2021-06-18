@@ -13,7 +13,8 @@ Vue.component('grantsCartEthereumZksync', {
     donationInputs: { type: Array, required: true }, // donationInputs computed property from cart.js
     grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     maxCartItems: { type: Number, required: true }, // max number of items in cart
-    network: { type: String, required: true } // web3 network to use
+    network: { type: String, required: true }, // web3 network to use
+    grantsUnderMinimalContribution: { type: Array, required: true } // Array of grants under min contribution
   },
 
   data: function() {
@@ -222,7 +223,6 @@ Vue.component('grantsCartEthereumZksync', {
 
         // Save off cart data
         this.zksync.checkoutStatus = 'pending';
-        await appCart.$refs.cart.manageEthereumCartJSONStore(this.user.address, 'save');
 
         // Send user to zkSync to complete checkout
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(

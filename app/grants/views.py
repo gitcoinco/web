@@ -26,6 +26,7 @@ import re
 import time
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -102,18 +103,20 @@ def get_clr_rounds_metadata():
         clr_round = CLR_ROUND_DATA['round_num']
         start_date = CLR_ROUND_DATA['round_start']
         end_date = CLR_ROUND_DATA['round_end']
+        round_active = CLR_ROUND_DATA['round_active']
 
-        # timezones are in UTC
-        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%M.%S')
-        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%M.%S')
+        # timezones are in UTC (format example: 2021-06-16:15.00.00)
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
 
     except:
         # setting defaults
         clr_round=1
         round_start_date = timezone.now()
-        round_end_date = timezone.now()
+        round_end_date = timezone.now() + timezone.timedelta(days=14)
+        round_active = True
 
-    return clr_round, round_start_date, round_end_date
+    return clr_round, round_start_date, round_end_date, round_active
 
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
@@ -849,6 +852,8 @@ def grants_landing(request):
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
+    _, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+
 
     params = {
         'active': 'grants_landing',
@@ -857,13 +862,18 @@ def grants_landing(request):
         'title': 'Grants',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
         'active_rounds': active_rounds,
         'sponsors': sponsors,
         'featured': True,
+        'round_start_date': round_start_date,
+        'round_end_date': round_end_date,
+        'now': now,
+        'round_active': round_active,
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -965,6 +975,7 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
+    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_explorer',
@@ -973,10 +984,14 @@ def grants_by_grant_type(request, grant_type):
         'network': network,
         'keyword': keyword,
         'type': grant_type,
+        'grant_label': grant_label if grant_type else grant_type,
+        'round_end': round_end_date,
+        'next_round_start': round_start_date,
+        'now': timezone.now(),
         'mid_back': mid_back,
         'bottom_back': bottom_back,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1008,7 +1023,8 @@ def grants_by_grant_type(request, grant_type):
         'collection_id': collection_id,
         'collections': collections,
         'featured': featured,
-        'active_rounds': active_rounds
+        'active_rounds': active_rounds,
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -1137,7 +1153,7 @@ def grants_by_grant_clr(request, clr_round):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    _, next_round_start, _ = get_clr_rounds_metadata()
+    clr_round, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_landing',
@@ -1147,14 +1163,15 @@ def grants_by_grant_clr(request, clr_round):
         'keyword': keyword,
         'type': grant_type,
         'grant_label': grant_label if grant_type else grant_type,
-        'next_round_start': next_round_start,
+        'round_end': round_end_date,
+        'next_round_start': round_start_date,
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1277,6 +1294,7 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
 
+
     try:
         grant = None
         try:
@@ -1370,6 +1388,7 @@ def grant_details(request, grant_id, grant_slug):
     try:
         # If the user viewing the page is team member or admin, check if grant has match funds available
         # to withdraw
+
         is_match_available_to_claim = False
         is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2021, 4, 30, 12, 0).replace(tzinfo=pytz.utc)
         is_staff = request.user.is_authenticated and request.user.is_staff
@@ -2076,7 +2095,7 @@ def cancel_grant_v1(request, grant_id):
     response = {
         'status': 200,
         'pk': grant.pk,
-        'message': 'grant cancelled sucessfully'
+        'message': 'grant cancelled successfully'
     }
     return JsonResponse(response)
 
@@ -2298,11 +2317,12 @@ def get_replaced_tx(request):
 def grants_cart_view(request):
     context = {
         'title': 'Grants Cart',
-        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
     }
     if request.user.is_authenticated:
         profile = request.user.profile
         context['username'] = profile.username
+        context['trust_bonus'] = round(request.user.profile.trust_bonus * 100)
 
         is_brightid_verified = ( 'verified' == get_brightid_status(profile.brightid_uuid) )
 
@@ -2399,9 +2419,9 @@ def profile(request):
 def quickstart(request):
     """Display quickstart guide."""
     params = {
-    'active': 'grants_quickstart',
-    'title': _('Quickstart'),
-    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants9.png')),
+        'active': 'grants_quickstart',
+        'title': _('Quickstart'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 

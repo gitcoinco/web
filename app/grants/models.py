@@ -154,7 +154,7 @@ class GrantCLR(SuperModel):
         help_text="used to generate customer_name/round_num/sub_round_slug"
     )
     display_text = models.CharField(
-        max_length=15,
+        max_length=25,
         null=True,
         blank=True,
         help_text="sets the custom text in CLR banner on the landing page"

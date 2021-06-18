@@ -14,7 +14,7 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from marketing.mails import new_grant, new_grant_admin, new_supporter, thank_you_for_supporting
+from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
@@ -38,7 +38,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
 
     # KO hack 12/14/2020
-    # this will prevent tasks on grants that have been issued from an app server from being immediately 
+    # this will prevent tasks on grants that have been issued from an app server from being immediately
     # rewritten by the celery server.  not elegant, but it works.  perhaps in the future,
     # a delay could be introduced in the call of the task, not the task itself.
     time.sleep(3)
@@ -53,7 +53,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # grant t shirt sizing
     grant_calc_buffer = max(1, math.pow(instance.contribution_count, 1/10)) # cc
-    
+
     # contributor counts
     do_calc = (time.time() - (2 * grant_calc_buffer)) > instance.metadata.get('last_calc_time_contributor_counts', 0)
     if do_calc:
@@ -84,9 +84,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.monthly_amount_subscribed = 0
         instance.sybil_score = 0
         for subscription in instance.subscriptions.all():
-            
+
             value_usdt = subscription.amount_per_period_usdt
-            
+
             # recalculate usdt value
             created_recently = subscription.created_on > (timezone.now() - timezone.timedelta(days=10))
             if not value_usdt and created_recently:
@@ -207,9 +207,9 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.comments = package.get('comment', '')
         subscription.save()
 
+        value_usdt = subscription.get_converted_amount(False)
         include_for_clr = package.get('include_for_clr')
-
-        if subscription.contributor_profile.shadowbanned:
+        if value_usdt < 1 or subscription.contributor_profile.shadowbanned:
             include_for_clr = False
 
         subscription.successful_contribution(
@@ -240,7 +240,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         if 'comment' in package:
             _profile = profile
             comment = package.get('comment')
-            if comment and activity:
+            if value_usdt >= 1 and comment and activity:
                 if profile.anonymize_gitcoin_grants_contributions:
                     _profile = Profile.objects.filter(handle='gitcoinbot').first()
                     comment = f"Comment from contributor: {comment}"
@@ -249,14 +249,8 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
                     activity=activity,
                     comment=comment)
 
-        # emails to grant owner
-        try:
-            new_supporter(grant, subscription)
-        except Exception as e:
-            logger.exception(e)
-
         # emails to contributor
-        if send_supporter_mail:
+        if value_usdt >= 1 and send_supporter_mail:
             grants_with_subscription = [{
                 'grant': grant,
                 'subscription': subscription
@@ -305,7 +299,7 @@ def recalc_clr_if_x_minutes_old(self, grant_id, minutes, retry: bool = True) -> 
 
     return # KO 2020/03/13 - disabling this while i investigate queue processing issues.
     # namely, this task was clogging up celery queues last night
-    # plus, this task is strictly additive (ie estimate_clr runs every hour already), this task 
+    # plus, this task is strictly additive (ie estimate_clr runs every hour already), this task
     # only creates incremental stats update on top of that.
 
     with redis.lock(f"tasks:recalc_clr_if_x_minutes_old:{grant_id}", timeout=60 * 3):
@@ -390,3 +384,12 @@ def save_contribution(self, contrib_id):
     from grants.models import Contribution
     contrib = Contribution.objects.get(pk=contrib_id)
     contrib.save()
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_new_contributions_email(self, grant_id):
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+        new_contributions(grant)
+    except Exception as e:
+        print(e)

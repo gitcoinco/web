@@ -585,7 +585,7 @@ def account_settings(request):
             profile.save()
 
             # remove email
-            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/add', b'{"reason":3}')
+            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/delete')
 
             if es:
                 es.delete()
@@ -664,7 +664,7 @@ def job_settings(request):
             profile.save()
 
             # remove email
-            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/dnc/email/add', b'{"reason":3}')
+            mautic_proxy_backend('POST', f'contacts/{profile.mautic_id}/delete')
 
             if es:
                 es.delete()
