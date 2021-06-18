@@ -139,7 +139,7 @@ Vue.mixin({
 
         case '50797': {
           // tezos
-          const ADDRESS_REGEX = new RegExp('^(tz1|tz2|tz3)[0-9a-z]{33}$');
+          const ADDRESS_REGEX = new RegExp('^(tz1|tz2|tz3)[0-9a-zA-Z]{33}$');
           const isTezosValid = ADDRESS_REGEX.test(vm.form.funderAddress);
 
           if (!isTezosValid) {
