@@ -360,12 +360,17 @@ const makeMenu = (navbarEl) => {
         // set the height according to parent
         spacerElsByName[parentMenu].style.height = `${ dimension.height + getDimension(parentWrap, menuElsByName[parentMenu]).height }px`;
       }
-      // set spacers height
-      menuSpacer.style.height = `${ dimension.height }px`;
-      // cleanUp menuEl before adding new css
-      menuEl.style.cssText = '';
-      // resize and position content (on top of the spacer)
-      menuEl.style.height = `${ dimension.height }px`;
+      if (menuSpacer) {
+        // set spacers height
+        menuSpacer.style.height = `${ dimension.height }px`;
+      }
+
+      if (menuEl) {
+        // cleanUp menuEl before adding new css
+        menuEl.style.cssText = '';
+        // resize and position content (on top of the spacer)
+        menuEl.style.height = `${ dimension.height }px`;
+      }
       // wait for .show to paint
       window.requestAnimationFrame(() => {
         // mark this menu as active
