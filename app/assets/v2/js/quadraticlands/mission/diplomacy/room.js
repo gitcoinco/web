@@ -26,8 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   initToneJs();
-  new Kinetics().interactionHook();
+
+  window.kinetics = new Kinetics();
+  window.kinetics.interactionHook(); 
+  
+
   last = 0;
+
   console.debug('ANIMATE DIPLOMACY');
   animate_diplomacy();
 
@@ -125,11 +130,11 @@ document.addEventListener('DOMContentLoaded', function() {
       url: url,
       data: params,
       success: function(response){
-        alert("Message submitted");
+        flashMessage("Message submitted", 2000);
         document.refresh_page(url);
       },
       error: function(error){
-        alert('got an error - pls contact support@gitcoin.co');
+        flashMessage('got an error - pls contact support@gitcoin.co', 5000);
       },
     });  
   });
@@ -251,14 +256,14 @@ async function vouche() {
     url: url,
     data: params,
     success: function(response){
-      alert("Vote submitted")
+      flashMessage("Vote submitted", 2000)
       document.refresh_page(url);
     $('html, body').animate({
         scrollTop: $("#chat_room_interface").offset().top
      }, 500);
     },
     error: function(error){
-      alert('got an error - pls contact support@gitcoin.co');
+      flashMessage('got an error - pls contact support@gitcoin.co', 5000);
     },
     dataType: 'json'
   });

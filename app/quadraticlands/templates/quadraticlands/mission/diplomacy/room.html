@@ -12,12 +12,10 @@
 
 {% block 'content' %}
 
-
 {% csrf_token %}
 
 <!-- Diplomacy Room Hero -->
-<section class="hero knightrider" data-kinetics-mode data-kinetics-mode-type="rain" data-kinetics-mode-speed="5"
-  data-kinetics-mode-boundery="endless">
+<section class="hero knightrider">
 
   <div class="background">
     <!-- svg needs preserveAspectRatio="xMidYMid slice" -->
@@ -32,16 +30,19 @@
 
 </section>
 
-<!-- intro-->
+<!-- intro @kev add |floatformat:2 for noninter numbers -->
 <section class="introduction" style="margin-bottom: 3em;">
-	<p>This room was created {{game.created_on | naturaltime}} by @{{game.admin.profile.handle}} and is admin'd by @{{game.admin.profile.handle}}; it has {{game.active_players.count}} people in it & represents {{game.gtc_used}} of GTC and has created {{game.sybil_created}} TrustBonus of Sybil Resistence on Gitcoin.</p>
+	<p>This room was created {{game.created_on | naturaltime}} by @{{game.admin.profile.handle}} and has {{game.active_players.count}} members. It represents {{game.gtc_used}} of GTC and has created {{game.sybil_created}} of Sybil Resistence on Gitcoin.</p>
 </section>
 
 
-
+<!-- members headline -->
+<section class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
+  <h1>Members</h1>
+</section>
 
 <!-- members to vouche -->
-<section class="diplomacy-room-members" data-kinetics-mode data-kinetics-mode-type="space" data-kinetics-mode-speed="1">
+<section class="diplomacy-room-members">
 
 	{% for player in game.active_players.all %}
 	<div class="member-card">
@@ -107,17 +108,19 @@
 	</div>
 
 	<div class="col">
-		<a id="vouche_button" class="btn aqua" data-kinetics-attraction data-kinetics-attraction-grow="6">Vouch</a>
+		<a id="vouche_button" class="btn aqua" data-kinetics-attraction data-kinetics-attraction-grow="12">Vouch</a>
 	</div>
 
 </section>
-
 
 
 <!-- diplomacy roomlog headline -->
 <section class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
   <h1>Roomlog</h1>
 </section>
+
+
+
 <!-- diplomacy roomlog -->
 <section class="diplomacy-roomlog" style="margin-top:3em;">
 
@@ -162,15 +165,15 @@
 		<div id="chat_room_interface" class="input">
 			{% csrf_token %}
 				<input id="chat_room" name="chat" type="text" placeholder="never gonna give you up">
-				<button  id="send_chat_button">Send</button>
+				<button data-kinetics-attraction data-kinetics-attraction-grow="12" id="send_chat_button">Send</button>
 		</div>
 	</div>
 </section>
 </form>
 
-
-
 </section>
+
+
 
 
 
@@ -190,7 +193,7 @@
     </div>
     <div class="input">
       <input id="room_link" type="text" readonly value="{{base_url}}{{game.relative_url}}">
-      <button id="room_link_button">copy</button>
+      <button id="room_link_button" data-kinetics-attraction data-kinetics-attraction-grow="12">copy</button>
     </div>
   </div>
 </section>
@@ -230,7 +233,7 @@
 		</div>
 		<div id="delete_room_interface" class="input">
 			<input id="delete_room" type="text" placeholder="Roomname" data-roomname="{{game.title}}">
-			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="delete_room_button">Delete Room</button>
+			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="delete_room_button" data-kinetics-attraction data-kinetics-attraction-grow="12">Delete Room</button>
 		</div>
 	</div>
 </section>
@@ -245,7 +248,7 @@
 		</div>
 		<div id="leave_room_interface" class="input">
 			<input id="leave_room" type="text" placeholder="leave Room" data-phrase="live long and prosper">
-			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="leave_room_button">Leave Room</button>
+			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="leave_room_button" data-kinetics-attraction data-kinetics-attraction-grow="12">Leave Room</button>
 		</div>
 	</div>
 </section>
@@ -254,11 +257,9 @@
 
 
 
-
-
-
-
 {% endblock %}
+
+
 
 {% block 'scripts' %}
 
