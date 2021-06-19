@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-
   // random floor polygones coloring / lights of town
   polygones = document.querySelectorAll('svg #hero polygon, svg #hero path');
 

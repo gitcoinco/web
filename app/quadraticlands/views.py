@@ -377,8 +377,11 @@ def mission_diplomacy_room_helper(request, game):
                 )
                 return mission_diplomacy_helper(request)
 
-            game.add_player(request.user.profile.handle)
-            return mission_diplomacy_helper(request, invited_to_game=game)
+            # show invite
+            if request.GET.get('join'):
+                game.add_player(request.user.profile.handle)
+            else:
+                return mission_diplomacy_helper(request, invited_to_game=game)
         else:
             # logged out condition
             messages.info(

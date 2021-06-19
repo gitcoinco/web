@@ -69,6 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // no self deleegation
+  $('.front input').click(function(){
+    if($(this).data('username') == document.contxt['github_handle']){
+      flashMessage('Cannot vouch for  self', 1000);
+    }
+  })
+
+
+
   // delete room UI
   // show delete button + warning on enter the room name what is fetched
   // by data-attribute data-roomname
