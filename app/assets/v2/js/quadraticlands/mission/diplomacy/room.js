@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   document.scroll_roomlog = function(){
-    $(".diplomacy-roomlog .entries").animate({ scrollTop: $('.diplomacy-roomlog  .entries').prop("scrollHeight")}, 1000);
+    $(".diplomacy-roomlog .entries").animate({ scrollTop: 0}, 1000);
   }
   document.refresh_page = function(url){
       $.get(url, function(response){

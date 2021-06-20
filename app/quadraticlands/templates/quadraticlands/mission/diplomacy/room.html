@@ -116,7 +116,7 @@
 
 <!-- diplomacy roomlog headline -->
 <section class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
-  <h1>Roomlog & Trollbox</h1>
+  <h1>Trollbox</h1>
 </section>
 
 
@@ -125,7 +125,7 @@
 	<div class="wrapper">
 		<div id="chat_room_interface" class="input">
 			{% csrf_token %}
-				<input id="chat_room" name="chat" type="text" placeholder="Message">
+				<input id="chat_room" name="chat" type="text" placeholder="Never gonna give you up">
 				<button data-kinetics-attraction data-kinetics-attraction-grow="12" id="send_chat_button">Send</button>
 		</div>
 	</div>
@@ -136,8 +136,8 @@
 <!-- diplomacy roomlog -->
 <section class="diplomacy-roomlog" style="margin-top:3em;">
 
-	<div class="entries">
-	{% for feed in game.feed.all %}
+	<div class="entries" style="max-height:1000px; overflow-y:scroll;">
+	{% for feed in game.reverse_feed.all %}
 
 	<div class="entry">
 
@@ -186,7 +186,7 @@
 <section class="diplomacy-invite">
   <div class="wrapper">
     <div class="info">
-    	Invite up to 8 members via this link.
+    	Invite up to {{max_players}} members via this link.
     	<span>( {{game.active_players | length}} slot{{game.active_players | pluralize}} used )</span>
     </div>
     <div class="input">

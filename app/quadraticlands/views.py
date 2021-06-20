@@ -364,9 +364,9 @@ def mission_diplomacy_room(request, uuid, name):
 def mission_diplomacy_room_helper(request, game):
 
     # handle invites
-    players = GamePlayer.objects.filter(active=True, profile=request.user.profile)
-    games = Game.objects.filter(pk__in=players.values_list("game"))
-    if game not in games:
+    users_players = GamePlayer.objects.filter(active=True, profile=request.user.profile)
+    users_games = Game.objects.filter(pk__in=users_players.values_list("game"))
+    if game not in users_games:
         if request.user.is_authenticated:
 
             # too many user condition
@@ -391,11 +391,11 @@ def mission_diplomacy_room_helper(request, game):
 
     # in game experience
     is_member = game.is_active_player(request.user.profile.handle)
-    is_admin = players.filter(admin=True, profile=request.user.profile).exists()
+    is_admin = game.players.filter(admin=True, profile=request.user.profile).exists()
     if is_admin:
         if request.GET.get('remove'):
             remove_this_fool = request.GET.get('remove')
-            for player in players.filter(active=True, profile=remove_this_fool):
+            for player in game.players.filter(active=True, profile__handle=remove_this_fool):
                 game.remove_player(player.profile.handle)
                 messages.info(
                     request,

@@ -260,6 +260,10 @@ class Game(SuperModel):
         return self.current_votes_total
 
     @property
+    def reverse_feed(self):
+        return self.feed.all().order_by('-created_on')
+
+    @property
     def sybil_created(self):
         amount = self.current_votes_total * 0.007 # estimate of the GTC to trust bonus ratio
         return amount
