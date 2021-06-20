@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-
   // random floor polygones coloring / lights of town
   polygones = document.querySelectorAll('svg #hero polygon, svg #hero path');
 
@@ -41,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   window.kinetics = new Kinetics();
   window.kinetics.interactionHook(); 
-  
 
-  // ROOM DELETED NOTIFICATION + PARTICLE FANYNESS
+
+ // ROOM DELETED NOTIFICATION + PARTICLE FANYNESS
   const notification_room_created = document.getElementById('notification_room_deleted');
   if (notification_room_created)
   {
@@ -68,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });      
     }, 7000);
   }
-
 
 
 

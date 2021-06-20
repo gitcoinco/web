@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
   window.kinetics = new Kinetics();
   window.kinetics.interactionHook(); 
   
-
   // ROOM CREATED NOTIFICATION + PARTICLE FANYNESS
   const notification_room_created = document.getElementById('notification_room_created');
   if (notification_room_created)
@@ -56,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });      
     }, 7000);
   }
-
+  
 
   last = 0;
 
@@ -95,6 +94,15 @@ document.addEventListener('DOMContentLoaded', function() {
       flashMessage('copied to clipboard', 10000);
     });
   }
+
+  // no self deleegation
+  $('.front input').click(function(){
+    if($(this).data('username') == document.contxt['github_handle']){
+      flashMessage('Cannot vouch for  self', 1000);
+    }
+  })
+
+
 
   // delete room UI
   // show delete button + warning on enter the room name what is fetched
@@ -157,11 +165,11 @@ document.addEventListener('DOMContentLoaded', function() {
       url: url,
       data: params,
       success: function(response){
-        alert("Message submitted");
+        flashMessage("Message submitted", 2000);
         document.refresh_page(url);
       },
       error: function(error){
-        alert('got an error - pls contact support@gitcoin.co');
+        flashMessage('got an error - pls contact support@gitcoin.co', 5000);
       },
     });  
   });
@@ -283,14 +291,14 @@ async function vouche() {
     url: url,
     data: params,
     success: function(response){
-      alert("Vote submitted")
+      flashMessage("Vote submitted", 2000)
       document.refresh_page(url);
     $('html, body').animate({
         scrollTop: $("#chat_room_interface").offset().top
      }, 500);
     },
     error: function(error){
-      alert('got an error - pls contact support@gitcoin.co');
+      flashMessage('got an error - pls contact support@gitcoin.co', 5000);
     },
     dataType: 'json'
   });

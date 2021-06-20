@@ -66,9 +66,11 @@
   <script>
   {% block messages %}
     {% if messages %}
-      {% for message in messages %}
-        alert('{{ message|capfirst }}');
-      {% endfor %}
+      document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+          flashMessage('{{ message|capfirst }}');
+        {% endfor %}
+      });
     {% endif %}
   {% endblock messages %}
   </script>

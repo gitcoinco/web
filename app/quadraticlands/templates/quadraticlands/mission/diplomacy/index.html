@@ -66,7 +66,7 @@
       <div class="info">
         <div class="name">{{invite.title}}<span class="membercount">2</span></div>
         <div class="status">You got invited by <span>{{invite.admin.profile.handle}}</span> to join this Room.</div>
-        <div class="actions"><a class="btn aqua" href="{{invite.title}}/join/TODO">Join Room</a></div>
+        <div class="actions"><a class="btn aqua" href="{{invite.title}}/?join=1">Join Room</a></div>
       </div>
       <div class="members">
         {% for player in invite.active_players %}
@@ -77,7 +77,7 @@
     {% endif %}
 
     {% if not games %}
-      You have no game, and also no games.  
+      You have no game, and also no active games.  
       <br>
       <br>
       Create a game below, or ask your mates for an invite to theirs.

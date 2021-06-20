@@ -12,10 +12,6 @@
 
 {% block 'content' %}
 
-<!-- NOTIFICATION : if room created : true -->
-<div class="hide" id="notification_room_created"></div>
-<!-- END NOTIFICATION -->
-
 {% csrf_token %}
 
 <!-- Diplomacy Room Hero -->
@@ -124,13 +120,12 @@
 </section>
 
 
-<!-- diplomacy-chat-room -->
-<form method="POST" action="{{game.url}}#chat">
+<form method="POST" class="diplomacy-chat-form" action="{{game.url}}#chat">
 <section class="diplomacy-chat-room" id="chat">
 	<div class="wrapper">
 		<div id="chat_room_interface" class="input">
 			{% csrf_token %}
-				<input id="chat_room" name="chat" type="text" placeholder="Say something">
+				<input id="chat_room" name="chat" type="text" placeholder="Message">
 				<button data-kinetics-attraction data-kinetics-attraction-grow="12" id="send_chat_button">Send</button>
 		</div>
 	</div>
@@ -141,7 +136,7 @@
 <!-- diplomacy roomlog -->
 <section class="diplomacy-roomlog" style="margin-top:3em;">
 
-	<div class="entries" style=" max-height: 800px; overflow-y: scroll;">
+	<div class="entries">
 	{% for feed in game.feed.all %}
 
 	<div class="entry">
@@ -173,7 +168,6 @@
 	{% endfor %}
 	</div>
 
-
 </section>
 
 
@@ -196,7 +190,7 @@
     	<span>( {{game.active_players | length}} slot{{game.active_players | pluralize}} used )</span>
     </div>
     <div class="input">
-      <input id="room_link" type="text" readonly value="https://gitcoin.co/quadraticlands/mission/diplomacy/4934-devilhunters">
+      <input id="room_link" type="text" readonly value="{{base_url}}{{game.relative_url}}">
       <button id="room_link_button" data-kinetics-attraction data-kinetics-attraction-grow="12">copy</button>
     </div>
   </div>
