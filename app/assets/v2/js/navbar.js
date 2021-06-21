@@ -31,6 +31,12 @@ const makeMenu = (navbarEl) => {
     }
   };
 
+  // pull computedRootStyles from shared.js or compute here
+  const computedRootStyles = (window.hasOwnProperty("computedRootStyles") ? window.computedRootStyles : getComputedStyle(document.documentElement));
+
+  // pull breakpoint_md from shared.js or from root styles if not present
+  const breakpoint_md = (window.hasOwnProperty("breakpoint_md") ? window.breakpoint_md : parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md')));
+
   // read the transition duration from navbar.scss (computedRootStyles is defined in shared.js)
   const transitionDuration = parseFloat(computedRootStyles.getPropertyValue('--gc-menu-transition-duration'));
 
@@ -186,18 +192,13 @@ const makeMenu = (navbarEl) => {
   // remove isVisible transitions to reduce jank
   const resetVisibility = () => {
     // removing isVisible will reset transition to just opacity
-    if (backgroundEl)
-      backgroundEl.classList.remove('isVisible');
-    if (contentEl)
-      contentEl.classList.remove('isVisible');
-    if (caretEl)
-      caretEl.classList.remove('isVisible');
+    backgroundEl.classList.remove('isVisible');
+    contentEl.classList.remove('isVisible');
+    caretEl.classList.remove('isVisible');
     // close the dropdown to animate out
-    if (menuContainerEl)
-      menuContainerEl.classList.remove('open');
+    menuContainerEl.classList.remove('open');
     // remove .show after the transitions finishes
     setTimeout(() => {
-      if (menuContainerEl)
         menuContainerEl.classList.remove('show');
     }, transitionDuration);
   };
@@ -346,8 +347,8 @@ const makeMenu = (navbarEl) => {
     // hide bs dropdowns
     $('.nav-link.dropdown-toggle').dropdown('hide');
 
-    // open if not already active (else we're closing)
-    if (!isActive) {
+    // open if not already active (else we're closing - but ensure the elements are present to display the subMenu before proceeding)
+    if (!isActive && menuEl && menuSpacer) {
       // display the el
       menuEl.classList.add('show');
       // get the dimensions for just this menu (doing this each call so that the expanded (active) state is measured)
@@ -360,17 +361,14 @@ const makeMenu = (navbarEl) => {
         // set the height according to parent
         spacerElsByName[parentMenu].style.height = `${ dimension.height + getDimension(parentWrap, menuElsByName[parentMenu]).height }px`;
       }
-      if (menuSpacer) {
-        // set spacers height
-        menuSpacer.style.height = `${ dimension.height }px`;
-      }
 
-      if (menuEl) {
-        // cleanUp menuEl before adding new css
-        menuEl.style.cssText = '';
-        // resize and position content (on top of the spacer)
-        menuEl.style.height = `${ dimension.height }px`;
-      }
+      // set spacers height
+      menuSpacer.style.height = `${ dimension.height }px`;
+      // cleanUp menuEl before adding new css
+      menuEl.style.cssText = '';
+      // resize and position content (on top of the spacer)
+      menuEl.style.height = `${ dimension.height }px`;
+
       // wait for .show to paint
       window.requestAnimationFrame(() => {
         // mark this menu as active
