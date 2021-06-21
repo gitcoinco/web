@@ -22,7 +22,7 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 
 from grants.models import CartActivity, Subscription
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from marketing.mails import remember_your_cart
 
 

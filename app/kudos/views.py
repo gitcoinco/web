@@ -603,7 +603,7 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
     except Profile.MultipleObjectsReturned:
         kwargs['profile'] = Profile.objects.filter(handle=github_handle.lower()).first()
     except Profile.DoesNotExist:
-        logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
+        logger.debug(f"error in record_kudos_activity: profile with github name {github_handle} not found")
         return
 
     try:

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from grants.tasks import process_new_contributions_email
 
@@ -29,8 +30,10 @@ class Command(BaseCommand):
     help = 'send contribution summary emails to grant owners'
 
     def handle(self, *args, **options):
+        network = get_default_network()
         grant_ids = Contribution.objects.filter(
             created_on__gt=timezone.now() - timezone.timedelta(hours=12),
+            subscription__network=network,
             success=True
         ).values_list('normalized_data__id', flat=True).distinct()
 

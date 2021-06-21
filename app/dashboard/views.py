@@ -100,7 +100,7 @@ from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
 from grants.models import Grant
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
@@ -2770,7 +2770,7 @@ def get_profile_tab(request, profile, tab, prev_context):
 
                 return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
-        as_dict = profile.to_dict()
+        as_dict = profile.as_dict
         all_activities = as_dict.get('activities')
         tabs = []
         counts = as_dict.get('activities_counts', {'joined': 1})
@@ -3560,7 +3560,7 @@ def disconnect_user_google(request, handle):
 
     profile.is_google_verified = False
     profile.identity_data_google = False
-    profile.google_user_id = False
+    profile.google_user_id = None
     profile.save()
 
     return JsonResponse({
@@ -3829,7 +3829,7 @@ def disconnect_user_facebook(request, handle):
 
     profile.is_facebook_verified = False
     profile.identity_data_facebook = False
-    profile.facebook_user_id = False
+    profile.facebook_user_id = None
     profile.save()
 
     return JsonResponse({
@@ -3936,7 +3936,7 @@ def profile(request, handle, tab=None):
         return redirect(profile.url)
 
     # setup context for visit
-    if not len(profile.tribe_members) and tab == 'tribe':
+    if not profile.tribe_members.exists() and tab == 'tribe':
         tab = 'activity'
 
     # hack to make sure that if ur looking at ur own profile u see right online status
@@ -6827,9 +6827,9 @@ def send_verification(request, handle):
 
     if not has_previous_validation:
         response = validate_number(request.user, twilio, phone, redis, delivery_method)
-        if response.isValid == False:
-            response.msg = "Please provide a valid phone number"
         if response:
+            if response.get('isValid') and response.isValid == False:
+                response.msg = "Please provide a valid phone number"
             return response
     else:
         cooldown = has_previous_validation + timedelta(minutes=SMS_COOLDOWN_IN_MINUTES)

@@ -218,7 +218,7 @@ class ProfileAdmin(admin.ModelAdmin):
         from django.shortcuts import redirect
         if "_unsquelch_sybil" in request.POST:
             from townsquare.models import SquelchProfile
-            obj.squelches.delete()
+            SquelchProfile.objects.filter(profile=obj).delete()
             self.message_user(request, "UnShadowBan done")
             return redirect(obj.admin_url)
         if "_squelch_sybil" in request.POST:
