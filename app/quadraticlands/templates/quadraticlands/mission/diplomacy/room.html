@@ -37,7 +37,7 @@
 
 
 <!-- members headline -->
-<section class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
+<section id="members" class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
   <h1>Members</h1>
 </section>
 
@@ -133,10 +133,11 @@
 </form>
 
 
-<!-- diplomacy roomlog -->
-<section class="diplomacy-roomlog" style="margin-top:3em;">
 
-	<div class="entries" style="max-height:1000px; overflow-y:scroll;">
+<!-- diplomacy roomlog / trollbox -->
+<section id="trollbox" class="diplomacy-roomlog" style="margin-top:3em;">
+
+	<div class="entries">
 	{% for feed in game.reverse_feed.all %}
 
 	<div class="entry">
@@ -171,6 +172,8 @@
 </section>
 
 
+<!-- ANCHOR AFTER TROLLBOX -->
+<section id="trollbox_after"></section>
 
 
 
@@ -255,6 +258,16 @@
 
 
 
+<!-- diplomacy room navigation ( arrows up and down ) -->
+<nav id="arrownav" class="diplomacy-room-navigation hide">
+	<a class="prev" href="#members">{% include "quadraticlands/_inlinesvg/arrow_up.svg" %}</a>
+	<a class="next" href="#trollbox_after">{% include "quadraticlands/_inlinesvg/arrow_down.svg" %}</a>
+</nav>
+
+
+
+
+
 {% endblock %}
 
 
@@ -268,6 +281,6 @@
 <script src="{% static "v2/js/lib/quadraticlands/tone.js" %}"></script>
 
 <!-- animate workstream page header image ( hero-workstream.svg ) -->
-<script src="{% static "v2/js/quadraticlands/mission/diplomacy/room.js" %}"></script>
+<script src="{% static "v2/js/quadraticlands/mission/diplomacy/room.js" defer %}"></script>
 
 {% endblock %}

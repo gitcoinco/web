@@ -1,5 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+  console.debug('DIPLOMACY ROOM');
+
+  
+
+  // show arrownav when #trollbox is in visible area
+  // hide arrownav when #trollbox is not in visible area
+  const arrownav = document.getElementById('arrownav');
+  var observer = new IntersectionObserver(function(entries) {
+    if(entries[0].isIntersecting === true)
+      arrownav.classList.remove("hide");
+    else
+      arrownav.classList.add("hide");
+  }, { threshold: [0.5] });
+  observer.observe(document.querySelector("#trollbox"));
+
+
+
+
+  /* not sure what this does - do we need it ?
   document.scroll_roomlog = function(){
     $(".diplomacy-roomlog .entries").animate({ scrollTop: 0}, 1000);
   }
@@ -11,8 +30,12 @@ document.addEventListener('DOMContentLoaded', function() {
       })
   }
   document.scroll_roomlog();
+  */
 
-  console.debug('DIPLOMACY ROOM');
+
+
+
+  
 
   // random floor polygones coloring on diplomacy image
   polygones = document.querySelectorAll('svg #hero polygon, svg #hero path');
@@ -324,4 +347,6 @@ function animate_diplomacy(now) {
 
   requestAnimationFrame(animate_diplomacy);
 }
+
+
 
