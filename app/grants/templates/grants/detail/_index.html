@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load static humanize i18n grants_extra compress %}
+{% load static humanize i18n grants_extra bundle %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +24,7 @@
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards_pic.html' %}
     <script src="https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js"></script>
-    {% compress css file _grant_details %}
+    {% bundle css file _grant_details %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
@@ -32,7 +32,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
 
   </head>
@@ -411,7 +411,6 @@
 
       {% include 'shared/footer.html' %}
       {% include 'shared/current_profile.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'grants/shared/shared_scripts.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
       <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>

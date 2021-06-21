@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize i18n static compress %}
+{% load humanize i18n static bundle %}
 {% load kudos_extras %}
 
 <!DOCTYPE html>
@@ -25,9 +25,9 @@
   <head>
     <meta name="title" content="Gitcoin Platform Stats & Testimonials | Gitcoin">
     <meta name="description" content="See the Cumulative Bounty History of Gitcoin in USD, Bounty Completion Rate, Median Bounty Turnaround Time, Testimonials and more.">
-    {% compress css file results %}
+    {% bundle css file results %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/results.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
   <body class="{{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
@@ -317,9 +317,9 @@
       <div class="row mt-5 pb-5 text-center">
         <div class="col">
           <h2>Platform Activities</h2>
-          {% compress css file activity_stream %}
+          {% bundle css file activity_stream %}
             <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-          {% endcompress %}
+          {% endbundle %}
         </div>
       </div>
       <div id="activities" class="activity_stream container">
@@ -598,7 +598,6 @@
       </div>
 
       {% include 'shared/footer.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' %}
 
 

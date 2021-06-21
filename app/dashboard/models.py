@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -296,7 +296,10 @@ class Bounty(SuperModel):
         ('harmony_ext', 'Harmony Ext'),
         ('rsk_ext', 'RSK Ext'),
         ('xinfin_ext', 'Xinfin Ext'),
+        ('nervos_ext', 'Nervos Ext'),
         ('algorand_ext', 'Algorand Ext'),
+        ('sia_ext', 'Sia Ext'),
+        ('tezos_ext', 'Tezos Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1415,7 +1418,10 @@ class BountyFulfillment(SuperModel):
         ('harmony_ext', 'harmony_ext'),
         ('rsk_ext', 'rsk_ext'),
         ('xinfin_ext', 'xinfin_ext'),
+        ('nervos_ext', 'nervos_ext'),
         ('algorand_ext', 'algorand_ext'),
+        ('sia_ext', 'sia_ext'),
+        ('tezos_ext', 'tezos_ext'),
         ('manual', 'manual')
     ]
 
@@ -1432,7 +1438,10 @@ class BountyFulfillment(SuperModel):
         ('FILECOIN', 'FILECOIN'),
         ('RSK', 'RSK'),
         ('XINFIN', 'XINFIN'),
+        ('NERVOS', 'NERVOS'),
         ('ALGORAND', 'ALGORAND'),
+        ('SIA', 'SIA'),
+        ('TEZOS', 'TEZOS'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -3016,6 +3025,9 @@ class Profile(SuperModel):
     is_pro = models.BooleanField(default=False, help_text=_('Is this user upgraded to pro?'))
     mautic_id = models.CharField(max_length=128, null=True, blank=True, db_index=True, help_text=_('Mautic id to be able to do api requests without user being logged'))
 
+    is_poh_verified=models.BooleanField(default=False)
+    poh_handle = models.CharField(blank=True, null=True, max_length=64, unique=True)
+
     # Idena fields
     is_idena_connected = models.BooleanField(default=False)
     is_idena_verified = models.BooleanField(default=False)
@@ -3037,27 +3049,30 @@ class Profile(SuperModel):
     @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
-        # trust bonus compounds for every new verification added
-        tb = 1
+        # trust bonus starts at 50% and compounds for every new verification added
+        # to a max of 150%
+        tb = 0.5
+        if self.is_poh_verified:
+            tb += 0.50
         if self.is_brightid_verified:
-            tb *= 1.25
-        if self.is_twitter_verified:
-            tb *= 1.05
-        if self.sms_verification:
-            tb *= 1.02
-        if self.is_google_verified:
-            tb *= 1.02
-        if self.is_poap_verified:
-            tb *= 1.10
+            tb += 0.50
         if self.is_idena_verified:
-            tb *= 1.25
-        if self.is_facebook_verified:
-            tb *= 1.001
+            tb += 0.50
+        if self.is_poap_verified:
+            tb += 0.25
         if self.is_ens_verified:
-            tb *= 1.001
-        if self.is_duniter_verified:
-            tb *= 1.001
-        return tb
+            tb += 0.25
+        if self.sms_verification:
+            tb += 0.15
+        if self.is_google_verified:
+            tb += 0.15
+        if self.is_twitter_verified:
+            tb += 0.15
+        if self.is_facebook_verified:
+            tb += 0.15
+        # if self.is_duniter_verified:
+        #     tb *= 1.001
+        return min(1.5, tb)
 
 
     @property
@@ -3383,6 +3398,7 @@ class Profile(SuperModel):
             import random
             try:
                 wallpapers = load_files_in_directory('wallpapers')
+                wallpapers = [image for image in wallpapers if image[0:5] == '2021_']
                 self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
             except Exception as e:
                 # fix for travis, which has no static dir
@@ -4047,10 +4063,11 @@ class Profile(SuperModel):
         if not self.github_access_token:
             return False
 
-        _params = build_auth_dict(self.github_access_token)
+        _params = build_auth_dict()
         url = TOKEN_URL.format(**_params)
         response = requests.get(
             url,
+            data=json.dumps({'access_token': self.github_access_token}),
             auth=(_params['client_id'], _params['client_secret']),
             headers=HEADERS)
 
@@ -4159,7 +4176,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url)
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
@@ -4481,7 +4498,6 @@ class Profile(SuperModel):
         context['avg_rating_scaled'] = profile.get_average_star_rating(20)
         context['verification'] = bool(profile.get_my_verified_check)
         context['avg_rating'] = profile.get_average_star_rating()
-        context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
         context['total_kudos_sent_count'] = profile.sent_kudos.count()
         context['total_kudos_received_count'] = profile.received_kudos.count()
@@ -5796,6 +5812,11 @@ class Investigation(SuperModel):
 
         htmls.append(f'Facebook Verified: {instance.is_facebook_verified}')
         if instance.is_facebook_verified:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTIONx1)')
+
+        htmls.append(f'POH Verified: {instance.is_poh_verified}')
+        if instance.is_poh_verified:
             total_sybil_score -= 1
             htmls.append('(REDEMPTIONx1)')
 

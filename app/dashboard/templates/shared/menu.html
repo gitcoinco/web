@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -48,7 +48,7 @@
     <div class="nav-item gc-nav-item dropdown px-md-2 px-lg-3 interior my-auto">
       <a class="nav-link gc-nav-link px-3 px-md-0" href="#" id="dropdownCompany" role="button"
       data-menu="company" aria-haspopup="true" aria-expanded="false">
-        {% trans "Company" %}
+        {% trans "Organization" %}
       </a>
       <div class="gc-mobile-spacer gc-mobile-spacer-company gc-menu-background-clr d-none"></div>
     </div>
@@ -138,6 +138,23 @@
                       </div>
                     </div>
                   </a>
+
+                  <a class="dropdown-item text-grey-500 px-3 py-0" href="{% url "quadraticlands:quadraticlands" %}">
+                    <div class="row">
+                      <div class="col align-self-center" style="max-width: 3.25rem;">
+                        <svg height="39" viewBox="0 0 56 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="28" cy="28.5" r="23" stroke="#02E2AC" stroke-width="2"/>
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M33.4507 25.0574C34.3343 26.296 34.814 27.8 34.8014 29.3167C34.8014 30.8081 34.3217 32.2994 33.4507 33.5128L35.2937 34.9157C36.4677 33.2979 37.1115 31.3262 37.1115 29.3293C37.1241 27.2186 36.4298 25.1459 35.1548 23.4775L34.0979 24.4303L33.4507 25.0574Z" fill="#02E2AC"/>
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M36.9344 36.1573L30.7363 31.443C31.1781 30.8617 31.4306 30.1539 31.4685 29.4208C31.4937 28.6878 31.3044 27.9674 30.913 27.3481L33.8795 24.6686L36.9849 21.7617C37.1868 21.5721 37.1995 21.2435 36.9975 21.0413L36.5683 20.6116C34.3592 18.3745 31.3801 17.0727 28.2495 16.9716L28.2621 15.2654C28.2747 15.1516 28.2621 15.0379 28.2369 14.9241C28.199 14.8104 28.1485 14.7092 28.0728 14.6208C27.997 14.5323 27.9087 14.4691 27.7951 14.4185C27.6941 14.368 27.5805 14.3427 27.4668 14.3427C27.3532 14.3427 27.2396 14.368 27.1386 14.4185C27.0377 14.4691 26.9367 14.5323 26.8609 14.6208C26.7852 14.7092 26.7221 14.8104 26.6968 14.9115C26.659 15.0252 26.6463 15.139 26.6716 15.2527L26.659 17.0095C25.9142 17.0853 25.1694 17.2244 24.4499 17.4392L24.4625 15.2527C24.4751 15.139 24.4625 15.0252 24.4372 14.9115C24.3994 14.7977 24.3489 14.6966 24.2731 14.6081C24.1974 14.5197 24.109 14.4565 23.9954 14.4059C23.8944 14.3554 23.7808 14.3301 23.6672 14.3301C23.5536 14.3301 23.44 14.3554 23.339 14.4059C23.238 14.4565 23.137 14.5197 23.0613 14.6081C22.9856 14.6966 22.9224 14.7977 22.8972 14.8988C22.8593 15.0126 22.8467 15.1263 22.8719 15.2401L22.8341 18.0333C20.2842 19.1707 18.1887 21.155 16.9137 23.6449C15.6388 26.1347 15.2348 28.9911 15.7902 31.7337C16.3457 34.4764 17.8226 36.9536 19.9686 38.7483C22.1145 40.543 24.8159 41.5541 27.6057 41.6047L36.6314 41.6426C36.9091 41.6426 37.1363 41.4151 37.1363 41.137V36.5744C37.1363 36.4101 37.0606 36.2584 36.9344 36.1573ZM27.7824 39.4055C25.5607 39.3929 23.4021 38.6472 21.6475 37.2948C19.8928 35.9298 18.6305 34.0214 18.0624 31.8728C17.4944 29.7242 17.6585 27.4365 18.5043 25.389C19.3626 23.3416 20.8648 21.6227 22.7962 20.5105L22.7836 23.8345C22.771 23.9482 22.7836 24.062 22.8088 24.1757C22.8467 24.2895 22.8972 24.3906 22.9729 24.4791C23.0487 24.5675 23.137 24.6307 23.2506 24.6813C23.3516 24.7318 23.4652 24.7571 23.5789 24.7571C23.6925 24.7571 23.8061 24.7318 23.9071 24.6813C24.008 24.6307 24.109 24.5675 24.1848 24.4791C24.2605 24.3906 24.3236 24.2895 24.3489 24.1884C24.3867 24.0746 24.3994 23.9609 24.3741 23.8471L24.3867 19.7648C25.4976 19.3603 26.6716 19.1707 27.8582 19.1707C30.042 19.1707 32.1627 19.8912 33.8921 21.2056C34.0184 21.3067 34.031 21.4837 33.9174 21.5974L29.1962 25.9325C28.7671 25.7556 28.3 25.6545 27.8329 25.6545C27.3154 25.6545 26.7978 25.7556 26.3181 25.9704C25.8384 26.1853 25.4219 26.5013 25.081 26.8931C24.7402 27.2849 24.4877 27.7525 24.3363 28.2454C24.1848 28.751 24.1469 29.2692 24.2226 29.7874C24.2984 30.3056 24.4751 30.7985 24.7528 31.2408C25.0305 31.6832 25.4092 32.0497 25.8384 32.3404C26.2803 32.6185 26.7726 32.808 27.2901 32.8839C27.8077 32.9597 28.3379 32.9218 28.8302 32.7701L34.8641 37.358C34.9273 37.4086 34.9651 37.4844 34.9651 37.5602L34.9525 39.178C34.9525 39.317 34.8389 39.4308 34.7 39.4308L27.7824 39.4055ZM29.2594 29.2944C29.2594 29.5725 29.171 29.8506 29.0195 30.0907C28.8554 30.3308 28.6408 30.5078 28.3757 30.6215C28.1106 30.7353 27.8203 30.7605 27.5552 30.6974C27.2901 30.6342 27.025 30.5078 26.8231 30.3056C26.6211 30.1033 26.4822 29.8506 26.4317 29.5725C26.3812 29.2944 26.4065 29.0038 26.5201 28.751C26.6337 28.4856 26.8104 28.2707 27.0503 28.1064C27.2901 27.9547 27.5678 27.8663 27.8455 27.8663C28.2242 27.8663 28.5903 28.0179 28.8554 28.296C29.1079 28.5488 29.2594 28.9026 29.2594 29.2944Z" fill="#02E2AC"/>
+                        </svg>
+                      </div>
+                      <div class="col py-3 text-wrap">
+                        <b class="gc-megamenu-title d-block">{% trans "Govern" %}</b>
+                        <span>{% trans "Decide the future of the open web" %}</span>
+                      </div>
+                    </div>
+                  </a>
+
                 </div>
               </div>
             </div>
@@ -145,7 +162,7 @@
         </section>
 
         <!-- Products -->
-        <section class="gc-menu-wrap gc-menu-wrap-products gc-menu-submenu-wrap position-md-absolute" data-submenu="products">
+        <section class="gc-menu-wrap gc-menu-wrap-products gc-menu-submenu-wrap position-md-absolute" data-submenu="products" data-direction="ltr">
           <div class="gc-menu-inner text-grey-500">
             <div class="row">
               <div class="col-12 col-md-7 col-lg-8 gc-menu-submenu-toggles gc-menu-padding-col gc-menu-scroll">
@@ -224,7 +241,7 @@
 
               <div class="d-none d-md-flex col-5 col-lg-4 bg-lighter gc-menu-inner">
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-bounties position-absolute {% if '/bount' in request.path or '/explorer' in request.path and 'grants/explorer' not in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Bounties" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Bounties" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'new_bounty' %}">{% trans "Fund Issue" %}</a>
@@ -241,7 +258,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-hackathons position-absolute {% if '/hackathon' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Hackathons" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Hackathons" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'get_hackathons' %}">{% trans "Explore Hackathons" %}</a>
@@ -252,7 +269,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-grants position-absolute {% if '/grants' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants' %}">{% trans "Explore Grants" %}</a>
@@ -266,7 +283,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute {% if '/quests' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Quests" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Quests" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'quests_index' %}">{% trans "Explore Quests" %}</a>
@@ -277,7 +294,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kudos position-absolute {% if '/kudos' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kudos" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Kudos" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'kudos_marketplace' %}">{% trans "Explore Kudos" %}</a>
@@ -291,7 +308,7 @@
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-kernel position-absolute {% if '/kernel' in request.path %}active{% endif %}">
-                  <b class="gc-menu-submenu-title d-block px-3 pt-3 pb-2">{% trans "Kernel" %}</b>
+                  <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Kernel" %}</b>
                   <ul class="list-unstyled">
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="https://kernel.community">{% trans "Explore Kernel" %}</a>
@@ -338,7 +355,7 @@
                 </div>
               </a>
 
-              <a class="dropdown-item text-grey-500 px-3 py-0" href="https://discord.com/invite/83BK5z55yB">
+              <a class="dropdown-item text-grey-500 px-3 py-0" href="https://discord.gg/gitcoin">
                 <div class="row py-3">
                   <div class="col align-self-center" style="max-width: 3.25rem;">
                     <svg width="32" height="36" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -351,6 +368,24 @@
                   </div>
                 </div>
               </a>
+
+
+              <a class="dropdown-item text-grey-500 px-3 py-0" href="https://gov.gitcoin.co/">
+                <div class="row py-3">
+                  <div class="col align-self-center" style="max-width: 3.25rem;">
+                    <svg width="34" height="33" viewBox="0 0 34 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="16.9991" cy="16.7153" r="15.214" stroke="#0E0333" stroke-width="2"/>
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M20.6816 14.3897C21.2786 15.2265 21.6027 16.2426 21.5942 17.2672C21.5942 18.2748 21.2701 19.2823 20.6816 20.102L21.9267 21.0498C22.7199 19.9569 23.1548 18.6248 23.1548 17.2757C23.1633 15.8498 22.6943 14.4495 21.8329 13.3224L21.1189 13.9661L20.6816 14.3897Z" fill="#02E2AC"/>
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M23.035 21.8886L18.8477 18.7037C19.1461 18.3109 19.3167 17.8328 19.3423 17.3375C19.3593 16.8423 19.2314 16.3556 18.967 15.9372L20.9712 14.127L23.0691 12.1631C23.2055 12.0351 23.2141 11.8131 23.0776 11.6764L22.7877 11.3861C21.2952 9.8748 19.2826 8.99533 17.1676 8.92702L17.1761 7.77431C17.1847 7.69746 17.1761 7.62062 17.1591 7.54377C17.1335 7.46692 17.0994 7.39861 17.0482 7.33884C16.997 7.27907 16.9374 7.23638 16.8606 7.20223C16.7924 7.16807 16.7156 7.15099 16.6389 7.15099C16.5621 7.15099 16.4854 7.16807 16.4171 7.20223C16.3489 7.23638 16.2807 7.27907 16.2295 7.33884C16.1783 7.39861 16.1357 7.46692 16.1187 7.53523C16.0931 7.61208 16.0845 7.68892 16.1016 7.76577L16.0931 8.95263C15.5899 9.00387 15.0867 9.09779 14.6006 9.24294L14.6092 7.76577C14.6177 7.68892 14.6092 7.61208 14.5921 7.53523C14.5665 7.45838 14.5324 7.39007 14.4813 7.3303C14.4301 7.27053 14.3704 7.22784 14.2936 7.19369C14.2254 7.15953 14.1487 7.14246 14.0719 7.14246C13.9951 7.14246 13.9184 7.15953 13.8502 7.19369C13.7819 7.22784 13.7137 7.27053 13.6625 7.3303C13.6114 7.39007 13.5687 7.45838 13.5517 7.52669C13.5261 7.60354 13.5176 7.68039 13.5346 7.75723L13.509 9.64426C11.7864 10.4127 10.3707 11.7533 9.50935 13.4354C8.64801 15.1175 8.37511 17.0472 8.75035 18.9001C9.12559 20.7529 10.1234 22.4265 11.5732 23.639C13.0229 24.8515 14.848 25.5345 16.7327 25.5687L22.8303 25.5943C23.0179 25.5943 23.1714 25.4406 23.1714 25.2528V22.1703C23.1714 22.0593 23.1202 21.9569 23.035 21.8886ZM16.8521 24.083C15.3511 24.0744 13.8928 23.5707 12.7074 22.657C11.522 21.7349 10.6692 20.4456 10.2854 18.994C9.90165 17.5424 10.0125 15.997 10.5839 14.6137C11.1638 13.2305 12.1787 12.0692 13.4835 11.3178L13.4749 13.5635C13.4664 13.6403 13.4749 13.7172 13.492 13.794C13.5176 13.8709 13.5517 13.9392 13.6029 13.9989C13.654 14.0587 13.7137 14.1014 13.7905 14.1355C13.8587 14.1697 13.9355 14.1868 14.0122 14.1868C14.089 14.1868 14.1657 14.1697 14.2339 14.1355C14.3022 14.1014 14.3704 14.0587 14.4216 13.9989C14.4727 13.9392 14.5154 13.8709 14.5324 13.8025C14.558 13.7257 14.5665 13.6488 14.5495 13.572L14.558 10.814C15.3085 10.5408 16.1016 10.4127 16.9032 10.4127C18.3786 10.4127 19.8113 10.8994 20.9797 11.7874C21.065 11.8557 21.0735 11.9753 20.9967 12.0521L17.8072 14.9809C17.5173 14.8613 17.2017 14.793 16.8862 14.793C16.5365 14.793 16.1869 14.8613 15.8628 15.0065C15.5387 15.1516 15.2573 15.3651 15.0271 15.6298C14.7968 15.8945 14.6262 16.2104 14.5239 16.5434C14.4216 16.885 14.396 17.2351 14.4471 17.5851C14.4983 17.9352 14.6177 18.2682 14.8053 18.5671C14.9929 18.8659 15.2488 19.1135 15.5387 19.3099C15.8372 19.4978 16.1698 19.6259 16.5195 19.6771C16.8691 19.7283 17.2273 19.7027 17.5599 19.6002L21.6364 22.6997C21.679 22.7339 21.7046 22.7851 21.7046 22.8364L21.696 23.9293C21.696 24.0232 21.6193 24.1001 21.5255 24.1001L16.8521 24.083ZM17.8499 17.2521C17.8499 17.44 17.7902 17.6278 17.6878 17.7901C17.577 17.9523 17.432 18.0718 17.2529 18.1487C17.0738 18.2255 16.8777 18.2426 16.6986 18.1999C16.5195 18.1572 16.3404 18.0718 16.2039 17.9352C16.0675 17.7986 15.9737 17.6278 15.9396 17.44C15.9054 17.2521 15.9225 17.0557 15.9993 16.885C16.076 16.7057 16.1954 16.5605 16.3574 16.4495C16.5195 16.347 16.7071 16.2873 16.8947 16.2873C17.1506 16.2873 17.3979 16.3897 17.577 16.5776C17.7475 16.7484 17.8499 16.9874 17.8499 17.2521Z" fill="#02E2AC"/>
+                    </svg>
+                  </div>
+                  <div class="col">
+                    <b class="gc-megamenu-title d-block">{% trans "Governance Forum" %}</b>
+                    <span class="line-clamp-1 text-wrap">{% trans "Help decide the future of Gitcoin" %}</span>
+                  </div>
+                </div>
+              </a>
+
             </div>
           </div>
         </section>
@@ -375,14 +410,9 @@
                       <i class="fal fa-analytics gc-menu-icon"></i>{% trans "Results" %}
                     </a>
                   </li>
-                  <li>
-                    <a class="dropdown-item" href="{% url 'products' %}">
-                      <i class="fal fa-inventory gc-menu-icon"></i>{% trans "Products" %}
-                    </a>
-                  </li>
                 </ul>
 
-                <ul class="col-6 list-unstyled pl-0">
+                <ul class="col-6 list-unstyled pl-0 mb-0">
 
                   <li>
                     <a class="dropdown-item" href="{% url "blog" %}">
@@ -395,8 +425,8 @@
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="/wiki">
-                      <i class="fab fa-wikipedia-w gc-menu-icon"></i>{% trans "Wiki" %}
+                    <a class="dropdown-item" href="{% url "support" %}">
+                      <i class="fal fa-ticket-alt gc-menu-icon"></i>{% trans "Support" %}
                     </a>
                   </li>
                 </ul>
@@ -429,20 +459,20 @@
       </div>
 
       <div class="gc-menu-background gc-menu-background-clr shadow-lg bg-white position-md-absolute"></div>
-      <div class="gc-menu-caret position-md-absolute"></div>
+      <div class="gc-menu-caret bg-white position-md-absolute"></div>
 
     </div>
   </nav>
 
   <nav class="navbar-nav navbar-icons d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}
-    {% include 'shared/notifications.html' %}
-    {% include 'shared/search.html' %}
-    {% include 'shared/cart_nav.html' %}
+      {% include 'shared/notifications.html' %}
+      {% include 'shared/search.html' %}
+      {% include 'shared/cart_nav.html' %}
     {% endif %}
   </nav>
 
-  <nav class="navbar-nav d-flex align-items-md-center">
-    {% include 'shared/nav_auth.html' with source='authed' %}
+  <nav class="navbar-nav gc-navbar-nav d-flex align-items-md-center gc-navbar-auth">
+    {% include 'shared/nav_auth.html' %}
   </nav>
 </div>

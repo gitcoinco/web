@@ -1,11 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const navbarEls = document.querySelectorAll('.gc-navbar-nav');
 
+  [...navbarEls].forEach((navbarEl) => {
+    makeMenu(navbarEl);
+  });
+});
+
+// feed in the navBarEl
+const makeMenu = (navbarEl) => {
   // debounce actions to avoid measuring too often/losing focus
   let debounceClose = false;
   let debounceMeasure = false;
 
-  // control the navPos when we open #navbarSupportedContent (mobile's collapse toggle)
-  let navPos = 0;
+  // control the anchored position when we open #navbarSupportedContent (mobile's collapse toggle)
   let anchored = 0;
 
   const isTouchDevice = ('ontouchstart' in window);
@@ -18,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     company: {
       moveX: -80
+    },
+    profile: {
+      moveX: -300
     }
   };
 
@@ -28,23 +38,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const $navbarSupportedContent = $('#navbarSupportedContent');
 
   // reference constant els used in the menu
-  const navbarEl = document.querySelector('.gc-navbar-nav');
   const navbarContainerEl = document.querySelector('.navbar');
-  const menuContainerEl = document.querySelector('.gc-menu-container');
   const navItemEls = document.querySelectorAll('.gc-nav-item');
-  const navLinkEls = document.querySelectorAll('.gc-nav-link');
-  const menuEls = document.querySelectorAll('.gc-menu-wrap');
   const spacerEls = document.querySelectorAll('.gc-mobile-spacer');
-  const contentEl = document.querySelector('.gc-menu-content');
-  const caretEl = document.querySelector('.gc-menu-caret');
-  const backgroundEl = document.querySelector('.gc-menu-background');
-  const submenuEls = document.querySelectorAll('.gc-menu-submenu-wrap');
+  const menuEls = document.querySelectorAll('.gc-menu-wrap');
+
+  const menuContainerEl = navbarEl.querySelector('.gc-menu-container');
+  const navLinkEls = navbarEl.querySelectorAll('.gc-nav-link');
+  const contentEl = navbarEl.querySelector('.gc-menu-content');
+
+  const caretEl = navbarEl.querySelector('.gc-menu-caret');
+  const backgroundEl = navbarEl.querySelector('.gc-menu-background');
+
+  const submenuEls = navbarEl.querySelectorAll('.gc-menu-submenu-wrap');
+
   const mobileToggleEl = document.querySelector('.navbar-toggler-icon');
 
   // fill these based on what we find in the submenuEls
   const submenuToggleEls = {};
   const submenuMenuEls = {};
+  const submenuSpacerEls = {};
   const submenuMenuElsByName = {};
+  const submenuSpacerElsByName = {};
   const debounceSubmenuFocus = [];
 
   // record mousePositions when interacting with submenus
@@ -55,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return [...from].reduce((carr, el) => {
       const attr = el.dataset[dataAttr];
-      const dest = document.querySelector(`.${className}-${attr}`);
+      const dest = navbarEl.querySelector(`.${className}-${attr}`);
 
       // record the dest by attr value
       carr[attr] = dest;
@@ -72,7 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
   [...submenuEls].forEach((el) => {
     submenuToggleEls[el.dataset.submenu] = el.querySelectorAll('.gc-menu-submenu-toggle');
     submenuMenuEls[el.dataset.submenu] = el.querySelectorAll('.gc-menu-submenu');
+    submenuSpacerEls[el.dataset.submenu] = el.querySelectorAll('.gc-mobile-submenu-spacer');
     submenuMenuElsByName[el.dataset.submenu] = indexElsByName(submenuToggleEls[el.dataset.submenu], 'gc-menu-submenu', 'submenu');
+    submenuSpacerElsByName[el.dataset.submenu] = indexElsByName(submenuToggleEls[el.dataset.submenu], 'gc-mobile-submenu-spacer', 'submenu');
   });
 
   // remove transform (rotate()) during measure so that the height/width isn't skewed
@@ -119,20 +136,32 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // measure the submenu's dimensions
-  const getSubmenuDimensions = (menu) => {
+  const getSubmenuDimensions = (menu, direction) => {
     showMenuContainerEl();
 
-    // position of the upperRight boundary
-    dimensions[`${menu}Submenu-decreasingCorner`] = {
-      x: dimensions[menu].menuX + menuElsByName[menu].clientWidth,
-      y: dimensions[menu].menuY - 400
-    };
-
-    // position of the lowerRight boundary
-    dimensions[`${menu}Submenu-increasingCorner`] = {
-      x: dimensions[menu].menuX + menuElsByName[menu].clientWidth,
-      y: dimensions[menu].menuY + menuElsByName[menu].clientHeight + 400
-    };
+    if (direction === false) {
+      // position of the lowerLeft boundary
+      dimensions[`${menu}Submenu-decreasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft,
+        y: dimensions[menu].menuY + menuElsByName[menu].clientHeight + 400
+      };
+      // position of the upperLeft boundary
+      dimensions[`${menu}Submenu-increasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft,
+        y: dimensions[menu].menuY - 400
+      };
+    } else {
+      // position of the upperRight boundary
+      dimensions[`${menu}Submenu-decreasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft + menuElsByName[menu].clientWidth,
+        y: dimensions[menu].menuY - 400
+      };
+      // position of the lowerRight boundary
+      dimensions[`${menu}Submenu-increasingCorner`] = {
+        x: dimensions[menu].menuX + navbarEl.offsetLeft + menuElsByName[menu].clientWidth,
+        y: dimensions[menu].menuY + menuElsByName[menu].clientHeight + 400
+      };
+    }
 
     hideMenuContainerEl();
   };
@@ -151,20 +180,25 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
     // get the dimensions for each submenu
-    [...submenuEls].forEach((el) => getSubmenuDimensions(el.dataset.submenu));
+    [...submenuEls].forEach((el) => getSubmenuDimensions(el.dataset.submenu, el.dataset.direction == 'ltr'));
   };
 
   // remove isVisible transitions to reduce jank
   const resetVisibility = () => {
     // removing isVisible will reset transition to just opacity
-    backgroundEl.classList.remove('isVisible');
-    contentEl.classList.remove('isVisible');
-    caretEl.classList.remove('isVisible');
+    if (backgroundEl)
+      backgroundEl.classList.remove('isVisible');
+    if (contentEl)
+      contentEl.classList.remove('isVisible');
+    if (caretEl)
+      caretEl.classList.remove('isVisible');
     // close the dropdown to animate out
-    menuContainerEl.classList.remove('open');
+    if (menuContainerEl)
+      menuContainerEl.classList.remove('open');
     // remove .show after the transitions finishes
     setTimeout(() => {
-      menuContainerEl.classList.remove('show');
+      if (menuContainerEl)
+        menuContainerEl.classList.remove('show');
     }, transitionDuration);
   };
 
@@ -189,6 +223,25 @@ document.addEventListener('DOMContentLoaded', () => {
     caretEl.style.cssText = 'transition:unset;';
   };
 
+  // clean up the state of a submenu selection on mobile
+  const cleanUpSubmenu = (menu, keepSelection) => {
+    if (!keepSelection) {
+      [...submenuMenuEls[menu]].forEach((el) => {
+        el.classList.remove('show');
+        el.classList.remove('active');
+      });
+    }
+    [...submenuToggleEls[menu]].forEach((el) => {
+      el.classList.remove('active');
+      el.classList.remove('gc-menu-submenu-toggle-focus');
+      el.classList.remove('gc-menu-submenu-toggle-active');
+    });
+    [...submenuSpacerEls[menu]].forEach((el) => {
+      el.classList.remove('active');
+      el.style.height = '0px';
+    });
+  };
+
   // toggle display of menu dropdown (triggered on hover - content is moved and background is scaled)
   const showMenu = (navLink) => {
     // get menu name from navLink
@@ -205,12 +258,21 @@ document.addEventListener('DOMContentLoaded', () => {
       menuElsByName[menu].querySelector('.gc-menu-submenu').classList.add('active');
     }
 
+    // remove active state on first load
+    if (submenuToggleEls[menu]) {
+      cleanUpSubmenu(menu, true);
+    }
+
     // wait for .show paint (waiting for display: block)
     window.requestAnimationFrame(() => {
       // add open to set opacity and to transition the rotateX
       menuContainerEl.classList.add('open');
       // remove prev active state
-      menuEls.forEach(el => el.classList.remove('active'));
+      menuEls.forEach(el => {
+        if (el.parentElement == menuElsByName[menu].parentElement) {
+          el.classList.remove('active');
+        }
+      });
       // mark this menu as active
       menuElsByName[menu].classList.add('active');
 
@@ -250,17 +312,36 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // toggle display of menus for mobile
-  const showMenuMobile = (navLink) => {
-    // get menu name from navLink
-    const menu = navLink.dataset.menu;
-    // get menuEl + menuSpacer so we can move menuEl into menuSpacer space
-    const menuEl = menuElsByName[menu];
-    const menuSpacer = spacerElsByName[menu];
-    // check if its already been opened (is .active)
-    const isActive = menuSpacer.classList.contains('active');
+  const showMenuMobile = (navLink, isSubMenu) => {
+    // discover the parents details for subMenus
+    let parentWrap; let
+        parentMenu;
 
-    // remove prev .active state(s)
-    cleanUp();
+    // grab the parent if working a submenu
+    if (isSubMenu) {
+      parentWrap = navLink.closest('.gc-menu-wrap');
+      parentMenu = parentWrap.dataset.submenu;
+    }
+
+    // get menu name from navLink
+    const menu = (isSubMenu ? navLink.dataset.submenu : navLink.dataset.menu);
+    // get menuEl + menuSpacer so we can move menuEl into menuSpacer space
+    const menuEl = (isSubMenu ? submenuMenuElsByName[parentMenu][menu] : menuElsByName[menu]);
+    const menuSpacer = (isSubMenu ? submenuSpacerElsByName[parentMenu][menu] : spacerElsByName[menu]);
+    // check if its already been opened (is .active)
+    const isActive = menuSpacer ? menuSpacer.classList.contains('active') : false;
+
+    // cleanup the prev state
+    if (!isSubMenu) {
+      // remove prev .active state(s)
+      cleanUp();
+      // remove active state on first load
+      if (submenuToggleEls[menu]) {
+        cleanUpSubmenu(menu);
+      }
+    } else {
+      cleanUpSubmenu(parentMenu);
+    }
 
     // hide bs dropdowns
     $('.nav-link.dropdown-toggle').dropdown('hide');
@@ -269,24 +350,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isActive) {
       // display the el
       menuEl.classList.add('show');
+      // get the dimensions for just this menu (doing this each call so that the expanded (active) state is measured)
+      const dimension = getDimension(navLink, menuEl);
+
+      // mark the submenu
+      if (isSubMenu && spacerElsByName[parentMenu]) {
+        // fix/remove hover state on toggle
+        navLink.classList.add('gc-menu-submenu-toggle-active');
+        // set the height according to parent
+        spacerElsByName[parentMenu].style.height = `${ dimension.height + getDimension(parentWrap, menuElsByName[parentMenu]).height }px`;
+      }
+      if (menuSpacer) {
+        // set spacers height
+        menuSpacer.style.height = `${ dimension.height }px`;
+      }
+
+      if (menuEl) {
+        // cleanUp menuEl before adding new css
+        menuEl.style.cssText = '';
+        // resize and position content (on top of the spacer)
+        menuEl.style.height = `${ dimension.height }px`;
+      }
       // wait for .show to paint
       window.requestAnimationFrame(() => {
         // mark this menu as active
         menuEl.classList.add('active');
         menuSpacer.classList.add('active');
         navLink.parentElement.classList.add('active');
-
-        // get the dimensions for just this menu (doing this each call so that the expanded (active) state is measured)
-        const dimension = getDimension(navLink, menuEl);
-
-        // set spacers height
-        menuSpacer.style.height = `${ dimension.height }px`;
         // cleanUp menuEl before adding new css
         menuEl.style.cssText = '';
-        // resize and position content (on top of the spacer)
-        menuEl.style.top = `${ dimension.menuY + navbarContainerEl.scrollTop }px`;
-        menuEl.style.height = `${ dimension.height }px`;
+        // position the top after showing to gather the right position
+        menuEl.style.top = (isSubMenu ? `${ menuSpacer.offsetTop }px` : `${ dimension.menuY + navbarContainerEl.scrollTop }px`);
       });
+    } else if (spacerElsByName[parentMenu]) {
+      // set the height according to parent (close the gap)
+      spacerElsByName[parentMenu].style.height = `${ getDimension(parentWrap, menuElsByName[parentMenu]).height }px`;
     }
   };
 
@@ -295,10 +393,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // record mousePositions for each movement over submenus container
   const pushMousePosition = (e, menu) => {
+    // ensure that the mouse is always offset by whatever is above the nav
+    const navbarOffset = navbarContainerEl.getBoundingClientRect();
+
     // push the positions taken from the event
     mousePositions[menu].push({
-      x: e.pageX,
-      y: e.pageY
+      x: e.clientX,
+      y: e.clientY - navbarOffset.y
     });
     // ensure the arr is no longer than 2 entries
     if (mousePositions[menu].length > 2)
@@ -333,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // check if we should delay the change of menu
       if (decreasingSlope < prevDecreasingSlope && increasingSlope > prevIncreasingSlope) {
-        debounceSubmenuFocus[menu] = setTimeout(() => showSubmenu(e, menu, submenuToggle), 300);
+        debounceSubmenuFocus[menu] = setTimeout(() => showSubmenu(e, menu, submenuToggle), 1000);
       } else {
         showSubmenu(e, menu, submenuToggle);
       }
@@ -345,16 +446,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // scroll to the start of the menu/close if we move out of mobile
   const posMobileMenu = () => {
     if (document.body.classList.contains('navbar-menu-open')) {
-      // get the top pos of the nav so that we can check if we need to scroll it into view (navBar is 100vh)
-      navPos = Math.ceil(window.scrollY + navbarContainerEl.getBoundingClientRect().top);
       // scroll beyond the topNav and lock
       if (window.innerWidth >= breakpoint_md) {
         // close menu if we move into md
-        navPos = 0;
-        $navbarSupportedContent.collapse('hide');
+        if ($navbarSupportedContent) {
+          $navbarSupportedContent.collapse('hide');
+        }
         document.body.classList.remove('navbar-menu-open');
-      } else if (navPos !== 0) {
-        window.scrollTo(0, navPos);
       }
     }
   };
@@ -366,123 +464,132 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
+  // only init if required els are discovered/available
+  if (backgroundEl !== null && navItemEls.length > 0 && menuEls.length > 0) {
 
-  // set initial positions for each nav item
-  setDimensions();
+    // set initial positions for each nav item
+    setDimensions();
 
-
-  // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
-  $navbarSupportedContent.on('show.bs.collapse', () => {
-    anchored = window.scrollY;
-    document.body.classList.add('navbar-menu-open');
-    posMobileMenu();
-  }).on('hide.bs.collapse', () => {
-    document.body.classList.remove('navbar-menu-open');
-    window.scrollTo(0, anchored);
-    anchored = 0;
-  });
-
-  // bindPosMobileMenu for each eventName
-  [ 'resize', 'orientationchange' ].forEach((eventName) => {
-    bindPosMobileMenu(eventName);
-  });
-
-  // cleanUp on resize (remove active state and remeasure the dimensions)
-  window.addEventListener('resize', () => {
-    // debounce the measure
-    clearTimeout(debounceMeasure);
-    // reinit the cleanup
-    debounceMeasure = setTimeout(() => {
-      // cleanUp
-      cleanUp();
-      // only alter dimensions on resive for desktop version
-      if (window.innerWidth >= breakpoint_md) {
-        // set the new positions
-        setDimensions();
-      }
-    }, 30);
-  });
-
-  // set mouseenter events on each navLink
-  navLinkEls.forEach((navLink) => {
-    navLink.addEventListener('mouseenter', () => {
-      // show the selection
-      if (window.innerWidth >= breakpoint_md)
-        showMenu(navLink);
-    });
-    navLink.addEventListener('click', (e) => {
-      // prevent href from scrolling to top
-      e.preventDefault();
-      // show the selection
-      if (window.innerWidth >= breakpoint_md) {
-        showMenu(navLink);
-      } else {
-        showMenuMobile(navLink);
-      }
-    });
-  });
-
-  // cleanup and attach event to close gc-menu on bs-dropdown open
-  mobileToggleEl.addEventListener('click', () => {
-    // remove any open/active state
-    cleanUp();
-    // wait for vue to finish paint
-    window.requestAnimationFrame(() => {
-      // bind click event to hide items when bootstrap menu is opened (bind on toggle so that we're definately ready)
-      $('.nav-link.dropdown-toggle[data-toggle="dropdown"]').each((_, el) => {
-        $(el).off('click.gc-menu').on('click.gc-menu', () => window.innerWidth < breakpoint_md && cleanUp());
+    if ($navbarSupportedContent) {
+      // add .navbar-menu-open to prevent page-scroll when mobile menu is opened
+      $navbarSupportedContent.on('show.bs.collapse', () => {
+        anchored = window.scrollY;
+        document.body.classList.add('navbar-menu-open');
+        posMobileMenu();
+      }).on('hide.bs.collapse', () => {
+        document.body.classList.remove('navbar-menu-open');
+        window.scrollTo(0, anchored);
+        anchored = 0;
       });
-    });
-  });
-
-  // set mouseleave event on whole navbar el (how long to stay open after mouseleave)
-  navbarEl.addEventListener('mouseleave', () => {
-    if (window.innerWidth >= breakpoint_md) {
-      debounceClose = setTimeout(() => {
-        // remove isVisible transitions to reduce jank
-        resetVisibility();
-      }, 1000);
     }
-  });
 
-  // if mouse re-enters the navbar clear the timeout
-  navbarEl.addEventListener('mouseenter', () => {
-    if (window.innerWidth >= breakpoint_md) {
-      // quit the close routine
-      clearTimeout(debounceClose);
-    }
-  });
-
-  // set-up each of the defined submenus
-  [...submenuEls].forEach((el) => {
-    // collect the submenu name (as data attr on .gc-menu-wrap el)
-    const menu = el.dataset.submenu;
-
-    // associate mousePos arr (collected for each menu)
-    mousePositions[menu] = [];
-
-    // record each mouseMove on the whole dropdown area
-    menuElsByName[menu].addEventListener('mousemove', (e) => {
-      pushMousePosition(e, menu);
+    // bindPosMobileMenu for each eventName
+    [ 'resize', 'orientationchange' ].forEach((eventName) => {
+      bindPosMobileMenu(eventName);
     });
 
-    // show submenu content on hover of gc-menu-submenu-toggle
-    submenuToggleEls[menu].forEach((submenuToggle) => {
-      submenuToggle.addEventListener((isTouchDevice ? 'touchstart' : 'mouseenter'), (e) => {
-        // disallow touch actions from following links unless its the second touch (submenu only applied to desktop)
+    // cleanUp on resize (remove active state and remeasure the dimensions)
+    window.addEventListener('resize', () => {
+      // debounce the measure
+      clearTimeout(debounceMeasure);
+      // reinit the cleanup
+      debounceMeasure = setTimeout(() => {
+        // cleanUp
+        cleanUp();
+        // only alter dimensions on resive for desktop version
         if (window.innerWidth >= breakpoint_md) {
-          if (!isTouchDevice) {
-            hysteresisCheck(e, menu, submenuToggle);
-          } else if (isTouchDevice && !submenuToggle.classList.contains('gc-menu-submenu-toggle-focus')) {
-            showSubmenu(e, menu, submenuToggle);
-          }
+          // set the new positions
+          setDimensions();
+        }
+      }, 30);
+    });
+
+    // set mouseenter events on each navLink
+    navLinkEls.forEach((navLink) => {
+      navLink.addEventListener('mouseenter', () => {
+        // show the selection
+        if (window.innerWidth >= breakpoint_md)
+          showMenu(navLink);
+      });
+      navLink.addEventListener('click', (e) => {
+        // prevent href from scrolling to top
+        e.preventDefault();
+        // show the selection
+        if (window.innerWidth >= breakpoint_md) {
+          showMenu(navLink);
+        } else {
+          showMenuMobile(navLink);
         }
       });
-      // stop hysteresisCheck from activating menus after we'e left the submenuToggle area
-      submenuToggle.addEventListener('mouseleave', (e) => {
-        clearTimeout(debounceSubmenuFocus[menu]);
+    });
+
+    // cleanup and attach event to close gc-menu on bs-dropdown open
+    mobileToggleEl.addEventListener('click', () => {
+      // remove any open/active state
+      cleanUp();
+      // wait for vue to finish paint
+      window.requestAnimationFrame(() => {
+        // bind click event to hide items when bootstrap menu is opened (bind on toggle so that we're definately ready)
+        $('.nav-link.dropdown-toggle[data-toggle="dropdown"]').each((_, el) => {
+          $(el).off('click.gc-menu').on('click.gc-menu', () => window.innerWidth < breakpoint_md && cleanUp());
+        });
       });
     });
-  });
 
-});
+    // set mouseleave event on whole navbar el (how long to stay open after mouseleave)
+    navbarEl.addEventListener('mouseleave', () => {
+      if (window.innerWidth >= breakpoint_md) {
+        debounceClose = setTimeout(() => {
+          // remove isVisible transitions to reduce jank
+          resetVisibility();
+        }, 1000);
+      }
+    });
+
+    // if mouse re-enters the navbar clear the timeout
+    navbarEl.addEventListener('mouseenter', () => {
+      if (window.innerWidth >= breakpoint_md) {
+        // quit the close routine
+        clearTimeout(debounceClose);
+      }
+    });
+
+    // set-up each of the defined submenus
+    [...submenuEls].forEach((el) => {
+      // collect the submenu name (as data attr on .gc-menu-wrap el)
+      const menu = el.dataset.submenu;
+
+      // associate mousePos arr (collected for each menu)
+      mousePositions[menu] = [];
+
+      // record each mouseMove on the whole dropdown area
+      menuElsByName[menu].addEventListener('mousemove', (e) => {
+        pushMousePosition(e, menu);
+      });
+
+      // show submenu content on hover of gc-menu-submenu-toggle
+      submenuToggleEls[menu].forEach((submenuToggle) => {
+        submenuToggle.addEventListener((isTouchDevice ? 'touchstart' : 'mouseenter'), (e) => {
+          // disallow touch actions from following links unless its the second touch (submenu only applied to desktop)
+          if (window.innerWidth >= breakpoint_md) {
+            if (!isTouchDevice) {
+              hysteresisCheck(e, menu, submenuToggle);
+            } else if (isTouchDevice && !submenuToggle.classList.contains('gc-menu-submenu-toggle-focus')) {
+              showSubmenu(e, menu, submenuToggle);
+            }
+          }
+        });
+        // stop hysteresisCheck from activating menus after we'e left the submenuToggle area
+        submenuToggle.addEventListener('mouseleave', (e) => {
+          clearTimeout(debounceSubmenuFocus[menu]);
+        });
+        // click event for mobile submenus
+        submenuToggle.addEventListener('click', (e) => {
+          if (window.innerWidth < breakpoint_md) {
+            showMenuMobile(submenuToggle, true);
+          }
+        });
+      });
+    });
+  }
+};

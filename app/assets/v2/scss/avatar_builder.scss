@@ -30,7 +30,7 @@
 }
 
 #avatar-builder__sections li.complete {
-  list-style-image: url('/static/v2/images/check-dark.svg');
+  list-style-image: url(static('v2/images/check-dark.svg'));
 }
 
 #avatar-builder__editor {
@@ -153,7 +153,7 @@ button.avatar-option {
 }
 
 .avatar-option.selected::after {
-  content: url('/static/v2/images/check.svg');
+  content: url(static('v2/images/check.svg'));
   background-color: #150069;
 }
 

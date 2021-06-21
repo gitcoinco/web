@@ -1,0 +1,87 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+{% block 'content' %}
+<!-- hide footer, header as this is a fullscreen experience -->
+{% include 'quadraticlands/components/fullscreen.html' %}
+
+<section class="quest">
+
+  <!-- quest-vote -->
+  <main id="voting">
+
+    <section class="introduction">
+      {% csrf_token %}
+      <h1>Help direct <br>the Gitcoin Dev roadmap</h1>
+      <p>Distribute your complete voting power (100%) across the items you think Gitcoin should focus most.</p>
+    </section>
+    <div class="wrapper scrollable">
+      <div class="quest-vote">
+        {% include 'quadraticlands/mission/use/vote_item.html' with name="Grants Curation" %}
+        {% include 'quadraticlands/mission/use/vote_item.html' with name="Grants Governance" %}
+        {% include 'quadraticlands/mission/use/vote_item.html' with name="Grants Decentralization" %}
+        {% include 'quadraticlands/mission/use/vote_item.html' with name="Sybil Resistance" %}
+        {% include 'quadraticlands/mission/use/vote_item.html' with name="Hackathon expansion" %}
+        {% include 'quadraticlands/mission/use/vote_item.html' with name="Identity Management" %}
+        {% include 'quadraticlands/mission/use/vote_item.html' with name="Quadratic Voting" %}
+      </div>
+    </div>
+  </main>
+
+  <!-- timer / seperator -->
+  <div class="seperator">
+    <div id="progressbar" style="width:0px"></div>
+  </div>
+
+  <!-- bottom navigation -->
+  <nav class="glass">
+
+    <div class="left">
+      <a href="/quadraticlands/" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+        data-kinetics-attraction-force="1.1" data-kinetics-attraction-size="200">Exit</a>
+    </div>
+
+    <div class="center">
+      Proof of Use
+    </div>
+
+    <!-- button status -->
+    <div class="right">
+
+      <!-- intro - start voting process -->
+      <div id="btnStart" class="hide">
+        <a class="btn">Start</a>
+      </div>
+
+      <!-- voting submit -->
+      <div id="btnVoting" class="hide">
+        <a class="btn" id="signTypedDataV4Button" data-kinetics-attraction data-kinetics-attraction-chance=".3"
+          data-kinetics-attraction-force="1.1" data-kinetics-attraction-size="200">Submit</a>
+      </div>
+
+      <!-- availablePercent left  -->
+      <div id="availablePercent" class="hide" style="color:var(--aqua);"><span>100</span>% left</div>
+
+      <!-- finish - goto outro -->
+      <div id="btnOutro" class="hide">
+        <a class="btn" href="/quadraticlands/mission/use/outro" data-kinetics-attraction
+          data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1"
+          data-kinetics-attraction-size="200">Continue</a>
+      </div>
+    </div>
+  </nav>
+</section>
+
+{% endblock %}
+
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+<!-- force web3modal to popup automaticaly when no provider selected-->
+<script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
+
+<!-- voting logic -->
+<script src="{% static "v2/js/quadraticlands/mission/use/vote.js" %}"></script>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Gitcoin project settings.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -21,19 +21,17 @@ import json
 import os
 import socket
 import subprocess
+import warnings
 
 from django.utils.translation import gettext_noop
 
 import environ
 import raven
 import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.celery import CeleryIntegration
-
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
-
-import warnings
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
 
@@ -77,14 +75,12 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
 
-
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
 # Application definition
 INSTALLED_APPS = [
     'csp',
-    'compressor',
     'corsheaders',
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
@@ -158,6 +154,7 @@ INSTALLED_APPS = [
     'adminsortable2',
     'debug_toolbar',
     'passport',
+    'quadraticlands'
 ]
 
 MIDDLEWARE = [
@@ -191,7 +188,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates', 'quadraticlands/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -441,45 +438,11 @@ else:
     MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
 
-# Sass precompiler settings
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
+# Staticfinder finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder'
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 ]
-# number of demicals allowed in sass numbers
-LIBSASS_PRECISION = 8
-# minify sass output in production (offline)
-if ENV not in ['local', 'test', 'staging', 'preview']:
-    # get current commit hash to feed into the manifest's name
-    commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).strip()
-    # compress offline (use './manage.py compress' to build manifest.*.json)
-    COMPRESS_OFFLINE = True
-    # make manifest deploy specific (new manifest for each deployment)
-    COMPRESS_OFFLINE_MANIFEST = 'manifest.' + commit.decode('utf8') + '.json'
-    # allow for the full path (url) to be included in the manifest
-    COMPRESS_INCLUDE_URLS = True
-    # allow the placeholder insertion to be skipped
-    COMPRESS_SKIP_PLACEHOLDER = True
-    # use content based hashing so that we always match between servers
-    COMPRESS_CSS_HASHING_METHOD = 'content'
-    # minification of sass output
-    COMPRESS_CSS_FILTERS = [
-        'compressor.filters.css_default.CssAbsoluteFilter',
-        'compressor.filters.cssmin.rCSSMinFilter'
-    ]
-    # drop line comments
-    LIBSASS_SOURCE_COMMENTS = False
-
-COMPRESS_OUTPUT_DIR = "v2"
-COMPRESS_ROOT = STATIC_ROOT
-COMPRESS_HOST = STATIC_HOST
-COMPRESS_URL = STATIC_URL
-COMPRESS_STORAGE = STATICFILES_STORAGE
-COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
 
@@ -788,7 +751,6 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
         env('GA_AUTH_PROVIDER_X509_CERT_URL', default='https://www.googleapis.com/oauth2/v1/certs'),
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
-HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJAR_SV', default=0), }
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
@@ -817,7 +779,7 @@ CSP_DEFAULT_SRC = False
 CSP_FRAME_ANCESTORS = ("'self'")
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
+CORS_ORIGIN_WHITELIST = ('googleads.g.doubleclick.net', 'gitcoin.co', 'github.com',)
 CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN,)
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
@@ -974,3 +936,6 @@ BULK_CHECKOUT_ABI = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType
 JOBS_NODE = env.bool('JOBS_NODE', default=False)
 CELERY_NODE = env.bool('CELERY_NODE', default=False)
 
+# GTC Token Distribution
+GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
+GTC_DIST_KEY = env('GTC_DIST_KEY', default='')

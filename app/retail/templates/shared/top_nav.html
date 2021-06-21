@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches %}
+{% load i18n static matches bundle humanize token_format %}
+
 
 <!--- Top Row Notification -->
 <div class="row bottom_notification font-caption d-none" style="text-align: center;">
@@ -29,3 +30,55 @@
       &times;
   </span>
 </div>
+
+
+<header id="ql-banner" class="sticky-top">
+  <div id="ql-banner-inner" class="w-100">
+    <div class="row px-lg-5">
+      <div id="ql-banner-lhs" class="col-12 col-md-8 col-lg-7 m-auto px-5 sticky-top">
+        <h1 id="ql-banner-h1" class="text-white pb-3 line-height-1 mb-1"><span>The Gitcoin DAO Has Officially Started. Shape the Future Of Digital Public Goods with Gitcoin’s Governance Token.</span></h1>
+        <a id="ql-banner-btn" class="btn btn-lg col-12 col-md-auto btn-lg font-weight-bold" href="{% url "quadraticlands:quadraticlands" %}" data-kinetics-attraction data-kinetics-attraction-mode="bee" data-kinetics-attraction-chance="0.5" >
+          {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is not True %}
+            Claim {{total_claimable_gtc | token_format | intcomma}} GTC
+          {% else %}
+            Learn more
+          {% endif %}
+        </a>
+      </div>
+
+      <div id="ql-banner-rhs" class="d-none d-md-flex col-md-4 col-lg-5 justify-content-around pt-0">
+        <div id="ql-banner-hero" class="mt-auto w-100">
+          <div id="ql-banner-coin" class="coin spin-3d mx-auto">
+            <svg viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="46" cy="46" r="46" fill="#02E2AC"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M58.1641 38.8181C60.0592 41.4745 61.088 44.7003 61.061 47.9531C61.061 51.1517 60.0322 54.3503 58.1641 56.9526L62.1168 59.9615C64.6347 56.4918 66.0155 52.2631 66.0155 47.9802C66.0425 43.4533 64.5535 39.0078 61.819 35.4297L59.5522 37.4731L58.1641 38.8181Z" fill="#0E0333"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M65.6362 62.6262L52.3429 52.5153C53.2905 51.2684 53.832 49.7504 53.9132 48.1782C53.9674 46.606 53.5613 45.0609 52.722 43.7327L59.0843 37.986L65.7445 31.7514C66.1777 31.3448 66.2047 30.64 65.7715 30.2063L64.851 29.2847C60.1131 24.4867 53.7237 21.6947 47.0094 21.4779L47.0365 17.8184C47.0636 17.5745 47.0365 17.3305 46.9823 17.0865C46.9011 16.8426 46.7928 16.6257 46.6304 16.436C46.4679 16.2462 46.2784 16.1107 46.0347 16.0022C45.8182 15.8938 45.5745 15.8396 45.3308 15.8396C45.0872 15.8396 44.8435 15.8938 44.6269 16.0022C44.4103 16.1107 44.1937 16.2462 44.0313 16.436C43.8688 16.6257 43.7335 16.8426 43.6793 17.0594C43.5981 17.3034 43.571 17.5473 43.6252 17.7913L43.5981 21.5592C42.0008 21.7218 40.4034 22.02 38.8602 22.4808L38.8873 17.7913C38.9143 17.5473 38.8873 17.3034 38.8331 17.0594C38.7519 16.8155 38.6436 16.5986 38.4812 16.4089C38.3187 16.2191 38.1292 16.0836 37.8855 15.9751C37.6689 15.8667 37.4253 15.8125 37.1816 15.8125C36.938 15.8125 36.6943 15.8667 36.4777 15.9751C36.2611 16.0836 36.0445 16.2191 35.8821 16.4089C35.7196 16.5986 35.5843 16.8155 35.5301 17.0323C35.4489 17.2763 35.4218 17.5202 35.476 17.7642L35.3947 23.7548C29.9258 26.1945 25.4316 30.4503 22.6971 35.7903C19.9627 41.1304 19.0963 47.2566 20.2876 53.1388C21.4788 59.021 24.6465 64.3339 29.249 68.1831C33.8515 72.0323 39.6453 74.2009 45.6286 74.3093L64.9864 74.3906C65.582 74.3906 66.0694 73.9027 66.0694 73.3063V63.5207C66.0694 63.1683 65.9069 62.8431 65.6362 62.6262ZM46.0077 69.5927C41.2427 69.5656 36.6131 67.9663 32.8498 65.0658C29.0866 62.1383 26.3792 58.0451 25.1609 53.437C23.9425 48.8288 24.2945 43.9224 26.1084 39.5311C27.9495 35.1398 31.1712 31.4532 35.3135 29.0678L35.2865 36.1969C35.2594 36.4409 35.2865 36.6849 35.3406 36.9288C35.4218 37.1728 35.5301 37.3896 35.6926 37.5794C35.855 37.7691 36.0445 37.9047 36.2882 38.0131C36.5048 38.1215 36.7484 38.1757 36.9921 38.1757C37.2358 38.1757 37.4794 38.1215 37.696 38.0131C37.9126 37.9047 38.1292 37.7691 38.2916 37.5794C38.4541 37.3896 38.5895 37.1728 38.6436 36.9559C38.7248 36.712 38.7519 36.468 38.6978 36.224L38.7248 27.4685C41.1073 26.6011 43.6252 26.1945 46.1701 26.1945C50.8539 26.1945 55.4023 27.7396 59.1114 30.5587C59.3821 30.7755 59.4092 31.155 59.1655 31.399L49.0399 40.6967C48.1194 40.3172 47.1177 40.1003 46.116 40.1003C45.0059 40.1003 43.8959 40.3172 42.8671 40.778C41.8383 41.2388 40.9449 41.9165 40.2139 42.7568C39.4829 43.5971 38.9414 44.6001 38.6165 45.6573C38.2916 46.7415 38.2104 47.8529 38.3729 48.9643C38.5353 50.0757 38.9143 51.1329 39.51 52.0816C40.1056 53.0303 40.9178 53.8164 41.8383 54.4399C42.7859 55.0363 43.8418 55.4429 44.9518 55.6055C46.0618 55.7682 47.1989 55.6868 48.2548 55.3615L61.1961 65.2014C61.3314 65.3098 61.4127 65.4724 61.4127 65.6351L61.3856 69.1048C61.3856 69.4029 61.1419 69.6469 60.8441 69.6469L46.0077 69.5927ZM49.1753 47.9071C49.1753 48.5035 48.9858 49.0998 48.6609 49.6149C48.3089 50.1299 47.8487 50.5094 47.2801 50.7534C46.7116 50.9973 46.0889 51.0515 45.5203 50.916C44.9518 50.7805 44.3832 50.5094 43.9501 50.0757C43.5169 49.642 43.2191 49.0998 43.1108 48.5035C43.0025 47.9071 43.0566 47.2837 43.3003 46.7415C43.544 46.1723 43.923 45.7115 44.4374 45.3591C44.9518 45.0338 45.5474 44.844 46.143 44.844C46.9553 44.844 47.7404 45.1693 48.3089 45.7657C48.8504 46.3078 49.1753 47.0668 49.1753 47.9071Z" fill="#0E0333"/>
+            </svg>
+          </div>
+          <div id="ql-banner-town">
+            {% include "quadraticlands/_inlinesvg/hero_town.svg" %}
+          </div>
+        </div>
+      </div>
+      <div id="ql-banner-close" class="cursor-pointer" data-kinetics-attraction data-kinetics-attraction-mode="bee" data-kinetics-attraction-chance="0.5">
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0)">
+            <path d="M7.78521 10.0001L11.8247 5.79229C12.0583 5.54893 12.0583 5.154 11.8247 4.91025L10.8861 3.93252C10.6525 3.68916 10.2733 3.68916 10.0393 3.93252L6.00021 8.14072L1.96071 3.93291C1.72708 3.68955 1.34796 3.68955 1.11396 3.93291L0.175707 4.91025C-0.057918 5.15361 -0.057918 5.54854 0.175707 5.79229L4.21521 10.0001L0.175707 14.2079C-0.057918 14.4513 -0.057918 14.8462 0.175707 15.0899L1.11433 16.0677C1.34796 16.311 1.72708 16.311 1.96108 16.0677L6.00021 11.8595L10.0397 16.0673C10.2733 16.3106 10.6525 16.3106 10.8865 16.0673L11.8251 15.0896C12.0587 14.8462 12.0587 14.4513 11.8251 14.2075L7.78521 10.0001Z" fill="white"></path>
+          </g>
+          <defs>
+            <clipPath id="clip0">
+              <rect width="12" height="20" fill="white"></rect>
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+{% bundle merge_js file ql_banner %}
+  <!-- lets load these in as a blocking script to make sure the banner is presented sooner rather than later -->
+  <script src="{% static "v2/js/lib/quadraticlands/kinetics.gc-ql.umd.js" %}"></script>
+  <script src="{% static "v2/js/RAFThrottle.js" %}"></script>
+  <script src="{% static "v2/js/ql-banner.js" %}"></script>
+{% endbundle %}

@@ -1,7 +1,7 @@
 {% load humanize %}
-{% load i18n static compress %}
+{% load i18n static bundle %}
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,9 +22,9 @@
   <meta charset="utf-8">
   <script src="{% static "v2/js/lib/jquery.js" %}"></script>
   <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
-  {% compress css file admin_dashboard %}
+  {% bundle css file admin_dashboard %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
-  {% endcompress %}
+  {% endbundle %}
   <style>
     .colMS{
       margin-right: 0px;

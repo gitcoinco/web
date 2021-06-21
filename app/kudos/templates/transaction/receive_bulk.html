@@ -1,6 +1,6 @@
 {% extends 'transaction/base.html' %}
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static kudos_extras compress %}
+{% load i18n static kudos_extras bundle %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
@@ -35,10 +35,10 @@
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
-{% compress css file receive_bulk %}
+{% bundle css file receive_bulk %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jquery-ui.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
-{% endcompress %}
+{% endbundle %}
 <section id="main" class="box-transaction">
   <header class="text-center">
   <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid and kudos_transfer.tx_status != 'not_subed' %} style="display:none;" {% endif %}>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the management command to assemble leaderboard rankings.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -181,7 +181,7 @@ def do_leaderboard():
     for breakdown in BREAKDOWNS:
         for tag, from_date in tag_to_datetime.items():
             for product in products:
-                
+
                 print(breakdown, tag, product)
 
                 ct = products_to_content_type.get(product)
@@ -202,7 +202,7 @@ def do_leaderboard():
 
                 print('---')
 
-                # set old LR as inactive
+                # set old LeaderboardRank as inactive
                 created_on = timezone.now()
                 with transaction.atomic():
                     print(" - saving -")
@@ -239,12 +239,13 @@ def do_leaderboard():
                             }
 
                             profile = None
-                            try:
-                                profile = Profile.objects.get(handle=idx.lower())
-                                if profile.suppress_leaderboard:
-                                    continue
-                            except Exception as e:
-                                print(e)
+                            if (index_on is not 'token_name'):
+                                try:
+                                    profile = Profile.objects.get(handle=idx.lower())
+                                    if profile.suppress_leaderboard:
+                                        continue
+                                except Exception as e:
+                                    print(e)
                             lbr_kwargs['profile'] = profile
 
                             LeaderboardRank.objects.create(**lbr_kwargs)
@@ -276,6 +277,7 @@ class Command(BaseCommand):
 
         cadences = [
         ]
+
         if not run_quarterly():
             cadences.append((DAILY, 'Daily'))
         if run_weekly():

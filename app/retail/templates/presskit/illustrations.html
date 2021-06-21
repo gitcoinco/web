@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -15,32 +15,17 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<section class="presskit_section py-5">
+<section class="presskit_section py-5 bg-light-purple">
   <div class="container">
     <div class="row my-5">
-      <h2 class="col-12 my-3 mb-5">{% trans "Illustrations" %}</h2>
-      <div class="col-md-6 col-lg-3  my-3">
-        <div class="card text-center p-3 h-100 illustration-card">
-          <img class="presskit_svg p-5" src="{% static "v2/images/presskit/illustrations/helmet.svg" %}" class="p-5">
-          <a class="my-3 font-weight-bold" href="{% static "v2/images/presskit/illustrations/helmet.svg" %}">{% trans "Download Logo" %}</a>
-        </div>
+      <h2 class="col-12 my-3 mb-5 h2-default">{% trans "Illustrations" %}</h2>
+      <div class="col-md-6 col-sm-12 my-3">
+          <img class="satellite_svg img-fluid" src="{% static "v2/images/presskit/illustrations/presskit-illus-02.svg" %}" class="p-5">
       </div>
-      <div class="col-md-6 col-lg-3 my-3">
-        <div class="card text-center p-3 h-100 illustration-card">
-          <img class="presskit_svg p-5" src="{% static "v2/images/presskit/illustrations/regulus.svg" %}" class="p-5">
-          <a class="my-3 font-weight-bold" href="{% static "v2/images/presskit/illustrations/regulus.svg" %}">{% trans "Download Regulus" %}</a>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3 my-3">
-        <div class="card text-center p-3 h-100 illustration-card">
-          <img class="presskit_svg p-5" src="{% static "v2/images/presskit/illustrations/prime.svg" %}" class="p-5">
-          <a class="my-3 font-weight-bold" href="{% static "v2/images/presskit/illustrations/regulus.svg" %}">{% trans "Download Prime" %}</a>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3  my-3">
-        <div class="card text-center p-3 h-100 illustration-card">
-          <img class="presskit_svg p-5" src="{% static "v2/images/presskit/illustrations/divine.svg" %}" class="p-5">
-          <a class="my-3 font-weight-bold" href="{% static "v2/images/presskit/illustrations/divine.svg" %}">{% trans "Download Divine" %}</a>
+      <div class="col-md-6 col-sm-12  my-3">
+        <div class="card text-center p-3 h-100">
+          <img class="spaceship_svg img-fluid" src="{% static "v2/images/presskit/illustrations/presskit-illus-03.svg" %}" class="p-5">
+          <a class="my-3 font-weight-bold btn btn-primary" href="{% static "v2/images/presskit/Gitcoin_Illustrations.zip" %}">{% trans "Download Gitcoin Illustrations" %}</a>
         </div>
       </div>
     </div>

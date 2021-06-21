@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+  Copyright (C) 2021 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -14,17 +14,17 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static cookielaw_tags compress %}
+{% load i18n static cookielaw_tags bundle %}
 <!DOCTYPE HTML>
 <html>
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    {% compress css file onepager_base %}
+    {% bundle css file onepager_base %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepager/main.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/box_redeem.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     <style>
       .d-flex {
         display: flex;
@@ -67,14 +67,13 @@
       var media_url = "{{ MEDIA_URL }}";
     </script>
     <noscript>
-      {% compress css file onepager_noscript %}
+      {% bundle css file onepager_noscript %}
         <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/onepager/noscript.scss" %} />
-      {% endcompress %}
+      {% endbundle %}
     </noscript>
   </head>
   <body id="yge" class="{{ class }} tips transaction g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/analytics.html' with suppress_sumo=1 %}
     {% block 'world' %} {% endblock %}
 
     <!-- Wrapper -->

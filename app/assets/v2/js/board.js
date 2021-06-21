@@ -51,7 +51,7 @@ Vue.mixin({
         vm.isLoading[type] = false;
       }).catch(function() {
         vm.isLoading[type] = false;
-        vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
+        vm.error[type] = 'Error fetching bounties. Please contact support@gitcoin.co';
       });
     },
     fetchTokens: function(type) {
@@ -64,7 +64,7 @@ Vue.mixin({
         vm.isLoading[type] = false;
       }).catch(function() {
         vm.isLoading[type] = false;
-        vm.error[type] = 'Error fetching tokens. Please contact founders@gitcoin.co';
+        vm.error[type] = 'Error fetching tokens. Please contact support@gitcoin.co';
       });
     },
     fetchApplicants: function(id, key, type) {
@@ -93,7 +93,7 @@ Vue.mixin({
         vm.isLoading[type] = false;
       }).catch(function() {
         vm.isLoading[type] = false;
-        vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
+        vm.error[type] = 'Error fetching bounties. Please contact support@gitcoin.co';
       });
     },
     fetchMatchingBounties: function() {

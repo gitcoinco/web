@@ -170,9 +170,21 @@ Vue.mixin({
           // harmony
           type = 'harmony_ext';
           break;
+        case '1995':
+          // nervos
+          type = 'nervos_ext';
+          break;
         case '1001':
           // algorand
           type = 'algorand_ext';
+          break;
+        case '1935':
+          // sia
+          type = 'sia_ext';
+          break;
+        case '050797':
+          // tezos
+          type = 'tezos_ext';
           break;
         case '666':
           // paypal

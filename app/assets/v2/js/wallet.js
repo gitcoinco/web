@@ -146,7 +146,7 @@ async function fetchAccountData(provider) {
   }
 
   // Go through all accounts and get their ETH balance
-  const rowResolvers = accounts.map(async(address) => {
+  const rowResolvers = accounts.filter((val, indx, orig) => orig.indexOf(val) === indx).map(async(address) => {
 
     if (!accounts.length || provider.isFortmatic) {
       return;
@@ -248,16 +248,13 @@ async function onConnect() {
   if (provider.on) {
     // Subscribe to accounts change
     provider.on('accountsChanged', (accounts) => {
+      console.log('accountsChanged');
       fetchAccountData(provider);
     });
 
     // Subscribe to chainId change
     provider.on('chainChanged', (chainId) => {
-      fetchAccountData(provider);
-    });
-
-    // Subscribe to networkId change
-    provider.on('networkChanged', (networkId) => {
+      console.log('chainChanged');
       fetchAccountData(provider);
     });
   }
@@ -364,9 +361,8 @@ window.addEventListener('load', async() => {
         console.log('accountsChanged');
         fetchAccountData(provider);
       });
-      window.ethereum.on('networkChanged', function(networkId) {
-        console.log('networkChanged');
-
+      window.ethereum.on('chainChanged', function(networkId) {
+        console.log('chainChanged');
         fetchAccountData(provider);
       });
     }

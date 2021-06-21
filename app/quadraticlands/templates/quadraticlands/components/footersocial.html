@@ -1,0 +1,42 @@
+{% load i18n static %}
+
+<!-- footer social icons -->
+
+<section id="footersocial">
+
+  <a href="{% url "youtube" %}">
+    <div data-kinetics-attraction data-kinetics-attraction-chance=".1" data-kinetics-attraction-force="1"
+      data-kinetics-attraction-size="50">
+      {% include "quadraticlands/_inlinesvg/footersocial/youtube.svg" %}
+    </div>
+  </a>
+
+  <a href="{% url "twitter" %}">
+    <div data-kinetics-attraction data-kinetics-attraction-chance=".1" data-kinetics-attraction-force="1"
+      data-kinetics-attraction-size="50">
+      {% include "quadraticlands/_inlinesvg/footersocial/twitter.svg" %}
+    </div>
+  </a>
+
+  <a href="{% url "github" %}">
+    <div data-kinetics-attraction data-kinetics-attraction-chance=".1" data-kinetics-attraction-force="1"
+      data-kinetics-attraction-size="50">
+      {% include "quadraticlands/_inlinesvg/footersocial/github.svg" %}
+    </div>
+  </a>
+
+  <a href="{% url "discord" %}">
+    <div data-kinetics-attraction data-kinetics-attraction-chance=".1" data-kinetics-attraction-force="1"
+      data-kinetics-attraction-size="50">
+      {% include "quadraticlands/_inlinesvg/footersocial/discord.svg" %}
+    </div>
+  </a>
+
+  <a href="mailto:support@gitcoin.co">
+    <div data-kinetics-attraction data-kinetics-attraction-chance=".1" data-kinetics-attraction-force="1"
+      data-kinetics-attraction-size="50">
+      {% include "quadraticlands/_inlinesvg/footersocial/email.svg" %}
+    </div>
+  </a>
+
+</section>

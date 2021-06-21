@@ -1,7 +1,7 @@
 #!/usr/local/bin/dumb-init /bin/bash
 
 # Load the .env file into the environment.
-if [ "$ENV" == 'staging' ]; then
+if [ "$ENV" == "staging" ]; then
     # shellcheck disable=SC2046
     export $(grep -v '^#' app/app/.env | xargs)
 fi
@@ -40,10 +40,23 @@ if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
 fi
 
 # Provision the Django test environment.
-if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
+if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ];
+then
     echo "First run - Provisioning the local development environment..."
     if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
         python3 manage.py createcachetable
+    fi
+
+    # Build assets using bundle and webpack
+    if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
+        yarn install
+        python3 manage.py bundle
+        if [ "$ENV" == "prod" ];
+        then
+            yarn run build
+        else
+            yarn run webpack &
+        fi
     fi
 
     if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
@@ -68,7 +81,12 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
 
     fi
     date >> /provisioned
-    echo "Provisioning completed!"
+    echo "Provisioning complete!"
+else
+    # Build assets using bundle and webpack
+    if [ "$DISABLE_WEBPACK_ASSETS" != "on" && "$ENV" != "prod" ]; then
+        python3 manage.py bundle && yarn run webpack &
+    fi
 fi
 
 if [ "$FORCE_GET_PRICES" = "on" ]; then

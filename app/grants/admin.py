@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant admin layout.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -113,7 +113,7 @@ class GrantAdmin(GeneralAdmin):
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails', 'admin_message'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails', 'admin_message', 'has_external_funding'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',

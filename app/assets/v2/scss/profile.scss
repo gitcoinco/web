@@ -58,6 +58,7 @@
 .profile-header {
   position: relative;
   min-height: 450px;
+  background-size: cover;
 }
 
 .profile-header.basic {
@@ -353,7 +354,7 @@
 }
 
 .profile-bounties--loading {
-  background-image: url('/static/v2/images/loading_v2.gif');
+  background-image: url(static('v2/images/loading_v2.gif'));
   background-repeat: no-repeat;
   background-position: 0 -1rem;
   background-size: 4rem;
@@ -504,7 +505,7 @@
 }
 
 nav.navbar.navbar-dark{
-  background-image: url(/static/v2/images/header-bg.png);
+  background-image: url(static('v2/images/header-bg.png'));
 }
 
 #rank_link{

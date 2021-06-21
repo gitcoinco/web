@@ -122,7 +122,6 @@ services:
       - db
       - redis
     command: ["bash","./bin/celery/worker/run.sh"]
-
 #  scheduler:
 #    <<: *worker
 #    command: ["bash","./bin/celery/scheduler/run.sh"]

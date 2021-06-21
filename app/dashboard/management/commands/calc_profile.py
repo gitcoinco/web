@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -21,6 +21,7 @@ from django.db.models import F
 from django.utils import timezone
 
 from dashboard.models import Profile, UserAction
+from dashboard.tasks import profile_dict
 
 
 class Command(BaseCommand):
@@ -34,5 +35,4 @@ class Command(BaseCommand):
         profiles = profiles.filter(modified_on__gt=F('last_calc_date'))
         print(profiles.count())
         for instance in profiles:
-            instance.calculate_all()
-            instance.save()
+            profile_dict.delay(instance.pk)

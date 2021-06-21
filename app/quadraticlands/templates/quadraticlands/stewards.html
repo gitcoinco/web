@@ -1,0 +1,98 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+
+{% block 'content' %}
+
+
+<div id="interface_stewards" class="hide">
+
+  <section class="introduction">
+    <h1>Empower a Gitcoin Steward</h1>
+    <p>Select a Gitcoin Steward to empower with your voting rights.</p>
+    <p>(Governance can also be updated with <a href="https://www.withtally.com/governance/gitcoin">Tally</a>)</p>
+  </section>
+
+
+  <section class="stewards">
+    <div class="wrapper">
+
+      {% for key, steward in stewards.items %}
+
+      <div class="steward-card {% if selected %} selected {% endif %} " data-kinetics-attraction
+        data-kinetics-attraction-chance=".3" data-kinetics-attraction-force="1.1" data-kinetics-attraction-grow="7">
+
+        <div class="steward">
+          <figure>
+            {% if steward.custom_steward_img %}
+              <img src="{{ steward.custom_steward_img.url }}">
+            {% else %}
+              <img src="/dynamic/avatar/{{ steward.profile }}">
+            {% endif %}
+          </figure>
+          <div class="text">
+            <div class="name">{{ steward.real_name | safe }}</div>
+            <div class="description">{{ steward.profile_link | safe }}</div>
+            <div class="selected">will be your delegate</div>
+          </div>
+        </div>
+
+        <div class="steward-details">
+          <div class="wrapper">
+            <a class="btn" target="_blank" href="{{ steward.bio | safe }}">Info's</a>
+            <a class="btn purple button-steward-select" data-address="{{ steward.gtc_address | safe }}">Delegate</a>
+          </div>
+        </div>
+
+      </div>
+
+      {% endfor %}
+
+    </div>
+  </section>
+
+</div>
+
+<!-- ineligible ( no gtc tokens ) -->
+<div id="interface_ineligible" class="hide">
+  <section class="status">
+    <div class="wrapper glass">
+      <h3>Wallet</h3>
+      <p>Please select a Wallet with GTC Tokens.</p>
+    </div>
+  </section>
+</div>
+
+<!-- pending transaction -->
+<div id="interface_tx_pending" class="hide">
+  <section class="status">
+    <div class="wrapper glass">
+      <h3>Transaction <span>(pending)</span></h3>
+      <div class="spinner">{% include "quadraticlands/_inlinesvg/spinner.svg" %}</div>
+      <p>Delegation transaction pending, please wait. <span id="transaction_link_pending"></span></p>
+    </div>
+  </section>
+</div>
+
+<!-- error transaction -->
+<div id="interface_tx_error" class="hide">
+  <section class="status">
+    <div class="wrapper glass">
+      <h3>Transaction <span>(error)</span></h3>
+      <p>We're sorry, we were unable to complete your delegation. Please check Etherscan for more infos. <span
+          id="transaction_link_error"></span></p>
+    </div>
+  </section>
+</div>
+
+
+{% endblock %}
+{% block 'scripts' %}
+
+<!-- kinetics particles -->
+<script src="{% static "v2/js/quadraticlands/kinetics.js" %}"></script>
+
+<!-- stewards logic -->
+<script src="{% static "v2/js/quadraticlands/stewards.js" %}"></script>
+
+{% endblock %}

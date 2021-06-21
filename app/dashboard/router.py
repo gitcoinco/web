@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define dashboard specific DRF API routes.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -514,7 +514,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
 
         if 'is_featured' in param_keys:
             queryset = queryset.filter(
-                is_featured=self.request.query_params.get('is_featured'),
+                is_featured=bool(self.request.query_params.get('is_featured')),
                 is_open=True,
             )
 
@@ -528,6 +528,9 @@ class BountiesViewSet(viewsets.ModelViewSet):
             if order_by == 'recently_marketed':
                 queryset = queryset.order_by(F('last_remarketed').desc(nulls_last = True), '-web3_created')
             else:
+                order_by_options = ['-web3_created', 'web3_created', '-_val_usd_db', '_val_usd_db']
+                if order_by not in order_by_options:
+                    order_by = '-web3_created'
                 queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
@@ -539,7 +542,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
             max_bounties = 100
             if limit > max_bounties:
                 limit = max_bounties
-            offset = self.request.query_params.get('offset', 0)
+            offset = self.request.query_params.get('offset', '0')
             if limit:
                 start = int(offset) if offset.isdigit() else 0
                 end = start + int(limit)

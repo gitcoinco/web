@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define Dashboard related utilities and miscellaneous logic.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -47,8 +47,11 @@ from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.filecoin import sync_filecoin_payout
 from dashboard.sync.harmony import sync_harmony_payout
+from dashboard.sync.nervos import sync_nervos_payout
 from dashboard.sync.polkadot import sync_polkadot_payout
 from dashboard.sync.rsk import sync_rsk_payout
+from dashboard.sync.sia import sync_sia_payout
+from dashboard.sync.tezos import sync_tezos_payout
 from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
 from ens.auto import ns
@@ -56,6 +59,7 @@ from ens.utils import name_to_hash
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
+from graphqlclient import GraphQLClient
 from hexbytes import HexBytes
 from ipfshttpclient.exceptions import CommunicationError
 from pytz import UTC
@@ -71,11 +75,12 @@ logger = logging.getLogger(__name__)
 SEMAPHORE_BOUNTY_SALT = '1'
 SEMAPHORE_BOUNTY_NS = 'bounty_processor'
 
+GRAPHQL_CLIENTS = {}
 
 def all_sendcryptoasset_models():
-    from revenue.models import DigitalGoodPurchase
     from dashboard.models import Tip
     from kudos.models import KudosTransfer
+    from revenue.models import DigitalGoodPurchase
 
     return [DigitalGoodPurchase, Tip, KudosTransfer]
 
@@ -325,6 +330,36 @@ def get_web3(network, sockets=False):
     raise UnsupportedNetworkException(network)
 
 
+def get_graphql_client(uri):
+    """Get a graphQL client attached to the given uri
+
+    Returns:
+        GraphQLClient: an established GraphQLClient assoicated with the given uri
+    """
+
+    # memoize
+    if uri not in GRAPHQL_CLIENTS:
+        GRAPHQL_CLIENTS[uri] = GraphQLClient(uri)
+
+    # return the client connection
+    return GRAPHQL_CLIENTS.get(uri)
+
+
+def get_graphql_result(uri, query):
+    """Get result of the query from the uri
+
+    Returns:
+        dict: result of the graphQL query
+    """
+
+    # get connection to uri
+    client = get_graphql_client(uri)
+    # pull the result
+    result = client.execute(query)
+
+    return json.loads(result)
+
+
 def get_profile_from_referral_code(code):
     """Returns a profile from the unique code
 
@@ -397,57 +432,84 @@ def getBountyContract(network):
     getBountyContract = web3.eth.contract(standardbounties_addr, abi=bounty_abi)
     return getBountyContract
 
-def get_poap_contract_addresss(network):
-    if network == 'mainnet':
-        return to_checksum_address('0x22C1f6050E56d2876009903609a2cC3fEf83B415')
-    elif network == 'xdai':
-        return to_checksum_address('0x22C1f6050E56d2876009903609a2cC3fEf83B415')
-    elif network == 'ropsten':
-        return to_checksum_address('0x50C5CA3e7f5566dA3Aa64eC687D283fdBEC2A2F2')
-    raise UnsupportedNetworkException(network)
+
+def get_poap_tokens(uri, address):
+
+    # query the tokens held for an address
+    return get_graphql_result(uri, '''
+    {
+        account(id: "%s") {
+            tokens(orderBy: id, orderDirection: asc){
+                id
+            }
+        }
+    }
+    ''' % address)
 
 
-def get_poap_contract(network, sockets):
-    web3 = get_web3(network, sockets)
-    poap_abi = '[{"constant":true,"inputs":[{"name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"}],"name":"renounceEventMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenEvent","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"account","type":"address"}],"name":"removeEventMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"account","type":"address"}],"name":"removeAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"account","type":"address"}],"name":"isAdmin","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"to","type":"address[]"}],"name":"mintEventToManyUsers","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"eventId","type":"uint256"},{"name":"account","type":"address"}],"name":"isEventMinter","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"unpause","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"baseURI","type":"string"}],"name":"setBaseURI","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"paused","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"index","type":"uint256"}],"name":"tokenDetailsOfOwnerByIndex","outputs":[{"name":"tokenId","type":"uint256"},{"name":"eventId","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"account","type":"address"}],"name":"addAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"pause","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"renounceAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"__name","type":"string"},{"name":"__symbol","type":"string"},{"name":"__baseURI","type":"string"},{"name":"admins","type":"address[]"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"account","type":"address"}],"name":"addEventMinter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"to","type":"address"}],"name":"mintToken","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokenId","type":"uint256"},{"name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"sender","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventId","type":"uint256"},{"name":"tokenId","type":"uint256"},{"name":"to","type":"address"}],"name":"mintToken","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"eventIds","type":"uint256[]"},{"name":"to","type":"address"}],"name":"mintUserToManyEvents","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"eventId","type":"uint256"},{"indexed":false,"name":"tokenId","type":"uint256"}],"name":"EventToken","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"account","type":"address"}],"name":"AdminAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"account","type":"address"}],"name":"AdminRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"eventId","type":"uint256"},{"indexed":true,"name":"account","type":"address"}],"name":"EventMinterAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"eventId","type":"uint256"},{"indexed":true,"name":"account","type":"address"}],"name":"EventMinterRemoved","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"approved","type":"address"},{"indexed":true,"name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"operator","type":"address"},{"indexed":false,"name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"}]'
-    poap_addr = get_poap_contract_addresss(network)
-    poap_abi = json.loads(poap_abi)
-    poap_contract = web3.eth.contract(poap_addr, abi=poap_abi)
-    return poap_contract
+def get_poap_transfers(uri, address):
+
+    # query the transfers associated with an address (oldest token first then most recent transfer first)
+    return get_graphql_result(uri, '''
+    {
+        account(id: "%s") {
+            tokens(orderBy: id, orderDirection: asc){
+                id
+                transfers(orderBy: timestamp, orderDirection: desc, where: { to: "%s" }){
+                    timestamp
+                }
+            }
+        }
+    }
+    ''' % (address, address))
 
 
-def get_poap_earliest_owned_token_timestamp(network, sockets, address):
-    web3 = get_web3(network, sockets)
-    poap_contract = get_poap_contract(network, sockets)
-    from_block = 7844214
-    if network == "xdai":
-        from_block = 12188423
-    elif network == "ropsten":
-        from_block = 5592255
+def get_poap_earliest_owned_token_timestamp(network, address):
+    # returning None when no tokens are held for address
+    tokens_timestamps = []
+    # must query the graph using lowercase address
+    address = address.lower()
 
-    # Check that the address holds a balance
-    if poap_contract.functions.balanceOf(address).call() == 0:
-        # No balance for this address
-        return None
-    else:
-        # Get all Transfer events that were sent to this Address
-        transfer_filter = poap_contract.events.Transfer.createFilter(argument_filters={'to': address}, fromBlock=from_block, toBlock='latest')
-        # Make sure the filter is registered before claiming entries
-        time.sleep(1)
-        log_entries = transfer_filter.get_all_entries()
-        # If no entries are returned then we should return 0 to denote a failure (there should be at least some entries if we have a balance present)
-        if len(log_entries) == 0:
-            # No Transfer events we're retrieved for this address
-            return 0
+    # graphQL api uri
+    uri = 'https://api.thegraph.com/subgraphs/name/poap-xyz/poap%s' % ('-xdai' if network == 'xdai' else '')
+
+    # get all tokens held by this address
+    poap_tokens = get_poap_tokens(uri, address)
+
+    try:
+        # check if the address has tokens
+        has_tokens = poap_tokens['data']['account']
+        poap_tokens = has_tokens['tokens'] if has_tokens else None
+
+        # if the address holds no tokens then stop
+        if not has_tokens or len(poap_tokens) == 0:
+            pass
         else:
-            # Get block number of the earliest tokenId that still owned by owner
-            for entry in log_entries:
-                token_id = entry.args.tokenId
-                block_number = entry.blockNumber
-                owner = poap_contract.functions.ownerOf(token_id).call()
-                if address.lower() == owner.lower():
-                    # Gotcha
-                    return web3.eth.getBlock(block_number).timestamp
+            # flatten tokenIds into a dict
+            tokens_list = []
+            for token in poap_tokens:
+                tokens_list.append(token['id'])
+
+            # pull the transfers so that we can check timestamps
+            poap_transfers = get_poap_transfers(uri, address)
+            tokens_transfered = poap_transfers['data']['account']['tokens']
+
+            # check the earliest received token that is still owned by the address
+            for token in tokens_transfered:
+                # token still owned by the address?
+                if token['id'] in tokens_list:
+                    # use timestamp of most recent transfer
+                    tokens_timestamps.append(int(token['transfers'][0]['timestamp']))
+    except:
+        # returning 0 will print a failed (try again) error
+        tokens_timestamps[0] = 0
+
+    # sort to discover earliest
+    tokens_timestamps.sort()
+
+    # return the earliest timestamp
+    return tokens_timestamps[0] if len(tokens_timestamps) else None
+
 
 def get_ens_contract_addresss(network, legacy=False):
     if network == 'mainnet':
@@ -610,8 +672,17 @@ def sync_payout(fulfillment):
     elif fulfillment.payout_type == 'xinfin_ext':
         sync_xinfin_payout(fulfillment)
 
+    elif fulfillment.payout_type == 'nervos_ext':
+        sync_nervos_payout(fulfillment)
+
     elif fulfillment.payout_type == 'algorand_ext':
         sync_algorand_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'sia_ext':
+        sync_sia_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'tezos_ext':
+        sync_tezos_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -638,7 +709,6 @@ def get_bounty_id(issue_url, network):
 
 
 def get_bounty_id_from_db(issue_url, network):
-    issue_url = normalize_url(issue_url)
     bounties = Bounty.objects.filter(
         github_url=issue_url,
         network=network,
@@ -816,8 +886,8 @@ def clean_bounty_url(url):
 
 def generate_pub_priv_keypair():
     # Thanks https://github.com/vkobel/ethereum-generate-wallet/blob/master/LICENSE.md
-    from ecdsa import SigningKey, SECP256k1
     import sha3
+    from ecdsa import SECP256k1, SigningKey
 
     def checksum_encode(addr_str):
         keccak = sha3.keccak_256()
@@ -921,8 +991,9 @@ def get_tx_status(txid, network, created_on):
 
 def get_tx_status_and_details(txid, network, created_on):
     from django.utils import timezone
-    from dashboard.utils import get_web3
+
     import pytz
+    from dashboard.utils import get_web3
 
     DROPPED_DAYS = 4
 
@@ -1001,8 +1072,8 @@ def get_nonce(network, address, ignore_db=False):
     # this function solves the problem of 2 pending tx's writing over each other
     # by checking both web3 RPC *and* the local DB for the nonce
     # and then using the higher of the two as the tx nonce
-    from perftools.models import JSONStore
     from dashboard.utils import get_web3
+    from perftools.models import JSONStore
     w3 = get_web3(network)
 
     # web3 RPC node: nonce

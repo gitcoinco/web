@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the management command to pull new price data for tokens.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -140,11 +140,10 @@ def coingecko(source, tokens):
 
     """Handle pulling market data from Coingecko."""
 
-    now = timezone.now()
-
     token_str = ''
     for token in tokens:
-        token_str += (token.conversion_rate_id + ',')
+        if token.conversion_rate_id:
+            token_str += (token.conversion_rate_id + ',')
 
     url =  f'https://api.coingecko.com/api/v3/simple/price?ids={token_str}&vs_currencies=usd,eth'
 
@@ -153,6 +152,11 @@ def coingecko(source, tokens):
     response = requests.get(url).json()
 
     for token in tokens:
+
+        if not token.symbol or not token.conversion_rate_id:
+            print(f'error: {token} is missing symbol /conversion_rate_id. skipping fetching conversion rate.')
+            continue
+
         from_currency = token.symbol
         conversion_rate_id = token.conversion_rate_id
         conversion_rates = response.get(conversion_rate_id)

@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -84,11 +84,11 @@ along with this program. If not, see
     }
   }
 
-  @media only screen and (min-width: 600px) {
+  /* @media only screen and (min-width: 600px) {
     .grant-action-mobile {
       display: none;
     }
-  }
+  } */
 </style>
 
 <div id="content-body">
@@ -107,7 +107,7 @@ along with this program. If not, see
     alt="grant logo">
   <h1 class="grant-email-name">{{ grant.title }}</h1>
   <p class="grant-description">{{ grant.description }}</p>
-  <div class="grant-action" style="margin-top: 2em;">
+  <!-- <div class="grant-action" style="margin-top: 2em;">
     <span>
       <a class="button" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
         {% trans "View Your Grant" %}
@@ -119,7 +119,7 @@ along with this program. If not, see
         {% trans "Learn How to Maximize your Matching" %}
       </a>
     </span>
-  </div>
+  </div> -->
   <div class="grant-action-mobile" style="margin-top: 2em;">
     <a class="button" style="display: block;" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
       {% trans "View Your Grant" %}

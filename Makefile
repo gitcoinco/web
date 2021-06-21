@@ -39,6 +39,9 @@ login: ## Login to Docker Hub.
 push: ## Push the Docker image to the Docker Hub repository.
 	@docker push "${REPO_NAME}"
 
+bundle: ## Create bundles for all `bundle` blocks then compress with webpack
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3 manage.py bundle && yarn run build"
+
 collect-static: ## Collect newly added static resources from the assets directory.
 	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web bash -c "cd /code/app && python3 manage.py collectstatic -i other --no-input"
 

@@ -1,4 +1,4 @@
-{% load i18n static compress %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,14 +10,14 @@
     {% if canonical_url %}
       <link rel="canonical" href="{{ canonical_url }}">
     {% endif %}
-    {% compress css file bounty_details2 %}
+    {% bundle css file bounty_details2 %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/highlight_github.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/user_popover.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
     {% include 'shared/fbpixel.html' %}
   </head>
 
@@ -530,6 +530,7 @@
                                 <p>
                                   This bounty can only be paid out from the same wallet address that funded it.
                                 </p>
+                                <br>
                                 <p class="mb-4 font-weight-bold">
                                   Make sure you’re paying out from this address
 
@@ -537,7 +538,6 @@
                                   <a v-else class="font-weight-bold" :href="getAddressURL(fulfillment.token_name, bounty.bounty_owner_address)" target="_blank">
                                     [[ bounty.bounty_owner_address ]]
                                   </a>
-
                                 </p>
                                 <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
                                   v-on:click="goToStep('payout_amount', 'check_wallet_owner')"
@@ -613,7 +613,7 @@
                                 <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
-                                  I have Paid
+                                  I have paid
                                 </button>
 
                                 <p class="font-subheader mt-4 mb-0 text-center">
@@ -645,29 +645,45 @@
 
                               <!-- STEP : WALLET OWNER CHECK -->
                               <div id="check_wallet_owner" v-if="fulfillment_context.active_step == 'check_wallet_owner'">
-
-                                <p>
+                                <div class="funder-address-container mt-4" v-if="canChangeFunderAddress">
+                                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funderAddress">Funder Address</label>
+                                  <input v-model="bounty.bounty_owner_address" @input="validateFunderAddress(bounty.token_name)" name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out">
+                                  <div class="text-danger" v-if="errors.funderAddress">
+                                    [[ errors.funderAddress ]]
+                                  </div>
+                                </div>
+                                <p v-else>
                                   This bounty can only be paid out from the same wallet address that funded it.
                                 </p>
-                                <p class="mb-4">
+                                <br>
+                                <p class="mb-4 font-weight-bold">
                                   Make sure you’re paying out from this address
 
-                                  <span v-if="fulfillment.payout_type == 'manual'">[[ bounty.bounty_owner_address | truncateHash ]]</span>
+                                  <span v-if="fulfillment.payout_type == 'manual' && !canChangeFunderAddress">[[ bounty.bounty_owner_address | truncateHash ]]</span>
                                   <a v-else class="font-weight-bold" :href="getAddressURL(fulfillment.token_name, bounty.bounty_owner_address)" target="_blank">
                                     [[ bounty.bounty_owner_address ]]
                                   </a>
 
                                 </p>
-                                <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
-                                  v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
-                                >
-                                  Yes, I understand
-                                </button>
-                                <p class="font-subheader mt-4 mb-0 text-center">
-                                  <a href="#" v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'no_access_to_wallet')">
-                                    I don’t have access to this address
-                                  </a>
-                                </p>
+                                <div v-if="canChangeFunderAddress">
+                                  <button :disabled="errors.funderAddress" class="btn btn-primary btn-block py-3 btn-lg mt-4"
+                                    v-on:click="goToStep('payout_amount', 'check_wallet_owner')"
+                                  >
+                                    Yes, I understand
+                                  </button>
+                                </div>
+                                <div v-else>
+                                  <button class="btn btn-primary btn-block py-3 btn-lg mt-4"
+                                    v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
+                                  >
+                                    Yes, I understand
+                                  </button>
+                                  <p class="font-subheader mt-4 mb-0 text-center">
+                                    <a href="#" v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'no_access_to_wallet')">
+                                      I don’t have access to this address
+                                    </a>
+                                  </p>
+                                </div>
 
                               </div>
 
@@ -801,7 +817,7 @@
                                 <button class="btn btn-primary btn-block py-3 btn-lg mt-3"
                                   @click="fulfillmentComplete(fulfillment.payout_type, fulfillment.pk, $event)"
                                 >
-                                  I have Paid
+                                  I have paid
                                 </button>
 
                                 <p class="font-subheader mt-4 mb-0 text-center">
@@ -1077,7 +1093,6 @@
         document.issue_stdbounties_id = '{{ stdbounties_id }}';
       </script>
 
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
       {% include 'shared/footer.html' %}
       {% include 'shared/current_profile.html' %}

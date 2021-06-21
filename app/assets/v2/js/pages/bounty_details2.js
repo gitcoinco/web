@@ -144,6 +144,10 @@ Vue.mixin({
           url = `https://explorer.rsk.co/tx/${txn}`;
           break;
 
+        case 'CKB':
+          url = `https://explorer.nervos.org/transaction/${txn}`;
+          break;
+
         case 'XDC':
           url = `https://explorer.xinfin.network/tx/${txn}`;
           break;
@@ -152,6 +156,10 @@ Vue.mixin({
         case 'USDTa':
         case 'USDCa':
           url = `https://algoexplorer.io/tx/${txn}`;
+          break;
+
+        case 'SC':
+          url = `https://siastats.info/navigator?search=${txn}`;
           break;
 
         default:
@@ -210,6 +218,10 @@ Vue.mixin({
           url = `https://explorer.rsk.co/address/${address}`;
           break;
 
+        case 'CKB':
+          url = `https://explorer.nervos.org/address/${address}`;
+          break;
+
         case 'XDC':
           url = `https://explorer.xinfin.network/addr/${address}`;
           break;
@@ -218,6 +230,10 @@ Vue.mixin({
         case 'USDTa':
         case 'USDCa':
           url = `https://algoexplorer.io/tx/${address}`;
+          break;
+
+        case 'SC':
+          url = `https://siastats.info/navigator?search=${address}`;
           break;
 
         default:
@@ -392,6 +408,7 @@ Vue.mixin({
     },
     getTenant: function(token_name, web3_type) {
       let tenant;
+      let vm = this;
 
       if (web3_type == 'manual') {
         tenant = 'OTHERS';
@@ -443,6 +460,11 @@ Vue.mixin({
           tenant = 'RSK';
           break;
 
+        case 'CKB':
+          tenant = 'NERVOS';
+          vm.canChangeFunderAddress = true;
+          break;
+
         case 'XDC':
           tenant = 'XINFIN';
           break;
@@ -451,6 +473,15 @@ Vue.mixin({
         case 'USDTa':
         case 'USDCa':
           tenant = 'ALGORAND';
+          break;
+
+        case 'SC':
+          tenant = 'SIA';
+          vm.canChangeFunderAddress = true;
+          break;
+
+        case 'XTZ':
+          tenant = 'TEZOS';
           break;
 
         default:
@@ -754,7 +785,10 @@ Vue.mixin({
       switch (fulfillment.payout_type) {
         case 'qr':
         case 'manual':
+        case 'nervos_ext':
+        case 'sia_ext':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
+          vm.getTenant(vm.bounty.token_name, fulfillment.payout_type);
           break;
 
         case 'fiat':
@@ -763,6 +797,7 @@ Vue.mixin({
         case 'rsk_ext':
         case 'xinfin_ext':
         case 'algorand_ext':
+        case 'tezos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
@@ -802,6 +837,29 @@ Vue.mixin({
         case 'harmony_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
+      }
+    },
+    validateFunderAddress: function(token_name) {
+      let vm = this;
+      let hasError = false;
+
+      vm.errors = {};
+
+      switch (token_name) {
+        case 'CKB': {
+          const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
+          const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
+    
+          if (!isNervosValid && !address.toLowerCase().startsWith('0x')) {
+            hasError = true;
+          }
+        }
+
+        // include validation for other tokens here
+      }
+
+      if (hasError) {
+        vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${token_name} address`);
       }
     }
   },
@@ -844,6 +902,7 @@ if (document.getElementById('gc-bounty-detail')) {
     el: '#gc-bounty-detail',
     data() {
       return {
+        errors: {},
         loadingState: loadingState['loading'],
         bounty: bounty,
         url: url,
@@ -859,7 +918,8 @@ if (document.getElementById('gc-bounty-detail')) {
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: [],
-        pollInterval: null
+        pollInterval: null,
+        canChangeFunderAddress: false
       };
     },
     mounted() {

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals
 
 import asyncio
 import base64
+import calendar
 import getpass
 import hashlib
 import html
@@ -27,6 +28,7 @@ import json
 import logging
 import re
 import time
+import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -98,6 +100,7 @@ from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
 from grants.models import Grant
+from grants.utils import get_clr_rounds_metadata
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
@@ -141,6 +144,7 @@ from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
+from .poh_utils import is_registered_on_poh
 from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
@@ -302,8 +306,16 @@ def create_new_interest_helper(bounty, user, issue_message):
 @csrf_exempt
 def gh_login(request):
     """Attempt to redirect the user to Github for authentication."""
-    return redirect('social:begin', backend='github')
 
+    if not request.GET.get('next'):
+        return redirect('social:begin', backend='github')
+
+    login_redirect = redirect('social:begin', backend='github')
+    redirect_url = f'?next={request.scheme}://{request.get_host()}{request.GET.get("next")}'
+
+    redirect_url = login_redirect.url + redirect_url
+
+    return redirect(redirect_url, backend='github')
 
 @csrf_exempt
 def gh_org_login(request):
@@ -1392,25 +1404,6 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard/index.html', params)
 
 
-def ethhack(request):
-    """Handle displaying ethhack landing page."""
-    from dashboard.context.hackathon import eth_hack
-
-    params = eth_hack
-
-    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
-
-
-def beyond_blocks_2019(request):
-    """Handle displaying ethhack landing page."""
-    from dashboard.context.hackathon import beyond_blocks_2019
-
-    params = beyond_blocks_2019
-    params['card_desc'] = params['meta_description']
-
-    return TemplateResponse(request, 'dashboard/hackathon/index.html', params)
-
-
 def accept_bounty(request):
     """Process the bounty.
 
@@ -2186,6 +2179,9 @@ def quickstart(request):
 def load_banners(request):
     """Load profile banners"""
     images = load_files_in_directory('wallpapers')
+    show_only_2021_banners = request.GET.get('all', '0') == '0'
+    if show_only_2021_banners:
+        images = [image for image in images if image[0:5] == '2021_']
     response = {
         'status': 200,
         'banners': images
@@ -2237,11 +2233,6 @@ def user_card(request, handle):
         profile = profile_helper(handle, True)
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
-
-    if not settings.DEBUG:
-        network = 'mainnet'
-    else:
-        network = 'rinkeby'
 
     if request.user.is_authenticated:
         is_following = True if TribeMember.objects.filter(profile=request.user.profile, org=profile).count() else False
@@ -2779,10 +2770,10 @@ def get_profile_tab(request, profile, tab, prev_context):
 
                 return TemplateResponse(request, 'profiles/profile_activities.html', context, status=status)
 
-
-        all_activities = context.get('activities')
+        as_dict = profile.as_dict
+        all_activities = as_dict.get('activities')
         tabs = []
-        counts = context.get('activities_counts', {'joined': 1})
+        counts = as_dict.get('activities_counts', {'joined': 1})
         for name, actions in activity_tabs:
 
             # this functions as profile_filter_activities does
@@ -2899,7 +2890,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['sent_kudos_count'] = sent_kudos.count()
     elif tab == 'ptokens':
         tokens_list = PurchasePToken.objects.filter(token_holder_profile_id=profile.id).distinct('ptoken').values_list('ptoken', flat=True)
-        context['buyed_ptokens'] = PersonalToken.objects.filter(pk__in=tokens_list)
+        context['purchased_ptokens'] = PersonalToken.objects.filter(pk__in=tokens_list)
     elif tab == 'ratings':
         context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
         context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -2919,45 +2910,142 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
-        context['is_idena_connected'] = profile.is_idena_connected
-        if profile.is_idena_connected:
-            context['idena_address'] = profile.idena_address
-            context['logout_idena_url'] = reverse(logout_idena, args=(profile.handle,))
-            context['recheck_idena_status'] = reverse(recheck_idena_status, args=(profile.handle,))
-            context['is_idena_verified'] = profile.is_idena_verified
-            context['idena_status'] = profile.idena_status
-            if not context['is_idena_verified']:
-                context['idena_next_validation'] = localtime(next_validation_time())
-        else:
-            context['login_idena_url'] = idena_callback_url(request, profile)
 
-        today = datetime.today()
+        idena = {}
+        idena['is_connected'] = profile.is_idena_connected
+        # always pass in the urls so that we can easily switch state client side
+        idena['login_url'] = idena_callback_url(request, profile)
+        idena['logout_url'] = reverse('logout_idena', args=[profile.handle])
+        idena['check_status_url'] = reverse('recheck_idena_status', args=[profile.handle])
+        # construct verified state
+        if profile.is_idena_connected:
+            idena['address'] = profile.idena_address
+            idena['status'] = profile.idena_status
+            idena['is_verified'] = profile.is_idena_verified
+            if not idena['is_verified']:
+                idena['next_validation'] = str(localtime(next_validation_time()))
+
 
         # states:
         #0. not_connected - start state, user has no brightid_uuid
         #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
         #2. not_verified - connected, but not verified
         #3. verified - connected, and verified
-        context['brightid_status'] = 'not_connected'
+        brightid = {}
+        brightid['status'] = 'not_connected'
+        brightid['uuid'] = profile.brightid_uuid
         if profile.brightid_uuid:
-            context['brightid_status'] = 'unknown'
+            brightid['status'] = 'unknown'
         if profile.is_brightid_verified:
-            context['brightid_status'] = 'verified'
+            brightid['status'] = 'verified'
         if request.GET.get('pull_bright_id_status'):
-            context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
+            brightid['status'] = get_brightid_status(profile.brightid_uuid)
 
         try:
-            context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+            brightid['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
         except JSONStore.DoesNotExist:
-            context['upcoming_calls'] = []
+            brightid['upcoming_calls'] = []
 
-        context['is_sms_verified'] = profile.sms_verification
-        context['is_poap_verified'] = profile.is_poap_verified
-        context['is_twitter_verified'] = profile.is_twitter_verified
-        context['verify_tweet_text'] = verify_text_for_tweet(profile.handle)
-        context['is_google_verified'] = profile.is_google_verified
-        context['is_ens_verified'] = profile.is_ens_verified
-        context['is_facebook_verified'] = profile.is_facebook_verified
+        # QF round info
+        clr_round, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+        # place clr dates (as unix ts)
+        context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
+        context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())
+
+        # detail available services
+        services = [
+            {
+                'ref': 'poh',
+                'name': 'Proof of Humanity',
+                'icon_path': static('v2/images/project_logos/poh-min.svg'),
+                'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
+                'match_percent': 50,
+                'is_verified': profile.is_poh_verified
+            }, {
+                'ref': 'brightid',
+                'name': 'BrightID',
+                'icon_path': static('v2/images/project_logos/brightid.png'),
+                'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
+                'match_percent': 50,
+                'is_verified': brightid['status'] == 'verified',
+                'status': "Awaiting Verification" if brightid['status'] == 'not_verified' else None,
+                '_status': brightid['status'],
+                'uuid': str(brightid['uuid']),
+                'upcoming_calls': brightid['upcoming_calls']
+            }, {
+                'ref': 'idena',
+                'name': 'Idena',
+                'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('v2/images/project_logos/idena.svg'),
+                'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
+                'match_percent': 50,
+                'is_connected': idena['is_connected'],
+                'is_verified': idena['is_connected'] and idena['is_verified'],
+                'status': idena['status'] if idena['is_connected'] and not idena['is_verified'] else None,
+                '_status': idena['status'] if idena['is_connected'] else None,
+                'address': idena['address'] if idena['is_connected'] else None,
+                'login_url': idena['login_url'],
+                'logout_url': idena['logout_url'],
+                'check_status_url': idena['check_status_url'],
+                'next_validation': idena['next_validation'] if idena['is_connected'] and not idena['is_verified'] else None,
+            }, {
+                'ref': 'poap',
+                'name': 'POAP',
+                'icon_path': static('v2/images/project_logos/poap.svg'),
+                'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
+                'match_percent': 25,
+                'is_verified': profile.is_poap_verified
+            }, {
+                'ref': 'ens',
+                'name': 'ENS',
+                'icon_path': static('v2/images/project_logos/ens.svg'),
+                'desc': 'Get verified through the Ethereum Naming Service.',
+                'match_percent': 25,
+                'is_verified': profile.is_ens_verified
+            }, {
+                'ref': 'sms',
+                'name': 'SMS',
+                'icon_class': 'fa fa-mobile-alt fa-3x',
+                'desc': 'Get verified through text from your phone.',
+                'match_percent': 15,
+                'is_verified': profile.sms_verification
+            }, {
+                'ref': 'google',
+                'name': 'Google',
+                'icon_path': static('v2/images/project_logos/google.png'),
+                'desc': 'Get verified by connecting to your Google account.',
+                'match_percent': 15,
+                'is_verified': profile.is_google_verified
+            }, {
+                'ref': 'twitter',
+                'name': 'Twitter',
+                'icon_style': {
+                    'color': 'rgb(0, 172, 237)'
+                },
+                'icon_class': 'fab fa-twitter fa-3x',
+                'desc': 'Get verified by connecting your Twitter account.',
+                'match_percent': 15,
+                'is_verified': profile.is_twitter_verified,
+                'verify_tweet_text': verify_text_for_tweet(profile.handle)
+            }, {
+                'ref': 'facebook',
+                'name': 'Facebook',
+                'icon_style': {
+                    'color': 'rgb(24, 119, 242)'
+                },
+                'icon_class': 'fab fa-facebook fa-3x',
+                'desc': 'Get verified by connecting your Facebook account.',
+                'match_percent': 15,
+                'is_verified': profile.is_facebook_verified
+            }
+        ]
+
+        # pass as JSON in the context
+        context['services'] = json.dumps(services)
+        # Tentatively Coming Soon
+        context['coming_soon'] = json.dumps(['Duniter'])
+        # Tentatively On the Roadmap
+        context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
+
     else:
         raise Http404
     return context
@@ -2986,7 +3074,16 @@ def logout_idena(request, handle):
         profile.is_idena_connected = False
         profile.save()
 
-    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+    return JsonResponse({
+        'ok': True,
+        'address': profile.idena_address,
+        'status': profile.idena_status,
+        'is_connected': profile.is_idena_connected,
+        'login_url': idena_callback_url(request, profile),
+        'is_verified': profile.is_idena_verified,
+        'next_validation': None,
+        'icon_path': static('v2/images/project_logos/idena.svg'),
+    })
 
 # Response model differ from rest of project because idena client excepts this shape:
 # Using {success, error} instead of {ok, msg}
@@ -3106,10 +3203,20 @@ def recheck_idena_status(request, handle):
             'msg': f'Request must be for the logged in user'
         })
 
-    profile = profile_helper(handle, True)
+    profile = request.user.profile
+
     profile.update_idena_status()
     profile.save()
-    return redirect(reverse('profile_by_tab', args=(profile.handle, 'trust')))
+
+    return JsonResponse({
+        'ok': True,
+        'address': profile.idena_address,
+        'status': profile.idena_status if profile.is_idena_connected and not profile.is_idena_verified else None,
+        'is_connected': profile.is_idena_connected,
+        'is_verified': profile.is_idena_verified,
+        'next_validation': str(localtime(next_validation_time())) if not profile.is_idena_verified else None,
+        'icon_path': 'https://robohash.org/%s' % profile.idena_address if profile.is_idena_connected else static('v2/images/project_logos/idena.svg'),
+    })
 
 def verify_text_for_tweet(handle):
     url = 'https://gitcoin.co/' + handle
@@ -3117,6 +3224,7 @@ def verify_text_for_tweet(handle):
     full_text = msg + ' ' + url
 
     return full_text
+
 
 @login_required
 def verify_user_twitter(request, handle):
@@ -3223,6 +3331,32 @@ def verify_user_twitter(request, handle):
     })
 
 
+@login_required
+@require_POST
+def disconnect_user_twitter(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.twitter_handle = None
+    profile.is_twitter_verified = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False,
+    })
+
+
+'''
+# TODO: re-enable this when duniterpy integration is fixed
+#       see here: https://github.com/gitcoinco/web/pull/7844
+#       and here: https://github.com/gitcoinco/web/pull/8569
 @login_required
 async def verify_user_duniter(request):
     """This function searches the database for the gitcoin link, from a verified duniter account.
@@ -3350,7 +3484,7 @@ async def verify_user_duniter(request):
         'ok': True,
         'msg': 'Your Duniter Qualified User Check was successful!'
     })
-
+'''
 
 
 def connect_google():
@@ -3361,6 +3495,7 @@ def connect_google():
         scope=settings.GOOGLE_SCOPE,
         redirect_uri=urllib.parse.urljoin(settings.BASE_URL, reverse(verify_user_google)),
     )
+
 
 @login_required
 @require_POST
@@ -3397,12 +3532,11 @@ def verify_user_google(request):
         return redirect('profile_by_tab', 'trust')
 
     identity_data_google = r.json()
-
     if Profile.objects.filter(google_user_id=identity_data_google['id']).exists():
         messages.error(request, _(f'A user with this Google account already exists!'))
 
     else:
-        messages.success(request, _(f'Congratulations! You have successfully verified your Google account!'))
+        messages.success(request, _(f'Your Google verification was successful. Thank you for helping make Gitcoin more sybil resistant!'))
         profile = profile_helper(request.user.username, True)
         profile.is_google_verified = True
         profile.identity_data_google = identity_data_google
@@ -3411,9 +3545,90 @@ def verify_user_google(request):
 
     return redirect('profile_by_tab', 'trust')
 
+
 @login_required
-def verify_profile_with_ens(request):
+@require_POST
+def disconnect_user_google(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
     profile = request.user.profile
+
+    profile.is_google_verified = False
+    profile.identity_data_google = False
+    profile.google_user_id = None
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
+
+@login_required
+@require_POST
+def verify_user_brightid(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    status = get_brightid_status(profile.brightid_uuid)
+
+    if status == 'verified':
+        profile.is_brightid_verified = True
+        profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': status
+    })
+
+
+@login_required
+@require_POST
+def disconnect_user_brightid(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.brightid_uuid = uuid.uuid4()
+    profile.is_brightid_verified = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False,
+        'status': None,
+        '_status': 'unknown',
+        'uuid': profile.brightid_uuid
+    })
+
+
+@login_required
+def verify_user_ens(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
     default_address = profile.ens_verification_address or profile.preferred_payout_address
     if request.method == 'GET':
         user_address = request.GET.get('verification_address', default_address)
@@ -3508,6 +3723,28 @@ def verify_profile_with_ens(request):
     })
 
 
+@login_required
+@require_POST
+def disconnect_user_ens(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_ens_verified = False
+    profile.ens_verification_address = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
+
 def connect_facebook():
     import urllib.parse
 
@@ -3517,6 +3754,7 @@ def connect_facebook():
     )
 
     return facebook_compliance_fix(facebook)
+
 
 @login_required
 @require_POST
@@ -3535,6 +3773,7 @@ def request_verify_facebook(request, handle):
     facebook = connect_facebook()
     authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
     return redirect(authorization_url)
+
 
 @login_required
 @require_GET
@@ -3567,13 +3806,37 @@ def verify_user_facebook(request):
 
     else:
         profile = profile_helper(request.user.username, True)
-        messages.success(request, _(f'Congratulations! You have successfully verified your facebook account!'))
+        messages.success(request, _(f'Your Facebook verification was successful. Thank you for helping make Gitcoin more sybil resistant!'))
         profile.is_facebook_verified = True
         profile.identity_data_facebook = identity_data_facebook
         profile.facebook_user_id = identity_data_facebook['id']
         profile.save()
 
     return redirect('profile_by_tab', 'trust')
+
+
+@login_required
+@require_POST
+def disconnect_user_facebook(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_facebook_verified = False
+    profile.identity_data_facebook = False
+    profile.facebook_user_id = None
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
 
 def profile_filter_activities(activities, activity_name, activity_tabs):
     """A helper function to filter a ActivityQuerySet.
@@ -3633,6 +3896,9 @@ def profile(request, handle, tab=None):
     user_only_tabs = ['viewers', 'earnings', 'spent', 'trust']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
+    if not request.user.is_authenticated and tab in ['people', 'manage']:
+        tab = default_tab
+
     context = {}
     context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
     # get this user
@@ -3670,7 +3936,7 @@ def profile(request, handle, tab=None):
         return redirect(profile.url)
 
     # setup context for visit
-    if not len(profile.tribe_members) and tab == 'tribe':
+    if not profile.tribe_members.exists() and tab == 'tribe':
         tab = 'activity'
 
     # hack to make sure that if ur looking at ur own profile u see right online status
@@ -3696,9 +3962,9 @@ def profile(request, handle, tab=None):
             active_tab = 0
         elif tab == "projects":
             active_tab = 1
-        elif tab == "people":
-            active_tab = 2
         elif tab == "bounties":
+            active_tab = 2
+        elif tab == "people":
             active_tab = 3
         elif tab == "ptokens":
             active_tab = 4
@@ -3728,7 +3994,6 @@ def profile(request, handle, tab=None):
             context['title'] = profile.handle
             context['card_desc'] = profile.desc
 
-
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:
             raise e # raise so that sentry konws about it and we fix it
@@ -3755,8 +4020,8 @@ def profile(request, handle, tab=None):
 
     follow_page_size = 10
     page_number = request.GET.get('page', 1)
-    context['all_followers'] = TribeMember.objects.filter(org=profile)
-    context['all_following'] = TribeMember.objects.filter(profile=profile)
+    context['all_followers'] = TribeMember.objects.filter(org=profile).order_by('pk')
+    context['all_following'] = TribeMember.objects.filter(profile=profile).order_by('pk')
     context['following'] = Paginator(context['all_following'], follow_page_size).get_page(page_number)
     context['followers'] = Paginator(context['all_followers'], follow_page_size).get_page(page_number)
     context['foltab'] = request.GET.get('sub', 'followers')
@@ -3987,7 +4252,7 @@ def labs(request):
         "class": "fab fa-slack fa-2x"
     }, {
         "name": _("Contact the Team"),
-        "link": "mailto:founders@gitcoin.co",
+        "link": "mailto:support@gitcoin.co",
         "class": "fa fa-envelope fa-2x"
     }]
 
@@ -4294,12 +4559,12 @@ def change_bounty(request, bounty_id):
                 value_in_token = params.get('value_in_token')
                 bounty.value_in_token = value_in_token
                 bounty.balance = value_in_token
+                bounty_increased = True
                 try:
                     bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
                     bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
                     bounty.value_in_usdt_now = bounty.value_in_usdt
                     bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
-                    bounty_increased = True
                 except ConversionRateNotFoundError as e:
                     logger.debug(e)
 
@@ -4911,7 +5176,7 @@ def hackathon_get_project(request, bounty_id, project_id=None):
 
     try:
         bounty = Bounty.objects.get(id=bounty_id)
-        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache()
+        projects = HackathonProject.objects.filter(bounty__standard_bounties_id=bounty.standard_bounties_id, profiles__id=profile.id).nocache() if profile else None
     except HackathonProject.DoesNotExist:
         pass
 
@@ -6156,7 +6421,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6273,8 +6538,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / algorand_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6340,7 +6605,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'algorand_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6474,7 +6739,14 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
             'msg': 'The phone number has been associated with other account.'
         }, status=401)
 
-    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+    try:
+        validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+    except:
+        return JsonResponse({
+            'success': False,
+            'msg': 'phone number lookup failed'
+        }, status=401)
+
     country_code = validation.carrier['mobile_country_code'] if validation.carrier['mobile_country_code'] else 0
     pv = ProfileVerification.objects.create(profile=user.profile,
                                        caller_type=validation.caller_name[
@@ -6513,12 +6785,16 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
                 'msg': pv.validation_comment
             }, status=401)
 
-    if delivery_method == 'email':
-        twilio.verify.verifications.create(to=user.profile.email, channel='email')
-    else:
-        twilio.verify.verifications.create(to=phone, channel='sms')
+    try:
+        if delivery_method == 'email':
+            twilio.verify.verifications.create(to=user.profile.email, channel='email')
+        else:
+            twilio.verify.verifications.create(to=phone, channel='sms')
+        pv.validation_passed = True
+    except Exception:
+        pv.validation_passed = False
+        pv.validation_comment = 'Unable to create record'
 
-    pv.validation_passed = True
     pv.save()
 
     profile.last_validation_request = timezone.now()
@@ -6530,7 +6806,14 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
 
 
 @login_required
-def send_verification(request):
+def send_verification(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
     user = request.user
     profile = user.profile
     phone = request.POST.get('phone')
@@ -6545,6 +6828,8 @@ def send_verification(request):
     if not has_previous_validation:
         response = validate_number(request.user, twilio, phone, redis, delivery_method)
         if response:
+            if response.get('isValid') and response.isValid == False:
+                response.msg = "Please provide a valid phone number"
             return response
     else:
         cooldown = has_previous_validation + timedelta(minutes=SMS_COOLDOWN_IN_MINUTES)
@@ -6573,7 +6858,14 @@ def send_verification(request):
 
 
 @login_required
-def validate_verification(request):
+def validate_verification(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
     redis = RedisService().redis
     twilio = TwilioService().verify
     code = request.POST.get('code')
@@ -6616,6 +6908,27 @@ def validate_verification(request):
         'success': False,
         'msg': 'No verification process associated'
     }, status=401)
+
+
+@login_required
+@require_POST
+def disconnect_sms(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.sms_verification = False
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
 
 
 @staff_member_required
@@ -6751,8 +7064,15 @@ def events(request, hackathon):
 @login_required
 @require_POST
 def verify_user_poap(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
 
-    profile = profile_helper(handle, True)
+    profile = request.user.profile
+
     if profile.is_poap_verified:
         return JsonResponse({
             'ok': True,
@@ -6793,7 +7113,7 @@ def verify_user_poap(request, handle):
     timestamp = None
 
     for network in ['mainnet', 'xdai']:
-        timestamp = get_poap_earliest_owned_token_timestamp(network, True, eth_address)
+        timestamp = get_poap_earliest_owned_token_timestamp(network, eth_address)
         # only break if we find a token that has been held for longer than 15 days
         if timestamp and timestamp <= fitteen_days_ago_ts:
             break
@@ -6818,6 +7138,107 @@ def verify_user_poap(request, handle):
     return JsonResponse({
         'ok': True,
         'msg': 'Found a POAP badge that has been sitting in this wallet more than 15 days'
+    })
+
+
+@login_required
+@require_POST
+def disconnect_user_poap(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_poap_verified = False
+    profile.poap_owner_account = None
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
+    })
+
+
+@login_required
+@require_POST
+def verify_user_poh(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+    if profile.is_poh_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': f'User was verified previously',
+        })
+
+    request_data = json.loads(request.body.decode('utf-8'))
+    signature = request_data.get('signature', '')
+    eth_address = request_data.get('eth_address', '')
+    if eth_address == '' or signature == '':
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Empty signature or Ethereum address',
+        })
+
+    message_hash = defunct_hash_message(text="verify_poh_registration")
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    if eth_address != signer:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Invalid signature',
+        })
+
+    if Profile.objects.filter(poh_handle=signer).exists():
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Ethereum address is already registered.',
+        })
+
+    web3 = get_web3('mainnet')
+    if not is_registered_on_poh(web3, signer):
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Ethereum address is not registered on Proof of Humanity, please try after registration.',
+        })
+
+    profile.is_poh_verified = True
+    profile.poh_handle = signer
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'msg': 'User is registered on POH',
+    })
+
+
+@login_required
+@require_POST
+def disconnect_user_poh(request, handle):
+    is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
+    if not is_logged_in_user:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Request must be for the logged in user',
+        })
+
+    profile = request.user.profile
+
+    profile.is_poh_verified = False
+    profile.poh_handle = None
+    profile.save()
+
+    return JsonResponse({
+        'ok': True,
+        'is_verified': False
     })
 
 
@@ -6855,28 +7276,29 @@ def mautic_api(request, endpoint=''):
 
 def mautic_proxy(request, endpoint=''):
     params = request.GET
-    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
-    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
-    headers = {"Authorization": f"Basic {token}"}
-
-    if request.body:
-        body_unicode = request.body.decode('utf-8')
-        payload = json.loads(body_unicode)
-
-    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
     if request.method == 'GET':
-        response = requests.get(url=url, headers=headers, params=params).json()
-    elif request.method == 'POST':
-        response = requests.post(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PUT':
-        response = requests.put(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
-    elif request.method == 'PATCH':
-        response = requests.patch(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+        response = mautic_proxy_backend(request.method, endpoint, None, params)
+    elif request.method in ['POST','PUT','PATCH','DELETE']:
+        response = mautic_proxy_backend(request.method, endpoint, request.body, params)
 
     return JsonResponse(response)
 
+
+def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
+    # print(method, endpoint, payload, params)
+    credential = f"{settings.MAUTIC_USER}:{settings.MAUTIC_PASSWORD}"
+    token = base64.b64encode(credential.encode("utf-8")).decode("utf-8")
+    headers = {"Authorization": f"Basic {token}"}
+    url = f"https://gitcoin-5fd8db9bd56c8.mautic.net/api/{endpoint}"
+
+    if payload:
+        body_unicode = payload.decode('utf-8')
+        payload = json.loads(body_unicode)
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+    else:
+        response = getattr(requests, method.lower())(url=url, headers=headers, params=params).json()
+
+    return response
 
 
 @csrf_exempt

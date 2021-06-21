@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Grant subminer management command.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import datetime
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.db.models import F, Max
-from django.utils import timezone
 
-from dashboard.utils import get_tx_status, has_tx_mined
-from grants.models import CartActivity, Contribution, Grant, Subscription
-from grants.views import next_round_start, round_end  # TODO-SELF-SERVICE: REMOVE THIS
-from marketing.mails import remember_your_cart, warn_subscription_failed
-from townsquare.models import MatchRound
+from grants.models import CartActivity, Subscription
+from grants.utils import get_clr_rounds_metadata
+from marketing.mails import remember_your_cart
 
 
 class Command(BaseCommand):
@@ -55,12 +50,15 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        last_activity_by_user = CartActivity.objects.filter(latest=True, created_on__gt=next_round_start).exclude(metadata=[])
+
+        _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
+
+        last_activity_by_user = CartActivity.objects.filter(latest=True, created_on__gt=round_start_date).exclude(metadata=[])
         count = 0
         if options.get('hours'):
             hours = options.get('hours')
         else:
-            hours = int((round_end - datetime.now()).total_seconds() / 3600)
+            hours = int((round_end_date - datetime.now()).total_seconds() / 3600)
 
         for activity in last_activity_by_user:
             print(activity)
@@ -71,7 +69,7 @@ class Command(BaseCommand):
                 subscription = Subscription.objects.filter(grant_id=grant_entry['grant_id'],
                                                            contributor_profile=activity.profile,
                                                            created_on__gt=activity.created_on,
-                                                           created_on__lte=round_end).first()
+                                                           created_on__lte=round_end_date).first()
 
                 if not subscription:
                     no_checkout_grants.append(grant_entry)

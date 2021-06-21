@@ -1,4 +1,4 @@
-{% load i18n humanize static avatar_tags kudos_extras compress %}
+{% load i18n humanize static avatar_tags kudos_extras bundle %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,7 +10,7 @@
     {% if not hidden %}
       <link rel="canonical" href="{{profile.url}}/{{tab}}" />
     {% endif %}
-    {% compress css file profile %}
+    {% bundle css file profile %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dashboard.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/profile.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
@@ -20,7 +20,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/scroll-carousel.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-    {% endcompress %}
+    {% endbundle %}
   </head>
   <body class="interior {{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
@@ -108,12 +108,25 @@
 
       {% include 'shared/result.html' %}
       {% include 'shared/footer.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
       {% include 'shared/current_profile.html' %}
       {% if tab == 'activity' %}
         {% include 'shared/tip_dependancies.html' %}
       {% else %}
+        {% if tab == 'trust' %}
+          <script>
+            document.services = {{ services|safe }};
+            document.roadmap = {{ roadmap|safe }};
+            document.coming_soon = {{ coming_soon|safe }};
+            document.round_start_date = {{ round_start_date }};
+            document.round_end_date = {{ round_end_date }};
+          </script>
+          {% bundle merge_js file profile-trust %}
+            <script src="{% static "v2/js/parseMonthDay.js" %}"></script>
+            <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
+            <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
+          {% endbundle %}
+        {% endif %}
         <script src="/dynamic/js/tokens_dynamic.js"></script>
         <script src="{% static "v2/js/tokens.js" %}"></script>
       {% endif %}
@@ -140,14 +153,13 @@
           document.current_hodling = {{ available_to_redeem|default:0 }};
         {% endif %}
       </script>
-      {% compress js file profile %}
+      {% bundle merge_js file profile %}
         <script src="{% static "v2/js/pages/tabs.js" %}"></script>
         <script src="{% static "v2/js/pages/profile.js" %}"></script>
         <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
         <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
         <script src="{% static "v2/js/pages/profile_tokens.js" %}"></script>
         <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
-        <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
         <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
         <script src="{% static "v2/js/rating.js" %}"></script>
         <script src="{% static "v2/js/status.js" %}"></script>
@@ -156,7 +168,7 @@
         <script src="{% static "v2/js/activity.js" %}"></script>
         <script src="{% static "v2/js/3box.min.js" %}"></script>
         <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
-      {% endcompress %}
+      {% endbundle %}
     </div>
   </body>
 </html>

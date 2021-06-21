@@ -6,8 +6,6 @@ from os.path import basename
 from secrets import token_hex
 
 from django.conf import settings
-from django.contrib.staticfiles.storage import HashedFilesMixin
-from django.core.files.storage import get_storage_class
 
 from storages.backends.s3boto3 import S3ManifestStaticStorage, S3StaticStorage
 
@@ -26,26 +24,6 @@ class SilentFileStorage(S3ManifestStaticStorage, S3StaticStorage):
     def __init__(self, *args, **kwargs):
         # Init S3StaticStorage and S3ManifestStaticStorage to send assets to S3
         super(SilentFileStorage, self).__init__(*args, **kwargs)
-        # Init CompressorFileStorage to save local copies for compressor
-        self.local_storage = get_storage_class("compressor.storage.CompressorFileStorage")()
-        # Init HashedFilesMixin to get filenames with hashes present
-        self.local_hashes = HashedFilesMixin()
-
-    def save(self, name, content):
-        """Save both a local and a remote copy of the given file"""
-        # Record the clean file content (pre gzip)
-        file_content = content.file
-        # Save remote copy to S3
-        super(SilentFileStorage, self).save(name, content)
-        # Only save files that are part of the compress blocks locally
-        if ".scss" in name or ".js" in name or ".css" in name:
-            # restore the clean file_content
-            content.file = file_content
-            # Save a local copy for compressor
-            self.local_storage._save(name, content)
-            # Save a local copy with hash present
-            self.local_storage._save(self.local_hashes.hashed_name(name, content), content)
-        return name
 
     def exists(self, name):
         """Check if the named file exists in S3 storage"""

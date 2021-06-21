@@ -210,9 +210,21 @@ Vue.mixin({
           // harmony
           type = 'harmony_ext';
           break;
+        case '1995':
+          // nervos
+          type = 'nervos_ext';
+          break;
         case '1001':
           // algorand
           type = 'algorand_ext';
+          break;
+        case '1935':
+          // sia
+          type = 'sia_ext';
+          break;
+        case '050797':
+          // tezos
+          type = 'tezos_ext';
           break;
         case '666':
           // paypal
@@ -429,7 +441,7 @@ Vue.mixin({
           web3.eth.sendTransaction({
             to: toAddress,
             from: selectedAccount,
-            value: web3.utils.toWei(String(vm.totalAmount.totalFee), 'ether')
+            value: BigInt(vm.totalAmount.totalFee.toFixed(18) * Math.pow(10, 18)).toString()
           }).once('transactionHash', (txnHash, errors) => {
 
             console.log(txnHash, errors);

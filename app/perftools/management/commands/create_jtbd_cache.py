@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,6 +16,7 @@
 
 '''
 
+import datetime
 import json
 import logging
 
@@ -27,6 +28,7 @@ from django.utils import timezone
 from dashboard.models import Bounty
 from economy.models import EncodeAnything
 from grants.models import Grant
+from marketing.models import LeaderboardRank
 from perftools.models import JSONStore
 
 logger = logging.getLogger(__name__)
@@ -42,8 +44,6 @@ def fetch_jtbd_hackathons():
 
 def create_jtbd_earn_cache():
     print('create_jtbd_earn_cache')
-    import datetime
-    from marketing.models import LeaderboardRank
 
     top_earners = list(LeaderboardRank.objects.active().filter(
         product='bounties', leaderboard='monthly_earners'
@@ -250,6 +250,34 @@ def create_jtbd_fund_cache():
     )
 
 
+def create_about_cache():
+    print('create_about_cache')
+
+    three_months_ago = timezone.now() - datetime.timedelta(days=360)
+    grants_bubbles = list(Grant.objects.filter(
+        network='mainnet', hidden=False, visible=True, active=True
+    ).values('logo', 'id').order_by('weighted_shuffle', 'pk')[:33])
+
+    top_earners = list(LeaderboardRank.objects.active().filter(
+        product='bounties', leaderboard='monthly_earners'
+    ).values('profile__handle', 'profile__organizations', 'profile__data').order_by('-amount')[0:16])
+
+    data = {
+        'grants_bubbles': grants_bubbles,
+        'top_earners': top_earners
+    }
+
+    view = 'about'
+    keyword = 'general'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+    )
+
+
 class Command(BaseCommand):
 
     help = 'generates jtbd data'
@@ -261,6 +289,7 @@ class Command(BaseCommand):
         operations.append(create_jtbd_learn_cache)
         operations.append(create_jtbd_connect_cache)
         operations.append(create_jtbd_fund_cache)
+        operations.append(create_about_cache)
 
         for func in operations:
             try:

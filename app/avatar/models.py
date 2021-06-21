@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Avatar models.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -131,11 +131,15 @@ class BaseAvatar(SuperModel):
             use_svg (bool): Whether or not to use SVG format.
 
         """
-        if not use_svg:
-            return self.png.file, 'image/png'
-        else:
-            return self.svg.file, 'image/svg+xml'
+        try:
+            if not use_svg and bool(self.png):
+                return self.png.file, 'image/png'
+            elif bool(self.svg):
+                return self.svg.file, 'image/svg+xml'
+        except:
+            return None, None
 
+        return None, None
 
 class CustomAvatar(BaseAvatar):
     recommended_by_staff = models.BooleanField(default=False)

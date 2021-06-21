@@ -19,7 +19,7 @@ def get_algorand_txn_status(fulfillment):
     url = f'https://api.algoexplorer.io/v2/transactions/pending/{txnid}?format=json'
     response = requests.get(url).json()
     if response:
-        
+
         if response.get('confirmed-round') and response.get('txn') and response.get('txn').get('txn'):
             txn = response["txn"]['txn']
             if not response["pool-error"] == "":
@@ -37,7 +37,7 @@ def get_algorand_txn_status(fulfillment):
             ):
                 return 'success'    
         
-        elif response['message'] and API_KEY != '':
+        elif response.get('message') and API_KEY != '':
             # txn is too old and cannot be found on algoexplorer
             return get_algorand_txn_status_paid_explorer(fulfillment)
         
@@ -58,7 +58,7 @@ def get_algorand_txn_status_paid_explorer(fulfillment):
     response = requests.get(url=url, headers=headers).json()
     
     if response:
-        if response.get("confirmed-round") and response.get("txn"):
+        if response.get("current-round") and response.get("transaction"):
             txn = response["transaction"]
 
             # asset / algo token

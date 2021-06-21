@@ -58,6 +58,10 @@ Vue.mixin({
         'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
       };
 
+      if (vm.grant.reference_url.startsWith('www.')) {
+        vm.grant.reference_url = 'https://' + vm.grant.reference_url;
+      }
+
       const apiUrlGrant = `/grants/v1/api/grant/edit/${vm.grant.id}/`;
       const data = {
         'title': vm.grant.title,
@@ -78,7 +82,8 @@ Vue.mixin({
         'polkadot_payout_address': vm.grant.polkadot_payout_address,
         'kusama_payout_address': vm.grant.kusama_payout_address,
         'rsk_payout_address': vm.grant.rsk_payout_address,
-        'region': vm.grant.region?.name || undefined
+        'region': vm.grant.region?.name || undefined,
+        'has_external_funding': vm.grant.has_external_funding
       };
 
       if (vm.logo) {
@@ -349,6 +354,9 @@ Vue.mixin({
       if (vm.grant.description_rich_edited.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
+      if (vm.grant.has_external_funding == 'unknown') {
+        vm.$set(vm.errors, 'has_external_funding', 'Please select if your grant has had external funding');
+      }
 
       if (!vm.$refs.formEditGrant.reportValidity()) {
         return false;
@@ -536,6 +544,10 @@ Vue.component('grant-details', {
         { 'name': 'india', 'label': 'India'},
         { 'name': 'east_asia', 'label': 'East Asia'},
         { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+      ],
+      externalFundingOptions: [
+        {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
+        {'key': 'no', 'value': 'No, this project has not raised external funding.'}
       ]
     };
   },

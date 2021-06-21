@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -61,7 +61,7 @@ def whitepaper_new(request, ratelimited=False):
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
     if ratelimited:
-        context['msg'] = _("You're ratelimited. Please contact founders@gitcoin.co")
+        context['msg'] = _("You're ratelimited. Please contact support@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     context['role'] = request.POST.getlist('role')
@@ -105,7 +105,7 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
         valid_email = False
 
     if not request.POST.get('email', False) or not valid_email:
-        context['msg'] = _("Invalid Email. Please contact founders@gitcoin.co")
+        context['msg'] = _("Invalid Email. Please contact support@gitcoin.co")
         context['success'] = False
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
@@ -126,7 +126,7 @@ def whitepaper_access(request, ratelimited=False):
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     if ratelimited:
-        context['msg'] = _("You're ratelimited. Please contact founders@gitcoin.co")
+        context['msg'] = _("You're ratelimited. Please contact support@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     context['accesskey'] = request.POST.get('accesskey')
@@ -134,12 +134,12 @@ def whitepaper_access(request, ratelimited=False):
     access_codes = AccessCodes.objects.filter(invitecode=request.POST.get('accesskey'))
     valid_access_code = access_codes.exists()
     if not valid_access_code:
-        context['msg'] = _("Invalid Access Code. Please contact founders@gitcoin.co")
+        context['msg'] = _("Invalid Access Code. Please contact support@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     ac = access_codes.first()
     if ac.uses >= ac.maxuses:
-        context['msg'] = _("You have exceeded your maximum number of uses for this access code. Please contact founders@gitcoin.co")
+        context['msg'] = _("You have exceeded your maximum number of uses for this access code. Please contact support@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     valid_email = True
@@ -149,7 +149,7 @@ def whitepaper_access(request, ratelimited=False):
         valid_email = False
 
     if not request.POST.get('email', False) or not valid_email:
-        context['msg'] = _("Invalid Email. Please contact founders@gitcoin.co")
+        context['msg'] = _("Invalid Email. Please contact support@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     ip = get_ip(request)

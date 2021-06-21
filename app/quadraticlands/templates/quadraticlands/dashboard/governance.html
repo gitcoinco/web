@@ -1,0 +1,96 @@
+{% load static %}
+
+<!-- governance module hidden by default - available only when user have tokens -->
+<div id="governance" class="section full hide">
+
+  <a class="noparticles">
+    <div class="header">
+      <div class="icon">
+        <img loading="lazy" src="{% static "v2/images/quadraticlands/icons/delegation.svg" %}" />
+      </div>
+      <div class="title">
+        Delegation Mode:
+        <span id="delegation_mode"></span>
+        <span id="delegate_address"></span>
+      </div>
+    </div>
+  </a>
+
+  <div class="content">
+    <div class="content-governance">
+      <div class="wrapper">
+
+        <div id="txt_disable_delegate" class="hide">
+          <p>To participate actively in governance, disable Delegation Mode.</p>
+        </div>
+
+        <!--enabled button-->
+        <div id="toggle_enabled" class="delegation-toggle hide">
+          <div class="label">Delegation Mode</div>
+          <div id="toggle_button_enabled" class="toggle enabled">
+            <div class="enabled">Enabled</div>
+            <div class="circle"></div>
+            <div class="disabled">Disable</div>
+          </div>
+        </div>
+
+        <!--disabled button-->
+        <div id="toggle_disabled" class="delegation-toggle disablehover hide">
+          <div class="label">Delegation Mode</div>
+          <div class="toggle disabled disablehover">
+            <div class="enabled">Enabled</div>
+            <div class="circle"></div>
+            <div class="disabled">Disabled</div>
+          </div>
+        </div>
+
+
+        <div id="txt_delegate" class="hide">
+
+          <p>Delegate your tokens via the <a href="stewards">stewards page</a> or explore  the <a target="_blank" href="https://gov.gitcoin.co">discourse forum</a> and paste an ethereum address here:</p>
+
+        </div>
+
+        <div id="txt_redelegate" class="hide">
+          <p>To empower someone else, visit the <a href="stewards">stewards page</a> or explore the <a target="_blank" href="https://gov.gitcoin.co">discourse forum</a> and paste their ethereum address here:</p>
+        </div>
+
+        <div id="delegate_form">
+          <input id="delegate_input" type="text" placeholder="Paste Ethereum Address">
+          <a id="delegate_button" class="btn disabled">Delegate</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- pending transaction -->
+<div id="tx_pending" class="section full hide">
+  <div class="content-tx-pending">
+    <div class="wrapper">
+      <div class="spinner">
+        {% include "quadraticlands/_inlinesvg/spinner.svg" %}
+      </div>
+      <div>
+        <p>Delegation transaction pending, please wait. <span id="transaction_link_pending"></span></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- error transaction -->
+<div id="tx_error" class="section full hide">
+  <div class="content-tx-error">
+    <div class="wrapper">
+      <div class="text">
+        <p>We're sorry, we were unable to complete your delegation. Please check Etherscan for more infos. <span
+            id="transaction_link_error"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static "v2/js/quadraticlands/dashboard/governance.js" %}"></script>

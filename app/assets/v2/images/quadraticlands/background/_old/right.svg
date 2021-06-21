@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Keyshape -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" height="900" width="1400" style="white-space: pre;">
+    <style>
+@keyframes background_t { 0% { transform: translate(0px,0px); } 100% { transform: translate(0px,0px); } }
+@keyframes a0_t { 0% { transform: translate(522.5px,-136px) rotate(0deg) translate(-64.5px,-64px); } 100% { transform: translate(1494.5px,236px) rotate(-100deg) translate(-64.5px,-64px); } }
+@keyframes a1_t { 0% { transform: rotate(0deg) translate(-64px,-64px); } 83.3333% { transform: rotate(132deg) translate(-64px,-64px); } 100% { transform: rotate(132deg) translate(-64px,-64px); } }
+@keyframes a1_d { 0% { d: path('M79.8931,-15L98.8931,64L29,108L29,20Z'); } 100% { d: path('M63.7619,20L119.205,81.5753L38.3704,124.755L63.7619,20Z'); } }
+@keyframes a1_mo { 0% { offset-distance: 0%; } 16.6667% { offset-distance: 0%; animation-timing-function: cubic-bezier(0.42,0,1,1); } 25% { offset-distance: 59.539%; } 83.3333% { offset-distance: 62.594%; animation-timing-function: cubic-bezier(0,0,0.58,1); } 91.6667% { offset-distance: 100%; } 100% { offset-distance: 100%; } }
+@keyframes a2_t { 0% { transform: rotate(0deg) translate(-63.5px,-64px); } 83.3333% { transform: rotate(-90deg) translate(-63.5px,-64px); } 100% { transform: rotate(-90deg) translate(-63.5px,-64px); } }
+@keyframes a2_d { 0% { d: path('M85,22L82.2548,102.521L42,106L85,22Z'); } 100% { d: path('M85,22L113.199,128L-4.80067,86L18.1993,22Z'); } }
+@keyframes a2_mo { 0% { offset-distance: 0%; } 16.6667% { offset-distance: 0%; animation-timing-function: cubic-bezier(0.42,0,1,1); } 25% { offset-distance: 51.578%; } 83.3333% { offset-distance: 54.272%; animation-timing-function: cubic-bezier(0,0,0.58,1); } 88.3333% { offset-distance: 100%; } 100% { offset-distance: 100%; } }
+@keyframes a3_t { 0% { transform: translate(1504px,466.698059px); } 15% { transform: translate(1504px,466.698059px); animation-timing-function: cubic-bezier(0.42,0,1,1); } 21.6666% { transform: translate(700px,466.698059px); } 81.6666% { transform: translate(668.571411px,466.698059px); animation-timing-function: cubic-bezier(0,0,0.58,1); } 90% { transform: translate(-131px,466.698059px); } 100% { transform: translate(-131px,466.698059px); } }
+@keyframes a4_t { 0% { transform: rotate(0deg) translate(-64.5px,-64.5px); } 83.3333% { transform: rotate(60deg) translate(-64.5px,-64.5px); } 100% { transform: rotate(60deg) translate(-64.5px,-64.5px); } }
+@keyframes a4_d { 0% { d: path('M30.6294,30.612L107,25L93.1929,104L22,104L30.6294,30.612Z'); } 100% { d: path('M30.6294,30.612L107,25L113.317,127.526L49.4132,90.6311L30.6294,30.612Z'); } }
+@keyframes a4_mo { 0% { offset-distance: 0%; } 16.6667% { offset-distance: 0%; animation-timing-function: cubic-bezier(0.42,0,1,1); } 25% { offset-distance: 41.649%; } 83.3333% { offset-distance: 45.884%; animation-timing-function: cubic-bezier(0,0,0.58,1); } 91.6667% { offset-distance: 100%; } 100% { offset-distance: 100%; } }
+@keyframes a5_t { 0% { transform: translate(-250.108018px,706.676999px) rotate(0deg) translate(-64px,-64px); } 100% { transform: translate(662.137739px,958.8385px) rotate(54deg) translate(-64px,-64px); } }
+    </style>
+    <rect id="background" width="1400" height="900" fill="#0e0333" stroke="none" stroke-width="0" transform="translate(31,20) translate(-31,-20)" style="animation: 6s linear infinite both background_t;"/>
+    <path d="M129.315,27L200.167,57.3652L171.826,176.802L32.1461,140.363L20,103.925L129.315,27Z" fill="#8c65f7" transform="translate(522.5,-136) translate(-64.5,-64)" style="animation: 6s linear infinite both a0_t;"/>
+    <path d="M79.8931,-15L98.8931,64L29,108L29,20Z" fill="#8c65f7" style="transform: translate(-64px,-64px); animation: 6s linear infinite both a1_t, 6s linear infinite both a1_d, 6s linear infinite both a1_mo; offset-path: path('M-173.893,767L-173.893,767C133.5,756.5,692,604.5,1199,697L1268,713L2135,697.699L2135,697.699'); offset-rotate: 0deg;"/>
+    <path d="M85,22L82.2548,102.521L42,106L85,22Z" fill="#5bf1cd" style="transform: translate(-63.5px,-64px); animation: 6s linear infinite both a2_t, 6s linear infinite both a2_d, 6s linear infinite both a2_mo; offset-path: path('M-157.039,218.802L-157.039,218.802C101.5,187.5,343.5,342,1098.76,274L1164,265L2282,254.699L2282,254.699'); offset-rotate: 0deg;"/>
+    <text fill="#ffffff" font-size="44" font-family="'Space Mono'" letter-spacing="0" word-spacing="0" stroke="none" text-anchor="middle" transform="translate(1504,466.698)" style="line-height: 16px; animation: 6s linear infinite both a3_t;">Right</text>
+    <path d="M30.6294,30.612L107,25L93.1929,104L22,104L30.6294,30.612Z" fill="#F579A6" style="transform: translate(-64.5px,-64.5px); animation: 6s linear infinite both a4_t, 6s linear infinite both a4_d, 6s linear infinite both a4_mo; offset-path: path('M-559.5,564.5L-559.5,564.5C-559.5,564.5,-125.5,680,303.174,571.51L389.174,550.51C389.174,550.51,1106.5,384,1507.17,540.21L1507.17,540.21'); offset-rotate: 0deg;"/>
+    <path d="M23.0003,59.7012L134.525,23L257.323,203.683L23,257.323L23.0003,59.7012Z" fill="#F579A6" transform="translate(-250.108,706.677) translate(-64,-64)" style="animation: 6s linear infinite both a5_t;"/>
+</svg>

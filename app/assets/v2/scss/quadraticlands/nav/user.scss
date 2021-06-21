@@ -1,0 +1,52 @@
+#nav-user {
+  align-self: center;
+  margin-right: 30px;
+
+  a {
+    text-decoration: none;
+    color: var(--purple_light);
+
+    &:hover {
+      color: var(--white);
+    }
+  }
+
+  div {
+    display: flex;
+    img {
+      width: 40px;
+      height: 40px;
+      display: block;
+      border-radius: 32px;
+      align-self: center;
+    }
+    span {
+      align-self: center;
+      margin-left: 5px;
+    }
+  }
+
+  &.hide {
+    display: none;
+  }
+}
+
+@media #{$tablet} {
+  #nav-user {
+    margin-right: 15px;
+    span {
+      display: none;
+    }
+  }
+}
+
+@media #{$phone} {
+  #nav-user {
+    div {
+      img {
+        width: 32px;
+        height: 32px;
+      }
+    }
+  }
+}

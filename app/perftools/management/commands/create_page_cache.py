@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,23 +22,16 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import models, transaction
-from django.db.models import Count, Q
-from django.db.models.query import QuerySet
-from django.forms.models import model_to_dict
-from django.templatetags.static import static
+from django.db import transaction
 from django.utils import timezone
-from django.utils.encoding import force_text
-from django.utils.functional import Promise
 
 from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
-from dashboard.models import Activity, Bounty, HackathonEvent, Profile
+from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
-from grants.utils import generate_leaderboard
-from grants.views import next_round_start, round_types
+from grants.utils import generate_leaderboard, get_clr_rounds_metadata
 from marketing.models import Stat
 from perftools.models import JSONStore
 from quests.helpers import generate_leaderboard
@@ -127,12 +120,19 @@ def create_grant_category_size_cache():
 
 
 def create_top_grant_spenders_cache():
-    for round_type in round_types:
+
+    _, round_start_date, _, _ = get_clr_rounds_metadata()
+
+    grant_types = GrantType.objects.filter(is_visible=True, is_active=True)
+    for grant_type in grant_types:
         contributions = Contribution.objects.filter(
             success=True,
-            created_on__gt=next_round_start,
-            subscription__grant__grant_type__name=round_type
-            ).values_list('subscription__contributor_profile__handle', 'subscription__amount_per_period_usdt')
+            created_on__gt=round_start_date,
+            subscription__grant__grant_type=grant_type
+        ).values_list(
+            'subscription__contributor_profile__handle',
+            'subscription__amount_per_period_usdt'
+        )
         count_dict = {ele[0]:0 for ele in contributions}
         sum_dict = {ele[0]:0 for ele in contributions}
         for ele in contributions:
@@ -146,18 +146,18 @@ def create_top_grant_spenders_cache():
                 #print(key, val)
                 Stat.objects.create(
                     created_on=from_date,
-                    key="count_" + round_type + "_" + key,
+                    key="count_" + grant_type.name + "_" + key,
                     val=val,
-                    )
+                )
 
         for key, val in sum_dict.items():
             if val:
                 #print(key, val)
                 Stat.objects.create(
                     created_on=from_date,
-                    key="sum_" + round_type + "_" + key,
+                    key="sum_" + grant_type.name + "_" + key,
                     val=val,
-                    )
+                )
 
 
 def fetchPost(qt='2'):

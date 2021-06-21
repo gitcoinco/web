@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -218,7 +218,7 @@ class ProfileAdmin(admin.ModelAdmin):
         from django.shortcuts import redirect
         if "_unsquelch_sybil" in request.POST:
             from townsquare.models import SquelchProfile
-            obj.squelches.delete()
+            SquelchProfile.objects.filter(profile=obj).delete()
             self.message_user(request, "UnShadowBan done")
             return redirect(obj.admin_url)
         if "_squelch_sybil" in request.POST:

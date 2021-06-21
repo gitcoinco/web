@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2021 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -46,7 +46,7 @@ class Command(BaseCommand):
     help = 'syncs database with kudos on the blockchain'
 
     def add_arguments(self, parser):
-        parser.add_argument('network', type=str, choices=['localhost', 'rinkeby', 'mainnet'],
+        parser.add_argument('network', type=str, choices=['localhost', 'rinkeby', 'mainnet', 'xdai'],
                             help='ethereum network to use')
         parser.add_argument('syncmethod', type=str, choices=['filter', 'id', 'block', 'opensea'],
                             help='sync method to use')
@@ -111,8 +111,11 @@ class Command(BaseCommand):
         more_kudos = True
 
         while more_kudos:
-            kudos_contract.sync_db_without_txid(kudos_id=kudos_enum)
-            kudos_enum += 1
+            try:
+                kudos_contract.sync_db_without_txid(kudos_id=kudos_enum)
+                kudos_enum += 1
+            except Exception as e:
+                print(e)
 
             if kudos_enum > end_id:
                 more_kudos = False

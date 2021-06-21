@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define the Retail utility methods and general logic.
 
-Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
@@ -33,7 +33,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 from cacheops import CacheMiss, cache
 from grants.models import Contribution, Grant
-from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, ManualStat, Stat
+from marketing.models import Alumni, LeaderboardRank, ManualStat, Stat
 from requests_oauthlib import OAuth2Session
 
 programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'rust', 'html', 'design', 'java']
@@ -418,8 +418,8 @@ def build_stat_results(keyword=None):
     from dashboard.models import Bounty, HackathonEvent, Tip
     context = {
         'active': 'results',
-        'title': _('Results'),
-        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.'),
+        'title': 'Results',
+        'card_desc': 'Gitcoin is transparent by design.  Here are some stats about our suite of OSS incentivization products.',
     }
     pp = PerformanceProfiler()
     pp.profile_time('start')
@@ -502,7 +502,7 @@ def build_stat_results(keyword=None):
     pp.profile_time('bounty_history')
 
 
- 
+
 
     def get_kudos_leaderboard(key='kudos_token.artist'):
         query = f"""
@@ -648,7 +648,8 @@ def build_stat_results(keyword=None):
     median_index = int(num_contributions/2)
     context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
     context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
-    from grants.views import clr_round
+    from grants.utils import get_clr_rounds_metadata
+    clr_round, _, _, _ = get_clr_rounds_metadata()
     context['num_matching_rounds'] = clr_round
     context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"
     context['privacy_violations'] = ManualStat.objects.filter(key='privacy_violations').order_by('-pk').first().val

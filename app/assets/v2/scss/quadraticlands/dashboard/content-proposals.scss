@@ -1,0 +1,16 @@
+section.dashboard .content-proposals {
+  .wrapper {
+    .item {
+      width: 100%;
+      display: flex;
+      margin-bottom: 1em;
+
+      .item-stats {
+        margin-left: auto;
+        &.aqua {
+          color: var(--aqua);
+        }
+      }
+    }
+  }
+}
