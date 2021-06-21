@@ -90,6 +90,9 @@ Vue.component('grants-cart', {
         ],
         'RSK': [
           `${static_url}v2/js/grants/cart/rsk_extension.js`
+        ],
+        'ALGORAND': [
+          `${static_url}v2/js/grants/cart/algorand_extension.js`
         ]
       }
     };
@@ -369,6 +372,11 @@ Vue.component('grants-cart', {
     isBinanceExtInstalled() {
       return window.BinanceChain || false;
     },
+
+    isAlgorandExtInstalled() {
+      return window.AlgoSigner || false;
+    },
+
     isRskExtInstalled() {
       const rskHost = 'https://public-node.rsk.co';
       const rskClient = new Web3();
@@ -468,6 +476,9 @@ Vue.component('grants-cart', {
         case 'RSK':
           vm.chainId = '30';
           break;
+        case 'ALGORAND':
+          vm.chainId = '1001';
+          break;
       }
     },
     confirmQRPayment: function(e, grant) {
@@ -543,6 +554,9 @@ Vue.component('grants-cart', {
       let vm = this;
 
       switch (tenant) {
+        case 'ALGORAND':
+          contributeWithAlgorandExtension(grant, vm);
+          break;
         case 'RSK':
           contributeWithRskExtension(grant, vm);
           break;

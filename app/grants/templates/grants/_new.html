@@ -236,6 +236,10 @@
                     <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'rsk'}">
                       <input type="radio" name="grant_chain" id="rsk_chain" value="rsk" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="20"> rsk
                     </label>
+
+                    <label class="btn btn-radio chain-btn d-flex align-items-center justify-content-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 'algorand'}">
+                      <input type="radio" name="grant_chain" id="algorand_chain" value="algorand" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="20"> algorand
+                    </label>
                     {% endif %}
                   </div>
 
@@ -397,6 +401,24 @@
 
                     <div class="text-danger" v-if="errors.rsk_payout_address">
                       [[errors.rsk_payout_address]]
+                    </div>
+                  </template>
+
+
+                  <template v-if="chainId == 'algorand'">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="algorand_payout_address">
+                      Algorand Recipient Wallet Address
+                    </label>
+                    <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+                    <p class="text-black-60 font-caption mb-2">
+                      This is where funds from contributors to this grant will be sent
+                    </p>
+
+                    <input id="algorand_payout_address" v-model="form.algorand_payout_address" name="algorand_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+
+                    <div class="text-danger" v-if="errors.algorand_payout_address">
+                      [[errors.algorand_payout_address]]
                     </div>
                   </template>
                 </div>

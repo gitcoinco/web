@@ -229,7 +229,7 @@ Vue.mixin({
         case 'ALGO':
         case 'USDTa':
         case 'USDCa':
-          url = `https://algoexplorer.io/tx/${address}`;
+          url = `https://algoexplorer.io/address/${address}`;
           break;
 
         case 'SC':
