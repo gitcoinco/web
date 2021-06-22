@@ -265,8 +265,8 @@ def get_github_primary_email(oauth_token):
         str: The user's primary github email address.
 
     """
-    gh_client = github_connect(oauth_token)
     try:
+        gh_client = github_connect(oauth_token)
         emails = gh_client.get_user().get_emails()
         for email in emails:
             if email.get('primary'):
@@ -284,33 +284,31 @@ def get_github_event_emails(oauth_token, username):
         oauth_token (str): The Github OAuth2 token to use for authentication.
 
     Returns:
-        list of str: All of the user's associated email from github.
+        list of str: All of the user's associated emails from github.
 
     """
     emails = []
-    headers = JSON_HEADER
-    if oauth_token:
-        headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get(f'https://api.github.com/users/{username}/events/public', headers=headers)
-
     userinfo = get_user(username)
     user_name = userinfo.get('name', '')
 
-    if response.status_code == 200:
-        events = response.json()
+    try:
+        gh_client = github_connect(oauth_token)
+        events = gh_client.get_user(username).get_public_events()
         for event in events:
-            payload = event.get('payload', {})
+            payload = event.payload if event.payload else {}
             for commit in payload.get('commits', []):
                 author = commit.get('author', {})
-                email = author.get('email', {})
-                name = author.get('name', {})
+                email = author.get('email', '')
+                name = author.get('name', '')
                 if name and username and user_name:
                     append_email = name.lower() == username.lower() or name.lower() == user_name.lower() \
-                                   and email and 'noreply.github.com' not in email
+                                    and email and 'noreply.github.com' not in email
                     if append_email:
                         emails.append(email)
+    except GithubException as e:
+        logger.error(e)
 
-    return set(emails)
+    return list(set(emails))
 
 
 def get_github_emails(oauth_token):
@@ -324,15 +322,16 @@ def get_github_emails(oauth_token):
 
     """
     emails = []
-    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get('https://api.github.com/user/emails', headers=headers)
+    try:
+        gh_client = github_connect(oauth_token)
+        email_data = gh_client.get_user().get_emails()
 
-    if response.status_code == 200:
-        email_data = response.json()
         for email in email_data:
             email_address = email.get('email')
             if email_address and 'noreply.github.com' not in email_address:
                 emails.append(email_address)
+    except GithubException as e:
+        logger.error(e)
 
     return emails
 
@@ -397,8 +396,8 @@ def search_users(query, token=None):
         github.PaginatedList: The pygithub paginator object of all results if many True.
 
     """
-    gh_client = github_connect(token)
     try:
+        gh_client = github_connect(token)
         paginated_list = gh_client.search_users(query)
         return paginated_list
     except GithubException as e:
@@ -750,8 +749,9 @@ def issue_number(issue_url):
 
 def get_current_ratelimit(token=None):
     """Get the current Github API ratelimit for the provided token."""
-    gh_client = github_connect(token)
     try:
+        gh_client = github_connect(token)
         return gh_client.get_rate_limit()
-    except GithubException:
+    except GithubException as e:
+        logger.error(e)
         return {}
