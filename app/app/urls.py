@@ -295,7 +295,7 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
-    
+
 
     # quests
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
@@ -770,6 +770,9 @@ urlpatterns = [
         name='no_applicant_reminder'
     ),
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
+
+    # docs
+    re_path(r'^_administration/docs/',include('django.contrib.admindocs.urls')),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
