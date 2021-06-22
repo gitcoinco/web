@@ -57,9 +57,12 @@
 
 <article>
 
-  <section class="diplomacy-roomlist">
+  <!-- games headline -->
+  <section class="introduction" style="margin-bottom: 3em;">
+    <h1>Your Rooms</h1>
+  </section>
 
-  <h1> Your Games </h1>
+  <section class="diplomacy-roomlist">
 
     {% if invite %}
     <div class="room invite">
@@ -131,7 +134,10 @@
 <!-- sfx library-->
 <script src="{% static "v2/js/lib/quadraticlands/tone.js" %}"></script>
 
-<!-- animate workstream page header image ( hero-diplomacy.svg ) -->
+<!-- animated head + sfx hero -->
+<script src="{% static "v2/js/quadraticlands/mission/diplomacy/hero.js" %}"></script>
+
+<!-- room list app -->
 <script src="{% static "v2/js/quadraticlands/mission/diplomacy/index.js" %}"></script>
 
 {% endblock %}

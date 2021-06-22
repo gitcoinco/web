@@ -273,13 +273,22 @@
 
 {% block 'scripts' %}
 
+
 <!-- force web3modal to popup automatically when no provider selected-->
 <script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
 
 <!-- sfx library-->
 <script src="{% static "v2/js/lib/quadraticlands/tone.js" %}"></script>
 
-<!-- animate workstream page header image ( hero-workstream.svg ) -->
+<!-- animated head + sfx hero -->
+<script src="{% static "v2/js/quadraticlands/mission/diplomacy/hero.js" %}"></script>
+
+<!-- room app -->
 <script src="{% static "v2/js/quadraticlands/mission/diplomacy/room.js" defer %}"></script>
+
+
+
+
+
 
 {% endblock %}

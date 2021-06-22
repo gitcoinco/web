@@ -2,22 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   console.debug('DIPLOMACY ROOM');
 
-  
-
-  // show arrownav when #trollbox is in visible area
-  // hide arrownav when #trollbox is not in visible area
+  // show and hide arrownav when #trollbox is / is not in visible area
   const arrownav = document.getElementById('arrownav');
   var observer = new IntersectionObserver(function(entries) {
     if(entries[0].isIntersecting === true)
       arrownav.classList.remove("hide");
     else
       arrownav.classList.add("hide");
-  }, { threshold: [0.5] });
+  }, { threshold: [0] });
   observer.observe(document.querySelector("#trollbox"));
 
 
-
-
+  // 
+  //
   document.refresh_page = function(url){
     var keys = [/*'.diplomacy-room-members', '.diplomacyvouchebar', */'.entries']
     $.get(url, function(response){
@@ -29,56 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
   }
-  
 
-  // random floor polygones coloring on diplomacy image
-  polygones = document.querySelectorAll('svg #hero polygon, svg #hero path');
-  polygones.forEach(p => {
-    p.setAttribute('data-kinetics-attraction', '');
-    p.setAttribute('data-kinetics-attraction-chance', getRandomFloat(0.3, 1));
-    p.setAttribute('data-kinetics-attraction-force', getRandomFloat(.7, 1.3));
-    p.setAttribute('data-kinetics-attraction-grow', getRandomInt(1, 4));
-    p.setAttribute('data-tone-click-random', '');
-    p.style.cursor = 'pointer';
-  });
 
-  initToneJs();
-
-  window.kinetics = new Kinetics();
-  window.kinetics.interactionHook(); 
-  
   // ROOM CREATED NOTIFICATION + PARTICLE FANYNESS
   const notification_room_created = document.getElementById('notification_room_created');
   if (notification_room_created)
   {
     console.log("ROOM CREATED");
     flashMessage('Room successfull created', 7000);
-
-    // special particle fx
-    window.kinetics.set({
-      particles: {
-        sizes: { min: 200, max: 400 }, rotate: { speed: 5 },
-        mode:{ type: "party", speed: 40, boundery:"endless"}
-      }
-    });
-
-     // reset to normal after 7 seconds
-    setTimeout(function() {
-      window.kinetics.set({
-        particles: {
-          sizes: { min: 5, max: 20 }, rotate: { speed: 1.5 },
-          mode:{ type: "space", speed: 2, boundery:"endless"}
-        }
-      });      
-    }, 7000);
   }
   
-
-  last = 0;
-
-  console.debug('ANIMATE DIPLOMACY');
-  animate_diplomacy();
-
 
   //member card toggle card front back - but not on click in the input field on front card
   const membercards = document.querySelectorAll('.member-card');
@@ -96,10 +53,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
   document.addEventListener('dataWalletReady', diplomacyWallet);
 
+
   //fetch diplomacy_wallet_available from dom (comes from database)
   const used = document.getElementById('diplomacy_wallet_used');
   window.used = used.dataset.used;
   console.debug("USED", window.used)
+
 
   // copy room link to clipboard
   const room_link = document.getElementById('room_link');
@@ -112,13 +71,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+
   // no self deleegation
   $('.front input').click(function(){
     if($(this).data('username') == document.contxt['github_handle']){
       flashMessage('Cannot vouch for  self', 1000);
     }
   })
-
 
 
   // delete room UI
@@ -139,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
 
   // leave room UI
   // show leave button + warning on enter the room name what is fetched
@@ -240,6 +200,7 @@ function updateVoucheBar(){
 
 }
 
+
 // fetch the gtc balance
 async function diplomacyWallet(){
   console.debug("diplomacy wallet");
@@ -318,26 +279,5 @@ async function vouche() {
   });
 
 }
-
-
-// animations for hero
-function animate_diplomacy(now) {
-
-  if (!last || now - last >= 60) {
-
-    // pick a random poly from hero-about.svg
-    // to randomly color up with a little animation
-    polygone = polygones[Math.floor(Math.random() * polygones.length)];
-    polygone.animate({ fill: [ '#9760FF', '#FA72AF', '#7AFFF7', '#9760FF' ] },
-      {
-        duration: 500, delay: 0, iterations: 1
-      });
-
-    last = now;
-  }
-
-  requestAnimationFrame(animate_diplomacy);
-}
-
 
 
