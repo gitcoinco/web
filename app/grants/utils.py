@@ -31,6 +31,7 @@ from django.utils import timezone
 
 from app import settings
 from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
+from app.utils import notion_write
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
@@ -338,3 +339,54 @@ def sync_payout(contribution):
         return None
 
     tenant_payout_mapper[subscription.tenant](contribution)
+
+
+def save_grant_to_notion(title, url):
+    """Post an insert to notions sybil-db table"""
+    # check for notion credentials before attempting insert
+    if settings.NOTION_SYBIL_DB and settings.NOTION_API_KEY:
+        # fully qualified url
+        fullUrl = settings.BASE_URL.rstrip('/') + url
+
+        # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
+        return notion_write(settings.NOTION_SYBIL_DB, {
+            'Current Status': {
+                'id': 'ea{s',
+                'type': 'select',
+                'select': {
+                    'id': '002e021f-3dde-4282-96e6-b2ce1c3a8380',
+                    'name': 'PENDING - Steward Review',
+                    'color': 'yellow'
+                }
+            },
+            'URL': {
+                'id': 'ThRE',
+                'type': 'rich_text',
+                'rich_text': [{
+                    'type': 'text',
+                    'text': {
+                        'content': url,
+                        'link': {
+                            'url': fullUrl
+                        }
+                    },
+                    'plain_text': url,
+                    'href': fullUrl
+                }]
+            },
+            'Grant Name': {
+                "id": "title",
+                "type": "title",
+                "title": [{
+                    "type": "text",
+                    "text": {
+                        "content": title,
+                        "link": {
+                            "url": fullUrl
+                        }
+                    },
+                    "plain_text": title,
+                    "href": fullUrl
+                }]
+            }
+        })
