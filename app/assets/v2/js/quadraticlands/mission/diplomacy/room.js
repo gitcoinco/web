@@ -18,23 +18,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-  /* not sure what this does - do we need it ?
-  document.scroll_roomlog = function(){
-    $(".diplomacy-roomlog .entries").animate({ scrollTop: 0}, 1000);
-  }
   document.refresh_page = function(url){
-      $.get(url, function(response){
-        $(document).find('.entries').replaceWith($(response).find('.entries'))
-        document.scroll_roomlog();
-        $('#chat_room').focus();
-      })
+    var keys = [/*'.diplomacy-room-members', '.diplomacyvouchebar', */'.entries']
+    $.get(url, function(response){
+      for(var i=0; i<keys.length; i++){
+        let key = keys[i];
+        console.log(key, $(response).length, $(response).find(key).html());
+        debugger;
+        $(key).replaceWith($(response).find(key));
+      }
+    })
   }
-  document.scroll_roomlog();
-  */
-
-
-
-
   
 
   // random floor polygones coloring on diplomacy image
@@ -315,10 +309,7 @@ async function vouche() {
     data: params,
     success: function(response){
       flashMessage("Vote submitted", 2000)
-      document.refresh_page(url);
-    $('html, body').animate({
-        scrollTop: $("#chat_room_interface").offset().top
-     }, 500);
+      document.location.href= url;
     },
     error: function(error){
       flashMessage('got an error - pls contact support@gitcoin.co', 5000);

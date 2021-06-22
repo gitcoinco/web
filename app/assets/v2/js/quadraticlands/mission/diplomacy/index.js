@@ -42,34 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
   window.kinetics.interactionHook(); 
 
 
- // ROOM DELETED NOTIFICATION + PARTICLE FANYNESS
-  const notification_room_created = document.getElementById('notification_room_deleted');
-  if (notification_room_created)
-  {
-    console.log("ROOM DELETED");
-    flashMessage('Room deleted', 7000);
-
-    // special particle fx
-    window.kinetics.set({
-      particles: {
-        sizes: { min: 20, max: 40 }, rotate: { speed: 5 },
-        mode:{ type: "linear", speed: 60, boundery:"emitter"}
-      }
-    });
-
-     // reset to normal after 7 seconds
-    setTimeout(function() {
-      window.kinetics.set({
-        particles: {
-          sizes: { min: 5, max: 20 }, rotate: { speed: 1.5 },
-          mode:{ type: "space", speed: 2, boundery:"endless"}
-        }
-      });      
-    }, 7000);
-  }
-
-
-
   last = 0;
   console.debug('ANIMATE DIPLOMACY');
   animate_diplomacy();

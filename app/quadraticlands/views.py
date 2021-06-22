@@ -366,6 +366,7 @@ def mission_diplomacy_room_helper(request, game):
     # handle invites
     users_players = GamePlayer.objects.filter(active=True, profile=request.user.profile)
     users_games = Game.objects.filter(pk__in=users_players.values_list("game"))
+    users_player =  users_players.first()
     if game not in users_games:
         if request.user.is_authenticated:
 
@@ -427,6 +428,7 @@ def mission_diplomacy_room_helper(request, game):
     # game view
     params = {
         'title': game.title,
+        'users_player': users_player,
         'game': game,
         'is_admin': is_admin,
         'max_players': max_players_per_game,
