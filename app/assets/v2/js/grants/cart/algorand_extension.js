@@ -1,38 +1,39 @@
-const contributeWithAlgorandExtension = async(grant, vm, modal) => {
-  const token_name = grant.grant_donation_currency;
-  const amount = grant.grant_donation_amount;
-  const to_address = grant.rsk_payout_address;
-  const token = vm.getTokenByName(token_name);
 
-  // TODO: FIGURE OUT from_address
-
-  // const NETWORK = 'TestNet';
-  const NETWORK = 'MainNet';
+const initAlgorandConnection = async(grant, vm) => {
 
   // 1. check if AlgoSigner is available
   if (!AlgoSigner) {
     _alert({ message: 'Please download or enable AlgoSigner extension' }, 'danger');
-    modal.closeModal();
     return;
   }
 
+  // const NETWORK = 'TestNet';
+  const NETWORK = 'MainNet';
+
+  // step2: get connected accounts
+  AlgoSigner.connect().then(async() => {
+    const addresses = await AlgoSigner.accounts({ ledger: NETWORK });
+
+    if (addresses.length == 0) {
+      _alert({ message: 'No wallet addresses detected on AlgoSigner extension' }, 'danger');
+      return;
+    }
+    vm.updatePaymentStatus(grant.grant_id, 'waiting-on-user-input', null, {addresses: addresses});
+  });
+
+};
+
+const contributeWithAlgorandExtension = async(grant, vm, from_address) => {
+  const token_name = grant.grant_donation_currency;
+  const amount = grant.grant_donation_amount;
+  const to_address = grant.algorand_payout_address;
+  const token = vm.getTokenByName(token_name);
+
+  // const NETWORK = 'TestNet';
+  const NETWORK = 'MainNet';
+
   try {
     AlgoSigner.connect().then(async() => {
-      // step2: get connected accounts
-      const accounts = await AlgoSigner.accounts({ ledger: NETWORK });
-
-      let is_account_present = false;
-
-      accounts.map(account=> {
-        if (account.address == from_address)
-          is_account_present = true;
-      });
-      
-      if (!is_account_present) {
-        _alert({ message: `Unable to access address ${from_address} in wallet` }, 'danger');
-        modal.closeModal();
-        return;
-      }
       
       // step3: check if enough balance is present
       const balance = await AlgoSigner.algod({
@@ -46,41 +47,39 @@ const contributeWithAlgorandExtension = async(grant, vm, modal) => {
       ) {
         // ALGO token
         _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
-        modal.closeModal();
         return;
-
       }
       // ALGO assets
       let is_asset_present = false;
 
       if (balance.assets && balance.assets.length > 0) {
         balance.assets.map(asset => {
-          if (asset['asset-id'] == asset_index)
+          if (asset['asset-id'] == token.addr)
             is_asset_present = true;
         });
       }
 
-      if (is_asset_present) {
+      if (!is_asset_present) {
         _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
-        modal.closeModal();
         return;
       }
 
       let has_enough_asset_balance = false;
 
       balance.assets.map(asset => {
-        if (asset['asset-id'] == asset_index && asset['amount'] <= amount * 10 ** token.decimals)
+        if (asset['asset-id'] == token.addr && asset['amount'] <= amount * 10 ** token.decimals)
           has_enough_asset_balance = true;
       });
 
       if (has_enough_asset_balance) {
         _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
-        modal.closeModal();
         return;
       }
       
+      // step4: set modal to waiting state
+      vm.updatePaymentStatus(grant.grant_id, 'waiting');
 
-      // step4: get txnParams
+      // step5: get txnParams
       const txParams = await AlgoSigner.algod({
         ledger: NETWORK,
         path: '/v2/transactions/params'
@@ -92,8 +91,8 @@ const contributeWithAlgorandExtension = async(grant, vm, modal) => {
       if (token_name == 'ALGO') {
         // ALGO token
         txn = {
-          from: from_address,
-          to: to_address,
+          from: from_address.toUpperCase(),
+          to: to_address.toUpperCase(),
           fee: txParams['fee'],
           type: 'pay',
           amount: amount * 10 ** token.decimals,
@@ -106,9 +105,9 @@ const contributeWithAlgorandExtension = async(grant, vm, modal) => {
       } else {
         // ALGO assets
         txn = {
-          from: from_address,
-          to: to_address,
-          assetIndex: Number(asset_index.addr),
+          from: from_address.toUpperCase(),
+          to: to_address.toUpperCase(),
+          assetIndex: Number(token.addr),
           note: 'contributing to gitcoin grant',
           amount: amount * 10 ** token.decimals,
           type: 'axfer',
@@ -121,39 +120,34 @@ const contributeWithAlgorandExtension = async(grant, vm, modal) => {
       }
 
       AlgoSigner.sign(txn).then(signedTx => {
-
-        // step6: broadcast txn
+        // step7: broadcast txn
         AlgoSigner.send({
           ledger: NETWORK,
           tx: signedTx.blob
-        })
-          .then(tx => {
-            callback(null, from_address, tx.txId);
-          })
-          .catch((e) => {
-            console.log(e);
-            _alert({ message: 'Unable to broadcast txn. Please try again' }, 'danger');
-            modal.closeModal();
-            return;
-          });
+        }).then(tx => {
+          callback(null, from_address, tx.txId);
+        }).catch((e) => {
+          console.log(e);
+          _alert({ message: 'Unable to broadcast txn. Please try again' }, 'danger');
+          vm.updatePaymentStatus(grant.grant_id, 'failed');
+          return;
+        });
 
       }).catch(e => {
         console.log(e);
         _alert({ message: 'Unable to sign txn. Please try again' }, 'danger');
-        modal.closeModal();
+        vm.updatePaymentStatus(grant.grant_id, 'failed');
         return;
       });
 
     }).catch(e => {
       console.log(e);
       _alert({ message: 'Please allow Gitcoin to connect to AlgoSigner extension' }, 'danger');
-      modal.closeModal();
+      vm.updatePaymentStatus(grant.grant_id, 'failed');
       return;
     });
   } catch (e) {
-    modal.closeModal();
-    _alert({ message: 'Unable to make contribution to grant. Please try again later.' }, 'error');
-    console.log(error);
+    callback(err);
     return;
   }
   
@@ -180,7 +174,9 @@ const contributeWithAlgorandExtension = async(grant, vm, modal) => {
       const apiUrlBounty = 'v1/api/contribute';
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
+
         if (200 <= response.status && response.status <= 204) {
+          console.log('success', response);
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [
@@ -194,15 +190,17 @@ const contributeWithAlgorandExtension = async(grant, vm, modal) => {
               }
             ]
           });
+
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
+
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
-          _alert('Unable to make contribute to grant. Please try again later', 'danger');
+          _alert('Unable to contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
-        _alert('Unable to make contribute to grant. Please try again later', 'danger');
+        _alert('Unable to contribute to grant. Please try again later', 'danger');
         console.log(error);
       });
     }

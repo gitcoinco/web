@@ -53,12 +53,12 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
 
       if (balance.assets && balance.assets.length > 0) {
         balance.assets.map(asset => {
-          if (asset['asset-id'] == asset_index)
+          if (asset['asset-id'] == asset_index.addr)
             is_asset_present = true;
         });
       }
 
-      if (is_asset_present) {
+      if (!is_asset_present) {
         _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
         modal.closeModal();
         return;
@@ -67,7 +67,7 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
       let has_enough_asset_balance = false;
 
       balance.assets.map(asset => {
-        if (asset['asset-id'] == asset_index && asset['amount'] <= amount * 10 ** vm.decimals)
+        if (asset['asset-id'] == asset_index.addr && asset['amount'] <= amount * 10 ** vm.decimals)
           has_enough_asset_balance = true;
       });
 

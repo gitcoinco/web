@@ -60,8 +60,8 @@
             Not Eligible for matching
           </div>
         </div>
-        <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button :disabled=!isAlgorandExtInstalled variant="primary" class="btn px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'ALGORAND')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
+        <div class="align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
+          <b-button :disabled="!isAlgorandExtInstalled" variant="primary" class="btn btn-primary px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'ALGORAND')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
             Payout
           </b-button>
         </div>
@@ -76,7 +76,7 @@
       {% include '../comment.html' %}
 
       <modal :id="'payoutModal' + grant.grant_id" ref="payout-modal">
-        <div slot="body" class="text-center px-5">
+        <div slot="body" class="text-center px-3">
           <div v-if="grant.payment_status == 'waiting'">
             <i class="fas fa-spinner fa-pulse d-block" style="font-size: 7rem;"></i>
             <p class="font-bigger-1 mt-5">
@@ -89,9 +89,28 @@
             <p class="font-header font-weight-semibold">
               Signing Transaction Failed.
             </p>
+            <p>
               <i class="fas fa-times" style="font-size: 7rem;"></i>
-              <a href="#" class="btn btn-gc-pink btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Try again in some time</a>
+              <a href="#" class="btn btn-danger btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Try again in some time</a>
             </p>
+          </div>
+          <div v-else-if="grant.payment_status == 'waiting-on-user-input'">
+            <p class="font-header font-weight-semibold">
+              Select the account you want to pay from
+            </p>
+
+            <ul class="pl-0 pt-3" v-if="grant.additionalAttributes && grant.additionalAttributes.addresses">
+              <li class="notifications__list" v-for="address_info in grant.additionalAttributes.addresses" :key="address_info.address">
+                <button class="p-2 font-caption text-left btn btn-block btn-outline-dark d-block mb-3 cursor-pointer`"
+                  @click="contributeWithExtension(grant, 'ALGORAND', address_info.address)"
+                >
+                  <p class="mb-1">
+                    <span>[[ address_info.address ]] </span>
+                  </p>
+                </button>
+              </li>
+            </ul>
+
           </div>
           <div v-else>
             <p class="font-header font-weight-semibold mb-4">

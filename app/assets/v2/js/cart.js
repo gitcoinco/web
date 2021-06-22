@@ -92,6 +92,7 @@ Vue.component('grants-cart', {
           `${static_url}v2/js/grants/cart/rsk_extension.js`
         ],
         'ALGORAND': [
+          `${static_url}v2/js/tokens.js`,
           `${static_url}v2/js/grants/cart/algorand_extension.js`
         ]
       }
@@ -555,7 +556,11 @@ Vue.component('grants-cart', {
 
       switch (tenant) {
         case 'ALGORAND':
-          contributeWithAlgorandExtension(grant, vm);
+          if (data) {
+            contributeWithAlgorandExtension(grant, vm, data);
+          } else {
+            initAlgorandConnection(grant, vm);
+          }
           break;
         case 'RSK':
           contributeWithRskExtension(grant, vm);
@@ -623,9 +628,12 @@ Vue.component('grants-cart', {
           }
           if (additionalAttributes) {
             vm.grantData[index].additionalAttributes = additionalAttributes;
+            console.log(vm.grantData[index]);
           }
         }
       });
+
+      vm.$forceUpdate();
     },
 
     /**

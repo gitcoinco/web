@@ -29,8 +29,6 @@ from secrets import token_hex
 from django.templatetags.static import static
 from django.utils import timezone
 
-from app import settings
-from app.dashboard.sync.algorand import sync_algorand_payout
 from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
