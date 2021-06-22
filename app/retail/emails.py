@@ -34,6 +34,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
@@ -137,15 +138,27 @@ def render_new_grant_approved_email(grant):
     return response_html, response_txt, subject
 
 
-def render_new_supporter_email(grant, subscription):
+def render_new_contributions_email(grant):
+    hours_ago = 12
+    network = get_default_network()
+    contributions = grant.contributions.filter(
+        created_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago),
+        subscription__network=network
+    )
+    amount_raised = sum(contributions.values_list('normalized_data__amount_per_period_usdt', flat=True))
+    num_of_contributors = len(set(contributions.values_list('profile_for_clr', flat=True)))
+
     params = {
         'grant': grant,
-        'subscription': subscription,
-        'utm_tracking': build_utm_tracking('new_supporter'),
+        'hours_ago': hours_ago,
+        'amount_raised': amount_raised,
+        'num_of_contributors': num_of_contributors,
+        'media_url': settings.MEDIA_URL,
+        'utm_tracking': build_utm_tracking('new_contributions'),
     }
-    response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
-    response_txt = render_to_string("emails/grants/new_supporter.txt", params)
-    subject = _("You have a new Grant supporter!")
+    response_html = premailer_transform(render_to_string("emails/grants/new_contributions.html", params))
+    response_txt = render_to_string("emails/grants/new_contributions.txt", params)
+    subject = _("You have new Grant contributions!")
     return response_html, response_txt, subject
 
 
@@ -269,10 +282,11 @@ def thank_you_for_supporting(request):
     return HttpResponse(response_html)
 
 
+
 @staff_member_required
-def new_supporter(request):
+def new_contributions(request):
     subscription = Subscription.objects.last()
-    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
+    response_html, __, __ = render_new_contributions_email(subscription.grant)
     return HttpResponse(response_html)
 
 

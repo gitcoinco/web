@@ -64,7 +64,7 @@ def get_celo_txn_status(txnid):
 
 
 def sync_celo_payout(contribution):
-    is_sucessfull_txn = False
+    is_successfull_txn = False
 
     if not contribution.tx_id or contribution.tx_id == '0x0':
         txn = find_txn_on_celo_explorer(contribution)
@@ -73,9 +73,9 @@ def sync_celo_payout(contribution):
             contribution.save()
             
     if contribution.tx_id and contribution.tx_id != '0x0':
-        is_sucessfull_txn = get_celo_txn_status(contribution.tx_id)
+        is_successfull_txn = get_celo_txn_status(contribution.tx_id)
 
-        if is_sucessfull_txn:
+        if is_successfull_txn:
             contribution.success = True
             contribution.tx_cleared = True
             contribution.checkout_type = 'celo_std'

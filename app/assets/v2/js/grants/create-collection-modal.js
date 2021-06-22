@@ -6,9 +6,21 @@ Vue.component('create-collection-modal', {
       collectionTitle: '',
       collectionDescription: '',
       collections: [],
+      imgURL: '',
       selectedCollection: null,
       showCreateCollection: false
     };
+  },
+  mounted: function() {
+    const checkoutData = CartData.loadCheckedOut();
+
+    let grant_ids = '';
+
+    for (let i = 0; i < checkoutData.length; i++) {
+      grant_ids = grant_ids + checkoutData[i]['grant_id'] + ',';
+    }
+
+    this.imgURL = '/dynamic/grants_cart_thumb/' + document.contxt['github_handle'] + '/' + grant_ids;
   },
   computed: {
     isValidCollection() {
@@ -57,12 +69,16 @@ Vue.component('create-collection-modal', {
         const redirect = `/grants/explorer/collections?collection_id=${response.collection.id}`;
 
         _alert('Congratulations, your new collection was created successfully!', 'success');
+
         this.cleanCollectionModal();
 
         this.$bvModal.hide(this.modalId);
         this.$bvModal.hide('contribution-thanks'); // triggers cart clear
-        window.location = redirect;
 
+        // allow the user to read the alert message before redirecting
+        setTimeout(() => {
+          window.location = redirect;
+        }, 2000);
       } catch (e) {
         _alert(e.msg, 'danger');
       }

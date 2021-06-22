@@ -32,8 +32,8 @@
   <body class="{{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      <div class="header">
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'home/nav.html' %}
       </div>
 
@@ -92,8 +92,7 @@
         </div>
 
       {% include 'shared/footer.html' %}
-      {% include 'shared/analytics.html' %}
-      {% include 'shared/footer_scripts.html' %}
     </div>
   </body>
+  {% include 'shared/footer_scripts.html' %}
 </html>

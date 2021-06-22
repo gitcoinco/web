@@ -1,0 +1,15 @@
+{% load i18n humanize %}
+
+{% trans "New Contributions to Your Grant" %}
+
+{{ hours_ago }} hours</span>, your grant has earned approximately:
+
+${{ amount_raised|floatformat:2|intcomma }}
+
+from {{ num_of_contributors }} contributor{{ num_of_contributors|pluralize }}
+
+{{ grant.title }}
+
+{% trans "For more information, go to your grants page." %}
+
+{{grant.url}}?{{ utm_tracking }}

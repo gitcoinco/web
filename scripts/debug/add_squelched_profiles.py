@@ -4,12 +4,12 @@ from django.utils import timezone
 
 from grants.models import *
 from grants.models import Contribution, PhantomFunding
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 
 # total stats
 
 
-_, round_start_date, round_end_date = get_clr_rounds_metadata()
+_, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
 contributions = Contribution.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date, success=True)
 pfs = PhantomFunding.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date)
@@ -59,7 +59,7 @@ for obj in all_contributors_by_amount[0:limit]:
 
 
 
-# new feature stats for round 5 
+# new feature stats for round 5
 
 subs = Subscription.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(hours=48))
 subs = subs.filter(subscription_contribution__success=True)
@@ -73,9 +73,9 @@ print(subs.filter(is_postive_vote=False).count())
 contributions = Contribution.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date, success=True, subscription__network='mainnet')[0:100]
 print("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
 for contribution in contributions:
-    print(contribution.tx_id, 
+    print(contribution.tx_id,
         contribution.split_tx_id,
         contribution.subscription.contributor_address,
-        contribution.subscription.amount_per_period, 
+        contribution.subscription.amount_per_period,
         contribution.subscription.amount_per_period_minus_gas_price,
         contribution.subscription.token_address)

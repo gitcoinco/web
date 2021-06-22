@@ -3049,29 +3049,30 @@ class Profile(SuperModel):
     @property
     def trust_bonus(self):
         # returns a percentage trust bonus, for this curent user.
-        # trust bonus compounds for every new verification added
-        tb = 1
-        if self.is_brightid_verified:
-            tb *= 1.25
-        if self.is_twitter_verified:
-            tb *= 1.05
-        if self.sms_verification:
-            tb *= 1.02
-        if self.is_google_verified:
-            tb *= 1.02
-        if self.is_poap_verified:
-            tb *= 1.10
-        if self.is_idena_verified:
-            tb *= 1.25
-        if self.is_facebook_verified:
-            tb *= 1.001
-        if self.is_ens_verified:
-            tb *= 1.001
-        if self.is_duniter_verified:
-            tb *= 1.001
+        # trust bonus starts at 50% and compounds for every new verification added
+        # to a max of 150%
+        tb = 0.5
         if self.is_poh_verified:
-            tb *= 1.25
-        return tb
+            tb += 0.50
+        if self.is_brightid_verified:
+            tb += 0.50
+        if self.is_idena_verified:
+            tb += 0.50
+        if self.is_poap_verified:
+            tb += 0.25
+        if self.is_ens_verified:
+            tb += 0.25
+        if self.sms_verification:
+            tb += 0.15
+        if self.is_google_verified:
+            tb += 0.15
+        if self.is_twitter_verified:
+            tb += 0.15
+        if self.is_facebook_verified:
+            tb += 0.15
+        # if self.is_duniter_verified:
+        #     tb *= 1.001
+        return min(1.5, tb)
 
 
     @property
@@ -4175,7 +4176,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url)
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
@@ -4497,7 +4498,6 @@ class Profile(SuperModel):
         context['avg_rating_scaled'] = profile.get_average_star_rating(20)
         context['verification'] = bool(profile.get_my_verified_check)
         context['avg_rating'] = profile.get_average_star_rating()
-        context['suppress_sumo'] = True
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
         context['total_kudos_sent_count'] = profile.sent_kudos.count()
         context['total_kudos_received_count'] = profile.received_kudos.count()

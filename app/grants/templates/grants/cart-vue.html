@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static i18n bundle %}
+{% load static i18n bundle tz %}
 <!DOCTYPE html>
   <html lang="en">
 
@@ -45,6 +45,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
       <div id="gc-grants-cart" v-cloak>
+
+        <div class="container">
+          <div v-if="{{trust_bonus}} < 150" v-cloak class="alert alert-primary spacer-mt-4 border-1 border-primary">
+            <div class="row">
+              <div class="col-12 col-lg-auto text-left pb-1 pb-lg-0" style="max-width: 50px;">
+                <object type="image/svg+xml" data="{% static 'v2/images/trust/64x64-green.svg' %}" height="35"></object>
+              </div>
+              <div class="col-12 col-lg-11 mt-2">
+                <h6 class="gc-font-base mt-1 d-block d-md-inline">Maximize Your Impact! Your current match is {{ trust_bonus }}%</h6>
+                <span class="font-smaller-1 line-height-2">Verify your identity after you checkout to increase your impact.</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
         <grants-cart ref="cart" inline-template>
           <div class="container">
 
@@ -117,7 +133,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
 
     {% include 'shared/current_profile.html' %}
-    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/fingerprintjs.html' %}
 
@@ -136,6 +151,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
     <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+    <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
     <script>
       $('[data-toggle="tooltip"]').bootstrapTooltip();
     </script>
