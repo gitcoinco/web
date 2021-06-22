@@ -598,63 +598,62 @@ def get_notifications():
 
 
 def post_issue_comment(owner, repo, issue_num, comment):
-    """Post a comment on an issue."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
+    """Post a comment on an issue.
+    
+    Args:
+        owner (str): Owner of the repo
+        repo (str): Name of the repo
+        issue_num (int): Issue number
+        comment (int): Comment Body
+
+    Returns:
+        github.IssueComment.IssueComment: The GitHub created comment.
+
+    """
+    gh_client = github_connect()
     try:
-        response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
-        return response.json()
-    except Exception as e:
-        logger.error(
-            "could not post issue comment - Reason: %s - %s %s %s %s", e, comment, owner, repo, response.status_code
-        )
-    return {}
+        repo = gh_client.get_repo(f'{owner}/{repo}')
+        issue_comment = repo.get_issue(number=issue_num).create_comment(comment)
+        return issue_comment
+    except GithubException as e:
+        logger.error(e)
+        return {}
 
 
 def patch_issue_comment(comment_id, owner, repo, comment):
     """Update a comment on an issue via patch."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
+    gh_client = github_connect()
     try:
-        response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
-        if response.status_code == 200:
-            return response.json()
-    except Exception as e:
-        logger.error(
-            "could not patch issue comment - Reason: %s - %s %s %s %s", e, comment_id, owner, repo, response.status_code
-        )
-    return {}
+        repo = gh_client.get_repo(f'{owner}/{repo}')
+        issue_comment = repo.get_comment(comment_id).edit(comment)
+        return issue_comment
+    except GithubException as e:
+        logger.error(e)
+        return {}
 
 
 def delete_issue_comment(comment_id, owner, repo):
     """Remove a comment on an issue via delete."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
+    gh_client = github_connect()
     try:
-        response = requests.delete(url, auth=_AUTH)
-        return response.json()
-    except ValueError:
-        logger.error(
-            "could not delete issue comment because JSON response could not be decoded: %s %s %s %s %s",
-            comment_id, owner, repo, response.status_code, response.text
-        )
-    except Exception as e:
-        logger.error(
-            "could not delete issue comment - Reason: %s: %s %s %s %s %s",
-            e, comment_id, owner, repo, response.status_code, response.text
-        )
-    return {}
+        repo = gh_client.get_repo(f'{owner}/{repo}')
+        issue_comment = repo.get_comment(comment_id).delete()
+        return issue_comment
+    except GithubException as e:
+        logger.error(e)
+        return {}
 
 
 def post_issue_comment_reaction(owner, repo, comment_id, content):
     """React to an issue comment."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions'
+    gh_client = github_connect()
     try:
-        response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
-        return response.json()
-    except Exception as e:
-        logger.error(
-            "could not post issue reaction - Reason: %s - %s %s %s %s",
-            e, comment_id, owner, repo, response.status_code
-        )
-    return {}
+        repo = gh_client.get_repo(f'{owner}/{repo}')
+        reaction = repo.get_comment(comment_id).create_reaction(content)
+        return reaction
+    except GithubException as e:
+        logger.error(e)
+        return {}
 
 
 def get_url_dict(issue_url):
