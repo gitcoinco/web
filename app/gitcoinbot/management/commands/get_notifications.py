@@ -24,7 +24,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from git.utils import (
-    get_gh_notifications, get_issue_comments, issue_number, org_name, post_issue_comment_reaction, repo_name,
+    get_issue_comments, get_notifications, issue_number, org_name, post_issue_comment_reaction, repo_name,
 )
 from github import RateLimitExceededException
 
@@ -34,7 +34,7 @@ class Command(BaseCommand):
     help = 'gets gitcoinbot notifications and responds if the user needs to install the app to get them to work'
 
     def handle(self, *args, **options):
-        notifications = get_gh_notifications()
+        notifications = get_notifications()
         try:
             print('Notifications Count: ', notifications.totalCount)
             for notification in notifications:
@@ -55,7 +55,7 @@ class Command(BaseCommand):
                         _comment_id = latest_comment_url.split('/')[-1]
                         comment = get_issue_comments(_org_name, _repo_name, _issue_number, _comment_id)
                         does_mention_gitcoinbot = settings.GITHUB_API_USER in comment.body
-                        if isinstance(comment, dict) and comments.get('message', '') == 'Not Found':
+                        if isinstance(comment, dict) and comment.get('message', '') == 'Not Found':
                             print("comment was not found")
                         elif not does_mention_gitcoinbot:
                             print("does not mention gitcoinbot")

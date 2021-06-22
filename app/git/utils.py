@@ -440,8 +440,8 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
         return paginated_list
     except Exception as e:
         logger.error(
-            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status_code: %s",
-            e.data['message'], owner, repo, page, state, e.status
+            "could not get issues - Reason: %s - owner: %s repo: %s page: %s status_code: %s",
+            e.data['message'], owner, repo, page, e.status
         )
         return {'status': e.status, 'message': e.data['message']}
 
@@ -586,25 +586,15 @@ def get_organization(org, sub_path='', auth=None):
 
 
 def get_notifications():
-    """Get the github notifications."""
-    url = f'https://api.github.com/notifications?all=1'
-    try:
-        response = requests.get(url, auth=_AUTH, headers=HEADERS)
-        return response.json()
-    except Exception as e:
-        logger.error("could not get notifications - Reason: %s", e)
-    return {}
-
-
-def get_gh_notifications(login=None):
     """Get the Github notifications for Gitcoin Bot."""
     gh_client = github_connect()
-    if login:
-        repo_user = gh_client.get_user(login=login)
-    else:
+    try:
         repo_user = gh_client.get_user()
-    notifications = repo_user.get_notifications(all=True)
-    return notifications
+        paginated_list = repo_user.get_notifications(all=True)
+        return paginated_list
+    except GithubException as e:
+        logger.error(e)
+        return []
 
 
 def post_issue_comment(owner, repo, issue_num, comment):
