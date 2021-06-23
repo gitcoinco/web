@@ -96,7 +96,7 @@ from ens.utils import name_to_hash
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_auth_url, get_gh_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
+from git.utils import get_auth_url, get_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
 from grants.models import Grant
 from grants.utils import get_clr_rounds_metadata
 from kudos.models import KudosTransfer, Token, Wallet
@@ -6194,7 +6194,7 @@ def create_bounty_v1(request):
     # bounty github data
     try:
         kwargs = get_url_dict(bounty.github_url)
-        bounty.github_issue_details = get_gh_issue_details(**kwargs)
+        bounty.github_issue_details = get_issue_details(**kwargs)
     except Exception as e:
         logger.error(e)
 

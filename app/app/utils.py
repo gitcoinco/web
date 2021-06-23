@@ -22,7 +22,7 @@ import requests
 from avatar.models import SocialAvatar
 from avatar.utils import get_svg_templates, get_user_github_avatar_image
 from geoip2.errors import AddressNotFoundError
-from git.utils import _AUTH, HEADERS, get_user, github_connect
+from git.utils import get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener

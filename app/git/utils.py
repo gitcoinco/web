@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 from datetime import timedelta
-from json import JSONDecodeError
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
@@ -35,13 +34,9 @@ from rest_framework.reverse import reverse
 
 logger = logging.getLogger(__name__)
 
-_AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 BASE_URI = settings.BASE_URL.rstrip('/')
 HEADERS = {'Accept': 'application/vnd.github.v3+json'}
-JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
-TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/token'
-PER_PAGE_LIMIT = 100
 
 
 def github_connect(token=None):
@@ -63,7 +58,7 @@ def github_connect(token=None):
     return github_client
 
 
-def get_gh_issue_details(org, repo, issue_num, token=None):
+def get_issue_details(org, repo, issue_num, token=None):
     details = {'keywords': []}
     try:
         gh_client = github_connect(token)
@@ -74,6 +69,7 @@ def get_gh_issue_details(org, repo, issue_num, token=None):
         for k, _ in langs.items():
             details['keywords'].append(k)
         details['title'] = issue_details.title
+        details['body'] = issue_details.body
         details['description'] = issue_details.body.replace('\n', '').strip()
         details['state'] = issue_details.state
         if issue_details.state == 'closed':
@@ -84,7 +80,7 @@ def get_gh_issue_details(org, repo, issue_num, token=None):
     return details
 
 
-def get_gh_issue_state(org, repo, issue_num):
+def get_issue_state(org, repo, issue_num):
     gh_client = github_connect()
     org_user = gh_client.get_user(login=org)
     repo_obj = org_user.get_repo(repo)
@@ -164,7 +160,6 @@ def revoke_token(oauth_token):
         url,
         data=json.dumps({'access_token': oauth_token}),
         auth=_auth,
-        headers=HEADERS
     )
     if response.status_code == 204:
         return True

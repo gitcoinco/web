@@ -23,7 +23,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from corsheaders.signals import check_request_enabled
-from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 
 from .notifications import maybe_market_to_github
 
@@ -36,7 +35,6 @@ def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
     if action in ['post_add', 'post_remove']:
         from dashboard.tasks import m2m_changed_interested
         m2m_changed_interested.delay(instance.pk)
-
 
 
 def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):

@@ -43,7 +43,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_gh_issue_details, get_url_dict, org_name
+from git.utils import get_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -220,7 +220,7 @@ def issue_details(request):
 
     try:
         if url_dict:
-            response = get_gh_issue_details(token=token, **url_dict)
+            response = get_issue_details(token=token, **url_dict)
         else:
             response['message'] = 'could not parse Github url'
     except Exception as e:
@@ -601,7 +601,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     new_bounty.fetch_issue_item()
     try:
         issue_kwargs = get_url_dict(new_bounty.github_url)
-        new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+        new_bounty.github_issue_details = get_issue_details(**issue_kwargs)
 
     except Exception as e:
         logger.error(e)
