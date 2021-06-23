@@ -341,12 +341,12 @@ def sync_payout(contribution):
     tenant_payout_mapper[subscription.tenant](contribution)
 
 
-def save_grant_to_notion(title, url):
+def save_grant_to_notion(grant):
     """Post an insert to notions sybil-db table"""
     # check for notion credentials before attempting insert
     if settings.NOTION_SYBIL_DB and settings.NOTION_API_KEY:
         # fully qualified url
-        fullUrl = settings.BASE_URL.rstrip('/') + url
+        fullUrl = settings.BASE_URL.rstrip('/') + grant.url
 
         # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
         return notion_write(settings.NOTION_SYBIL_DB, {
@@ -365,12 +365,12 @@ def save_grant_to_notion(title, url):
                 'rich_text': [{
                     'type': 'text',
                     'text': {
-                        'content': url,
+                        'content': grant.url,
                         'link': {
                             'url': fullUrl
                         }
                     },
-                    'plain_text': url,
+                    'plain_text': grant.url,
                     'href': fullUrl
                 }]
             },
@@ -380,12 +380,12 @@ def save_grant_to_notion(title, url):
                 "title": [{
                     "type": "text",
                     "text": {
-                        "content": title,
+                        "content": grant.title,
                         "link": {
                             "url": fullUrl
                         }
                     },
-                    "plain_text": title,
+                    "plain_text": grant.title,
                     "href": fullUrl
                 }]
             }

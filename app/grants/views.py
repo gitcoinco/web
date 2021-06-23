@@ -73,10 +73,10 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCollection, GrantType, MatchPledge, Subscription,
 )
-from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
+from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write, update_grant_metadata
 from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
-    is_grant_team_member, save_grant_to_notion, sync_payout,
+    is_grant_team_member, sync_payout,
 )
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
@@ -1864,15 +1864,6 @@ def grant_new(request):
 
         grant = Grant.objects.create(**grant_kwargs)
 
-        try:
-            # record to notion for sybil-hunters
-            save_grant_to_notion(title, grant.url)
-        except:
-            # delete the newly created grant and error if we can't save to notion
-            grant.delete()
-            response['message'] = 'error: Grant creation failed, please try again'
-            return JsonResponse(response)
-
         hackathon_project_id = request.GET.get('related_hackathon_project_id')
         if hackathon_project_id:
             hackathon_project = HackathonProject.objects.filter(id=hackathon_project_id).first()
@@ -1914,6 +1905,9 @@ def grant_new(request):
         # send email to creator and admin
         process_grant_creation_email.delay(grant.pk, profile.pk)
         process_grant_creation_admin_email.delay(grant.pk)
+
+         # record to notion for sybil-hunters
+        process_notion_db_write.delay(grant.pk)
 
         response = {
             'status': 200,

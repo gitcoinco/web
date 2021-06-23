@@ -14,8 +14,8 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCollection, Subscription
-from grants.utils import get_clr_rounds_metadata
-from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
+from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
+from marketing.mails import new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
@@ -380,6 +380,23 @@ def process_grant_creation_admin_email(self, grant_id):
         new_grant_admin(grant)
     except Exception as e:
         print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_notion_db_write(self, grant_id):
+
+    grant = Grant.objects.get(pk=grant_id)
+
+    # attempt to save - fallback to an email
+    try:
+        # write to notion for sybil-hunters
+        save_grant_to_notion(grant)
+    except:
+        try:
+            # send as email if we fail to write to notion
+            notion_failure_email(grant)
+        except Exception as e:
+            print(e)
 
 
 @app.shared_task(bind=True, max_retries=3)

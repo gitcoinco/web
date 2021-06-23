@@ -745,6 +745,29 @@ def new_grant_admin(grant):
             translation.activate(cur_language)
 
 
+def notion_failure_email(grant):
+    to_emails = ['new-grants@gitcoin.co']
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    for to_email in to_emails:
+        try:
+            setup_lang(to_email)
+            subject = _("Failed to write grant to notions db")
+            body_str = _("The following grant failed to be written to notions db, please manually add it")
+            body = f'{body_str}:\n\nTitle: "{grant.title}"\nURL: "{settings.BASE_URL.rstrip("/")}{grant.url}"'
+            if not should_suppress_notification_email(to_email, 'grant'):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    body,
+                    from_name=_("No Reply from Gitcoin.co"),
+                    categories=['admin', func_name()],
+                )
+        finally:
+            translation.activate(cur_language)
+
+
 def send_user_feedback(quest, feedback, user):
     to_email = quest.creator.email
     from_email = settings.SERVER_EMAIL
@@ -1195,7 +1218,7 @@ The txid of this test transaction is {match.test_payout_tx}.
 
 We will be issuing a final payout transaction in DAI within 24-72 hours of this email.  No action is needed on your part, we will issue the final payout transaction automatically.
 
-If you're looking to kill time before your payout is administered.... 
+If you're looking to kill time before your payout is administered....
 1. Please take a moment to comment on this thread to let us know what you thought of this grants round [https://github.com/gitcoinco/web/issues/8000]. We'd love to hear how the round went for you.
 2. {coupon}
 
