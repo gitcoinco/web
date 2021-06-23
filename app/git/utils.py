@@ -550,24 +550,15 @@ def get_interested_actions(github_url, username, email=''):
     return actions_by_interested_party
 
 
-def get_user(user, sub_path='', scope='', scoped=False, auth=None):
-    if not auth:
-        auth = _AUTH
+def get_user(user, token=None):
     """Get the github user details."""
-    if scope is not '':
-        url = f'https://api.github.com/user/{scope}?per_page={PER_PAGE_LIMIT}'
-    elif scoped:
-        url = f'https://api.github.com/user'
-    else:
-        user = user.replace('@', '')
-        url = f'https://api.github.com/users/{user}{sub_path}?per_page={PER_PAGE_LIMIT}'
-    response = requests.get(url, auth=auth, headers=HEADERS)
-
     try:
-        response_dict = response.json()
-    except JSONDecodeError:
-        response_dict = {}
-    return response_dict
+        gh_client = github_connect(token)
+        return gh_client.get_user(user)
+    except GithubException as e:
+        logger.error(e)
+
+    return None
 
 
 def get_organization(org, sub_path='', auth=None):

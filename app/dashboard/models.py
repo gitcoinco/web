@@ -3538,21 +3538,6 @@ class Profile(SuperModel):
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
-    def repos_data_lite(self):
-        from git.utils import get_user
-        # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
-        # but in a way that is respectful of db size too
-        return get_user(self.handle, '/repos')
-
-    @property
-    def repos_data(self):
-        from app.utils import add_contributors
-        repos_data = self.repos_data_lite
-        repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
-        repos_data = [add_contributors(repo_data) for repo_data in repos_data]
-        return repos_data
-
-    @property
     def is_moderator(self):
         """Determine whether or not the user is a moderator.
 

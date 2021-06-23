@@ -509,9 +509,9 @@ def get_avatar(_org_name):
         avatar = Image.open(filepath, 'r').convert("RGBA")
     except (IOError, FileNotFoundError):
         remote_user = get_user(_org_name)
-        if not remote_user.get('avatar_url', False):
+        if not hasattr(remote_user, 'avatar_url'):
             return JsonResponse({'msg': 'invalid user'}, status=422)
-        remote_avatar_url = remote_user['avatar_url']
+        remote_avatar_url = remote_user.avatar_url
 
         r = requests.get(remote_avatar_url, stream=True)
         chunk_size = 20000
@@ -570,7 +570,7 @@ def get_err_response(request, blank_img=False):
 
 def get_user_github_avatar_image(handle):
     remote_user = get_user(handle)
-    avatar_url = remote_user.get('avatar_url')
+    avatar_url = remote_user.avatar_url if hasattr(remote_user, 'avatar_url') else None
     if not avatar_url:
         remote_org = get_organization(handle)
         avatar_url = remote_org.get('avatar_url')

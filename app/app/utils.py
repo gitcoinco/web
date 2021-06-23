@@ -22,7 +22,7 @@ import requests
 from avatar.models import SocialAvatar
 from avatar.utils import get_svg_templates, get_user_github_avatar_image
 from geoip2.errors import AddressNotFoundError
-from git.utils import _AUTH, HEADERS, get_user
+from git.utils import _AUTH, HEADERS, get_user, github_connect
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener
@@ -123,38 +123,6 @@ def ellipses(data, _len=75):
     return (data[:_len] + '..') if len(data) > _len else data
 
 
-def add_contributors(repo_data):
-    """Add contributor data to repository data dictionary.
-
-    Args:
-        repo_data (dict): The repository data dictionary to be updated.
-
-    Returns:
-        dict: The updated repository data dictionary.
-
-    """
-    if repo_data.get('fork', False):
-        return repo_data
-
-    params = {}
-    url = repo_data['contributors_url']
-    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-
-    if response.status_code in [204, 404] :  # no content
-        return repo_data
-
-    response_data = response.json()
-    rate_limited = (isinstance(response_data, dict) and 'documentation_url' in response_data.keys())
-    if rate_limited:
-        # retry after rate limit
-        time.sleep(60)
-        return add_contributors(repo_data)
-
-    # no need for retry
-    repo_data['contributors'] = response_data
-    return repo_data
-
-
 def setup_lang(request, user):
     """Handle setting the user's language preferences and store in the session.
 
@@ -203,28 +171,28 @@ def sync_profile(handle, user=None, hide_profile=True, delay_okay=False):
 def actually_sync_profile(handle, user=None, hide_profile=True):
     from dashboard.models import Profile
     handle = handle.strip().replace('@', '').lower()
-    # data = get_user(handle, scoped=True)
     if user and hasattr(user, 'profile'):
         try:
             access_token = user.social_auth.filter(provider='github').latest('pk').access_token
-            data = get_user(handle, '', scoped=True, auth=(handle, access_token))
+            data = get_user(handle, token=access_token)
 
             user = User.objects.get(username__iexact=handle)
-            if 'login' in data:
+            if data and data.login:
                 profile = user.profile
-                user.username = data['login']
+                user.username = data.login
                 user.save()
-                profile.handle = data['login']
+                profile.handle = data.login
                 profile.email = user.email
                 profile.save()
 
-        except UserSocialAuth.DoesNotExist:
-            pass
+        except Exception as e:
+            logger.error(e)
+            return None
     else:
         data = get_user(handle)
 
     email = ''
-    is_error = 'name' not in data.keys()
+    is_error = not hasattr(data, 'name')
     if is_error:
         print("- error main")
         logger.warning(f'Failed to fetch github username {handle}', exc_info=True, extra={'handle': handle})
@@ -249,17 +217,16 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         latest_obj = profile.user.social_auth.filter(provider='github').latest('pk') if profile.user else None
         access_token = latest_obj.access_token if latest_obj else None
-        orgs = get_user(handle, '/orgs', auth=(profile.handle, access_token)) if access_token else []
-        profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
+        orgs = get_user(handle, token=access_token).get_orgs()
+        profile.organizations = [ele.login for ele in orgs if ele] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
-        for repo in profile.repos_data_lite:
-            if type(repo) == dict:
-                language = repo.get('language') if repo.get('language') else ''
-                _keywords = language.split(',')
-                for key in _keywords:
-                    if key != '' and key not in keywords:
-                        keywords.append(key)
+        for repo in get_user(handle).get_repos():
+            language = repo.language or ''
+            _keywords = language.split(',')
+            for key in _keywords:
+                if key != '' and key not in keywords:
+                    keywords.append(key)
 
         profile.keywords = keywords
         profile.save()

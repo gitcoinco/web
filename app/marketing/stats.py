@@ -142,20 +142,20 @@ def user_actions():
 
 def github_stars():
     from git.utils import get_user
-    reops = get_user('gitcoinco', '/repos')
-    forks_count = sum([repo['forks_count'] for repo in reops])
+    repos = get_user('gitcoinco').get_repos()
+    forks_count = sum([repo.forks_count for repo in repos])
 
     Stat.objects.create(
         key='github_forks_count',
         val=forks_count,
-        )
+    )
 
-    stargazers_count = sum([repo['stargazers_count'] for repo in reops])
+    stargazers_count = sum([repo.stargazers_count for repo in repos])
 
     Stat.objects.create(
         key='github_stargazers_count',
         val=stargazers_count,
-        )
+    )
 
 
 def github_issues():
@@ -165,8 +165,8 @@ def github_issues():
     repos = []
 
     for org in ['bitcoin', 'gitcoinco', 'ethereum']:
-        for repo in get_user(org, '/repos'):
-            repos.append((org, repo['name']))
+        for repo in get_user(org).get_repos():
+            repos.append((org, repo.name))
 
     for org, repo in repos:
         issues = []
@@ -174,7 +174,7 @@ def github_issues():
         page = 1
         while cont:
             new_issues = get_issues(org, repo, page, 'all')
-            issues = issues + new_issues
+            issues = issues + list(new_issues)
             page += 1
             cont = len(new_issues)
 
@@ -185,7 +185,7 @@ def github_issues():
                 created_on=timezone.now(),
                 key=key,
                 val=(val),
-                )
+            )
         except Exception:
             pass
         if not val:

@@ -34,7 +34,7 @@ class Command(BaseCommand):
                         gh_client = github_connect(access_token)
                         user_access_repos = gh_client.get_user().get_repos()
                         if user_access_repos.totalCount: pass # trigger error throw if any
-                        # Question around user repo acccess if we can't get user repos, should we assume all repos are no longer available in the platform?
+                        # Question around user repo access if we can't get user repos, should we assume all repos are no longer available in the platform?
                     except Exception as e:
                         print(e.data['message'])
                         return lsynced
