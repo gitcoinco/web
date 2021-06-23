@@ -31,7 +31,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from dashboard.utils import get_web3
+from web3 import Web3
 
+from dashboard.abi import erc20_abi
 from quadraticlands.helpers import (
     get_coupon_code, get_FAQ, get_initial_dist, get_initial_dist_breakdown, get_mission_status, get_stewards,
 )
@@ -418,9 +421,16 @@ def mission_diplomacy_room_helper(request, game):
 
     # make a move
     if is_member and request.POST.get('signature'):
+        moves = json.loads(request.POST.get('package'))
+        signature = request.POST.get('signature')
+        recipient_address = Web3.toChecksumAddress(moves['account'])
+        web3 = get_web3('mainnet')
+        gtc = web3.eth.contract(address=Web3.toChecksumAddress('0xde30da39c46104798bb5aa3fe8b9e0e1f348163f'), abi=erc20_abi)
+        balance = gtc.functions.balanceOf(recipient_address).call()
+        import ipdb; ipdb.set_trace()
         data = {
-            'moves': json.loads(request.POST.get('package')),
-            'signature': request.POST.get('signature'),
+            'moves': moves,
+            'signature': signature,
         }
         game.make_move(request.user.profile.handle, data)
         return JsonResponse({'msg':'OK', 'url' : game.url})
