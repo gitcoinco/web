@@ -26,7 +26,7 @@
         {% with name="1. Proof of Knowledge" %}
 
           {% if not proof_of_knowledge %}
-            {% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/knowledge" %}
+            {% include 'quadraticlands/dashboard/mission_item.html' with message="closed" locked="true" %}
           {% else %}
             {% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
           {% endif %}
@@ -47,7 +47,7 @@
 
             <!-- User can Play -->
             {% if not proof_of_use %}
-              {% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/use" %}
+              {% include 'quadraticlands/dashboard/mission_item.html' with message="closed" locked="true" %}
             {% else %}
               {% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
             {% endif %}
@@ -70,7 +70,7 @@
 
             <!-- User can Play -->
             {% if not proof_of_receive%}
-              {% include 'quadraticlands/dashboard/mission_item.html' with playable="true" message="available" url="/quadraticlands/mission/receive" %}
+              {% include 'quadraticlands/dashboard/mission_item.html' with message="closed" locked="true" %}
             {% else %}
               {% include 'quadraticlands/dashboard/mission_item.html' with message="completed" done="true" locked="true" %}
             {% endif %}

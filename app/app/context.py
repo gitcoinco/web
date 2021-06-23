@@ -34,7 +34,6 @@ from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
 from perftools.models import JSONStore
 from ptokens.models import PersonalToken
-from quadraticlands.helpers import get_initial_dist, get_mission_status
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
@@ -197,9 +196,7 @@ def preprocess(request):
         'is_location_blocked_for_ptokens': is_location_blocked_for_ptokens,
         'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
         'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
-        'mautic_id': profile.mautic_id if profile else None,
-        'total_claimable_gtc': get_initial_dist(request)['total_claimable_gtc'],
-        'proof_of_receive': get_mission_status(request)['proof_of_receive'] if isinstance(request, HttpRequest) and request.method == "GET" else False
+        'mautic_id': profile.mautic_id if profile else None
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)
