@@ -174,7 +174,7 @@ def github_issues():
         page = 1
         while cont:
             new_issues = get_issues(org, repo, page, 'all')
-            issues = issues + list(new_issues)
+            issues = issues + new_issues
             page += 1
             cont = len(new_issues)
 

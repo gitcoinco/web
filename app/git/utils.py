@@ -412,10 +412,10 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
         repo = gh_client.get_repo(f'{owner}/{repo}')
         if issue:
             if comment_id:
-                issue_comment = repo.get_issue(number=issue).get_comment(comment_id)
+                issue_comment = repo.get_issue(issue).get_comment(comment_id)
                 return issue_comment
             else:
-                paginated_list = repo.get_issue(number=issue).get_comments().get_page(page)
+                paginated_list = repo.get_issue(issue).get_comments().get_page(page)
         else:
             paginated_list = repo.get_issues_comments(sort='created', direction='desc').get_page(page)
         
@@ -451,28 +451,25 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
     """Get the timeline events for a given issue.
 
     PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
-    PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
-    (See https://developer.github.com/changes/2016-05-23-timeline-preview-api/ for more info.)
-
     Args:
         owner (str): Owner of the repo
         repo (str): Name of the repo
         issue (int): Issue number
 
     Returns:
-        requests.Response: The GitHub timeline response.
+        github.PaginatedList of githubTimelineEvent: The GitHub timeline response list.
     """
-    params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, 'page': page, }
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+    page -= 1
+    if page < 0: page = 0
+
+    gh_client = github_connect()
     try:
-        # Set special header to access timeline preview api
-        response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
-        return response.json()
-    except Exception as e:
-        logger.error(
-            "could not get timeline events - Reason: %s - %s %s %s %s", e, owner, repo, issue, response.status_code
-        )
-    return {}
+        repo = gh_client.get_repo(f'{owner}/{repo}')
+        paginated_list = repo.get_issue(int(issue)).get_timeline().get_page(page)
+        return paginated_list
+    except GithubException as e:
+        logger.error(e)
+    return []
 
 
 def get_interested_actions(github_url, username, email=''):
@@ -486,6 +483,7 @@ def get_interested_actions(github_url, username, email=''):
     page = 1
     while should_continue_loop:
         actions = get_issue_timeline_events(owner, repo, issue_num, page)
+        actions = [action._rawData for action in actions]
         should_continue_loop = len(actions) == 100
         all_actions = all_actions + actions
         page += 1
@@ -510,6 +508,7 @@ def get_interested_actions(github_url, username, email=''):
             page = 1
             while should_continue_loop:
                 pr_actions = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num, page)
+                pr_actions = [action._rawData for action in pr_actions]
                 should_continue_loop = len(pr_actions) == 100
                 all_pr_actions = all_pr_actions + pr_actions
                 page += 1
@@ -572,7 +571,7 @@ def post_issue_comment(owner, repo, issue_num, comment):
     gh_client = github_connect()
     try:
         repo = gh_client.get_repo(f'{owner}/{repo}')
-        issue_comment = repo.get_issue(number=issue_num).create_comment(comment)
+        issue_comment = repo.get_issue(issue_num).create_comment(comment)
         return issue_comment
     except GithubException as e:
         logger.error(e)
