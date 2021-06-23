@@ -36,7 +36,7 @@ class Command(BaseCommand):
                         if user_access_repos.totalCount: pass # trigger error throw if any
                         # Question around user repo access if we can't get user repos, should we assume all repos are no longer available in the platform?
                     except Exception as e:
-                        print(e.data['message'])
+                        print(e)
                         return lsynced
 
                     current_user_repos = []
@@ -75,26 +75,21 @@ class Command(BaseCommand):
                             org_members = gh_client.get_organization(db_org.name).get_members()
                             if org_members.totalCount: pass # trigger error throw if any
                         except Exception as e:
-                            print(e.data['message'])
+                            print(e)
                             continue
 
                         for member in org_members:
 
                             try:
-                                membership = get_organization(
-                                    db_org.name, f'/memberships/{member["login"]}', (handle, access_token)
-                                )
-                                if 'message' in membership:
-                                    print(membership['message'])
-                                    continue
-                                role = membership['role'] if 'role' in membership else "member"
+                                membership = get_user(handle).get_organization_membership(db_org.name)
+                                role = membership.role if hasattr(membership, 'role') else "member"
                                 db_group = Group.objects.get_or_create(name=f'{db_org.name}-role-{role}')[0]
                                 db_org.groups.add(db_group)
-                                member_profile_obj = Profile.objects.get(handle=member['login'], user__is_active=True)
+                                member_profile_obj = Profile.objects.get(handle=member.login, user__is_active=True)
                                 member_profile_obj.user.groups.add(db_group)
-                                members_to_sync.append(member['login'])
+                                members_to_sync.append(member.login)
                             except Exception as e:
-                                # print(f'An exception happened in the Organization Loop: handle {member["login"]} {e}')
+                                print(e)
                                 continue
 
                         try:
@@ -102,7 +97,7 @@ class Command(BaseCommand):
                             org_repos = gh_client.get_organization(db_org.name).get_repos()
                             if org_repos.totalCount: pass # trigger error throw if any
                         except Exception as e:
-                            print(e.data['message'])
+                            print(e)
                             continue
 
                         for repo in org_repos:
@@ -114,7 +109,7 @@ class Command(BaseCommand):
                                 repo_collabs = gh_client.get_repo(repo.full_name).get_collaborators()
                                 if repo_collabs.totalCount: pass # trigger error throw if any
                             except Exception as e:
-                                print(e.data['message'])
+                                print(e)
                                 continue
 
                             for collaborator in repo_collabs:

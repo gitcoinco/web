@@ -561,20 +561,6 @@ def get_user(user, token=None):
     return None
 
 
-def get_organization(org, sub_path='', auth=None):
-    """Get the github organization details."""
-    if not auth:
-        auth = _AUTH
-    org = org.replace('@', '')
-    url = f'https://api.github.com/orgs/{org}{sub_path}?per_page={PER_PAGE_LIMIT * 2}'
-    response = requests.get(url, auth=auth, headers=HEADERS)
-    try:
-        response_dict = response.json()
-    except JSONDecodeError:
-        response_dict = {}
-    return response_dict
-
-
 def get_notifications():
     """Get the Github notifications for Gitcoin Bot."""
     gh_client = github_connect()
