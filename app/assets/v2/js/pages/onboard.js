@@ -2,6 +2,21 @@ var onboard = {};
 var current = 0;
 var words = [];
 
+var redirectURL = function() {
+  let url = '';
+
+  if (flow === 'contributor') {
+    save_job_status();
+    url = '/explorer?keywords=' + words.join(',');
+  } else if (flow === 'funder') {
+    url = '/funding/new';
+  } else if (flow === 'profile') {
+    url = '/profile/';
+  }
+
+  document.location.href = url;
+};
+
 if ($('.logged-in').length) {
   $('.nav-item.dropdown #navbarDropdown').css('visibility', 'visible');
   $('.nav_avatar').css('visibility', 'visible');
@@ -256,20 +271,5 @@ $('.search-area input[type=text]').keypress(function(e) {
     e.preventDefault();
   }
 });
-
-var redirectURL = function() {
-  let url = '';
-
-  if (flow === 'contributor') {
-    save_job_status();
-    url = '/explorer?keywords=' + words.join(',');
-  } else if (flow === 'funder') {
-    url = '/funding/new';
-  } else if (flow === 'profile') {
-    url = '/profile/';
-  }
-
-  document.location.href = url;
-};
 
 localStorage['onboarded_funder'] = true;

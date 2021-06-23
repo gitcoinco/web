@@ -31,8 +31,7 @@ from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
-from grants.utils import generate_leaderboard
-from grants.views import get_clr_rounds_metadata
+from grants.utils import generate_leaderboard, get_clr_rounds_metadata
 from marketing.models import Stat
 from perftools.models import JSONStore
 from quests.helpers import generate_leaderboard
@@ -122,7 +121,7 @@ def create_grant_category_size_cache():
 
 def create_top_grant_spenders_cache():
 
-    _, round_start_date, _ = get_clr_rounds_metadata()
+    _, round_start_date, _, _ = get_clr_rounds_metadata()
 
     grant_types = GrantType.objects.filter(is_visible=True, is_active=True)
     for grant_type in grant_types:

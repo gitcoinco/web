@@ -30,7 +30,7 @@ from dashboard.models import Activity, Earning, Profile
 from economy.utils import convert_token_to_usdt
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from townsquare.models import Comment
 
 text = ''
@@ -253,7 +253,7 @@ def earners(days, cadence):
         if source_type not in descs[handle].keys():
             descs[handle][source_type] = 0
         descs[handle][source_type] += 1
-            
+
     amounts = sorted(amounts.items(), key=operator.itemgetter(1), reverse=True)
 
     pprint("================================")
@@ -281,7 +281,7 @@ def earners(days, cadence):
 
 def grants():
 
-    clr_round, _, _ = get_clr_rounds_metadata()
+    clr_round, _, _, _ = get_clr_rounds_metadata()
     active_clr_rounds = GrantCLR.objects.filter(is_active=True, customer_name='ethereum', start_date__lt=timezone.now(), end_date__gt=timezone.now())
     if not active_clr_rounds.exists():
         return
@@ -306,7 +306,7 @@ def grants():
     #for aclr in active_clr_rounds:
     #    grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
 
-    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)#, subscription__grant__in=grants_pks)
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, subscription_network='mainnet')#, subscription__grant__in=grants_pks)
     if must_be_successful:
         contributions = contributions.filter(success=True)
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)

@@ -21,11 +21,13 @@ import logging
 import os
 import re
 import urllib.request
+from datetime import datetime
 from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
 from django.templatetags.static import static
+from django.utils import timezone
 
 from app import settings
 from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
@@ -39,7 +41,7 @@ from grants.sync.polkadot import sync_polkadot_payout
 from grants.sync.rsk import sync_rsk_payout
 from grants.sync.zcash import sync_zcash_payout
 from grants.sync.zil import sync_zil_payout
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from PIL import Image, ImageDraw, ImageOps
 
 logger = logging.getLogger(__name__)
@@ -58,6 +60,32 @@ tenant_payout_mapper = {
     'KUSAMA': sync_polkadot_payout,
     'RSK': sync_rsk_payout
 }
+
+def get_clr_rounds_metadata():
+    '''
+        Fetches default CLR round metadata for stats/marketing flows.
+        This is configured when multiple rounds are running
+    '''
+    try:
+        CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
+
+        clr_round = CLR_ROUND_DATA['round_num']
+        start_date = CLR_ROUND_DATA['round_start']
+        end_date = CLR_ROUND_DATA['round_end']
+        round_active = CLR_ROUND_DATA['round_active']
+
+        # timezones are in UTC (format example: 2021-06-16:15.00.00)
+        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
+        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
+
+    except:
+        # setting defaults
+        clr_round=1
+        round_start_date = timezone.now()
+        round_end_date = timezone.now() + timezone.timedelta(days=14)
+        round_active = True
+
+    return clr_round, round_start_date, round_end_date, round_active
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)

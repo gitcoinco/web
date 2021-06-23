@@ -94,6 +94,12 @@ if ! [ "$JOBS_NODE" ]; then
         sudo kill -1 $pid
         sleep 1.5
         done
+
+        if [ $(pgrep -fl "gunicorn: worke" | wc -l) -eq "0"  ]; then
+            echo "- RESTART gunicorn"
+            sudo systemctl restart gunicorn
+        fi
+
     else
         echo "- celery"
         sudo systemctl restart celery.service

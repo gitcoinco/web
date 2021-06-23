@@ -157,6 +157,10 @@ Vue.mixin({
       if (!vm.checkForm(event))
         return;
 
+      if (form.reference_url.startsWith('www.')) {
+        form.reference_url = 'https://' + form.reference_url;
+      }
+
       const params = {
         'title': form.title,
         'reference_url': form.reference_url,

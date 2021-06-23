@@ -58,6 +58,10 @@ Vue.mixin({
         'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()
       };
 
+      if (vm.grant.reference_url.startsWith('www.')) {
+        vm.grant.reference_url = 'https://' + vm.grant.reference_url;
+      }
+
       const apiUrlGrant = `/grants/v1/api/grant/edit/${vm.grant.id}/`;
       const data = {
         'title': vm.grant.title,

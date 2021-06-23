@@ -1157,56 +1157,55 @@
                     <div class="col-10 offset-1">
                       <div class="rounded py-4 px-md-5 row mx-0 suggested_bounties">
                         <b-col>
-                        <h2 class="mt-2 mb-4 font-bigger-1 font-weight-bold mx-3 ml-lg-0">
-                          {% trans "Update Sidebar" %}
-                        </h2>
-                        <div class="col-12 col-md-11 px-0 pr-md-0">
-                          <div class="priority-container mt-4">
-                            <div class="priorities rounded col-12 py-4">
-                              <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
-                                <p class="mb-3 font-bigger-3"><i class="far fa-bullhorn"></i></p>
-                                <span>Tell the community about [[ tribe.name ]]</span>
-                              </h2>
-                            </div>
+                          <h2 class="mt-2 mb-4 font-bigger-1 font-weight-bold mx-3 ml-lg-0">
+                            {% trans "Update Sidebar" %}
+                          </h2>
+                          <div class="col-12 col-md-11 px-0 pr-md-0">
+                            <div class="priority-container mt-4">
+                              <div class="priorities rounded col-12 py-4">
+                                <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
+                                  <p class="mb-3 font-bigger-3"><i class="far fa-bullhorn"></i></p>
+                                  <span>Tell the community about [[ tribe.name ]]</span>
+                                </h2>
+                              </div>
 
-                            <div class="editor-container">
+                              <div class="editor-container">
+                                <quill-editor
+                                  ref="quillEditorDesc"
+                                  class="editor bg-white"
+                                  v-model="tribe.tribe_description"
+                                  :options="editorOptionDesc"
+                                ></quill-editor>
+                              </div>
+                            </div>
+                            <div class="priority-container mt-5">
+
+                              <div class="priorities rounded col-12 py-4">
+                                <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
+                                  <p class="mb-3 font-bigger-3"><i class="far fa-star"></i></p>
+                                  <span>Share your priorities to encourage tribe members</span>
+                                  <span class="d-block mt-2">to volunteer to work on bounties which matter</span>
+                                </h2>
+                              </div>
+
                               <quill-editor
-                                ref="quillEditorDesc"
+                                ref="quillEditorPriority"
                                 class="editor bg-white"
-                                v-model="tribe.tribe_description"
-                                :options="editorOptionDesc"
+                                v-model="tribe.tribe_priority"
+                                :options="editorOptionPrio"
                               ></quill-editor>
                             </div>
                           </div>
-                          <div class="priority-container mt-5">
-
-                            <div class="priorities rounded col-12 py-4">
-                              <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
-                                <p class="mb-3 font-bigger-3"><i class="far fa-star"></i></p>
-                                <span>Share your priorities to encourage tribe members</span>
-                                <span class="d-block mt-2">to volunteer to work on bounties which matter</span>
-                              </h2>
-                            </div>
-
-                            <quill-editor
-                              ref="quillEditorPriority"
-                              class="editor bg-white"
-                              v-model="tribe.tribe_priority"
-                              :options="editorOptionPrio"
-                            ></quill-editor>
+                          <div class="update-priority-submit col-12 col-md-11 p-1">
+                              <div class="form__checkbox d-inline-block p-2">
+                                <b-form-checkbox v-model="params.publish_to_ts" name="check-button" switch>
+                                  {% trans "Post to Townsquare" %}
+                                </b-form-checkbox>
+                              </div>
                           </div>
-                        </div>
-                        <div class="update-priority-submit col-12 col-md-11 p-1">
-                            <div class="form__checkbox d-inline-block p-2">
-                              <b-form-checkbox v-model="params.publish_to_ts" name="check-button" switch>
-                                {% trans "Post to Townsquare" %}
-                              </b-form-checkbox>
-                            </div>
-
-                            <button type="submit" class="btn btn-sm btn-primary float-right font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
-                              <i class="fas fa-bullhorn mr-2"></i> {% trans "Update Sidebar" %}
-                            </button>
-                        </div>
+                          <button type="submit" class="btn btn-sm btn-primary font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
+                            <i class="fas fa-bullhorn mr-2"></i> {% trans "Update Sidebar" %}
+                          </button>
                         </b-col>
                       </div>
                       <div v-if="tribe.suggested_bounties && tribe.suggested_bounties.length > 0" class="rounded py-4 px-md-5 row mx-0 suggested_bounties">
@@ -1491,7 +1490,6 @@
 
       {% include 'shared/result.html' %}
       {% include 'shared/featured_bounty_cards.html' %}
-      {% include 'shared/analytics.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
       {% include 'shared/footer.html' %}
       {% include 'shared/current_profile.html' %}

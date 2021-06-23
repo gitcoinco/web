@@ -83,9 +83,6 @@ along with this program. If not, see
                       <template v-if="'activity' == current_type">
                         {% include 'grants/shared/landing_activity.html' %}
                       </template>
-                      <template v-else-if="'about' == current_type">
-                        {% include 'grants/shared/landing_announce.html' %}
-                      </template>
                       <template v-else-if="'stats' == current_type">
                         <div id="insert_iframe">
                           <div style="background-color: #eee; font-size: 14px; text-align: center;">
@@ -136,7 +133,6 @@ along with this program. If not, see
       {% include 'shared/footer.html' %}
     </div>
   </div>
-  {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
   {% include 'grants/shared/shared_scripts.html' %}
   {{collections|json_script:"collections-object"}}
@@ -202,7 +198,6 @@ along with this program. If not, see
   <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
   <script src="{% static "v2/js/grants/funding.js" %}"></script>
   <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
-  <script src="{% static "v2/js/grants/contribution-trust-bonus.js" %}"></script>
   <script src="{% static "v2/js/grants/grant-thanks-modal.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
 </body>
