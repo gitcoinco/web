@@ -238,23 +238,6 @@ def get_github_user_token(code, **kwargs):
     return None
 
 
-def get_github_user_data(oauth_token):
-    """Get the user's github profile information.
-
-    Args:
-        oauth_token (str): The Github OAuth2 token to use for authentication.
-
-    Returns:
-        requests.Response: The Github user response.
-
-    """
-    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
-    response = requests.get('https://api.github.com/user', headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    return {}
-
-
 def get_github_primary_email(oauth_token):
     """Get the primary email address associated with the github profile.
 
@@ -550,11 +533,11 @@ def get_interested_actions(github_url, username, email=''):
     return actions_by_interested_party
 
 
-def get_user(user, token=None):
+def get_user(user=None, token=None):
     """Get the github user details."""
     try:
         gh_client = github_connect(token)
-        return gh_client.get_user(user)
+        return gh_client.get_user(user) if user else gh_client.get_user()
     except GithubException as e:
         logger.error(e)
 

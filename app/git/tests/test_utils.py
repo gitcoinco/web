@@ -130,26 +130,6 @@ class GitUtilitiesTest(TestCase):
         assert result_no_token is None
 
     @responses.activate
-    def test_get_github_user_data(self):
-        """Test the github utility get_github_user_data method."""
-        headers = dict({'Authorization': f'token {self.user_oauth_token}'}, **JSON_HEADER)
-        data = {'login': 'gitcoin'}
-        responses.add(responses.GET, 'https://api.github.com/user', json=data, headers=headers, status=200)
-        result = get_github_user_data(self.user_oauth_token)
-
-        assert result == data
-
-    @responses.activate
-    def test_get_github_user_data_failure(self):
-        """Test the github utility get_github_user_data method."""
-        headers = dict({'Authorization': f'token {self.user_oauth_token}'}, **JSON_HEADER)
-        data = {'login': 'gitcoin'}
-        responses.add(responses.GET, 'https://api.github.com/user', json=data, headers=headers, status=404)
-        result = get_github_user_data(self.user_oauth_token)
-
-        assert result == {}
-
-    @responses.activate
     def test_is_github_token_valid(self):
         """Test the github utility is_github_token_valid method."""
         now = timezone.now()

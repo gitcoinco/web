@@ -96,9 +96,7 @@ from ens.utils import name_to_hash
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import (
-    get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
-)
+from git.utils import get_auth_url, get_gh_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
 from grants.models import Grant
 from grants.utils import get_clr_rounds_metadata
 from kudos.models import KudosTransfer, Token, Wallet
@@ -279,8 +277,8 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
 def helper_handle_access_token(request, access_token):
     # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
     # interest API via token
-    github_user_data = get_github_user_data(access_token)
-    request.session['handle'] = github_user_data['login']
+    github_user_data = get_user(token=access_token)
+    request.session['handle'] = github_user_data.login
     profile = Profile.objects.filter(handle=request.session['handle'].lower()).first()
     request.session['profile_id'] = profile.pk
 
@@ -368,9 +366,9 @@ def new_interest(request, bounty_id):
     access_token = request.GET.get('token')
     if access_token:
         helper_handle_access_token(request, access_token)
-        github_user_data = get_github_user_data(access_token)
+        github_user_data = get_user(access_token)
         profile = Profile.objects.prefetch_related('bounty_set') \
-            .filter(handle=github_user_data['login'].lower()).first()
+            .filter(handle=github_user_data.login.lower()).first()
         profile_id = profile.pk
     else:
         profile = request.user.profile if profile_id else None
@@ -605,8 +603,8 @@ def remove_interest(request, bounty_id):
     access_token = request.GET.get('token')
     if access_token:
         helper_handle_access_token(request, access_token)
-        github_user_data = get_github_user_data(access_token)
-        profile = Profile.objects.filter(handle=github_user_data['login'].lower()).first()
+        github_user_data = get_user(access_token)
+        profile = Profile.objects.filter(handle=github_user_data.login.lower()).first()
         profile_id = profile.pk
 
     if not profile_id:
@@ -2135,14 +2133,14 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
         access_token = request.user.profile.get_access_token()
     else:
         access_token = request.session.get('access_token')
-    github_user_data = get_github_user_data(access_token)
+    github_user_data = get_user(access_token)
 
     try:
         bounty = Bounty.objects.current().filter(network=bounty_network, standard_bounties_id=stdbounties_id).first()
     except Bounty.DoesNotExist:
         raise Http404
 
-    has_fulfilled = bounty.fulfillments.filter(profile__handle=github_user_data['login']).count()
+    has_fulfilled = bounty.fulfillments.filter(profile__handle=github_user_data.login).count()
     if has_fulfilled == 0:
         return JsonResponse({
             'success': False,
