@@ -99,7 +99,7 @@ def get_mission_status(request):
                 "proof_of_use" : mission_status.proof_of_use,
                 "proof_of_knowledge" : mission_status.proof_of_knowledge,
                 "proof_of_receive" : mission_status.proof_of_receive,
-                "completed_missions": completed_missions 
+                "completed_missions": completed_missions
             }
             return game_state
         except MissionStatus.DoesNotExist:
@@ -114,47 +114,6 @@ def get_mission_status(request):
         "completed_missions": 0
     }
     return no_game_state
-
-
-@require_http_methods(["POST"])
-@login_required
-#@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
-def set_mission_status(request):
-    '''When a mission is completed, the UI will POST here to flip game state completed True for a given mission'''
-    if request.user.is_authenticated:
-        try:
-            mission_name = request.POST.get('mission')
-            if type(mission_name) != str:
-                logger.info('QuadLands - Non-string received for mission_name.')
-                HttpResponse(status=404)
-            elif mission_name not in ('proof_of_use', 'proof_of_knowledge','proof_of_receive'):
-                logger.info(f'QuadLands - Invalid mission_name received - {mission_name}')
-                HttpResponse(status=404)
-        except:
-            logger.info('QuadLands - Failed to parse set_mission_status')
-            return HttpResponse(status=404)
-
-        profile = get_profile_from_username(request)
-
-        # if doesn't exist creates record
-        mission = MissionStatus.objects.get_or_create(profile=profile)
-        # then get the record
-        mission_status = MissionStatus.objects.get(profile=profile)
-
-        if mission_name == 'proof_of_knowledge':
-            mission_status.proof_of_knowledge = True
-            mission_status.save()
-
-        if mission_name == 'proof_of_use':
-            mission_status.proof_of_use = True
-            mission_status.save()
-
-        if mission_name == 'proof_of_receive':
-            mission_status.proof_of_receive = True
-            mission_status.save()
-
-        resp = {'mission_status_set': 'true'}
-        return JsonResponse(resp, status=200)
 
 
 def get_initial_dist(request):
@@ -236,109 +195,6 @@ def vote(request):
     resp = {'vote_save': 'success'}
     return JsonResponse(resp, status=200)
 
-@require_http_methods(["POST"])
-# @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-@login_required
-def claim(request):
-    '''
-    Receives AJAX post from CLAIM button on claim.html
-    Returns JSON response (signed token claim!) from Eth Signed Message Service
-    '''
-
-    if request.user.is_impersonate:
-        logger.info('QuadLands: Impersonated user sent request POSTED to /claim - highly sus - request ignored.')
-        raise Http404
-
-    profile = get_profile_from_username(request)
-    logger.info(f'claim profile id: {profile.id}')
-
-    post_data_to_emss = {}
-    post_data_to_emss['user_id'] = profile.id
-
-    # confirm we received a valid, checksummed address for the token claim
-    # then add address to post_data_to_emss dict
-    try:
-        if is_checksum_address(request.POST.get('address')):
-            post_data_to_emss['user_address'] = request.POST.get('address')
-        elif is_address(request.POST.get('address')):
-            post_data_to_emss['user_address'] = to_checksum_address(request.POST.get('address'))
-        else:
-            logger.info('QuadLands: token claim address failed integrity check. No claim will be generated.')
-            return JsonResponse({'error': 'Token claim address failed integrity checks.'})
-    except:
-        logger.error('QuadLands: There was an issue validating user wallet address.')
-        return JsonResponse({'error': 'Token claim address failed validation'})
-
-    # confirm we received a valid, checksummed delegate address for the token claim
-    # then add address to post_data_to_emss dict
-    try:
-        if is_checksum_address(request.POST.get('delegate')):
-            post_data_to_emss['delegate_address'] = request.POST.get('delegate')
-        elif is_address(request.POST.get('delegate')):
-            post_data_to_emss['delegate_address'] = to_checksum_address(request.POST.get('delegate'))
-        else:
-            logger.info('QuadLands: token claim delegate_address failed integrity check. No claim will be generated.')
-            return JsonResponse({'error': 'Token claim delegate failed integrity checks.'})
-    except:
-        logger.error('QuadLands: There was an issue validating delegate address.')
-        return JsonResponse({'error': 'Token claim delegate failed validation'})
-
-    claim = get_initial_dist(request)
-
-    post_data_to_emss['user_amount'] = claim['total_claimable_wei']
-
-    # create a hash of post data
-    try:
-        sig = create_sha256_signature(settings.GTC_DIST_KEY, json.dumps(post_data_to_emss))
-    except:
-        logger.error('QuadLands: Error creating hash of POST data for EMSS')
-        return JsonResponse({'error': 'Hashing token claim data.'})
-
-    header = {
-        "X-GITCOIN-SIG" : sig,
-        "content-type": "application/json",
-    }
-
-    # POST relevant user data to micro service that returns signed transation data for the user broadcast
-    try:
-        emss_response = requests.post(settings.GTC_DIST_API_URL, data=json.dumps(post_data_to_emss), headers=header)
-        emss_response_content = emss_response.content
-        emss_response.raise_for_status() # raise exception on error
-    except requests.exceptions.ConnectionError:
-        logger.error('GTC Distributor: ConnectionError while connecting to EMSS!')
-        resp = {'ERROR': 'There was an issue getting token claim.'}
-        return JsonResponse(resp, status=503)
-    except requests.exceptions.Timeout:
-        # Maybe set up for a retry
-        logger.error('GTC Distributor: Timeout while connecting to EMSS!')
-        resp = {'ERROR': 'There was an issue getting token claim.'}
-        return JsonResponse(resp, status=408)
-    except requests.exceptions.TooManyRedirects:
-        logger.error('GTC Distributor: Too many redirects while connecting to EMSS!')
-        resp = {'ERROR': 'There was an issue getting token claim.'}
-        return JsonResponse(resp, status=400)
-    except requests.exceptions.RequestException as e:
-        # catastrophic error. bail.
-        logger.error(f'GTC Distributor:  Error posting to EMSS - {e}')
-        resp = {'ERROR': 'There was an issue getting token claim.'}
-        return JsonResponse(resp, status=400)
-
-    # pass returned values from eth signer microservice
-    # ESMS returns bytes object of json. so, we decode it
-    esms_response = json.loads( emss_response_content.decode('utf-8'))
-
-    logger.debug(f'GTC Token Distributor - ESMS response: {esms_response}')
-    return JsonResponse(esms_response)
-
-def create_sha256_signature(key, message):
-    '''Given key & message, returns HMAC digest of the message'''
-    try:
-        byte_key = binascii.unhexlify(key)
-        message = message.encode()
-        return hmac.new(byte_key, message, hashlib.sha256).hexdigest().upper()
-    except Exception as e:
-        logger.error(f'GTC Distributor - Error Hashing Message: {e}')
-        return False
 
 def get_stewards():
     '''Return stewards for a given request'''
@@ -399,7 +255,7 @@ def get_coupon_code(request):
 
     # fetch empty coupons
     coupons = SchwagCoupon.objects.filter(profile__isnull=True)
-    # assign coupon code based on claimable GTC tokens 
+    # assign coupon code based on claimable GTC tokens
     if total_claimable_gtc < 50:
         # 20% coupon
         coupon = coupons.filter(discount_type='20_off').first()
@@ -415,5 +271,5 @@ def get_coupon_code(request):
     if coupon:
         coupon.profile = profile
         coupon.save()
-    
+
     return coupon.coupon_code
