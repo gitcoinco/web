@@ -615,7 +615,6 @@ MAILCHIMP_LIST_ID_HACKERS = env.str('MAILCHIMP_LIST_ID_HACKERS', default='')
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
 GITHUB_AUTH_BASE_URL = env('GITHUB_AUTH_BASE_URL', default='https://github.com/login/oauth/authorize')
-GITHUB_TOKEN_URL = env('GITHUB_TOKEN_URL', default='https://github.com/login/oauth/access_token')
 GITHUB_SCOPE = env('GITHUB_SCOPE', default='read:user,user:email')
 GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='')  # TODO
 GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='')  # TODO

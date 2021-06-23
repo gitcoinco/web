@@ -224,20 +224,6 @@ def get_auth_url(redirect_uri='/'):
     return settings.GITHUB_AUTH_BASE_URL + f'?{auth_url}'
 
 
-def get_github_user_token(code, **kwargs):
-    """Get the Github authorization token."""
-    _params = {'code': code, 'client_id': settings.GITHUB_CLIENT_ID, 'client_secret': settings.GITHUB_CLIENT_SECRET}
-    # Add additional parameters to the request paramaters.
-    _params.update(kwargs)
-    response = requests.get(settings.GITHUB_TOKEN_URL, headers=JSON_HEADER, params=_params)
-    response = response.json()
-    scope = response.get('scope', None)
-    if scope:
-        access_token = response.get('access_token', None)
-        return access_token
-    return None
-
-
 def get_github_primary_email(oauth_token):
     """Get the primary email address associated with the github profile.
 

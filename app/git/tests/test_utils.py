@@ -26,10 +26,9 @@ from django.utils import timezone
 
 import responses
 from git.utils import (
-    BASE_URI, HEADERS, JSON_HEADER, TOKEN_URL, build_auth_dict, delete_issue_comment, get_auth_url, get_github_emails,
-    get_github_primary_email, get_github_user_data, get_github_user_token, get_issue_comments,
-    get_issue_timeline_events, get_user, is_github_token_valid, org_name, patch_issue_comment, post_issue_comment,
-    post_issue_comment_reaction, repo_url, reset_token, revoke_token, search,
+    HEADERS, JSON_HEADER, TOKEN_URL, build_auth_dict, delete_issue_comment, get_github_emails, get_github_primary_email,
+    get_issue_comments, get_issue_timeline_events, get_user, is_github_token_valid, org_name, patch_issue_comment,
+    post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token, search,
 )
 from test_plus.test import TestCase
 
@@ -107,27 +106,6 @@ class GitUtilitiesTest(TestCase):
         assert responses.calls[1].request.url == url
         assert result == self.user_oauth_token
         assert result_not_found == ''
-
-    @responses.activate
-    def test_get_github_user_token(self):
-        """Test the github utility get_github_user_token method."""
-        data = {'access_token': self.user_oauth_token, 'scope': 'read:user,user:email'}
-        params = {
-            'code': self.callback_code,
-            'client_id': settings.GITHUB_CLIENT_ID,
-            'client_secret': settings.GITHUB_CLIENT_SECRET,
-        }
-        params = urlencode(params, quote_via=quote_plus)
-        url = settings.GITHUB_TOKEN_URL + '?' + params
-        responses.add(responses.GET, settings.GITHUB_TOKEN_URL, json=data, headers=JSON_HEADER, status=200)
-        responses.add(responses.GET, settings.GITHUB_TOKEN_URL, json={}, headers=JSON_HEADER, status=200)
-        result = get_github_user_token(self.callback_code)
-        result_no_token = get_github_user_token(self.callback_code)
-
-        assert responses.calls[0].request.url == url
-        assert responses.calls[1].request.url == url
-        assert result == self.user_oauth_token
-        assert result_no_token is None
 
     @responses.activate
     def test_is_github_token_valid(self):

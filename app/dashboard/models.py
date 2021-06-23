@@ -4034,32 +4034,6 @@ class Profile(SuperModel):
             return self.data["name"]
         return self.username
 
-
-    def is_github_token_valid(self):
-        """Check whether or not a Github OAuth token is valid.
-
-        Args:
-            access_token (str): The Github OAuth token.
-
-        Returns:
-            bool: Whether or not the provided OAuth token is valid.
-
-        """
-        if not self.github_access_token:
-            return False
-
-        _params = build_auth_dict()
-        url = TOKEN_URL.format(**_params)
-        response = requests.get(
-            url,
-            data=json.dumps({'access_token': self.github_access_token}),
-            auth=(_params['client_id'], _params['client_secret']),
-            headers=HEADERS)
-
-        if response.status_code == 200:
-            return True
-        return False
-
     def __str__(self):
         return self.handle
 
