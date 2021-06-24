@@ -34,6 +34,6 @@ for token_req_id in token_req_ids:
     obj.save()
     time.sleep(1)
 
-num_to_sync = 9 + len(token_req_ids)
+num_to_sync = 500 + len(token_req_ids)
 for i in range(0, num_to_sync):
     sync_latest(i, obj.network)
