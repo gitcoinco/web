@@ -38,7 +38,6 @@ from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
-from premailer import Premailer
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)

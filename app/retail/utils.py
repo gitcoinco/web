@@ -31,7 +31,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-from cacheops import CacheMiss, cache
 from grants.models import Contribution, Grant
 from marketing.models import Alumni, LeaderboardRank, ManualStat, Stat
 from requests_oauthlib import OAuth2Session
