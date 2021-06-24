@@ -17,8 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from gettext import gettext
-
 from django.contrib.auth.models import User
 from django.template.defaultfilters import truncatechars
 
