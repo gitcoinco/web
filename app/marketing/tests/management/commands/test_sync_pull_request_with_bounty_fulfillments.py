@@ -19,10 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import timedelta
 from unittest import mock
 
-from django.conf import settings
 from django.utils import timezone
 
 import marketing

@@ -16,15 +16,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import logging
-from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.utils import timezone
 
 from marketing.models import Stat
 from slackclient import SlackClient
-from slackclient.exceptions import SlackClientError
 
 
 def gitter():
