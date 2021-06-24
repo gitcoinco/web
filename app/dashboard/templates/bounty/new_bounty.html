@@ -126,13 +126,13 @@
                       <input type="radio" name="bounty_chain" id="1001_chain" value="1001" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16"> Algorand
                     </label>
 
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1935'}">
+                      <input type="radio" name="bounty_chain" id="1935_chain" value="1935" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/sia.svg' %}" alt="" width="16"> Sia
+                    </label>
+
                     {% if is_staff %}
                       <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1995'}">
                         <input type="radio" name="bounty_chain" id="1995_chain" value="1995" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/nervos.svg' %}" alt="" width="16"> Nervos
-                      </label>
-
-                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1935'}">
-                        <input type="radio" name="bounty_chain" id="1935_chain" value="1935" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/sia.svg' %}" alt="" width="16"> Sia
                       </label>
 
                       <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
