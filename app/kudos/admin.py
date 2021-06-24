@@ -36,7 +36,7 @@ class GeneralAdmin(admin.ModelAdmin):
 class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['profile__handle', 'name']
-    list_display = ['pk', 'profile', 'network', 'created_on', '__str__']
+    list_display = ['preview_small', 'pk', 'profile', 'network', 'created_on', '__str__']
     raw_id_fields = ['profile']
     readonly_fields = ['preview']
 
@@ -56,15 +56,26 @@ class TokenRequestAdmin(admin.ModelAdmin):
             try:
                 obj.rejection_reason = 'n/a'
                 obj.save()
-                mint_token_request(obj.id)
+                mint_token_request(obj.id, num_sync=1)
                 self.message_user(request, f"Mint/sync submitted to chain")
             except Exception as e:
                 self.message_user(request, str(e))
             return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
+        if "_do_sync_kudos" in request.POST:
+            from kudos.management.commands.mint_all_kudos import sync_latest
+            num_sync = int(request.POST.get('num_sync', 5))
+            for i in range(0, num_sync):
+                sync_latest(i, network=obj.network)
+            self.message_user(request, f"Sync'c Kudos")
+            return redirect('/kudos/marketplace')
         return redirect(obj.admin_url)
 
     def preview(self, instance):
         html = f"<img style='max-width: 400px;' src='{instance.artwork_url}'>"
+        return mark_safe(html)
+
+    def preview_small(self, instance):
+        html = f"<a href={instance.admin_url}><img style='max-width: 50px;' src='{instance.artwork_url}'></a>"
         return mark_safe(html)
 
 
