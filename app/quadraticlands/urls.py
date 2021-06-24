@@ -23,7 +23,7 @@ from django.urls import path, re_path
 from quadraticlands.helpers import vote
 from quadraticlands.views import (
     base, base_auth, dashboard_index, handler400, handler403, handler404, handler500, index, mission_index,
-    mission_lore, mission_postcard, mission_postcard_svg, mission_schwag, workstream_base, workstream_index
+    mission_lore, mission_postcard, mission_postcard_svg, mission_schwag, workstream_base, workstream_index,
 )
 
 app_name = 'quadraticlands'
