@@ -1,5 +1,3 @@
-import random
-
 from django.conf import settings
 
 from app.settings import account_sid, auth_token, verify_service
