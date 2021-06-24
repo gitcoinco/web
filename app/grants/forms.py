@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django import forms
-from django.utils.translation import gettext_lazy as _
 
 from grants.models import Grant
 

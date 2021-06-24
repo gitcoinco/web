@@ -1,7 +1,7 @@
 from dashboard.router import ProfileSerializer
 from rest_framework import serializers
 
-from .models import CLRMatch, Contribution, Grant, Subscription
+from .models import Contribution, Grant, Subscription
 from .utils import amount_in_wei, get_converted_amount, which_clr_round
 
 

@@ -1,4 +1,3 @@
-import datetime as dt
 import inspect
 import math
 import time
@@ -8,16 +7,13 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 
-import pytz
 from app.services import RedisService
-from celery import app, group
+from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCollection, Subscription
 from grants.utils import get_clr_rounds_metadata
 from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
-from marketing.models import Stat
-from perftools.models import JSONStore
 from townsquare.models import Comment
 
 logger = get_task_logger(__name__)

@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta
 
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import Paginator
 
 import django_filters.rest_framework
 from ratelimit.decorators import ratelimit
 from rest_framework import routers, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
 from .models import CLRMatch, Contribution, Grant, Subscription

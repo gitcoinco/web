@@ -1,7 +1,3 @@
-from datetime import datetime
-
-from django.utils import timezone
-
 import requests
 from grants.sync.helpers import is_txn_done_recently, record_contribution_activity, txn_already_used
 
