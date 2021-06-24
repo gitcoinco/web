@@ -3407,7 +3407,7 @@ def ingest_contributions(request):
 
         # Get transaction timestamp
         block_info = w3.eth.getBlock(receipt['blockNumber'])
-        created_on = pytz.UTC.localize(datetime.datetime.fromtimestamp(block_info['timestamp']))
+        created_on = pytz.UTC.localize(datetime.fromtimestamp(block_info['timestamp']))
 
         # For each event in the parsed logs, create the DB objects
         for (index,event) in enumerate(parsed_logs):
