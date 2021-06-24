@@ -28,7 +28,6 @@ import uuid
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -43,10 +42,10 @@ import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.tasks import increment_view_count
-from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
+from dashboard.utils import get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
+from git.utils import get_emails_by_category, get_github_primary_email
 from kudos.tasks import redeem_bulk_kudos
 from kudos.utils import kudos_abi
 from marketing.mails import new_kudos_request

@@ -38,7 +38,6 @@ from dashboard.models import SendCryptoAsset
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from pyvips.error import Error as VipsError
 
 logger = logging.getLogger(__name__)
 
