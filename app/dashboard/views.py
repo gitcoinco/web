@@ -18,10 +18,8 @@
 '''
 from __future__ import print_function, unicode_literals
 
-import asyncio
 import base64
 import calendar
-import getpass
 import hashlib
 import html
 import json
@@ -41,8 +39,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Avg, Count, Prefetch, Q, Sum
+from django.db.models import Count, Q, Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -50,7 +47,6 @@ from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import escape, strip_tags
 from django.utils.http import is_safe_url
 from django.utils.text import slugify
 from django.utils.timezone import localtime
@@ -59,7 +55,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
-import dateutil.parser
 import ens
 import magic
 import pytz
@@ -67,9 +62,8 @@ import requests
 import tweepy
 from app.services import RedisService, TwilioService
 from app.settings import (
-    BMAS_ENDPOINT, EMAIL_ACCOUNT_VALIDATION, ES_CORE_ENDPOINT, ES_USER_ENDPOINT, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES,
-    SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
-    TWITTER_CONSUMER_SECRET,
+    EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
+    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
 )
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -80,28 +74,23 @@ from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
-from dashboard.duniter import CERTIFICATIONS_SCHEMA
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
-    get_ens_contract_addresss, get_ens_resolver_contract, get_orgs_perms, get_poap_earliest_owned_token_timestamp,
-    profile_helper,
+    get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
-from ens.auto import ns
-from ens.utils import name_to_hash
 from eth_account.messages import defunct_hash_message
-from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
+from eth_utils import is_address, is_same_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
     get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
 )
-from grants.models import Grant
 from grants.utils import get_clr_rounds_metadata
-from kudos.models import KudosTransfer, Token, Wallet
+from kudos.models import Token
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
 from marketing.mails import admin_contact_funder, bounty_uninterested
@@ -110,7 +99,7 @@ from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
     wall_post_email,
 )
-from marketing.models import EmailSubscriber, Keyword, UpcomingDate
+from marketing.models import Keyword
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from perftools.models import JSONStore
@@ -119,11 +108,10 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
-from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
-from townsquare.views import get_following_tribes, get_tags
+from townsquare.views import get_tags
 from web3 import HTTPProvider, Web3
 
 from .export import (
@@ -136,16 +124,15 @@ from .helpers import (
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile,
-    ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
-    TribeMember, UserAction, UserDirectory, UserVerificationModel,
+    HackathonSponsor, Interest, LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction,
+    UserVerificationModel,
 )
 from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
+    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
 from .poh_utils import is_registered_on_poh
-from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
+from .router import HackathonEventSerializer, TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
@@ -163,7 +150,6 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 @protected_resource()
 def oauth_connect(request, *args, **kwargs):
     active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
-    from marketing.utils import should_suppress_notification_email
     user_profile = {
         "login": active_user_profile.handle,
         "email": active_user_profile.user.email,

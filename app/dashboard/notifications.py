@@ -24,12 +24,10 @@ from urllib.parse import urlparse as parse
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.templatetags.static import static
-from django.utils import timezone, translation
+from django.utils import translation
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-import requests
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
@@ -469,7 +467,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
     """
     from dashboard.utils import get_ordinal_repr  # hack for circular import issue
-    from dashboard.models import BountyFulfillment, Interest
+    from dashboard.models import BountyFulfillment
     msg = ''
     usdt_value = ""
     try:
