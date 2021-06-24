@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import datetime
-import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -29,9 +28,8 @@ import pytz
 import requests
 from dashboard.models import Activity, Profile
 from economy.models import Token
-from economy.tx import headers
 from economy.utils import convert_token_to_usdt
-from grants.models import Contribution, Grant, Subscription
+from grants.models import Grant, Subscription
 from perftools.models import JSONStore
 from web3 import Web3
 

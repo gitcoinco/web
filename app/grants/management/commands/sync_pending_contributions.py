@@ -20,11 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import timedelta
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from grants.models import Contribution, Grant
+from grants.models import Contribution
 from grants.tasks import update_grant_metadata
 from grants.utils import sync_payout
 
