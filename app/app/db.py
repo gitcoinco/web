@@ -9,11 +9,11 @@ class PrimaryDBRouter:
         Reads go to a randomly-chosen replica if backend node
         Else go to default DB
         """
-        replicas = ['read_replica_1']
-        if settings.JOBS_NODE:
-        	return random.choice(replicas)
-        if settings.CELERY_NODE:
-        	return random.choice(replicas)
+        # replicas = ['read_replica_1']
+        # if settings.JOBS_NODE:
+        # 	return random.choice(replicas)
+        # if settings.CELERY_NODE:
+        # 	return random.choice(replicas)
         return 'default'
 
     def db_for_write(self, model, **hints):
