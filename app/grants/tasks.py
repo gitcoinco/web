@@ -13,7 +13,8 @@ from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
-from grants.models import Grant, Subscription
+from grants.models import Grant, GrantCollection, Subscription
+from grants.utils import get_clr_rounds_metadata
 from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
 from marketing.models import Stat
 from perftools.models import JSONStore
@@ -22,9 +23,6 @@ from townsquare.models import Comment
 logger = get_task_logger(__name__)
 
 redis = RedisService().redis
-
-CLR_START_DATE = dt.datetime(2021, 3, 10, 1, 0) # TODO:SELF-SERVICE
-
 
 def lineno():
     """Returns the current line number in our program."""
@@ -36,6 +34,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     if settings.FLUSH_QUEUE:
         return
 
+    network = 'mainnet'
+    if settings.DEBUG:
+        network = 'rinkeby'
 
     # KO hack 12/14/2020
     # this will prevent tasks on grants that have been issued from an app server from being immediately
@@ -46,7 +47,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     # setup
     print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
+
+    _, round_start_date, _, _ = get_clr_rounds_metadata()
+
     if instance.in_active_clrs.exists():
         gclr = instance.in_active_clrs.order_by('start_date').first()
         round_start_date = gclr.start_date
@@ -83,7 +86,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.amount_received = 0
         instance.monthly_amount_subscribed = 0
         instance.sybil_score = 0
-        for subscription in instance.subscriptions.all():
+        for subscription in instance.subscriptions.filter(network=network):
 
             value_usdt = subscription.amount_per_period_usdt
 
@@ -99,7 +102,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
-                    if contrib.created_on > round_start_date:
+                    if contrib.created_on.replace(tzinfo=None) > round_start_date.replace(tzinfo=None):
                         instance.amount_received_in_round += Decimal(value_usdt)
                         instance.sybil_score += subscription.contributor_profile.sybil_score
 
@@ -391,5 +394,14 @@ def process_new_contributions_email(self, grant_id):
     try:
         grant = Grant.objects.get(pk=grant_id)
         new_contributions(grant)
+    except Exception as e:
+        print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def generate_collection_cache(self, collection_id):
+    try:
+        collection = GrantCollection.objects.get(pk=collection_id)
+        collection.generate_cache()
     except Exception as e:
         print(e)

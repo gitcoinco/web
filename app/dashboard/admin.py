@@ -190,7 +190,7 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
     raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk', 'ignore_tribes']
     ordering = ['-id']
-    search_fields = ['email', 'data']
+    search_fields = ['handle', 'email']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
 
@@ -218,7 +218,7 @@ class ProfileAdmin(admin.ModelAdmin):
         from django.shortcuts import redirect
         if "_unsquelch_sybil" in request.POST:
             from townsquare.models import SquelchProfile
-            obj.squelches.delete()
+            SquelchProfile.objects.filter(profile=obj).delete()
             self.message_user(request, "UnShadowBan done")
             return redirect(obj.admin_url)
         if "_squelch_sybil" in request.POST:

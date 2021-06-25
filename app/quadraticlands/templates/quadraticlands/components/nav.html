@@ -1,4 +1,4 @@
-{% load i18n static matches cookielaw_tags token_format %}
+{% load i18n static matches cookielaw_tags %}
 
 <header>
 
@@ -66,13 +66,6 @@
 
       <!-- NETWORK -->
       <span id="web3network" class="web3network hide"></span>
-
- 
-      <!-- CLAIMABLE AMOUNT -->
-      <!-- IF :  user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False -->
-      {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is False  %}
-        <span class="claimable"><a href="/quadraticlands/mission">CLAIM {{ total_claimable_gtc | token_format }} GTC</a></span>
-      {% endif %}
 
       <div id="noproviderIcon">
         {% include "quadraticlands/_inlinesvg/wallet.svg" %}

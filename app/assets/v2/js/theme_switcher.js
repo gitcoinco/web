@@ -17,7 +17,7 @@ function subscribe() {
     return;
   }
   // Handle preferred user theme mode
-  document.getElementById('theme-switcher').addEventListener('click', onToggleMode);
+  // document.getElementById('theme-switcher').addEventListener('click', onToggleMode);
 
   // Load theme if persisted
   const mode = window.localStorage.getItem('theme');

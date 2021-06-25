@@ -101,7 +101,7 @@
         </template>
         <template v-else-if="row.activity_type == 'created_kudos'">
           a new kudos has been minted:
-          <a href="{{ row.kudos.external_url }}">
+          <a href="{{ row.kudos.url }}">
             {{ row.kudos.ui_name }}
           </a>
         </template>
@@ -315,15 +315,15 @@
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
                   {% if row.activity_type == 'new_tip' %}
-                    <span class="value_in_token">{{ row.metadata.amount | floatformat:2}} {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.amount | floatformat:4}} {{row.metadata.token_name}}</span>
                   {% elif row.bounty %}
-                    <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
+                    <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:4 }} {{row.bounty.token_name}}</span>
                   {% elif row.value_in_token_disp %}
-                    <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:4 }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
-                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:4 }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:2}} {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:4}} {{row.metadata.token_name}}</span>
                   {% endif %}
                 </p>
               </div>
@@ -358,7 +358,7 @@
       </div>
       <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
-          <a href="{{row.kudos.external_url}}">
+          <a href="{{row.kudos.url}}">
             <img src="{{row.kudos.preview_img_url}}" alt="{{row.kudos.ui_name }}" class="mw-100">
           </a>
         {% elif row.activity_type == 'leaderboard_rank' %}

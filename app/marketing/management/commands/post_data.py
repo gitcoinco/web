@@ -30,7 +30,7 @@ from dashboard.models import Activity, Earning, Profile
 from economy.utils import convert_token_to_usdt
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from townsquare.models import Comment
 
 text = ''
@@ -306,7 +306,7 @@ def grants():
     #for aclr in active_clr_rounds:
     #    grants_pks = grants_pks + list(aclr.grants.values_list('pk', flat=True))
 
-    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)#, subscription__grant__in=grants_pks)
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, subscription_network='mainnet')#, subscription__grant__in=grants_pks)
     if must_be_successful:
         contributions = contributions.filter(success=True)
     pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)

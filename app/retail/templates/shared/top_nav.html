@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches bundle humanize token_format %}
+{% load i18n static matches bundle humanize %}
 
 
 <!--- Top Row Notification -->
@@ -36,13 +36,9 @@
   <div id="ql-banner-inner" class="w-100">
     <div class="row px-lg-5">
       <div id="ql-banner-lhs" class="col-12 col-md-8 col-lg-7 m-auto px-5 sticky-top">
-        <h1 id="ql-banner-h1" class="text-white pb-3 line-height-1 mb-1"><span>The Gitcoin DAO Has Officially Started. Shape the Future Of Digital Public Goods with Gitcoin’s Governance Token.</span></h1>
+        <h1 id="ql-banner-h1" class="text-white pb-3 line-height-1 mb-1"><span>The Gitcoin DAO Has Officially Started. Shape the Future Of Digital Public Goods with Gitcoin’s Governance Token & Workstreams.</span></h1>
         <a id="ql-banner-btn" class="btn btn-lg col-12 col-md-auto btn-lg font-weight-bold" href="{% url "quadraticlands:quadraticlands" %}" data-kinetics-attraction data-kinetics-attraction-mode="bee" data-kinetics-attraction-chance="0.5" >
-          {% if user.is_authenticated and total_claimable_gtc != 0 and proof_of_receive is not True %}
-            Claim {{total_claimable_gtc | token_format | intcomma}} GTC
-          {% else %}
-            Learn more
-          {% endif %}
+          Learn more
         </a>
       </div>
 
