@@ -100,7 +100,7 @@ django-queryset-csv
 django-proxy==1.2.1
 ed25519
 tweepy
-attrs==19.3.0
+attrs>=19.3.0
 oogway==0.7.0
 icalendar==4.0.7
 duniterpy==0.61.0
