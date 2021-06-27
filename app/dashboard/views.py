@@ -2527,7 +2527,7 @@ def profile_job_opportunity(request, handle):
     except ValueError:
         return JsonResponse(
             {'error': 'Bad request'},
-            status=401
+            status=400
         )
 
     response = {
