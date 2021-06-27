@@ -634,17 +634,18 @@ def build_grants_by_type(
         if is_there_a_clr_round_active_for_this_grant_type_now:
             _grants = _grants.filter(is_clr_active=True)
 
-    if omit_my_grants and profile:
-        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                    list(profile.grant_admin.all().values_list('pk', flat=True))
-        _grants = _grants.exclude(id__in=grants_id)
-    elif grant_type == 'me' and profile:
-        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                    list(profile.grant_admin.all().values_list('pk', flat=True))
-        _grants = _grants.filter(id__in=grants_id)
-    elif only_contributions:
-        contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
-        _grants = _grants.filter(id__in=Subquery(contributions))
+    if profile:
+        if omit_my_grants:
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.exclude(id__in=grants_id)
+        elif grant_type == 'me':
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.filter(id__in=grants_id)
+        elif only_contributions:
+            contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+            _grants = _grants.filter(id__in=Subquery(contributions))
 
     print(" " + str(round(time.time(), 2)))
     _grants = _grants.keyword(keyword).order_by(sort, 'pk')
