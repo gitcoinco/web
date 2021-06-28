@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initToneJs();
   window.kinetics = new Kinetics();
-  window.kinetics.interactionHook(); 
+  window.kinetics.interactionHook();
   last = 0;
   animate_diplomacy();
 
@@ -37,5 +37,4 @@ function animate_diplomacy(now) {
 
   requestAnimationFrame(animate_diplomacy);
 }
-
 

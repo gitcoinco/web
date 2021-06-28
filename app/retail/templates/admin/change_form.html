@@ -85,10 +85,23 @@
         <input type="submit" value="Notify User of Contribution Failure" name="_notify_contribution_failure" value="1">
       {% endif %}
     {% elif 'kudos/tokenrequest' in request.build_absolute_uri %}
-      <input type="submit" value="Change Owner + Mint + Sync Kudos" name="_change_owner_mint_kudos" value="1">
-      <input type="submit" value="Mint + Sync Kudos" name="_mint_kudos" value="1">
+      <h4>Approve/Reject</h4>
+      <input type="submit" value="Mint Kudos" name="_mint_kudos" value="1">
       <input type="submit" value="Reject Kudos" name="_reject_kudos" value="1">
       <input type="submit" value="Change Owner to Gitcoin" name="_change_owner" value="1">
+      <br>
+      <hr>
+      <br>
+      <h4>Batch Actions</h4>
+      <input type="submit" value="Change Owner + Mint" name="_change_owner_mint_kudos" value="1">
+      <br>
+      <hr>
+      <br>
+      <h4>Sync'er</h4>
+      Num to Sync:
+      <input type="number" value="5" name="num_sync">
+      <input type="submit" value="Sync Kudos" name="_do_sync_kudos" value="1">
+
     {% elif 'quests/quest' in request.build_absolute_uri %}
       <input type="submit" value="Approve Request" name="_approve_quest" value="1">
     {% elif 'dashboard/hackathonevent/' in request.build_absolute_uri %}

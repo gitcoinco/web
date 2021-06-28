@@ -18,19 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.contrib.postgres.fields import JSONField
-from django.db import models
-from django.utils.translation import gettext_lazy as _
 import uuid
 
-from app.utils import get_upload_filename
-from economy.models import SuperModel
 from django.contrib.postgres.fields import ArrayField, JSONField
-from django_extensions.db.fields import AutoSlugField
-from django.utils.translation import gettext_lazy as _
+from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
+
+from app.utils import get_upload_filename
 from dashboard.models import Profile
+from django_extensions.db.fields import AutoSlugField
+from economy.models import SuperModel
 
 
 class Uint256Field(models.DecimalField):

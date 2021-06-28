@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (navbarDropdownWallet) {
     navbarDropdownWallet.addEventListener('click', () => {
-      console.log("click")
+      console.log('click');
       walletProvider.classList.toggle('active');
     });
 
@@ -29,8 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // make noprovider icon also open the menue.
   const noproviderIcon = document.getElementById('noproviderIcon');
+
   noproviderIcon.addEventListener('click', () => {
-    console.log("noprovider");
+    console.log('noprovider');
     walletProvider.classList.toggle('active');
   });
 

@@ -278,7 +278,7 @@ Vue.component('sms-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected your SMS verification.", "success", 3000);
+        _alert('You have successfully disconnected your SMS verification.', 'success', 3000);
       }
     },
     isValidNumber(validation) {
@@ -365,7 +365,7 @@ Vue.component('twitter-verify-modal', {
               </div>
               <div v-if="step === 'validate-tweet' || step == 'perform-validation'">
                 <p class="mb-4">
-                  Now we'll validate that you've sent the tweet. Enter your Twitter handle and press validate.
+                  Now we'll validate that you've sent the tweet. Enter your Twitter handle and press "Verify Tweet".
                 </p>
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -385,7 +385,7 @@ Vue.component('twitter-verify-modal', {
                   </span>
                   <b-button @click="clickedValidate" :disabled="step === 'perform-validation'" variant="primary" class="btn-primary  mt-3 mb-2">
                     <b-spinner small v-if="step === 'perform-validation'" type="grow"></b-spinner>
-                    Connect Twitter
+                    Verify Tweet
                   </b-button>
                 </div>
 
@@ -495,7 +495,7 @@ Vue.component('twitter-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected from Twitter.", "success", 3000);
+        _alert('You have successfully disconnected from Twitter.', 'success', 3000);
       }
     }
   }
@@ -732,7 +732,7 @@ Vue.component('poap-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected from POAP.", "success", 3000);
+        _alert('You have successfully disconnected from POAP.', 'success', 3000);
       }
     },
     clickedClose() {
@@ -962,7 +962,7 @@ Vue.component('poh-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected from POH.", "success", 3000);
+        _alert('You have successfully disconnected from POH.', 'success', 3000);
       }
     }
   }
@@ -1178,7 +1178,7 @@ Vue.component('brightid-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected from BrightID.", "success", 3000);
+        _alert('You have successfully disconnected from BrightID.', 'success', 3000);
       }
     }
   }
@@ -1324,7 +1324,7 @@ Vue.component('idena-verify-modal', {
         }
         this.awaitingResponse = false;
         if (url === this.service.logout_url) {
-          _alert("You have successfully disconnected from Idena.", "success", 3000);
+          _alert('You have successfully disconnected from Idena.', 'success', 3000);
         }
       }
     }
@@ -1828,7 +1828,7 @@ Vue.component('ens-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected from ENS.", "success", 3000);
+        _alert('You have successfully disconnected from ENS.', 'success', 3000);
       }
     }
   }
@@ -1943,7 +1943,7 @@ Vue.component('google-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected from Google.", "success", 3000);
+        _alert('You have successfully disconnected from Google.', 'success', 3000);
       }
     }
   }
@@ -2058,7 +2058,7 @@ Vue.component('facebook-verify-modal', {
       } finally {
         this.awaitingResponse = false;
         this.dismissVerification();
-        _alert("You have successfully disconnected from Facebook.", "success", 3000);
+        _alert('You have successfully disconnected from Facebook.', 'success', 3000);
       }
     }
   }

@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from grants.models import *
 from grants.models import Contribution, PhantomFunding, Subscription
-from grants.views import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 
 # total stats
 

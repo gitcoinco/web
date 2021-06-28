@@ -34,6 +34,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
@@ -139,8 +140,10 @@ def render_new_grant_approved_email(grant):
 
 def render_new_contributions_email(grant):
     hours_ago = 12
+    network = get_default_network()
     contributions = grant.contributions.filter(
-        created_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago)
+        created_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago),
+        subscription__network=network
     )
     amount_raised = sum(contributions.values_list('normalized_data__amount_per_period_usdt', flat=True))
     num_of_contributors = len(set(contributions.values_list('profile_for_clr', flat=True)))

@@ -28,15 +28,18 @@ class Command(BaseCommand):
     help = 'warns the admins when any of the monitored_accounts is out of gas'
 
     def handle(self, *args, **options):
-        w3 = get_web3('mainnet')
-        monitored_accounts = [settings.KUDOS_OWNER_ACCOUNT]
-        for account in monitored_accounts:
-            balance_eth_threshold = 0.1
-            if account == settings.KUDOS_OWNER_ACCOUNT:
-                balance_eth_threshold = 0.4
+        networks = ['xdai', 'mainnet']
+        for network in networks:
+            denomination = 'ETH' if network == 'mainnet' else 'xdai'
+            w3 = get_web3(network)
+            monitored_accounts = [settings.KUDOS_OWNER_ACCOUNT]
+            for account in monitored_accounts:
+                balance_eth_threshold = 0.1
+                if account == settings.KUDOS_OWNER_ACCOUNT:
+                    balance_eth_threshold = 0.4
 
-            balance_wei = w3.eth.getBalance(account)
-            balance_eth = balance_wei / 10**18
+                balance_wei = w3.eth.getBalance(account)
+                balance_eth = balance_wei / 10**18
 
-            if balance_eth < balance_eth_threshold:
-                warn_account_out_of_eth(account, balance_eth, 'ETH')
+                if balance_eth < balance_eth_threshold:
+                    warn_account_out_of_eth(account, balance_eth, 'ETH')

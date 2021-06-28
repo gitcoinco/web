@@ -75,13 +75,13 @@ from grants.models import (
 )
 from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
 from grants.utils import (
-    emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_user_code, is_grant_team_member,
-    sync_payout,
+    emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
+    is_grant_team_member, sync_payout,
 )
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
-from perftools.models import JSONStore, StaticJsonEnv
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
@@ -90,33 +90,6 @@ from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-
-
-def get_clr_rounds_metadata():
-    '''
-        Fetches default CLR round metadata for stats/marketing flows.
-        This is configured when multiple rounds are running
-    '''
-    try:
-        CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
-
-        clr_round = CLR_ROUND_DATA['round_num']
-        start_date = CLR_ROUND_DATA['round_start']
-        end_date = CLR_ROUND_DATA['round_end']
-        round_active = CLR_ROUND_DATA['round_active']
-
-        # timezones are in UTC (format example: 2021-06-16:15.00.00)
-        round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
-        round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
-
-    except:
-        # setting defaults
-        clr_round=1
-        round_start_date = timezone.now()
-        round_end_date = timezone.now() + timezone.timedelta(days=14)
-        round_active = True
-
-    return clr_round, round_start_date, round_end_date, round_active
 
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
@@ -661,17 +634,18 @@ def build_grants_by_type(
         if is_there_a_clr_round_active_for_this_grant_type_now:
             _grants = _grants.filter(is_clr_active=True)
 
-    if omit_my_grants and profile:
-        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                    list(profile.grant_admin.all().values_list('pk', flat=True))
-        _grants = _grants.exclude(id__in=grants_id)
-    elif grant_type == 'me' and profile:
-        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                    list(profile.grant_admin.all().values_list('pk', flat=True))
-        _grants = _grants.filter(id__in=grants_id)
-    elif only_contributions:
-        contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
-        _grants = _grants.filter(id__in=Subquery(contributions))
+    if profile:
+        if omit_my_grants:
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.exclude(id__in=grants_id)
+        elif grant_type == 'me':
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.filter(id__in=grants_id)
+        elif only_contributions:
+            contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+            _grants = _grants.filter(id__in=Subquery(contributions))
 
     print(" " + str(round(time.time(), 2)))
     _grants = _grants.keyword(keyword).order_by(sort, 'pk')
@@ -1153,7 +1127,7 @@ def grants_by_grant_clr(request, clr_round):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    clr_round, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
+    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_landing',
@@ -1456,6 +1430,7 @@ def grant_details(request, grant_id, grant_slug):
 @csrf_exempt
 def grant_details_contributors(request, grant_id):
     page = int(request.GET.get('page', 1))
+    network = request.GET.get('network', 'mainnet')
     limit = int(request.GET.get('limit', 30))
 
     try:
@@ -1463,10 +1438,18 @@ def grant_details_contributors(request, grant_id):
             pk=grant_id
         )
     except Grant.DoesNotExist:
-        response['message'] = 'error: grant cannot be found'
+        response = {
+            'message': 'error: grant cannot be found'
+        }
         return JsonResponse(response)
 
-    _contributors = set(Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True, anonymous=False).prefetch_related('subscription', 'profile_for_clr').values_list('profile_for_clr__handle', flat=True).order_by('-created_on'))
+    _contributors = set(Contribution.objects.filter(
+        subscription__grant=grant,
+        subscription__network=network,
+        subscription__is_postive_vote=True,
+        anonymous=False
+    ).prefetch_related('subscription', 'profile_for_clr').values_list('profile_for_clr__handle', flat=True).order_by('-created_on'))
+
     contributors = list(_contributors)
     all_pages = Paginator(contributors, limit)
     this_page = all_pages.page(page)
@@ -1491,6 +1474,7 @@ def grant_details_contributors(request, grant_id):
 @csrf_exempt
 def grant_details_contributions(request, grant_id):
     page = int(request.GET.get('page', 1))
+    network = request.GET.get('network', 'mainnet')
     limit = int(request.GET.get('limit', 10))
     try:
         grant = Grant.objects.prefetch_related('subscriptions').get(
@@ -1502,7 +1486,11 @@ def grant_details_contributions(request, grant_id):
         }
         return JsonResponse(response)
 
-    _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+    _contributions = Contribution.objects.filter(
+        subscription__grant=grant,
+        subscription__network=network,
+        subscription__is_postive_vote=True
+    ).prefetch_related('subscription', 'subscription__contributor_profile')
     contributions = list(_contributions.order_by('-created_on'))
     # print(contributions)
     all_pages = Paginator(contributions, limit)
@@ -3420,7 +3408,7 @@ def ingest_contributions(request):
 
         # Get transaction timestamp
         block_info = w3.eth.getBlock(receipt['blockNumber'])
-        created_on = pytz.UTC.localize(datetime.datetime.fromtimestamp(block_info['timestamp']))
+        created_on = pytz.UTC.localize(datetime.fromtimestamp(block_info['timestamp']))
 
         # For each event in the parsed logs, create the DB objects
         for (index,event) in enumerate(parsed_logs):

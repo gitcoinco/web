@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
     'django_celery_beat',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -212,7 +213,8 @@ DATABASES = {
 if ENV in ['prod']:
     DATABASES = {
         'default': env.db(),
-        'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL')
+        'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL'),
+        'read_replica_2': env.db('READ_REPLICA_2_DATABASE_URL')
         }
     DATABASE_ROUTERS = ['app.db.PrimaryDBRouter']
 

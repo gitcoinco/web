@@ -92,7 +92,7 @@ async function fetchAccountData(provider) {
   }
   await web3.eth.net.getId().then(id => {
     networkId = id;
-    networkName = getDataChains(id, 'chainId')[0].network;
+    networkName = getDataChains(id, 'chainId')[0] && getDataChains(id, 'chainId')[0].network;
   });
   // web3.currentProvider.chainId
   // networkName = await web3.eth.net.getNetworkType();
@@ -120,7 +120,7 @@ async function fetchAccountData(provider) {
   // MetaMask does not give you all accounts, only the selected account
   console.log('Got accounts', accounts);
   // FOR TESTING ONLY
-  selectedAccount = '0x1402e01ba957e030200ec21e1417dc32c11e486b'; //accounts[0] || provider.account;
+  selectedAccount = '0x1402e01ba957e030200ec21e1417dc32c11e486b'; // accounts[0] || provider.account;
   cb_address = selectedAccount;
 
   document.querySelector('.selected-account').textContent = truncate(selectedAccount);

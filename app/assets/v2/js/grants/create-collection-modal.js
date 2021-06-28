@@ -78,7 +78,7 @@ Vue.component('create-collection-modal', {
         // allow the user to read the alert message before redirecting
         setTimeout(() => {
           window.location = redirect;
-        }, 2000)
+        }, 2000);
       } catch (e) {
         _alert(e.msg, 'danger');
       }

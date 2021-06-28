@@ -14,8 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-{% load kudos_extras %}
+{% load i18n static kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
 
 {% if show_sales_action %}
@@ -90,9 +89,11 @@
                   <li>
                     <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=fulfilledByMe">{% trans "Completed" %}</a>
                   </li>
-                  <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=reservedForMe">{% trans "Reserved for Me" %}</a>
-                  </li>
+                  {% if not profile.persona_is_funder %}
+                    <li>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=reservedForMe">{% trans "Reserved for Me" %}</a>
+                    </li>
+                  {% endif %}
                   <li>
                     <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=createdByMe">{% trans "Created by Me" %}</a>
                   </li>
@@ -107,14 +108,25 @@
                 <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Hackathons" %}</b>
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=startedByMe&keywords=hackathon">{% trans "Participating" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=startedByMe&keywords=hackathon">{% trans "In Progress" %}</a>
                   </li>
-                  <li>
-                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/hackathons">{% trans "Projects" %}</a>
-                  </li>
+                  {% if not profile.persona_is_funder %}
+                    <li>
+                      <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/hackathons">{% trans "Projects" %}</a>
+                    </li>
+                  {% endif %}
                   <li>
                     <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=fulfilledByMe&keywords=hackathon">{% trans "Completed" %}</a>
                   </li>
+                  {% if profile.persona_is_funder and profile.organizations %}
+                    <li>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?org={{profile.organizations|join:','}}&idx_status=open&network=mainnet&keywords=hackathon">{% trans "Created by Me" %}</a>
+                    </li>
+                  {% elif profile.persona_is_funder %}
+                    <li>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'explorer' %}?bounty_filter=createdByMe&idx_status=open&network=mainnet&keywords=hackathon">{% trans "Created by Me" %}</a>
+                    </li>
+                  {% endif %}
                 </ul>
               </div>
 
@@ -122,16 +134,16 @@
                 <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Grants" %}</b>
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}me">{% trans "Projects" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}me?idle=true">{% trans "Projects" %}</a>
                   </li>
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}collections?keyword={{ user }}">{% trans "Collections" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}collections?keyword={{ user }}&idle=true">{% trans "Collections" %}</a>
                   </li>
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?only_contributions=true">{% trans "Contributions" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?only_contributions=true&idle=true">{% trans "Contributions" %}</a>
                   </li>
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?following=true">{% trans "Starred Grants" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?following=true&idle=true">{% trans "Starred Grants" %}</a>
                   </li>
                   <hr />
                   <li>

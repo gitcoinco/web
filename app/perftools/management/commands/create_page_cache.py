@@ -31,8 +31,7 @@ from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
-from grants.utils import generate_leaderboard
-from grants.views import get_clr_rounds_metadata
+from grants.utils import generate_leaderboard, get_clr_rounds_metadata
 from marketing.models import Stat
 from perftools.models import JSONStore
 from quests.helpers import generate_leaderboard

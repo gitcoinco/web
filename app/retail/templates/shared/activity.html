@@ -422,15 +422,15 @@
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
                   {% if row.activity_type == 'new_tip' %}
-                    <span class="value_in_token">{{ row.metadata.amount | floatformat:3 }} {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.amount | floatformat:4 }} {{row.metadata.token_name}}</span>
                   {% elif row.bounty %}
                     <span class="value_in_token_bounty">{{ row.bounty.value_true.normalize }} {{row.bounty.token_name}}</span>
                   {% elif row.value_in_token_disp %}
                     <span class="value_in_token_disp">{{ row.value_in_token_disp.normalize }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
-                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:3 }} ETH</span>
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:4 }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:3 }} {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:4 }} {{row.metadata.token_name}}</span>
                   {% endif %}
                 </p>
               </div>
@@ -498,7 +498,7 @@
     </div>
       <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
-          <a href="{{row.kudos.external_url}}">
+          <a href="{{row.kudos.url}}">
             <img src="{{row.kudos.preview_img_url}}" alt="{{row.kudos.ui_name }}" class="mw-100">
           </a>
         {% elif row.activity_type == 'leaderboard_rank' %}
@@ -599,7 +599,7 @@
   </div>
   {% elif row.activity_type == 'new_kudos' and not for_email %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content py-3" data-href="{{ row.kudos.external_url }}">
+    <div class="row align-items-center bg-light content py-3" data-href="{{ row.kudos.url }}">
       <div class="col-12 col-md-3 text-center">
           <img class="logo-metacard" src="{{ row.kudos.img_url }}">
       </div>

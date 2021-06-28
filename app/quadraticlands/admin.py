@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 from quadraticlands.models import (
-    GTCSteward, InitialTokenDistribution, MissionStatus, QLVote, QuadLandsFAQ, SchwagCoupon,
-    GamePlayer, GameFeed, Game
+    Game, GameFeed, GamePlayer, GTCSteward, InitialTokenDistribution, MissionStatus, QLVote, QuadLandsFAQ, SchwagCoupon,
 )
 
 
