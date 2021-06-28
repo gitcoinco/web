@@ -327,16 +327,18 @@ def handle_marketing_callback(_input, request):
         #set user referrer
         if key == 'ref':
             if request.user.is_authenticated:
-                from django.contrib.auth.models import User
-                value = _input.split(':')[1]
-                pk = int(value, 16)
-                profs = Profile.objects.filter(pk=pk)
-                if profs.exists():
-                    profile = profs.first()
-                    if profile.pk != request.user.profile.pk:
-                        target_profile = request.user.profile
-                        target_profile.referrer = profile
-                        target_profile.save()
+                try:
+                    value = _input.split(':')[1]
+                    pk = int(value, 16)
+                    profs = Profile.objects.filter(pk=pk)
+                    if profs.exists():
+                        profile = profs.first()
+                        if profile.pk != request.user.profile.pk:
+                            target_profile = request.user.profile
+                            target_profile.referrer = profile
+                            target_profile.save()
+                except ValueError:
+                    messages.info(request, "Cannot find Profile")
         # add user to a group
         if callback_reference.split(':')[0] == 'add_to_group':
             if request.user.is_authenticated:
