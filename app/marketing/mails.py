@@ -701,7 +701,7 @@ def grant_update_email(activity):
 
 
 def new_faucet_request(fr):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -858,7 +858,7 @@ def new_quest_approved(quest):
 
 
 def new_token_request(obj):
-    to_email = 'founders@gitcoin.co'
+    to_email = "support@gitcoin.co"
     from_email = obj.email
     cur_language = translation.get_language()
     try:
@@ -1080,7 +1080,7 @@ def gdpr_reconsent(email):
 
 
 def funder_payout_reminder(to_email, bounty, github_username, live):
-    from_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = "support@gitcoin.co"
     subject = "Payout reminder"
     html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
     if (live):
