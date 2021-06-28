@@ -42,7 +42,7 @@ class Command(BaseCommand):
         # Auto expire pending transactions
         timeout_period = timezone.now() - timedelta(minutes=60)
 
-        tenants = ['ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'BINANCE', 'KUSAMA', 'RSK']
+        tenants = ['ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'BINANCE', 'KUSAMA', 'RSK', 'ALGORAND']
 
         for tenant in tenants:
             tenant_pending_contributions = pending_contribution.filter(subscription__tenant=tenant)

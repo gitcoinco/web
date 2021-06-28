@@ -2844,10 +2844,11 @@ class TribesSubscription(SuperModel):
 
 
 class Profile(SuperModel):
-    """Define the structure of the user profile.
+    """
+        Define the structure of the user profile.
 
-    TODO:
-        * Remove all duplicate identity related information already stored on User.
+        TODO:
+            * Remove all duplicate identity related information already stored on User.
 
     """
 

@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'taskapp.celery.CeleryConfig',
     'django_celery_beat',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -212,7 +213,8 @@ DATABASES = {
 if ENV in ['prod']:
     DATABASES = {
         'default': env.db(),
-        'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL')
+        'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL'),
+        'read_replica_2': env.db('READ_REPLICA_2_DATABASE_URL')
         }
     DATABASE_ROUTERS = ['app.db.PrimaryDBRouter']
 
@@ -638,6 +640,10 @@ FACEBOOK_AUTH_BASE_URL = env('FACEBOOK_AUTH_BASE_URL', default='https://www.face
 FACEBOOK_TOKEN_URL = env('FACEBOOK_TOKEN_URL', default='https://graph.facebook.com/v9.0/oauth/access_token')
 FACEBOOK_CLIENT_ID = env('FACEBOOK_CLIENT_ID', default='')
 FACEBOOK_CLIENT_SECRET = env('FACEBOOK_CLIENT_SECRET', default='')
+
+# Notion
+NOTION_API_KEY = env('NOTION_API_KEY', default='')
+NOTION_SYBIL_DB = env('NOTION_SYBIL_DB', default='')
 
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xAD278911Ad07534F921eD7D757b6c0e6730FCB16')

@@ -2524,6 +2524,11 @@ def profile_job_opportunity(request, handle):
         profile.save()
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
+    except ValueError:
+        return JsonResponse(
+            {'error': 'Bad request'},
+            status=400
+        )
 
     response = {
         'status': 200,
