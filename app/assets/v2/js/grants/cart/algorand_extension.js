@@ -128,7 +128,7 @@ const contributeWithAlgorandExtension = async(grant, vm, from_address) => {
           callback(null, from_address, tx.txId);
         }).catch((e) => {
           console.log(e);
-          _alert({ message: 'Unable to broadcast txn. Please try again' }, 'danger');
+          _alert({ message: 'Unable to broadcast transaction. Please try again' }, 'danger');
           vm.updatePaymentStatus(grant.grant_id, 'failed');
           return;
         });
