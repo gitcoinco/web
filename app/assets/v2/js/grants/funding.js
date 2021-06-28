@@ -157,6 +157,9 @@ function tokenOptionsForGrant(grant) {
   } else if (grant.tenants && grant.tenants.includes('RSK')) {
     tokenDataList = tokenDataList.filter(token => token.chainId === 30);
     tokenDefault = 'RBTC';
+  } else if (grant.tenants && grant.tenants.includes('ALGORAND')) {
+    tokenDataList = tokenDataList.filter(token => token.chainId === 1001);
+    tokenDefault = 'ALGO';
   } else {
     tokenDataList = tokenDataList.filter((token) => token.chainId === 1);
   }

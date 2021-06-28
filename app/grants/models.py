@@ -414,6 +414,13 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The rsk wallet address where subscription funds will be sent.'),
     )
+    algorand_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The algorand wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -650,6 +657,8 @@ class Grant(SuperModel):
             tenants.append('BINANCE')
         if self.rsk_payout_address and self.rsk_payout_address != '0x0':
             tenants.append('RSK')
+        if self.algorand_payout_address and self.algorand_payout_address != '0x0':
+            tenants.append('ALGORAND')
 
         return tenants
 
@@ -892,6 +901,7 @@ class Grant(SuperModel):
             'kusama_payout_address': self.kusama_payout_address,
             'harmony_payout_address': self.harmony_payout_address,
             'rsk_payout_address': self.rsk_payout_address,
+            'algorand_payout_address': self.algorand_payout_address,
             'is_on_team': is_grant_team_member(self, user.profile) if user and user.is_authenticated else False,
         }
 
@@ -950,6 +960,7 @@ class Grant(SuperModel):
                 'harmony_payout_address': self.harmony_payout_address,
                 'binance_payout_address': self.binance_payout_address,
                 'rsk_payout_address': self.rsk_payout_address,
+                'algorand_payout_address': self.algorand_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
@@ -1007,7 +1018,8 @@ class Subscription(SuperModel):
         ('KUSAMA', 'KUSAMA'),
         ('HARMONY', 'HARMONY'),
         ('BINANCE', 'BINANCE'),
-        ('RSK', 'RSK')
+        ('RSK', 'RSK'),
+        ('ALGORAND', 'ALGORAND')
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
@@ -1679,7 +1691,8 @@ class Contribution(SuperModel):
         ('polkadot_std', 'polkadot_std'),
         ('harmony_std', 'harmony_std'),
         ('binance_std', 'binance_std'),
-        ('rsk_std', 'rsk_std')
+        ('rsk_std', 'rsk_std'),
+        ('algorand_std', 'algorand_std')
     ]
 
     success = models.BooleanField(default=True, help_text=_('Whether or not success.'))

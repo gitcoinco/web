@@ -29,12 +29,12 @@ from secrets import token_hex
 from django.templatetags.static import static
 from django.utils import timezone
 
-from app import settings
 from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
 from app.utils import notion_write
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.algorand import sync_algorand_payout
 from grants.sync.binance import sync_binance_payout
 from grants.sync.celo import sync_celo_payout
 from grants.sync.harmony import sync_harmony_payout
@@ -59,7 +59,8 @@ tenant_payout_mapper = {
     'POLKADOT': sync_polkadot_payout,
     'BINANCE': sync_binance_payout,
     'KUSAMA': sync_polkadot_payout,
-    'RSK': sync_rsk_payout
+    'RSK': sync_rsk_payout,
+    'ALGORAND': sync_algorand_payout
 }
 
 def get_clr_rounds_metadata():
