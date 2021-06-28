@@ -791,7 +791,7 @@ def send_user_feedback(quest, feedback, user):
 
 
 def new_quest_request(quest, is_edit):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -814,7 +814,7 @@ def new_quest_request(quest, is_edit):
 
 
 def new_action_request(action):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -1028,7 +1028,7 @@ def warn_account_out_of_eth(account, balance, denomination):
 def warn_subscription_failed(subscription):
     if subscription and subscription.negative:
         return
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -1290,7 +1290,7 @@ Team Gitcoin & The Funders League
 
 
 def match_distribution(mr):
-    from_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = "support@gitcoin.co"
     to_email = mr.profile.email
     subject = f"Match Distribution of ${mr.match_total} for @{mr.profile.handle}"
     html, text = render_match_distribution(mr)
