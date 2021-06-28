@@ -35,7 +35,6 @@ const payWithTezosExtension = async(fulfillment_id, to_address, vm, modal) => {
         }
       ]);
 
-      console.log('Operation Hash: ', txHash);
       callback(null, selectedAddress, txHash);
     } catch (e) {
       modal.closeModal();
@@ -64,8 +63,6 @@ const payWithTezosExtension = async(fulfillment_id, to_address, vm, modal) => {
       
       fetchData(apiUrlBounty, 'POST', payload).then(response => {
         if (200 <= response.status && response.status <= 204) {
-          console.log('success', response);
-          
           vm.fetchBounty();
           _alert('Payment Successful', 'success');
           

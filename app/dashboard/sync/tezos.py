@@ -41,10 +41,7 @@ def get_tezos_txn_status(fulfillment):
     amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address
 
-    if token_name != 'XTZ':
-        return None
-
-    if not txnid:
+    if token_name != 'XTZ' or not txnid:
         return None
 
     tx_response = requests.get(f'{BASE_URL}/operations/{txnid}').json()
