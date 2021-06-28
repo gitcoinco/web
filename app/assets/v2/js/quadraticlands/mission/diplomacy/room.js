@@ -5,65 +5,72 @@ document.addEventListener('DOMContentLoaded', function() {
   // show and hide arrownav when #trollbox is / is not in visible area
   const arrownav = document.getElementById('arrownav');
   var observer = new IntersectionObserver(function(entries) {
-    if(entries[0].isIntersecting === true)
-      arrownav.classList.remove("hide");
+    if (entries[0].isIntersecting === true)
+      arrownav.classList.remove('hide');
     else
-      arrownav.classList.add("hide");
+      arrownav.classList.add('hide');
   }, { threshold: [0] });
-  observer.observe(document.querySelector("#trollbox"));
+
+  observer.observe(document.querySelector('#trollbox'));
 
 
-  // 
   //
-  document.refresh_page = function(url){
-    var keys = [/*'.diplomacy-room-members', '.diplomacyvouchebar', */'.entries']
-    $.get(url, function(response){
-      for(var i=0; i<keys.length; i++){
+  //
+  document.refresh_page = function(url) {
+    var keys = [/* '.diplomacy-room-members', '.diplomacyvouchebar', */'.entries'];
+
+    $.get(url, function(response) {
+      for (var i = 0; i < keys.length; i++) {
         let key = keys[i];
+
         console.log(key, $(response).length, $(response).find(key).html());
         debugger;
         $(key).replaceWith($(response).find(key));
       }
-    })
-  }
+    });
+  };
 
 
   // ROOM CREATED NOTIFICATION + PARTICLE FANYNESS
   const notification_room_created = document.getElementById('notification_room_created');
-  if (notification_room_created)
-  {
-    console.log("ROOM CREATED");
+
+  if (notification_room_created) {
+    console.log('ROOM CREATED');
     flashMessage('Room successfull created', 7000);
   }
-  
 
-  //member card toggle card front back - but not on click in the input field on front card
+
+  // member card toggle card front back - but not on click in the input field on front card
   const membercards = document.querySelectorAll('.member-card');
+
   membercards.forEach(card => {
     card.addEventListener('click', (event) => {
-      if (event.target.tagName != "INPUT") {
-        card.classList.toggle("flip");
+      if (event.target.tagName != 'INPUT') {
+        card.classList.toggle('flip');
       }
-    });    
+    });
   });
 
 
-  //fetch balance of users wallet + display it
+  // fetch balance of users wallet + display it
   const diplomacy_wallet_address = document.getElementById('wallet_address');
   const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
+
   document.addEventListener('dataWalletReady', diplomacyWallet);
 
 
-  //fetch diplomacy_wallet_available from dom (comes from database)
+  // fetch diplomacy_wallet_available from dom (comes from database)
   const used = document.getElementById('diplomacy_wallet_used');
+
   window.used = used.dataset.used;
-  console.debug("USED", window.used)
+  console.debug('USED', window.used);
 
 
   // copy room link to clipboard
   const room_link = document.getElementById('room_link');
   const room_link_button = document.getElementById('room_link_button');
-  if(room_link){
+
+  if (room_link) {
     room_link_button.addEventListener('click', () => {
       room_link.select();
       document.execCommand('copy');
@@ -73,11 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // no self deleegation
-  $('.front input').click(function(){
-    if($(this).data('username') == document.contxt['github_handle']){
+  $('.front input').click(function() {
+    if ($(this).data('username') == document.contxt['github_handle']) {
       flashMessage('Cannot vouch for  self', 1000);
     }
-  })
+  });
 
 
   // delete room UI
@@ -86,8 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const delete_room = document.getElementById('delete_room');
   const delete_room_button = document.getElementById('delete_room_button');
   const delete_room_interface = document.getElementById('delete_room_interface');
-  if(delete_room){  
+
+  if (delete_room) {
     const roomname = delete_room.dataset.roomname;
+
     delete_room.addEventListener('input', () => {
       if (delete_room.value == roomname) {
         delete_room_button.classList.remove('disabled');
@@ -104,7 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // show leave button + warning on enter the room name what is fetched
   // by data-attribute data-phrase
   const leave_room = document.getElementById('leave_room');
-  if(leave_room){
+
+  if (leave_room) {
     const leave_room_button = document.getElementById('leave_room_button');
     const leave_room_interface = document.getElementById('leave_room_interface');
     const phrase = leave_room.dataset.phrase;
@@ -125,36 +135,39 @@ document.addEventListener('DOMContentLoaded', function() {
   // vouche button trigger function vouche()
   //
   const vouche_button = document.getElementById('vouche_button');
+
   vouche_button.addEventListener('click', () => {
     vouche();
   });
 
-  $("body").on('submit', '.diplomacy-chat-form', function(e){
+  $('body').on('submit', '.diplomacy-chat-form', function(e) {
     e.preventDefault();
     let params = {
       csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
-      chat: $("#chat_room").val(),
-    }
+      chat: $('#chat_room').val()
+    };
+
     $('#chat_room').val('');
-    var url = $("#diplomacy-chat-form").attr('action');
+    var url = $('#diplomacy-chat-form').attr('action');
+
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: url,
       data: params,
-      success: function(response){
-        flashMessage("Message submitted", 2000);
+      success: function(response) {
+        flashMessage('Message submitted', 2000);
         document.refresh_page(url);
       },
-      error: function(error){
+      error: function(error) {
         flashMessage('got an error - pls contact support@gitcoin.co', 5000);
-      },
-    });  
+      }
+    });
   });
 
 
   // vouche bar validations
   inputs = document.querySelectorAll('.member-card .front input');
-  console.debug(inputs)
+  console.debug(inputs);
   inputs.forEach(i => {
     i.addEventListener('input', input => {
       if (i.value < 0) {
@@ -163,13 +176,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
       updateVoucheBar();
 
-      console.debug("USED", window.used)
-      console.debug("USE", window.use)
-      console.debug("AWAILABLE", (window.walletbalance - window.used) )
+      console.debug('USED', window.used);
+      console.debug('USE', window.use);
+      console.debug('AWAILABLE', (window.walletbalance - window.used));
 
-      if (window.use > (window.walletbalance - window.used) )
-      {
-        console.debug("you can not use so much gtc");
+      if (window.use > (window.walletbalance - window.used)) {
+        console.debug('you can not use so much gtc');
         i.value = 0;
         updateVoucheBar();
       }
@@ -180,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-function updateVoucheBar(){
+function updateVoucheBar() {
 
   window.use = 0;
   inputs = document.querySelectorAll('.member-card .front input');
@@ -196,14 +208,14 @@ function updateVoucheBar(){
 
   diplomacy_wallet_available = document.getElementById('diplomacy_wallet_available');
   diplomacy_wallet_available.innerHTML = window.walletbalance - window.used;
-  console.debug("updateVouceBar");
+  console.debug('updateVouceBar');
 
 }
 
 
 // fetch the gtc balance
-async function diplomacyWallet(){
-  console.debug("diplomacy wallet");
+async function diplomacyWallet() {
+  console.debug('diplomacy wallet');
   try {
 
     let balance = await getTokenBalances(gtc_address());
@@ -211,7 +223,7 @@ async function diplomacyWallet(){
     diplomacy_wallet_balance.innerHTML = balance.balance.toFixed(2);
     diplomacy_wallet_address.innerHTML = truncate(selectedAccount);
     window.walletbalance = balance.balance.toFixed(2);
-    console.debug("walletbalance", window.walletbalance)
+    console.debug('walletbalance', window.walletbalance);
 
     // to calc available balance
     updateVoucheBar();
@@ -251,33 +263,32 @@ async function vouche() {
   // this is how far i could come. now your turn :)
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
-  const package = {
+  const _package = {
     'votes': result,
     'balance': balance,
-    'account': account,
-  }
-  let signature = await web3.eth.personal.sign(JSON.stringify(package) , account);
+    'account': account
+  };
+  let signature = await web3.eth.personal.sign(JSON.stringify(_package), account);
   const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
   const params = {
-    package: JSON.stringify(package),
+    'package': JSON.stringify(_package),
     signature: signature,
-    csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
-  }
+    csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
+  };
   const url = document.location.href;
+
   $.ajax({
-    type: "POST",
+    type: 'POST',
     url: url,
     data: params,
-    success: function(response){
-      flashMessage("Vote submitted", 2000)
-      document.location.href= url;
+    success: function(response) {
+      flashMessage('Vote submitted', 2000);
+      document.location.href = url;
     },
-    error: function(error){
+    error: function(error) {
       flashMessage('got an error - pls contact support@gitcoin.co', 5000);
     },
     dataType: 'json'
   });
 
 }
-
-
