@@ -22,7 +22,7 @@ Pillow>=8.2.0
 premailer
 populus
 psycopg2-binary==2.7.5
-PyJWT==1.5.3
+PyJWT>=1.5.3
 PyPdf2
 python-twitter==3.2
 sendgrid==5.6.0
@@ -30,7 +30,7 @@ slackclient==2.0.0
 eth-tester
 elasticsearch==7.10.0
 websockets
-web3==4.5.0
+web3>=4.5.0
 eth-abi>=1.1.1
 mailchimp3==3.0.7
 django_chartit==0.2.9
@@ -91,7 +91,7 @@ django-oauth-toolkit
 ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
-wiki==0.7.3
+wiki>=0.7.3
 django-bulk-update
 pdfrw
 django-admin-sortable2==0.7.6
