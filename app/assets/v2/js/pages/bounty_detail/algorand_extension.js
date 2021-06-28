@@ -137,7 +137,7 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
 
       }).catch(e => {
         console.log(e);
-        _alert({ message: 'Unable to sign txn. Please try again' }, 'danger');
+        _alert({ message: 'Unable to sign transaction. Please try again' }, 'danger');
         modal.closeModal();
         return;
       });

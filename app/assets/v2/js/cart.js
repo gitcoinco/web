@@ -628,7 +628,6 @@ Vue.component('grants-cart', {
           }
           if (additionalAttributes) {
             vm.grantData[index].additionalAttributes = additionalAttributes;
-            console.log(vm.grantData[index]);
           }
         }
       });

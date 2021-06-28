@@ -135,7 +135,7 @@ const contributeWithAlgorandExtension = async(grant, vm, from_address) => {
 
       }).catch(e => {
         console.log(e);
-        _alert({ message: 'Unable to sign txn. Please try again' }, 'danger');
+        _alert({ message: 'Unable to sign transaction. Please try again' }, 'danger');
         vm.updatePaymentStatus(grant.grant_id, 'failed');
         return;
       });
