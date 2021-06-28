@@ -127,6 +127,8 @@ Vue.mixin({
         vm.$set(vm.errors, 'kusama_payout_address', 'Please enter Kusama address');
       } else if (vm.chainId == 'rsk' && !vm.form.rsk_payout_address) {
         vm.$set(vm.errors, 'rsk_payout_address', 'Please enter RSK address');
+      } else if (vm.chainId == 'algorand' && !vm.form.algorand_payout_address) {
+        vm.$set(vm.errors, 'algorand_payout_address', 'Please enter Algorand address');
       }
 
       if (!vm.form.grant_type) {
@@ -180,6 +182,7 @@ Vue.mixin({
         'polkadot_payout_address': form.polkadot_payout_address,
         'kusama_payout_address': form.kusama_payout_address,
         'rsk_payout_address': form.rsk_payout_address,
+        'algorand_payout_address': form.algorand_payout_address,
         'grant_type': form.grant_type,
         'categories[]': form.grant_categories,
         'network': form.network,
@@ -363,6 +366,7 @@ if (document.getElementById('gc-new-grant')) {
           polkadot_payout_address: '',
           kusama_payout_address: '',
           rsk_payout_address: '',
+          algorand_payout_address: '',
           grant_type: '',
           grant_categories: [],
           network: 'mainnet'
