@@ -31,6 +31,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
+from eth_account.messages import defunct_hash_message
 
 from dashboard.abi import erc20_abi
 from dashboard.utils import get_web3
@@ -364,13 +365,23 @@ def mission_diplomacy_room_helper(request, game):
 
     # make a move
     if is_member and request.POST.get('signature'):
-        moves = json.loads(request.POST.get('package'))
+        package = request.POST.get('package')
+        moves = json.loads(package)
         signature = request.POST.get('signature')
         recipient_address = Web3.toChecksumAddress(moves['account'])
         web3 = get_web3('mainnet')
         gtc = web3.eth.contract(address=Web3.toChecksumAddress('0xde30da39c46104798bb5aa3fe8b9e0e1f348163f'), abi=erc20_abi)
         balance = gtc.functions.balanceOf(recipient_address).call()
-        import ipdb; ipdb.set_trace()
+        claimed_balance = int(moves['balance'])
+        signer_address = Web3.toChecksumAddress(web3.eth.account.recoverHash(defunct_hash_message(text=package), signature=signature))
+        claimed_address = Web3.toChecksumAddress(moves['account'])
+
+        if claimed_balance != balance:
+            return HttpResponse('not authorized - bad balance', status=401)
+
+        if claimed_address != signer_address:
+            return HttpResponse('not authorized - bad addr', status=401)
+
         data = {
             'moves': moves,
             'signature': signature,
