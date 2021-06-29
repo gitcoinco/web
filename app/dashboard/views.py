@@ -2967,6 +2967,13 @@ def get_profile_tab(request, profile, tab, prev_context):
                 'match_percent': 50,
                 'is_verified': profile.is_poh_verified
             }, {
+                'ref': 'qd',
+                'name': 'Quadratic Diplomacy',
+                'icon_path': static('v2/images/project_logos/qd.svg'),
+                'desc': 'Stake your GTC on your frens, and earn sybil resistence by doing so!',
+                'match_percent': 30,
+                'is_verified': profile.players.exists()
+            }, {
                 'ref': 'brightid',
                 'name': 'BrightID',
                 'icon_path': static('v2/images/project_logos/brightid.png'),
