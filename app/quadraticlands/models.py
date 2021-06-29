@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import uuid
+from django.db.models.signals import pre_save
 
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
@@ -385,6 +386,12 @@ class GameFeed(SuperModel):
         help_text=_('The game feed update creators\'s profile.'),
         null=True,
     )
+    action = models.CharField(
+        default='',
+        max_length=255,
+        blank=True,
+        db_index=True,
+    )
     data = JSONField(default=dict)
 
 
@@ -395,6 +402,10 @@ class GameFeed(SuperModel):
         if self.data['action'] != 'vouched':
             return []
         return self.data.get('package',{}).get('moves',{}).get('votes',[])
+
+@receiver(pre_save, sender=GameFeed, dispatch_uid="psave_gf")
+def psave_gf(sender, instance, **kwargs):
+    instance.action = instance.data['action']
 
 class GamePlayer(SuperModel):
 
@@ -416,6 +427,7 @@ class GamePlayer(SuperModel):
     active = models.BooleanField(
         default=False
     )
+    cached_data = JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"{self.game} / {self.profile.handle} / Admin: {self.admin} / Active: {self.active}"
@@ -426,7 +438,7 @@ class GamePlayer(SuperModel):
 
     @property
     def last_move(self):
-        return self.game.feed.filter(player=self, data__action='vouched').order_by('-created_on').first()
+        return self.game.feed.filter(player=self, action='vouched').order_by('-created_on').first()
 
     def votes(self):
         if self.data['action'] != 'vouched':
@@ -436,6 +448,17 @@ class GamePlayer(SuperModel):
 
     @property
     def votes_in(self):
+        return self.cached_data['votes_in'] 
+
+    @property
+    def tokens_in(self):
+        return self.cached_data['tokens_in'] 
+
+    @property
+    def tokens_out(self):
+        return self.cached_data['tokens_out'] 
+
+    def compute_votes_in(self):
         return_dict = {
 
         }
@@ -448,12 +471,16 @@ class GamePlayer(SuperModel):
                         return_dict[player.profile.handle] += float(vote['value'])
         return return_dict
 
-    @property
-    def tokens_in(self):
+    def compute_tokens_in(self):
         return sum(ele for key, ele in self.votes_in.items())
 
-    @property
-    def tokens_out(self):
+    def compute_tokens_out(self):
         if not self.last_move:
             return 0
         return sum(float(ele['value']) for ele in self.last_move.votes())
+
+@receiver(pre_save, sender=GamePlayer, dispatch_uid="psave_gp")
+def psave_gp(sender, instance, **kwargs):
+    instance.cached_data['votes_in'] = instance.compute_votes_in()
+    instance.cached_data['tokens_out'] = instance.compute_tokens_out()
+    instance.cached_data['tokens_in'] = instance.compute_tokens_in()
