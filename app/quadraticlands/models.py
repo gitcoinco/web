@@ -319,7 +319,7 @@ class Game(SuperModel):
 
     def make_move(self, handle, package):
 
-        return GameFeed.objects.create(
+        gf = GameFeed.objects.create(
             game=self,
             player=self.players.get(profile__handle=handle),
             data={
@@ -327,6 +327,9 @@ class Game(SuperModel):
                 'package': package,
             },
             )
+        for player in self.active_players.all():
+            player.save()
+        return gf
 
     def chat(self, handle, chat):
 
@@ -364,6 +367,10 @@ class Game(SuperModel):
     @property
     def active_players(self):
         return self.players.filter(active=True)
+
+    @property
+    def active_players_by_rank(self):
+        return self.active_players.order_by('-cached_data__tokens_in')
 
 
 @receiver(pre_save, sender=Game, dispatch_uid="psave_game")

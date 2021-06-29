@@ -44,7 +44,7 @@
 <!-- members to vouche -->
 <section class="diplomacy-room-members">
 
-	{% for player in game.active_players.all %}
+	{% for player in game.active_players_by_rank.all %}
 	<div class="member-card">
 		<div class="front">
 			<figure><img src="/dynamic/avatar/{{player.profile.handle}}"></figure>
