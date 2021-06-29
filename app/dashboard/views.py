@@ -2971,7 +2971,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                 'name': 'Quadratic Diplomacy',
                 'icon_path': static('v2/images/project_logos/qd.svg'),
                 'desc': 'Stake your GTC on your frens, and earn sybil resistence by doing so!',
-                'match_percent': 30,
+                'match_percent': 20,
                 'is_verified': profile.players.exists()
             }, {
                 'ref': 'brightid',
