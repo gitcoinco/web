@@ -224,11 +224,13 @@ $(document).ready(function() {
 
   if ($('input[name=amount]').length) {
 
-    setTimeout(setUsdAmount, 1000);
+    const denomination = $('input[name=denomination]').val()
 
-    $('input[name=hours]').keyup(setUsdAmount);
-    $('input[name=hours]').blur(setUsdAmount);
-    $('input[name=amount]').keyup(setUsdAmount);
+    setTimeout(() => setUsdAmount(denomination), 1000);
+
+    $('input[name=hours]').keyup(() => setUsdAmount(denomination));
+    $('input[name=hours]').blur(() => setUsdAmount(denomination));
+    $('input[name=amount]').keyup(() => setUsdAmount(denomination));
 
     $('input[name=usd_amount]').on('focusin', function() {
       $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
@@ -247,7 +249,7 @@ $(document).ready(function() {
       $('input[name=amount]').trigger('change');
 
       if (prev_usd_amount != usd_amount) {
-        usdToAmount(usd_amount);
+        usdToAmount(usd_amount, denomination);
       }
     });
   }
@@ -304,7 +306,7 @@ $(document).ready(function() {
         formData['is_featured'] = false;
       }
 
-      const token = tokenAddressToDetails(token_address);
+      const token = tokenAddressToDetailsByNetwork(token_address, bounty_network);
 
       formData['value_in_token'] = formData['amount'] * 10 ** token.decimals;
 
