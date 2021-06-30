@@ -6812,6 +6812,7 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
 
 
 @login_required
+@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def send_verification(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
@@ -6864,6 +6865,7 @@ def send_verification(request, handle):
 
 
 @login_required
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def validate_verification(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
