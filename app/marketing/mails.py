@@ -41,13 +41,13 @@ from retail.emails import (
     render_grant_txn_failed, render_grant_update, render_match_distribution, render_match_email, render_mention,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
     render_new_contributions_email, render_new_grant_approved_email, render_new_grant_email, render_new_work_submission,
-    render_no_applicant_reminder, render_nth_day_email_campaign, render_pending_contribution_email,
-    render_quarterly_stats, render_remember_your_cart, render_request_amount_email, render_reserved_issue,
-    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
-    render_successful_contribution_email, render_support_cancellation_email, render_tax_report,
-    render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
-    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_no_applicant_reminder, render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart,
+    render_request_amount_email, render_reserved_issue, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
+    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
+    render_tribe_hackathon_prizes, render_unread_notification_email_weekly_roundup, render_wallpost,
+    render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -175,26 +175,6 @@ def get_bounties_for_keywords(keywords, hours_back):
     all_bounties = all_bounties.order_by('-admin_mark_as_remarket_ready')
 
     return new_bounties, all_bounties
-
-def nth_day_email_campaign(nth, subscriber):
-    firstname = subscriber.email.split('@')[0]
-
-    if subscriber.profile and subscriber.profile.user and subscriber.profile.user.first_name:
-        firstname = subscriber.profile.user.first_name
-
-    if should_suppress_notification_email(subscriber.email, 'roundup'):
-        return False
-    cur_language = translation.get_language()
-
-    try:
-        setup_lang(subscriber.email)
-        from_email = settings.CONTACT_EMAIL
-        if not should_suppress_notification_email(subscriber.email, 'welcome_mail'):
-            html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
-            to_email = subscriber.email
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
-    finally:
-        translation.activate(cur_language)
 
 
 def featured_funded_bounty(from_email, bounty):

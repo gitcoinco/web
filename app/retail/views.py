@@ -56,7 +56,6 @@ from marketing.models import Alumni, EmailInventory, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
-from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 from townsquare.models import PinnedPost
 from townsquare.tasks import increment_view_counts
