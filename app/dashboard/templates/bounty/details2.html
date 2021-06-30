@@ -1,4 +1,4 @@
-{% load i18n static bundle %}
+{% load i18n static bundle slug %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1004,7 +1004,7 @@
 
                           <div class="text-center mt-2">
                             <a href="{%if project.name %}
-                              {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
+                              {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slug %}
                             {% else %}
                               {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
                             {% endif %}

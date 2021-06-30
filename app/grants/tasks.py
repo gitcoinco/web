@@ -21,6 +21,7 @@ from marketing.mails import (
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
+from unidecode import unidecode
 
 logger = get_task_logger(__name__)
 
@@ -75,7 +76,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # cheap calcs
     print(lineno(), round(time.time(), 2))
-    instance.slug = slugify(instance.title)[:49]
+    instance.slug = slugify(unidecode(instance.title))[:49]
     instance.twitter_handle_1 = instance.twitter_handle_1.replace('@', '')
     instance.twitter_handle_2 = instance.twitter_handle_2.replace('@', '')
 
