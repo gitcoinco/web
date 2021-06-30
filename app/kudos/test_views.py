@@ -63,10 +63,6 @@ class KudosViewsTestCase(TestCase):
         self.assertEqual(r.status_code, 200)
 
     # @skip(reason='stub for future testing')
-    # def test_get_to_emails(self):
-    #     self.client.get('/kudos/1')
-
-    # @skip(reason='stub for future testing')
     # def test_kudos_preferred_wallet(self):
     #     self.client.get('/kudos/1')
 

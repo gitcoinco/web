@@ -59,48 +59,6 @@ def get_token(token_id, network, address):
     return get_object_or_404(Token, contract=contract, token_id=token_id)
 
 
-def reconcile_kudos_preferred_wallet(profile):
-    """DEPRECATED.
-    Helper function to set the kudos_preferred_wallet if it doesn't already exist
-
-    Args:
-        profile (TYPE): Description
-
-    Returns:
-        str: Profile wallet address.
-
-    """
-    # If the preferred_kudos_wallet is not set, figure out how to set it.
-    if not profile.preferred_kudos_wallet:
-        # If the preferred_payout_address exists, use it for the preferred_kudos_Wallet
-        if profile.preferred_payout_address and profile.preferred_payout_address != '0x0':
-            # Check if the preferred_payout_addess exists as a kudos wallet address
-            kudos_wallet = profile.wallets.filter(address=profile.preferred_payout_address).first()
-            if kudos_wallet:
-                # If yes, set that wallet to be the profile.preferred_kudos_wallet
-                profile.preferred_kudos_wallet = kudos_wallet
-                # profile.preferred_kudos_wallet = profile.wallets.filter(address=profile.preferred_payout_address)
-            else:
-                # Create the kudos_wallet and set it as the preferred_kudos_wallet in the profile
-                new_kudos_wallet = Wallet(address=profile.preferred_payout_address)
-                new_kudos_wallet.save()
-                profile.preferred_kudos_wallet = new_kudos_wallet
-        else:
-            # Check if there are any kudos_wallets available.  If so, set the first one to preferred.
-            kudos_wallet = profile.kudos_wallets.all()
-            if kudos_wallet:
-                profile.preferred_kudos_wallet = kudos_wallet.first()
-            else:
-                # Not enough information available to set the preferred_kudos_wallet
-                # Use kudos indrect send.
-                logger.warning('No kudos wallets or preferred_payout_address address found.  Use Kudos Indirect Send.')
-                return None
-
-        profile.save()
-
-    return profile.preferred_kudos_wallet
-
-
 def re_send_kudos_transfer(kt, override_with_xdai_okay):
     from dashboard.utils import get_web3, has_tx_mined
     from gas.utils import recommend_min_gas_price_to_confirm_in_time
