@@ -39,6 +39,7 @@ from economy.models import SuperModel
 from eth_utils import to_checksum_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from pyvips.error import Error as VipsError
+from unidecode import unidecode
 
 logger = logging.getLogger(__name__)
 
@@ -398,7 +399,7 @@ class Token(SuperModel):
 
     @property
     def img_url(self):
-        return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'
+        return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(unidecode(self.name))}'
 
     @property
     def preview_img_url(self):
@@ -410,7 +411,7 @@ class Token(SuperModel):
 
     @property
     def url(self):
-        return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
+        return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(unidecode(self.name))}'
 
     def get_absolute_url(self):
         return self.url
@@ -425,7 +426,7 @@ class Token(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        return f'/kudos/{self.pk}/{slugify(self.name)}'
+        return f'/kudos/{self.pk}/{slugify(unidecode(self.name))}'
 
     @property
     def is_available(self):

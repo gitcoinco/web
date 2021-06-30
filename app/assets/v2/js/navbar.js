@@ -32,10 +32,10 @@ const makeMenu = (navbarEl) => {
   };
 
   // pull computedRootStyles from shared.js or compute here
-  const computedRootStyles = (Object.prototype.hasOwnProperty.call(window, 'computedRootStyles') ? window.computedRootStyles : getComputedStyle(document.documentElement));
+  const computedRootStyles = (Object.hasOwnProperty.call(window, 'computedRootStyles') ? window.computedRootStyles : getComputedStyle(document.documentElement));
 
   // pull breakpoint_md from shared.js or from root styles if not present
-  const breakpoint_md = (Object.prototype.hasOwnProperty.call(window, 'breakpoint_md') ? window.breakpoint_md : parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md')));
+  const breakpoint_md = (Object.hasOwnProperty.call(window, 'breakpoint_md') ? window.breakpoint_md : parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md')));
 
   // read the transition duration from navbar.scss (computedRootStyles is defined in shared.js)
   const transitionDuration = parseFloat(computedRootStyles.getPropertyValue('--gc-menu-transition-duration'));

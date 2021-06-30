@@ -25,7 +25,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import translation
@@ -45,7 +45,7 @@ from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
 
 def ratelimited(request, ratelimited=False):
-    return whitepaper_access(request, ratelimited=True)
+    return HttpResponseForbidden("You're ratelimited - Please try again soon", 403)
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)

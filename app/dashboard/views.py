@@ -32,6 +32,7 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
+from unidecode import unidecode
 
 from django.conf import settings
 from django.contrib import messages
@@ -5333,7 +5334,7 @@ def project_data(project_id):
             'winner': project.winner,
             'looking_members': project.looking_members,
             'work_url': project.work_url,
-            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
+            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(unidecode(project.name))]),
             'demo': {
                 'url': project.extra.get('video_url', None),
                 'provider': project.extra.get('video_provider', None),
@@ -5397,7 +5398,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
             'name': project.name,
             'id': project.id,
             'summary': project.summary,
-            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
+            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(unidecode(project.name))]),
             'status': project.status,
             'winner': project.winner,
             'looking_members': project.looking_members,
@@ -6811,6 +6812,7 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
 
 
 @login_required
+@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def send_verification(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:
@@ -6863,6 +6865,7 @@ def send_verification(request, handle):
 
 
 @login_required
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def validate_verification(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
     if not is_logged_in_user:

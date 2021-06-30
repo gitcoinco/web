@@ -116,3 +116,4 @@ rcssmin==1.0.6
 libsass==0.20.1
 graphqlclient==0.2.4
 docutils==0.17.1
+unidecode==1.2.0
