@@ -25,7 +25,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import HttpResponseForbidden, HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import translation

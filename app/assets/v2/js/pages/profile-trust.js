@@ -241,7 +241,11 @@ Vue.component('sms-verify-modal', {
           this.countdown();
           this.display_email_option = response.allow_email;
         }).catch((e) => {
-          vm.errorMessage = e.responseJSON.msg;
+          if (e.status == 403) {
+            vm.errorMessage = e.responseText;
+          } else {
+            vm.errorMessage = e.responseJSON.msg;
+          }
         });
       }
     },
