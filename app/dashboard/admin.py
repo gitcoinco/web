@@ -104,10 +104,13 @@ class PortfolioItemAdmin(admin.ModelAdmin):
 
 class EarningAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    list_display = ['created_on', 'from_profile', 'to_profile', 'value_in_token', 'value_usd']
     raw_id_fields = ['from_profile', 'to_profile', 'org_profile']
     search_fields = ['from_profile__handle', 'to_profile__handle']
     readonly_fields = [ 'source_link']
+
+    def value_in_token(self, instance):
+        return f'{instance.token_value} {instance.token_name}'
 
     def source_link(self, instance):
         url = instance.source.admin_url
