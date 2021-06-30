@@ -30,7 +30,7 @@ slackclient==2.0.0
 eth-tester
 elasticsearch==7.10.0
 websockets
-web3>=4.5.0
+web3==4.5.0
 eth-abi>=1.1.1
 mailchimp3==3.0.7
 django_chartit==0.2.9
