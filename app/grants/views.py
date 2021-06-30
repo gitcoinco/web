@@ -73,7 +73,9 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCollection, GrantType, MatchPledge, Subscription,
 )
-from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write, update_grant_metadata
+from grants.tasks import (
+    process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write, update_grant_metadata,
+)
 from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
     is_grant_team_member, sync_payout,
