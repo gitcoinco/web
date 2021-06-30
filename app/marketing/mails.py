@@ -284,24 +284,6 @@ def new_grant_approved(grant, profile):
         translation.activate(cur_language)
 
 
-def new_grant_match_pledge(matchpledge):
-    to_email = 'founders@gitcoin.co'
-    from_email = matchpledge.profile.email
-    cur_language = translation.get_language()
-
-    try:
-        setup_lang(to_email)
-        subject = f"New Grants Match Pledge Inquiry from {matchpledge.profile.handle}"
-        body = f""
-        for key, val in matchpledge.data_json.items():
-            body += f"{key}: {val}\n"
-        body += f"\n\n\n{settings.BASE_URL}{matchpledge.admin_url}"
-        html = f"<pre>{body}</pre>"
-        send_mail(from_email, to_email, subject, body, html, categories=['transactional', func_name()])
-    finally:
-        translation.activate(cur_language)
-
-
 def new_contributions(grant):
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
@@ -1021,29 +1003,6 @@ def warn_account_out_of_eth(account, balance, denomination):
             from_name=_("No Reply from Gitcoin.co"),
             categories=['admin', func_name()],
         )
-    finally:
-        translation.activate(cur_language)
-
-
-def warn_subscription_failed(subscription):
-    if subscription and subscription.negative:
-        return
-    to_email = "support@gitcoin.co"
-    from_email = settings.SERVER_EMAIL
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-        subject = str(subscription.pk) + str(_(" subscription failed"))
-        body = f"{settings.BASE_URL}{subscription.admin_url}\n{subscription.contributor_profile.email}, {subscription.contributor_profile.user.email}<pre>\n\n{subscription.subminer_comments}</pre>"
-        if not should_suppress_notification_email(to_email, 'admin'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                body,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
-            )
     finally:
         translation.activate(cur_language)
 

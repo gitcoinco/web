@@ -2620,8 +2620,6 @@ def create_matching_pledge_v1(request):
     )
 
     match_pledge.save()
-    # dont' send spammy email
-    # new_grant_match_pledge(match_pledge)
 
     response = {
         'status': 200,
