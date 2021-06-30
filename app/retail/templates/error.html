@@ -30,16 +30,4 @@
       {% endblocktrans %}</p>
     <img class="mt-4" style="max-width: 22rem;" src="{% static "v2/images/shrug_bot.png" %}">
   {% endif %}
-  {% comment %}
-  {% if code == 500 and request.sentry.id %}
-    {% load raven %}
-    <script src="https://cdn.ravenjs.com/{{ raven_js_version }}/raven.min.js"></script>
-    <script>
-      Raven.showReportDialog({
-        eventId: '{{ request.sentry.id }}',
-        dsn: '{% sentry_public_dsn "https" %}'
-      });
-    </script>
-  {% endif %}
-  {% endcomment %}
 {% endblock %}
