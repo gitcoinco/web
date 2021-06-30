@@ -15,16 +15,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches bundle %}
+{% load i18n %}
 
 
 <!--- Top Row Notification -->
 <div class="row bottom_notification font-caption d-none" style="text-align: center;">
   <script>
-    document.nav_salt = {{nav_salt|safe}};
+    document.nav_salt = {{ nav_salt|safe }};
   </script>
   <span style="text-align: center; margin: auto;">
-    {{header_msg|safe}}
+    {{ header_msg|safe }}
   </span>
   <span style="cursor: pointer;" id="top_nav_notification">
       &times;
