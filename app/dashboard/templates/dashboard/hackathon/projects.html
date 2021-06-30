@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load i18n static bundle %}
+{% load i18n static bundle slug %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -174,7 +174,7 @@
                     <h5 class="card-title text-uppercase">{{ project.name }}</h5>
                     <a href="
                     {% if project.name %}
-                        {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
+                        {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slug %}
                     {% else %}
                         {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
                     {% endif %}" class="font-weight-bold card-subtitle">Project Home</a>

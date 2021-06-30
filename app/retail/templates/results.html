@@ -15,7 +15,7 @@
   along with this program. If not,see
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load humanize i18n static bundle %}
+{% load humanize i18n static bundle slug %}
 {% load kudos_extras %}
 
 <!DOCTYPE html>
@@ -249,7 +249,7 @@
             <div class="row">
               <div class="col-md-12 p-1">
                 {% for kudos_leaderboard in kudos_leaderboards %}
-              <div id="{{kudos_leaderboard.0|slugify}}" class="col-md-12 p-1 hidden leaderboard_target">
+              <div id="{{kudos_leaderboard.0|slug}}" class="col-md-12 p-1 hidden leaderboard_target">
                 <div class="justify-content-center align-items-center p-3 pt-1 mt-1 ">
                   <p style="text-align: center; font-size: 0.9rem;">Kudos is a digital collectible + a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
                 </div>
