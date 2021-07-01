@@ -107,7 +107,7 @@ class EarningAdmin(admin.ModelAdmin):
     list_display = ['created_on', 'from_profile', 'to_profile', 'value_in_token', 'value_usd']
     raw_id_fields = ['from_profile', 'to_profile', 'org_profile']
     search_fields = ['from_profile__handle', 'to_profile__handle']
-    readonly_fields = [ 'source_link']
+    readonly_fields = [ 'source_link', 'token_value', 'token_name']
 
     def value_in_token(self, instance):
         return f'{instance.token_value} {instance.token_name}'

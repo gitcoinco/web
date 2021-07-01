@@ -19,10 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.core.management.base import BaseCommand
 
-from app.dashboard.models import BountyFulfillment, Tip
-from app.grants.models import Contribution
-from app.kudos.models import KudosTransfer
-from dashboard.models import Earning
+from grants.models import Contribution
+from kudos.models import KudosTransfer
+from dashboard.models import Earning, BountyFulfillment, Tip
 from economy.models import Token
 
 
@@ -31,17 +30,19 @@ def updateContributionEarnings (earnings):
     print("===========================================")
     print(f"Total Earning Contributions Count: {earnings.count()}")
 
-    status_change = 0
     contributions = Contribution.objects.all()
     for earning in earnings:
-        contribution = contributions.get(pk=earning.pk)
-        if contribution.amount_per_period_minus_gas_price:
-            earning.token_value = contribution.amount_per_period_minus_gas_price
+        try:
+            print(f'#{earning.pk}')
+            contribution = contributions.get(pk=earning.source_id)
+            if contribution.subscription.amount_per_period_minus_gas_price:
+                earning.token_value = contribution.subscription.amount_per_period_minus_gas_price
 
-            if contribution.success == False:
-                status_change += 1
-                earning.success = False
+                if contribution.success == False:
+                    earning.success = False
                 earning.save()
+        except:
+            print(f'unable to find contribution {earning.source_id}')
 
 
 def updateKudosEarnings (earnings):
@@ -49,10 +50,13 @@ def updateKudosEarnings (earnings):
     print(f"Total Earning Kudos Count: {earnings.count()}")
     kudos_transfers = KudosTransfer.objects.all()
     for earning in earnings:
-        kudo = kudos_transfers.get(pk=earning.pk)
-        if kudo.amount:
-            earning.token_value = kudo.amount
-            earning.save()
+        try:
+            kudo = kudos_transfers.get(pk=earning.source_id)
+            if kudo.amount:
+                earning.token_value = kudo.amount
+                earning.save()
+        except:
+            print(f'unable to find kudos {earning.source_id}')
 
 
 
@@ -61,10 +65,13 @@ def updateBountyEarnings (earnings):
     print(f"Total Earning Bounties Fulfillment Count: {earnings.count()}")
     bounty_fulfillments = BountyFulfillment.objects.all()
     for earning in earnings:
-        bounty_fulfillment = bounty_fulfillments.get(pk=earning.pk)
-        if bounty_fulfillment.token_value:
-            earning.token_value = bounty_fulfillment.token_value
-            earning.save()
+        try:
+            bounty_fulfillment = bounty_fulfillments.get(pk=earning.source_id)
+            if bounty_fulfillment.payout_amount:
+                earning.token_value = bounty_fulfillment.payout_amount
+                earning.save()
+        except:
+            print(f'unable to find Bounty {earning.source_id}')
 
 
 def updateTipEarnings (earnings):
@@ -72,7 +79,7 @@ def updateTipEarnings (earnings):
     print(f"Total Earning Tips Count: {earnings.count()}")
     tips = Tip.objects.all()
     for earning in earnings:
-        tip = tips.get(pk=earning.pk)
+        tip = tips.get(pk=earning.source_id)
         if tip.amount:
             earning.token_value = tip.amount
             earning.save()
@@ -89,8 +96,11 @@ def fixBountyFulfillmentAmount ():
     for bounty_fulfillment in bounty_fulfillments:
         token_name = bounty_fulfillment.token_name
         token = tokens.filter(symbol=token_name).first()
-        bounty_fulfillment.payout_amount = bounty_fulfillment.payout_amount / (10**token.decimals)
-        bounty_fulfillment.save()
+        if token:       
+            bounty_fulfillment.payout_amount = bounty_fulfillment.payout_amount / (10**token.decimals)
+            bounty_fulfillment.save()
+        else:
+            print(f'error: unable to find {token_name}')
 
 
 class Command(BaseCommand):
@@ -98,10 +108,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Fix earnings."""
+
         print("Pulling in every Earning")
+        # e = Earning.objects.all()
+        # print(f"Total Count: {e.count()}")
 
         # fetch successful earnings
-        earnings = Earning.objects.filter(success=True)
+        earnings = Earning.objects.all()
         print(f"Total Count: {earnings.count()}")
 
         # filter mainnet 
