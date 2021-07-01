@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.core.management.base import BaseCommand
 
+from dashboard.models import BountyFulfillment, Earning, Tip
+from economy.models import Token
 from grants.models import Contribution
 from kudos.models import KudosTransfer
-from dashboard.models import Earning, BountyFulfillment, Tip
-from economy.models import Token
 
 
 def updateContributionEarnings (earnings):
