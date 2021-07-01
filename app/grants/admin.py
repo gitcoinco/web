@@ -348,7 +348,9 @@ class ContributionAdmin(GeneralAdmin):
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
-        return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
+        if obj.subscription.contributor_profile:
+            return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
+        return None
 
     def created_on_nt(self, obj):
         return naturaltime(obj.created_on)
@@ -360,7 +362,9 @@ class ContributionAdmin(GeneralAdmin):
         return obj.subscription.token_symbol
 
     def user_sybil_score(self, obj):
-        return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
+        if obj.subscription.contributor_profile:
+            return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
+        return '0'
 
     def grant(self, obj):
         return mark_safe(f"<a href={obj.subscription.grant.url}>{obj.subscription.grant.title}</a>")

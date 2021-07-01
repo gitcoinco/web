@@ -191,7 +191,11 @@ Vue.component('grants-ingest-contributions', {
         if (!json.success) {
           console.log('ingestion failed');
           this.submitted = false;
-          throw new Error('Your transactions could not be processed, please try again');
+          const msg = json.message ?
+            'Error adding contributions as ' + json.message :
+            'Error adding contributions, please try again';
+
+          throw new Error(msg);
         } else {
           console.log('ingestion successful');
           _alert('Your contributions have been added successfully!', 'success');
