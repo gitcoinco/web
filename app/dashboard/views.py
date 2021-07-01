@@ -4626,7 +4626,8 @@ def change_bounty(request, bounty_id):
         'token_name': bounty.token_name,
         'token_address': bounty.token_address,
         'amount': bounty.get_value_true,
-        'estimated_hours': bounty.estimated_hours
+        'estimated_hours': bounty.estimated_hours,
+        'network': bounty.network
     }
 
     return TemplateResponse(request, 'bounty/change.html', params)
