@@ -83,7 +83,7 @@ redis-semaphore
 watchtower==0.5.4
 Wand==0.4.4
 raven==6.9.0
-sentry-sdk==0.19.5
+sentry-sdk==1.1.0
 websocket-client
 bleach
 python-magic
