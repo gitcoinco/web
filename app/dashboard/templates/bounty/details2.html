@@ -438,7 +438,7 @@
                             </div>
 
                             <!-- WEB3 MODAL FLOW -->
-                            <div v-else-if="fulfillment.payout_type == 'algorand_ext' || fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext'" class="px-sm-4">
+                            <div v-else-if="fulfillment.payout_type == 'algorand_ext' || fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext' || fulfillment.payout_type == 'tezos_ext'" class="px-sm-4">
 
                               <div class="text-center pb-3">
                                 <p class="mb-3 font-subheader font-weight-bold">Payout</p>
@@ -1149,6 +1149,13 @@
     {% elif web3_type == 'algorand_ext' %}
 
       <script src="{% static "v2/js/pages/bounty_detail/algorand_extension.js" %}"></script>
+
+    {% elif web3_type == 'tezos_ext' %}
+
+      <script src="{% static "v2/js/lib/tezos/walletbeacon.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/tezos/taquito.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/tezos/taquito-beacon-wallet.min.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/tezos_extension.js" %}"></script>
 
     {% elif web3_type == 'fiat' %}
 
