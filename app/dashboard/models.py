@@ -27,7 +27,6 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
 from logging import error
-from unidecode import unidecode
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -74,6 +73,7 @@ from marketing.mails import featured_funded_bounty, fund_request_email, start_wo
 from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
 from townsquare.models import Offer, PinnedPost
+from unidecode import unidecode
 from web3 import Web3
 
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack

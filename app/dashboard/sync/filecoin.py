@@ -5,6 +5,7 @@ from django.utils import timezone
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
+from economy.models import Token
 
 headers = {
     'Host': 'gitcoin.co'
@@ -104,7 +105,11 @@ def sync_filecoin_payout(fulfillment):
 
 def isValidTxn(fulfillment, txn):
     funderAddress = fulfillment.bounty.bounty_owner_address
-    amount = fulfillment.payout_amount
+
+    token = Token.objects.filter(symbol='FIL').first()
+    decimal = token.decimals
+    amount = fulfillment.payout_amount * 10 ** decimal
+
     payeeAddress = fulfillment.fulfiller_address
 
     if (

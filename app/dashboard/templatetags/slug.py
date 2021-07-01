@@ -1,6 +1,7 @@
 from django import template
-from unidecode import unidecode
 from django.utils.text import slugify
+
+from unidecode import unidecode
 
 register = template.Library()
 
