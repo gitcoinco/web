@@ -3260,6 +3260,12 @@ def ingest_contributions(request):
     message = request.POST.get('message')
     network = request.POST.get('network')
     ingestion_types = [] # after each series of ingestion, we append the ingestion_method to this array
+    handle = request.POST.get('handle')
+
+    if (profile.is_staff and
+        ( not handle or Profile.objects.filter(handle=handle).count() == 0)
+    ):
+            return JsonResponse({ 'success': False, 'message': 'Profile could not be found' })
 
     # Setup web3
     w3 = get_web3(network)
@@ -3284,12 +3290,15 @@ def ingest_contributions(request):
         if recovered_address.lower() != expected_address.lower():
             raise Exception("Signature could not be verified")
 
-    if txHash != '':
-        receipt = w3.eth.getTransactionReceipt(txHash)
-        from_address = receipt['from']
-        verify_signature(signature, message, from_address)
-    if userAddress != '':
-        verify_signature(signature, message, userAddress)
+    try:
+        if txHash != '':
+            receipt = w3.eth.getTransactionReceipt(txHash)
+            from_address = receipt['from']
+            verify_signature(signature, message, from_address)
+        if userAddress != '':
+            verify_signature(signature, message, userAddress)
+    except:
+        return JsonResponse({ 'success': False, 'message': 'Signature could not be verified' })
 
     def get_token(w3, network, address):
         if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
