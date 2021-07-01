@@ -1,0 +1,16 @@
+pkg-config
+python3.7
+python3-pip
+virtualenv
+openssl
+software-properties-common
+libpq-dev
+libxml2
+libxslt1-dev
+libmaxminddb-dev
+bash
+git
+tar
+gzip
+inkscape
+libmagic-dev

@@ -1,0 +1,95 @@
+---
+# This playbook configures the packages, localenv, virtualenv,
+# and django server on the web vm.
+
+- name: Configure webserver
+  hosts: web
+  gather_facts: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    # Setup all base apt packages
+    - name: Add inkscape repository
+      become: true
+      ansible.builtin.apt_repository:
+        repo: ppa:inkscape.dev/stable
+        state: present
+      tags: packages
+    - name: Install base packages
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+        name: "{{ item }}"
+      loop: "{{ lookup('file', '../requirements/apt-base-packages.txt').splitlines() }}"
+      tags: packages
+    - name: Install build dependency packages
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+        name: "{{ item }}"
+      loop: "{{ lookup('file', '../requirements/apt-build-deps.txt').splitlines() }}"
+      tags: packages
+
+    # Setup local environment 
+    - name: Clone the Gitcoin Web repo
+      ansible.builtin.git:
+        repo: "https://github.com/gitcoinco/web.git"
+        dest: "/home/vagrant/web"
+      tags: local-env
+    - name: Set up .env file
+      ansible.builtin.copy:
+        src: "/home/vagrant/web/app/app/local.env"
+        dest: "/home/vagrant/web/app/app/.env"
+        remote_src: yes
+      tags: local-env
+    - name: Remove default database_url line in .env file
+      # TODO: Use regex to replace this inline
+      ansible.builtin.lineinfile:
+        path: "/home/vagrant/web/app/app/.env"
+        line: "DATABASE_URL=psql://postgres:postgres@db:5432/postgres"
+        state: absent
+      tags: local-env
+    - name: Set new database_url correctly in .env file
+      ansible.builtin.lineinfile:
+        path: "/home/vagrant/web/app/app/.env"
+        line: "DATABASE_URL=psql://gitcoin_user:password@localhost:5432/gitcoin"
+        state: present
+      tags: local-env
+    - name: Temporary remove package version to deconflict
+      # TODO: Find the correct package dependencies for building without conflict
+      ansible.builtin.lineinfile:
+        path: "/home/vagrant/web/requirements/base.txt"
+        line: "duniterpy==0.61.0"
+        state: absent
+      tags: local-env
+
+    # Setup virtualenv and install all python requirements
+    - name: Install python requirements in virtualenv
+      pip:
+        requirements: "/home/vagrant/web/requirements/test.txt"
+        virtualenv: "/home/vagrant/web/gcoin"
+        virtualenv_python: python3.7
+      tags: virtualenv
+
+    # Configure and start django server
+    - name: Django migrate
+      community.general.django_manage:
+        command: migrate
+        project_path: /home/vagrant/web/app
+      tags: django
+    - name: Django create cache table
+      community.general.django_manage:
+        command: createcachetable
+        project_path: /home/vagrant/web/app
+      tags: django
+    - name: Django get prices
+      community.general.django_manage:
+        command: "get_prices"
+        project_path: /home/vagrant/web/app
+      tags: django
+    - name: Django run server
+      community.general.django_manage:
+        command: "runserver 0.0.0.0:8000"
+        project_path: /home/vagrant/web/app
+      tags: django
+

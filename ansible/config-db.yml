@@ -1,0 +1,48 @@
+---
+# This playbook configures the PostgreSQL database on the db vm.
+
+- name: Configure dbserver
+  hosts: db
+  gather_facts: yes
+  tasks:
+    - name: Setup base packages
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        pkg:
+          - bash
+          - openssl
+          - libssl-dev
+          - libssl-doc
+    - name: Install PostgreSQL
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        pkg:
+          - postgresql
+          - postgresql-contrib
+          - libpq-dev
+          - python3-psycopg2
+    - name: Start PostgreSQL service if not running
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: yes
+    - name: Create gitcoin database
+      become: yes
+      become_user: postgres
+      community.postgresql.postgresql_db:
+        name: gitcoin
+        state: present
+    - name: Create gitcoin_user
+      become: yes
+      become_user: postgres
+      community.postgresql.postgresql_user:
+        name: gitcoin_user
+        password: "password"
+    - name: Set gitcoin_user as owner
+      become: yes
+      become_user: postgres
+      community.postgresql.postgresql_owner:
+        db: gitcoin
+        new_owner: gitcoin_user

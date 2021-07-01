@@ -1,0 +1,15 @@
+gcc
+g++
+postgresql
+libxml2-dev
+libxslt-dev
+libfreetype6
+libffi-dev
+libjpeg-dev
+autoconf
+automake
+libtool
+make
+dos2unix
+libvips
+libvips-dev
