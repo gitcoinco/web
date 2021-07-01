@@ -145,7 +145,7 @@ def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold
                 {user_id (str): {user_id (str): pair_total (float)}}
             trust_dict
                 {user_id (str): trust_score (float)}
-            v_threshold 
+            v_threshold
                 float
             uv_threshold
                 float
@@ -360,11 +360,12 @@ def populate_data_for_clr(grants, contributions, clr_round):
         contributions_by_id = {}
         for c in contribs:
             prof = c.profile_for_clr
-            key = prof.id
-            if key not in contributions_by_id.keys():
-                contributions_by_id[key] = []
-            contributions_by_id[key].append(c)
-            contributing_profile_ids.append((prof.id, prof.trust_bonus))
+            if prof:
+                key = prof.id
+                if key not in contributions_by_id.keys():
+                    contributions_by_id[key] = []
+                contributions_by_id[key].append(c)
+                contributing_profile_ids.append((prof.id, prof.trust_bonus))
 
         contributing_profile_ids = list(set(contributing_profile_ids))
 

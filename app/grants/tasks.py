@@ -15,10 +15,13 @@ from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCollection, Subscription
 from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
-from marketing.mails import new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting
+from marketing.mails import (
+    new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
+)
 from marketing.models import Stat
 from perftools.models import JSONStore
 from townsquare.models import Comment
+from unidecode import unidecode
 
 logger = get_task_logger(__name__)
 
@@ -73,7 +76,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # cheap calcs
     print(lineno(), round(time.time(), 2))
-    instance.slug = slugify(instance.title)[:49]
+    instance.slug = slugify(unidecode(instance.title))[:49]
     instance.twitter_handle_1 = instance.twitter_handle_1.replace('@', '')
     instance.twitter_handle_2 = instance.twitter_handle_2.replace('@', '')
 
@@ -104,7 +107,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                     instance.amount_received += Decimal(value_usdt)
                     if contrib.created_on.replace(tzinfo=None) > round_start_date.replace(tzinfo=None):
                         instance.amount_received_in_round += Decimal(value_usdt)
-                        instance.sybil_score += subscription.contributor_profile.sybil_score
+                        instance.sybil_score += subscription.contributor_profile.sybil_score if subscription.contributor_profile else 0
 
         instance.metadata['last_calc_time_sybil_and_contrib_amounts'] = time.time()
 

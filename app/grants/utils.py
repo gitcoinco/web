@@ -360,33 +360,18 @@ def save_grant_to_notion(grant):
                     'color': 'yellow'
                 }
             },
-            'URL': {
-                'id': 'ThRE',
-                'type': 'rich_text',
-                'rich_text': [{
-                    'type': 'text',
-                    'text': {
-                        'content': grant.url,
-                        'link': {
-                            'url': fullUrl
-                        }
-                    },
-                    'plain_text': grant.url,
-                    'href': fullUrl
-                }]
-            },
             'Grant Name': {
                 "id": "title",
                 "type": "title",
                 "title": [{
                     "type": "text",
                     "text": {
-                        "content": grant.title,
+                        "content": fullUrl,
                         "link": {
                             "url": fullUrl
                         }
                     },
-                    "plain_text": grant.title,
+                    "plain_text": fullUrl,
                     "href": fullUrl
                 }]
             }

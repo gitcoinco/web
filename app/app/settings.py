@@ -312,7 +312,7 @@ AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 SENTRY_DSN = env.str('SENTRY_DSN', default='')
 SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
 RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
-RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
+RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='6.8.0')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,

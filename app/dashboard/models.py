@@ -27,6 +27,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
 from logging import error
+from unidecode import unidecode
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -299,6 +300,7 @@ class Bounty(SuperModel):
         ('nervos_ext', 'Nervos Ext'),
         ('algorand_ext', 'Algorand Ext'),
         ('sia_ext', 'Sia Ext'),
+        ('tezos_ext', 'Tezos Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1420,6 +1422,7 @@ class BountyFulfillment(SuperModel):
         ('nervos_ext', 'nervos_ext'),
         ('algorand_ext', 'algorand_ext'),
         ('sia_ext', 'sia_ext'),
+        ('tezos_ext', 'tezos_ext'),
         ('manual', 'manual')
     ]
 
@@ -1439,6 +1442,7 @@ class BountyFulfillment(SuperModel):
         ('NERVOS', 'NERVOS'),
         ('ALGORAND', 'ALGORAND'),
         ('SIA', 'SIA'),
+        ('TEZOS', 'TEZOS'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -5186,7 +5190,7 @@ class HackathonEvent(SuperModel):
     def save(self, *args, **kwargs):
         """Define custom handling for saving HackathonEvent."""
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(unidecode(self.name))
         super().save(*args, **kwargs)
 
 
@@ -5316,12 +5320,16 @@ class HackathonProject(SuperModel):
         return f"{self.name} - {self.bounty} on {self.created_on}"
 
     def url(self):
-        slug = slugify(self.name)
+        slug = slugify(unidecode(self.name))
         return f'/hackathon/projects/{self.hackathon.slug}/{slug}/'
 
-    def url_page(self):
-        slug = slugify(self.name)
-        return f'/hackathon/{self.bounty.org_name}/projects/{self.pk}/${self.name}'
+    def url_project_page(self):
+        slug = slugify(unidecode(self.name))
+        return f'/hackathon/{self.hackathon.slug}/projects/{self.pk}/{slug}'
+
+    def url_bounty_page(self):
+        slug = slugify(unidecode(self.name))
+        return f'/hackathon/{self.bounty.org_name}/projects/{self.pk}/{slug}'
 
     def get_absolute_url(self):
         return self.url()
