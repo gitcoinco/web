@@ -17,18 +17,21 @@ document.addEventListener('DOMContentLoaded', function() {
   //
   //
   document.refresh_page = function(url) {
-    var keys = [/* '.diplomacy-room-members', '.diplomacyvouchebar', */'.entries'];
+    var keys = [ '.diplomacy-room-members', '.diplomacyvouchebar', '.entries'];
 
     $.get(url, function(response) {
       for (var i = 0; i < keys.length; i++) {
         let key = keys[i];
 
-        console.log(key, $(response).length, $(response).find(key).html());
-        debugger;
         $(key).replaceWith($(response).find(key));
       }
     });
   };
+
+  // refresh page every 30s
+  setInterval(function(){
+    document.refresh_page(document.location.href);
+  }, 30 * 1000);
 
 
   // ROOM CREATED NOTIFICATION + PARTICLE FANYNESS
@@ -41,14 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // member card toggle card front back - but not on click in the input field on front card
-  const membercards = document.querySelectorAll('.member-card');
-
-  membercards.forEach(card => {
-    card.addEventListener('click', (event) => {
-      if (event.target.tagName != 'INPUT') {
-        card.classList.toggle('flip');
-      }
-    });
+  $('body').on('click', '.member-card', function(e) {
+    e.preventDefault();
+    if (e.target.tagName != 'INPUT') {
+      $(this).toggleClass('flip');
+    }
   });
 
 
@@ -283,7 +283,7 @@ async function vouche() {
     data: params,
     success: function(response) {
       flashMessage('Vote submitted', 2000);
-      document.location.href = url;
+      document.refresh_page(url);
     },
     error: function(error) {
       flashMessage('got an error - pls contact support@gitcoin.co', 5000);
