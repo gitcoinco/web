@@ -84,14 +84,17 @@ def sync_eth_payout(fulfillment):
 
 
 def getReplacedTX(tx):
-    ethurl = "https://etherscan.io/tx/"
-    response = requests.get(ethurl + tx + '/', headers=headers)
-    soup = BeautifulSoup(response.content, "html.parser")
-    p = soup.find("span", "u-label u-label--sm u-label--warning rounded")
-    if not p:
-        return None
-    if "Replaced" in p.text:
-        q = soup.find(href=re.compile("/tx/0x"))
-        return q.text
-    else:
+    try:
+        ethurl = "https://etherscan.io/tx/"
+        response = requests.get(ethurl + tx + '/', headers=headers)
+        soup = BeautifulSoup(response.content, "html.parser")
+        p = soup.find("span", "u-label u-label--sm u-label--warning rounded")
+        if not p:
+            return None
+        if "Replaced" in p.text:
+            q = soup.find(href=re.compile("/tx/0x"))
+            return q.text
+        else:
+            return None
+    except Exception:
         return None
