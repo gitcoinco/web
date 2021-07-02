@@ -32,7 +32,6 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
-from unidecode import unidecode
 
 from django.conf import settings
 from django.contrib import messages
@@ -125,6 +124,7 @@ from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
 from townsquare.views import get_following_tribes, get_tags
+from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
 from .export import (
