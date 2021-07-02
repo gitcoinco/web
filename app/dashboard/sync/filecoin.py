@@ -107,7 +107,7 @@ def isValidTxn(fulfillment, txn):
     funderAddress = fulfillment.bounty.bounty_owner_address
 
     token = Token.objects.filter(symbol='FIL').first()
-    decimal = token.decimals
+    decimal = token.decimals if token else 18
     amount = fulfillment.payout_amount * 10 ** decimal
 
     payeeAddress = fulfillment.fulfiller_address

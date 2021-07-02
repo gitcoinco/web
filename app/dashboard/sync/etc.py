@@ -12,7 +12,7 @@ def find_txn_on_etc_explorer(fulfillment, network='mainnet'):
     funderAddress = fulfillment.bounty.bounty_owner_address
 
     token = Token.objects.filter(symbol=token_name).first()
-    decimal = token.decimals
+    decimal = token.decimals if token else 18
     amount = fulfillment.payout_amount * 10 ** decimal
 
     payeeAddress = fulfillment.fulfiller_address

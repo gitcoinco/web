@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 def find_txn_on_btc_explorer(fulfillment, network='mainnet'):
     funderAddress = fulfillment.bounty.bounty_owner_address
 
-    token = Token.objects.filter(symbol=token_name).first()
-    decimal = token.decimals
+    token = Token.objects.filter(symbol='BTC').first()
+    decimal = token.decimals if token else 8
     amount = fulfillment.payout_amount * 10 ** decimal
 
     payeeAddress = fulfillment.fulfiller_address

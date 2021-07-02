@@ -19,7 +19,7 @@ def find_txn_on_zil_explorer(fulfillment, network='mainnet'):
     funderAddress = fulfillment.bounty.bounty_owner_address
 
     token = Token.objects.filter(symbol=token_name).first()
-    decimal = token.decimals
+    decimal = token.decimals if token else 12
     amount = fulfillment.payout_amount * 10 ** decimal
 
     payeeAddress = fulfillment.fulfiller_address
