@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (navbarDropdownWallet) {
     navbarDropdownWallet.addEventListener('click', () => {
-      console.log('click');
       walletProvider.classList.toggle('active');
     });
 
@@ -31,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const noproviderIcon = document.getElementById('noproviderIcon');
 
   noproviderIcon.addEventListener('click', () => {
-    console.log('noprovider');
     walletProvider.classList.toggle('active');
   });
 

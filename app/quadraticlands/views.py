@@ -280,6 +280,10 @@ def mission_diplomacy_helper(request, invited_to_game=None):
                     request,
                     f'Your Game has been created successfully'
                 )
+                messages.success(
+                    request,
+                    f'Share this link with ur frens to have them join!'
+                )
                 return redirect(game.url)
     else:
         if request.POST:

@@ -14,8 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
   observer.observe(document.querySelector('#trollbox'));
 
 
-  //
-  //
+  document.success_messages = ['bleep blop!', 'ooo u snarky!', 'sent!', 'weee!', 'what a quadratic take!', 'whiz bang!', 'tell us how u rly feel', '1001110', '🤖❤️']
   document.refresh_page = function(url) {
     var keys = [ '.diplomacy-room-members', '.diplomacyvouchebar', '.entries'];
 
@@ -155,7 +154,8 @@ document.addEventListener('DOMContentLoaded', function() {
       url: url,
       data: params,
       success: function(response) {
-        flashMessage('Message submitted', 2000);
+        var message = document.success_messages[Math.floor(Math.random()*document.success_messages.length)];
+        flashMessage(message, 2000);
         document.refresh_page(url);
       },
       error: function(error) {
@@ -167,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // vouche bar validations
   inputs = document.querySelectorAll('.member-card .front input');
-  console.debug(inputs);
   inputs.forEach(i => {
     i.addEventListener('input', input => {
       if (i.value < 0) {
@@ -282,7 +281,8 @@ async function vouche() {
     url: url,
     data: params,
     success: function(response) {
-      flashMessage('Vote submitted', 2000);
+      var message = document.success_messages[Math.floor(Math.random()*document.success_messages.length)];
+      flashMessage(message, 2000);
       document.refresh_page(url);
     },
     error: function(error) {
