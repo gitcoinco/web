@@ -1,7 +1,7 @@
-import json
 
 from django.conf import settings
 from django.utils import timezone
+import time
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
@@ -57,6 +57,7 @@ def get_zil_txn_status(txnid, network='mainnet'):
 
 
 def sync_zil_payout(fulfillment):
+    time.sleep(0.5) # to avoid rate limit
     if not fulfillment.payout_tx_id or fulfillment.payout_tx_id == "0x0":
         txn = find_txn_on_zil_explorer(fulfillment)
         if txn:
