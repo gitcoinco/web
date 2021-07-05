@@ -76,9 +76,9 @@
         </twitter-verify-modal>
 
         <qd-modal
-          :service="serviceDict.twitter"
-          :show-validation="visibleModal === 'twitter-modal'"
-          :validation-step="(!serviceDict.twitter.is_verified ? 'send-tweet' : 'disconnect')"
+          :service="serviceDict.qd"
+          :show-validation="visibleModal === 'qd-modal'"
+          :validation-step="(!serviceDict.qd.is_verified ? '0' : 'send-to-qd')"
           @modal-dismissed="hideModal()">
         </qd-modal>
 
