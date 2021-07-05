@@ -78,7 +78,7 @@
         <qd-modal
           :service="serviceDict.qd"
           :show-validation="visibleModal === 'qd-modal'"
-          :validation-step="(!serviceDict.qd.is_verified ? '0' : 'send-to-qd')"
+          validation-step="0"
           @modal-dismissed="hideModal()">
         </qd-modal>
 
@@ -207,7 +207,10 @@
                 </div>
                 <div class="text-right" :class="(service.is_verified || service.status ? 'col-6' : 'col-12 col-lg-6')">
                   <button v-if="!service.is_verified" class="btn btn-primary w-100 w-md-auto px-md-3" @click="showModal(service.ref + '-modal')">Verify</button>
-                  <button v-else class="btn btn-outline-primary" @click="showModal(service.ref + '-modal')">Disconnect</button>
+                  <div v-else>
+                    <button v-if="!service.alt_is_verified_btn" :disabled="service.disable_disconnect" class="btn btn-outline-primary" @click="showModal(service.ref + '-modal')">Disconnect</button>
+                    <a v-else :class="'btn ' + service.alt_is_verified_btn.type" :href="service.alt_is_verified_btn.location" target="_blank">[[service.alt_is_verified_btn.text]]</a>
+                  </div>
                 </div>
               </div>
             </div>

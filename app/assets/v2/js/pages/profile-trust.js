@@ -2095,12 +2095,12 @@ Vue.component('qd-modal', {
         <div class="modal-content p-0">
           <div class="top rounded-top p-2 text-center" style="background: #0e0333;">
             <div class="w-100">
-              <button @click="dismissVerification()" type="button" class="close position-absolute mt-2" style="right: 1rem" data-dismiss="modal" aria-label="Close">
+              <button @click="dismissVerification()" type="button" class="close position-absolute mt-2 text-white" style="right: 1rem" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="bg-white d-flex mt-4 mx-auto p-1 rounded-circle" style="width: 74px; height: 74px;">
-              <img class="m-auto w-100" src="/static/v2/images/quadraticlands/mission/diplomacy.svg" alt="POH Logo">
+              <img class="m-auto w-100" src="/static/v2/images/quadraticlands/mission/diplomacy.svg" alt="QL Diplomacy Logo">
             </div>
             <h3 class="text-white my-4"> Verify with Quadratic Diplomacy </h3>
           </div>
@@ -2113,9 +2113,9 @@ Vue.component('qd-modal', {
                 WHY: The Foundation of Gitcoin Grants is Quadratic Funding, which is itself dependant upon sybil & fraud resistence.
               </p>
 
-              <a href="/quadraticlands/mission/diplomacy" role="button" class="btn btn-primary mb-2" target="_blank">>
+              <button @click="goToVerification" role="button" class="btn btn-primary mb-2 mt-5 px-5 float-right">
                 Verify Now
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -2127,6 +2127,10 @@ Vue.component('qd-modal', {
       setTimeout(() => {
         this.forceStep = false;
       }, 1000);
+    },
+    goToVerification() {
+      window.open('/quadraticlands/mission/diplomacy', '_blank')
+      this.dismissVerification();
     }
   }
 });
