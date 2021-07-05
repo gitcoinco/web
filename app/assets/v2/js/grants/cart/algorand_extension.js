@@ -41,39 +41,39 @@ const contributeWithAlgorandExtension = async(grant, vm, from_address) => {
         path: `/v2/accounts/${from_address}`
       });
 
-      if (
-        token_name == 'ALGO' &&
-        Number(balance.amount) <= amount * 10 ** token.decimals
-      ) {
+      if (token_name == 'ALGO') {
         // ALGO token
-        _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
-        return;
-      }
-      // ALGO assets
-      let is_asset_present = false;
+        if (Number(balance.amount) <= amount * 10 ** token.decimals) {
+          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+          return;
+        }
+      } else {
+        // ALGO assets
+        let is_asset_present = false;
 
-      if (balance.assets && balance.assets.length > 0) {
+        if (balance.assets && balance.assets.length > 0) {
+          balance.assets.map(asset => {
+            if (asset['asset-id'] == token.addr)
+              is_asset_present = true;
+          });
+        }
+
+        if (!is_asset_present) {
+          _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
+          return;
+        }
+
+        let has_enough_asset_balance = false;
+
         balance.assets.map(asset => {
-          if (asset['asset-id'] == token.addr)
-            is_asset_present = true;
+          if (asset['asset-id'] == token.addr && asset['amount'] <= amount * 10 ** token.decimals)
+            has_enough_asset_balance = true;
         });
-      }
 
-      if (!is_asset_present) {
-        _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
-        return;
-      }
-
-      let has_enough_asset_balance = false;
-
-      balance.assets.map(asset => {
-        if (asset['asset-id'] == token.addr && asset['amount'] <= amount * 10 ** token.decimals)
-          has_enough_asset_balance = true;
-      });
-
-      if (has_enough_asset_balance) {
-        _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
-        return;
+        if (has_enough_asset_balance) {
+          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+          return;
+        }
       }
       
       // step4: set modal to waiting state
