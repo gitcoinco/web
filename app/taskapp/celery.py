@@ -27,3 +27,6 @@ class CeleryConfig(AppConfig):
         app.autodiscover_tasks(lambda: installed_apps, force=True)
         app.conf.task_routes = {ele[0]: ele[1] for ele in settings.CELERY_ROUTES}
         app.conf.task_default_queue = 'default'
+        # Fix Hard time limit (300.0s) exceeded for task
+        app.conf.task_time_limit = 50 * 60 # 50mins
+        app.conf.task_soft_time_limit = 10 * 60 # 10mins
