@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import uuid
-from django.db.models.signals import pre_save
 
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models

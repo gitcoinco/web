@@ -31,10 +31,10 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
-from eth_account.messages import defunct_hash_message
 
 from dashboard.abi import erc20_abi
 from dashboard.utils import get_web3
+from eth_account.messages import defunct_hash_message
 from quadraticlands.helpers import (
     get_coupon_code, get_FAQ, get_initial_dist, get_initial_dist_breakdown, get_mission_status, get_stewards,
 )
