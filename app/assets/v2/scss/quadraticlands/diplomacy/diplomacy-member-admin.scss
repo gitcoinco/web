@@ -1,12 +1,10 @@
-.diplomacy-member-admin{
-	
+.diplomacy-member-admin {
   margin: auto;
   margin: 0em 1.5em;
 
   margin-top: 1em;
 
-  .member{
-
+  .member {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -16,36 +14,31 @@
     background-color: var(--space_light_alpha);
     padding: 1.3em 1.5em;
 
-
-    img{
+    img {
       width: 64px;
       height: 64px;
       border-radius: 64px;
       margin-right: 1em;
     }
 
-    .username{
+    .username {
       color: var(--white);
     }
 
-    .action{
-
+    .action {
       margin-left: auto;
 
-      .btn{ 
-        margin: 0px; 
+      .btn {
+        margin: 0px;
       }
-
     }
 
-
-    &.self{
-      .action{
-
+    &.self {
+      .action {
         font-weight: 500;
         color: var(--white);
 
-        .btn{
+        .btn {
           display: none;
         }
 
@@ -54,31 +47,24 @@
         }
       }
     }
-
-
   }
-
-
-
-
 }
-
-
-
-
 
 @media #{$tablet} {
   .diplomacy-member-admin {
-    .member{ padding: 0.5em 1em; }
+    .member {
+      padding: 0.5em 1em;
+    }
   }
 }
 
 @media #{$phone} {
   .diplomacy-member-admin {
-    .member{ padding: 1em; }  
-    .member img{ display: none; }  	
+    .member {
+      padding: 1em;
+    }
+    .member img {
+      display: none;
+    }
   }
 }
-
-
-

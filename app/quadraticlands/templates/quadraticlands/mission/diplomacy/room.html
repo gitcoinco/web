@@ -42,40 +42,38 @@
 </section>
 
 <div>
-<!-- members to vouche -->
-<section class="diplomacy-room-members">
+  <!-- members to vouche -->
+  <section class="diplomacy-room-members">
 
-	{% for player in game.active_players_by_rank.all %}
-	<div class="member-card">
-		<div class="front">
-			<figure><img src="/dynamic/avatar/{{player.profile.handle}}"></figure>
-			<div class="username">@{{player.profile.handle}}</div>
-			<div class="tokens_in">{{player.tokens_in}}</div>
-			<div class="tokens_out">{{player.tokens_out}}</div>
-			<input data-kinetics-attraction data-member {% if player.profile.handle == github_handle %}readonly{% endif %} data-member data-userid="{{player.profile.id}}" data-username="{{player.profile.handle}}" type="number" placeholder="0" value="">
-		</div>
-		<div class="back">
-			<div class="wrapper tokens_in">
-				{% for username, value in player.votes_in.items %}
-					<div>@{{username}}<span>{{value}}</span></div>
-				{% endfor %}
-			</div>
-			<div class="wrapper tokens_out">
-			{% if player.last_move %}
-				{% for vote in player.last_move.votes %}
-					<div>@{{vote.username}}<span>{{vote.value}}</span></div>
-				{% endfor %}
-				{% else %}
-					<div>No moves yet.</div>
-				{% endif %}
-			</div>
-		</div>
-	</div>
-	{% endfor %}
+    {% for player in game.active_players_by_rank.all %}
+    <div class="member-card">
+      <div class="front">
+        <figure><img src="/dynamic/avatar/{{player.profile.handle}}"></figure>
+        <div class="username">@{{player.profile.handle}}</div>
+        <div class="tokens_in">{{player.tokens_in}}</div>
+        <div class="tokens_out">{{player.tokens_out}}</div>
+        <input data-kinetics-attraction data-member {% if player.profile.handle == github_handle %}readonly{% endif %} data-member data-userid="{{player.profile.id}}" data-username="{{player.profile.handle}}" type="number" placeholder="0" value="">
+      </div>
+      <div class="back">
+        <div class="wrapper tokens_in">
+          {% for username, value in player.votes_in.items %}
+            <div>@{{username}}<span>{{value}}</span></div>
+          {% endfor %}
+        </div>
+        <div class="wrapper tokens_out">
+        {% if player.last_move %}
+          {% for vote in player.last_move.votes %}
+            <div>@{{vote.username}}<span>{{vote.value}}</span></div>
+          {% endfor %}
+          {% else %}
+            <div>No moves yet.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
 
-
-
-</section>
+  </section>
 </div>
 
 

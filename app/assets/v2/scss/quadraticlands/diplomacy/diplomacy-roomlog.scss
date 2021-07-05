@@ -1,10 +1,8 @@
-.diplomacy-roomlog{
-	
+.diplomacy-roomlog {
   margin: auto;
   margin: 0em 1.5em;
 
-  .entry{
-
+  .entry {
     border-top: 1px solid var(--smoke);
     padding: 1em 0em;
 
@@ -12,34 +10,29 @@
     flex-wrap: wrap;
     row-gap: 0.3em;
     align-items: center;
-
   }
 
-
-
-  .member{
-
+  .member {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     margin-right: 1em;
-		
-    img{
+
+    img {
       width: 32px;
       height: 32px;
       border-radius: 32px;
       display: inline;
-      margin:0px;
-      padding:0px;
+      margin: 0px;
+      padding: 0px;
       margin-right: 0.5em;
     }
 
-    .username{
+    .username {
       color: var(--white);
-
     }
 
-    .tokens{
+    .tokens {
       color: var(--aqua);
       margin-left: 0.5em;
       &:before {
@@ -49,20 +42,16 @@
         content: " GTC";
       }
     }
-
   }
 
-  .time{
+  .time {
     color: var(--stone);
     &:before {
       content: "· ";
-    }			
+    }
   }
 
-
-  .action{
+  .action {
     margin-right: 1em;
   }
-
-
 }

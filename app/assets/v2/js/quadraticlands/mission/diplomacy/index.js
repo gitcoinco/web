@@ -1,15 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  console.debug('DIPLOMACY ROOMLIST');
-
   // create hyperlinks to rooms
   rooms = document.querySelectorAll('[data-roomlink]');
-  rooms.forEach(room => {
+  rooms.forEach((room) => {
     room.addEventListener('click', () => {
       window.location.href = room.dataset.roomlink;
     });
   });
-
 
   // show submit button on user input of create room input field
   const create_room = document.getElementById('create_room');
@@ -22,6 +19,4 @@ document.addEventListener('DOMContentLoaded', function() {
       create_room_button.classList.remove('disabled');
     }
   });
-
-
 });

@@ -1,21 +1,20 @@
-.diplomacy-create-room{
-
+.diplomacy-create-room {
   margin: auto;
   margin: 0em 1.5em;
   margin-bottom: 1em;
 
   background-color: var(--space_light);
 
-  .wrapper{
+  .wrapper {
     padding: 2em;
   }
 
-  .info{
+  .info {
     font-weight: 500;
     color: var(--white);
   }
 
-  .input{
+  .input {
     background-color: var(--space_light);
     border: 1px solid var(--smoke);
     display: grid;
@@ -26,26 +25,26 @@
     margin-top: 1em;
   }
 
-  input{
+  input {
     background-color: transparent;
     border: none;
     outline: none;
     color: var(--aqua);
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-size: 120%;
     width: 100%;
 
-    &:focus{
+    &:focus {
       border: none;
-      outline: none;			
+      outline: none;
     }
   }
 
-  ::placeholder{
+  ::placeholder {
     color: var(--stone);
   }
 
-  button{
+  button {
     margin: 0;
     margin-left: 0.1em;
     margin-right: 0.1em;
@@ -70,30 +69,22 @@
     &:hover {
       animation: colorcycle 1s ease-in-out infinite;
       opacity: 1;
-    }	
+    }
 
-    &.disabled{
+    &.disabled {
       opacity: 0.1;
       pointer-events: none;
     }
-
-
   }
-
 }
 
-
-
 @media #{$phone} {
-  .diplomacy-create-room{
-    .wrapper{
+  .diplomacy-create-room {
+    .wrapper {
       padding: 1em;
     }
-    .input{
+    .input {
       padding: 0.5em;
     }
   }
 }
-
-
-

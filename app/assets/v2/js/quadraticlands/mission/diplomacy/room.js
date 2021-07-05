@@ -1,22 +1,31 @@
 document.addEventListener('DOMContentLoaded', function() {
-
-  console.debug('DIPLOMACY ROOM');
-
   // show and hide arrownav when #trollbox is / is not in visible area
   const arrownav = document.getElementById('arrownav');
-  var observer = new IntersectionObserver(function(entries) {
-    if (entries[0].isIntersecting === true)
-      arrownav.classList.remove('hide');
-    else
-      arrownav.classList.add('hide');
-  }, { threshold: [0] });
+  var observer = new IntersectionObserver(
+    function(entries) {
+      if (entries[0].isIntersecting === true)
+        arrownav.classList.remove('hide');
+      else
+        arrownav.classList.add('hide');
+    },
+    { threshold: [0] }
+  );
 
   observer.observe(document.querySelector('#trollbox'));
 
-
-  document.success_messages = ['bleep blop!', 'ooo u snarky!', 'sent!', 'weee!', 'what a quadratic take!', 'whiz bang!', 'tell us how u rly feel', '1001110', '🤖❤️']
+  document.success_messages = [
+    'bleep blop!',
+    'ooo u snarky!',
+    'sent!',
+    'weee!',
+    'what a quadratic take!',
+    'whiz bang!',
+    'tell us how u rly feel',
+    '1001110',
+    '🤖❤️'
+  ];
   document.refresh_page = function(url) {
-    var keys = [ '.diplomacy-room-members', '.diplomacyvouchebar', '.entries'];
+    var keys = [ '.diplomacy-room-members', '.diplomacyvouchebar', '.entries' ];
 
     $.get(url, function(response) {
       for (var i = 0; i < keys.length; i++) {
@@ -28,42 +37,40 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   // refresh page every 30s
-  setInterval(function(){
+  setInterval(function() {
     document.refresh_page(document.location.href);
   }, 30 * 1000);
 
-
   // ROOM CREATED NOTIFICATION + PARTICLE FANYNESS
-  const notification_room_created = document.getElementById('notification_room_created');
+  const notification_room_created = document.getElementById(
+    'notification_room_created'
+  );
 
   if (notification_room_created) {
-    console.log('ROOM CREATED');
     flashMessage('Room successfull created', 7000);
   }
-
 
   // member card toggle card front back - but not on click in the input field on front card
   $('body').on('click', '.member-card', function(e) {
     e.preventDefault();
-    if (e.target.tagName != 'INPUT') {
+    if (e.target.tagName != 'INPUT') {
       $(this).toggleClass('flip');
     }
   });
 
-
   // fetch balance of users wallet + display it
   const diplomacy_wallet_address = document.getElementById('wallet_address');
-  const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
+  const diplomacy_wallet_balance = document.getElementById(
+    'wallet_token_balance'
+  );
 
   document.addEventListener('dataWalletReady', diplomacyWallet);
-
 
   // fetch diplomacy_wallet_available from dom (comes from database)
   const used = document.getElementById('diplomacy_wallet_used');
 
   window.used = used.dataset.used;
   console.debug('USED', window.used);
-
 
   // copy room link to clipboard
   const room_link = document.getElementById('room_link');
@@ -77,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-
   // no self deleegation
   $('.front input').click(function() {
     if ($(this).data('username') == document.contxt['github_handle']) {
@@ -85,13 +91,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-
   // delete room UI
   // show delete button + warning on enter the room name what is fetched
   // by data-attribute data-roomname
   const delete_room = document.getElementById('delete_room');
   const delete_room_button = document.getElementById('delete_room_button');
-  const delete_room_interface = document.getElementById('delete_room_interface');
+  const delete_room_interface = document.getElementById(
+    'delete_room_interface'
+  );
 
   if (delete_room) {
     const roomname = delete_room.dataset.roomname;
@@ -107,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-
   // leave room UI
   // show leave button + warning on enter the room name what is fetched
   // by data-attribute data-phrase
@@ -115,7 +121,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (leave_room) {
     const leave_room_button = document.getElementById('leave_room_button');
-    const leave_room_interface = document.getElementById('leave_room_interface');
+    const leave_room_interface = document.getElementById(
+      'leave_room_interface'
+    );
     const phrase = leave_room.dataset.phrase;
 
     leave_room.addEventListener('input', () => {
@@ -127,12 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
         leave_room_interface.classList.remove('warning');
       }
     });
-
   }
 
-
   // vouche button trigger function vouche()
-  //
   const vouche_button = document.getElementById('vouche_button');
 
   vouche_button.addEventListener('click', () => {
@@ -154,7 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
       url: url,
       data: params,
       success: function(response) {
-        var message = document.success_messages[Math.floor(Math.random()*document.success_messages.length)];
+        var message =
+          document.success_messages[
+            Math.floor(Math.random() * document.success_messages.length)
+          ];
+
         flashMessage(message, 2000);
         document.refresh_page(url);
       },
@@ -164,11 +173,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-
   // vouche bar validations
   inputs = document.querySelectorAll('.member-card .front input');
-  inputs.forEach(i => {
-    i.addEventListener('input', input => {
+  inputs.forEach((i) => {
+    i.addEventListener('input', (input) => {
       if (i.value < 0) {
         i.value = 0;
       }
@@ -177,26 +185,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
       console.debug('USED', window.used);
       console.debug('USE', window.use);
-      console.debug('AWAILABLE', (window.walletbalance - window.used));
+      console.debug('AWAILABLE', window.walletbalance - window.used);
 
-      if (window.use > (window.walletbalance - window.used)) {
+      if (window.use > window.walletbalance - window.used) {
         console.debug('you can not use so much gtc');
         i.value = 0;
         updateVoucheBar();
       }
-
     });
   });
-
 });
 
-
 function updateVoucheBar() {
-
   window.use = 0;
   inputs = document.querySelectorAll('.member-card .front input');
 
-  inputs.forEach(i => {
+  inputs.forEach((i) => {
     if (i.value > 0) {
       window.use += Number(i.value);
     }
@@ -205,41 +209,34 @@ function updateVoucheBar() {
   diplomacy_wallet_use = document.getElementById('diplomacy_wallet_use');
   diplomacy_wallet_use.innerHTML = window.use;
 
-  diplomacy_wallet_available = document.getElementById('diplomacy_wallet_available');
+  diplomacy_wallet_available = document.getElementById(
+    'diplomacy_wallet_available'
+  );
   diplomacy_wallet_available.innerHTML = window.walletbalance - window.used;
-  console.debug('updateVouceBar');
-
 }
-
 
 // fetch the gtc balance
 async function diplomacyWallet() {
   console.debug('diplomacy wallet');
   try {
-
     let balance = await getTokenBalances(gtc_address());
 
     diplomacy_wallet_balance.innerHTML = balance.balance.toFixed(2);
     diplomacy_wallet_address.innerHTML = truncate(selectedAccount);
     window.walletbalance = balance.balance.toFixed(2);
-    console.debug('walletbalance', window.walletbalance);
 
     // to calc available balance
     updateVoucheBar();
-
   } catch (e) {
     console.error(e);
   }
 }
-
 
 // reads all the members input fields and generate a nice
 // array of objects to do a "sign" + a "safe to db"
 // not sure how to do this part.
 
 async function vouche() {
-
-  console.debug('VOUCHE');
 
   // read all input fields what have data-member
   members = document.querySelectorAll('[data-member]');
@@ -248,7 +245,7 @@ async function vouche() {
   const result = [];
 
   // push all vouche data of each member to the result
-  members.forEach(member => {
+  members.forEach((member) => {
     var entry = {
       userid: member.dataset.userid,
       username: member.dataset.username,
@@ -263,12 +260,15 @@ async function vouche() {
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
   const _package = {
-    'votes': result,
-    'balance': balance,
-    'account': account
+    votes: result,
+    balance: balance,
+    account: account
   };
-  let signature = await web3.eth.personal.sign(JSON.stringify(_package), account);
-  const diplomacy_wallet_balance = document.getElementById('wallet_token_balance');
+  let signature = await web3.eth.personal.sign(
+    JSON.stringify(_package),
+    account
+  );
+
   const params = {
     'package': JSON.stringify(_package),
     signature: signature,
@@ -281,7 +281,11 @@ async function vouche() {
     url: url,
     data: params,
     success: function(response) {
-      var message = document.success_messages[Math.floor(Math.random()*document.success_messages.length)];
+      const message =
+        document.success_messages[
+          Math.floor(Math.random() * document.success_messages.length)
+        ];
+
       flashMessage(message, 2000);
       document.refresh_page(url);
     },
@@ -290,5 +294,4 @@ async function vouche() {
     },
     dataType: 'json'
   });
-
 }

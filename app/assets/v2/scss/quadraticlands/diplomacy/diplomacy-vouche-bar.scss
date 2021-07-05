@@ -1,5 +1,4 @@
-.diplomacy-vouche-bar{
-	
+.diplomacy-vouche-bar {
   margin: auto;
   margin: 0em 1.5em;
   margin-top: 2em;
@@ -10,28 +9,23 @@
   justify-content: space-between;
   align-items: center;
 
-
   background-color: var(--space_pink);
 
-  .col{
-
+  .col {
     margin: 1em 2em;
 
-    .btn{
-      margin:0px;
+    .btn {
+      margin: 0px;
     }
 
-    p{
+    p {
       color: var(--white);
-      margin:0;
-      padding:0;
+      margin: 0;
+      padding: 0;
     }
 
-    div{
+    div {
       color: var(--aqua);
     }
-
   }
-
-
 }
