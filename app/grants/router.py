@@ -180,6 +180,7 @@ class GrantViewSet(viewsets.ModelViewSet):
             'clr_payouts': clr_payouts,
             'metadata' : {
                 'grant_name': grant.title,
+                'created_on': grant.created_on,
                 'from_timestamp': from_timestamp,
                 'to_timestamp': to_timestamp,
                 'count': all_contributions.count,
