@@ -164,7 +164,12 @@ class GrantViewSet(viewsets.ModelViewSet):
         )
         all_contributions = Paginator(contributions_queryset, results_limit)
 
-        contributions_queryset = all_contributions.page(page)
+        try:
+            contributions_queryset = all_contributions.page(page)
+        except EmptyPage:
+            return Response({
+                'error': 'no results for this page'
+            })
         transactions = txn_serializer(contributions_queryset, many=True).data
 
         clr_serializer = CLRPayoutsSerializer
