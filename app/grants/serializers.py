@@ -2,7 +2,7 @@ from dashboard.router import ProfileSerializer
 from rest_framework import serializers
 
 from .models import CLRMatch, Contribution, Grant, Subscription
-from .utils import amount_in_wei, get_converted_amount, which_clr_round
+from .utils import amount_in_wei, get_converted_amount
 
 
 class GrantSerializer(serializers.ModelSerializer):
@@ -60,16 +60,12 @@ class TransactionsSerializer(serializers.Serializer):
     asset = serializers.CharField(source='subscription.token_symbol')
     timestamp = serializers.DateTimeField(source='created_on')
     amount = serializers.SerializerMethodField()
-    clr_round = serializers.SerializerMethodField()
     usd_value = serializers.SerializerMethodField()
     tx_hash = serializers.SerializerMethodField()
 
     def get_amount(self, obj):
         subscription = obj.subscription
         return format(amount_in_wei(subscription.token_address, subscription.amount_per_period_minus_gas_price), '.0f')
-
-    def get_clr_round(self, obj):
-        return which_clr_round(obj.created_on)
 
     def get_usd_value(self, obj):
         subscription = obj.subscription
