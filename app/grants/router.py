@@ -159,7 +159,8 @@ class GrantViewSet(viewsets.ModelViewSet):
         ).filter(
             subscription__grant=grant,
             created_on__lte=to_timestamp,
-            created_on__gt=from_timestamp
+            created_on__gt=from_timestamp,
+            subscription__network='mainnet'
         )
         all_contributions = Paginator(contributions_queryset, results_limit)
 

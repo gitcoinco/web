@@ -1,6 +1,7 @@
 
-from django.conf import settings
 import time
+
+from django.conf import settings
 
 import requests
 from grants.sync.helpers import is_txn_done_recently, record_contribution_activity, txn_already_used
