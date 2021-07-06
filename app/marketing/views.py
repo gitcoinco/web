@@ -1019,15 +1019,6 @@ def upcoming_grant():
     grant = Grant.objects.order_by('-weighted_shuffle').first()
     return grant
 
-def upcoming_hackathon():
-    try:
-        return HackathonEvent.objects.filter(end_date__gt=timezone.now(), visible=True).order_by('-start_date')
-    except HackathonEvent.DoesNotExist:
-        try:
-            return [HackathonEvent.objects.filter(start_date__gte=timezone.now(), visible=True).order_by('start_date').first()]
-        except HackathonEvent.DoesNotExist:
-            return None
-
 def get_hackathons():
     from perftools.models import JSONStore
     from dateutil.parser import parse
