@@ -1000,12 +1000,6 @@ class Grant(SuperModel):
         return super(Grant, self).save(*args, **kwargs)
 
 
-class SubscriptionQuerySet(models.QuerySet):
-    """Define the Subscription default queryset and manager."""
-
-    pass
-
-
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
@@ -1546,13 +1540,6 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
-class DonationQuerySet(models.QuerySet):
-    """Define the Contribution default queryset and manager."""
-
-    pass
-
-
-
 class Flag(SuperModel):
 
     grant = models.ForeignKey(
@@ -1671,12 +1658,6 @@ class Donation(SuperModel):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
         return f"id: {self.pk}; from:{profile.handle}; {tx_id} => ${token_amount_usdt}; {naturaltime(self.created_on)}"
-
-
-class ContributionQuerySet(models.QuerySet):
-    """Define the Contribution default queryset and manager."""
-
-    pass
 
 
 class Contribution(SuperModel):

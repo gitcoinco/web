@@ -1389,17 +1389,6 @@ class BountyEvent(SuperModel):
     metadata = JSONField(default=dict, blank=True)
 
 
-class BountyFulfillmentQuerySet(models.QuerySet):
-    """Handle the manager queryset for BountyFulfillments."""
-
-    def accepted(self):
-        """Filter results to accepted bounty fulfillments."""
-        return self.filter(accepted=True)
-
-    def submitted(self):
-        """Exclude results that have not been submitted."""
-        return self.exclude(fulfiller_address='0x0000000000000000000000000000000000000000')
-
 class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
 
@@ -1939,11 +1928,6 @@ class Tip(SendCryptoAsset):
         except Exception as e:
             logger.warning('Receive url for Tip recipient not found')
             return ''
-
-
-class TipPayoutException(Exception):
-    pass
-
 
 
 class TipPayout(SuperModel):

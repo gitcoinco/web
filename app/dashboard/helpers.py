@@ -263,21 +263,6 @@ def sync_bounty_with_web3(bounty_contract, url):
     return process_bounty_details(bountydetails)
 
 
-class BountyStage(Enum):
-    """Python enum class that matches up with the Standard Bounties BountyStage enum.
-
-    Attributes:
-        Draft (int): Bounty is a draft.
-        Active (int): Bounty is active.
-        Dead (int): Bounty is dead.
-
-    """
-
-    Draft = 0
-    Active = 1
-    Dead = 2
-
-
 class UnsupportedSchemaException(Exception):
     """Define unsupported schema exception handling."""
 

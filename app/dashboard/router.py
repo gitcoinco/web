@@ -222,16 +222,6 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 class HackathonProjectsPagination(PageNumberPagination):
     page_size = 10
 
-class UserDirectorySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = UserDirectory
-        fields = '__all__'
-        depth = 1
-
-class UserDirectoryPagination(PageNumberPagination):
-    page_size = 20
-
 
 class HackathonProjectsViewSet(viewsets.ModelViewSet):
     queryset = HackathonProject.objects.prefetch_related('bounty', 'profiles').all().order_by('id')
