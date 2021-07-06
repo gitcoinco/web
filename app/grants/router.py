@@ -159,11 +159,17 @@ class GrantViewSet(viewsets.ModelViewSet):
         ).filter(
             subscription__grant=grant,
             created_on__lte=to_timestamp,
-            created_on__gt=from_timestamp
+            created_on__gt=from_timestamp,
+            subscription__network='mainnet'
         )
         all_contributions = Paginator(contributions_queryset, results_limit)
 
-        contributions_queryset = all_contributions.page(page)
+        try:
+            contributions_queryset = all_contributions.page(page)
+        except EmptyPage:
+            return Response({
+                'error': 'no results for this page'
+            })
         transactions = txn_serializer(contributions_queryset, many=True).data
 
         clr_serializer = CLRPayoutsSerializer
@@ -174,6 +180,7 @@ class GrantViewSet(viewsets.ModelViewSet):
             'clr_payouts': clr_payouts,
             'metadata' : {
                 'grant_name': grant.title,
+                'created_on': grant.created_on,
                 'from_timestamp': from_timestamp,
                 'to_timestamp': to_timestamp,
                 'count': all_contributions.count,
