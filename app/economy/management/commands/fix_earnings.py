@@ -79,10 +79,13 @@ def updateTipEarnings (earnings):
     print(f"Total Earning Tips Count: {earnings.count()}")
     tips = Tip.objects.all()
     for earning in earnings:
-        tip = tips.get(pk=earning.source_id)
-        if tip.amount:
-            earning.token_value = tip.amount
-            earning.save()
+        try:
+            tip = tips.get(pk=earning.source_id)
+            if tip.amount:
+                earning.token_value = tip.amount
+                earning.save()
+        except:
+            print(f'unable to find Tip {earning.source_id}')
 
 
 def fixBountyFulfillmentAmount ():
@@ -123,7 +126,7 @@ class Command(BaseCommand):
 
 
         # filter earning which have txid
-        earnings_with_txid = earnings_mainnet.filter(txid__isnull=False).exclude(txid__exact='')
+        earnings_with_txid = earnings_mainnet.filter(txid__isnull=False).exclude(txid__exact='').exclude(txid__exact='0x0')
         print(f"Total Mainnet Earnings with txnid: {earnings_with_txid.count()}")
         
         #  ============================= STEP 1 =======================
