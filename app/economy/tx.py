@@ -92,14 +92,6 @@ def transaction_status(transaction, txid):
         maybeprint(89, e)
 
 
-def check_transaction_contract(transaction_tax):
-    transaction = check_transaction(transaction_tax)
-    if transaction is not None:
-        token_address = check_token(transaction.to)
-        if token_address is not False and not token_address == '0x0000000000000000000000000000000000000000':
-            return transaction_status(transaction, transaction_tax)
-
-
 def get_token(token_symbol, network):
     """
     For a given token symbol and amount, returns the token's details. For ETH, we change the 
@@ -135,13 +127,6 @@ def check_for_replaced_tx(tx_hash, network):
 
     return tx_hash, status, timestamp
 
-def is_bulk_checkout_tx(receipt):
-    """
-    Returns true if the to address of the recipient is the bulk checkout contract
-    """
-    to_address = receipt['to'].lower()
-    is_bulk_checkout = to_address == bulk_checkout_address.lower()
-    return is_bulk_checkout
 
 def grants_transaction_validator(contribution, w3):
     """
@@ -202,16 +187,6 @@ def grants_transaction_validator(contribution, w3):
 
         # Validator currently assumes msg.sender == originator as described above
         response['originator'] = [ receipt['from'] ]
-
-        # The below check was commented out since it wrongly fails for transactions sent via Argent
-        # and other wallets that use meta-transactions or relayers
-
-        # # Return if recipient is not the BulkCheckout contract
-        # is_bulk_checkout = is_bulk_checkout_tx(receipt)
-        # if not is_bulk_checkout:
-        #     to_address = receipt['to']
-        #     response['validation']['comment'] = f'This function only validates transactions through the BulkCheckout contract, but this transaction was sent to {to_address}'
-        #     return response
 
         # Parse receipt logs to look for expected transfer info. We don't need to distinguish
         # between ETH and token transfers, and don't need to look at any other receipt parameters,
@@ -341,98 +316,3 @@ auth = settings.ALETHIO_KEY
 headers = {'Authorization': f'Bearer {auth}'}
 validation_threshold_pct = 0.05
 validation_threshold_total = 0.05
-
-def get_token_originators(to_address, token, from_address='', return_what='transfers', tx_id='', amounts=[]):
-    address = to_address
-
-    #is_address = requests.get('https://api.aleth.io/v1/accounts/' + address, headers=headers).status_code
-
-    #if is_address != requests.codes.ok:
-    #    raise ValueError('Address provided is not valid.')
-
-    #is_token = requests.get(
-    #    'https://api.aleth.io/v1/tokens/' + (token),
-    #    headers=headers
-    #).status_code
-
-    #if is_token != requests.codes.ok and token != '0x0':
-    #    raise ValueError('Token provided is not valid.')
-
-    #balance = 0
-    #try:
-        #url = 'https://api.aleth.io/v1/token-balances?filter[account]=' + address + '&filter[token]=' + token
-        #balance = requests.get(url, headers=headers).json()['data'][0]['attributes']['balance']
-    #    pass
-        #if balance == 0:
-        #    raise ValueError('No balance of token at address provided.')
-    #except Exception as e:
-    #    maybeprint(250, e)
-
-    endpoint = 'token-transfers' if token != '0x0' else 'ether-transfers'
-    url = f'https://api.aleth.io/v1/{endpoint}?filter[to]=' + address + '&filter[token]=' + token + '&page%5Blimit%5D=100'
-    if token == '0x0':
-        url = f'https://api.aleth.io/v1/{endpoint}?filter[account]=' + address + '&page%5Blimit%5D=100'
-    if from_address:
-        url += '&filter[from]=' + from_address
-
-    # OLD: THIS REQUEST THROWS WITH A 500 INTERNAL SERVER ERROR
-    transfers = requests.get(
-        url,
-        headers=headers
-    ).json()
-
-    # NEW: PARSE EVENT LOGS TO SEE WHAT'S GOING ON
-
-    if transfers.get('message') == 'API rate limit exceeded. Please upgrade your account.':
-        raise Exception("RATE LIMIT EXCEEDED")
-    # TODO - pull more than one page in case there are many transfers.
-
-    if return_what == 'transfers':
-        for transfer in transfers.get('data', {}):
-            this_is_the_one = tx_id and tx_id.lower() in str(transfer).lower()
-            _decimals = transfer.get('attributes', {}).get('decimals', 18)
-            _symbol = transfer.get('attributes', {}).get('symbol', 'ETH')
-            _value = transfer.get('attributes', {}).get('value', 0)
-            _value_decimal = Decimal(int(_value) / 10 ** _decimals)
-            _this_is_the_one = False
-            for amount in amounts:
-                delta = abs(float(abs(_value_decimal)) - float(abs(amount)))
-                threshold = (float(abs(amount)) * validation_threshold_pct)
-                if delta < threshold or delta < validation_threshold_total:
-                    _this_is_the_one = True
-            this_is_the_one = not len(amounts) or _this_is_the_one
-            if this_is_the_one:
-                if transfer.get('type') in ['TokenTransfer', 'EtherTransfer']:
-                    return {
-                            'token_amount_decimal': _value_decimal,
-                            'token_name': _symbol,
-                            'to': address,
-                            'token_address': token,
-                            'token_amount_int': int(transfer['attributes']['value']),
-                            'decimals': _decimals,
-                    }
-        return None
-
-    # TokenTransfer events, value field
-    try:
-        originators = []
-        xfrs = transfers.get('data', {})
-        for tx in xfrs:
-            if tx.get('type') == 'TokenTransfer':
-                response = tx['relationships']['from']['data']['id']
-                # hack to save time
-                if response != to_address:
-                    return [response]
-                #originators.append(response)
-            value = int(tx.get('attributes', {}).get('value', 0))
-            if tx.get('type') == 'EtherTransfer' and value > 0 and token == '0x0':
-                response = tx['relationships']['from']['data']['id']
-                if response != to_address:
-                    # hack to save time
-                    return [response]
-                    originators.append(response)
-
-        return list(set(originators))
-    except Exception as e:
-        maybeprint('284', e)
-        return []

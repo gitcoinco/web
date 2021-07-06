@@ -32,7 +32,6 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
-from unidecode import unidecode
 
 from django.conf import settings
 from django.contrib import messages
@@ -125,6 +124,7 @@ from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
 from townsquare.views import get_following_tribes, get_tags
+from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
 from .export import (
@@ -317,11 +317,6 @@ def gh_login(request):
     redirect_url = login_redirect.url + redirect_url
 
     return redirect(redirect_url, backend='github')
-
-@csrf_exempt
-def gh_org_login(request):
-    """Attempt to redirect the user to Github for authentication."""
-    return redirect('social:begin', backend='gh-custom')
 
 
 def get_interest_modal(request):
@@ -1042,21 +1037,6 @@ def set_project_notes(request):
     return JsonResponse({})
 
 
-@require_GET
-def users_autocomplete(request):
-    max_items = 5
-    q = request.GET.get('q')
-    if q:
-        from haystack.query import SQ, SearchQuerySet
-        sqs = SearchQuerySet().autocomplete((SQ(first_name_auto=q) | SQ(last_name_auto=q) | SQ(handle_auto=q)))
-        results = [str(result.object) for result in sqs[:max_items]]
-    else:
-        results = []
-
-    return JsonResponse({
-        'results': results
-    })
-
 @csrf_exempt
 def output_users_to_csv(request):
 
@@ -1146,26 +1126,6 @@ def users_fetch(request):
         hackathon_id,
         only_with_tokens
     )
-
-    def previous_worked():
-        if current_user.profile.persona_is_funder:
-            return Count(
-                'fulfilled',
-                filter=Q(
-                    fulfilled__bounty__network=network,
-                    fulfilled__accepted=True,
-                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
-                )
-            )
-
-        return Count(
-            'bounties_funded__fulfillments',
-            filter=Q(
-                bounties_funded__fulfillments__bounty__network=network,
-                bounties_funded__fulfillments__accepted=True,
-                bounties_funded__fulfillments__profile__handle=current_user.profile.handle
-            )
-        )
 
     if request.GET.get('type') == 'explore_tribes':
         profile_list = Profile.objects.filter(is_org=True).order_by('-follower_count', 'id')
@@ -4272,82 +4232,6 @@ def labs(request):
         'socials': socials
     }
     return TemplateResponse(request, 'labs.html', context)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def redeem_coin(request, shortcode):
-    if request.body:
-        status = 'OK'
-
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        address = body['address']
-
-        try:
-            coin = CoinRedemption.objects.get(shortcode=shortcode)
-            address = Web3.toChecksumAddress(address)
-
-            if hasattr(coin, 'coinredemptionrequest'):
-                status = 'error'
-                message = 'Bad request'
-            else:
-                abi = json.loads('[{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":false,"stateMutability":"nonpayable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]')
-
-                # Instantiate Colorado Coin contract
-                contract = w3.eth.contract(coin.contract_address, abi=abi)
-
-                tx = contract.functions.transfer(address, coin.amount * 10**18).buildTransaction({
-                    'nonce': w3.eth.getTransactionCount(settings.COLO_ACCOUNT_ADDRESS),
-                    'gas': 100000,
-                    'gasPrice': recommend_min_gas_price_to_confirm_in_time(5) * 10**9
-                })
-
-                signed = w3.eth.account.signTransaction(tx, settings.COLO_ACCOUNT_PRIVATE_KEY)
-                transaction_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-
-                CoinRedemptionRequest.objects.create(
-                    coin_redemption=coin,
-                    ip=get_ip(request),
-                    sent_on=timezone.now(),
-                    txid=transaction_id,
-                    txaddress=address
-                )
-
-                message = transaction_id
-        except CoinRedemption.DoesNotExist:
-            status = 'error'
-            message = _('Bad request')
-        except Exception as e:
-            status = 'error'
-            message = str(e)
-
-        # http response
-        response = {
-            'status': status,
-            'message': message,
-        }
-
-        return JsonResponse(response)
-
-    try:
-        coin = CoinRedemption.objects.get(shortcode=shortcode)
-
-        params = {
-            'class': 'redeem',
-            'title': _('Coin Redemption'),
-            'coin_status': _('PENDING')
-        }
-
-        try:
-            coin_redeem_request = CoinRedemptionRequest.objects.get(coin_redemption=coin)
-            params['colo_txid'] = coin_redeem_request.txid
-        except CoinRedemptionRequest.DoesNotExist:
-            params['coin_status'] = _('INITIAL')
-
-        return TemplateResponse(request, 'yge/redeem_coin.html', params)
-    except CoinRedemption.DoesNotExist:
-        raise Http404
 
 
 @login_required
