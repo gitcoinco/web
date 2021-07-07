@@ -113,7 +113,7 @@ class GrantAdmin(GeneralAdmin):
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'emails', 'admin_message', 'has_external_funding'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'emails', 'admin_message', 'has_external_funding'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -348,7 +348,9 @@ class ContributionAdmin(GeneralAdmin):
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
-        return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
+        if obj.subscription.contributor_profile:
+            return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
+        return None
 
     def created_on_nt(self, obj):
         return naturaltime(obj.created_on)
@@ -360,7 +362,9 @@ class ContributionAdmin(GeneralAdmin):
         return obj.subscription.token_symbol
 
     def user_sybil_score(self, obj):
-        return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
+        if obj.subscription.contributor_profile:
+            return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
+        return '0'
 
     def grant(self, obj):
         return mark_safe(f"<a href={obj.subscription.grant.url}>{obj.subscription.grant.title}</a>")
@@ -460,15 +464,26 @@ class GrantCategoryAdmin(admin.ModelAdmin):
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'customer_name', 'total_pot', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active']
+    list_display = ['pk', 'customer_name', 'total_pot', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active', 'stats_link']
     raw_id_fields = ['owner']
 
-    def link(self, instance):
+
+    def stats_link(self, instance):
+        htmls = []
         try:
             url = f'/_administration/mesh?type=grant&year={instance.start_date.strftime("%Y")}&month={instance.start_date.strftime("%m")}&day={instance.start_date.strftime("%d")}&to_year={instance.end_date.strftime("%Y")}&to_month={instance.end_date.strftime("%m")}&to_day={instance.end_date.strftime("%d")}&submit=Go'
-            html = f"<a href={url}>mesh link</a>"
+            html = f"<a href={url}>mesh</a>"
+            htmls.append(html)
 
-            return mark_safe(html)
+            url = f'https://metabase.gitcoin.co/public/question/264bb597-1fab-48ff-90bd-c205e4b43d91?grant_clr={instance.pk}'
+            html = f"<a href={url}>leaderboard</a>"
+            htmls.append(html)
+
+            url = f'https://metabase.gitcoin.co/dashboard/44?clr_round={instance.round_num}'
+            html = f"<a href={url}>stats</a>"
+            htmls.append(html)
+
+            return mark_safe(", ".join(htmls))
         except:
             return "N/A"
 

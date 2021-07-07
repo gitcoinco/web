@@ -29,9 +29,11 @@ from secrets import token_hex
 from django.utils import timezone
 
 from app.settings import BASE_URL, MEDIA_URL
+from app.utils import notion_write
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.algorand import sync_algorand_payout
 from grants.sync.binance import sync_binance_payout
 from grants.sync.celo import sync_celo_payout
 from grants.sync.harmony import sync_harmony_payout
@@ -56,7 +58,8 @@ tenant_payout_mapper = {
     'POLKADOT': sync_polkadot_payout,
     'BINANCE': sync_binance_payout,
     'KUSAMA': sync_polkadot_payout,
-    'RSK': sync_rsk_payout
+    'RSK': sync_rsk_payout,
+    'ALGORAND': sync_algorand_payout
 }
 
 def get_clr_rounds_metadata():
@@ -336,3 +339,39 @@ def sync_payout(contribution):
         return None
 
     tenant_payout_mapper[subscription.tenant](contribution)
+
+
+def save_grant_to_notion(grant):
+    """Post an insert to notions sybil-db table"""
+    # check for notion credentials before attempting insert
+    if settings.NOTION_SYBIL_DB and settings.NOTION_API_KEY:
+        # fully qualified url
+        fullUrl = settings.BASE_URL.rstrip('/') + grant.url
+
+        # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
+        return notion_write(settings.NOTION_SYBIL_DB, {
+            'Current Status': {
+                'id': 'ea{s',
+                'type': 'select',
+                'select': {
+                    'id': '002e021f-3dde-4282-96e6-b2ce1c3a8380',
+                    'name': 'PENDING - Steward Review',
+                    'color': 'yellow'
+                }
+            },
+            'Grant Name': {
+                "id": "title",
+                "type": "title",
+                "title": [{
+                    "type": "text",
+                    "text": {
+                        "content": fullUrl,
+                        "link": {
+                            "url": fullUrl
+                        }
+                    },
+                    "plain_text": fullUrl,
+                    "href": fullUrl
+                }]
+            }
+        })

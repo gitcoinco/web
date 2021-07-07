@@ -167,6 +167,19 @@
                 <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.rsk_payout_address"><i class="far fa-copy"></i></copy-clipboard>
               </div>
             </template>
+
+            <!-- ALGORAND -->
+            <template v-if="grant.tenants && grant.tenants.indexOf('ALGORAND') > -1">
+              <div class="d-flex align-items-center">
+                <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16">
+                <a target="_blank" :href="`https://algoexplorer.io/address/${grant.algorand_payout_address}`">
+                  <span id="algorand-address" class="wallet-address" v-b-tooltip.hover.bottom="grant.algorand_payout_address">
+                    [[grant.algorand_payout_address | truncateHash]]
+                  </span>
+                </a>
+                <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.algorand_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+              </div>
+            </template>
           </div>
 
           <!-- Twitter Verified-->

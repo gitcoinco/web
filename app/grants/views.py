@@ -71,7 +71,9 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCollection, GrantType, MatchPledge, Subscription,
 )
-from grants.tasks import process_grant_creation_admin_email, process_grant_creation_email, update_grant_metadata
+from grants.tasks import (
+    process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write, update_grant_metadata,
+)
 from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
     is_grant_team_member, sync_payout,
@@ -632,17 +634,18 @@ def build_grants_by_type(
         if is_there_a_clr_round_active_for_this_grant_type_now:
             _grants = _grants.filter(is_clr_active=True)
 
-    if omit_my_grants and profile:
-        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                    list(profile.grant_admin.all().values_list('pk', flat=True))
-        _grants = _grants.exclude(id__in=grants_id)
-    elif grant_type == 'me' and profile:
-        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                    list(profile.grant_admin.all().values_list('pk', flat=True))
-        _grants = _grants.filter(id__in=grants_id)
-    elif only_contributions:
-        contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
-        _grants = _grants.filter(id__in=Subquery(contributions))
+    if profile:
+        if omit_my_grants:
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.exclude(id__in=grants_id)
+        elif grant_type == 'me':
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.filter(id__in=grants_id)
+        elif only_contributions:
+            contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+            _grants = _grants.filter(id__in=Subquery(contributions))
 
     print(" " + str(round(time.time(), 2)))
     _grants = _grants.keyword(keyword).order_by(sort, 'pk')
@@ -1590,6 +1593,7 @@ def grant_edit(request, grant_id):
         kusama_payout_address = request.POST.get('kusama_payout_address', '0x0')
         binance_payout_address = request.POST.get('binance_payout_address', '0x0')
         rsk_payout_address = request.POST.get('rsk_payout_address', '0x0')
+        algorand_payout_address = request.POST.get('algorand_payout_address', '0x0')
 
         if (
             eth_payout_address == '0x0' and
@@ -1600,7 +1604,8 @@ def grant_edit(request, grant_id):
             kusama_payout_address == '0x0' and
             harmony_payout_address == '0x0' and
             binance_payout_address == '0x0' and
-            rsk_payout_address == '0x0'
+            rsk_payout_address == '0x0' and 
+            algorand_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1638,6 +1643,9 @@ def grant_edit(request, grant_id):
 
         if rsk_payout_address != '0x0':
             grant.rsk_payout_address = rsk_payout_address
+
+        if algorand_payout_address != '0x0':
+            grant.algorand_payout_address = algorand_payout_address
 
         github_project_url = request.POST.get('github_project_url', None)
         if github_project_url:
@@ -1782,13 +1790,14 @@ def grant_new(request):
         harmony_payout_address = request.POST.get('harmony_payout_address', None)
         binance_payout_address = request.POST.get('binance_payout_address', None)
         rsk_payout_address = request.POST.get('rsk_payout_address', None)
+        algorand_payout_address = request.POST.get('algorand_payout_address', None)
 
         if (
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
             not polkadot_payout_address and not kusama_payout_address and
             not harmony_payout_address and not binance_payout_address and
-            not rsk_payout_address
+            not rsk_payout_address and not algorand_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1837,6 +1846,7 @@ def grant_new(request):
             'harmony_payout_address': harmony_payout_address if harmony_payout_address else '0x0',
             'binance_payout_address': binance_payout_address if binance_payout_address else '0x0',
             'rsk_payout_address': rsk_payout_address if rsk_payout_address else '0x0',
+            'algorand_payout_address': algorand_payout_address if algorand_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
@@ -1899,6 +1909,9 @@ def grant_new(request):
         # send email to creator and admin
         process_grant_creation_email.delay(grant.pk, profile.pk)
         process_grant_creation_admin_email.delay(grant.pk)
+
+         # record to notion for sybil-hunters
+        process_notion_db_write.delay(grant.pk)
 
         response = {
             'status': 200,
@@ -3139,7 +3152,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK']:
+        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND']:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: tenant chain is not supported for grant'
@@ -3248,6 +3261,12 @@ def ingest_contributions(request):
     message = request.POST.get('message')
     network = request.POST.get('network')
     ingestion_types = [] # after each series of ingestion, we append the ingestion_method to this array
+    handle = request.POST.get('handle')
+
+    if (profile.is_staff and
+        ( not handle or Profile.objects.filter(handle=handle).count() == 0)
+    ):
+            return JsonResponse({ 'success': False, 'message': 'Profile could not be found' })
 
     # Setup web3
     w3 = get_web3(network)
@@ -3272,12 +3291,15 @@ def ingest_contributions(request):
         if recovered_address.lower() != expected_address.lower():
             raise Exception("Signature could not be verified")
 
-    if txHash != '':
-        receipt = w3.eth.getTransactionReceipt(txHash)
-        from_address = receipt['from']
-        verify_signature(signature, message, from_address)
-    if userAddress != '':
-        verify_signature(signature, message, userAddress)
+    try:
+        if txHash != '':
+            receipt = w3.eth.getTransactionReceipt(txHash)
+            from_address = receipt['from']
+            verify_signature(signature, message, from_address)
+        if userAddress != '':
+            verify_signature(signature, message, userAddress)
+    except:
+        return JsonResponse({ 'success': False, 'message': 'Signature could not be verified' })
 
     def get_token(w3, network, address):
         if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
@@ -3401,7 +3423,7 @@ def ingest_contributions(request):
 
         # Get transaction timestamp
         block_info = w3.eth.getBlock(receipt['blockNumber'])
-        created_on = pytz.UTC.localize(datetime.datetime.fromtimestamp(block_info['timestamp']))
+        created_on = pytz.UTC.localize(datetime.fromtimestamp(block_info['timestamp']))
 
         # For each event in the parsed logs, create the DB objects
         for (index,event) in enumerate(parsed_logs):

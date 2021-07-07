@@ -12,9 +12,12 @@ from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCollection, Subscription
-from grants.utils import get_clr_rounds_metadata
-from marketing.mails import new_contributions, new_grant, new_grant_admin, thank_you_for_supporting
+from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
+from marketing.mails import (
+    new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
+)
 from townsquare.models import Comment
+from unidecode import unidecode
 
 logger = get_task_logger(__name__)
 
@@ -69,7 +72,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # cheap calcs
     print(lineno(), round(time.time(), 2))
-    instance.slug = slugify(instance.title)[:49]
+    instance.slug = slugify(unidecode(instance.title))[:49]
     instance.twitter_handle_1 = instance.twitter_handle_1.replace('@', '')
     instance.twitter_handle_2 = instance.twitter_handle_2.replace('@', '')
 
@@ -100,7 +103,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                     instance.amount_received += Decimal(value_usdt)
                     if contrib.created_on.replace(tzinfo=None) > round_start_date.replace(tzinfo=None):
                         instance.amount_received_in_round += Decimal(value_usdt)
-                        instance.sybil_score += subscription.contributor_profile.sybil_score
+                        instance.sybil_score += subscription.contributor_profile.sybil_score if subscription.contributor_profile else 0
 
         instance.metadata['last_calc_time_sybil_and_contrib_amounts'] = time.time()
 
@@ -376,6 +379,23 @@ def process_grant_creation_admin_email(self, grant_id):
         new_grant_admin(grant)
     except Exception as e:
         print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_notion_db_write(self, grant_id):
+
+    grant = Grant.objects.get(pk=grant_id)
+
+    # attempt to save - fallback to an email
+    try:
+        # write to notion for sybil-hunters
+        save_grant_to_notion(grant)
+    except:
+        try:
+            # send as email if we fail to write to notion
+            notion_failure_email(grant)
+        except Exception as e:
+            print(e)
 
 
 @app.shared_task(bind=True, max_retries=3)

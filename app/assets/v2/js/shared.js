@@ -668,16 +668,16 @@ this.actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-this.setUsdAmount = function() {
+this.setUsdAmount = function(givenDenomination) {
   const amount = $('input[name=amount]').val();
-  const denomination = $('#token option:selected').text();
+  const denomination = givenDenomination || $('#token option:selected').text();
 
   getUSDEstimate(amount, denomination, function(estimate) {
     if (estimate['value']) {
       $('#usd-amount-wrapper').show();
       $('#usd_amount_text').show();
 
-      $('#usd_amount').val(estimate['value_unrounded']);
+      $('#usd_amount').val(estimate['value']);
       $('#usd_amount_text').html(estimate['rate_text']);
       $('#usd_amount').removeAttr('disabled');
     } else {
@@ -691,8 +691,8 @@ this.setUsdAmount = function() {
   });
 };
 
-this.usdToAmount = function(usdAmount) {
-  const denomination = $('#token option:selected').text();
+this.usdToAmount = function(usdAmount, givenDenomination) {
+  const denomination = givenDenomination || $('#token option:selected').text();
 
   getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
     if (amountEstimate['value']) {

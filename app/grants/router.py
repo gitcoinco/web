@@ -116,6 +116,7 @@ class GrantViewSet(viewsets.ModelViewSet):
         now = datetime.now()
         to_timestamp = self.request.query_params.get('to_timestamp')
         from_timestamp = self.request.query_params.get('from_timestamp')
+        format = '%Y-%m-%d'
 
         # Check timestamp
         if not from_timestamp:
@@ -208,6 +209,7 @@ class GrantViewSet(viewsets.ModelViewSet):
         now = datetime.now()
         to_timestamp = self.request.query_params.get('to_timestamp')
         from_timestamp = self.request.query_params.get('from_timestamp')
+        format = '%Y-%m-%d'
 
         # Check timestamp
         if not from_timestamp:

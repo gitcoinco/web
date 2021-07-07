@@ -182,6 +182,10 @@ Vue.mixin({
           // sia
           type = 'sia_ext';
           break;
+        case '50797':
+          // tezos
+          type = 'tezos_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
