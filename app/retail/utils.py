@@ -56,17 +56,6 @@ class PerformanceProfiler:
         self.last_time = time.time()
 
 
-def get_github_user_profile(token):
-    github = OAuth2Session(
-        settings.GITHUB_CLIENT_ID,
-        token=token,
-    )
-
-    creds = github.get('https://api.github.com/user').json()
-    print(creds)
-    return creds
-
-
 def strip_html(html):
     tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
     no_tags = tag_re.sub('', html)

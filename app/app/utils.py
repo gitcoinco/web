@@ -26,7 +26,6 @@ from geoip2.errors import AddressNotFoundError
 from git.utils import get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
-from pyshorteners import Shortener
 from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 
@@ -45,79 +44,6 @@ class NotEqual(Lookup):
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
         return f'{lhs} <> {rhs}', params
-
-
-def get_query_cache_key(compiler):
-    """Generate a cache key from a SQLCompiler.
-
-    This cache key is specific to the SQL query and its context
-    (which database is used).  The same query in the same context
-    (= the same database) must generate the same cache key.
-
-    Args:
-        compiler (django.db.models.sql.compiler.SQLCompiler): A SQLCompiler
-            that will generate the SQL query.
-
-    Returns:
-        int: The cache key.
-
-    """
-    sql, params = compiler.as_sql()
-    cache_key = f'{compiler.using}:{sql}:{[str(p) for p in params]}'
-    return sha1(cache_key.encode('utf-8')).hexdigest()
-
-
-def get_table_cache_key(db_alias, table):
-    """Generates a cache key from a SQL table.
-
-    Args:
-        db_alias (str): The alias of the used database.
-        table (str): The name of the SQL table.
-
-    Returns:
-        int: The cache key.
-
-    """
-    cache_key = f'{db_alias}:{table}'
-    return sha1(cache_key.encode('utf-8')).hexdigest()
-
-
-def get_raw_cache_client(backend='default'):
-    """Get a raw Redis cache client connection.
-
-    Args:
-        backend (str): The backend to attempt connection against.
-
-    Raises:
-        Exception: The exception is raised/caught if any generic exception
-            is encountered during the connection attempt.
-
-    Returns:
-        redis.client.StrictRedis: The raw Redis client connection.
-            If an exception is encountered, return None.
-
-    """
-    from django_redis import get_redis_connection
-    try:
-        return get_redis_connection(backend)
-    except Exception as e:
-        logger.error(e)
-        return None
-
-
-def get_short_url(url):
-    is_short = False
-    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
-        try:
-            if not is_short:
-                shortener = Shortener(shortener)
-                response = shortener.short(url)
-                if response != 'Error' and 'http' in response:
-                    url = response
-                is_short = True
-        except Exception:
-            pass
-    return url
 
 
 def ellipses(data, _len=75):
@@ -298,47 +224,6 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
         _, content = mailbox.fetch(str(fetched_id), '(RFC822)')
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
-
-
-def itermerge(gen_a, gen_b, key):
-    a = None
-    b = None
-
-    # yield items in order until first iterator is emptied
-    try:
-        while True:
-            if a is None:
-                a = gen_a.next()
-
-            if b is None:
-                b = gen_b.next()
-
-            if key(a) <= key(b):
-                yield a
-                a = None
-            else:
-                yield b
-                b = None
-    except StopIteration:
-        # yield last item to be pulled from non-empty iterator
-        if a is not None:
-            yield a
-
-        if b is not None:
-            yield b
-
-    # flush remaining items in non-empty iterator
-    try:
-        for a in gen_a:
-            yield a
-    except StopIteration:
-        pass
-
-    try:
-        for b in gen_b:
-            yield b
-    except StopIteration:
-        pass
 
 
 def handle_location_request(request):

@@ -226,44 +226,6 @@ def get_upload_filename(instance, filename):
     return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
-def get_svg_templates():
-    """Get the SVG templates for all avatar categories."""
-    template_data = {
-        'accessories': {
-            'earring': [],
-            'glasses': [],
-            'hat': [],
-            'masks': [],
-            'extras': [],
-        },
-        'clothing': [],
-        'ears': [],
-        'eyes': [],
-        'facial_hair': {
-            'beard': [],
-            'mustache': []
-        },
-        'hair': [],
-        'head': [],
-        'makeup': [],
-        'mouth': [],
-        'nose': [],
-        'wallpaper': []
-    }
-
-    for category in template_data:
-        path = f'avatar/templates/{category}'
-        template_list = os.listdir(path)
-
-        if isinstance(template_data[category], dict):
-            for item in template_data[category]:
-                inner_path = f'{path}/{item}'
-                template_data[category][item] = os.listdir(inner_path)
-        else:
-            template_data[category] = template_list
-    return template_data
-
-
 def get_svg_template(category, item, primary_color, secondary_color=''):
     context = {'primary_color': primary_color}
     if secondary_color:

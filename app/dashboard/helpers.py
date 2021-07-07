@@ -244,24 +244,6 @@ def normalize_url(url):
     return url
 
 
-def sync_bounty_with_web3(bounty_contract, url):
-    """Sync the Bounty with Web3.
-
-    Args:
-        bounty_contract (Web3): The Web3 contract instance.
-        url (str): The bounty URL.
-
-    Returns:
-        tuple: A tuple of bounty change data.
-        tuple[0] (bool): Whether or not the Bounty changed.
-        tuple[1] (dashboard.models.Bounty): The first old bounty object.
-        tuple[2] (dashboard.models.Bounty): The new Bounty object.
-
-    """
-    bountydetails = bounty_contract.call().bountydetails(url)
-    return process_bounty_details(bountydetails)
-
-
 class BountyStage(Enum):
     """Python enum class that matches up with the Standard Bounties BountyStage enum.
 

@@ -59,7 +59,3 @@ def is_email_townsquare_enabled(email):
     if not user:
         return False
     return is_user_townsquare_enabled(user)
-
-
-def is_there_an_action_available():
-    return Offer.objects.current().exists()

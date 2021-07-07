@@ -36,42 +36,6 @@ from slackclient.exceptions import SlackClientError
 logger = logging.getLogger(__name__)
 
 
-def delete_user_from_mailchimp(email_address):
-    client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
-    result = None
-    try:
-        result = client.search_members.get(query=email_address)
-        if result:
-            subscriber_hash = result.get('exact_matches', {}).get('members', [{}])[0].get('id', None)
-    except Exception as e:
-        logger.debug(e)
-
-
-        try:
-            client.lists.members.delete(
-                list_id=settings.MAILCHIMP_LIST_ID,
-                subscriber_hash=subscriber_hash,
-            )
-        except Exception as e:
-            logger.debug(e)
-
-        try:
-            client.lists.members.delete(
-                list_id=settings.MAILCHIMP_LIST_ID_HUNTERS,
-                subscriber_hash=subscriber_hash,
-            )
-        except Exception as e:
-            logger.debug(e)
-
-        try:
-            client.lists.members.delete(
-                list_id=settings.MAILCHIMP_LIST_ID_HUNTERS,
-                subscriber_hash=subscriber_hash,
-            )
-        except Exception as e:
-            logger.debug(e)
-
-
 def is_deleted_account(handle):
     return AccountDeletionRequest.objects.filter(handle=handle.lower()).exists()
 
@@ -144,52 +108,6 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
             result['output'] = _('The test message was sent to Slack.')
             result['success'] = True
     except SlackClientError as e:
-        logger.error(e)
-        result['output'] = _('An error has occurred.')
-    return result
-
-
-def validate_discord_integration(webhook_url, message=None, icon_url=''):
-    """Validate the Discord webhook URL by posting a message.
-
-    Args:
-        webhook_url (str): The Discord webhook URL.
-        message (str): The Discord message to be sent.
-            Defaults to: The Gitcoin Discord integration is working fine.
-        icon_url (str): The URL to the avatar to be used.
-            Defaults to: the gitcoin helmet.
-
-    Attributes:
-        result (dict): The result dictionary defining success status and error message.
-        message (str): The response message to display to the user.
-        response (obj): The Discord response object - refer to python-requests API
-
-    Raises:
-        requests.exception.HTTPError: The exception is raised for any HTTP error.
-
-    Returns:
-        str: The response message.
-
-    """
-    result = {'success': False, 'output': 'Test message was not sent.'}
-
-    if message is None:
-        message = gettext('The Gitcoin Discord integration is working fine.')
-
-    if not icon_url:
-        icon_url = static('v2/images/helmet.png')
-
-    try:
-        headers = {'Content-Type': 'application/json'}
-        body = {"content": message, "avatar_url": icon_url}
-        response = requests.post(
-            webhook_url, headers=headers, json=body
-        )
-        response.raise_for_status()
-        if response.ok:
-            result['output'] = _('The test message was sent to Discord.')
-            result['success'] = True
-    except requests.exceptions.HTTPError as e:
         logger.error(e)
         result['output'] = _('An error has occurred.')
     return result
