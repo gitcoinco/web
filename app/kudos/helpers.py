@@ -22,8 +22,6 @@ import logging
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
-from eth_utils import is_address, to_checksum_address
-
 from .models import Contract, Token, Wallet
 
 logger = logging.getLogger(__name__)

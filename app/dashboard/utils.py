@@ -21,7 +21,6 @@ import base64
 import json
 import logging
 import re
-import time
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
@@ -36,9 +35,7 @@ from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
 from cytoolz import compose
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import (
-    Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
-)
+from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from dashboard.sync.algorand import sync_algorand_payout
 from dashboard.sync.binance import sync_binance_payout
 from dashboard.sync.btc import sync_btc_payout
@@ -54,7 +51,6 @@ from dashboard.sync.sia import sync_sia_payout
 from dashboard.sync.tezos import sync_tezos_payout
 from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
-from ens.auto import ns
 from ens.utils import name_to_hash
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex

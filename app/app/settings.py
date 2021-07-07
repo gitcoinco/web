@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import os
 import socket
-import subprocess
 import warnings
 
 from django.utils.translation import gettext_noop

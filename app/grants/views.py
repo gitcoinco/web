@@ -26,14 +26,12 @@ import re
 import time
 import uuid
 from datetime import datetime
-from decimal import Decimal
 from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
@@ -1547,8 +1545,6 @@ def grant_edit(request, grant_id):
     is_team_member = is_grant_team_member(grant, profile)
     if request.method == 'POST' and (is_team_member or request.user.is_staff):
 
-        from grants.utils import add_grant_to_active_clrs
-
         response = {
             'status': 400,
             'message': 'error: Bad Request. Unable to create grant'
@@ -1743,8 +1739,6 @@ def grant_new(request):
     """Handle new grant."""
 
     if request.method == 'POST':
-
-        from grants.utils import add_grant_to_active_clrs
 
         response = {
             'status': 400,

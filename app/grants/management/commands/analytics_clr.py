@@ -18,14 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import calculate_clr_for_donation, fetch_data, populate_data_for_clr
-from grants.models import Contribution, Grant, GrantCLR
-from marketing.mails import warn_subscription_failed
+from grants.models import GrantCLR
 
 
 def analytics_clr(from_date=None, clr_round=None, network='mainnet'):

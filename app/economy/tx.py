@@ -1,19 +1,13 @@
-import decimal
-import os
-import time
 from decimal import Decimal
-from time import sleep
 
 from django.conf import settings
 from django.utils import timezone
 
 import requests
-from bs4 import BeautifulSoup
 from dashboard.abi import erc20_abi
 from dashboard.utils import get_tx_status, get_web3
 from economy.models import Token
-from hexbytes import HexBytes
-from web3 import HTTPProvider, Web3
+from web3 import Web3
 from web3.exceptions import BadFunctionCallOutput
 
 

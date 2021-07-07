@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 from corsheaders.signals import check_request_enabled
 
 from .notifications import maybe_market_to_github

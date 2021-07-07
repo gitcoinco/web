@@ -43,7 +43,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from django_extensions.db.fields import AutoSlugField
-from economy.models import SuperModel, Token
+from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
@@ -1193,7 +1193,6 @@ class Subscription(SuperModel):
         token = addr_to_token(self.token_address, self.network)
 
         # gas prices no longer take this amount times 10**18 decimals
-        import pytz
         if self.created_on > timezone.datetime(2020, 6, 16, 15, 0).replace(tzinfo=pytz.utc):
             return self.gas_price
 

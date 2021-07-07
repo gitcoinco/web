@@ -26,10 +26,9 @@ from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
-from django.templatetags.static import static
 from django.utils import timezone
 
-from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
+from app.settings import BASE_URL, MEDIA_URL
 from app.utils import notion_write
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount

@@ -24,7 +24,6 @@ from decimal import Decimal
 from enum import Enum
 
 from django.conf import settings
-from django.conf.urls.static import static
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
@@ -42,8 +41,8 @@ from dashboard.notifications import (
     notify_of_lowball_bounty,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_issue_details, get_url_dict, org_name
+from economy.utils import convert_amount
+from git.utils import get_gh_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC

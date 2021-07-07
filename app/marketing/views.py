@@ -29,19 +29,17 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
-from django.db.models import Avg, Count, Max, Q
+from django.db.models import Avg, Max
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.utils import timezone, translation
-from django.utils.translation import LANGUAGE_SESSION_KEY
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
-from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
+from dashboard.models import HackathonEvent, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from dashboard.views import mautic_proxy_backend
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -51,8 +49,7 @@ from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK,
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
-from quests.models import Quest
-from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
+from retail.emails import render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
