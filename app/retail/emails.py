@@ -101,26 +101,6 @@ def render_featured_funded_bounty(bounty):
     return response_html, response_txt, subject
 
 
-def render_nth_day_email_campaign(to_email, nth, firstname):
-    subject_map = {
-        1: "Day 1: Growing Open Source",
-        2: "Day 2: Using Gitcoin's Issue Explorer",
-        3: "Learning Blockchain"
-    }
-
-    subject = subject_map[nth]
-
-    params = {
-        "firstname": firstname,
-        "subscriber": get_or_save_email_subscriber(to_email, "internal"),
-		"email_type": "welcome_mail"
-    }
-    response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
-    response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
-
-    return response_html, response_txt, subject
-
-
 def render_new_grant_email(grant):
     params = {'grant': grant, 'utm_tracking': build_utm_tracking('new_grant')}
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))

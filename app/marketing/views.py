@@ -49,7 +49,7 @@ from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK,
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
-from retail.emails import render_new_bounty, render_nth_day_email_campaign
+from retail.emails import render_new_bounty
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
@@ -979,12 +979,6 @@ def leaderboard(request, key=''):
 
     return TemplateResponse(request, 'leaderboard.html', context)
 
-@staff_member_required
-def day_email_campaign(request, day):
-    if day not in list(range(1, 3)):
-        raise Http404
-    response_html, _, _, = render_nth_day_email_campaign('foo@bar.com', day, 'staff member')
-    return HttpResponse(response_html)
 
 def trending_quests():
     from quests.models import QuestAttempt
