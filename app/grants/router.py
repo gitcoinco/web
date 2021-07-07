@@ -9,9 +9,10 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
-from .models import CLRMatch, Contribution, Grant, Subscription
+from .models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
 from .serializers import (
-    CLRPayoutsSerializer, DonorSerializer, GrantSerializer, SubscriptionSerializer, TransactionsSerializer,
+    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantSerializer, SubscriptionSerializer,
+    TransactionsSerializer,
 )
 
 
@@ -95,10 +96,58 @@ class GrantViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=False)
+    @ratelimit(key='ip', rate='2/s')
+    def clr_round_metadata(self, request):
+        """
+            Generate CLR Round metadata for Grants
+            URL: api/v0.1/grants/get_clr_round_metadata/
+        """
+
+        clr_rounds = GrantCLR.objects.all()
+
+        pk = self.request.query_params.get('id')
+        active = self.request.query_params.get('active', False)
+        to_timestamp = self.request.query_params.get('to_timestamp')
+        from_timestamp = self.request.query_params.get('from_timestamp')
+        format = '%Y-%m-%d'
+
+        if pk:
+            clr_rounds = clr_rounds.filter(pk=pk)
+
+        if active:
+            clr_rounds = clr_rounds.filter(is_active=True)
+
+        if from_timestamp:
+            try:
+                from_timestamp = datetime.strptime(from_timestamp, format)
+            except ValueError:
+                return Response({
+                    'error': 'from_timestamp is is not in the format YYYY-MM-DD'
+                })
+            clr_rounds = clr_rounds.filter(start_date__gte=from_timestamp)
+
+        if to_timestamp:
+            try:
+                to_timestamp = datetime.strptime(to_timestamp, format)
+            except ValueError:
+                return Response({
+                    'error': 'to_timestamp is is not in the format YYYY-MM-DD'
+                })
+            clr_rounds = clr_rounds.filter(start_date__lte=to_timestamp)
+
+        clr_serializer = GrantCLRSerializer
+        data = clr_serializer(clr_rounds,  many=True).data
+
+        return Response({
+            'rounds': data
+        })
+
+
+    @action(detail=False)
     @ratelimit(key='ip', rate='5/s')
     def contributions_rec_report(self, request):
         """
-            Genrate Grantee Report for an Grant
+            Generate Grantee Report for an Grant
             URL: api/v0.1/grants/contributions_rec_report/?id=<grant-id>&format=json
         """
 

@@ -1,7 +1,7 @@
 from dashboard.router import ProfileSerializer
 from rest_framework import serializers
 
-from .models import CLRMatch, Contribution, Grant, Subscription
+from .models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
 from .utils import amount_in_wei, get_converted_amount
 
 
@@ -132,3 +132,13 @@ class DonorSerializer(serializers.Serializer):
         """Define the Donor serializer metadata."""
 
         fields = ('grant_name', 'asset', 'timestamp', 'grant_amount', 'gitcoin_maintenance_amount', 'grant_usd_value', 'gitcoin_usd_value')
+
+
+class GrantCLRSerializer(serializers.ModelSerializer):
+    """Handle metadata of CLR rounds"""
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantCLR
+        fields = (
+            'id', 'display_text', 'round_num', 'is_active', 'start_date', 'end_date'
+        )
