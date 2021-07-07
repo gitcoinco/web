@@ -17,21 +17,28 @@
 {% endcomment %}
 {% load i18n static kudos_extras bundle %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
-<script src="{% static "onepager/js/confetti.js" %}"></script>
-<script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
-<script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
-<script>
-  document.network = '{{coupon.token.contract.network}}';
-  document.gas_amount = {{gas_amount}};
-  $(document).ready(function(){
-    {% if error %}
-      _alert('{{error}}', 'danger');
-    {% endif %}
-    start_kudos_levitate();
-    document.suppress_kudos_levitate_hover = true;
-  })
-</script>
+  <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
+  <script src="{% static "onepager/js/confetti.js" %}"></script>
+  <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>
+  <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
+  <script>
+    document.network = '{{coupon.token.contract.network}}';
+    document.gas_amount = {{gas_amount}};
+    $(document).ready(function(){
+      {% if error %}
+        _alert('{{error}}', 'danger');
+      {% endif %}
+      start_kudos_levitate();
+      document.suppress_kudos_levitate_hover = true;
+    })
+  </script>
+  {% if kudos_transfer.receive_txid %}
+    <script>
+      setTimeout(function(){
+        startConfetti();
+      }, 1000);
+    </script>
+  {% endif %}
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
@@ -192,18 +199,6 @@
       </div>
     </form>
   </div>
-
-  {% if not kudos_transfer.receive_txid and is_authed %}
-    <script>
-    </script>
-  {% endif %}
-{% if kudos_transfer.receive_txid %}
-  <script>
-    setTimeout(function(){
-      startConfetti();
-    }, 1000);
-  </script>
-{% endif %}
 </section>
 <style>
   #kudos-image {

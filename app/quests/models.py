@@ -9,6 +9,7 @@ from django.utils.text import slugify
 
 # Create your models here.
 from economy.models import SuperModel
+from unidecode import unidecode
 
 num_backgrounds = 34
 video_enabled_backgrounds = [4, 6, 8, 9, 10, 11, 13, 14, 22, 23, 34]
@@ -59,7 +60,7 @@ class Quest(SuperModel):
     ui_data = JSONField(default=dict, blank=True)
     edit_comments = models.TextField(default='', blank=True)
     admin_comments = models.TextField(default='', blank=True)
-    
+
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title} (visible: {self.visible})'
@@ -75,7 +76,7 @@ class Quest(SuperModel):
 
     @property
     def relative_url(self):
-        return f"quests/{self.pk}/{slugify(self.title)}"
+        return f"quests/{self.pk}/{slugify(unidecode(self.title))}"
 
     @property
     def edit_url(self):

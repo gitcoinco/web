@@ -27,7 +27,7 @@
 <body class="interior submit_bounty g-font-muli">
   <div class="content__main min-vh-100 d-md-flex flex-column">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
@@ -76,7 +76,7 @@
                         </div>
                         <div class="col-12 col-md-3">
                           <label class="form__label" for="amount">{% trans "Amount" %}</label>
-                          <input name='amount' id='amount'  class="form__input" type="number" min="{{ amount }}" value="{{ amount }}" step="0.001" min="0.001"/>
+                          <input name='amount' id='amount'  class="form__input" type="number" min="{{ amount }}" value="{{ amount }}" min="0.001"/>
                         </div>
                         <div class="col-12 col-md-3" id="usd-amount-wrapper">
                           <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
@@ -112,6 +112,7 @@
     document.pk = {{ pk }};
     document.result = {{ result|safe }};
     const token_address = '{{ token_address }}';
+    const bounty_network = '{{ network }}';
   </script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
