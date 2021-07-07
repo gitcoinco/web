@@ -17,8 +17,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from cacheops import cached_as
 from economy.models import ConversionRate
+
+
+class ConversionRateNotFoundError(Exception):
+    """Thrown if ConversionRate not found."""
+
+    pass
 
 
 def convert_amount(from_amount, from_currency, to_currency, timestamp=None):

@@ -57,19 +57,17 @@ from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
-from bleach import clean
 from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
-from dashboard.idena_utils import get_idena_status, next_validation_time
+from dashboard.idena_utils import get_idena_status
 from dashboard.tokens import addr_to_token, token_by_name
-from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
+from economy.models import ConversionRate, SuperModel, get_0_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_issue_comments, get_issue_details, issue_number, org_name, repo_name
-from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
+from marketing.mails import fund_request_email, start_work_approved
 from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
-from townsquare.models import Offer, PinnedPost
+from townsquare.models import PinnedPost
 from unidecode import unidecode
 from web3 import Web3
 
