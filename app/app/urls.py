@@ -718,11 +718,6 @@ urlpatterns = [
         retail.emails.tribe_hackathon_prizes,
         name='tribe_hackathon_prizes'
     ),
-    path(
-        '_administration/email/day_email_campaign/<int:day>',
-        marketing.views.day_email_campaign,
-        name='day_email_campaign'
-    ),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
