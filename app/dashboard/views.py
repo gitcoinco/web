@@ -85,9 +85,7 @@ from dashboard.utils import (
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
-from grants.models import Grant
 from grants.utils import get_clr_rounds_metadata
 from kudos.models import Token
 from kudos.utils import humanize_name
@@ -122,11 +120,10 @@ from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
 from .models import (
-    Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
-    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction,
-    UserVerificationModel,
+    Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon, Earning,
+    FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
+    MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView, Question,
+    SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
@@ -808,6 +805,7 @@ def uninterested(request, bounty_id, profile_id):
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
+
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -893,6 +891,7 @@ def users_directory(request):
 
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+
 @csrf_exempt
 @staff_member_required
 def user_lookup(request):
@@ -905,28 +904,13 @@ def user_lookup(request):
     from proxy.views import proxy_view
     return proxy_view(request, remote_url)
 
+
 @staff_member_required
 def users_directory_elastic(request):
     """Handle displaying users directory page."""
     from retail.utils import programming_languages, programming_languages_full
     messages.info(request, 'The Andrew-era user directory has been deprecated, please contact the #product-data channel if you need something')
     return redirect('/users')
-    keywords = programming_languages + programming_languages_full
-
-    params = {
-        'is_staff': request.user.is_staff,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')) ,
-        'active': 'users',
-        'title': 'Users',
-        'meta_title': "",
-        'meta_description': "",
-        'keywords': keywords
-    }
-
-    if request.path == '/tribes/explore':
-        params['explore'] = 'explore_tribes'
-
-    return TemplateResponse(request, 'dashboard/users-elastic.html', params)
 
 
 def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = "", only_with_tokens = False):
@@ -1032,6 +1016,7 @@ def output_users_to_csv(request):
     export_search_to_csv.delay(body=request.body.decode('utf-8'), user_handle=request.user.profile.handle)
 
     return JsonResponse({'message' : 'Your request is processing and will be delivered to your email'})
+
 
 @require_GET
 def users_fetch(request):
@@ -1911,7 +1896,6 @@ def helper_handle_release_bounty_to_public(request, bounty):
             messages.warning(request, _('This functionality is only for reserved bounties'))
 
 
-
 @login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
@@ -2148,12 +2132,6 @@ def profile_details(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if not settings.DEBUG:
-        network = 'mainnet'
-    else:
-        network = 'rinkeby'
-
-
     response = {
         'avatar': profile.avatar_url,
         'handle': profile.handle,
@@ -2213,7 +2191,6 @@ def user_card(request, handle):
     if response.get('profile',{}).get('data',{}).get('email'):
         del response['profile']['data']['email']
 
-
     return JsonResponse(response, safe=False)
 
 
@@ -2250,7 +2227,6 @@ def profile_quests(request, handle):
 
     from quests.models import QuestPointAward
     qpas = QuestPointAward.objects.filter(profile=profile).order_by('created_on')
-    history = []
 
     response = """date,close"""
     balances = {}
@@ -2267,9 +2243,7 @@ def profile_quests(request, handle):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
-
 
 
 def profile_grants(request, handle):
@@ -2286,7 +2260,6 @@ def profile_grants(request, handle):
 
     from grants.models import Contribution
     contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
-    history = []
 
     response = """date,close"""
     balances = {}
@@ -2301,7 +2274,6 @@ def profile_grants(request, handle):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2368,7 +2340,6 @@ def profile_ratings(request, handle, attr):
         balance = balance['sum'] / balance['count']
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2405,7 +2376,6 @@ def profile_earnings(request, handle, direction='to'):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2436,7 +2406,6 @@ def profile_viewers(request, handle):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2482,6 +2451,7 @@ def profile_job_opportunity(request, handle):
     }
     return JsonResponse(response)
 
+
 @require_POST
 @login_required
 def profile_settings(request):
@@ -2511,6 +2481,7 @@ def profile_settings(request):
     }
 
     return JsonResponse(response, status=response.get('status', 200))
+
 
 @require_POST
 @login_required
@@ -2573,6 +2544,7 @@ def profile_backup(request):
     }
 
     return JsonResponse(response, status=response.get('status', 200))
+
 
 @require_POST
 @login_required
@@ -3001,12 +2973,14 @@ def get_profile_tab(request, profile, tab, prev_context):
         raise Http404
     return context
 
+
 def get_profile_by_idena_token(token):
     handle = get_handle_by_idena_token(token)
     try:
         return Profile.objects.get(handle=handle)
     except ObjectDoesNotExist:
         return None
+
 
 def logout_idena(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
@@ -3035,6 +3009,7 @@ def logout_idena(request, handle):
         'next_validation': None,
         'icon_path': static('v2/images/project_logos/idena.svg'),
     })
+
 
 # Response model differ from rest of project because idena client excepts this shape:
 # Using {success, error} instead of {ok, msg}
@@ -3096,6 +3071,7 @@ def start_session_idena(request, handle):
         }
     })
 
+
 # Response model differ from rest of project because idena client excepts this shape:
 # Using {success, error} instead of {ok, msg}
 @csrf_exempt # Call from idena client
@@ -3145,6 +3121,7 @@ def authenticate_idena(request, handle):
         }
     })
 
+
 @login_required
 def recheck_idena_status(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
@@ -3168,6 +3145,7 @@ def recheck_idena_status(request, handle):
         'next_validation': str(localtime(next_validation_time())) if not profile.is_idena_verified else None,
         'icon_path': 'https://robohash.org/%s' % profile.idena_address if profile.is_idena_connected else static('v2/images/project_logos/idena.svg'),
     })
+
 
 def verify_text_for_tweet(handle):
     url = 'https://gitcoin.co/' + handle
@@ -3463,6 +3441,7 @@ def request_verify_google(request, handle):
         prompt="select_account"
     )
     return redirect(authorization_url)
+
 
 @login_required
 @require_GET
@@ -4173,6 +4152,7 @@ def terms(request):
     }
     return TemplateResponse(request, 'legal/terms.html', context)
 
+
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
 
@@ -4296,6 +4276,7 @@ def new_hackathon_bounty(request, hackathon=''):
         update=bounty_params
     )
     return TemplateResponse(request, 'dashboard/hackathon/new_bounty.html', params)
+
 
 @csrf_exempt
 def get_suggested_contributors(request):
@@ -4595,6 +4576,7 @@ def get_kudos(request):
         raise Http404
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
 
 @login_required
 def hackathon_prizes(request, hackathon=''):
@@ -5125,7 +5107,6 @@ def hackathon_save_project(request):
             if p in video_url:
                 kwargs['extra']['video_provider'] = p
 
-
     if categories:
         kwargs['categories'] = categories
 
@@ -5646,7 +5627,6 @@ def funder_dashboard(request, bounty_type):
                               for b in bounties], safe=False)
 
 
-
 def contributor_dashboard(request, bounty_type):
     """JSON data for the contributor dashboard"""
 
@@ -5831,8 +5811,6 @@ def join_tribe(request, handle):
         )
 
 
-
-
 @csrf_exempt
 @require_POST
 def tribe_leader(request):
@@ -5970,6 +5948,7 @@ def save_tribe(request,handle):
             },
             status=500
         )
+
 
 @csrf_exempt
 @require_POST
@@ -6568,7 +6547,6 @@ def close_bounty_v1(request, bounty_id):
     return JsonResponse(response)
 
 
-
 @staff_member_required
 def bulkemail(request):
     handles = request.POST.get('handles', '')
@@ -7138,6 +7116,7 @@ def file_upload(request):
         data = {'is_valid': False}
 
     return JsonResponse(data)
+
 
 @csrf_exempt
 def mautic_api(request, endpoint=''):
