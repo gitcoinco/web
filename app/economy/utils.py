@@ -21,19 +21,6 @@ from cacheops import cached_as
 from economy.models import ConversionRate
 
 
-# All Units in native currency
-class TransactionException(Exception):
-    """Handle general transaction exceptions."""
-
-    pass
-
-
-class ConversionRateNotFoundError(Exception):
-    """Thrown if ConversionRate not found."""
-
-    pass
-
-
 def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     from django.conf import settings
     """Convert the provided amount to another current.

@@ -93,38 +93,6 @@ class KudosError(Exception):
     pass
 
 
-class KudosTransferNotFound(KudosError):
-    """Exception is raised when web3 and the database are out of sync.
-
-    Attributes:
-    kudos_id -- the kudos id that has mismatched data
-    message -- explanation of the error
-
-    """
-
-    def __init__(self, kudos_id, message):
-        self.kudos_id = kudos_id
-        self.message = message
-
-
-class KudosMismatch(KudosError):
-    """Exception is raised when web3 and the database are out of sync.
-
-    Attributes:
-        kudos_id: The kudos id that has mismatched data.
-        kudos_web3: Kudos attributes on web3.
-        kudos_db: Kudos attritubes in the database.
-        message: Explanation of the error.
-
-    """
-
-    def __init__(self, kudos_id, kudos_web3, kudos_db, message):
-        self.kudos_id = kudos_id
-        self.kudos_web3 = kudos_web3
-        self.kudos_db = kudos_db
-        self.message = message
-
-
 class KudosContract:
     """A class represending the Kudos.sol contract.
 
@@ -345,8 +313,6 @@ class KudosContract:
             # Only warn for a Kudos that is cloned/transfered, not a Gen0 Kudos.
             if kudos_token.num_clones_allowed == 0:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
-                # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
-                # raise
         except KudosTransfer.MultipleObjectsReturned:
             pass
 

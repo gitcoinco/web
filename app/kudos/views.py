@@ -275,39 +275,6 @@ def mint(request):
     return TemplateResponse(request, 'kudos_mint.html', {})
 
 
-def get_primary_from_email(params, request):
-    """Find the primary_from_email address.  This function finds the address using this priority:
-
-    1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
-    2. If the user is logged in, they should have an email address associated with their account.
-        Use this as the second option.  `request_user_email`.
-    3. If all else fails, attempt to pull the email from the user's github account.
-
-    Args:
-        params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-            request coming in from a Tips/Kudos send.
-
-    Returns:
-        str: The primary_from_email string.
-
-    """
-
-    request_user_email = request.user.email if request.user.is_authenticated else ''
-    logger.info(request.user.profile)
-    access_token = request.user.profile.get_access_token() if request.user.is_authenticated else ''
-
-    if params.get('fromEmail'):
-        primary_from_email = params['fromEmail']
-    elif request_user_email:
-        primary_from_email = request_user_email
-    elif access_token:
-        primary_from_email = get_github_primary_email(access_token)
-    else:
-        primary_from_email = 'unknown@gitcoin.co'
-
-    return primary_from_email
-
-
 def kudos_preferred_wallet(request, handle):
     """Returns the address, if any, that someone would like to be send kudos directly to."""
     response = {'addresses': []}

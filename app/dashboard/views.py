@@ -1112,26 +1112,6 @@ def users_fetch(request):
         only_with_tokens
     )
 
-    def previous_worked():
-        if current_user.profile.persona_is_funder:
-            return Count(
-                'fulfilled',
-                filter=Q(
-                    fulfilled__bounty__network=network,
-                    fulfilled__accepted=True,
-                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
-                )
-            )
-
-        return Count(
-            'bounties_funded__fulfillments',
-            filter=Q(
-                bounties_funded__fulfillments__bounty__network=network,
-                bounties_funded__fulfillments__accepted=True,
-                bounties_funded__fulfillments__profile__handle=current_user.profile.handle
-            )
-        )
-
     if request.GET.get('type') == 'explore_tribes':
         profile_list = Profile.objects.filter(is_org=True).order_by('-follower_count', 'id')
 
