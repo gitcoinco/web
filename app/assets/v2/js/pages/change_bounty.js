@@ -224,7 +224,7 @@ $(document).ready(function() {
 
   if ($('input[name=amount]').length) {
 
-    const denomination = $('input[name=denomination]').val()
+    const denomination = $('input[name=denomination]').val();
 
     setTimeout(() => setUsdAmount(denomination), 1000);
 
