@@ -1032,10 +1032,6 @@ def create_status_update(request):
     return JsonResponse(response)
 
 
-def grant_redir(request):
-    return redirect('/grants/')
-
-
 def help(request):
     return redirect('/support/')
 

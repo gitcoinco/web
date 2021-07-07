@@ -73,6 +73,7 @@ from marketing.mails import featured_funded_bounty, fund_request_email, start_wo
 from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
 from townsquare.models import Offer, PinnedPost
+from unidecode import unidecode
 from web3 import Web3
 
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
@@ -299,6 +300,7 @@ class Bounty(SuperModel):
         ('nervos_ext', 'Nervos Ext'),
         ('algorand_ext', 'Algorand Ext'),
         ('sia_ext', 'Sia Ext'),
+        ('tezos_ext', 'Tezos Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1420,6 +1422,7 @@ class BountyFulfillment(SuperModel):
         ('nervos_ext', 'nervos_ext'),
         ('algorand_ext', 'algorand_ext'),
         ('sia_ext', 'sia_ext'),
+        ('tezos_ext', 'tezos_ext'),
         ('manual', 'manual')
     ]
 
@@ -1439,6 +1442,7 @@ class BountyFulfillment(SuperModel):
         ('NERVOS', 'NERVOS'),
         ('ALGORAND', 'ALGORAND'),
         ('SIA', 'SIA'),
+        ('TEZOS', 'TEZOS'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -5186,7 +5190,7 @@ class HackathonEvent(SuperModel):
     def save(self, *args, **kwargs):
         """Define custom handling for saving HackathonEvent."""
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(unidecode(self.name))
         super().save(*args, **kwargs)
 
 
@@ -5316,12 +5320,16 @@ class HackathonProject(SuperModel):
         return f"{self.name} - {self.bounty} on {self.created_on}"
 
     def url(self):
-        slug = slugify(self.name)
+        slug = slugify(unidecode(self.name))
         return f'/hackathon/projects/{self.hackathon.slug}/{slug}/'
 
-    def url_page(self):
-        slug = slugify(self.name)
-        return f'/hackathon/{self.bounty.org_name}/projects/{self.pk}/${self.name}'
+    def url_project_page(self):
+        slug = slugify(unidecode(self.name))
+        return f'/hackathon/{self.hackathon.slug}/projects/{self.pk}/{slug}'
+
+    def url_bounty_page(self):
+        slug = slugify(unidecode(self.name))
+        return f'/hackathon/{self.bounty.org_name}/projects/{self.pk}/{slug}'
 
     def get_absolute_url(self):
         return self.url()

@@ -112,7 +112,7 @@
                   </li>
                   {% if not profile.persona_is_funder %}
                     <li>
-                      <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/hackathons">{% trans "Projects" %}</a>
+                      <a class="dropdown-item dropdown-item-small" href="{{ profile_url }}/hackathons">{% trans "Projects" %}</a>
                     </li>
                   {% endif %}
                   <li>
@@ -156,7 +156,7 @@
                 <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Quests" %}</b>
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/quests">{% trans "Played" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{{ profile_url }}/quests">{% trans "Played" %}</a>
                   </li>
                   <hr />
                   <li>
@@ -169,10 +169,10 @@
                 <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Kudos" %}</b>
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/kudos#mykudos">{% trans "Received" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{{ profile_url }}/kudos#mykudos">{% trans "Received" %}</a>
                   </li>
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{{profile.url}}/kudos#sentkudos">{% trans "Sent" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{{ profile_url }}/kudos#sentkudos">{% trans "Sent" %}</a>
                   </li>
                   <hr />
                   <li>
