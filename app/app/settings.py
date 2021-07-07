@@ -28,7 +28,6 @@ import environ
 import raven
 import sentry_sdk
 from boto3.session import Session
-from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -101,7 +100,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'autotranslate',
     'django_extensions',
-    'easy_thumbnails',
     'health_check',
     'health_check.db',
     'health_check.cache',
@@ -421,7 +419,6 @@ STATIC_ROOT = root(STATICFILES_LOCATION)
 
 if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
-    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     STATIC_HOST = env('STATIC_HOST', default='https://s.gitcoin.co/')
     STATIC_URL = STATIC_HOST + env('STATIC_URL', default=f'{STATICFILES_LOCATION}{"/" if STATICFILES_LOCATION else ""}')
@@ -444,22 +441,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 ]
-
-THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor',)
-
-THUMBNAIL_ALIASES = {
-    '': {
-        'graph_node': {
-            'size': (30, 30),
-            'crop': True
-        },
-        'graph_node_circular': {
-            'size': (30, 30),
-            'crop': True,
-            'circle': True
-        }
-    }
-}
 
 CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=True)
 CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')

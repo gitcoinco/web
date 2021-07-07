@@ -631,7 +631,7 @@ class Bounty(SuperModel):
     def title_or_desc(self):
         """Return the title of the issue."""
         if not self.title:
-            title = self.fetch_issue_item('title') or self.github_url
+            title = self.fetch_issue_item('title')
             return title
         return self.title
 
@@ -1003,11 +1003,10 @@ class Bounty(SuperModel):
             str: The item content.
 
         """
-        github_url = self.get_github_api_url()
-        if github_url:
-            _org_name = org_name(github_url)
-            _repo_name = repo_name(github_url)
-            _issue_num = issue_number(github_url)
+        if self.github_url.lower()[:19] == 'https://github.com/':
+            _org_name = org_name(self.github_url)
+            _repo_name = repo_name(self.github_url)
+            _issue_num = issue_number(self.github_url)
             gh_issue_details = get_issue_details(_org_name, _repo_name, int(_issue_num))
 
             if gh_issue_details:
