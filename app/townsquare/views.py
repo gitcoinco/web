@@ -124,7 +124,7 @@ def get_sidebar_tabs(request):
                 'title': f"Relationships",
                 'slug': key,
                 'helper_text': f'Activity from the users who you\'ve done business with Gitcoin',
-                'badge': max_of_ten(get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()) if request.GET.get('tab') != key else 0
+                'badge': 0
             }
             tabs = [new_tab] + tabs
             default_tab = 'my_tribes'
@@ -136,7 +136,7 @@ def get_sidebar_tabs(request):
                 'title': f'Grants',
                 'slug': key,
                 'helper_text': f'Activity on the Grants you\'ve created or funded.',
-                'badge': max_of_ten(get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()) if request.GET.get('tab') != key else 0
+                'badge': 0,
             }
             tabs = [new_tab] + tabs
             default_tab = 'grants'
@@ -144,7 +144,7 @@ def get_sidebar_tabs(request):
         num_favorites = request.user.favorites.filter(grant=None).all().count()
         if num_favorites:
             key = 'my_favorites'
-            activities = get_specific_activities(key, False, request.user, request.session.get(key, 0)).count()
+            activities = 0
             new_tab = {
                 'title': f"My Favorites",
                 'slug': key,
