@@ -90,6 +90,10 @@ Vue.component('grants-cart', {
         ],
         'RSK': [
           `${static_url}v2/js/grants/cart/rsk_extension.js`
+        ],
+        'ALGORAND': [
+          `${static_url}v2/js/tokens.js`,
+          `${static_url}v2/js/grants/cart/algorand_extension.js`
         ]
       }
     };
@@ -247,11 +251,11 @@ Vue.component('grants-cart', {
           grant_donation_clr_match: '',
           grant_donation_currency: token,
           grant_donation_num_rounds: 1,
-          grant_id: '86',
+          grant_id: '12',
           grant_image_css: '',
           grant_logo: '',
-          grant_slug: 'gitcoin-sustainability-fund',
-          grant_title: 'Gitcoin Grants Round 8 + Dev Fund',
+          grant_slug: 'gitcoin-grants-official-matching-pool-fund',
+          grant_title: 'Gitcoin Grants Official Matching Pool Fund',
           grant_token_address: '0x0000000000000000000000000000000000000000',
           grant_token_symbol: '',
           isAutomatic: true // we add this field to help properly format the POST requests,
@@ -369,6 +373,11 @@ Vue.component('grants-cart', {
     isBinanceExtInstalled() {
       return window.BinanceChain || false;
     },
+
+    isAlgorandExtInstalled() {
+      return window.AlgoSigner || false;
+    },
+
     isRskExtInstalled() {
       const rskHost = 'https://public-node.rsk.co';
       const rskClient = new Web3();
@@ -468,6 +477,9 @@ Vue.component('grants-cart', {
         case 'RSK':
           vm.chainId = '30';
           break;
+        case 'ALGORAND':
+          vm.chainId = '1001';
+          break;
       }
     },
     confirmQRPayment: function(e, grant) {
@@ -543,6 +555,13 @@ Vue.component('grants-cart', {
       let vm = this;
 
       switch (tenant) {
+        case 'ALGORAND':
+          if (data) {
+            contributeWithAlgorandExtension(grant, vm, data);
+          } else {
+            initAlgorandConnection(grant, vm);
+          }
+          break;
         case 'RSK':
           contributeWithRskExtension(grant, vm);
           break;
@@ -612,6 +631,8 @@ Vue.component('grants-cart', {
           }
         }
       });
+
+      vm.$forceUpdate();
     },
 
     /**

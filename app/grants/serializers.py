@@ -62,6 +62,7 @@ class TransactionsSerializer(serializers.Serializer):
     amount = serializers.SerializerMethodField()
     clr_round = serializers.SerializerMethodField()
     usd_value = serializers.SerializerMethodField()
+    tx_hash = serializers.SerializerMethodField()
 
     def get_amount(self, obj):
         subscription = obj.subscription
@@ -73,11 +74,14 @@ class TransactionsSerializer(serializers.Serializer):
     def get_usd_value(self, obj):
         subscription = obj.subscription
         return subscription.get_converted_amount(ignore_gitcoin_fee=False)
-    
+
+    def get_tx_hash(self, obj):
+        return obj.tx_id if obj.tx_id else obj.split_tx_id
+
     class Meta:
         """Define the Transactions serializer metadata."""
 
-        fields = ('asset', 'timestamp', 'amount', 'clr_round', 'usd_value')
+        fields = ('asset', 'timestamp', 'amount', 'clr_round', 'usd_value', 'tx_hash')
 
 class CLRPayoutsSerializer(serializers.Serializer):
     """Handle serializing CLR Payout information."""
@@ -87,6 +91,7 @@ class CLRPayoutsSerializer(serializers.Serializer):
     usd_value = serializers.SerializerMethodField()
     timestamp = serializers.DateTimeField(source='created_on')
     round = serializers.IntegerField(source='round_number')
+    tx_hash = serializers.CharField(source='payout_tx')
 
     def get_usd_value(self, obj):
         return get_converted_amount(obj.amount, 'DAI')
@@ -94,7 +99,7 @@ class CLRPayoutsSerializer(serializers.Serializer):
     class Meta:
         """Define the CLRPayout serializer metadata."""
 
-        fields = ('amount', 'asset', 'usd_value', 'timestamp', 'round')
+        fields = ('amount', 'asset', 'usd_value', 'timestamp', 'round', 'tx_hash')
 
 class DonorSerializer(serializers.Serializer):
     """Handle serializing Donor information."""

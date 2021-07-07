@@ -30,6 +30,7 @@
                   kusama_payout_address: "{{ grant.obj.kusama_payout_address }}",
                   binance_payout_address: "{{ grant.obj.binance_payout_address }}",
                   rsk_payout_address: "{{ grant.obj.rsk_payout_address }}",
+                  algorand_payout_address: "{{ grant.obj.algorand_payout_address }}",
                   grant_token_address: "{{ grant.obj.token_address }}",
                   grant_logo: {% if grant.logo and grant.logo.url %}"{{ grant.obj.logo.url }}"{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} "{% static grant_logo|addstr:id|add:'.png' %}" {% endwith %} {% endif %},
                   grant_clr_prediction_curve: "{{ grant.obj.clr_prediction_curve }}",

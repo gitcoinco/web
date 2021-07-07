@@ -1,4 +1,4 @@
-{% load static token_format %}
+{% load static %}
 
 
 {% if playable %}
@@ -15,7 +15,7 @@
           <div class="card-title">{{name}}</div>
           <div class="card-subtitle {% if playable %} active {% endif %}">
             {{message}}
-  
+
             <!--
             {% if pending %}
               <span class="additional-info">

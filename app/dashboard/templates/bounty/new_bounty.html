@@ -126,13 +126,17 @@
                       <input type="radio" name="bounty_chain" id="1001_chain" value="1001" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16"> Algorand
                     </label>
 
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1935'}">
+                      <input type="radio" name="bounty_chain" id="1935_chain" value="1935" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/sia.svg' %}" alt="" width="16"> Sia
+                    </label>
+
                     {% if is_staff %}
                       <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1995'}">
                         <input type="radio" name="bounty_chain" id="1995_chain" value="1995" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/nervos.svg' %}" alt="" width="16"> Nervos
                       </label>
 
-                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1935'}">
-                        <input type="radio" name="bounty_chain" id="1935_chain" value="1935" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/sia.svg' %}" alt="" width="16"> Sia
+                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '50797'}">
+                        <input type="radio" name="bounty_chain" id="50797_chain" value="50797" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/tezos.svg' %}" alt="" width="16"> Tezos
                       </label>
 
                       <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
@@ -427,7 +431,7 @@
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funderAddress">Funder Address</label>
                   <p class="font-body" v-show="funderAddressFallback === true">Please enter your Binance Wallet address. We are unable to validate a Binance address. Please confirm that you are using the correct Binance address.</p>
                   <input name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out" v-model="form.funderAddress">
-                  <div class="text-danger" v-if="errors.funderAddress && (!form.funderAddress || chainId === '0')">
+                  <div class="text-danger" v-if="errors.funderAddress">
                     [[errors.funderAddress]]
                   </div>
                   <div class="text-danger" v-if="funderAddressFallback === true">

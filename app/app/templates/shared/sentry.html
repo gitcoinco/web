@@ -15,11 +15,22 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% if raven_js_dsn %}
-  <script src="https://cdn.ravenjs.com/{{ raven_js_version|default_if_none:'3.26.4' }}/raven.min.js"  ></script>
+  <script
+    src="https://browser.sentry-cdn.com/{{ raven_js_version }}/bundle.min.js"
+    integrity="sha384-a1zd+NHj/GIqnlXIHuEKFontqYxBdK9Zwslrvnhr1KfU9tBDzKbM55gQFXlHYDiD"
+    crossorigin="anonymous"
+  ></script>
+
   <script>
-    var ravenOptions = {
-      release: '{{ release }}',
+
+    Sentry.init({
+      dsn: "{{ raven_js_dsn }}",
+      // this assumes your build process sets "npm_package_version" in the env
+      release: "gitcoin-web@{{ release }}",
       environment: '{{ env }}',
+      // We recommend adjusting this value in production, or using tracesSampler
+      // for finer control
+      tracesSampleRate: 1.0,
       ignoreErrors: [
         // Random plugins/extensions
         'top.GLOBALS',
@@ -43,7 +54,7 @@
         // See http://toolbar.conduit.com/Developer/HtmlAndGadget/Methods/JSInjection.aspx
         'conduitPage'
       ],
-      ignoreUrls: [
+      denyUrls: [
         // Facebook flakiness
         /graph\.facebook\.com/i,
         // Facebook blocked
@@ -59,14 +70,13 @@
         /webappstoolbarba\.texthelp\.com\//i,
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i
       ]
-    };
-    Raven.config('{{ raven_js_dsn }}', ravenOptions).install()
-    {% if github_handle %}
-    Raven.setUserContext({
-      id: '{{ user.id|default_if_none:"0" }}',
-      handle: '{{ github_handle }}',
-      profile_id: '{{ profile_id|default_if_none:"0" }}'
     });
+    {% if github_handle %}
+      Sentry.setUser({
+        username: '{{ github_handle }}',
+        id: {{ user.id|default_if_none:"0" }}
+      });
+      Sentry.setTag("profile_id", {{ profile_id|default_if_none:"0" }});
     {% endif %}
   </script>
 {% endif %}

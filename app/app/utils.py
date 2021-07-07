@@ -1,6 +1,7 @@
 import email
 import functools
 import imaplib
+import json
 import logging
 import multiprocessing.pool
 import os
@@ -502,3 +503,47 @@ def timeout(max_timeout):
         return func_wrapper
 
     return timeout_decorator
+
+
+def notion_write(database_id='', payload=None):
+    # write to the pages api (https://developers.notion.com/reference/post-page)
+    url = "https://api.notion.com/v1/pages"
+    # define the parent (database) that we're writing to and set the properties (row content)
+    body = {
+        "parent": {
+            "type": "database_id",
+            "database_id": database_id
+        },
+        "properties": payload
+    }
+
+    # return success as dict
+    return notion_api_call(url, body)
+
+
+def notion_read(database_id, payload=None):
+    # read from the database query api (https://developers.notion.com/docs/working-with-databases)
+    url = f"https://api.notion.com/v1/databases/{database_id}/query"
+
+    # return success as dict
+    return notion_api_call(url, payload)
+
+
+def notion_api_call(url='', payload=None):
+    # retrieve auth from headers
+    headers = {
+        "Authorization": f"Bearer {settings.NOTION_API_KEY}",
+        "Content-Type": "application/json",
+        "Notion-Version": "2021-05-13"
+    }
+    # default the body to empty dict
+    body = payload if isinstance(payload, dict) else {}
+    # print({'url':url, 'headers':json.dumps(headers), 'data':json.dumps(body)})
+    response = requests.post(url=url, headers=headers, data=json.dumps(body))
+
+    # throw exception if we dont get a 200 response
+    if response.status_code != 200:
+        raise Exception("Failed to set to/get from notion")
+
+    # return success as dict
+    return response

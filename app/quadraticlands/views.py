@@ -73,55 +73,11 @@ def mission_index(request):
 
 
 @login_required
-def mission_base(request, mission_name):
-    '''used to handle quadraticlands/<mission_name>'''
-    context, game_status = get_initial_dist(request), get_mission_status(request)
-    context.update(game_status)
-    if mission_name == 'use' and game_status["proof_of_knowledge"] == False:
-        return redirect('/quadraticlands/mission')
-    if mission_name == 'receive':
-        if game_status["proof_of_knowledge"] == False or game_status["proof_of_use"] == False:
-            return redirect('/quadraticlands/mission')
-    return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/index.html', context)
-
-
-@login_required
 def dashboard_index(request):
     '''render quadraticlands/dashboard/index.html'''
     context, game_status = get_initial_dist(request), get_mission_status(request)
     context.update(game_status)
     return TemplateResponse(request, 'quadraticlands/dashboard/index.html', context)
-
-
-@login_required
-def mission_state(request, mission_name, mission_state):
-    '''quadraticlands/<mission_name>/<mission_state>'''
-    context, game_status = get_initial_dist(request), get_mission_status(request)
-    context.update(game_status)
-    if mission_state == 'delegate':
-        context.update(get_stewards())
-    if mission_state == 'claim':
-        if game_status['proof_of_knowledge'] == False or game_status["proof_of_use"] == False:
-            return redirect('/quadraticlands/mission')
-    if mission_state == 'claim':
-        context.update(get_initial_dist_breakdown(request))
-    return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/{mission_state}.html', context)
-
-
-@login_required
-def mission_question(request, mission_name, question_num):
-    '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>'''
-    context, game_status = get_initial_dist(request), get_mission_status(request)
-    context.update(game_status)
-    return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}.html', context)
-
-
-@login_required
-def mission_answer(request, mission_name, question_num, answer):
-    '''Used to handle quadraticlands/<mission_name>/<mission_state>/<question_num>/<answer>'''
-    context, game_status = get_initial_dist(request), get_mission_status(request)
-    context.update(game_status)
-    return TemplateResponse(request, f'quadraticlands/mission/{mission_name}/question_{question_num}_{answer}.html', context)
 
 
 def workstream_index(request):
@@ -132,19 +88,6 @@ def workstream_index(request):
 def workstream_base(request, stream_name):
     '''Used to render quadraticlands/workstream/<stream_name>.html'''
     return TemplateResponse(request, f'quadraticlands/workstream/{stream_name}.html')
-
-
-@login_required
-@require_POST
-@csrf_protect
-def mission_process(request, mission_name, question_num):
-    answer = request.POST.get('answer')
-    if mission_name == 'knowledge' and question_num == '1' and answer == '2':
-        return redirect(reverse('quadraticlands:mission_answer', args=(mission_name, question_num, 'right')))
-    elif mission_name == 'knowledge' and question_num == '2' and answer == '4':
-        return redirect(reverse('quadraticlands:mission_answer', args=(mission_name, question_num, 'right')))
-    else:
-        return redirect(reverse('quadraticlands:mission_answer', args=(mission_name, question_num, 'wrong')))
 
 
 @login_required
