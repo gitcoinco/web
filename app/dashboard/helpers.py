@@ -21,7 +21,6 @@ import logging
 import os
 import pprint
 from decimal import Decimal
-from enum import Enum
 
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
@@ -42,7 +41,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from git.utils import get_gh_issue_details, get_url_dict, org_name
+from git.utils import get_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -186,7 +185,6 @@ def issue_details(request):
     hackathon_slug = request.GET.get('hackathon_slug')
     duplicates = request.GET.get('duplicates', False)
     network = request.GET.get('network', 'mainnet')
-
 
     if hackathon_slug:
         sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
