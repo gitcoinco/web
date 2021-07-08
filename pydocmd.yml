@@ -101,8 +101,6 @@ generate:
     - grants.abi++
   - grants/admin.md:
     - grants.admin++
-  - grants/forms.md:
-    - grants.forms++
   - grants/models.md:
     - grants.models++
   - grants/router.md:
