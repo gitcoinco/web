@@ -15,7 +15,7 @@ redis = RedisService().redis
 
 rate_limit = '30000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
 
-@app.shared_task(bind=True, rate_limit=rate_limit)
+@app.shared_task(bind=True, rate_limit=rate_limit, soft_time_limit=600, time_limit=3000, max_retries=5)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
     """
     :param self:
