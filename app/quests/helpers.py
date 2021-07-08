@@ -252,7 +252,7 @@ def generate_leaderboard(max_entries=25, round_number=1):
 
     # groupby and sum the values (by profile)
     leaderboard = QuestPointAward.objects.filter(round_number=round_number)\
-        .values('profile__handle').annotate(occ=Count('profile__handle'), sum=Sum('value'))\
+        .values('profile__handle').annotate(sum=Sum('value'))\
         .order_by('-sum')[:max_entries]
 
     # add kudos to each leaderboard item
