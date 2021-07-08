@@ -1,7 +1,7 @@
-from datetime import datetime
+
+import time
 
 from django.conf import settings
-from django.utils import timezone
 
 import requests
 from grants.sync.helpers import is_txn_done_recently, record_contribution_activity, txn_already_used
@@ -68,6 +68,7 @@ def get_zil_txn_status(txnid, network='mainnet'):
 
 
 def sync_zil_payout(contribution):
+    time.sleep(0.5) # to avoid rate limit
 
     if not contribution.tx_id or contribution.tx_id == '0x0':
         txn = find_txn_on_zil_explorer(contribution)

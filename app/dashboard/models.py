@@ -5512,7 +5512,7 @@ class Earning(SuperModel):
     url = models.CharField(max_length=500, default='')
     txid = models.CharField(max_length=255, default='')
     token_name = models.CharField(max_length=255, default='')
-    token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
+    token_value = models.DecimalField(decimal_places=18, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
     success = models.BooleanField(default=False, help_text=_('Was txn successful?'))
 

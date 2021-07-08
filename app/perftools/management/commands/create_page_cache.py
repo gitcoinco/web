@@ -136,7 +136,7 @@ def create_top_grant_spenders_cache():
         count_dict = {ele[0]:0 for ele in contributions}
         sum_dict = {ele[0]:0 for ele in contributions}
         for ele in contributions:
-            if ele[1]:
+            if ele[0] and ele[1]:
                 count_dict[ele[0]] += 1
                 sum_dict[ele[0]] += ele[1]
 
