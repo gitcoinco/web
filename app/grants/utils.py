@@ -99,9 +99,9 @@ def get_leaderboard():
     return JSONStore.objects.filter(view='grants', key='leaderboard').order_by('-pk').first().data
 
 
-def generate_leaderboard(max_items=100):
+def generate_grants_leaderboard(max_items=100):
     from grants.models import Subscription, Contribution
-    handles = Subscription.objects.all().values_list('contributor_profile__handle', flat=True)
+    handles = Subscription.objects.exclude(contributor_profile__isnull=True).values_list('contributor_profile__handle', flat=True)
     default_dict = {
         'rank': None,
         'no': 0,
@@ -111,7 +111,7 @@ def generate_leaderboard(max_items=100):
     users_to_results = { ele : default_dict.copy() for ele in handles }
 
     # get all contribution attributes
-    for contribution in Contribution.objects.all().select_related('subscription'):
+    for contribution in Contribution.objects.exclude(profile_for_clr__isnull=True).select_related('subscription'):
         key = contribution.subscription.contributor_profile.handle
         users_to_results[key]['handle'] = key
         amount = contribution.subscription.get_converted_amount(False)
