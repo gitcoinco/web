@@ -49,6 +49,13 @@
 </body>
 
 <!-- jQuery -->
-<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
+
+{% bundle merge_js file bootstrap %}
+  <script src="popper.min.js" base-dir="/node_modules/popper.js/dist/umd/"></script>
+  <script src="bootstrap.min.js" base-dir="/node_modules/bootstrap/dist/js/"></script>
+{% endbundle %}
+
 </html>

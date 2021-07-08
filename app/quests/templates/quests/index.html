@@ -1,5 +1,5 @@
 {% extends 'quests/base.html' %}
-{% load humanize static i18n %}
+{% load humanize static i18n bundle %}
 {% comment %}
 Copyright (C) 2021 Gitcoin Core
 
@@ -579,7 +579,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endblock %}
 
 {% block 'scripts' %}
-  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+  {% bundle merge_js file unveil %}
+    <script src="jquery.unveil.js" base-dir="/node_modules/jquery-unveil/"></script>
+  {% endbundle %}
   <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
   <script>
     $(document).ready(function() {

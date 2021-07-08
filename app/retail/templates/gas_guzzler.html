@@ -1,7 +1,11 @@
 {% extends 'onepager/base.html' %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/lib/jquery.js"%}"></script>
+
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
+
 {% endblock %}
 <!-- Main -->
 

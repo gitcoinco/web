@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
 
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
@@ -59,7 +59,7 @@ $(document).ready(function() {
   }
 
   // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
-  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
+if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
     var this_url = new URL(document.location.href);
 
     this_url.searchParams.append('cb', localStorage.getItem('cb'));

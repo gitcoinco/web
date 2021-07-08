@@ -75,4 +75,10 @@
 
 </div>
 
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
+
+{% bundle merge_js file bootstrap %}
+  <script src="bootstrap.min.js" base-dir="/node_modules/bootstrap/dist/js/"></script>
+{% endbundle %}

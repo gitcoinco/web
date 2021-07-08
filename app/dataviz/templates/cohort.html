@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% load humanize %}
+{% load humanize bundle %}
 {% comment %}
   Copyright (C) 2021 Gitcoin Core
 
@@ -48,7 +48,9 @@
   <!-- code to include the highcharts and jQuery libraries goes here -->
   <!-- load_charts filter takes a comma-separated list of id's where -->
   <!-- the charts need to be rendered to               -->
-  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  {% bundle merge_js file jquery %}
+    <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+  {% endbundle %}
 </head>
 
 <body>

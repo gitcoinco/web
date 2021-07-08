@@ -15,17 +15,22 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static kudos_extras %}
+{% load i18n static kudos_extras bundle %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
-  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-  <script src="{% static "v2/js/ipfs.js" %}"></script>
-  <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
-  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+
   <script src="/dynamic/js/tokens_dynamic.js"></script>
+
+  {% bundle merge_js file send %}
+    <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
+    <script src="secrets.min.js" base-dir="/node_modules/secrets.js-grempe/"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/ipfs.js" %}"></script>
+    <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "v2/js/amounts.js" %}"></script>
+  {% endbundle %}
+
   <script>
     if (window.location.hostname === 'localhost') {
       document.network = 'custom network';
