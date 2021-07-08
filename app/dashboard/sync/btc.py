@@ -4,13 +4,18 @@ from django.utils import timezone
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
+from economy.models import Token
 from oogway import Net, validate
 
 logger = logging.getLogger(__name__)
 
 def find_txn_on_btc_explorer(fulfillment, network='mainnet'):
     funderAddress = fulfillment.bounty.bounty_owner_address
-    amount = fulfillment.payout_amount
+
+    token = Token.objects.filter(symbol='BTC').first()
+    decimal = token.decimals if token else 8
+    amount = fulfillment.payout_amount * 10 ** decimal
+
     payeeAddress = fulfillment.fulfiller_address
 
     n = Net(provider='Blockstream', network=network)

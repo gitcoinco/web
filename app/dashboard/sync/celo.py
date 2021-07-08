@@ -2,6 +2,7 @@ from django.utils import timezone
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
+from economy.models import Token
 
 
 def find_txn_on_celo_explorer(fulfillment, network='mainnet'):
@@ -10,7 +11,11 @@ def find_txn_on_celo_explorer(fulfillment, network='mainnet'):
         return None
 
     funderAddress = fulfillment.bounty.bounty_owner_address
-    amount = fulfillment.payout_amount
+
+    token = Token.objects.filter(symbol=token_name).first()
+    decimal = token.decimals if token else 18
+    amount = fulfillment.payout_amount * 10 ** decimal
+
     payeeAddress = fulfillment.fulfiller_address
 
     blockscout_url = f'https://explorer.celo.org/api?module=account&action=tokentx&address={funderAddress}'

@@ -30,7 +30,7 @@ from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
-from grants.utils import generate_leaderboard, get_clr_rounds_metadata
+from grants.utils import generate_grants_leaderboard, get_clr_rounds_metadata
 from marketing.models import Stat
 from perftools.models import JSONStore
 from quests.helpers import generate_leaderboard
@@ -135,7 +135,7 @@ def create_top_grant_spenders_cache():
         count_dict = {ele[0]:0 for ele in contributions}
         sum_dict = {ele[0]:0 for ele in contributions}
         for ele in contributions:
-            if ele[1]:
+            if ele[0] and ele[1]:
                 count_dict[ele[0]] += 1
                 sum_dict[ele[0]] += ele[1]
 
@@ -265,7 +265,7 @@ def create_grants_cache():
     print('grants')
     view = 'grants'
     keyword = 'leaderboard'
-    data = generate_leaderboard()
+    data = generate_grants_leaderboard()
     JSONStore.objects.create(
         view=view,
         key=keyword,
