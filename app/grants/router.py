@@ -209,7 +209,9 @@ class GrantViewSet(viewsets.ModelViewSet):
             subscription__grant=grant,
             created_on__lte=to_timestamp,
             created_on__gt=from_timestamp,
-            subscription__network='mainnet'
+            subscription__network='mainnet',
+            tx_cleared=True,
+            success=True
         )
         all_contributions = Paginator(contributions_queryset, results_limit)
 
@@ -296,10 +298,22 @@ class GrantViewSet(viewsets.ModelViewSet):
 
         # Filter Contributions made by given address
 
-        contributions_queryset = Contribution.objects.prefetch_related('subscription').filter(subscription__contributor_address=address)
+        contributions_queryset = Contribution.objects.prefetch_related('subscription').filter(
+            subscription__contributor_address=address,
+            created_on__lte=to_timestamp,
+            created_on__gt=from_timestamp,
+            subscription__network='mainnet',
+            tx_cleared=True,
+            success=True
+        )
 
         all_contributions = Paginator(contributions_queryset, results_limit)
-        contributions_queryset = all_contributions.page(page)
+        try:
+            contributions_queryset = all_contributions.page(page)
+        except EmptyPage:
+            return Response({
+                'error': 'no results for this page'
+            })
         data = donor_serializer(contributions_queryset, many=True).data
 
         response = Response({
