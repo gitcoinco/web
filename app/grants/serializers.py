@@ -62,6 +62,7 @@ class TransactionsSerializer(serializers.Serializer):
     amount = serializers.SerializerMethodField()
     usd_value = serializers.SerializerMethodField()
     tx_hash = serializers.SerializerMethodField()
+    token_address = serializers.SerializerMethodField()
 
     def get_amount(self, obj):
         subscription = obj.subscription
@@ -74,10 +75,13 @@ class TransactionsSerializer(serializers.Serializer):
     def get_tx_hash(self, obj):
         return obj.tx_id if obj.tx_id else obj.split_tx_id
 
+    def get_token_address(self, obj):
+        return obj.subscription.token_address if obj.subscription else '0x0'
+
     class Meta:
         """Define the Transactions serializer metadata."""
 
-        fields = ('asset', 'timestamp', 'amount', 'clr_round', 'usd_value', 'tx_hash')
+        fields = ('asset', 'timestamp', 'amount', 'clr_round', 'usd_value', 'tx_hash', 'token_address')
 
 class CLRPayoutsSerializer(serializers.Serializer):
     """Handle serializing CLR Payout information."""
