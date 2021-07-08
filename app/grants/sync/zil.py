@@ -1,3 +1,5 @@
+import time
+
 from django.conf import settings
 
 import requests
@@ -65,6 +67,7 @@ def get_zil_txn_status(txnid, network='mainnet'):
 
 
 def sync_zil_payout(contribution):
+    time.sleep(0.5) # to avoid rate limit
 
     if not contribution.tx_id or contribution.tx_id == '0x0':
         txn = find_txn_on_zil_explorer(contribution)

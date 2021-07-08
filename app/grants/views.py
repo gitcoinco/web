@@ -3372,7 +3372,7 @@ def ingest_contributions(request):
 
         # Return if no donation logs were found
         if len(parsed_logs) == 0:
-            raise Exception("No DonationSent events found in this transaction")
+            raise Exception("No DonationSent events weren found in this transaction")
 
         # Get transaction timestamp
         block_info = w3.eth.getBlock(receipt['blockNumber'])
@@ -3417,7 +3417,7 @@ def ingest_contributions(request):
             # A transaction hash was provided, so we look for BulkCheckout logs in the L1 transaction
             ingestion_method = 'bulk_checkout'
         else:
-            raise Exception('Could not ingest: Invalid identifier')
+            raise Exception('Invalid identifier')
 
         # Setup web3 and get user profile
         PROVIDER = f"wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}"
@@ -3483,11 +3483,14 @@ def ingest_contributions(request):
                     created_on = dateutil.parser.parse(transaction['created_at'])
                     save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync', user_address)
 
-    if txHash != '':
-        handle_ingestion(get_profile(profile), network, txHash, True)
-        ingestion_types.append('L1')
-    if userAddress != '':
-        handle_ingestion(get_profile(profile), network, userAddress, True)
-        ingestion_types.append('L2')
+    try:
+        if txHash != '':
+            handle_ingestion(get_profile(profile), network, txHash, True)
+            ingestion_types.append('L1')
+        if userAddress != '':
+            handle_ingestion(get_profile(profile), network, userAddress, True)
+            ingestion_types.append('L2')
+    except Exception as err:
+        return JsonResponse({ 'success': False, 'message': err })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })

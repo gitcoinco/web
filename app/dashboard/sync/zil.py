@@ -1,10 +1,12 @@
-import json
+
+import time
 
 from django.conf import settings
 from django.utils import timezone
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
+from economy.models import Token
 
 headers = {
     "X-APIKEY" : settings.VIEW_BLOCK_API_KEY
@@ -16,7 +18,11 @@ def find_txn_on_zil_explorer(fulfillment, network='mainnet'):
         return None
 
     funderAddress = fulfillment.bounty.bounty_owner_address
-    amount = fulfillment.payout_amount
+
+    token = Token.objects.filter(symbol=token_name).first()
+    decimal = token.decimals if token else 12
+    amount = fulfillment.payout_amount * 10 ** decimal
+
     payeeAddress = fulfillment.fulfiller_address
 
     url = f'https://api.viewblock.io/v1/zilliqa/addresses/{funderAddress}/txs?network={network}'
@@ -57,6 +63,7 @@ def get_zil_txn_status(txnid, network='mainnet'):
 
 
 def sync_zil_payout(fulfillment):
+    time.sleep(0.5) # to avoid rate limit
     if not fulfillment.payout_tx_id or fulfillment.payout_tx_id == "0x0":
         txn = find_txn_on_zil_explorer(fulfillment)
         if txn:
