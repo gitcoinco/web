@@ -923,7 +923,12 @@ def create_status_update(request):
     issue_re = re.compile(r'^(?:https?://)?(?:github\.com)/(?:[\w,\-,\_]+)/(?:[\w,\-,\_]+)/issues/(?:[\d]+)')
     response = {}
 
-    if request.POST:
+    if request.POST and request.user.is_authenticated:
+        if (request.user.profile.is_blocked or request.user.profile.shadowbanned):
+            response['status'] = 400
+            response['message'] = 'Status updated!'
+            return JsonResponse(response, status=400)
+
         profile = request.user.profile
         title = request.POST.get('data')
         resource = request.POST.get('resource', '')
@@ -933,12 +938,6 @@ def create_status_update(request):
         attach_amount = request.POST.get('attachAmount', '')
         attach_token_name = request.POST.get('attachTokenName', '')
         tx_id = request.POST.get('attachTxId', '')
-
-        if request.user.is_authenticated and (request.user.profile.is_blocked or request.user.profile.shadowbanned):
-            response['status'] = 200
-            response['message'] = 'Status updated!'
-            return JsonResponse(response, status=400)
-
 
         kwargs = {
             'activity_type': 'status_update',
@@ -1030,6 +1029,12 @@ def create_status_update(request):
             response['message'] = 'Bad Request'
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
             return JsonResponse(response, status=400)
+    else:
+        response['status'] = 401
+        response['message'] = 'Not logged in!'
+        print('here', response)
+        return JsonResponse(status=response['status'], data={'status': 401,'message':response['message']})
+
     return JsonResponse(response)
 
 
