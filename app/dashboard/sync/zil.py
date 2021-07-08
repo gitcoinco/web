@@ -1,7 +1,8 @@
 
+import time
+
 from django.conf import settings
 from django.utils import timezone
-import time
 
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
