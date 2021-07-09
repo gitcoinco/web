@@ -1,0 +1,111 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+<style>
+
+  .quest-avatar {
+    text-align: right;
+    margin: 1em;
+  }
+
+  .quest-avatar img {
+    max-height: 50px;
+    max-width: 100%;
+  }
+
+  .quest-contents {
+    text-align: left;
+    width: 100%;
+  }
+
+  .quest_table, .quest_table tr{
+    width: 100%;
+  }
+  .odd{
+    background-color: #fafafa;
+  }
+  .quest img {
+    max-width: 150px;
+    padding-right: 10px;
+  }
+  .quest-images-container {
+    padding-top: 45px;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 900px;
+  }
+
+</style>
+
+<div class="text-center quest-box">
+
+  {% if quest and small %}
+    <table class="quest quest-images-container">
+      <tr>
+        <td></td>
+        <td rowspan=2>
+          {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
+            <img class="quest-img-bottom"src={{base_url}}static/v2/images/emails/kudos_template.png>
+          {% else %}
+            <img class="quest-img-bottom"src="{{quest.enemy_img_url}}">
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan=2><img class="quest-img-top" src="{{quest.kudos_reward.img_url}}"></td>
+      </tr>
+    </table>
+    <p style="font-weight: bold; margin-bottom:0">{{quest.title}}</p>
+    <p style="margin-top:0">{{quest.description}}</p>
+    {% include 'emails/shared_quest_actions.html' with action='custom' action_copy='Play Quest' action_url=quest.url %}
+  {% endif %}
+
+  {% if quest and not small %}
+  <div class="quest">
+    <div class="quest-avatar">
+      <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{quest.enemy_img_url_png}}">
+    </div>
+    <div class="quest-contents">
+      <table class="quest_table">
+        <tr>
+          <td>
+            <p>
+              <b>{{quest.title}}</b>
+              <br>
+              <b>Attempts:</b> {{ quest.attempts.count }} {{quest.token_name}} ({{quest.success_pct}}% Winners!) 
+              <br>
+              <b>Prize:</b> {{quest.kudos_reward.ui_name}}
+              <br>
+              <b>Posted:</b> {{quest.created_on | naturaltime}}
+              {% if quest.tags %}
+                  <br>
+                  <b>Tags:</b> {% for tag in quest.tags %}#{{ tag }} {% endfor %}
+              {% endif %}
+            </p>
+
+          </td>
+          <td style="min-width: 100px; text-align: right;">
+            {% include 'emails/shared_quest_actions.html' with action='custom' action_copy='View' action_url=quest.url %}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>

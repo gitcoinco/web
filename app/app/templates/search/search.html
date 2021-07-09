@@ -1,0 +1,173 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
+<!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    {% bundle css file search %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/users.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/vue-innersearch.scss" %}>
+    {% endbundle %}
+  </head>
+
+  <body id="{{ explore }}" class="interior {{active}} g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'home/nav.html' %}
+      </div>
+      {% block content %}
+      <h2>Search</h2>
+
+      <form method="get" action="">
+        <table>
+          {{ form.as_table }}
+          <tr>
+            <td>&nbsp;</td>
+            <td>
+              <input type="submit" value="Search">
+            </td>
+          </tr>
+        </table>
+
+        {% if query %}
+          <h3>Results</h3>
+
+          {% for result in page.object_list %}
+            <p>
+              <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
+            </p>
+            {% empty %}
+            <p>No results found.</p>
+          {% endfor %}
+
+          {% if page.has_previous or page.has_next %}
+            <div>
+              {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+              |
+              {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+            </div>
+          {% endif %}
+        {% else %}
+          {# Show some example queries to run, maybe query syntax, something else? #}
+        {% endif %}
+      </form>
+      {% endblock %}
+      <div id="gc-users-directory" v-cloak>
+
+        <section>
+          <h1 class='is-title'>Hacky User Directory</h1>
+
+          <hr class='is-line' />
+
+          <div class="filters" style="width : 90%; margin : 0 auto;">
+            <tag-filter :for="'searchbox'"></tag-filter>
+            <tag-filter :for="'searchdatalist'">
+              <template slot-scope="{ data }">
+                [[ data._source.keywords ]]
+              </template>
+            </tag-filter>
+            <tag-filter :for="'nlf'">
+              <template slot-scope="{ data }">
+                Number of Hacks Joined: [[ data._source.keywords ]]
+              </template>
+            </tag-filter>
+          </div>
+
+          <div class="is-columns">
+            <div class="is-column is-one-fifth">
+              <div>
+                <numeric-list-filter :id="'nlf'" :field="'num_hacks_joined'">
+                  <template slot="header">
+                    <h3 class="is-nlf-title">Number of Hacks Joined : </h3>
+                  </template>
+                </numeric-list-filter>
+              </div>
+            </div>
+            <div class="is-column">
+              <div>
+                <searchbox :id="'searchbox'" :autofocus="true" :realtime="true" :timeout="200" :field="['keywords', 'handle', 'persona']" :placeholder="'Search by keyword'"></searchbox>
+                <search-datalist :id="'searchdatalist'" :realtime="true" :field="'keywords'" :suggestion="['keywords']">
+                  <template slot="items" slot-scope="{ item, value }">
+                    [[ value ]] [[ item._source.keywords ]]
+                  </template>
+
+                  <template slot="nosuggestion" slot-scope="{ value }">
+                    Sorry, "[[ value ]]" doesn't exist... :(
+                  </template>
+
+                  <template slot="suggestions" slot-scope="{ suggestion }">
+                    <span v-html="suggestion.highlight.first_name ? suggestion.highlight.first_name[0] : suggestion._source.first_name"></span>
+                    <span v-html="suggestion.highlight.last_name ? suggestion.highlight.last_name[0] : suggestion._source.last_name"></span>
+                    <span v-html="suggestion.highlight.handle ? suggestion.highlight.handle[0] : suggestion._source.handle"></span>
+                    <span v-html="suggestion.highlight.persona ? suggestion.highlight.persona[0] : suggestion._source.persona"></span>
+                  </template>
+                </search-datalist>
+
+                <div style="margin: 20px auto;width: 90%">
+                  <search-button></search-button>
+                  <reset-button :emptyHits="false"></reset-button>
+                </div>
+                <hits>
+                  <template slot="hits" slot-scope="{ hits }">
+                    <div class="is-score is-hits">
+                      <strong v-if="hits.score === 0">No result found</strong>
+                      <strong v-else-if="hits.score === 1">1 result found</strong>
+                      <strong v-else-if="hits.score > 1">[[ hits.score ]] results found</strong>
+                    </div>
+                    <div v-for="item in hits.items" :item="item">
+                      <div><strong>Identity (firstname, lastname) :</strong> ([[ item._source.first_name ]] [[ item._source.last_name ]] )</div>
+                    </div>
+                  </template>
+                </hits>
+
+                <paginate :previousText="'&#x2B9C; Previous page'" :nextText="'Next page &#x2B9E;'" :size="10"></paginate>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <script type="text/x-template" id="select2-template">
+        <select>
+          <slot></slot>
+        </select>
+      </script>
+
+      {% csrf_token %}
+      {% include 'shared/footer_scripts.html' with slim=1 %}
+      {% include 'shared/footer.html' %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue-innersearch@0.0.12/innersearch.min.js"></script>
+
+
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.keywords = {{keywords | safe}};
+    </script>
+    <script src="{% static "v2/js/users.js" %}"></script>
+  </body>
+</html>

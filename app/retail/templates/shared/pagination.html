@@ -1,0 +1,34 @@
+{% comment %}
+    Copyright (C) 2021 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+  <div class="pagination mt-2 mb-2">
+      <span class="step-links">
+          {% if page.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ page.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+              Page {{ page.number }} of {{ page.paginator.num_pages }}.
+          </span>
+
+          {% if page.has_next %}
+              <a href="?page={{ page.next_page_number }}">next</a>
+              <a href="?page={{ page.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+  </div>
