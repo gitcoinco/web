@@ -3038,6 +3038,11 @@ def get_profile_tab(request, profile, tab, prev_context):
             }
         ]
 
+        # TODO: REMOVE
+        is_staff = request.user.is_staff if request.user else False
+        if not is_staff:
+            del services[1]
+
         # pass as JSON in the context
         context['services'] = json.dumps(services)
         # Tentatively Coming Soon

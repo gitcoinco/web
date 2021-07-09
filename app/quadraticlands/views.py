@@ -247,7 +247,7 @@ def error(request, code):
         return JsonResponse(context, status=code)
     return TemplateResponse(request, f'quadraticlands/error.html', context, status=code)
 
-
+@staff_member_required
 def mission_diplomacy(request):
     return mission_diplomacy_helper(request)
 
@@ -304,6 +304,7 @@ def mission_diplomacy_helper(request, invited_to_game=None):
 
 
 @login_required
+@staff_member_required
 def mission_diplomacy_room(request, uuid, name):
     # get the game
     try:
