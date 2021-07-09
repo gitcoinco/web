@@ -1,0 +1,40 @@
+{% load i18n static %}
+<div class="row">
+  <div class="col-12 mb-4">
+    <h4 class="font-heading">{% trans h1 %}</h4>
+    {% if community_members == alumni %}
+      <p class="font-body caption">{% trans h2 %} <br>
+        {% trans "These are the ones who have opted to be public about it" %}
+      </p>
+    {% else %}
+      <p class="font-subheader caption">{% trans h2 %}</p>
+    {% endif %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-12 offset-lg-2 col-lg-8 row">
+    {% for avatar, name, handle, org in community_members %}
+    <div class="col-12 col-md-4 col-lg-3">
+      <div class="card card-small" style="border:none;">
+        <a href="{% url "profile" handle %}">
+          <img class="avatar" src="{{ avatar }}">
+        </a>
+        <p class="name">
+          <a href="{% url "profile" handle %}">
+            {{ name }}
+          </a>
+        </p>
+        <p class="organization font-caption">{{ org }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="row mt-5 pb-3">
+  <div class="col" style="text-align:center">
+    <a class="btn btn-primary" role="button" href="{% url "leaderboard" "" %}">
+      <i class="fas fa-rocket mr-2"></i>
+      {% trans "Checkout our Leaderboard" %}
+    </a>
+  </div>
+</div>

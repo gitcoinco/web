@@ -1,0 +1,385 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n grants_extra %}
+<div class="mx-0 ml-md-5 px-0 pl-md-3 pr-md-4">
+  <div id="grant-profile-tabs" class="tab-container font-body mt-2 mb-2">
+
+    <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
+      {% trans "SUMMARY" %}
+    </button>
+
+    <button type="button" id="nav-transactions" href="{{grant.url}}?tab=transactions" class="section-tab {% if tab == "transactions" %} active {% endif %}">
+      {% trans "TRANSACTIONS" %}
+      <span class="nav-badge">({{ activity_count }})</span>
+    </button>
+
+    {% if is_staff and grant.metadata.related %}
+    <button type="button" id="nav-related" href="{{grant.url}}?tab=related" class="section-tab {% if tab == "related" %} active {% endif %}">
+      {% trans "RELATED GRANTS" %}
+      <span class="nav-badge">({{ grant.metadata.related | length }})</span>
+    </button>
+    {% endif %}
+
+    {% if is_team_member %}
+    <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
+      {% trans "TRENDS" %}
+    </button>
+    {% endif %}
+
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
+      {% trans "CONTRIBUTORS" %}
+      <span class="nav-badge">({{ grant.contributor_count }})</span>
+    </button>
+    {% if is_staff %}
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=sybil_profile" class="section-tab {% if tab == "sybil_profile" %} active {% endif %}">
+      {% trans "SYBIL PROFILE" %}
+    </button>
+    {% endif %}
+
+  </div>
+
+  <div id="grant-profile-tabs-sections" class="tab-sections section pt-2">
+
+    {% if tab == "activity" %}
+    <div id="section-nav-activity" class="tab-section active">
+      {% if is_team_member %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+      {% else %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+      {% endif %}
+      <div id="activities" class="activity_stream container px-0">
+        {% include 'shared/activity_container.html' with pinned=False %}
+      </div>
+     
+    </div>
+    {% endif %}
+
+    {% if tab == "related" %}
+    <div id="section-nav-related" class="tab-section active">
+      {% for ele in grant.related_grants %}
+        <div id="" class="">
+          {{ele.1}} contributors of this grant also funded <a href="{{ele.0.url}}">{{ele.0.title}}</a>
+        </div>
+      {% endfor %}
+     
+    </div>
+    {% endif %}
+
+
+
+    {% if tab == "description" %}
+    <div id="section-nav-description" class="tab-section active">
+      <h4 class="m-0 p-0">Description</h4>
+      <div id="editor">
+        {% if grant.description_rich %}
+          {{ grant.description_rich }}
+        {% else %}
+          {{ grant.description }}
+        {% endif %}
+      </div>
+    </div>
+      {% if grant.metadata.wall_of_love %}
+      <div id=wall_of_love class="mb-2">
+      <h4 class="m-0 p-0">Wall of Love</h4>
+        {% for ele in grant.metadata.wall_of_love %}
+          <li class="ml-3 {% if forloop.counter > 5 %} hidden {% endif %} ">
+            {{ele.1}} x <strong>{{ele.0}}</strong>
+          </li>
+        {% endfor %}
+        {% if grant.metadata.wall_of_love|length >= 5 %}
+          <a href="#" class="ml-4 show_more_wall_of_love">Show More</a>
+        {% endif %}
+      {% endif %}
+      </div>
+
+      <h4 class="m-0 p-0">Activity Feed</h4>
+      {% if is_team_member %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+      {% else %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+      {% endif %}
+      <div id="activities" class="activity_stream container px-0">
+        {% include 'shared/activity_container.html' with pinned=False %}
+      </div>
+    {% endif %}
+
+    {% if tab == "transactions" %}
+      <div id="section-nav-transactions">
+        {% if is_team_member %}
+        <div class="float-right">
+          {% if is_owner %}
+          <a href="/settings/account#financials">
+          Export Transactions (OWNER ONLY)
+          </a> |
+          {% endif %}
+
+          <a href="/grants/contributions/grant{{grant.pk}}.json">
+          All Contributor Addresses for this Grant (TEAM ONLY)
+        </div>
+        <br class="break">
+        {% endif %}
+
+        {% if not subscriptions and not cancelled_subscriptions and not contributions %}
+          <h4 class="m-auto text-center font-weight-semibold">{% trans "No Activity for this Grant!" %}</h4>
+        {% else %}
+          {% include 'grants/activity.html' %}
+          <span id="grant-network" class="hidden">{{ grant.network }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+
+
+
+    {% if tab == "sybil_profile" and is_staff %}
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
+
+
+      <h4>Grant Sybil Profile</h4>
+
+      <hr>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      SybilScore ™️: {{ grant.sybil_score }}
+      <br>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      RiskScore ™️: {{ grant.weighted_risk_score }}
+      <pre>
+
+      A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+      - Account Metadata
+      - Suspicious Interactions
+      - Grant Flags Reports
+      - BrightID Trust Score (coming soon)
+      - KYC (maybe coming soon)
+      - MACI (maybe coming soon)
+
+      a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
+      </pre>
+      <div id="section-nav-sybil">
+        {% for ele in sybil_profiles%}
+        <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+        <table>
+          <tr>
+            <td>
+              Index
+            </td>
+            <td>
+              Contributors
+            </td>
+            <td>
+              Contributors (pct)
+            </td>
+            <td>
+              Contributions/Contributor
+            </td>
+            <td>
+              Profiles
+            </td>
+          </tr>
+        {% for sp in ele.1.0 %}
+          <tr style="border-top: 1px solid grey;">
+            <td>
+              {% if '0x' in sp.0 %}
+               <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+              {% else %}
+               {{sp.0}}
+              {% endif %}
+            </td>
+            <td>
+               {{sp.1}}
+            </td>
+            <td>
+               {{sp.5}}%
+            </td>
+            <td>
+               {{sp.3|floatformat:2}}
+            </td>
+            <td>
+              <div style="max-height: 50px; overflow: scroll;">
+                 {% for this_profile in sp.4 %}
+                      <a href="/{{this_profile}}">
+                        {% if forloop.counter < 20 %}
+                          <img data-src="/dynamic/avatar/{{this_profile}}" style="height: 20px; width: 20px; border-radius: 10px;">
+                        {% endif %}
+                        @{{this_profile}}
+                      </a>
+                 {% endfor %}
+               </div>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+          <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+          <script>
+          var ctx = document.getElementById('myChart{{forloop.counter0}}').getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: [{% for sp in ele.1.0 %}{{sp.0}}, {%endfor%}],
+                  datasets: [{
+                      label: 'Contributors by Sybil Score',
+                      data: [{% for sp in ele.1.0 %}{{sp.1}}, {%endfor%}],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  title: 'Contributors by Sybil Category',
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if tab == "stats" and is_team_member %}
+      <script src="https://www.gstatic.com/charts/loader.js"></script>
+      <script src="{% static "v2/js/grants/stats.js" %}"></script>
+      <div id=grant_stats_graph class="content-block content-block--white">
+        <div class="container">
+
+          <div class="value-container">
+            <div class="chart_container chart_container--big">
+              {% if stats_history|length %}
+              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">Marketing History Over Time</p>
+              <table id=stats_history>
+                <tr class="table_header">
+                  <td>
+                    When
+                  </td>
+                  <td>
+                    Impressions
+                  </td>
+                  <td>
+                    Added to Cart
+                  </td>
+                  <td>
+                    Contributions
+                  </td>
+                </tr>
+              {% for ele in stats_history %}
+                <tr>
+                  <td>
+                    {{ele.created_on|date:"Y/m/d"}}
+                  </td>
+                  <td>
+                    {% if ele.data.impressions > 0 %}
+                      {{ele.data.impressions}}
+                    {% else %}
+                      0
+                    {% endif %}
+                  </td>
+                  <td>
+                    {{ele.data.in_cart}}
+                  </td>
+                  <td>
+                    {{ele.data.contributions}}
+                  </td>
+                </tr>
+              {% endfor %}
+              </table>
+              {% endif %}
+
+            </div>
+          </div>
+          <script>
+            const max_graph = {{max_graph}};
+            const history = {{history|safe}}; 
+          </script>
+        </div>
+      </div>
+    {% endif %}
+    {% if tab == "contributors" %}
+    <div id="section-nav-contributors">
+      <div class="grant__stakeholders-list d-flex flex-wrap">
+        {% for contribution in contributors %}
+          {% if contribution.anonymous %}
+            {% trans  'Anonymous' as handle %}
+          {% elif contribution.subscription %}
+            {% trans  contribution.subscription.contributor_profile.handle  as handle %}
+          {% else %}
+            {% trans  contribution.profile.handle  as handle %}
+          {% endif %}
+          <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
+            <div class="mr-2 d-inline-block">
+              <img data-src="/dynamic/avatar/{{handle}}" />
+            </div>
+            <div class="mt-1 d-inline-block">
+              <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
+              {% if handle == request.user.profile.handle  %}
+              <a href="{%  url "grants:contribution_invoice" contribution.id  %}">Get invoice</a>
+              {% endif %}
+            </div>
+          </a>
+
+        {% empty %}
+          <div class="no-subscriptions">
+            <p class="mb-1">{% trans "No contributors." %}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  {% with description_tab_url=grant.url|addstr:'?tab=description' %}
+      let grant_description;
+
+      {% if tab == 'description' %}
+        grant_description = new Quill('#editor', {
+            theme: 'bubble',
+            readOnly: true,
+          });
+
+        {% if is_team_member and grant.active  %}
+          grant_description = new Quill('#editor', {
+            theme: 'snow',
+          });
+          grant_description.enable(false);
+        {% endif %}
+
+        let desc = JSON.parse(grant_description.getContents().ops[0].insert);
+        if (desc.ops) {
+          grant_description.setContents(desc);
+        }
+      {% endif %}
+  {% endwith %}
+</script>

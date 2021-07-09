@@ -1,0 +1,92 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+<style>
+
+  .bounty-avatar {
+    text-align: right;
+    margin: 1em;
+  }
+
+  .bounty-avatar img {
+    max-height: 50px;
+    max-width: 100%;
+  }
+
+  .bounty-contents {
+    text-align: left;
+    width: 100%;
+  }
+
+  .bounty {
+    display: flex;
+    padding: 0.5em;
+  }
+  .bounty_table, .bounty_table tr{
+    width: 100%;
+  }
+  .odd{
+    background-color: #fafafa;
+  }
+</style>
+
+<div class="text-center bounty-box {% if count|divisibleby:2 %}even{% else %}odd{% endif %}">
+  {% if primer %}
+    <div class="bounty-primer">
+      <p>{{primer}}<p>
+    </div>
+  {% endif %}
+  <div class="bounty">
+    <div class="bounty-avatar">
+      <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{bounty.avatar_url}}">
+      {% if bounty.org_name %}
+        <p style="font-size: 10px;">
+        @{{bounty.org_name}}
+        </p>
+      {% endif %}
+    </div>
+    <div class="bounty-contents">
+      <table class="bounty_table">
+        <tr>
+          <td>
+            <p>
+              <b>{{bounty.org_name}}</b>: {{bounty.title_or_desc}}
+              <br>
+              <b>Amount:</b> {{bounty.value_true}} {{bounty.token_name}}
+              {% if bounty.value_in_usdt_now %}
+                (${{bounty.value_in_usdt_now}})
+              {% endif %}
+              <br>
+              <b>Posted:</b> {{bounty.web3_created | naturaltime}}
+              {% if bounty.keywords %}
+                  <br>
+                  <b>Keywords:</b> {{bounty.keywords}}
+              {% endif %}
+
+            </p>
+
+          </td>
+          <td style="min-width: 100px; text-align: right;">
+            {% include 'emails/shared_bounty_actions.html' with action='custom' action_copy='View' action_url=bounty.absolute_url %}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
