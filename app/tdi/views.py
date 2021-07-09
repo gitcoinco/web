@@ -25,7 +25,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import translation
@@ -45,72 +45,7 @@ from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
 
 def ratelimited(request, ratelimited=False):
-    return whitepaper_access(request, ratelimited=True)
-
-
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def whitepaper_new(request, ratelimited=False):
-
-    context = {
-        'active': 'whitepaper',
-        'title': _('Whitepaper'),
-        'minihero': _('Whitepaper'),
-        'suppress_logo': True,
-    }
-    if not request.POST.get('submit', False):
-        return TemplateResponse(request, 'whitepaper_new.html', context)
-
-    if ratelimited:
-        context['msg'] = _("You're ratelimited. Please contact support@gitcoin.co")
-        return TemplateResponse(request, 'whitepaper_accesscode.html', context)
-
-    context['role'] = request.POST.getlist('role')
-    context['email'] = request.POST.get('email')
-    context['comments'] = request.POST.get('comments')
-    context['success'] = True
-    ip = get_ip(request)
-    body = gettext("""
-Email: {} \n
-Role: {}\n
-Comments: {}\n
-IP: {}\n
-
-https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
-
-    """).format(context['email'], context['role'], context['comments'], ip)
-    send_mail(
-        settings.CONTACT_EMAIL,
-        settings.CONTACT_EMAIL,
-        _("New Whitepaper Request"),
-        str(body),
-        categories=['admin', 'whitepaper_request'],
-    )
-
-    WhitepaperAccessRequest.objects.create(
-        email=context['email'],
-        role=context['role'],
-        comments=context['comments'],
-        ip=ip,
-    )
-
-    for code in AccessCodes.objects.all():
-        print(code)
-
-    invite_to_slack(context['email'])
-
-    valid_email = True
-    try:
-        validate_email(request.POST.get('email', False))
-    except ValidationError:
-        valid_email = False
-
-    if not request.POST.get('email', False) or not valid_email:
-        context['msg'] = _("Invalid Email. Please contact support@gitcoin.co")
-        context['success'] = False
-        return TemplateResponse(request, 'whitepaper_new.html', context)
-
-    context['msg'] = _("Your request has been sent.  <a href=/slack>Meantime, why don't you check out the slack channel?</a>")
-    return TemplateResponse(request, 'whitepaper_new.html', context)
+    return HttpResponseForbidden("You're ratelimited - Please try again soon", 403)
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)

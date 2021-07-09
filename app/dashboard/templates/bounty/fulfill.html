@@ -130,8 +130,7 @@
                         <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
                           title="Address to which bounty will be sent upon being accepted">
                         </i>
-                        <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Enter {{ bounty.token_name }} Wallet Address"/>
-
+                        <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Enter {{ bounty.token_name }}{% if bounty.web3_type == 'nervos_ext' %} or ETH {% endif %} Wallet Address"/>
                         <div class="text-danger hidden">
                           Enter a valid {{ bounty.token_name }} address
                         </div>

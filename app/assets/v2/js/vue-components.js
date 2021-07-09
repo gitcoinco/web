@@ -618,14 +618,6 @@ Vue.component('project-card', {
     };
   },
   props: [ 'project', 'edit', 'is_staff' ],
-  computed: {
-    project_url: function() {
-      let project = this.$props.project;
-      let project_name = (project.name || '').replace(/ /g, '-');
-
-      return `/hackathon/${project.hackathon.slug}/projects/${project.pk}/${project_name}`;
-    }
-  },
   methods: {
     projectModal() {
       let project = this.$props.project;
@@ -650,7 +642,7 @@ Vue.component('project-card', {
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project_url" target="_blank" class="btn btn-sm btn-primary font-smaller-2">View Project</a>
+            <a :href="project.url_project_page" target="_blank" class="btn btn-sm btn-primary font-smaller-2">View Project</a>
             <a :href="project.bounty.url" class="btn btn-sm btn-outline-primary font-smaller-2">View Bounty</a>
           </div>
         </div>

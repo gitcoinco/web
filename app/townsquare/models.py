@@ -9,6 +9,7 @@ from django.utils.text import slugify
 
 import townsquare.clr as clr
 from economy.models import SuperModel
+from unidecode import unidecode
 
 
 class Like(SuperModel):
@@ -172,7 +173,7 @@ class Offer(SuperModel):
 
     @property
     def view_url(self):
-        slug = slugify(self.title)
+        slug = slugify(unidecode(self.title))
         return f'/action/{self.pk}/{slug}'
 
     def get_absolute_url(self):
@@ -358,10 +359,10 @@ class MatchRanking(SuperModel):
 
 
 def get_eligible_input_data(mr):
-    from dashboard.models import Tip
-    from django.db.models import Q, F
-    from dashboard.models import Earning, Profile
     from django.contrib.contenttypes.models import ContentType
+    from django.db.models import F, Q
+
+    from dashboard.models import Earning, Profile, Tip
     network = 'mainnet'
     earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
     # filter out earnings that have invalid info (due to profile deletion), or dont have a USD value, or are not on the correct network

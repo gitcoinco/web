@@ -27,7 +27,7 @@
               break;
           }
 
-          let newUrl = `/hackathon/${vm.hackathon['slug']}/projects/${vm.project.id}/${vm.project.name}/${newPathName}?${window.location.search}`;
+          let newUrl = `${vm.project.url}/${newPathName}?${window.location.search}`;
 
           history.pushState({}, `${vm.hackathon['slug']} - ${newPathName}`, newUrl);
         },

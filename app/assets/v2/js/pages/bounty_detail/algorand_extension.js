@@ -16,7 +16,6 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
       return;
     }
 
-    // const connect = await AlgoSigner.connect();
     AlgoSigner.connect().then(async() => {
       // step2: get connected accounts
       const accounts = await AlgoSigner.accounts({ ledger: NETWORK });
@@ -39,43 +38,43 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
         path: `/v2/accounts/${from_address}`
       });
 
-      if (
-        token_name == 'ALGO' &&
-        Number(balance.amount) <= amount * 10 ** vm.decimals
-      ) {
+      if (token_name == 'ALGO') {
         // ALGO token
-        _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
-        modal.closeModal();
-        return;
+        if (Number(balance.amount) <= amount * 10 ** vm.decimals) {
+          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+          modal.closeModal();
+          return;
+        }
 
-      }
-      // ALGO assets
-      let is_asset_present = false;
+      } else {
+        // ALGO assets
+        let is_asset_present = false;
 
-      if (balance.assets && balance.assets.length > 0) {
+        if (balance.assets && balance.assets.length > 0) {
+          balance.assets.map(asset => {
+            if (asset['asset-id'] == asset_index.addr)
+              is_asset_present = true;
+          });
+        }
+
+        if (!is_asset_present) {
+          _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
+          modal.closeModal();
+          return;
+        }
+
+        let has_enough_asset_balance = false;
+
         balance.assets.map(asset => {
-          if (asset['asset-id'] == asset_index)
-            is_asset_present = true;
+          if (asset['asset-id'] == asset_index.addr && asset['amount'] <= amount * 10 ** vm.decimals)
+            has_enough_asset_balance = true;
         });
-      }
 
-      if (is_asset_present) {
-        _alert({ message: `Asset ${token_name} is not present in ${from_address}` }, 'danger');
-        modal.closeModal();
-        return;
-      }
-
-      let has_enough_asset_balance = false;
-
-      balance.assets.map(asset => {
-        if (asset['asset-id'] == asset_index && asset['amount'] <= amount * 10 ** vm.decimals)
-          has_enough_asset_balance = true;
-      });
-
-      if (has_enough_asset_balance) {
-        _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
-        modal.closeModal();
-        return;
+        if (has_enough_asset_balance) {
+          _alert({ message: `Insufficent balance in address ${from_address}` }, 'danger');
+          modal.closeModal();
+          return;
+        }
       }
       
 
@@ -138,7 +137,7 @@ const payWithAlgorandExtension = async(fulfillment_id, to_address, vm, modal) =>
 
       }).catch(e => {
         console.log(e);
-        _alert({ message: 'Unable to sign txn. Please try again' }, 'danger');
+        _alert({ message: 'Unable to sign transaction. Please try again' }, 'danger');
         modal.closeModal();
         return;
       });

@@ -1,6 +1,6 @@
 
 var tokenAddressToDetails = function(addr) {
-  return tokenAddressToDetailsByNetwork(addr, document.web3network);
+  return tokenAddressToDetailsByNetwork(addr, document.web3network || 'mainnet');
 };
 
 var tokenAddressToDetailsByNetwork = function(addr, network) {

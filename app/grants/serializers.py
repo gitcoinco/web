@@ -1,8 +1,8 @@
 from dashboard.router import ProfileSerializer
 from rest_framework import serializers
 
-from .models import CLRMatch, Contribution, Grant, Subscription
-from .utils import amount_in_wei, get_converted_amount, which_clr_round
+from .models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
+from .utils import amount_in_wei, get_converted_amount
 
 
 class GrantSerializer(serializers.ModelSerializer):
@@ -60,24 +60,28 @@ class TransactionsSerializer(serializers.Serializer):
     asset = serializers.CharField(source='subscription.token_symbol')
     timestamp = serializers.DateTimeField(source='created_on')
     amount = serializers.SerializerMethodField()
-    clr_round = serializers.SerializerMethodField()
     usd_value = serializers.SerializerMethodField()
+    tx_hash = serializers.SerializerMethodField()
+    token_address = serializers.SerializerMethodField()
 
     def get_amount(self, obj):
         subscription = obj.subscription
         return format(amount_in_wei(subscription.token_address, subscription.amount_per_period_minus_gas_price), '.0f')
 
-    def get_clr_round(self, obj):
-        return which_clr_round(obj.created_on)
-
     def get_usd_value(self, obj):
         subscription = obj.subscription
         return subscription.get_converted_amount(ignore_gitcoin_fee=False)
-    
+
+    def get_tx_hash(self, obj):
+        return obj.tx_id if obj.tx_id else obj.split_tx_id
+
+    def get_token_address(self, obj):
+        return obj.subscription.token_address if obj.subscription else '0x0'
+
     class Meta:
         """Define the Transactions serializer metadata."""
 
-        fields = ('asset', 'timestamp', 'amount', 'clr_round', 'usd_value')
+        fields = ('asset', 'timestamp', 'amount', 'clr_round', 'usd_value', 'tx_hash', 'token_address')
 
 class CLRPayoutsSerializer(serializers.Serializer):
     """Handle serializing CLR Payout information."""
@@ -87,6 +91,7 @@ class CLRPayoutsSerializer(serializers.Serializer):
     usd_value = serializers.SerializerMethodField()
     timestamp = serializers.DateTimeField(source='created_on')
     round = serializers.IntegerField(source='round_number')
+    tx_hash = serializers.CharField(source='payout_tx')
 
     def get_usd_value(self, obj):
         return get_converted_amount(obj.amount, 'DAI')
@@ -94,7 +99,7 @@ class CLRPayoutsSerializer(serializers.Serializer):
     class Meta:
         """Define the CLRPayout serializer metadata."""
 
-        fields = ('amount', 'asset', 'usd_value', 'timestamp', 'round')
+        fields = ('amount', 'asset', 'usd_value', 'timestamp', 'round', 'tx_hash')
 
 class DonorSerializer(serializers.Serializer):
     """Handle serializing Donor information."""
@@ -131,3 +136,13 @@ class DonorSerializer(serializers.Serializer):
         """Define the Donor serializer metadata."""
 
         fields = ('grant_name', 'asset', 'timestamp', 'grant_amount', 'gitcoin_maintenance_amount', 'grant_usd_value', 'gitcoin_usd_value')
+
+
+class GrantCLRSerializer(serializers.ModelSerializer):
+    """Handle metadata of CLR rounds"""
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantCLR
+        fields = (
+            'id', 'display_text', 'round_num', 'is_active', 'start_date', 'end_date'
+        )

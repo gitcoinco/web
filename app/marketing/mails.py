@@ -701,7 +701,7 @@ def grant_update_email(activity):
 
 
 def new_faucet_request(fr):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -745,6 +745,29 @@ def new_grant_admin(grant):
             translation.activate(cur_language)
 
 
+def notion_failure_email(grant):
+    to_emails = ['new-grants@gitcoin.co']
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    for to_email in to_emails:
+        try:
+            setup_lang(to_email)
+            subject = _("Failed to write grant to notions db")
+            body_str = _("The following grant failed to be written to notions db, please manually add it")
+            body = f'{body_str}:\n\nTitle: "{grant.title}"\nURL: "{settings.BASE_URL.rstrip("/")}{grant.url}"'
+            if not should_suppress_notification_email(to_email, 'grant'):
+                send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    body,
+                    from_name=_("No Reply from Gitcoin.co"),
+                    categories=['admin', func_name()],
+                )
+        finally:
+            translation.activate(cur_language)
+
+
 def send_user_feedback(quest, feedback, user):
     to_email = quest.creator.email
     from_email = settings.SERVER_EMAIL
@@ -768,7 +791,7 @@ def send_user_feedback(quest, feedback, user):
 
 
 def new_quest_request(quest, is_edit):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -791,7 +814,7 @@ def new_quest_request(quest, is_edit):
 
 
 def new_action_request(action):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -835,7 +858,7 @@ def new_quest_approved(quest):
 
 
 def new_token_request(obj):
-    to_email = 'founders@gitcoin.co'
+    to_email = "support@gitcoin.co"
     from_email = obj.email
     cur_language = translation.get_language()
     try:
@@ -1005,7 +1028,7 @@ def warn_account_out_of_eth(account, balance, denomination):
 def warn_subscription_failed(subscription):
     if subscription and subscription.negative:
         return
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = "support@gitcoin.co"
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
     try:
@@ -1057,7 +1080,7 @@ def gdpr_reconsent(email):
 
 
 def funder_payout_reminder(to_email, bounty, github_username, live):
-    from_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = "support@gitcoin.co"
     subject = "Payout reminder"
     html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
     if (live):
@@ -1195,7 +1218,7 @@ The txid of this test transaction is {match.test_payout_tx}.
 
 We will be issuing a final payout transaction in DAI within 24-72 hours of this email.  No action is needed on your part, we will issue the final payout transaction automatically.
 
-If you're looking to kill time before your payout is administered.... 
+If you're looking to kill time before your payout is administered....
 1. Please take a moment to comment on this thread to let us know what you thought of this grants round [https://github.com/gitcoinco/web/issues/8000]. We'd love to hear how the round went for you.
 2. {coupon}
 
@@ -1267,7 +1290,7 @@ Team Gitcoin & The Funders League
 
 
 def match_distribution(mr):
-    from_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = "support@gitcoin.co"
     to_email = mr.profile.email
     subject = f"Match Distribution of ${mr.match_total} for @{mr.profile.handle}"
     html, text = render_match_distribution(mr)

@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static slug %}
 
 <style>
 
@@ -68,7 +68,7 @@
       <div class="card-body">
         <h5 class="card-title text-uppercase"><a href="
          {% if project.name %}
-            {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}
+            {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slug %}
           {% else %}
             {% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id %}
           {% endif %}" target="_blank" class="font-weight-bold card-subtitle">{{ project.name }}</a></h5>

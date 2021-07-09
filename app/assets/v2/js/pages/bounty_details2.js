@@ -162,6 +162,10 @@ Vue.mixin({
           url = `https://siastats.info/navigator?search=${txn}`;
           break;
 
+        case 'XTZ':
+          url = `https://tzkt.io/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -229,11 +233,15 @@ Vue.mixin({
         case 'ALGO':
         case 'USDTa':
         case 'USDCa':
-          url = `https://algoexplorer.io/tx/${address}`;
+          url = `https://algoexplorer.io/address/${address}`;
           break;
 
         case 'SC':
           url = `https://siastats.info/navigator?search=${address}`;
+          break;
+
+        case 'XTZ':
+          url = `https://tzkt.io/${address}/operations/`;
           break;
 
         default:
@@ -480,6 +488,10 @@ Vue.mixin({
           vm.canChangeFunderAddress = true;
           break;
 
+        case 'XTZ':
+          tenant = 'TEZOS';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -490,7 +502,6 @@ Vue.mixin({
       let vm = this;
 
       const token_name = vm.bounty.token_name;
-      const decimals = tokenNameToDetails('mainnet', token_name).decimals;
       const amount = vm.fulfillment_context.amount;
       const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
       const funder_address = vm.bounty.bounty_owner_address;
@@ -499,7 +510,7 @@ Vue.mixin({
       const payload = {
         payout_type: payout_type,
         tenant: tenant,
-        amount: amount * 10 ** decimals,
+        amount: amount,
         token_name: token_name,
         funder_address: funder_address,
         payout_tx_id: payout_tx_id
@@ -573,6 +584,10 @@ Vue.mixin({
 
         case 'algorand_ext':
           payWithAlgorandExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'tezos_ext':
+          payWithTezosExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -793,6 +808,7 @@ Vue.mixin({
         case 'rsk_ext':
         case 'xinfin_ext':
         case 'algorand_ext':
+        case 'tezos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
@@ -845,7 +861,7 @@ Vue.mixin({
           const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
           const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
     
-          if (!isNervosValid && !address.toLowerCase().startsWith('0x')) {
+          if (!isNervosValid && !vm.bounty.bounty_owner_address.toLowerCase().startsWith('0x')) {
             hasError = true;
           }
         }
