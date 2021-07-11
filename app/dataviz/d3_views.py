@@ -752,7 +752,7 @@ def mesh_network_viz(request, ):
     _type = request.GET.get('type', 'all')
     theme = request.GET.get('theme', 'light')
     show_labels = request.GET.get('show_labels', '0')
-    trim_pct = int(request.GET.get('trim_pct', '0'))
+    trim_pct = int(request.GET.get('trim_pct', '0')) - 1
 
     since = f"{year}/{month}/{day}"
 
