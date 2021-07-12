@@ -55,7 +55,7 @@ class Command(BaseCommand):
     def do_we_care(self, event):
         repos_we_care_about = self.all_bountied_repos()
         try:
-            repo_name = event.get('repo', {}).get('name', '').lower()
+            repo_name = event.repo.name.lower()
             return repo_name in repos_we_care_about
         except AttributeError:
             logger.debug('Error in do_we_care during sync_github')
@@ -74,20 +74,15 @@ class Command(BaseCommand):
         # process them
         for profile in profiles:
             try:
-                events = get_user(profile.handle, '/events')
+                events = get_user(profile.handle).get_events()
                 for event in events:
-                    try:
-                        event_time = event.get('created_at', False)
-                        created_on = datetime.datetime.strptime(event_time, '%Y-%m-%dT%H:%M:%SZ')
-                    except Exception:
-                        created_on = timezone.now()
                     if self.do_we_care(event):
                         GithubEvent.objects.get_or_create(
                             profile=profile,
-                            payload=event,
-                            what=event.get('type', ''),
-                            repo=event.get('repo', {}).get('name', ''),
-                            created_on=created_on,
+                            payload=event._rawData,
+                            what=event.type,
+                            repo=event.repo.name,
+                            created_on=event.created_at,
                         )
             except Exception as e:
                 logger.error('Error while syncing profile actions during sync_github', e)

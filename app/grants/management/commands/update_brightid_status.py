@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from dashboard.brightid_utils import get_verified_uuids

@@ -24,13 +24,11 @@ from django.conf import settings
 from django.test.client import RequestFactory
 from django.utils import timezone
 
-import ipfshttpclient
-import pytest
 from dashboard.models import Bounty, Profile
 from dashboard.utils import (
-    IPFSCantConnectException, apply_new_bounty_deadline, clean_bounty_url, create_user_action, get_bounty, get_ipfs,
-    get_ordinal_repr, get_token_recipient_senders, get_web3, getBountyContract, humanize_event_name, ipfs_cat_ipfsapi,
-    re_market_bounty, release_bounty_to_the_public,
+    apply_new_bounty_deadline, clean_bounty_url, create_user_action, get_bounty, get_ordinal_repr,
+    get_token_recipient_senders, get_web3, getBountyContract, humanize_event_name, re_market_bounty,
+    release_bounty_to_the_public,
 )
 from eth_utils import is_address
 from pytz import UTC

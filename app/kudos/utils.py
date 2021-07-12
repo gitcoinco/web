@@ -93,38 +93,6 @@ class KudosError(Exception):
     pass
 
 
-class KudosTransferNotFound(KudosError):
-    """Exception is raised when web3 and the database are out of sync.
-
-    Attributes:
-    kudos_id -- the kudos id that has mismatched data
-    message -- explanation of the error
-
-    """
-
-    def __init__(self, kudos_id, message):
-        self.kudos_id = kudos_id
-        self.message = message
-
-
-class KudosMismatch(KudosError):
-    """Exception is raised when web3 and the database are out of sync.
-
-    Attributes:
-        kudos_id: The kudos id that has mismatched data.
-        kudos_web3: Kudos attributes on web3.
-        kudos_db: Kudos attritubes in the database.
-        message: Explanation of the error.
-
-    """
-
-    def __init__(self, kudos_id, kudos_web3, kudos_db, message):
-        self.kudos_id = kudos_id
-        self.kudos_web3 = kudos_web3
-        self.kudos_db = kudos_db
-        self.message = message
-
-
 class KudosContract:
     """A class represending the Kudos.sol contract.
 
@@ -345,8 +313,6 @@ class KudosContract:
             # Only warn for a Kudos that is cloned/transfered, not a Gen0 Kudos.
             if kudos_token.num_clones_allowed == 0:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
-                # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
-                # raise
         except KudosTransfer.MultipleObjectsReturned:
             pass
 
@@ -644,32 +610,6 @@ class KudosContract:
         """
         ipfs_hash = self._ipfs.add_json(kwargs)
         return f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
-
-
-def get_to_emails(params):
-    """Get a list of email address to send the alert to, in this priority:
-
-    1. get_emails_master() pulls email addresses from the user's public Github account.
-    2. If an email address is included in the Tips/Kudos form, append that to the email list.
-
-
-    Args:
-        params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-            request coming in from a Tips/Kudos send.
-
-    Returns:
-        list: An array of email addresses to send the email to.
-
-    """
-    to_emails = []
-
-    to_username = params['username'].lstrip('@')
-    to_emails = get_emails_master(to_username)
-
-    if params.get('email'):
-        to_emails.append(params['email'])
-
-    return list(set(to_emails))
 
 
 def kudos_abi():

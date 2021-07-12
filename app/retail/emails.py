@@ -38,7 +38,6 @@ from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
-from premailer import Premailer
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
@@ -98,26 +97,6 @@ def render_featured_funded_bounty(bounty):
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
     subject = _("Your bounty is now live on Gitcoin!")
-
-    return response_html, response_txt, subject
-
-
-def render_nth_day_email_campaign(to_email, nth, firstname):
-    subject_map = {
-        1: "Day 1: Growing Open Source",
-        2: "Day 2: Using Gitcoin's Issue Explorer",
-        3: "Learning Blockchain"
-    }
-
-    subject = subject_map[nth]
-
-    params = {
-        "firstname": firstname,
-        "subscriber": get_or_save_email_subscriber(to_email, "internal"),
-		"email_type": "welcome_mail"
-    }
-    response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
-    response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
 
     return response_html, response_txt, subject
 
@@ -670,8 +649,7 @@ def email_to_profile(to_email):
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, hackathons=(), latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
     from dateutil.parser import parse
-    from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    from marketing.views import upcoming_dates, email_announcements, trending_avatar
+    from marketing.views import email_announcements, trending_avatar
 
     sub = get_or_save_email_subscriber(to_email, 'internal')
     counter = 0

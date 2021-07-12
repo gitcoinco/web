@@ -17,19 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import json
-from datetime import date, datetime, timedelta
-from unittest.mock import patch
-
 from django.conf import settings
 from django.test.client import RequestFactory
 
-import pytz
-import requests_mock
-from dashboard.helpers import amount, is_lowball_bounty, issue_details, normalize_url, process_bounty_details
-from dashboard.models import Bounty
+from dashboard.helpers import amount, is_lowball_bounty, normalize_url
 from economy.models import ConversionRate
-from marketing.mails import featured_funded_bounty
 from test_plus.test import TestCase
 
 

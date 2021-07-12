@@ -22,8 +22,7 @@ from unittest.mock import patch
 from django.utils import timezone
 
 from dashboard.models import Profile
-from marketing.mails import nth_day_email_campaign, setup_lang
-from retail.emails import render_nth_day_email_campaign
+from marketing.mails import setup_lang
 from test_plus.test import TestCase
 
 
@@ -56,24 +55,3 @@ class MarketingMailsTest(TestCase):
         """Test the marketing mails setup_lang method."""
         setup_lang('bademail@gitcoin.co')
         assert mock_translation_activate.call_count == 0
-
-    @patch('marketing.mails.send_mail')
-    def test_day_1_campaign_email(self, mock_send_mail):
-        """Test the campaign email for day 1 is sent."""
-
-        nth_day_email_campaign(self.days[0], self.user)
-        assert mock_send_mail.call_count == 1
-
-    @patch('marketing.mails.send_mail')
-    def test_day_2_campaign_email(self, mock_send_mail):
-        """Test the campaign email for day 2 is sent."""
-
-        nth_day_email_campaign(self.days[1], self.user)
-        assert mock_send_mail.call_count == 1
-
-    @patch('marketing.mails.send_mail')
-    def test_day_3_campaign_email(self, mock_send_mail):
-        """Test the campaign email for day 3 is sent."""
-
-        nth_day_email_campaign(self.days[2], self.user)
-        assert mock_send_mail.call_count == 1

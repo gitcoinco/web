@@ -21,7 +21,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from app.utils import get_default_network
-from grants.models import Contribution, Grant, Subscription
+from grants.models import Contribution
 from grants.tasks import process_new_contributions_email
 
 

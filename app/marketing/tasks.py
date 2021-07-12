@@ -1,8 +1,7 @@
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 
 from app.services import RedisService
-from celery import app, group
+from celery import app
 from celery.utils.log import get_task_logger
 from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email

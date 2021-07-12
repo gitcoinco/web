@@ -17,7 +17,6 @@
 '''
 
 import urllib.request
-import xml.etree as etree
 import xml.etree.ElementTree as ET
 
 from django.core.management.base import BaseCommand

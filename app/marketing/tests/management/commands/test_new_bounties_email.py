@@ -1,12 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from django.core.management import call_command
 from django.utils import timezone
 
 import pytest
 from dashboard.models import Bounty, Profile
 from marketing.mails import get_bounties_for_keywords
-from marketing.models import Keyword
 from test_plus.test import TestCase
 
 

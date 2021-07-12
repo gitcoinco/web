@@ -25,7 +25,6 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from django.utils import timezone
 
-import requests
 from app.utils import get_location_from_ip
 from cacheops import cached_as
 from dashboard.models import Activity, Tip, UserAction

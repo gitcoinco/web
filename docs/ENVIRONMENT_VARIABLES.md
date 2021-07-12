@@ -62,7 +62,6 @@ All of the environment variables used by this application conform to the [`djang
 | --- | --- | --- | --- |
 | GITHUB_API_BASE_URL | The Github API URL. | `str` | https://api.github.com |
 | GITHUB_AUTH_BASE_URL | The Github OAuth authorization URL. | `str` | https://github.com/login/oauth/authorize |
-| GITHUB_TOKEN_URL | The Github OAuth access token URL. | `str` | https://github.com/login/oauth/access_token |
 | GITHUB_SCOPE | The Github application scope. | `str` | read:user,user:email,read:org |
 | GITHUB_CLIENT_ID | The client ID of the Github OAuth app. | `str` | TODO |
 | GITHUB_CLIENT_SECRET | The client secret of the Github OAuth app. | `str` | TODO |

@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from grants.models import GrantCollection
 from grants.tasks import generate_collection_cache

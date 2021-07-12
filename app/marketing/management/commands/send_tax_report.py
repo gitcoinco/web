@@ -19,7 +19,6 @@ import csv
 import json
 import logging
 import os
-import shutil
 import warnings
 import zipfile
 
@@ -29,13 +28,9 @@ from django.core.management.base import BaseCommand
 from django.db.models import F
 
 import pdfrw
-import sendgrid
 from dashboard.models import Bounty, BountyFulfillment, Earning, Profile, Tip
 from grants.models import Grant
 from marketing.mails import tax_report
-from python_http_client.exceptions import HTTPError, UnauthorizedError
-from sendgrid.helpers.mail import Content, Email, Mail, Personalization
-from sendgrid.helpers.stats import Category
 
 logger = logging.getLogger(__name__)
 

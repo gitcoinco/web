@@ -33,12 +33,10 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 import environ
-import pyvips
 from dashboard.models import SendCryptoAsset
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from pyvips.error import Error as VipsError
 from unidecode import unidecode
 
 logger = logging.getLogger(__name__)

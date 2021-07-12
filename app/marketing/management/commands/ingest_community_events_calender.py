@@ -15,14 +15,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import time
-
 from django.core.management.base import BaseCommand
-from django.db.models import Q
-from django.utils import timezone
 
 import requests
-from icalendar import Calendar, Event
+from icalendar import Calendar
 from marketing.models import UpcomingDate
 
 # The iCal link for Gitcoin community events calender

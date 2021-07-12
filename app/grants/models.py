@@ -43,7 +43,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from django_extensions.db.fields import AutoSlugField
-from economy.models import SuperModel, Token
+from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
@@ -1000,12 +1000,6 @@ class Grant(SuperModel):
         return super(Grant, self).save(*args, **kwargs)
 
 
-class SubscriptionQuerySet(models.QuerySet):
-    """Define the Subscription default queryset and manager."""
-
-    pass
-
-
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
@@ -1193,7 +1187,6 @@ class Subscription(SuperModel):
         token = addr_to_token(self.token_address, self.network)
 
         # gas prices no longer take this amount times 10**18 decimals
-        import pytz
         if self.created_on > timezone.datetime(2020, 6, 16, 15, 0).replace(tzinfo=pytz.utc):
             return self.gas_price
 
@@ -1546,13 +1539,6 @@ next_valid_timestamp: {next_valid_timestamp}
         return contribution
 
 
-class DonationQuerySet(models.QuerySet):
-    """Define the Contribution default queryset and manager."""
-
-    pass
-
-
-
 class Flag(SuperModel):
 
     grant = models.ForeignKey(
@@ -1671,12 +1657,6 @@ class Donation(SuperModel):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
         return f"id: {self.pk}; from:{profile.handle}; {tx_id} => ${token_amount_usdt}; {naturaltime(self.created_on)}"
-
-
-class ContributionQuerySet(models.QuerySet):
-    """Define the Contribution default queryset and manager."""
-
-    pass
 
 
 class Contribution(SuperModel):

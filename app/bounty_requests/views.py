@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 
-from django.core.exceptions import MultipleObjectsReturned
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _

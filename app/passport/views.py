@@ -2,10 +2,8 @@ import json
 import uuid
 
 from django.conf import settings
-from django.http import Http404, JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse
 
-import web3
 from dashboard.utils import get_web3
 from eth_account.messages import defunct_hash_message
 

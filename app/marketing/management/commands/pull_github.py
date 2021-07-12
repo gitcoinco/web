@@ -22,21 +22,12 @@ from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
 from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
-from git.utils import search
+from git.utils import search_user
 from marketing.models import EmailSubscriber
 
 
 class NoUsersException(Exception):
     pass
-
-
-def get_github_user_from_github(email):
-    result = search(email)
-    if not result.get('total_count', 0):
-        # print(result)
-        raise NoUsersException("no users found")
-
-    return result['items'][0]
 
 
 def get_github_user_from_DB(email):
@@ -68,8 +59,8 @@ class Command(BaseCommand):
                 if not es.github:
                     es.github = get_github_user_from_DB(es.email)
                 if not es.github:
-                    ghuser = get_github_user_from_github(es.email)
-                    es.github = ghuser['login']
+                    ghuser = search_user(es.email)
+                    es.github = ghuser.login
                 if not es.keywords:
                     try:
                         es.profile = profile_helper(es.github, True)

@@ -16,7 +16,6 @@
 
 '''
 
-import json
 import time
 import uuid
 
@@ -26,9 +25,9 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from avatar.models import AvatarTextOverlayInput
-from dashboard.utils import get_tx_status, get_web3, has_tx_mined
+from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from web3 import HTTPProvider, Web3
+from web3 import Web3
 
 
 class Command(BaseCommand):

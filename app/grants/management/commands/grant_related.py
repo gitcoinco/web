@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-import random
 import time
 
 from django.core.management.base import BaseCommand

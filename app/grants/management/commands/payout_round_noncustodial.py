@@ -27,25 +27,18 @@
 # ./manage.py payout_round_noncustodial set_payouts mainnet --clr_pks=131,121,120,119,118 --clr_round=9 --process_all
 
 import json
-import time
 from decimal import Decimal
 
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
-from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.abi import erc20_abi
-from dashboard.models import Activity, Earning, Profile
-from dashboard.utils import get_tx_status, get_web3, has_tx_mined
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from dashboard.models import Activity, Profile
 from grants.models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
-from marketing.mails import (
-    grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
-)
+from marketing.mails import grant_match_distribution_final_txn, grant_match_distribution_kyc
 from townsquare.models import Comment
-from web3 import HTTPProvider, Web3
+from web3 import Web3
 
 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
 match_payouts_address = Web3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)

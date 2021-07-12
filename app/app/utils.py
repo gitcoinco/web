@@ -21,12 +21,11 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 import geoip2.database
 import requests
 from avatar.models import SocialAvatar
-from avatar.utils import get_svg_templates, get_user_github_avatar_image
+from avatar.utils import get_user_github_avatar_image
 from geoip2.errors import AddressNotFoundError
-from git.utils import _AUTH, HEADERS, get_user
+from git.utils import get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
-from pyshorteners import Shortener
 from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 
@@ -47,113 +46,8 @@ class NotEqual(Lookup):
         return f'{lhs} <> {rhs}', params
 
 
-def get_query_cache_key(compiler):
-    """Generate a cache key from a SQLCompiler.
-
-    This cache key is specific to the SQL query and its context
-    (which database is used).  The same query in the same context
-    (= the same database) must generate the same cache key.
-
-    Args:
-        compiler (django.db.models.sql.compiler.SQLCompiler): A SQLCompiler
-            that will generate the SQL query.
-
-    Returns:
-        int: The cache key.
-
-    """
-    sql, params = compiler.as_sql()
-    cache_key = f'{compiler.using}:{sql}:{[str(p) for p in params]}'
-    return sha1(cache_key.encode('utf-8')).hexdigest()
-
-
-def get_table_cache_key(db_alias, table):
-    """Generates a cache key from a SQL table.
-
-    Args:
-        db_alias (str): The alias of the used database.
-        table (str): The name of the SQL table.
-
-    Returns:
-        int: The cache key.
-
-    """
-    cache_key = f'{db_alias}:{table}'
-    return sha1(cache_key.encode('utf-8')).hexdigest()
-
-
-def get_raw_cache_client(backend='default'):
-    """Get a raw Redis cache client connection.
-
-    Args:
-        backend (str): The backend to attempt connection against.
-
-    Raises:
-        Exception: The exception is raised/caught if any generic exception
-            is encountered during the connection attempt.
-
-    Returns:
-        redis.client.StrictRedis: The raw Redis client connection.
-            If an exception is encountered, return None.
-
-    """
-    from django_redis import get_redis_connection
-    try:
-        return get_redis_connection(backend)
-    except Exception as e:
-        logger.error(e)
-        return None
-
-
-def get_short_url(url):
-    is_short = False
-    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
-        try:
-            if not is_short:
-                shortener = Shortener(shortener)
-                response = shortener.short(url)
-                if response != 'Error' and 'http' in response:
-                    url = response
-                is_short = True
-        except Exception:
-            pass
-    return url
-
-
 def ellipses(data, _len=75):
     return (data[:_len] + '..') if len(data) > _len else data
-
-
-def add_contributors(repo_data):
-    """Add contributor data to repository data dictionary.
-
-    Args:
-        repo_data (dict): The repository data dictionary to be updated.
-
-    Returns:
-        dict: The updated repository data dictionary.
-
-    """
-    if repo_data.get('fork', False):
-        return repo_data
-
-    params = {}
-    url = repo_data['contributors_url']
-    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-
-    if response.status_code in [204, 404] :  # no content
-        return repo_data
-
-    response_data = response.json()
-    rate_limited = (isinstance(response_data, dict) and 'documentation_url' in response_data.keys())
-    if rate_limited:
-        # retry after rate limit
-        time.sleep(60)
-        return add_contributors(repo_data)
-
-    # no need for retry
-    repo_data['contributors'] = response_data
-    return repo_data
 
 
 def setup_lang(request, user):
@@ -204,28 +98,28 @@ def sync_profile(handle, user=None, hide_profile=True, delay_okay=False):
 def actually_sync_profile(handle, user=None, hide_profile=True):
     from dashboard.models import Profile
     handle = handle.strip().replace('@', '').lower()
-    # data = get_user(handle, scoped=True)
     if user and hasattr(user, 'profile'):
         try:
             access_token = user.social_auth.filter(provider='github').latest('pk').access_token
-            data = get_user(handle, '', scoped=True, auth=(handle, access_token))
+            data = get_user(handle, token=access_token)
 
             user = User.objects.get(username__iexact=handle)
-            if 'login' in data:
+            if data and data.login:
                 profile = user.profile
-                user.username = data['login']
+                user.username = data.login
                 user.save()
-                profile.handle = data['login']
+                profile.handle = data.login
                 profile.email = user.email
                 profile.save()
 
-        except UserSocialAuth.DoesNotExist:
-            pass
+        except Exception as e:
+            logger.error(e)
+            return None
     else:
         data = get_user(handle)
 
     email = ''
-    is_error = 'name' not in data.keys()
+    is_error = not hasattr(data, 'name')
     if is_error:
         print("- error main")
         logger.warning(f'Failed to fetch github username {handle}', exc_info=True, extra={'handle': handle})
@@ -250,17 +144,16 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         latest_obj = profile.user.social_auth.filter(provider='github').latest('pk') if profile.user else None
         access_token = latest_obj.access_token if latest_obj else None
-        orgs = get_user(handle, '/orgs', auth=(profile.handle, access_token)) if access_token else []
-        profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
+        orgs = get_user(handle, token=access_token).get_orgs()
+        profile.organizations = [ele.login for ele in orgs if ele] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
-        for repo in profile.repos_data_lite:
-            if type(repo) == dict:
-                language = repo.get('language') if repo.get('language') else ''
-                _keywords = language.split(',')
-                for key in _keywords:
-                    if key != '' and key not in keywords:
-                        keywords.append(key)
+        for repo in get_user(handle).get_repos():
+            language = repo.language or ''
+            _keywords = language.split(',')
+            for key in _keywords:
+                if key != '' and key not in keywords:
+                    keywords.append(key)
 
         profile.keywords = keywords
         profile.save()
@@ -331,47 +224,6 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
         _, content = mailbox.fetch(str(fetched_id), '(RFC822)')
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
-
-
-def itermerge(gen_a, gen_b, key):
-    a = None
-    b = None
-
-    # yield items in order until first iterator is emptied
-    try:
-        while True:
-            if a is None:
-                a = gen_a.next()
-
-            if b is None:
-                b = gen_b.next()
-
-            if key(a) <= key(b):
-                yield a
-                a = None
-            else:
-                yield b
-                b = None
-    except StopIteration:
-        # yield last item to be pulled from non-empty iterator
-        if a is not None:
-            yield a
-
-        if b is not None:
-            yield b
-
-    # flush remaining items in non-empty iterator
-    try:
-        for a in gen_a:
-            yield a
-    except StopIteration:
-        pass
-
-    try:
-        for b in gen_b:
-            yield b
-    except StopIteration:
-        pass
 
 
 def handle_location_request(request):

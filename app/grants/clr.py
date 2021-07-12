@@ -18,20 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import copy
-import datetime as dt
-import json
-import math
-import time
-from itertools import combinations
 
-from django.conf import settings
 from django.utils import timezone
 
 import numpy as np
-import pytz
 from grants.models import Contribution, Grant, GrantCollection
-from marketing.models import Stat
-from perftools.models import JSONStore
 
 CLR_PERCENTAGE_DISTRIBUTED = 0
 

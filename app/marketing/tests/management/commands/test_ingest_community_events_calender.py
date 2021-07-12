@@ -18,13 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import os
-from datetime import datetime, timedelta
 from unittest import mock
-from unittest.mock import patch
 
-from django.utils import timezone
-
-from icalendar import Calendar, Event
+from icalendar import Calendar
 from marketing.management.commands.ingest_community_events_calender import Command
 from marketing.models import UpcomingDate
 from test_plus.test import TestCase

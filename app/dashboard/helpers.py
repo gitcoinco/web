@@ -21,10 +21,8 @@ import logging
 import os
 import pprint
 from decimal import Decimal
-from enum import Enum
 
 from django.conf import settings
-from django.conf.urls.static import static
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
@@ -42,8 +40,8 @@ from dashboard.notifications import (
     notify_of_lowball_bounty,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_gh_issue_details, get_url_dict, org_name
+from economy.utils import convert_amount
+from git.utils import get_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -188,7 +186,6 @@ def issue_details(request):
     duplicates = request.GET.get('duplicates', False)
     network = request.GET.get('network', 'mainnet')
 
-
     if hackathon_slug:
         sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
         org_issue = org_name(url).lower()
@@ -220,7 +217,7 @@ def issue_details(request):
 
     try:
         if url_dict:
-            response = get_gh_issue_details(token=token, **url_dict)
+            response = get_issue_details(token=token, **url_dict)
         else:
             response['message'] = 'could not parse Github url'
     except Exception as e:
@@ -243,39 +240,6 @@ def normalize_url(url):
     if url[-1] == '/':
         url = url[0:-1]
     return url
-
-
-def sync_bounty_with_web3(bounty_contract, url):
-    """Sync the Bounty with Web3.
-
-    Args:
-        bounty_contract (Web3): The Web3 contract instance.
-        url (str): The bounty URL.
-
-    Returns:
-        tuple: A tuple of bounty change data.
-        tuple[0] (bool): Whether or not the Bounty changed.
-        tuple[1] (dashboard.models.Bounty): The first old bounty object.
-        tuple[2] (dashboard.models.Bounty): The new Bounty object.
-
-    """
-    bountydetails = bounty_contract.call().bountydetails(url)
-    return process_bounty_details(bountydetails)
-
-
-class BountyStage(Enum):
-    """Python enum class that matches up with the Standard Bounties BountyStage enum.
-
-    Attributes:
-        Draft (int): Bounty is a draft.
-        Active (int): Bounty is active.
-        Dead (int): Bounty is dead.
-
-    """
-
-    Draft = 0
-    Active = 1
-    Dead = 2
 
 
 class UnsupportedSchemaException(Exception):
@@ -601,7 +565,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     new_bounty.fetch_issue_item()
     try:
         issue_kwargs = get_url_dict(new_bounty.github_url)
-        new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+        new_bounty.github_issue_details = get_issue_details(**issue_kwargs)
 
     except Exception as e:
         logger.error(e)

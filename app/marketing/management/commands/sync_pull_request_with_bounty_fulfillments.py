@@ -23,7 +23,7 @@ from django.utils import timezone
 
 from dashboard.models import BountyFulfillment
 from dashboard.utils import record_funder_inaction_on_fulfillment
-from git.utils import get_gh_issue_state, get_interested_actions, post_issue_comment
+from git.utils import get_interested_actions, get_issue_state, post_issue_comment
 from marketing.mails import funder_payout_reminder
 
 logger = logging.getLogger('')
@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
     def _check_if_bounty_is_closed(self, bounty):
         try:
-            closed_issue = get_gh_issue_state(
+            closed_issue = get_issue_state(
                 bounty.github_org_name, bounty.github_repo_name, bounty.github_issue_number
             )
         except Exception as e:

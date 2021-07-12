@@ -19,10 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import timedelta
 from unittest import mock
 
-from django.conf import settings
 from django.utils import timezone
 
 import marketing
@@ -80,7 +79,7 @@ class TestSyncPullRequestWithBountyFulfillments(TestCase):
     def test_handle_simple(self, mocked_requests):
         """Test command sync keywords."""
         start_time = timezone.now()
-        mock.patch('marketing.management.commands.sync_pull_request_with_bounty_fulfillments.get_gh_issue_state', lambda x, y, z: 'closed').start()
+        mock.patch('marketing.management.commands.sync_pull_request_with_bounty_fulfillments.get_issue_state', lambda x, y, z: 'closed').start()
         mock.patch('marketing.management.commands.sync_pull_request_with_bounty_fulfillments.get_interested_actions', lambda x, y: GitHubTestAPI().get_interested_actions()).start()
 
         marketing.management.commands.sync_pull_request_with_bounty_fulfillments.Command().handle(live=False)

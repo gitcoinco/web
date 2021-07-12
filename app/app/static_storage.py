@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """Define the custom static storage to surpress bad URL references."""
-import os
 from datetime import datetime
-from os.path import basename
-from secrets import token_hex
 
 from django.conf import settings
 

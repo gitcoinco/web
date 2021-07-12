@@ -17,14 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import os
 from datetime import timedelta
-from unittest import mock
 
 from django.utils import timezone
 
 from dashboard.models import Bounty, BountyFulfillment, Profile
-from dashboard.sync.binance import get_binance_txn_status, sync_binance_payout
 from test_plus.test import TestCase
 
 
@@ -67,7 +64,7 @@ class BinanceSyncTest(TestCase):
         )
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
-            bounty=bounty,
+            bounty=self.bounty,
             payout_tx_id='0xc32f5ad8a1dec9e0ae67f0f55f772ea752e7e032b62b1cdaf8d392e12c66e919'
         )
 

@@ -21,7 +21,6 @@ import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.utils import timezone
 

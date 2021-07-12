@@ -26,7 +26,6 @@ from app.utils import get_profiles_from_text
 from dashboard.models import Activity
 from inbox.utils import (
     comment_notification, mentioned_users_notification, send_mention_notification_to_users, send_notification_to_user,
-    send_notification_to_user_from_gitcoinbot,
 )
 from townsquare.models import Comment, Like
 
