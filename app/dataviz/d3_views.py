@@ -752,7 +752,7 @@ def mesh_network_viz(request, ):
     _type = request.GET.get('type', 'all')
     theme = request.GET.get('theme', 'light')
     show_labels = request.GET.get('show_labels', '0')
-    trim_pct = int(request.GET.get('trim_pct', '0')) - 1
+    trim_pct = int(request.GET.get('trim_pct', '0'))
 
     since = f"{year}/{month}/{day}"
 
@@ -769,7 +769,8 @@ def mesh_network_viz(request, ):
         earnings = earnings.filter(source_type=mapping[_type])
     earnings = earnings.values_list('from_profile', 'to_profile')
     if trim_pct:
-        earnings = earnings.extra(where=[f'MOD(id, 100) > {trim_pct}'])
+        trim_pct_less_one = trim_pct - 1
+        earnings = earnings.extra(where=[f'MOD(id, 100) > {trim_pct_less_one}'])
     for obj in earnings:
         handle1 = obj[0]
         handle2 = obj[1]
