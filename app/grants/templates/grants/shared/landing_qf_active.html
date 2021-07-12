@@ -2,7 +2,6 @@
 <div class="container bg-white">
 
   <!-- Trust banner -->
-
   <div v-if="{{trust_bonus}} && {{trust_bonus}} < 150" v-cloak class="alert alert-primary spacer-mt-4 border-1 border-primary">
     <i :class="'far font-weight-bold mr-4 mt-1 position-absolute cursor-pointer' + (!bannerCollapsed ? ' fa-minus' : ' fa-plus')" @click="toggleBannerCollapse" style="right: 0px; z-index: 2"></i>
     <div class="row">
@@ -13,11 +12,13 @@
         <h6 class="gc-font-base mt-1">Maximize Your Impact! Your current match is {{ trust_bonus }}%</h6>
         <span v-if="!bannerCollapsed" class="font-smaller-1 line-height-2">Verified users have up to 150% of their donation amount count towards the match fund algorithm. Unverified users — only 50%. Maximize your match by verifying with identity partners.</span>
         <div v-if="!bannerCollapsed" class="row spacer-mt-2 font-smaller-1 line-height-2">
-          <div class="col-12 col-lg-6 spacer-mt-2">
-            {% timezone "US/Mountain" %}
-              <a><i class="far fa-calendar-alt spacer-pr-2 text-primary"></i> Verify during {{ round_start_date|localtime|date:"F j" }} - {{ round_end_date|localtime|date:"F j" }}</a>
-            {% endtimezone %}
-          </div>
+          {% if round_active %}
+            <div class="col-12 col-lg-6 spacer-mt-2">
+              {% timezone "US/Mountain" %}
+                <a><i class="far fa-calendar-alt spacer-pr-2 text-primary"></i> Verify during {{ round_start_date|localtime|date:"F j" }} - {{ round_end_date|localtime|date:"F j" }}</a>
+              {% endtimezone %}
+            </div>
+          {% endif %}
           <div class="col-12 col-lg-6 spacer-mt-2">
             <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2 text-primary"></i> Why this matters</span>
           </div>
