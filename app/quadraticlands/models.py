@@ -18,11 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.contrib.postgres.fields import JSONField
+import uuid
+
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import get_upload_filename
+from dashboard.models import Profile
+from django_extensions.db.fields import AutoSlugField
+from economy.models import SuperModel
 
 
 class Uint256Field(models.DecimalField):
@@ -198,3 +205,288 @@ class SchwagCoupon(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.discount_type}, {self.coupon_code}, {self.profile}'
+
+def create_game_helper(handle, title):
+    game = Game.objects.create(
+        _type = 'diplomacy',
+        title = title,
+        )
+    player = GamePlayer.objects.create(
+        game = game,
+        profile = Profile.objects.get(handle=handle),
+        active = True,
+        admin = True
+        )
+    game.players.add(player)
+
+    GameFeed.objects.create(
+            game=game,
+            player=player,
+            data={
+                'action': 'created the game',
+            },
+            )
+    game.add_player(player.profile.handle)
+    return game
+
+class Game(SuperModel):
+
+    title = models.CharField(max_length=500, blank=True)
+    _type = models.CharField(
+        default='',
+        db_index=True,
+        max_length=255,
+    )
+    uuid=models.UUIDField(default=uuid.uuid4, unique=True)
+    slug = AutoSlugField(populate_from='title')
+
+    def players_text(self):
+        return ", ".join([player.profile.handle for player in self.players.all()])
+
+    def get_absolute_url(self):
+        return f'/quadraticlands/mission/diplomacy/{self.uuid}/{self.slug}'
+    
+    @property
+    def url(self):
+        return self.get_absolute_url()
+
+    @property
+    def relative_url(self):
+        return self.get_absolute_url()[1:]
+
+    @property
+    def gtc_used(self):
+        return self.current_votes_total
+
+    @property
+    def reverse_feed(self):
+        return self.feed.all().order_by('-created_on')
+
+    @property
+    def sybil_created(self):
+        amount = self.current_votes_total * 0.007 # estimate of the GTC to trust bonus ratio
+        return amount
+
+    def is_active_player(self, handle):
+        return self.active_players.filter(profile__handle=handle).exists()
+
+    def add_player(self, handle):
+        profile = Profile.objects.get(handle=handle)
+        if not self.is_active_player(handle):
+            GamePlayer.objects.create(profile=profile, active=True, game=self)
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'joined',
+            },
+            )
+
+    def remove_player(self, handle):
+        player = self.players.filter(profile__handle=handle).first()
+        player.active = False
+        player.save()
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'left the game',
+            },
+            )
+
+        if player.admin:
+            player.admin = False 
+            player.save()
+
+            # promote someone new to admin
+            self.promote_admin()
+
+    def promote_admin(self):
+        if not self.active_players.exists():
+            return False
+
+        player = self.active_players.first()
+        return GameFeed.objects.create(
+            game=self,
+            player=player,
+            data={
+                'action': 'was promoted to admin',
+            },
+            )
+
+    def make_move(self, handle, package):
+
+        gf = GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'vouched',
+                'package': package,
+            },
+            )
+        for player in self.active_players.all():
+            player.save()
+        return gf
+
+    def chat(self, handle, chat):
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'chatted',
+                'chat': chat,
+            },
+            )
+    
+    def leave_game(self, handle):
+
+        return GameFeed.objects.create(
+            game=self,
+            player=self.players.get(profile__handle=handle),
+            data={
+                'action': 'left the game',
+            },
+            )
+
+    def __str__(self):
+        return self.title
+
+
+    @property
+    def admin(self):
+        return self.players.filter(admin=True).first()
+
+    @property
+    def current_votes_total(self):
+        return sum(player.tokens_in for player in self.active_players.all())
+
+    @property
+    def active_players(self):
+        return self.players.filter(active=True)
+
+    @property
+    def active_players_by_rank(self):
+        return self.active_players.order_by('-cached_data__tokens_in')
+
+
+@receiver(pre_save, sender=Game, dispatch_uid="psave_game")
+def psave_game(sender, instance, **kwargs):
+    pass
+
+class GameFeed(SuperModel):
+
+    game = models.ForeignKey(
+        'quadraticlands.Game',
+        related_name='feed',
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_('Link to Game')
+    )
+    player = models.ForeignKey(
+        'quadraticlands.GamePlayer',
+        related_name='game_feed',
+        on_delete=models.CASCADE,
+        help_text=_('The game feed update creators\'s profile.'),
+        null=True,
+    )
+    action = models.CharField(
+        default='',
+        max_length=255,
+        blank=True,
+        db_index=True,
+    )
+    data = JSONField(default=dict)
+
+
+    def __str__(self):
+        return f"{self.game}, {self.player.profile.handle}: {self.data}"
+
+    def votes(self):
+        if self.data['action'] != 'vouched':
+            return []
+        return self.data.get('package',{}).get('moves',{}).get('votes',[])
+
+@receiver(pre_save, sender=GameFeed, dispatch_uid="psave_gf")
+def psave_gf(sender, instance, **kwargs):
+    instance.action = instance.data['action']
+
+class GamePlayer(SuperModel):
+
+    game = models.ForeignKey(
+        'quadraticlands.Game',
+        related_name='players',
+        on_delete=models.CASCADE,
+        help_text=_('The Game')
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='players',
+        on_delete=models.CASCADE,
+        help_text=_('The player of the game.'),
+    )
+    admin = models.BooleanField(
+        default=False
+    )
+    active = models.BooleanField(
+        default=False
+    )
+    cached_data = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.game} / {self.profile.handle} / Admin: {self.admin} / Active: {self.active}"
+
+    @property
+    def last_action(self):
+        return self.game.feed.filter(player=self).order_by('-created_on').first()
+
+    @property
+    def last_move(self):
+        return self.game.feed.filter(player=self, action='vouched').order_by('-created_on').first()
+
+    def votes(self):
+        if self.data['action'] != 'vouched':
+            return []
+        return self.data.get('package',{}).get('moves',{}).get('votes',[])
+
+
+    @property
+    def votes_in(self):
+        return self.cached_data['votes_in'] 
+
+    @property
+    def tokens_in(self):
+        return self.cached_data['tokens_in'] 
+
+    @property
+    def tokens_out(self):
+        return self.cached_data['tokens_out'] 
+
+    def compute_votes_in(self):
+        return_dict = {
+
+        }
+        for player in self.game.active_players:
+            return_dict[player.profile.handle] = 0
+            last_move = player.last_move
+            if last_move:
+                for vote in last_move.votes():
+                    if vote['username'] == self.profile.handle:
+                        return_dict[player.profile.handle] += float(vote['value'])
+        return return_dict
+
+    def compute_tokens_in(self):
+        return sum(ele for key, ele in self.votes_in.items())
+
+    def compute_tokens_out(self):
+        if not self.last_move:
+            return 0
+        return sum(float(ele['value']) for ele in self.last_move.votes())
+
+@receiver(pre_save, sender=GamePlayer, dispatch_uid="psave_gp")
+def psave_gp(sender, instance, **kwargs):
+    instance.cached_data['votes_in'] = instance.compute_votes_in()
+    instance.cached_data['tokens_out'] = instance.compute_tokens_out()
+    instance.cached_data['tokens_in'] = instance.compute_tokens_in()

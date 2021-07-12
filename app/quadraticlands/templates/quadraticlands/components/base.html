@@ -63,5 +63,15 @@
 
 {% block 'scripts' %}
 {% endblock %}
-
+  <script>
+  {% block messages %}
+    {% if messages %}
+      document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+          flashMessage('{{ message|capfirst }}');
+        {% endfor %}
+      });
+    {% endif %}
+  {% endblock messages %}
+  </script>
 </html>

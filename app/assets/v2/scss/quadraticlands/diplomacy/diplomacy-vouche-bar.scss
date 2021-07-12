@@ -1,0 +1,31 @@
+.diplomacy-vouche-bar {
+  margin: auto;
+  margin: 0em 1.5em;
+  margin-top: 2em;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: var(--space_pink);
+
+  .col {
+    margin: 1em 2em;
+
+    .btn {
+      margin: 0px;
+    }
+
+    p {
+      color: var(--white);
+      margin: 0;
+      padding: 0;
+    }
+
+    div {
+      color: var(--aqua);
+    }
+  }
+}
