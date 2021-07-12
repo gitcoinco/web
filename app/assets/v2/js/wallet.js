@@ -3,8 +3,8 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
-if (typeof (web3) != 'undefined') {
-  var web3 =  web3;
+if (!Object.hasOwnProperty.call(window, 'web3')) {
+  window.web3 = null;
 }
 let web3Modal;
 let provider;
