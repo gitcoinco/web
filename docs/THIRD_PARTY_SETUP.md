@@ -160,3 +160,70 @@ Once you have access to your project secrets, you can enable Sentry error tracki
 ```shell
 SENTRY_DSN=xxx
 ```
+
+## [Verifiable Credentials](https://www.w3.org/TR/vc-data-model/) with DIDKit
+
+You can use [DIDKit](https://github.com/spruceid/didkit) to generate a private
+key to sign the verifiable credentials.
+
+It can be installed with `cargo`, the package manager for [Rust](https://www.rust-lang.org/),
+easily obtained with the [`rustup`](https://rustup.rs/) installer.
+
+```shell
+$ cargo install didkit-cli
+```
+
+The subcommand `generate-ed25519-key` will output a Ed25519 key in JWK format
+that you can then add to your `.env`.
+
+```shell
+$ didkit generate-ed25519-key
+{"kty":"OKP","crv":"Ed25519","x":"xyzw","d":"abcd"}
+
+DIDKIT_JWK_KEY={"kty":"OKP","crv":"Ed25519","x":"xyzw","d":"abcd"}
+```
+
+As the issuer, you will have to decide on a [DID](https://www.w3.org/TR/did-core/)
+method to use to create your DID and identify the signer.
+
+One of them is [`did-web`](https://w3c-ccg.github.io/did-method-web/) which works
+by hosting your DID document, a file called `did.json`, under the specified domain
+and path. For example, the DID `did:web:domain.tld:subpath` would look for the
+file under `domain.tld/subpath/.well-known/did.json`, and `did:web:domain.tld`
+would look at `domain.tld/.well-known/did.json`.
+
+```shell
+POPP_VC_ISSUER=did:web:domain.tld
+```
+
+If you opt to use a `did-web` DID, the `did.json` file should include the public
+information of the key used to sign the credentials like in the example that
+follows.
+
+```json
+{
+  "@context": "https://www.w3.org/ns/did/v1",
+  "id": "did:web:domain.tld",
+  "verificationMethod": [{
+    "id": "did:web:domain.tld#default",
+    "type": "Ed25519VerificationKey2018",
+    "controller": "did:web:domain.tld",
+    "publicKeyJwk": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "x": "xyzw"
+    }
+  }],
+  "authentication": ["did:web:domain.tld#default"],
+  "assertionMethod": ["did:web:domain.tld#default"]
+}
+```
+
+The last environment variable to be used with the VC integrations is `POPP_VC_VERIFIER`
+which is simply what the `Verify` button will link to when the user clicks on it.
+It should point to a tool that helps the user verify and/or understand the VC
+that was issued to them.
+
+```shell
+POPP_VC_VERIFIER=https://example.tld/popp-tools
+```

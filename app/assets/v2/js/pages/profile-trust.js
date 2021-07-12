@@ -2246,4 +2246,174 @@ $(document).ready(function() {
 
     });
   });
+
+  const passportCredential = (() => {
+
+    const _3BOX_SPACE = 'gitcoin';
+    const _3BOX_FIELD = 'popp';
+
+    let ethAddress;
+    let ethProvider;
+    let credential;
+    let verifier;
+
+    const params = () => ({
+      'network': document.web3network,
+      'coinbase': ethAddress
+    });
+
+    const downloadLink = () => {
+      const str = JSON.stringify(credential, null, 2);
+      const encoded = encodeURIComponent(str);
+
+      return `data:application/json;charset=utf-8,${encoded}`;
+    };
+
+    const baseContent = () => {
+      const formatted = JSON.stringify(credential, null, 2);
+      const { issuer, credentialSubject, passport } = credential;
+
+      const value = passport['personhood_score'];
+      // substring(12) removes 'did:pkh:eth:'
+      const address = credentialSubject['id'].substring(12);
+
+      const style = 'style="margin: 0.5rem;width: 100%;"';
+      const href = downloadLink();
+
+      const verifiableCredential = '<a href="https://www.w3.org/TR/vc-data-model/" target="_blank">W3C Verifiable Credential</a>';
+      const did = '<a href="https://www.w3.org/TR/did-core/" target="_blank">DID</a>';
+
+      return `
+        <p>This is a ${verifiableCredential} that contains your trust bonus signed by the ${did} <strong>${issuer}</strong>.</p>
+        <p>Your trust bonus score is <strong>${value}</strong> for the Ethereum address <strong>${address}</strong>.</p>
+        <textarea style="width: 100%;margin: 0 0 1rem 0;padding: 1rem;" rows="4" class="text-monospace" readonly>${formatted}</textarea>
+        <div style="display: flex;flex-direction: column;">
+          <div style="display: flex;">
+            <button ${style} type="button" class="btn btn-info" id="vc-copy">Copy</button>
+            <a ${style} href="${verifier}" target="_blank" class="btn btn-success">Verify</a>
+            <a ${style} href="${href}" class="btn btn-link" download="gitcoin-popp-vc.json"">Download</a>
+          </div>
+          <button ${style} type="button" class="btn btn-primary" id="vc-3box">Save to 3Box</button>
+        </div>
+      `;
+    };
+
+    const messages = {
+      auth: [
+        'Authenticate with 3Box',
+        'Authenticating with 3Box',
+        'Authenticated with 3Box'
+      ],
+      storage: [
+        `Open '${_3BOX_SPACE}' storage space on 3Box`,
+        `Opening '${_3BOX_SPACE}' storage space on 3Box`,
+        `Opened '${_3BOX_SPACE}' storage space on 3Box`
+      ],
+      variable: [
+        `Save passport credential as '${_3BOX_FIELD}'`,
+        `Saving passport credential as '${_3BOX_FIELD}'`,
+        `Saved passport credential as '${_3BOX_FIELD}'`
+      ]
+    };
+
+    const getMessage = (source, state) => {
+      if (state === true) {
+        return '<s>' + source[2] + '</s> ✓';
+      } else if (state === false) {
+        return '<strong>' + source[1] + '</strong>';
+      }
+      return '<em>' + source[0] + '</em>';
+    };
+
+    const get3BoxContent = (auth, storage, variable) => {
+      let list = '<ul>';
+
+      list += '<li>';
+      list += getMessage(messages.auth, auth);
+      list += '</li>';
+
+      list += '<li>';
+      list += getMessage(messages.storage, storage);
+      list += '</li>';
+
+      list += '<li>';
+      list += getMessage(messages.variable, variable);
+      list += '</li>';
+
+      list += '</ul>';
+
+      return `
+        <div>
+          <p><strong>3Box integration:</strong> you can save a POPP credential to 3Box.</p>
+          ${list}
+        </div>
+      `;
+    };
+
+    const vcPassport = () => {
+      if (document.web3network != 'rinkeby' && document.web3network != 'mainnet') {
+        _alert('Please connect your web3 wallet to mainnet + unlock it', 'danger', 1000);
+        return;
+      }
+
+      const accounts = web3.eth.getAccounts();
+
+      $.when(accounts).then((result) => {
+        ethAddress = result[0];
+        ethProvider = web3.currentProvider;
+
+        $.get('/passport/verifiable-credential', params(), async function(response) {
+          let status = response['status'];
+
+          if (status == 'error') {
+            _alert(response['msg'], 'danger', 5000);
+            return;
+          }
+
+          credential = response.vc;
+          verifier = response.verifier;
+
+          $('.modal-body').html(baseContent());
+        });
+      });
+    };
+
+    const vc3Box = async() => {
+      const modal = $('.modal-body');
+      const base = baseContent();
+
+      modal.html(`${base} <hr /> ${get3BoxContent(false)}`);
+
+      const storageBox = await Box.openBox(ethAddress, ethProvider);
+
+      modal.html(`${base} <hr /> ${get3BoxContent(true, false)}`);
+
+      const storageSpace = await storageBox.openSpace(_3BOX_SPACE);
+
+      await storageSpace.syncDone;
+
+      modal.html(`${base} <hr /> ${get3BoxContent(true, true, false)}`);
+
+      const json = JSON.stringify(credential);
+
+      await storageSpace.public.set(_3BOX_FIELD, json);
+
+      modal.html(`${base} <hr /> ${get3BoxContent(true, true, true)}`);
+
+      _alert('Your passport has been uploaded to 3Box', 'success', 5000);
+    };
+
+    const vcCopy = () => {
+      const str = JSON.stringify(credential, null, 2);
+
+      navigator.clipboard.writeText(str);
+    };
+
+    return { vcPassport, vc3Box, vcCopy };
+  })();
+
+  $(document).on('click', '#vc-passport', passportCredential.vcPassport);
+  $(document).on('click', '#vc-3box', passportCredential.vc3Box);
+  $(document).on('click', '#vc-copy', passportCredential.vcCopy);
+
 });
