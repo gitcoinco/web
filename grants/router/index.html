@@ -1976,6 +1976,11 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
 <p>If the argument is a tuple, the return value is the same object.
 <h3 id="grants.router.SubscriptionViewSet.queryset">queryset</h3></p>
 <p>Represent a lazy database lookup for a set of objects.
+<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3></p>
+<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<p>Handle serializing the Subscription object.
 <h3 id="grants.router.SubscriptionViewSet.get_queryset">get_queryset</h3></p>
 <pre><code class="python">SubscriptionViewSet.get_queryset(self)
 </code></pre>
@@ -1985,13 +1990,8 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
     * Add filter functionality.</p>
 <p>Returns:
     QuerySet: The Subscription queryset.</p>
-<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3>
+<h2 id="grants.router.GrantViewSet">GrantViewSet</h2>
 
-<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
-</code></pre>
-
-<p>Handle serializing the Subscription object.
-<h2 id="grants.router.GrantViewSet">GrantViewSet</h2></p>
 <pre><code class="python">GrantViewSet(self, **kwargs)
 </code></pre>
 
@@ -2017,12 +2017,19 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
     * Add additional filters.</p>
 <p>Returns:
     QuerySet: The Grant queryset.</p>
+<h3 id="grants.router.GrantViewSet.clr_round_metadata">clr_round_metadata</h3>
+
+<pre><code class="python">GrantViewSet.clr_round_metadata(self, request)
+</code></pre>
+
+<p>Generate CLR Round metadata for Grants
+URL: api/v0.1/grants/get_clr_round_metadata/</p>
 <h3 id="grants.router.GrantViewSet.contributions_rec_report">contributions_rec_report</h3>
 
 <pre><code class="python">GrantViewSet.contributions_rec_report(self, request)
 </code></pre>
 
-<p>Genrate Grantee Report for an Grant
+<p>Generate Grantee Report for an Grant
 URL: api/v0.1/grants/contributions_rec_report/?id=<grant-id>&amp;format=json</p>
 <h3 id="grants.router.GrantViewSet.contributions_sent_report">contributions_sent_report</h3>
 
