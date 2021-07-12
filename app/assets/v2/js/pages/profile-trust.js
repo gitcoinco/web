@@ -2141,7 +2141,7 @@ Vue.component('qd-modal', {
       }, 1000);
     },
     goToVerification() {
-      window.open('/quadraticlands/mission/diplomacy', '_blank')
+      window.open('/quadraticlands/mission/diplomacy', '_blank');
       this.dismissVerification();
     }
   }
