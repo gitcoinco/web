@@ -2937,6 +2937,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
         context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())
+        context['round_active'] = round_active
 
         # detail available services
         services = [
