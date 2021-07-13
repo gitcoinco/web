@@ -5,7 +5,7 @@ import random
 
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
@@ -250,15 +250,12 @@ def generate_leaderboard(max_entries=25, round_number=1):
     kudos_to_show_per_leaderboard_entry = 5
     leaderboard = {}
 
-    #pull totals for each qpa
-    for qpa in QuestPointAward.objects.filter(round_number=round_number):
-        key = qpa.profile.handle
-        if key not in leaderboard.keys():
-            leaderboard[key] = 0
-        leaderboard[key] += qpa.value
-    leaderboard = sorted(leaderboard.items(), key=lambda x: x[1], reverse=True)
+    # groupby and sum the values (by profile)
+    leaderboard = QuestPointAward.objects.filter(round_number=round_number)\
+        .values('profile__handle').annotate(sum=Sum('value'))\
+        .order_by('-sum')[:max_entries]
 
-    # add kudos to each leadervoard item
+    # add kudos to each leaderboard item
     return_leaderboard = []
     reward_kudos = {
         1: 621,
@@ -270,15 +267,15 @@ def generate_leaderboard(max_entries=25, round_number=1):
     counter = 0
     for ele in leaderboard:
         counter += 1
-        btr = BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele[0]).order_by('-created_on')
+        btr = BulkTransferRedemption.objects.filter(coupon__tag='quest',redeemed_by__handle=ele['profile__handle']).order_by('-created_on')
         kudii = list(set([(_ele.coupon.token.img_url, _ele.coupon.token.humanized_name) for _ele in btr]))[:kudos_to_show_per_leaderboard_entry]
-        display_pts = int(ele[1]) if not ele[1] % 1 else round(ele[1],1)
+        display_pts = int(ele['sum']) if not ele['sum'] % 1 else round(ele['sum'],1)
         reward_kudos_pk = reward_kudos.get(counter)
         reward_kudoses = Token.objects.get(pk=reward_kudos_pk) if reward_kudos_pk else None
         reward_kudos_url = [None, None]
         if reward_kudoses:
             reward_kudos_url = [reward_kudoses.preview_img_url, reward_kudoses.humanized_name]
-        this_ele = [ele[0], display_pts, kudii, reward_kudos_url, counter]
+        this_ele = [ele['profile__handle'], display_pts, kudii, reward_kudos_url, counter]
         return_leaderboard.append(this_ele)
 
     # return values
@@ -293,6 +290,5 @@ def generate_leaderboard(max_entries=25, round_number=1):
         leaderboard_hero[0] = leaderboard_hero[1]
         leaderboard_hero[1] = tmp
         leaderboard_hero = leaderboard_hero[:3]
-        
-    return_leaderboard = return_leaderboard[:max_entries]
+
     return return_leaderboard, leaderboard_hero

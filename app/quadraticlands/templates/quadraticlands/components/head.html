@@ -78,6 +78,22 @@
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-tx-pending.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/dashboard/content-tx-error.scss" %} />
 
+  /* quadratic-diplomacy */
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-roomlist.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-create-room.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-chat-room.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-delete-room.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-leave-room.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-room-members.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-vouche-bar.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-roomlog.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-invite.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-member-admin.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/diplomacy/diplomacy-room-navigation.scss" %} />
+  
+
+
+
   /* element overrides */
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quadraticlands/figure_introoutro.scss" %} />
 
@@ -90,4 +106,4 @@
 
 <link rel="icon" type="image/png" sizes="32x32" href='{% static "v2/images/quadraticlands/favicon.png" %}'>
 
-<title>Quadratic Lands</title>
+<title>{% if title %}{{title}}{%else%}Quadratic Lands{%endif%}</title>

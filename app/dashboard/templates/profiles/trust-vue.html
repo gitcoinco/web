@@ -75,6 +75,13 @@
           @modal-dismissed="hideModal()">
         </twitter-verify-modal>
 
+        <qd-modal
+          :service="serviceDict.qd"
+          :show-validation="visibleModal === 'qd-modal'"
+          validation-step="0"
+          @modal-dismissed="hideModal()">
+        </qd-modal>
+
         <poap-verify-modal
           :service="serviceDict.poap"
           :show-validation="visibleModal === 'poap-modal'"
@@ -138,9 +145,11 @@
               <h2>Increase Your Impact Up to 150%</h2>
               <span class="font-smaller-1 line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
               <div class="row spacer-mt-2 font-smaller-1 line-height-2">
-                <div class="col-12 col-lg-6 spacer-mt-2">
-                  <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[round_start_date]] - [[round_end_date]]</a>
-                </div>
+                {% if round_active %}
+                  <div class="col-12 col-lg-6 spacer-mt-2">
+                    <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[round_start_date]] - [[round_end_date]]</a>
+                  </div>
+                {% endif %}
                 <div class="col-12 col-lg-6 spacer-mt-2">
                   <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2"></i> Why this matters</span>
                 </div>
@@ -200,7 +209,10 @@
                 </div>
                 <div class="text-right" :class="(service.is_verified || service.status ? 'col-6' : 'col-12 col-lg-6')">
                   <button v-if="!service.is_verified" class="btn btn-primary w-100 w-md-auto px-md-3" @click="showModal(service.ref + '-modal')">Verify</button>
-                  <button v-else class="btn btn-outline-primary" @click="showModal(service.ref + '-modal')">Disconnect</button>
+                  <div v-else>
+                    <button v-if="!service.alt_is_verified_btn" :disabled="service.disable_disconnect" class="btn btn-outline-primary" @click="showModal(service.ref + '-modal')">Disconnect</button>
+                    <a v-else :class="'btn ' + service.alt_is_verified_btn.type" :href="service.alt_is_verified_btn.location" target="_blank">[[service.alt_is_verified_btn.text]]</a>
+                  </div>
                 </div>
               </div>
             </div>

@@ -18,8 +18,15 @@
   <h1>Governance Missions</h1>
 </section>
 
-<!-- upcoming missions-->
+<!-- governance missions-->
 <section class="mission">
+
+  {% if is_staff %}
+    <!-- Quadratic Diplomacy -->
+    {% with name="Quadratic Diplomacy" %}
+      {% include 'quadraticlands/mission/card.html' with svg="diplomacy.svg" message="available" playable="true" url="/quadraticlands/mission/diplomacy" %}
+    {% endwith %}
+  {% endif %}
 
   <!-- Discourse Forum -->
   {% with name="Discourse Forum" %}
@@ -35,7 +42,6 @@
   {% with name="Empower a Steward" %}
   {% include 'quadraticlands/mission/card.html' with svg="stewards.svg" message="available" playable="true" url="stewards" %}
   {% endwith %}
-
 
 </section>
 

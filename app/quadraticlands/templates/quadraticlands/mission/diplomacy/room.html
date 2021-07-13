@@ -1,0 +1,293 @@
+{% extends 'quadraticlands/components/base.html' %}
+{% load humanize static i18n %}
+
+{% block 'twittercard' %}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@gitcoin" />
+<meta name="twitter:title" content="{{game.title}} - Quadratic Diplomacy" />
+<meta name="twitter:description"
+  content="Join {{game.players_text}} playing Quadratic Diplomacy.  Bring your GTC" />
+<meta name="twitter:image" content="{% static "v2/images/quadraticlands/twitter/diplomacy.png" %}" />
+{% endblock %}
+
+{% block 'content' %}
+
+{% csrf_token %}
+
+<!-- Diplomacy Room Hero -->
+<section class="hero knightrider">
+
+  <div class="background">
+    <!-- svg needs preserveAspectRatio="xMidYMid slice" -->
+    {% include "quadraticlands/_inlinesvg/hero-diplomacy.svg" %}
+  </div>
+
+  <div class="content centered pushdown" data-kinetics-attraction data-kinetics-attraction-chance=".6"
+    data-kinetics-attraction-force="3" data-kinetics-attraction-grow="5">
+    <a href="/quadraticlands/mission/diplomacy"><h1><span>Quadratic Diplomacy</span></h1></a>
+    <h1 class="big">{{game.title}}</h1>
+  </div>
+
+</section>
+
+<!-- intro @kev add |floatformat:2 for noninter numbers -->
+<section class="introduction" style="margin-bottom: 3em;">
+	<p>This room was created {{game.created_on | naturaltime}} by @{{game.admin.profile.handle}} and has {{game.active_players.count}} members. It represents {{game.gtc_used}} of GTC and has created {{game.sybil_created}} PersonHoodScore of Sybil Resistence on Gitcoin.</p>
+</section>
+
+
+<!-- members headline -->
+<section id="members" class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
+  <h1>Members</h1>
+</section>
+
+<div>
+  <!-- members to vouche -->
+  <section class="diplomacy-room-members">
+
+    {% for player in game.active_players_by_rank.all %}
+    <div class="member-card">
+      <div class="front">
+        <figure><img src="/dynamic/avatar/{{player.profile.handle}}"></figure>
+        <div class="username">@{{player.profile.handle}}</div>
+        <div class="tokens_in">{{player.tokens_in}}</div>
+        <div class="tokens_out">{{player.tokens_out}}</div>
+        <input data-kinetics-attraction data-member {% if player.profile.handle == github_handle %}readonly{% endif %} data-member data-userid="{{player.profile.id}}" data-username="{{player.profile.handle}}" type="number" placeholder="0" value="">
+      </div>
+      <div class="back">
+        <div class="wrapper tokens_in">
+          {% for username, value in player.votes_in.items %}
+            <div>@{{username}}<span>{{value}}</span></div>
+          {% endfor %}
+        </div>
+        <div class="wrapper tokens_out">
+        {% if player.last_move %}
+          {% for vote in player.last_move.votes %}
+            <div>@{{vote.username}}<span>{{vote.value}}</span></div>
+          {% endfor %}
+          {% else %}
+            <div>No moves yet.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </section>
+</div>
+
+
+<div>
+<!-- diplomacy vouche bar -->
+<section class="diplomacy-vouche-bar">
+
+	<!-- @kev : this is the place where we do some calculations in jscript
+	and populate the divs via the #ids -->
+
+	<div class="col">
+		<p>Wallet <span id="diplomacy_wallet_address"></span></p>
+		<div id="diplomacy_wallet_balance"></div>
+	</div>
+
+	<div class="col">
+		<p>Used</p>
+		<div id="diplomacy_wallet_used" data-used="0">{{users_player.tokens_out}}</div>
+	</div>
+
+	<div class="col">
+		<p>Available</p>
+		<!-- @kev: will be calculated by current wallet - in database used -->
+		<div id="diplomacy_wallet_available"></div>
+	</div>
+
+	<div class="col">
+		<p>Use</p>
+		<div id="diplomacy_wallet_use">0</div>
+	</div>
+
+	<div class="col">
+		<a id="vouche_button" class="btn aqua" data-kinetics-attraction data-kinetics-attraction-grow="12">Vouch</a>
+	</div>
+
+</section>
+</div>
+
+<!-- diplomacy roomlog headline -->
+<section class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
+  <h1>Trollbox</h1>
+</section>
+
+
+<form method="POST" class="diplomacy-chat-form" action="{{game.url}}#chat">
+<section class="diplomacy-chat-room" id="chat">
+	<div class="wrapper">
+		<div id="chat_room_interface" class="input">
+			{% csrf_token %}
+				<input id="chat_room" name="chat" type="text" placeholder="Never gonna give you up">
+				<button data-kinetics-attraction data-kinetics-attraction-grow="12" id="send_chat_button">Send</button>
+		</div>
+	</div>
+</section>
+</form>
+
+
+
+<!-- diplomacy roomlog / trollbox -->
+<section id="trollbox" class="diplomacy-roomlog" style="margin-top:3em;">
+
+	<div class="entries">
+	{% for feed in game.reverse_feed.all %}
+
+	<div class="entry">
+
+		<span class="member">
+			<img src="/dynamic/avatar/{{feed.player.profile.handle}}">
+			<span class="username">{{feed.player.profile.handle}}</span>
+		</span>
+
+		<span class="action">
+
+			{{feed.data.action}}
+
+			{{feed.data.chat}}
+
+		</span>
+
+		{% for item in feed.votes %}
+			<span class="member">
+				<img src="/dynamic/avatar/{{item.username}}">
+				<span class="username">{{item.username}}</span>
+				<span class="tokens">{{item.value}}</span>
+			</span>	
+		{% endfor %}
+
+		<span class="time">{{feed.created_on | naturaltime}}</span>
+
+	</div>
+	{% endfor %}
+	</div>
+
+</section>
+
+
+<!-- ANCHOR AFTER TROLLBOX -->
+<section id="trollbox_after"></section>
+
+
+
+{% if is_admin %}
+
+<!-- administration headline -->
+<section class="introduction" style="margin-bottom: 3em;">
+  <h1>Administration</h1>
+</section>
+
+
+<!-- diplomacy invite -->
+<section class="diplomacy-invite">
+  <div class="wrapper">
+    <div class="info">
+    	Invite up to {{max_players}} members via this link.
+    	<span>( {{game.active_players | length}} slot{{game.active_players | pluralize}} used )</span>
+    </div>
+    <div class="input">
+      <input id="room_link" type="text" readonly value="{{base_url}}{{game.relative_url}}">
+      <button id="room_link_button" data-kinetics-attraction data-kinetics-attraction-grow="12">copy</button>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+
+
+{% if is_admin %}
+<section class="diplomacy-member-admin">
+
+	{% for player in game.active_players %}
+	<div class="member {% if player.admin %} self {% endif %}">
+		<img src="/dynamic/avatar/{{player.profile.handle}}">
+		<span class="username">@{{player.profile.handle}}</span>
+		<div class="action"><a class="btn pink" href="{{game.url}}?remove={{player.profile.handle}}">Remove</a></div>
+	</div>
+	{% endfor %}
+
+
+</section>
+{% endif %}
+
+
+
+<!-- danger zone -->
+<section class="introduction" style="margin-top: 6em; margin-bottom: 3em;">
+  <h1>Danger Zone</h1>
+</section>
+
+{% if is_admin %}
+
+<!-- danger zone admin : delete room -->
+<section class="diplomacy-delete-room">
+	<div class="wrapper">
+		<div class="info">
+			Enter your Roomname <span>{{game.title}}</span> to delete it
+		</div>
+		<div id="delete_room_interface" class="input">
+			<input id="delete_room" type="text" placeholder="Roomname" data-roomname="{{game.title}}">
+			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="delete_room_button" data-kinetics-attraction data-kinetics-attraction-grow="12">Delete Room</button>
+		</div>
+	</div>
+</section>
+
+{% else %}
+
+<!-- danger zone for members - but NOT the admin-->
+<section class="diplomacy-leave-room">
+	<div class="wrapper">
+		<div class="info">
+			Type <span>live long and prosper</span> to leave the Room
+		</div>
+		<div id="leave_room_interface" class="input">
+			<input id="leave_room" type="text" placeholder="leave Room" data-phrase="live long and prosper">
+			<button class="disabled" onclick="javascript:document.location='{{game.url}}?delete=t'" id="leave_room_button" data-kinetics-attraction data-kinetics-attraction-grow="12">Leave Room</button>
+		</div>
+	</div>
+</section>
+
+{% endif %}
+
+
+
+<!-- diplomacy room navigation ( arrows up and down ) -->
+<nav id="arrownav" class="diplomacy-room-navigation hide">
+	<a class="prev" href="#members">{% include "quadraticlands/_inlinesvg/arrow_up.svg" %}</a>
+	<a class="next" href="#trollbox_after">{% include "quadraticlands/_inlinesvg/arrow_down.svg" %}</a>
+</nav>
+
+
+
+
+
+{% endblock %}
+
+
+
+{% block 'scripts' %}
+
+
+<!-- force web3modal to popup automatically when no provider selected-->
+<script src="{% static "v2/js/quadraticlands/forceWallet.js" %}"></script>
+
+<!-- sfx library-->
+<script src="{% static "v2/js/lib/quadraticlands/tone.js" %}"></script>
+
+<!-- animated head + sfx hero -->
+<script src="{% static "v2/js/quadraticlands/mission/diplomacy/hero.js" %}"></script>
+
+<!-- room app -->
+<script src="{% static "v2/js/quadraticlands/mission/diplomacy/room.js" defer %}"></script>
+
+
+
+
+
+
+{% endblock %}
