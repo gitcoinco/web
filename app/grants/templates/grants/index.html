@@ -142,8 +142,9 @@ along with this program. If not, see
   {% bundle js file quill-image-extend-module %}
     <script>
       // use webpack to build ImageExtend
-      import { ImageExtend } from 'quill-image-extend-module';
+      import { QuillWatch, ImageExtend } from 'quill-image-extend-module';
       // set to global context
+      window.QuillWatch = QuillWatch;
       window.ImageExtend = ImageExtend;
     </script>
   {% endbundle %}

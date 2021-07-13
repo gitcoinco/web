@@ -1,9 +1,5 @@
 {% load static bundle %}
 
-<style type="text/css">
-  img{
-  }
-</style>
 <div class="Collage effect-parent">
 {% for url in urls %}
   {% if url.0 %}
@@ -18,6 +14,6 @@
 {% endbundle %}
 
 {% bundle merge_js file collage %}
-  <script src="jquery-collageplus.min.js" base-dir="/node_modules/jquery-collageplus/"></script>
+  <script src="jquery.collagePlus.min.js" base-dir="/node_modules/jquery-collageplus/"></script>
 {% endbundle %}
 
