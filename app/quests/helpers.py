@@ -5,7 +5,7 @@ import random
 
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Count, Sum 
+from django.db.models import Count, Sum
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
@@ -290,5 +290,5 @@ def generate_leaderboard(max_entries=25, round_number=1):
         leaderboard_hero[0] = leaderboard_hero[1]
         leaderboard_hero[1] = tmp
         leaderboard_hero = leaderboard_hero[:3]
-        
+
     return return_leaderboard, leaderboard_hero
