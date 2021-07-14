@@ -301,6 +301,7 @@ class Bounty(SuperModel):
         ('algorand_ext', 'Algorand Ext'),
         ('sia_ext', 'Sia Ext'),
         ('tezos_ext', 'Tezos Ext'),
+        ('casper_ext', 'Casper Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1423,6 +1424,7 @@ class BountyFulfillment(SuperModel):
         ('algorand_ext', 'algorand_ext'),
         ('sia_ext', 'sia_ext'),
         ('tezos_ext', 'tezos_ext'),
+        ('casper_ext', 'casper_ext'),
         ('manual', 'manual')
     ]
 
@@ -1443,6 +1445,7 @@ class BountyFulfillment(SuperModel):
         ('ALGORAND', 'ALGORAND'),
         ('SIA', 'SIA'),
         ('TEZOS', 'TEZOS'),
+        ('CASPER', 'CASPER'),
         ('OTHERS', 'OTHERS')
     ]
 
