@@ -1,7 +1,7 @@
 bs4
 ccxt
 cryptocompare==0.6
-cryptography==2.3
+cryptography==3.2
 celery==4.4.0
 django-celery-beat==1.1.1
 django==2.2.24
@@ -18,7 +18,7 @@ Markdown==3.2.1
 reportlab==3.5.6
 requests
 requests_oauthlib
-Pillow==4.0.0
+Pillow==8.2.0
 premailer
 populus
 psycopg2-binary==2.7.5
@@ -91,7 +91,7 @@ django-oauth-toolkit
 ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
-wiki==0.7.3
+wiki==0.7.5
 django-bulk-update
 pdfrw
 django-admin-sortable2==0.7.6
@@ -100,11 +100,11 @@ django-queryset-csv
 django-proxy==1.2.1
 ed25519
 tweepy
-attrs==19.3.0
+attrs==20.3.0
 oogway==0.7.0
 icalendar==4.0.7
-duniterpy==0.61.0
-aiohttp >= 3.6.3
+duniterpy==0.62.0
+aiohttp == 3.7.4
 jsonschema==3.2.0
 pyPEG2==2.15.2
 base58==2.1.0
