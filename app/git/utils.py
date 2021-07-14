@@ -237,7 +237,7 @@ def get_github_primary_email(oauth_token):
                 return email.get('email', '')
     except Exception as e:
         logger.error(e)
-    
+
     return ''
 
 
@@ -253,7 +253,7 @@ def get_github_event_emails(oauth_token, username):
     """
     emails = []
     userinfo = get_user(username)
-    user_name = userinfo.get('name', '')
+    user_name = userinfo.name
 
     try:
         gh_client = github_connect(oauth_token)
@@ -399,7 +399,7 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
                 paginated_list = repo.get_issue(issue).get_comments().get_page(page)
         else:
             paginated_list = repo.get_issues_comments(sort='created', direction='desc').get_page(page)
-        
+
         return paginated_list
     except Exception as e:
         logger.error(
@@ -538,7 +538,7 @@ def get_notifications():
 
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue.
-    
+
     Args:
         owner (str): Owner of the repo
         repo (str): Name of the repo
