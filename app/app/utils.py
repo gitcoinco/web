@@ -125,7 +125,7 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
         logger.warning(f'Failed to fetch github username {handle}', exc_info=True, extra={'handle': handle})
         return None
 
-    defaults = {'last_sync_date': timezone.now(), 'data': data}
+    defaults = {'last_sync_date': timezone.now(), 'data': data.raw_data}
 
     if user and isinstance(user, User):
         defaults['user'] = user
