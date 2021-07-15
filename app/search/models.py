@@ -17,7 +17,7 @@ class SearchResult(SuperModel):
     title = models.CharField(max_length=1000, default='')
     description = models.TextField(default='', blank=True)
     url = models.CharField(max_length=500, default='')
-    img_url = models.CharField(max_length=500, default='', null=True)
+    img_url = models.CharField(max_length=600, default='', null=True)
     visible_to = models.ForeignKey('dashboard.Profile', related_name='search_results_visible', on_delete=models.CASCADE, db_index=True, null=True)
 
     def __str__(self):
