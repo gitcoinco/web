@@ -263,7 +263,7 @@ async function vouche() {
   const account = accounts[0];
   const _package = {
     votes: result,
-    balance: balance.balance * 10 ** 18,
+    balance: balance.balance,
     account: account
   };
   let signature = await web3.eth.personal.sign(
