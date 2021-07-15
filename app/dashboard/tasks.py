@@ -321,7 +321,6 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
 @app.shared_task(bind=True, max_retries=1)
 def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> None:
     from app.utils import actually_sync_profile
-    from django.contrib.auth.models import User
     user = User.objects.filter(pk=user_pk).first() if user_pk else None
     actually_sync_profile(handle, user=user, hide_profile=hide_profile)
 
@@ -350,7 +349,6 @@ def record_visit(self, user_pk, profile_pk, ip_address, visitorId, useragent, re
     :return: None
     """
 
-    from django.contrib.auth.models import User
     user = User.objects.filter(pk=user_pk).first() if user_pk else None
     profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
     if user and profile:
