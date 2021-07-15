@@ -492,6 +492,10 @@ Vue.mixin({
           tenant = 'TEZOS';
           break;
 
+        case 'CSPR':
+          tenant = 'CASPER';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -588,6 +592,10 @@ Vue.mixin({
 
         case 'tezos_ext':
           payWithTezosExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'casper_ext':
+          payWithCasperExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -809,6 +817,7 @@ Vue.mixin({
         case 'xinfin_ext':
         case 'algorand_ext':
         case 'tezos_ext':
+        case 'casper_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }

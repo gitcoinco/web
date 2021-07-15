@@ -255,6 +255,10 @@ Vue.mixin({
           // tezos
           type = 'tezos_ext';
           break;
+        case '82795':
+          // casper
+          type = 'casper_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
