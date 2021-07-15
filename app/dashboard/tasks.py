@@ -8,11 +8,13 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpRequest
+from django.utils import timezone
 
 from app.services import RedisService
+from app.utils import get_location_from_ip
 from celery import app, group
 from celery.utils.log import get_task_logger
-from dashboard.models import Activity, Bounty, ObjectView, Profile
+from dashboard.models import Activity, Bounty, ObjectView, Profile, UserAction
 from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
@@ -319,7 +321,6 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
 @app.shared_task(bind=True, max_retries=1)
 def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> None:
     from app.utils import actually_sync_profile
-    from django.contrib.auth.models import User
     user = User.objects.filter(pk=user_pk).first() if user_pk else None
     actually_sync_profile(handle, user=user, hide_profile=hide_profile)
 
@@ -330,3 +331,68 @@ def recalculate_earning(self, pk, retry: bool = True) -> None:
     earning = Earning.objects.get(pk=pk)
     src = earning.source
     src.save()
+
+
+@app.shared_task(bind=True, max_retries=1)
+def record_visit(self, user_pk, profile_pk, ip_address, visitorId, useragent, referrer, path, session_key, utm, retry: bool = True) -> None:
+    """
+    :param self: Self
+    :param user_pk: user primary
+    :param profile_pk: profile primary
+    :param ip_address: get_ip(request)
+    :param visitorId: request.COOKIES.get("visitorId", None)
+    :param useragent: request.META['HTTP_USER_AGENT']
+    :param referrer: request.META.get('HTTP_REFERER', None)
+    :param path: request.META.get('PATH_INFO', None)
+    :param session_key: request.session._session_key
+    :param utm: _get_utm_from_cookie(request)
+    :return: None
+    """
+
+    user = User.objects.filter(pk=user_pk).first() if user_pk else None
+    profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
+    if user and profile:
+        try:
+            profile.last_visit = timezone.now()
+            profile.save()
+        except Exception as e:
+            logger.exception(e)
+
+        # enqueue profile_dict recalc
+        profile_dict.delay(profile.pk)
+
+        try:
+            metadata = {
+                'visitorId': visitorId,
+                'useragent': useragent,
+                'referrer': referrer,
+                'path': path,
+                'session_key': session_key,
+            }
+            UserAction.objects.create(
+                user=user,
+                profile=profile,
+                action='Visit',
+                location_data=get_location_from_ip(ip_address),
+                ip_address=ip_address,
+                utm=utm,
+                metadata=metadata,
+            )
+        except Exception as e:
+            logger.exception(e)
+
+
+@app.shared_task(bind=True, max_retries=1)
+def record_join(self, profile_pk, retry: bool = True) -> None:
+    """
+    :param self: Self
+    :param profile_pk: profile primary
+    :return: None
+    """
+
+    profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
+    if profile:
+        try:
+            Activity.objects.create(profile=profile, activity_type='joined')
+        except Exception as e:
+            logger.exception(e)
