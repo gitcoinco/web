@@ -357,10 +357,10 @@ def record_visit(self, user_pk, profile_pk, ip_address, visitorId, useragent, re
             profile.save()
         except Exception as e:
             logger.exception(e)
-        try:
-            profile_dict.delay(profile.pk)
-        except Exception as e:
-            logger.exception(e)
+
+        # enqueue profile_dict recalc
+        profile_dict.delay(profile.pk)
+
         try:
             metadata = {
                 'visitorId': visitorId,
