@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 from django.utils.crypto import get_random_string
 
 from dashboard.models import Profile

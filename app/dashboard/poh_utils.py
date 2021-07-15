@@ -1,5 +1,3 @@
-from django.conf import settings
-
 POH_CONTRACT_ADDRESS = '0xC5E9dDebb09Cd64DfaCab4011A0D5cEDaf7c9BDb'
 
 _poh_contract = None

@@ -26,15 +26,13 @@ import re
 import time
 import uuid
 from datetime import datetime
-from decimal import Decimal
 from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.humanize.templatetags.humanize import intword, naturaltime
+from django.contrib.humanize.templatetags.humanize import intword
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
@@ -44,7 +42,6 @@ from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
@@ -96,34 +93,6 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
-
-def get_fund_reward(request, grant):
-    token = Token.objects.filter(
-        id__in=kudos_reward_pks,
-        num_clones_available_counting_indirect_send__gt=0,
-        owner_address__iexact='0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F').order_by('?').first()
-    if not token:
-        return None
-    key_len = 25
-    _key = get_random_string(key_len)
-    btc = BulkTransferCoupon.objects.create(
-        token=token,
-        num_uses_total=1,
-        num_uses_remaining=1,
-        current_uses=0,
-        secret=_key,
-        comments_to_put_in_kudos_transfer=f"Thank you for funding '{grant.title}' on Gitcoin Grants!",
-        sender_profile=Profile.objects.get(handle='gitcoinbot'),
-        make_paid_for_first_minutes=0,
-        )
-
-    #store btc on session
-    request.session['send_notification'] = 1
-    request.session['cta_text'] = "Redeem Kudos"
-    request.session['msg_html'] = f"You have received a new {token.ui_name} for your contribution to {grant.title}"
-    request.session['cta_url'] = btc.url
-
-    return btc
 
 def get_keywords():
     """Get all Keywords."""
@@ -1184,18 +1153,6 @@ def grants_by_grant_clr(request, clr_round):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
-# TODO: REMOVE
-def add_form_categories_to_grant(form_category_ids, grant, grant_type):
-    form_category_ids = [int(i) for i in form_category_ids if i != '']
-
-    model_categories = basic_grant_categories(grant_type)
-    model_categories = [ category[0] for category in model_categories ]
-    selected_categories = [model_categories[i] for i in form_category_ids]
-
-    for category in selected_categories:
-        grant_category = GrantCategory.objects.get_or_create(category=category)[0]
-        grant.categories.add(grant_category)
-
 
 def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, index_on=None):
     grant_id_sql = f"= {grant_id}" if grant_id else "IS NOT NULL"
@@ -1547,8 +1504,6 @@ def grant_edit(request, grant_id):
     is_team_member = is_grant_team_member(grant, profile)
     if request.method == 'POST' and (is_team_member or request.user.is_staff):
 
-        from grants.utils import add_grant_to_active_clrs
-
         response = {
             'status': 400,
             'message': 'error: Bad Request. Unable to create grant'
@@ -1743,8 +1698,6 @@ def grant_new(request):
     """Handle new grant."""
 
     if request.method == 'POST':
-
-        from grants.utils import add_grant_to_active_clrs
 
         response = {
             'status': 400,
@@ -2620,8 +2573,6 @@ def create_matching_pledge_v1(request):
     )
 
     match_pledge.save()
-    # dont' send spammy email
-    # new_grant_match_pledge(match_pledge)
 
     response = {
         'status': 200,
@@ -2647,10 +2598,6 @@ def invoice(request, contribution_pk):
     }
 
     return TemplateResponse(request, 'grants/invoice.html', params)
-
-def basic_grant_types():
-    result = GrantType.objects.all()
-    return [ (ele.name, ele.label) for ele in result ]
 
 
 def basic_grant_categories(name):

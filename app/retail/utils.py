@@ -31,7 +31,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-from cacheops import CacheMiss, cache
 from grants.models import Contribution, Grant
 from marketing.models import Alumni, LeaderboardRank, ManualStat, Stat
 from requests_oauthlib import OAuth2Session
@@ -55,17 +54,6 @@ class PerformanceProfiler:
         total_time = self.end_time - self.start_time
         print(f"pulled {name} in {round(this_time,2)} seconds (total: {round(total_time,2)} sec)")
         self.last_time = time.time()
-
-
-def get_github_user_profile(token):
-    github = OAuth2Session(
-        settings.GITHUB_CLIENT_ID,
-        token=token,
-    )
-
-    creds = github.get('https://api.github.com/user').json()
-    print(creds)
-    return creds
 
 
 def strip_html(html):

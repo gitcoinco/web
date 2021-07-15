@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 
 from app.utils import sync_profile
 from dashboard.models import Organization, Profile, Repo
-from git.utils import get_organization, get_repo, get_user
+from git.utils import get_organization, get_user, github_connect
 
 
 class Command(BaseCommand):
@@ -30,16 +30,18 @@ class Command(BaseCommand):
                         profile.user.groups.filter(name__contains=y.name).delete()
                         print(f'Removing: {profile.handle} from Organization: {y.name} ')
 
-                    user_access_repos = get_repo(handle, '/repos', (handle, access_token), is_user=True)
-                    # Question around user repo acccess if we can't get user repos, should we assume all repos are no longer available in the platform?
-
-                    if 'message' in user_access_repos:
-                        print(user_access_repos['message'])
+                    try:
+                        gh_client = github_connect(access_token)
+                        user_access_repos = gh_client.get_user().get_repos()
+                        if user_access_repos.totalCount: pass # trigger error throw if any
+                        # Question around user repo access if we can't get user repos, should we assume all repos are no longer available in the platform?
+                    except Exception as e:
+                        print(e)
                         return lsynced
 
                     current_user_repos = []
                     for y in user_access_repos:
-                        current_user_repos.append(y['name'])
+                        current_user_repos.append(y.name)
 
                     remove_user_repos_names = [x for x in profile.repos.all() if x.name not in current_user_repos]
 
@@ -67,73 +69,77 @@ class Command(BaseCommand):
 
                         print(f'Syncing Organization: {db_org.name}')
                         profile.profile_organizations.add(db_org)
-                        org_members = get_organization(db_org.name, '/members', (handle, access_token))
 
-                        if 'message' in org_members:
-                            print(org_members['message'])
+                        try:
+                            gh_client = github_connect()
+                            org_members = gh_client.get_organization(db_org.name).get_members()
+                            if org_members.totalCount: pass # trigger error throw if any
+                        except Exception as e:
+                            print(e)
                             continue
 
                         for member in org_members:
 
                             try:
-                                membership = get_organization(
-                                    db_org.name, f'/memberships/{member["login"]}', (handle, access_token)
-                                )
-                                if 'message' in membership:
-                                    print(membership['message'])
-                                    continue
-                                role = membership['role'] if 'role' in membership else "member"
+                                membership = get_user(handle).get_organization_membership(db_org.name)
+                                role = membership.role if hasattr(membership, 'role') else "member"
                                 db_group = Group.objects.get_or_create(name=f'{db_org.name}-role-{role}')[0]
                                 db_org.groups.add(db_group)
-                                member_profile_obj = Profile.objects.get(handle=member['login'], user__is_active=True)
+                                member_profile_obj = Profile.objects.get(handle=member.login, user__is_active=True)
                                 member_profile_obj.user.groups.add(db_group)
-                                members_to_sync.append(member['login'])
+                                members_to_sync.append(member.login)
                             except Exception as e:
-                                # print(f'An exception happened in the Organization Loop: handle {member["login"]} {e}')
+                                print(e)
                                 continue
 
-                        org_repos = get_organization(db_org.name, '/repos', (handle, access_token))
-
-                        if 'message' in org_repos:
-                            print(org_repos['message'])
+                        try:
+                            gh_client = github_connect(access_token)
+                            org_repos = gh_client.get_organization(db_org.name).get_repos()
+                            if org_repos.totalCount: pass # trigger error throw if any
+                        except Exception as e:
+                            print(e)
                             continue
 
                         for repo in org_repos:
-                            db_repo = Repo.objects.get_or_create(name=repo['name'])[0]
+                            db_repo = Repo.objects.get_or_create(name=repo.name)[0]
                             db_org.repos.add(db_repo)
                             print(f'Syncing Repo: {db_repo.name}')
-                            repo_collabs = get_repo(repo['full_name'], '/collaborators', (handle, access_token))
-                            if 'message' in repo_collabs:
-                                print(repo_collabs['message'])
+                            try:
+                                gh_client = github_connect(access_token)
+                                repo_collabs = gh_client.get_repo(repo.full_name).get_collaborators()
+                                if repo_collabs.totalCount: pass # trigger error throw if any
+                            except Exception as e:
+                                print(e)
                                 continue
 
                             for collaborator in repo_collabs:
+                                
+                                if collaborator.permissions:
+                                    if collaborator.permissions.admin:
+                                        permission = "admin"
+                                    elif collaborator.permissions.push:
+                                        permission = "write"
+                                    elif collaborator.permissions.pull:
+                                        permission = "pull"
+                                    else:
+                                        permission = "none"
 
-                                if collaborator['permissions']['admin']:
-                                    permission = "admin"
-                                elif collaborator['permissions']['push']:
-                                    permission = "write"
-                                elif collaborator['permissions']['pull']:
-                                    permission = "pull"
-                                else:
-                                    permission = "none"
+                                    db_group = Group.objects.get_or_create(
+                                        name=f'{db_org.name}-repo-{repo["name"]}-{permission}'
+                                    )[0]
+                                    db_org.groups.add(db_group)
 
-                                db_group = Group.objects.get_or_create(
-                                    name=f'{db_org.name}-repo-{repo["name"]}-{permission}'
-                                )[0]
-                                db_org.groups.add(db_group)
-
-                                try:
-                                    member_user_profile = Profile.objects.get(
-                                        handle=collaborator['login'], user__is_active=True
-                                    )
-                                    member_user_profile.user.groups.add(db_group)
-                                    member_user_profile.repos.add(db_repo)
-                                    if collaborator['login'] not in members_to_sync or \
-                                        collaborator['login'] not in lsynced:
-                                        members_to_sync.append(collaborator['login'])
-                                except Exception as e:
-                                    continue
+                                    try:
+                                        member_user_profile = Profile.objects.get(
+                                            handle=collaborator.login, user__is_active=True
+                                        )
+                                        member_user_profile.user.groups.add(db_group)
+                                        member_user_profile.repos.add(db_repo)
+                                        if collaborator.login not in members_to_sync or \
+                                            collaborator.login not in lsynced:
+                                            members_to_sync.append(collaborator.login)
+                                    except Exception as e:
+                                        continue
 
                         for x in members_to_sync:
                             try:

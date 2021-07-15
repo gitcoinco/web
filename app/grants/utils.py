@@ -26,10 +26,9 @@ from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
-from django.templatetags.static import static
 from django.utils import timezone
 
-from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB, STATIC_HOST, STATIC_URL
+from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -188,16 +187,6 @@ def get_user_code(user_id, grant, coding_set=block_codes, length=6):
     coding_id = [coding_set[randint(0, 9)] for _ in range(length)]
 
     return ''.join(coding_id)
-
-
-def add_grant_to_active_clrs(grant):
-    from grants.models import Grant, GrantCLR
-
-    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
-    for clr_round in active_clr_rounds:
-        if clr_round.grants.filter(pk=grant.pk).exists():
-            grant.in_active_clrs.add(clr_round)
-            grant.save()
 
 
 def generate_collection_thumbnail(collection, width, heigth):

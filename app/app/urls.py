@@ -606,10 +606,6 @@ urlpatterns = [
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
-    # token distribution event
-    # re_path(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
-    # re_path(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
-
     # faucet views
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
@@ -721,11 +717,6 @@ urlpatterns = [
         '_administration/email/tribe_hackathon_prizes',
         retail.emails.tribe_hackathon_prizes,
         name='tribe_hackathon_prizes'
-    ),
-    path(
-        '_administration/email/day_email_campaign/<int:day>',
-        marketing.views.day_email_campaign,
-        name='day_email_campaign'
     ),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
