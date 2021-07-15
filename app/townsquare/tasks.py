@@ -14,7 +14,7 @@ redis = RedisService().redis
 # Lock timeout of 2 minutes (just in the case that the application hangs to avoid a redis deadlock)
 LOCK_TIMEOUT = 60 * 2
 
-@app.shared_task(bind=True, max_retries=3)
+@app.shared_task(bind=True, soft_time_limit=600, time_limit=660, max_retries=3)
 def increment_view_counts(self, pks, retry=False):
     """
     :param self:

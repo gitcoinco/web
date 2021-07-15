@@ -258,7 +258,7 @@ def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) 
         maybe_market_to_user_slack_helper(bounty, event_name)
 
 
-@app.shared_task(bind=True, max_retries=3)
+@app.shared_task(bind=True, soft_time_limit=600, time_limit=660, max_retries=3)
 def grant_update_email_task(self, pk, retry: bool = True) -> None:
     """
     :param self:

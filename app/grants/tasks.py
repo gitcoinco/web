@@ -31,7 +31,7 @@ def lineno():
     """Returns the current line number in our program."""
     return inspect.currentframe().f_back.f_lineno
 
-@app.shared_task(bind=True, max_retries=1)
+@app.shared_task(bind=True, soft_time_limit=600, time_limit=660, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     if settings.FLUSH_QUEUE:
