@@ -255,7 +255,7 @@ Vue.mixin({
           // tezos
           type = 'tezos_ext';
           break;
-        case '82795':
+        case '270895':
           // casper
           type = 'casper_ext';
           break;
