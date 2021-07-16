@@ -3532,7 +3532,7 @@ def verify_user_google(request):
         if r.status_code != 200:
             messages.error(request, _(f'Invalid code'))
             return redirect('profile_by_tab', 'trust')
-    except (ConnectionError, InvalidGrantError):
+    except (Exception):
         messages.error(request, _(f'Invalid code'))
         return redirect('profile_by_tab', 'trust')
 
@@ -6805,7 +6805,7 @@ def validate_verification(request, handle):
     profile = request.user.profile
 
     has_previous_validation = profile.last_validation_request
-    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
+    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8') if redis.get(f'verification:{request.user.id}:phone') else None
 
     if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
         pk=profile.id).exists():
