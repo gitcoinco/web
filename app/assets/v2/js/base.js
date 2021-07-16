@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // if there exists a sticky reflink but the user navigated away from the link in the course of logging in...
-if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
+  if (localStorage.getItem('cb') && document.contxt.github_handle && !getParam('cb')) {
     var this_url = new URL(document.location.href);
 
     this_url.searchParams.append('cb', localStorage.getItem('cb'));
