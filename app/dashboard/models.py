@@ -3074,6 +3074,12 @@ class Profile(SuperModel):
             tb += 0.15
         # if self.is_duniter_verified:
         #     tb *= 1.001
+        qd_tb = 0
+        for player in self.players.all():
+            new_score = 0
+            if player.tokens_in:
+                new_score = min(player.tokens_in / 100, 0.20)
+            qd_tb = max(qd_tb, new_score)
         return min(1.5, tb)
 
 

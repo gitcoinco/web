@@ -1,0 +1,83 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<div class="row col-md-8 m-auto">
+  <div class="col-12">
+    <h2>{% trans "Get Started with Gitcoin!" %}</h2>
+  </div>
+  <div class="col-12">
+    <div class="row icons">
+      <div class="col-3">
+        <i class="fas fa-wrench"></i>
+        <p>{% trans "Build" %}</p>
+      </div>
+      <div class="col-3">
+        <i class="fab fa-ethereum"></i>
+        <p>{% trans "Get Paid" %}</p>
+      </div>
+      <div class="col-3">
+        <i class="fab fa-connectdevelop"></i>
+        <p>{% trans "Network" %}</p>
+      </div>
+    </div>
+    {% if flow == 'funder' %}
+    {% blocktrans %}
+      <h3>Use Gitcoin to reach a pool of talented developers to contribute to your open source project.</h3>
+      <h3>Pay out in Ether, a leading cryptocurrency, or your native token!</h3>
+      <h3>Meet new people. Create a natural hiring pipeline. Grow open source.</h3>
+    {% endblocktrans %}
+    {% else %}
+    {% blocktrans %}
+      <h3>Use Gitcoin to find paid work and solve real world problems
+          in the blockchain/web3 ecosystem.</h3>
+      <h3>Receive payment in Ether, a leading cryptocurrency.</h3>
+      <h3>Meet new people. Learn new skills. Contribute to
+          the open source community.</h3>
+    {% endblocktrans %}
+    {% endif %}
+    <div class="col-12 mt-4">
+      {% if github_handle %}
+        <div class="logged-in">
+          <h3>
+            {% trans "You are logged in!" %}
+            <i class="far fa-check-circle"></i>
+          </h3>
+          <div class="font-caption row">
+            <div class="col-12">
+              <img class="github-avatar" src="{% if profile and profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{% url "org_avatar" github_handle %}?repo=https://github.com/{{ github_handle }}{% endif %}">
+              <span>
+                <p>{{ github_handle }}</p>
+                <a href="{% url "logout" %}?next={{ request.get_full_path }}">
+                  {% trans "Logout" %}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="logged-out">
+          <a class="btn btn-primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+            onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i>
+            <span>{% trans "Login with github" %}</span>
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

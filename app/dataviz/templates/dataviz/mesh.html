@@ -407,6 +407,11 @@ Drawing.SimpleGraph = function(options) {
 
     <div style="position: absolute; bottom: 0;">
       <form method=GET>
+      <select name="trim_pct">
+        {% for option in trim_pct_options %}
+          <option value="{{option}}" {% if trim_pct == option %}selected=selected{%endif%}  >Trimmed:{{option}}%</option>
+        {% endfor %}
+      </select>
       <select name="show_labels">
         {% for option in show_labels_options %}
           <option value="{{option}}" {% if show_labels == option %}selected=selected{%endif%}  >Label:{{option}}</option>

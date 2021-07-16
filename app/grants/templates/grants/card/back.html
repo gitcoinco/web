@@ -1,0 +1,55 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize grants_extra avatar_tags %}
+<div class="row h-100">
+
+  <div class="col-12 h-75">
+    {% if grant.activeSubscriptions %}
+      <h3 class="font-subheader font-weight-semibold mb-3">{% trans 'Contributors' %} ({{ grant.activeSubscriptions|length }})</h3>
+      <div class="overflow-auto h-90">
+        {% for handle in grant.activeSubscriptions %}
+          <a class="grant__stakeholders-item ml-2" href="{% url 'profile' handle %}">
+          <img data-src="/dynamic/avatar/{{handle}}" />
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <h3 class="font-subheader font-weight-semibold mb-3">No Contributons yet</h3>
+      <p class="font-body">Click on fund grant to become the first contributor for this grant!</p>
+    {% endif %}
+  </div>
+
+  <div class="col-12 py-4 m-auto text-center grant-item__info h-25">
+    <p>
+      <a class="font-title btn"
+        href="{% url 'grants:details' grant.id grant.slug %}" rel="noreferrer">
+        {% trans 'View Details' %}
+      </a>
+    </p>
+    {% if grant.active %}
+      <p>
+        <a class="font-title btn"
+          href="{% url 'grants:fund' grant.id grant.slug %}" rel="noreferrer">
+          {% trans 'Fund this Grant' %}
+        </a>
+      </p>
+    {% else %}
+      <p class="font-weight-bold">{% trans 'This grant is no longer active.' %}</p>
+    {% endif %}
+  </div>
+
+</div>

@@ -1,0 +1,39 @@
+{% comment %}
+    Copyright (C) 2021 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="d-flex flex-column align-items-center">
+  <div>
+    <div class="rowcol d-flex flex-column  mt-5">
+      <div class="dash-filter-header mb-2">{% trans "Edit Profile" %}</div>
+      <div class="d-flex flex-column ml-3">
+        <div class="dash-link ml-2">{% trans "Change Picture" %}</div>
+        <div class="dash-link ml-2">{% trans "Change Name" %}</div>
+        <div class="dash-link ml-2">{% trans "Change Expertise" %}</div>
+      </div>
+    </div>
+    <div class="rowcol d-flex flex-column  mt-5">
+      <div class="dash-filter-header mb-2">{% trans "Browse Other Users" %}</div>
+      <div class="d-flex flex-column ml-3">
+        <div class="dash-link ml-2">{% trans "By Location" %}</div>
+        <div class="dash-link ml-2">{% trans "By Language" %}</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-5 align-self-end text-right mr-3 font-smaller-7 mb-3">
+    <u>{% trans "CLEAR FIELDS" %}</u>
+  </div>
+</div>

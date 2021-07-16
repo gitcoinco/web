@@ -3,8 +3,8 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
-if (typeof (web3) != 'undefined') {
-  var web3 =  web3;
+if (!Object.hasOwnProperty.call(window, 'web3')) {
+  window.web3 = null;
 }
 let web3Modal;
 let provider;
@@ -122,6 +122,7 @@ async function fetchAccountData(provider) {
   // MetaMask does not give you all accounts, only the selected account
   console.log('Got accounts', accounts);
   selectedAccount = accounts[0] || provider.account;
+  // selectedAccount = '0x1402e01ba957e030200ec21e1417dc32c11e486b';
   cb_address = selectedAccount;
 
   document.querySelector('.selected-account').textContent = truncate(selectedAccount);

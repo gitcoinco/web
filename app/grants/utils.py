@@ -29,7 +29,7 @@ from secrets import token_hex
 from django.templatetags.static import static
 from django.utils import timezone
 
-from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, STATIC_HOST, STATIC_URL
+from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB, STATIC_HOST, STATIC_URL
 from app.utils import notion_write
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -323,12 +323,12 @@ def sync_payout(contribution):
 def save_grant_to_notion(grant):
     """Post an insert to notions sybil-db table"""
     # check for notion credentials before attempting insert
-    if settings.NOTION_SYBIL_DB and settings.NOTION_API_KEY:
+    if NOTION_SYBIL_DB and NOTION_API_KEY:
         # fully qualified url
-        fullUrl = settings.BASE_URL.rstrip('/') + grant.url
+        fullUrl = BASE_URL.rstrip('/') + grant.url
 
         # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
-        return notion_write(settings.NOTION_SYBIL_DB, {
+        return notion_write(NOTION_SYBIL_DB, {
             'Current Status': {
                 'id': 'ea{s',
                 'type': 'select',

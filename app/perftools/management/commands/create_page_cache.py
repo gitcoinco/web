@@ -142,7 +142,7 @@ def create_top_grant_spenders_cache():
 
         from_date = timezone.now()
         for key, val in count_dict.items():
-            if val:
+            if key and val and grant_type.name:
                 #print(key, val)
                 Stat.objects.create(
                     created_on=from_date,
@@ -151,7 +151,7 @@ def create_top_grant_spenders_cache():
                 )
 
         for key, val in sum_dict.items():
-            if val:
+            if key and val and grant_type.name:
                 #print(key, val)
                 Stat.objects.create(
                     created_on=from_date,

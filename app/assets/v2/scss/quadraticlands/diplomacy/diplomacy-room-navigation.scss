@@ -1,0 +1,28 @@
+.diplomacy-room-navigation {
+  .prev {
+    position: fixed;
+    top: 1.5em;
+    right: 1.5em;
+  }
+
+  .next {
+    position: fixed;
+    bottom: 1.5em;
+    right: 1.5em;
+  }
+
+  svg {
+    display: block;
+    background-color: var(--space_light_alpha);
+    stroke: var(--pink_light);
+    stroke-width: 3;
+    stroke-miterlimit: 5;
+    width: 64px;
+    height: 64px;
+    fill: none;
+
+    &:hover {
+      stroke: var(--white);
+    }
+  }
+}

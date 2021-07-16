@@ -2937,6 +2937,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
         context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())
+        context['round_active'] = round_active
 
         # detail available services
         services = [
@@ -2947,6 +2948,19 @@ def get_profile_tab(request, profile, tab, prev_context):
                 'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
                 'match_percent': 50,
                 'is_verified': profile.is_poh_verified
+            }, {
+                'ref': 'qd',
+                'name': 'Quadratic Diplomacy',
+                'icon_path': static('v2/images/quadraticlands/mission/diplomacy.svg'),
+                'desc': 'Stake your GTC on your frens, and earn sybil resistence by doing so!',
+                'match_percent': 20,
+                'is_verified': profile.players.exists(),
+                'disable_disconnect': True,
+                'alt_is_verified_btn': {
+                    'text': 'Explore',
+                    'type': 'btn-outline-primary',
+                    'location': reverse('quadraticlands:mission_diplomacy')
+                }
             }, {
                 'ref': 'brightid',
                 'name': 'BrightID',
@@ -3024,6 +3038,11 @@ def get_profile_tab(request, profile, tab, prev_context):
                 'is_verified': profile.is_facebook_verified
             }
         ]
+
+        # TODO: REMOVE
+        is_staff = request.user.is_staff if request.user else False
+        if not is_staff:
+            del services[1]
 
         # pass as JSON in the context
         context['services'] = json.dumps(services)
@@ -3513,7 +3532,7 @@ def verify_user_google(request):
         if r.status_code != 200:
             messages.error(request, _(f'Invalid code'))
             return redirect('profile_by_tab', 'trust')
-    except (ConnectionError, InvalidGrantError):
+    except (Exception):
         messages.error(request, _(f'Invalid code'))
         return redirect('profile_by_tab', 'trust')
 
@@ -6786,7 +6805,7 @@ def validate_verification(request, handle):
     profile = request.user.profile
 
     has_previous_validation = profile.last_validation_request
-    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
+    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8') if redis.get(f'verification:{request.user.id}:phone') else None
 
     if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
         pk=profile.id).exists():
