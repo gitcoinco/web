@@ -161,6 +161,16 @@ Vue.mixin({
           break;
         }
 
+        case '270895': {
+          // casper
+          let addr = vm.form.funderAddress;
+
+          if (!addr.toLowerCase().startsWith('01') && !addr.toLowerCase().startsWith('02')) {
+            isValid = false;
+          }
+          break;
+        }
+
         // include validation for other chains here
       }
 
