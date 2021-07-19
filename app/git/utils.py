@@ -519,7 +519,9 @@ def get_user(user=None, token=None):
         gh_client = github_connect(token)
         return gh_client.get_user(user) if user else gh_client.get_user()
     except GithubException as e:
-        logger.error(e)
+        # Do not log exception for github users which are deleted
+        if e.data.get("message") != 'Not Found':
+            logger.error(e)
 
     return None
 
