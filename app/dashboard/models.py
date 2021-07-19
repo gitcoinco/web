@@ -5111,6 +5111,7 @@ class HackathonEvent(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     use_circle = models.BooleanField(help_text=_('Use circle for the Hackathon'), default=False)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
+    total_prize = models.CharField(max_length=255, null=True, blank=True, help_text='extra text to display next the event dates on the hackathon list page')
 
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
