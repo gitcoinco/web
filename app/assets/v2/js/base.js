@@ -104,8 +104,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   };
 
-  if (document.visitorId) {
-    Cookies.set('visitorId', document.visitorId);
+  var visitorId = (document.visitorId || Cookies.get('_vid'));
+
+  if (visitorId) {
+    Cookies.set('visitorId', visitorId);
   }
   record_campaign_to_cookie();
 

@@ -24,13 +24,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from cacheops import CacheMiss, cache, cached_view, cached_view_as
 from economy.utils import convert_amount
 from gas.models import GasGuzzler
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from perftools.models import JSONStore
-
-from .helpers import handle_bounty_views
 
 logging.basicConfig(level=logging.DEBUG)
 

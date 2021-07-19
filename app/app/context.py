@@ -25,11 +25,11 @@ from django.core.cache import cache
 from django.http import HttpRequest
 from django.utils import timezone
 
-import requests
 from app.bundle_context import context as bundleContext
 from app.utils import get_location_from_ip
 from cacheops import cached_as
 from dashboard.models import Activity, Tip, UserAction
+from dashboard.tasks import record_join, record_visit
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
@@ -81,41 +81,26 @@ def preprocess(request):
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     if user_is_authenticated and profile and profile.pk:
         # what actions to take?
-        record_join = not profile.last_visit
-        record_visit = not profile.last_visit or profile.last_visit < (
+        should_record_join = not profile.last_visit
+        should_record_visit = not profile.last_visit or profile.last_visit < (
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
-        if record_visit:
-            try:
-                profile.last_visit = timezone.now()
-                profile.save()
-            except Exception as e:
-                logger.exception(e)
-            try:
-                from dashboard.tasks import profile_dict
-                profile_dict.delay(profile.pk)
-            except Exception as e:
-                logger.exception(e)
-            metadata = {
-                'visitorId': request.COOKIES.get("visitorId", None),
-                'useragent': request.META['HTTP_USER_AGENT'],
-                'referrer': request.META.get('HTTP_REFERER', None),
-                'path': request.META.get('PATH_INFO', None),
-                'session_key': request.session._session_key,
-            }
-            ip_address = get_ip(request)
-            UserAction.objects.create(
-                user=request.user,
-                profile=profile,
-                action='Visit',
-                location_data=get_location_from_ip(ip_address),
-                ip_address=ip_address,
-                utm=_get_utm_from_cookie(request),
-                metadata=metadata,
-            )
 
-        if record_join:
-            Activity.objects.create(profile=profile, activity_type='joined')
+        if should_record_visit:
+            # values to pass to celery from the request
+            ip_address = get_ip(request)
+            visitorId = request.COOKIES.get("visitorId", None)
+            useragent = request.META['HTTP_USER_AGENT']
+            referrer = request.META.get('HTTP_REFERER', None)
+            path = request.META.get('PATH_INFO', None)
+            session_key = request.session._session_key
+            utm = _get_utm_from_cookie(request)
+            # record the visit as a celery task
+            record_visit.delay(request.user.pk, profile.pk, ip_address, visitorId, useragent, referrer, path, session_key, utm)
+
+        if should_record_join:
+            # record the joined action as a celery task
+            record_join.delay(profile.pk)
 
         ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
 

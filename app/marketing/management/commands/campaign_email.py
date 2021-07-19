@@ -21,7 +21,6 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from marketing.mails import nth_day_email_campaign
 from marketing.models import EmailSubscriber
 
 
@@ -31,14 +30,6 @@ def n_days_ago(n):
         before.year, before.month, before.day,
         0, 0, 0, 0,
         tzinfo=timezone.get_current_timezone())
-
-
-def send_nth_email_to_subscriber(nth, sub):
-    first_email = EmailSubscriber.objects.filter(email__iexact=sub.email).order_by('created_on').first()
-    if first_email.id == sub.id:
-        # it is the first time this subscriber is in our system
-        # send email to him/her
-        nth_day_email_campaign(nth, sub)
 
 
 def send_nth_email(nth):

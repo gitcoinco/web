@@ -26,10 +26,9 @@ from decimal import Decimal
 from random import randint, seed
 from secrets import token_hex
 
-from django.templatetags.static import static
 from django.utils import timezone
 
-from app.settings import BASE_DIR, BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB, STATIC_HOST, STATIC_URL
+from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
 from avatar.utils import convert_img
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -94,42 +93,6 @@ def get_upload_filename(instance, filename):
     file_path = os.path.basename(filename)
     return f"grants/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
-
-def get_leaderboard():
-    return JSONStore.objects.filter(view='grants', key='leaderboard').order_by('-pk').first().data
-
-
-def generate_grants_leaderboard(max_items=100):
-    from grants.models import Subscription, Contribution
-    handles = Subscription.objects.exclude(contributor_profile__isnull=True).values_list('contributor_profile__handle', flat=True)
-    default_dict = {
-        'rank': None,
-        'no': 0,
-        'sum': 0,
-        'handle': None,
-    }
-    users_to_results = { ele : default_dict.copy() for ele in handles }
-
-    # get all contribution attributes
-    for contribution in Contribution.objects.exclude(profile_for_clr__isnull=True).select_related('subscription'):
-        key = contribution.subscription.contributor_profile.handle
-        users_to_results[key]['handle'] = key
-        amount = contribution.subscription.get_converted_amount(False)
-        if amount:
-            users_to_results[key]['no'] += 1
-            users_to_results[key]['sum'] += round(amount)
-    # prepare response for view
-    items = []
-    counter = 1
-    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
-        item = item[1]
-        if item['no']:
-            item['rank'] = counter
-            items.append(item)
-            counter += 1
-    return items[:max_items]
-
-
 def is_grant_team_member(grant, profile):
     """Checks to see if profile is a grant team member
 
@@ -188,16 +151,6 @@ def get_user_code(user_id, grant, coding_set=block_codes, length=6):
     coding_id = [coding_set[randint(0, 9)] for _ in range(length)]
 
     return ''.join(coding_id)
-
-
-def add_grant_to_active_clrs(grant):
-    from grants.models import Grant, GrantCLR
-
-    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
-    for clr_round in active_clr_rounds:
-        if clr_round.grants.filter(pk=grant.pk).exists():
-            grant.in_active_clrs.add(clr_round)
-            grant.save()
 
 
 def generate_collection_thumbnail(collection, width, heigth):
