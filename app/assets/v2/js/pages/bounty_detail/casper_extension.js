@@ -36,21 +36,15 @@ const payWithCasperExtension = async(fulfillment_id, to_address, vm, modal) => {
   const payment = DeployUtil.standardPayment(paymentAmount);
   const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
-  console.log(deploy);
-
   const signedDeploy = await Signer.sign(deploy, fromPublicKey, toPublicKey);
 
-  console.log(signedDeploy);
-
   try {
-    const txHash = await casperClient.putDeploy(signedDeploy);
+    const deployHash = await casperClient.putDeploy(signedDeploy);
 
-    console.log(txHash);
-    // callback(null, selectedAddress, txHash);
+    callback(null, selectedAddress, deployHash);
   } catch (e) {
     modal.closeModal();
-    _alert({ message: `${e.title} - ${e.description}` }, 'danger');
-    console.log(e);
+    callback(err);
   }
     
   function callback(error, from_address, txn) {
