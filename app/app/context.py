@@ -26,7 +26,7 @@ from django.http import HttpRequest
 from django.utils import timezone
 
 import requests
-from app.bundleContext import context as bundleContext
+from app.bundle_context import context as bundleContext
 from app.utils import get_location_from_ip
 from cacheops import cached_as
 from dashboard.models import Activity, Tip, UserAction
