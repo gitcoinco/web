@@ -70,9 +70,12 @@
 
 {% if not slim %}
   {% bundle merge_js file jquery-old %}
-    <script src="jsrender.min.js" base-dir="/node_modules/jsrender/"></script>
     <script src="jquery-ui.min.js" base-dir="/node_modules/jquery-ui-dist/"></script>
     <script src="jquery.modal.min.js" base-dir="/node_modules/jquery-modal/"></script>
+    <script src="jsrender.min.js" base-dir="/node_modules/jsrender/"></script>
+    <script>
+      $.views.settings.delimiters("[[", "]]", "^");
+    </script>
   {% endbundle %}
 {% endif %}
 
