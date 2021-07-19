@@ -93,42 +93,6 @@ def get_upload_filename(instance, filename):
     file_path = os.path.basename(filename)
     return f"grants/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
-
-def get_leaderboard():
-    return JSONStore.objects.filter(view='grants', key='leaderboard').order_by('-pk').first().data
-
-
-def generate_grants_leaderboard(max_items=100):
-    from grants.models import Subscription, Contribution
-    handles = Subscription.objects.exclude(contributor_profile__isnull=True).values_list('contributor_profile__handle', flat=True)
-    default_dict = {
-        'rank': None,
-        'no': 0,
-        'sum': 0,
-        'handle': None,
-    }
-    users_to_results = { ele : default_dict.copy() for ele in handles }
-
-    # get all contribution attributes
-    for contribution in Contribution.objects.exclude(profile_for_clr__isnull=True).select_related('subscription'):
-        key = contribution.subscription.contributor_profile.handle
-        users_to_results[key]['handle'] = key
-        amount = contribution.subscription.get_converted_amount(False)
-        if amount:
-            users_to_results[key]['no'] += 1
-            users_to_results[key]['sum'] += round(amount)
-    # prepare response for view
-    items = []
-    counter = 1
-    for item in sorted(users_to_results.items(), key=lambda kv: kv[1]['sum'], reverse=True):
-        item = item[1]
-        if item['no']:
-            item['rank'] = counter
-            items.append(item)
-            counter += 1
-    return items[:max_items]
-
-
 def is_grant_team_member(grant, profile):
     """Checks to see if profile is a grant team member
 
