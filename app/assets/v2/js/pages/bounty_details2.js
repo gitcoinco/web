@@ -166,6 +166,10 @@ Vue.mixin({
           url = `https://tzkt.io/${txn}`;
           break;
 
+        case 'CSPR':
+          url = `https://casperstats.io/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -242,6 +246,10 @@ Vue.mixin({
 
         case 'XTZ':
           url = `https://tzkt.io/${address}/operations/`;
+          break;
+
+        case 'CSPR':
+          url = `https://casperstats.io/address/${address}`;
           break;
 
         default:
