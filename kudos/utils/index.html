@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1311,7 +1299,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../grants/forms/" title="Forms" class="md-nav__link">
+    <a href="../../grants/forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -2009,27 +1997,7 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 </code></pre>
 
 <p>Base class for exceptions in this module.
-<h2 id="kudos.utils.KudosTransferNotFound">KudosTransferNotFound</h2></p>
-<pre><code class="python">KudosTransferNotFound(self, kudos_id, message)
-</code></pre>
-
-<p>Exception is raised when web3 and the database are out of sync.</p>
-<p>Attributes:
-kudos_id -- the kudos id that has mismatched data
-message -- explanation of the error</p>
-<h2 id="kudos.utils.KudosMismatch">KudosMismatch</h2>
-
-<pre><code class="python">KudosMismatch(self, kudos_id, kudos_web3, kudos_db, message)
-</code></pre>
-
-<p>Exception is raised when web3 and the database are out of sync.</p>
-<p>Attributes:
-    kudos_id: The kudos id that has mismatched data.
-    kudos_web3: Kudos attributes on web3.
-    kudos_db: Kudos attritubes in the database.
-    message: Explanation of the error.</p>
-<h2 id="kudos.utils.KudosContract">KudosContract</h2>
-
+<h2 id="kudos.utils.KudosContract">KudosContract</h2></p>
 <pre><code class="python">KudosContract(self, network='localhost', sockets=False)
 </code></pre>
 
@@ -2219,21 +2187,6 @@ getLatestId() view public returns (uint256 tokenId)</p>
     background_color (str):  Hex code.</p>
 <p>Returns:
     str: URL location on IPFS where the URI data is stored.</p>
-<h2 id="kudos.utils.get_to_emails">get_to_emails</h2>
-
-<pre><code class="python">get_to_emails(params)
-</code></pre>
-
-<p>Get a list of email address to send the alert to, in this priority:</p>
-<ol>
-<li>get_emails_master() pulls email addresses from the user's public Github account.</li>
-<li>If an email address is included in the Tips/Kudos form, append that to the email list.</li>
-</ol>
-<p>Args:
-    params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-        request coming in from a Tips/Kudos send.</p>
-<p>Returns:
-    list: An array of email addresses to send the email to.</p>
                 
                   
                 

@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1313,7 +1301,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../forms/" title="Forms" class="md-nav__link">
+    <a href="../forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -1976,11 +1964,6 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
 <p>If the argument is a tuple, the return value is the same object.
 <h3 id="grants.router.SubscriptionViewSet.queryset">queryset</h3></p>
 <p>Represent a lazy database lookup for a set of objects.
-<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3></p>
-<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
-</code></pre>
-
-<p>Handle serializing the Subscription object.
 <h3 id="grants.router.SubscriptionViewSet.get_queryset">get_queryset</h3></p>
 <pre><code class="python">SubscriptionViewSet.get_queryset(self)
 </code></pre>
@@ -1990,8 +1973,13 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
     * Add filter functionality.</p>
 <p>Returns:
     QuerySet: The Subscription queryset.</p>
-<h2 id="grants.router.GrantViewSet">GrantViewSet</h2>
+<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3>
 
+<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<p>Handle serializing the Subscription object.
+<h2 id="grants.router.GrantViewSet">GrantViewSet</h2></p>
 <pre><code class="python">GrantViewSet(self, **kwargs)
 </code></pre>
 

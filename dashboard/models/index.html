@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1320,7 +1308,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../grants/forms/" title="Forms" class="md-nav__link">
+    <a href="../../grants/forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -3433,23 +3421,8 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="dashboard.models.BountyFulfillmentQuerySet">BountyFulfillmentQuerySet</h2>
+<h2 id="dashboard.models.BountyFulfillment">BountyFulfillment</h2>
 
-<pre><code class="python">BountyFulfillmentQuerySet(self, model=None, query=None, using=None, hints=None)
-</code></pre>
-
-<p>Handle the manager queryset for BountyFulfillments.
-<h3 id="dashboard.models.BountyFulfillmentQuerySet.accepted">accepted</h3></p>
-<pre><code class="python">BountyFulfillmentQuerySet.accepted(self)
-</code></pre>
-
-<p>Filter results to accepted bounty fulfillments.
-<h3 id="dashboard.models.BountyFulfillmentQuerySet.submitted">submitted</h3></p>
-<pre><code class="python">BountyFulfillmentQuerySet.submitted(self)
-</code></pre>
-
-<p>Exclude results that have not been submitted.
-<h2 id="dashboard.models.BountyFulfillment">BountyFulfillment</h2></p>
 <pre><code class="python">BountyFulfillment(self, *args, **kwargs)
 </code></pre>
 
@@ -6919,16 +6892,6 @@ for a particular user
 
 <p>Returns:
     the reliabiliyt ranking that the user has.</p>
-<h3 id="dashboard.models.Profile.is_github_token_valid">is_github_token_valid</h3>
-
-<pre><code class="python">Profile.is_github_token_valid(self)
-</code></pre>
-
-<p>Check whether or not a Github OAuth token is valid.</p>
-<p>Args:
-    access_token (str): The Github OAuth token.</p>
-<p>Returns:
-    bool: Whether or not the provided OAuth token is valid.</p>
 <h3 id="dashboard.models.Profile.get_access_token">get_access_token</h3>
 
 <pre><code class="python">Profile.get_access_token(self, save=True)

@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1311,7 +1299,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../grants/forms/" title="Forms" class="md-nav__link">
+    <a href="../../grants/forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -1996,26 +1984,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     error (str): The error code</p>
 <p>Raises:
     SlackClientError: The exception is raised for any Slack-specific error.</p>
-<p>Returns:
-    str: The response message.</p>
-<h2 id="marketing.utils.validate_discord_integration">validate_discord_integration</h2>
-
-<pre><code class="python">validate_discord_integration(webhook_url, message=None, icon_url='')
-</code></pre>
-
-<p>Validate the Discord webhook URL by posting a message.</p>
-<p>Args:
-    webhook_url (str): The Discord webhook URL.
-    message (str): The Discord message to be sent.
-        Defaults to: The Gitcoin Discord integration is working fine.
-    icon_url (str): The URL to the avatar to be used.
-        Defaults to: the gitcoin helmet.</p>
-<p>Attributes:
-    result (dict): The result dictionary defining success status and error message.
-    message (str): The response message to display to the user.
-    response (obj): The Discord response object - refer to python-requests API</p>
-<p>Raises:
-    requests.exception.HTTPError: The exception is raised for any HTTP error.</p>
 <p>Returns:
     str: The response message.</p>
 <h2 id="marketing.utils.get_platform_wide_stats">get_platform_wide_stats</h2>

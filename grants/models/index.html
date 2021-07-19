@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1313,7 +1301,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../forms/" title="Forms" class="md-nav__link">
+    <a href="../forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -3116,11 +3104,6 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>Override the Grant save to optionally handle modified_on logic.
-<h2 id="grants.models.SubscriptionQuerySet">SubscriptionQuerySet</h2></p>
-<pre><code class="python">SubscriptionQuerySet(self, model=None, query=None, using=None, hints=None)
-</code></pre>
-
-<p>Define the Subscription default queryset and manager.
 <h2 id="grants.models.Subscription">Subscription</h2></p>
 <pre><code class="python">Subscription(self, *args, **kwargs)
 </code></pre>
@@ -3425,13 +3408,8 @@ object the first time, the query is executed.</p>
 
 <p>Create a contribution object. Only expected keyword argument is checkout_type, which was
 added as a keyword argument to avoid breaking existing calls to this function</p>
-<h2 id="grants.models.DonationQuerySet">DonationQuerySet</h2>
+<h2 id="grants.models.Flag">Flag</h2>
 
-<pre><code class="python">DonationQuerySet(self, model=None, query=None, using=None, hints=None)
-</code></pre>
-
-<p>Define the Contribution default queryset and manager.
-<h2 id="grants.models.Flag">Flag</h2></p>
 <pre><code class="python">Flag(self, *args, **kwargs)
 </code></pre>
 
@@ -3607,13 +3585,8 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="grants.models.ContributionQuerySet">ContributionQuerySet</h2>
+<h2 id="grants.models.Contribution">Contribution</h2>
 
-<pre><code class="python">ContributionQuerySet(self, model=None, query=None, using=None, hints=None)
-</code></pre>
-
-<p>Define the Contribution default queryset and manager.
-<h2 id="grants.models.Contribution">Contribution</h2></p>
 <pre><code class="python">Contribution(self, *args, **kwargs)
 </code></pre>
 
@@ -4428,7 +4401,7 @@ object the first time, the query is executed.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../forms/" title="Forms" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../admin/" title="Admin" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -4437,7 +4410,7 @@ object the first time, the query is executed.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Forms
+                Admin
               </span>
             </div>
           </a>

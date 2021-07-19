@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1320,7 +1308,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../grants/forms/" title="Forms" class="md-nav__link">
+    <a href="../../grants/forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -1992,16 +1980,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 <p>Collect authentication details.</p>
 <p>Returns:
     dict: An authentication dictionary.</p>
-<h2 id="git.utils.check_github">check_github</h2>
-
-<pre><code class="python">check_github(profile)
-</code></pre>
-
-<p>Check whether or not the provided username is present in the payload as active user.</p>
-<p>Args:
-    profile (str): The profile username to be validated.</p>
-<p>Returns:
-    dict: A dictionary containing status and user data.</p>
 <h2 id="git.utils.is_github_token_valid">is_github_token_valid</h2>
 
 <pre><code class="python">is_github_token_valid(oauth_token=None, last_validated=None)
@@ -2042,21 +2020,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     auth_url (str): The URL encoded Github authentication parameters.</p>
 <p>Returns:
     str: The Github authentication URL.</p>
-<h2 id="git.utils.get_github_user_token">get_github_user_token</h2>
-
-<pre><code class="python">get_github_user_token(code, **kwargs)
-</code></pre>
-
-<p>Get the Github authorization token.
-<h2 id="git.utils.get_github_user_data">get_github_user_data</h2></p>
-<pre><code class="python">get_github_user_data(oauth_token)
-</code></pre>
-
-<p>Get the user's github profile information.</p>
-<p>Args:
-    oauth_token (str): The Github OAuth2 token to use for authentication.</p>
-<p>Returns:
-    requests.Response: The Github user response.</p>
 <h2 id="git.utils.get_github_primary_email">get_github_primary_email</h2>
 
 <pre><code class="python">get_github_primary_email(oauth_token)
@@ -2076,7 +2039,7 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 <p>Args:
     oauth_token (str): The Github OAuth2 token to use for authentication.</p>
 <p>Returns:
-    list of str: All of the user's associated email from github.</p>
+    list of str: All of the user's associated emails from github.</p>
 <h2 id="git.utils.get_github_emails">get_github_emails</h2>
 
 <pre><code class="python">get_github_emails(oauth_token)
@@ -2087,16 +2050,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     oauth_token (str): The Github OAuth2 token to use for authentication.</p>
 <p>Returns:
     list of str: All of the user's associated email from git.</p>
-<h2 id="git.utils.search">search</h2>
-
-<pre><code class="python">search(query)
-</code></pre>
-
-<p>Search for a user on github.</p>
-<p>Args:
-    query (str): The query text to match.</p>
-<p>Returns:
-    request.Response: The github search response.</p>
 <h2 id="git.utils.search_user">search_user</h2>
 
 <pre><code class="python">search_user(query, token=None)
@@ -2113,7 +2066,7 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 <pre><code class="python">search_users(query, token=None)
 </code></pre>
 
-<p>Search for a user on github.</p>
+<p>Search for users on github.</p>
 <p>Args:
     query (str): The query text to match.
     token (str): The user's Github token to be used to perform the search.</p>
@@ -2121,55 +2074,44 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     github.PaginatedList: The pygithub paginator object of all results if many True.</p>
 <h2 id="git.utils.get_issue_comments">get_issue_comments</h2>
 
-<pre><code class="python">get_issue_comments(owner, repo, issue=None, comment_id=None)
+<pre><code class="python">get_issue_comments(owner, repo, issue=None, comment_id=None, page=1)
 </code></pre>
 
-<p>Get the comments from issues on a respository.
-PLEASE NOTE CURRENT LIMITATION OF 100 COMMENTS.</p>
+<p>Get the comments from issues on a respository.</p>
 <p>Args:
     owner (str): Owner of the repo
     repo (str): Name of the repo
-    issue (int): Issue number (optional)</p>
+    issue (int): Issue number (optional)
+    comment_id (int): Comment ID (optional)
+    page (int): Page number (optional)</p>
 <p>Returns:
-    requests.Response: The GitHub comments response.</p>
+    github.PaginatedList.PaginatedList / github.IssueComment.IssueComment: The GitHub comments response.</p>
 <h2 id="git.utils.get_issues">get_issues</h2>
 
 <pre><code class="python">get_issues(owner, repo, page=1, state='open')
 </code></pre>
 
-<p>Get the open issues on a respository.
+<p>Get the issues on a respository.
 <h2 id="git.utils.get_issue_timeline_events">get_issue_timeline_events</h2></p>
 <pre><code class="python">get_issue_timeline_events(owner, repo, issue, page=1)
 </code></pre>
 
 <p>Get the timeline events for a given issue.</p>
 <p>PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
-PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
-(See https://developer.github.com/changes/2016-05-23-timeline-preview-api/ for more info.)</p>
-<p>Args:
+Args:
     owner (str): Owner of the repo
     repo (str): Name of the repo
     issue (int): Issue number</p>
 <p>Returns:
-    requests.Response: The GitHub timeline response.</p>
-<h2 id="git.utils.get_organization">get_organization</h2>
+    github.PaginatedList of githubTimelineEvent: The GitHub timeline response list.</p>
+<h2 id="git.utils.get_user">get_user</h2>
 
-<pre><code class="python">get_organization(org, sub_path='', auth=None)
+<pre><code class="python">get_user(user=None, token=None)
 </code></pre>
 
-<p>Get the github organization details.
-<h2 id="git.utils.get_repo">get_repo</h2></p>
-<pre><code class="python">get_repo(repo_full_name, sub_path='', auth=None, is_user=False)
-</code></pre>
-
-<p>Get the github repo details.
+<p>Get the github user details.
 <h2 id="git.utils.get_notifications">get_notifications</h2></p>
 <pre><code class="python">get_notifications()
-</code></pre>
-
-<p>Get the github notifications.
-<h2 id="git.utils.get_gh_notifications">get_gh_notifications</h2></p>
-<pre><code class="python">get_gh_notifications(login=None)
 </code></pre>
 
 <p>Get the Github notifications for Gitcoin Bot.
@@ -2177,8 +2119,16 @@ PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
 <pre><code class="python">post_issue_comment(owner, repo, issue_num, comment)
 </code></pre>
 
-<p>Post a comment on an issue.
-<h2 id="git.utils.patch_issue_comment">patch_issue_comment</h2></p>
+<p>Post a comment on an issue.</p>
+<p>Args:
+    owner (str): Owner of the repo
+    repo (str): Name of the repo
+    issue_num (int): Issue number
+    comment (int): Comment Body</p>
+<p>Returns:
+    github.IssueComment.IssueComment: The GitHub created comment.</p>
+<h2 id="git.utils.patch_issue_comment">patch_issue_comment</h2>
+
 <pre><code class="python">patch_issue_comment(comment_id, owner, repo, comment)
 </code></pre>
 

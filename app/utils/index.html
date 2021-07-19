@@ -495,18 +495,6 @@
           
           
 
-
-  <li class="md-nav__item">
-    <a href="../thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
   
 
 
@@ -1320,7 +1308,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../grants/forms/" title="Forms" class="md-nav__link">
+    <a href="../../grants/forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -1984,56 +1972,7 @@ errors defaults to 'strict'.
 </code></pre>
 
 <p>Handle as SQL method for not equal lookup.
-<h2 id="app.utils.get_query_cache_key">get_query_cache_key</h2></p>
-<pre><code class="python">get_query_cache_key(compiler)
-</code></pre>
-
-<p>Generate a cache key from a SQLCompiler.</p>
-<p>This cache key is specific to the SQL query and its context
-(which database is used).  The same query in the same context
-(= the same database) must generate the same cache key.</p>
-<p>Args:
-    compiler (django.db.models.sql.compiler.SQLCompiler): A SQLCompiler
-        that will generate the SQL query.</p>
-<p>Returns:
-    int: The cache key.</p>
-<h2 id="app.utils.get_table_cache_key">get_table_cache_key</h2>
-
-<pre><code class="python">get_table_cache_key(db_alias, table)
-</code></pre>
-
-<p>Generates a cache key from a SQL table.</p>
-<p>Args:
-    db_alias (str): The alias of the used database.
-    table (str): The name of the SQL table.</p>
-<p>Returns:
-    int: The cache key.</p>
-<h2 id="app.utils.get_raw_cache_client">get_raw_cache_client</h2>
-
-<pre><code class="python">get_raw_cache_client(backend='default')
-</code></pre>
-
-<p>Get a raw Redis cache client connection.</p>
-<p>Args:
-    backend (str): The backend to attempt connection against.</p>
-<p>Raises:
-    Exception: The exception is raised/caught if any generic exception
-        is encountered during the connection attempt.</p>
-<p>Returns:
-    redis.client.StrictRedis: The raw Redis client connection.
-        If an exception is encountered, return None.</p>
-<h2 id="app.utils.add_contributors">add_contributors</h2>
-
-<pre><code class="python">add_contributors(repo_data)
-</code></pre>
-
-<p>Add contributor data to repository data dictionary.</p>
-<p>Args:
-    repo_data (dict): The repository data dictionary to be updated.</p>
-<p>Returns:
-    dict: The updated repository data dictionary.</p>
-<h2 id="app.utils.setup_lang">setup_lang</h2>
-
+<h2 id="app.utils.setup_lang">setup_lang</h2></p>
 <pre><code class="python">setup_lang(request, user)
 </code></pre>
 
@@ -2111,7 +2050,7 @@ The argument must be an iterable if specified.
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../thumbnail_processors/" title="Thumbnail Processors" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../static_storage/" title="Static Storage" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -2120,7 +2059,7 @@ The argument must be an iterable if specified.
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Thumbnail Processors
+                Static Storage
               </span>
             </div>
           </a>

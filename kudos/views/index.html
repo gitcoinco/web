@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1311,7 +1299,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../grants/forms/" title="Forms" class="md-nav__link">
+    <a href="../../grants/forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -2014,24 +2002,7 @@ TODO:  This might be depreacted in favor of the sync_profile function in the fut
 </code></pre>
 
 <p>Render the Kudos 'mint' page.  This is mostly a placeholder for future functionality.
-<h2 id="kudos.views.get_primary_from_email">get_primary_from_email</h2></p>
-<pre><code class="python">get_primary_from_email(params, request)
-</code></pre>
-
-<p>Find the primary_from_email address.  This function finds the address using this priority:</p>
-<ol>
-<li>If the email field is filed out in the Send POST request, use the <code>fromEmail</code> field.</li>
-<li>If the user is logged in, they should have an email address associated with their account.
-    Use this as the second option.  <code>request_user_email</code>.</li>
-<li>If all else fails, attempt to pull the email from the user's github account.</li>
-</ol>
-<p>Args:
-    params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-        request coming in from a Tips/Kudos send.</p>
-<p>Returns:
-    str: The primary_from_email string.</p>
-<h2 id="kudos.views.kudos_preferred_wallet">kudos_preferred_wallet</h2>
-
+<h2 id="kudos.views.kudos_preferred_wallet">kudos_preferred_wallet</h2></p>
 <pre><code class="python">kudos_preferred_wallet(request, handle)
 </code></pre>
 

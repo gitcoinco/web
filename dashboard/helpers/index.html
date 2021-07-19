@@ -495,18 +495,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
-      Thumbnail Processors
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../app/utils/" title="Utilities" class="md-nav__link">
       Utilities
     </a>
@@ -1320,7 +1308,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../grants/forms/" title="Forms" class="md-nav__link">
+    <a href="../../grants/forms.md" title="Forms" class="md-nav__link">
       Forms
     </a>
   </li>
@@ -2023,51 +2011,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     url (str): The URL to be normalized.</p>
 <p>Returns:
     str: The normalized URL.</p>
-<h2 id="dashboard.helpers.sync_bounty_with_web3">sync_bounty_with_web3</h2>
-
-<pre><code class="python">sync_bounty_with_web3(bounty_contract, url)
-</code></pre>
-
-<p>Sync the Bounty with Web3.</p>
-<p>Args:
-    bounty_contract (Web3): The Web3 contract instance.
-    url (str): The bounty URL.</p>
-<p>Returns:
-    tuple: A tuple of bounty change data.
-    tuple[0] (bool): Whether or not the Bounty changed.
-    tuple[1] (dashboard.models.Bounty): The first old bounty object.
-    tuple[2] (dashboard.models.Bounty): The new Bounty object.</p>
-<h2 id="dashboard.helpers.BountyStage">BountyStage</h2>
-
-<pre><code class="python">BountyStage(self, /, *args, **kwargs)
-</code></pre>
-
-<p>Python enum class that matches up with the Standard Bounties BountyStage enum.</p>
-<p>Attributes:
-    Draft (int): Bounty is a draft.
-    Active (int): Bounty is active.
-    Dead (int): Bounty is dead.</p>
-<h3 id="dashboard.helpers.BountyStage.Active">Active</h3>
-
-<p>Python enum class that matches up with the Standard Bounties BountyStage enum.</p>
-<p>Attributes:
-    Draft (int): Bounty is a draft.
-    Active (int): Bounty is active.
-    Dead (int): Bounty is dead.</p>
-<h3 id="dashboard.helpers.BountyStage.Dead">Dead</h3>
-
-<p>Python enum class that matches up with the Standard Bounties BountyStage enum.</p>
-<p>Attributes:
-    Draft (int): Bounty is a draft.
-    Active (int): Bounty is active.
-    Dead (int): Bounty is dead.</p>
-<h3 id="dashboard.helpers.BountyStage.Draft">Draft</h3>
-
-<p>Python enum class that matches up with the Standard Bounties BountyStage enum.</p>
-<p>Attributes:
-    Draft (int): Bounty is a draft.
-    Active (int): Bounty is active.
-    Dead (int): Bounty is dead.</p>
 <h2 id="dashboard.helpers.UnsupportedSchemaException">UnsupportedSchemaException</h2>
 
 <pre><code class="python">UnsupportedSchemaException(self, /, *args, **kwargs)
