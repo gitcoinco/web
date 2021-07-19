@@ -74,7 +74,9 @@ svg{
 <h1>Bounties by repo volume that were in status at this time</h1>
 {% include "dataviz/shared/nav.html" %}
 <script src="//d3js.org/d3.v2.js"></script>
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
 <br>
 <br>
 <br>

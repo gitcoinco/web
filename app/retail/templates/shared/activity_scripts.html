@@ -15,8 +15,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
-<script src="{% static "v2/js/lib/jitsi.js" %}"></script>
+{% load static bundle %}
+{% bundle merge_js file jitsi %}
+  <script src="external_api.min.js" base-dir="/node_modules/lib-jitsi-meet-dist/dist"></script>
+{% endbundle %}
 <script src="{% static "v2/js/activity.js" %}"></script>
 <script>
   document.long_poller_live = true;

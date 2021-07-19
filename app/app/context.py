@@ -26,6 +26,7 @@ from django.http import HttpRequest
 from django.utils import timezone
 
 import requests
+from app.bundle_context import context as bundleContext
 from app.utils import get_location_from_ip
 from cacheops import cached_as
 from dashboard.models import Activity, Tip, UserAction
@@ -212,5 +213,9 @@ def preprocess(request):
         if not settings.DEBUG:
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet').cache(timeout=60)
             context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet').cache(timeout=60)
+
+    # add bundleContext to context in dev
+    if settings.DEBUG:
+        context.update(bundleContext())
 
     return context

@@ -153,8 +153,18 @@ def get_bundled(elems, attr, kind, merge):
     for el in elems:
         # is inclusion or inline block?
         if el.get(attr):
+
+            # check if we're loading an alternative source in production
+            file = el[attr]
+            if isProduction and el.get('prod'):
+                file = el['prod']
+
             # absolute path of the given asset
-            asset = '%s/assets/%s' % (settings.BASE_DIR, el[attr])
+            if not el.get('base-dir'):
+                asset = '%s/assets/%s' % (settings.BASE_DIR, file)
+            else:
+                asset = os.path.normpath(os.path.join(settings.BASE_DIR, '../', el['base-dir'].strip('/'), file.strip('/')))
+
             # merged content is read from file and concatenated
             if merge:
                 f = open(asset.replace('/', os.sep), 'r', encoding='utf8')
@@ -273,9 +283,7 @@ def bundle(parser, token):
     mode = 'file'
 
     # file name for the output
-    if len(args) == 4:
-        name = args[3]
-    else:
-        name = None
+    name = args[3] if len(args) == 4 else None
+
 
     return CompressorNode(nodelist, kind, mode, name)

@@ -149,7 +149,9 @@
   $('[data-toggle="tooltip"]').bootstrapTooltip();
 </script>
 
-<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+{% bundle merge_js file unveil %}
+  <script src="jquery.unveil.js" base-dir="/node_modules/jquery-unveil/"></script>
+{% endbundle %}
 <script>
   $(document).ready(function() {
     $("img").unveil(200);

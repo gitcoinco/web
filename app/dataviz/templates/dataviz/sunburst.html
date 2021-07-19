@@ -35,7 +35,9 @@
 <head>
   <meta charset="utf-8">
   <script src="//d3js.org/d3.v3.min.js"></script>
-  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  {% bundle merge_js file jquery %}
+    <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+  {% endbundle %}
   {% bundle css file dataviz_sunburst %}
 
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/dataviz/sequences.scss" %} />

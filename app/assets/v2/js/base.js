@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
 
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;

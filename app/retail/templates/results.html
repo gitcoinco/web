@@ -601,7 +601,9 @@
       {% include 'shared/footer_scripts.html' %}
 
 
-      <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+      {% bundle merge_js file unveil %}
+        <script src="jquery.unveil.js" base-dir="/node_modules/jquery-unveil/"></script>
+      {% endbundle %}
     </div>
   </body>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
