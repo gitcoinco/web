@@ -1032,7 +1032,6 @@ def create_status_update(request):
     else:
         response['status'] = 401
         response['message'] = 'Not logged in!'
-        print('here', response)
         return JsonResponse(status=response['status'], data={'status': 401,'message':response['message']})
 
     return JsonResponse(response)
