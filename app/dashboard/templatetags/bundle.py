@@ -85,8 +85,8 @@ def clean_block_and_hash(block, forced):
             cleanBlock = cleanBlock.replace(tag, tag.replace('"', '').replace('\'', ''))
 
     # in production staticfinder will attach an additional hash to the resource which doesn't exist on the local disk
-    if isProduction and forced != True:
-        cleanBlock = re.sub(re.compile(r'(\..{12}\.(css|scss|js))'), r'.\2', cleanBlock)
+    if isProduction:
+        cleanBlock = re.sub(re.compile(r'(\.[0-9a-zA-Z]{12}\.(css|scss|js))'), r'.\2', cleanBlock)
 
     # parse block with bs4
     block = BeautifulSoup(cleanBlock, "lxml")
