@@ -21,12 +21,9 @@ import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from marketing.models import EmailSubscriber
 from marketing.tasks import new_bounty_daily
-from marketing.utils import should_suppress_notification_email
-from townsquare.utils import is_email_townsquare_enabled
 
 warnings.filterwarnings("ignore")
 

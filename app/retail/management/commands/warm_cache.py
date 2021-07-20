@@ -23,8 +23,6 @@ from django.core.management.base import BaseCommand
 from django.urls import reverse
 from django.utils import timezone
 
-from retail.utils import programming_languages
-
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)

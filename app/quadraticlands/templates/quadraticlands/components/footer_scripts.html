@@ -12,6 +12,15 @@
 
 
 <!-- JS web3 -->
+{% bundle merge_js file gitcoin %}
+  <script>
+    // import web3
+    import Web3 from 'web3';
+    // set to global scope
+    window.Web3 = Web3;
+  </script>
+{% endbundle %}
+
 <script src="{% static "v2/js/lib/web3.min.js" %}"></script>
 
 
@@ -26,15 +35,15 @@
 
 <!-- JS Gitcoin Network -->
 {% bundle merge_js file gitcoin %}
-<script src="{% static "v2/js/mautic.js" %}"></script>
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
-<script src="{% static "v2/js/data-chains.js" %}"></script>
-<script src="{% static "v2/js/wallet.js" %}"></script>
-<script src="{% static "v2/js/ajax-helper.js" %}"></script>
-<script src="{% static "v2/js/cart-data.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/truncate-hash.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+  <script src="{% static "v2/js/mautic.js" %}"></script>
+  <script src="{% static "v2/js/data-chains.js" %}"></script>
+  <script src="{% static "v2/js/wallet.js" %}"></script>
+  <script src="{% static "v2/js/ajax-helper.js" %}"></script>
+  <script src="{% static "v2/js/cart-data.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/truncate-hash.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
 {% endbundle %}
 
 

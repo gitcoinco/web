@@ -1,7 +1,9 @@
 {% extends 'onepager/base.html' %}
-{% load i18n static date_fromisoformat timesince_fromisoformat %}
+{% load i18n static date_fromisoformat timesince_fromisoformat bundle %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/lib/jquery.js"%}"></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
 <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
 {% endblock %}
 <!-- Main -->

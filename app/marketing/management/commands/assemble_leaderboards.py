@@ -21,11 +21,9 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
-from django.db.models import Q
 from django.utils import timezone
 
-from cacheops import CacheMiss, cache
-from dashboard.models import Earning, Profile
+from dashboard.models import Profile
 from marketing.models import LeaderboardRank
 
 # Constants

@@ -180,8 +180,11 @@
       {{project_obj|json_script:"project-object"}}
       {{currentProfile|json_script:"current-profile"}}
 
-      <script src="{% static "v2/js/lib/plyr.min.js" %}"></script>
-      <script src="{% static "v2/js/lib/vue-plyr.min.js" %}"></script>
+      {% bundle merge_js file plyr %}
+        <script src="plyr.min.js" base-dir="/node_modules/plyr/dist"></script>
+        <script src="vue-plyr.min.js" base-dir="/node_modules/vue-plyr/dist"></script>
+      {% endbundle %}
+
       <script src="{% static "v2/js/pages/project-page.js" %}"></script>
       {% include 'shared/activity_scripts.html' %}
       <script src="{% static "v2/js/status.js" %}"></script>

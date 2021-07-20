@@ -31,7 +31,7 @@ from django.template import loader
 
 import pyvips
 import requests
-from git.utils import get_organization, get_user
+from git.utils import get_user, github_connect
 from PIL import Image, ImageOps
 from pyvips.error import Error as VipsError
 from svgutils import transform
@@ -224,44 +224,6 @@ def get_upload_filename(instance, filename):
     salt = token_hex(16)
     file_path = os.path.basename(filename)
     return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
-
-
-def get_svg_templates():
-    """Get the SVG templates for all avatar categories."""
-    template_data = {
-        'accessories': {
-            'earring': [],
-            'glasses': [],
-            'hat': [],
-            'masks': [],
-            'extras': [],
-        },
-        'clothing': [],
-        'ears': [],
-        'eyes': [],
-        'facial_hair': {
-            'beard': [],
-            'mustache': []
-        },
-        'hair': [],
-        'head': [],
-        'makeup': [],
-        'mouth': [],
-        'nose': [],
-        'wallpaper': []
-    }
-
-    for category in template_data:
-        path = f'avatar/templates/{category}'
-        template_list = os.listdir(path)
-
-        if isinstance(template_data[category], dict):
-            for item in template_data[category]:
-                inner_path = f'{path}/{item}'
-                template_data[category][item] = os.listdir(inner_path)
-        else:
-            template_data[category] = template_list
-    return template_data
 
 
 def get_svg_template(category, item, primary_color, secondary_color=''):
@@ -509,9 +471,9 @@ def get_avatar(_org_name):
         avatar = Image.open(filepath, 'r').convert("RGBA")
     except (IOError, FileNotFoundError):
         remote_user = get_user(_org_name)
-        if not remote_user.get('avatar_url', False):
+        if not hasattr(remote_user, 'avatar_url'):
             return JsonResponse({'msg': 'invalid user'}, status=422)
-        remote_avatar_url = remote_user['avatar_url']
+        remote_avatar_url = remote_user.avatar_url
 
         r = requests.get(remote_avatar_url, stream=True)
         chunk_size = 20000
@@ -570,12 +532,9 @@ def get_err_response(request, blank_img=False):
 
 def get_user_github_avatar_image(handle):
     remote_user = get_user(handle)
-    avatar_url = remote_user.get('avatar_url')
+    avatar_url = remote_user.avatar_url if hasattr(remote_user, 'avatar_url') else None
     if not avatar_url:
-        remote_org = get_organization(handle)
-        avatar_url = remote_org.get('avatar_url')
-        if not avatar_url:
-            return None
+        return None
     from .models import BaseAvatar
     temp_avatar = get_github_avatar_image(avatar_url, BaseAvatar.ICON_SIZE)
     if not temp_avatar:

@@ -62,7 +62,7 @@
       {% if not original.active %}
         <textarea name="more_info" style="background-color:white; color: black; border: 1px solid;">Can you prove your ownership of this brand?</textarea>
         <input type="submit" value="Request More Info" name="_request_more_info" value="1">
-        | 
+        |
         <input type="submit" value="Approve Grant" name="_approve_grant" value="1">
       {% else %}
       N/A
@@ -106,6 +106,7 @@
       <input type="submit" value="Approve Request" name="_approve_quest" value="1">
     {% elif 'dashboard/hackathonevent/' in request.build_absolute_uri %}
       <input type="submit" value="Update Related Bounties Expiry Date" name="_bulk_update_expiry" value="1">
+      <input type="submit" value="Update Hackathon Events Cache" name="_update_hackathon_events_cache" value="1">
     {% endif %}
   </div>
 {% endblock %}

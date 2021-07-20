@@ -17,17 +17,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 
-import pytest
-from dashboard.models import Activity, Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
-from marketing.management.commands import assemble_leaderboards
+from dashboard.models import Bounty, BountyFulfillment, Earning, Profile, Tip, UserAction
 from marketing.management.commands.assemble_leaderboards import (
-    BREAKDOWNS, do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
+    do_leaderboard, run_monthly, run_quarterly, run_weekly, run_yearly, should_suppress_leaderboard,
 )
 from marketing.models import LeaderboardRank
 from pytz import UTC

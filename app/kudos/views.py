@@ -28,7 +28,6 @@ import uuid
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -43,10 +42,10 @@ import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.tasks import increment_view_count
-from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
+from dashboard.utils import get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
+from git.utils import get_emails_by_category, get_github_primary_email
 from kudos.tasks import redeem_bulk_kudos
 from kudos.utils import kudos_abi
 from marketing.mails import new_kudos_request
@@ -274,39 +273,6 @@ def details(request, kudos_id, name):
 def mint(request):
     """Render the Kudos 'mint' page.  This is mostly a placeholder for future functionality."""
     return TemplateResponse(request, 'kudos_mint.html', {})
-
-
-def get_primary_from_email(params, request):
-    """Find the primary_from_email address.  This function finds the address using this priority:
-
-    1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
-    2. If the user is logged in, they should have an email address associated with their account.
-        Use this as the second option.  `request_user_email`.
-    3. If all else fails, attempt to pull the email from the user's github account.
-
-    Args:
-        params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-            request coming in from a Tips/Kudos send.
-
-    Returns:
-        str: The primary_from_email string.
-
-    """
-
-    request_user_email = request.user.email if request.user.is_authenticated else ''
-    logger.info(request.user.profile)
-    access_token = request.user.profile.get_access_token() if request.user.is_authenticated else ''
-
-    if params.get('fromEmail'):
-        primary_from_email = params['fromEmail']
-    elif request_user_email:
-        primary_from_email = request_user_email
-    elif access_token:
-        primary_from_email = get_github_primary_email(access_token)
-    else:
-        primary_from_email = 'unknown@gitcoin.co'
-
-    return primary_from_email
 
 
 def kudos_preferred_wallet(request, handle):

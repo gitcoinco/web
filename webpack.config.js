@@ -2,6 +2,7 @@ const path = require('path');
 
 const webpack = require('webpack');
 
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const WebpackWatchedGlobEntries = require('webpack-watched-glob-entries-plugin');
 
@@ -60,22 +61,21 @@ module.exports = (_, argv) => {
     },
     optimization: {
       minimize: (argv.mode !== 'development'),
-      minimizer: [
-        // use custom minimizer to avoid tree-shaking (TerserPlugin is built-in)
-        new TerserPlugin({
-          minify: (file, sourceMap) => {
-            const options = {};
-
-            if (sourceMap) {
-              options.sourceMap = {
-                content: sourceMap,
-              };
-            }
-
-            return require("uglify-js").minify(file, options);
+      minimizer: [new TerserPlugin({
+          terserOptions: {
+              mangle: true,
+              format: {
+                  comments: false,
+              },
+              compress: {}
           },
-        })
-      ]
+          extractComments: false
+      })],
+    },
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js'
+      }
     },
     plugins: [
       new WebpackWatchedGlobEntries(),
@@ -86,7 +86,65 @@ module.exports = (_, argv) => {
     ]
   };
 
+  // extract scss bundles, compile, minify, watch and clean-up webpack artifacts
+  const sassConfig = {
+    entry: WebpackWatchedGlobEntries.getEntries(
+      [ path.resolve(__dirname, 'app/assets/v2/bundles/scss/*.scss') ]
+    ),
+    devtool: false, // (argv.mode === 'development' ? 'eval-cheap-source-map' : false)
+    output: {
+      filename: '[name].noop.js',
+      path: path.resolve(__dirname, 'app/assets/v2/bundled/scss/'),
+    },
+    module: {
+      rules: [
+        {
+          test: /bundles\/scss\/.*\.scss$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '[name].css',
+              }
+            },
+            {
+              loader: 'extract-loader',
+            },
+            {
+              loader: 'css-loader?-url',
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                additionalData: `
+                  $mode: '${argv.mode}';
+                  @function static($url) {
+                    @if (str-slice($url, 1, 1) == '/') {
+                      $url: str-slice($url, 2);
+                    }
+                    @return '${static}' + $url;
+                  };
+                  @import '${path.resolve(__dirname, 'app/assets/v2/scss/gc-mixins')}';
+                `
+              }
+            }
+          ]
+        }
+      ]
+    },
+    plugins: [
+      new WebpackWatchedGlobEntries(),
+      // webpack always creates a .js file for each entry - delete it
+      new FileManagerPlugin({
+        events: {
+          onEnd: {
+            delete: [path.resolve(__dirname, 'app/assets/v2/bundled/scss/*.noop.*')],
+          },
+        },
+      })
+    ]
+  };
 
   // export configuration to webpack
-  return jsConfig;
+  return [jsConfig, sassConfig];
 };

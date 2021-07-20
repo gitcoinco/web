@@ -49,7 +49,7 @@ then
 
     # Build assets using bundle and webpack
     if [ "$DISABLE_WEBPACK_ASSETS" != "on" ]; then
-        yarn install
+        yarn install --non-interactive --frozen-lockfile --network-timeout 100000 --verbose
         python3 manage.py bundle
         if [ "$ENV" == "prod" ];
         then

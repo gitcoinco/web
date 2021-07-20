@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
@@ -25,7 +25,9 @@ path.chord {
 <h1> payers (top) / payees (top) </h1>
 <p>The redder the node is the longer it took the bounty hunter to turn around.</p>
 <script src="//d3js.org/d3.v3.min.js"></script>
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
 <script>
 
 var url = document.location.href + '?data=1&format=csv';

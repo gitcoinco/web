@@ -1,12 +1,13 @@
 {% extends 'onepager/base.html' %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/lib/jquery.js"%}"> </script>
-<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js"  %}">
-</script>
+{% bundle merge_js file jquery-gas %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+  <script src="jquery-ui.min.js" base-dir="/node_modules/jquery-ui-dist/"></script>
+{% endbundle %}
+<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js"  %}"></script>
 <script src="{% static "v2/js/pages/gas.js" %}"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="{% static "v2/js/lib/tooltip.js" %}"></script>
 
 {% if gas_histories != '[]' %}
 <script>
