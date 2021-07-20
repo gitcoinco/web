@@ -49,7 +49,7 @@
     "bootstrap-vue": "2.18.0",
     "daterangepicker": "3.0.5",
     "dompurify": "^2.2.9",
-    "gsap": "2.0.2",
+    "gsap": "3.6.0",
     "highlight.js": "9.15.9",
     "ipfs-api": "^26.1.2",
     "jquery": "3.5.1",
