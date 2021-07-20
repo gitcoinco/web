@@ -404,9 +404,9 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
     except Exception as e:
         logger.error(
             "could not get issues - Reason: %s - owner: %s repo: %s page: %s status_code: %s",
-            e.data['message'], owner, repo, page, e.status
+            e.data.get("message"), owner, repo, page, e.status
         )
-        return {'status': e.status, 'message': e.data['message']}
+        return {'status': e.status, 'message': e.data.get("message")}
 
 
 def get_issues(owner, repo, page=1, state='open'):
@@ -423,7 +423,7 @@ def get_issues(owner, repo, page=1, state='open'):
     except Exception as e:
         logger.error(
             "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status_code: %s",
-            e.data['message'], owner, repo, page, state, e.status
+            e.data.get("message"), owner, repo, page, state, e.status
         )
     return []
 
@@ -519,7 +519,9 @@ def get_user(user=None, token=None):
         gh_client = github_connect(token)
         return gh_client.get_user(user) if user else gh_client.get_user()
     except GithubException as e:
-        logger.error(e)
+        # Do not log exception for github users which are deleted
+        if e.data.get("message") != 'Not Found':
+            logger.error(e)
 
     return None
 

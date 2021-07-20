@@ -120,11 +120,15 @@ class Command(BaseCommand):
             .filter(receive_address__iexact=options['account_address'], tokenName__iexact='ETH') \
             .order_by('-id') \
             .values('id', 'metadata')[:1]
-        
-        if len(dgp_records) > 0:
+
+        if (
+            len(dgp_records) > 0 and
+            dgp_records[0].get('metadata') and
+            dgp_records[0].get('metadata').get('blockNumber')
+        ):
             params['startblock'] = int(dgp_records[0]['metadata']['blockNumber']) + 1
             logger.info(f"ETH Tx Records were found. Continuing from block {params['startblock']}")
-        
+
         params['action'] = 'txlist'
         records = call_etherscan_api(network, params)
         for rec in records:
@@ -137,7 +141,11 @@ class Command(BaseCommand):
             .order_by('-id') \
             .values('id', 'metadata')[:1]
 
-        if len(dgp_records) > 0:
+        if (
+            len(dgp_records) > 0 and
+            dgp_records[0].get('metadata') and
+            dgp_records[0].get('metadata').get('blockNumber')
+        ):
             params['startblock'] = int(dgp_records[0]['metadata']['blockNumber']) + 1
             logger.info(f"Token Tx Records were found. Continuing from block {params['startblock']}")
 
