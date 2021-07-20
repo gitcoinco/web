@@ -2,9 +2,10 @@ const payWithCasperExtension = async(fulfillment_id, to_address, vm, modal) => {
 
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
+  const tenant = vm.getTenant(token_name, vm.bounty.web3_type);
 
   const { CasperClient, DeployUtil, PublicKey, Signer } = casper;
-  const casperClient = new CasperClient('http://3.142.224.108:7777/rpc');
+  const casperClient = new CasperClient(`/api/v1/bounty/payout/broadcast/${tenant}`);
 
   const isConnected = await Signer.isConnected();
 

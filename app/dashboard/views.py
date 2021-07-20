@@ -6551,6 +6551,30 @@ def payout_bounty_v1(request, fulfillment_id):
 
 @csrf_exempt
 @require_POST
+def payout_tx_forwarder_v1(request, tenant):
+    '''
+        Proxy payout transaction to external node to bypass CORS restriction on browser.
+    '''
+    import requests
+
+    if tenant.upper() == 'CASPER':
+        # casper
+        url = 'http://3.142.224.108:7777/rpc'
+    else:
+        return JsonResponse({'error': 'invalid tenant'}, status=400)
+
+    data = json.loads(request.body)
+
+    try:
+        response = requests.post(url, json=data).json()
+    except Exception:
+        response = {}
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
 def close_bounty_v1(request, bounty_id):
     '''
         ETC-TODO
