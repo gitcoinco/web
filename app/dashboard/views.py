@@ -6567,8 +6567,11 @@ def payout_tx_forwarder_v1(request, tenant):
 
     try:
         response = requests.post(url, json=data).json()
+
+        if response.get("error", False):
+            return JsonResponse({'error': response["error"]}, status=422)
     except Exception:
-        response = {}
+        return JsonResponse({'error': 'something went wrong!'}, status=422)
 
     return JsonResponse(response)
 
