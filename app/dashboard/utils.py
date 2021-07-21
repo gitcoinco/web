@@ -21,7 +21,6 @@ import base64
 import json
 import logging
 import re
-import time
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
@@ -36,9 +35,7 @@ from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
 from cytoolz import compose
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import (
-    Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
-)
+from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
 from dashboard.sync.algorand import sync_algorand_payout
 from dashboard.sync.binance import sync_binance_payout
 from dashboard.sync.btc import sync_btc_payout
@@ -55,7 +52,6 @@ from dashboard.sync.sia import sync_sia_payout
 from dashboard.sync.tezos import sync_tezos_payout
 from dashboard.sync.xinfin import sync_xinfin_payout
 from dashboard.sync.zil import sync_zil_payout
-from ens.auto import ns
 from ens.utils import name_to_hash
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
@@ -359,15 +355,6 @@ def get_graphql_result(uri, query):
     result = client.execute(query)
 
     return json.loads(result)
-
-
-def get_profile_from_referral_code(code):
-    """Returns a profile from the unique code
-
-    Returns:
-        A unique string for each profile
-    """
-    return base64.urlsafe_b64decode(code.encode()).decode()
 
 
 def get_bounty_invite_url(inviter, bounty_id):
@@ -888,57 +875,8 @@ def clean_bounty_url(url):
         return url
 
 
-def generate_pub_priv_keypair():
-    # Thanks https://github.com/vkobel/ethereum-generate-wallet/blob/master/LICENSE.md
-    import sha3
-    from ecdsa import SECP256k1, SigningKey
-
-    def checksum_encode(addr_str):
-        keccak = sha3.keccak_256()
-        out = ''
-        addr = addr_str.lower().replace('0x', '')
-        keccak.update(addr.encode('ascii'))
-        hash_addr = keccak.hexdigest()
-        for i, c in enumerate(addr):
-            if int(hash_addr[i], 16) >= 8:
-                out += c.upper()
-            else:
-                out += c
-        return '0x' + out
-
-    keccak = sha3.keccak_256()
-
-    priv = SigningKey.generate(curve=SECP256k1)
-    pub = priv.get_verifying_key().to_string()
-
-    keccak.update(pub)
-    address = keccak.hexdigest()[24:]
-
-    def test(addrstr):
-        assert(addrstr == checksum_encode(addrstr))
-
-    test('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed')
-    test('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359')
-    test('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB')
-    test('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb')
-    test('0x7aA3a964CC5B0a76550F549FC30923e5c14EDA84')
-
-    # print("Private key:", priv.to_string().hex())
-    # print("Public key: ", pub.hex())
-    # print("Address:    ", checksum_encode(address))
-    # return priv key, pub key, address
-
-    return priv.to_string().hex(), pub.hex(), checksum_encode(address)
-
-
 def get_bounty_semaphore_ns(standard_bounty_id):
     return f'{SEMAPHORE_BOUNTY_NS}_{standard_bounty_id}_{SEMAPHORE_BOUNTY_SALT}'
-
-
-def release_bounty_lock(standard_bounty_id):
-    from app.utils import release_semaphore
-    ns = get_bounty_semaphore_ns(standard_bounty_id)
-    release_semaphore(ns)
 
 
 def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None, disable_cache=False, full_profile=False):

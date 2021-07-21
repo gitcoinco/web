@@ -255,13 +255,15 @@ async function vouche() {
     result.push(entry);
   });
 
+  let balance = await getTokenBalances(gtc_address());
+
   // @kev : do something with the result ( sign, safe, whatever)
   // this is how far i could come. now your turn :)
   const accounts = await web3.eth.getAccounts();
   const account = accounts[0];
   const _package = {
     votes: result,
-    balance: balance,
+    balance: balance.balance,
     account: account
   };
   let signature = await web3.eth.personal.sign(

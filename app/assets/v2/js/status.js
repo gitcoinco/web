@@ -428,6 +428,10 @@ $(document).ready(function() {
       return;
     }
 
+    if (!document.contxt.github_handle) {
+      return;
+    }
+
     if (typeof ga !== 'undefined') {
       ga('send', 'event', 'Submit Status Update', 'click', 'Person');
     }
@@ -501,7 +505,7 @@ $(document).ready(function() {
       localStorage.setItem(lskey, the_message);
       _alert(
         { message: gettext('An error occurred. Please try again.') },
-        'error'
+        'danger'
       );
     };
 
@@ -547,7 +551,7 @@ $(document).ready(function() {
         } else {
           _alert(
             { message: gettext('An error occurred. Please try again.') },
-            'error'
+            'danger'
           );
         }
       }).catch(err => fail_callback());

@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
 
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
@@ -104,8 +104,10 @@ $(document).ready(function() {
       });
   };
 
-  if (document.visitorId) {
-    Cookies.set('visitorId', document.visitorId);
+  var visitorId = (document.visitorId || Cookies.get('_vid'));
+
+  if (visitorId) {
+    Cookies.set('visitorId', visitorId);
   }
   record_campaign_to_cookie();
 

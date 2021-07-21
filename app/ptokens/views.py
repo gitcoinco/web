@@ -17,41 +17,25 @@
 '''
 from __future__ import unicode_literals
 
-import csv
-import json
-import logging
-from datetime import date, datetime
-from decimal import Decimal
+from datetime import datetime
 
-from django.conf import settings
-from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth import logout
-from django.contrib.auth.models import User
-from django.core.validators import validate_email
-from django.db.models import Avg, Count, Max, Q, Sum
-from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.utils import timezone, translation
-from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 import dateutil
-from app.settings import PTOKEN_ABI
-from dashboard.models import Profile
-from dashboard.utils import get_web3
 from inbox.utils import send_notification_to_user
-from ptokens.emails import render_ptoken_redemption_request
 from ptokens.helpers import record_ptoken_activity
 from ptokens.mails import (
     send_ptoken_redemption_accepted, send_ptoken_redemption_cancelled, send_ptoken_redemption_rejected,
     send_ptoken_redemption_request,
 )
 from ptokens.models import PersonalToken, PTokenEvent, PurchasePToken, RedemptionToken
-from web3 import Web3
 
 
 @staff_member_required

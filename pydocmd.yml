@@ -15,8 +15,6 @@ generate:
     - app.sitemaps++
   - app/static_storage.md:
     - app.static_storage++
-  - app/thumbnail_processors.md:
-    - app.thumbnail_processors++
   - app/utils.md:
     - app.utils++
   - avatar/admin.md:
@@ -103,8 +101,6 @@ generate:
     - grants.abi++
   - grants/admin.md:
     - grants.admin++
-  - grants/forms.md:
-    - grants.forms++
   - grants/models.md:
     - grants.models++
   - grants/router.md:
@@ -222,7 +218,6 @@ pages:
       - Auth Pipeline: app/pipeline.md
       - Sitemaps: app/sitemaps.md
       - Static Storage: app/static_storage.md
-      - Thumbnail Processors: app/thumbnail_processors.md
       - Utilities: app/utils.md
     - Avatar:
       - Admin: avatar/admin.md

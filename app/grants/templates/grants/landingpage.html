@@ -116,8 +116,15 @@ along with this program. If not, see
   {{grant_bg.inline_css|json_script:"inline_css"}}
   <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
   <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
-  <script src="{% static "v2/js/lib/quill-image-extend-module.js" %}"></script>
-
+  {% bundle js file quill-image-extend-module %}
+    <script>
+      // use webpack to build ImageExtend
+      import { QuillWatch, ImageExtend } from 'quill-image-extend-module';
+      // set to global context
+      window.QuillWatch = QuillWatch;
+      window.ImageExtend = ImageExtend;
+    </script>
+  {% endbundle %}
   <script>
     document.current_type = "{{ type|default:'collections' }}";
     document.selected_category = "{{ selected_category }}";

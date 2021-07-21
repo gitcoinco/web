@@ -1,4 +1,4 @@
-{% load static %}
+{% load static bundle %}
 <!DOCTYPE html>
 <meta charset="utf-8">
 <body>
@@ -19,7 +19,9 @@ body {
 }
 </style>
 
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 var margin = {top: 20, right: 20, bottom: 30, left: 40},

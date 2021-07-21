@@ -1,4 +1,3 @@
-import datetime as dt
 import inspect
 import math
 import time
@@ -8,9 +7,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 
-import pytz
 from app.services import RedisService
-from celery import app, group
+from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCollection, Subscription
@@ -18,8 +16,6 @@ from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
-from marketing.models import Stat
-from perftools.models import JSONStore
 from townsquare.models import Comment
 from unidecode import unidecode
 
@@ -31,7 +27,7 @@ def lineno():
     """Returns the current line number in our program."""
     return inspect.currentframe().f_back.f_lineno
 
-@app.shared_task(bind=True, max_retries=1)
+@app.shared_task(bind=True, soft_time_limit=600, time_limit=660, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     if settings.FLUSH_QUEUE:
