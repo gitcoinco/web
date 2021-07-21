@@ -24,6 +24,7 @@ import hashlib
 import html
 import json
 import logging
+import random
 import re
 import time
 import uuid
@@ -77,7 +78,6 @@ from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
-from marketing.models import LeaderboardRank
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
@@ -5417,10 +5417,25 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
+    sponsors = []
     events = get_hackathon_events()
-    num_current = len([ele for ele in events if ele['type'] == 'current'])
-    num_upcoming = len([ele for ele in events if ele['type'] == 'upcoming'])
-    num_finished = len([ele for ele in events if ele['type'] == 'finished'])
+
+    num_current = 0
+    num_upcoming = 0
+    num_finished = 0
+
+    # count the number of each event type
+    for ele in events:
+        if ele['type'] == 'current':
+            num_current += 1
+        elif ele['type'] == 'upcoming':
+            num_upcoming += 1
+        elif ele['type'] == 'finished':
+            num_finished += 1
+
+        # curate the sponsors list
+        if ele.get('sponsor_profiles'):
+            sponsors.extend(ele.get('sponsor_profiles'))
 
     tabs = [
         ('current', 'happening now', num_current),
@@ -5428,13 +5443,8 @@ def get_hackathons(request):
         ('finished', 'completed', num_finished),
     ]
 
-    # keeping this until we have confirmation that using the events for bubbles is the right choice
-    # org_ranks = LeaderboardRank.objects.prefetch_related('profile').filter(leaderboard="all_orgs", product="bounties", active=True).order_by('-rank').all()[:33]
-    # org_profiles = [{
-    #     'rank': lbr.rank,
-    #     'handle': lbr.profile.handle,
-    #     'avatar': lbr.profile.avatar_url
-    #  } for lbr in org_ranks if lbr.profile.avatar_url]
+    # shuffle the sponsors
+    random.shuffle(sponsors)
 
     params = {
         'active': 'hackathons',
@@ -5444,8 +5454,8 @@ def get_hackathons(request):
         'tabs': tabs,
         'types': ['current', 'upcoming', 'finished'],
         'events': events,
+        'sponsors': sponsors[:33],
         'default_tab': get_hackathons_page_default_tabs(),
-        # 'org_profiles': org_profiles,
         'testimonial': {
             'handle': '@cryptomental',
             'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",

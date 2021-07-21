@@ -117,7 +117,6 @@
       border-radius: 50%;
       will-change: transform;
       object-fit: contain;
-      padding: 1em;
       box-shadow:
         0 15px 35px rgba(0, 0, 0, 0.1),
         0 3px 10px rgba(0, 0, 0, 0.1);
@@ -241,8 +240,8 @@
     <section class="spacer-my-6">
       <div class="bubble-wrap mb-5 mx-auto">
         <div class="bubbles" style="opacity: 0;">
-          {% for event in events|slice:33 %}
-            <img loading="lazy" class="bubble" src="{{ MEDIA_URL }}{{ event.logo }}" alt="{{ event.name }}" style="background: {{ event.background_color }};"/>
+          {% for sponsor in sponsors %}
+            <img loading="lazy" class="bubble" src="{{ sponsor.avatar_url }}" alt="{{ sponsor.handle }}"/>
           {% endfor %}
         </div>
       </div>
