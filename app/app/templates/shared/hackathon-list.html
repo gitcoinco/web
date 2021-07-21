@@ -55,7 +55,7 @@
                                 <a href="{{ sponsor.absolute_url }}" target="_blank"><img class="rounded-circle my-1 mr-1" style="width:36px;" src="{{ sponsor.avatar_url }}" /></a>
                               {% endfor %}
                               {% if event.sponsor_profiles|length > 6 %}
-                                <span class="rounded-circle bg-violet-100 d-inline-flex align-items-center justify-content-center font-smaller-1" style="width:36px;height:36px;">+{{ event.sponsor_profiles|length|add:"-6" }}</span>
+                                <span class="rounded-circle bg-violet-100 d-inline-flex align-items-center justify-content-center font-smaller-1 position-relative" style="width:36px;height:36px;top:1px;">+{{ event.sponsor_profiles|length|add:"-6" }}</span>
                               {% endif %}
                               </div>
                           {% endif %}
