@@ -111,9 +111,6 @@ class Command(BaseCommand):
                         # render the template with bundleContext
                         block = block.render(bundleContext)
 
-                        # clean static_url from the path (its not required but is included as legacy in most script/link inclusions)
-                        block = block.replace(settings.STATIC_URL, "")
-
                         # render the template (producing a bundle file)
                         rendered[render(block, kind, 'file', name, True)] = True
             except Exception as e:
