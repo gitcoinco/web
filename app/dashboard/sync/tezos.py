@@ -59,7 +59,6 @@ def get_tezos_txn_status(fulfillment):
         ):
             if tx_response['status'] == 'applied' and confirmations > 0:
                 return 'success'
-            return 'expired'
 
     return None
 
@@ -79,7 +78,5 @@ def sync_tezos_payout(fulfillment):
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
             record_payout_activity(fulfillment)
-        elif txn_status == 'expired':
-            fulfillment.payout_status = 'expired'
 
         fulfillment.save()

@@ -30,7 +30,7 @@ const payWithCasperExtension = async(fulfillment_id, to_address, vm, modal) => {
   const session = DeployUtil.ExecutableDeployItem.newTransfer(
     amount * 10 ** vm.decimals,
     toPublicKey,
-    fromPublicKey,
+    null,
     id
   );
   

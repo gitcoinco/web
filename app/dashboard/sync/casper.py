@@ -34,9 +34,6 @@ def get_casper_txn_status(fulfillment):
             if (
                 result["deploy"]["hash"] == txnid
                 and result["deploy"]["header"]["account"] == funderAddress
-                and [
-                    x for x in result["deploy"]["session"]["Transfer"]["args"] if x[0] == 'target'
-                ][0][1]['parsed'] == payeeAddress
                 and float([
                     x for x in result["deploy"]["session"]["Transfer"]["args"] if x[0] == 'amount'
                 ][0][1]['parsed']) == float(amount) * 10 ** 9
