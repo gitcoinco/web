@@ -57,22 +57,17 @@ from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
-from bleach import clean
 from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
-from dashboard.idena_utils import get_idena_status, next_validation_time
+from dashboard.idena_utils import get_idena_status
 from dashboard.tokens import addr_to_token, token_by_name
-from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
+from economy.models import ConversionRate, SuperModel, get_0_time
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
-    repo_name,
-)
-from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
+from git.utils import get_issue_comments, get_issue_details, issue_number, org_name, repo_name
+from marketing.mails import fund_request_email, start_work_approved
 from marketing.models import EmailSupressionList, LeaderboardRank
 from rest_framework import serializers
-from townsquare.models import Offer, PinnedPost
+from townsquare.models import PinnedPost
 from unidecode import unidecode
 from web3 import Web3
 
@@ -637,7 +632,7 @@ class Bounty(SuperModel):
     def title_or_desc(self):
         """Return the title of the issue."""
         if not self.title:
-            title = self.fetch_issue_item('title') or self.github_url
+            title = self.fetch_issue_item('title')
             return title
         return self.title
 
@@ -1009,11 +1004,14 @@ class Bounty(SuperModel):
             str: The item content.
 
         """
-        github_url = self.get_github_api_url()
-        if github_url:
-            issue_description = requests.get(github_url, auth=_AUTH)
-            if issue_description.status_code == 200:
-                item = issue_description.json().get(item_type, '')
+        if self.github_url.lower()[:19] == 'https://github.com/':
+            _org_name = org_name(self.github_url)
+            _repo_name = repo_name(self.github_url)
+            _issue_num = issue_number(self.github_url)
+            gh_issue_details = get_issue_details(_org_name, _repo_name, int(_issue_num))
+
+            if gh_issue_details:
+                item = gh_issue_details.get(item_type, '')
                 if item_type == 'body' and item:
                     self.issue_description = item
                 elif item_type == 'title' and item:
@@ -1047,11 +1045,11 @@ class Bounty(SuperModel):
             return []
         comment_count = 0
         for comment in comments:
-            if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
+            if comment.user and comment.user.login not in settings.IGNORE_COMMENTS_FROM:
                 comment_count += 1
         self.github_comments = comment_count
         if comment_count:
-            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments]
+            comment_times = [comment.created_at.strftime('%Y-%m-%dT%H:%M:%SZ') for comment in comments]
             max_comment_time = max(comment_times)
             max_comment_time = max_comment_time.replace(tzinfo=pytz.utc)
             self.last_comment_date = max_comment_time
@@ -1147,7 +1145,7 @@ class Bounty(SuperModel):
                 _org_name = org_name(self.github_url)
                 _repo_name = repo_name(self.github_url)
                 _issue_num = issue_number(self.github_url)
-                gh_issue_details = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
+                gh_issue_details = get_issue_details(_org_name, _repo_name, int(_issue_num))
                 if gh_issue_details:
                     self.github_issue_details = gh_issue_details
                     self.save()
@@ -1389,17 +1387,6 @@ class BountyEvent(SuperModel):
     event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
     metadata = JSONField(default=dict, blank=True)
 
-
-class BountyFulfillmentQuerySet(models.QuerySet):
-    """Handle the manager queryset for BountyFulfillments."""
-
-    def accepted(self):
-        """Filter results to accepted bounty fulfillments."""
-        return self.filter(accepted=True)
-
-    def submitted(self):
-        """Exclude results that have not been submitted."""
-        return self.exclude(fulfiller_address='0x0000000000000000000000000000000000000000')
 
 class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
@@ -1942,11 +1929,6 @@ class Tip(SendCryptoAsset):
         except Exception as e:
             logger.warning('Receive url for Tip recipient not found')
             return ''
-
-
-class TipPayoutException(Exception):
-    pass
-
 
 
 class TipPayout(SuperModel):
@@ -3549,21 +3531,6 @@ class Profile(SuperModel):
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
-    def repos_data_lite(self):
-        from git.utils import get_user
-        # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
-        # but in a way that is respectful of db size too
-        return get_user(self.handle, '/repos')
-
-    @property
-    def repos_data(self):
-        from app.utils import add_contributors
-        repos_data = self.repos_data_lite
-        repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
-        repos_data = [add_contributors(repo_data) for repo_data in repos_data]
-        return repos_data
-
-    @property
     def is_moderator(self):
         """Determine whether or not the user is a moderator.
 
@@ -4059,32 +4026,6 @@ class Profile(SuperModel):
         if self.data and self.data["name"] and self.data["name"] != 'null':
             return self.data["name"]
         return self.username
-
-
-    def is_github_token_valid(self):
-        """Check whether or not a Github OAuth token is valid.
-
-        Args:
-            access_token (str): The Github OAuth token.
-
-        Returns:
-            bool: Whether or not the provided OAuth token is valid.
-
-        """
-        if not self.github_access_token:
-            return False
-
-        _params = build_auth_dict()
-        url = TOKEN_URL.format(**_params)
-        response = requests.get(
-            url,
-            data=json.dumps({'access_token': self.github_access_token}),
-            auth=(_params['client_id'], _params['client_secret']),
-            headers=HEADERS)
-
-        if response.status_code == 200:
-            return True
-        return False
 
     def __str__(self):
         return self.handle

@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import time
 from datetime import datetime
-from functools import reduce
 
 from django.db.models import Count, F, Q
 
@@ -222,16 +221,6 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 class HackathonProjectsPagination(PageNumberPagination):
     page_size = 10
 
-class UserDirectorySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = UserDirectory
-        fields = '__all__'
-        depth = 1
-
-class UserDirectoryPagination(PageNumberPagination):
-    page_size = 20
-
 
 class HackathonProjectsViewSet(viewsets.ModelViewSet):
     queryset = HackathonProject.objects.prefetch_related('bounty', 'profiles').all().order_by('id')
@@ -322,7 +311,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories', 'metadata'
+            'bounty_categories'
         )
 
 

@@ -18,18 +18,22 @@
 {% load i18n static bundle %}
 {% block 'scripts' %}
   {% include 'shared/current_profile.html' %}
-  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-  <script src="{% static "v2/js/ipfs.js" %}"></script>
-  <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
-  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
-  <script src="{% static "onepager/js/send.js" %}"></script>
-  <script src="{% static "onepager/js/confetti.js" %}"></script>
-  <script src="{% static "v2/js/user-search.js" %}"></script>
-  <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+
+  {% bundle merge_js file send %}
+    <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
+    <script src="secrets.min.js" base-dir="/node_modules/secrets.js-grempe/"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/ipfs.js" %}"></script>
+    <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "v2/js/amounts.js" %}"></script>
+    <script src="{% static "onepager/js/send.js" %}"></script>
+    <script src="{% static "onepager/js/confetti.js" %}"></script>
+    <script src="{% static "v2/js/user-search.js" %}"></script>
+    <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+  {% endbundle %}
+
   <script>
     $('.user-tooltip > .user-img').click(function() {
       $('.user-tooltip > .user-img').removeClass('active');

@@ -25,7 +25,6 @@ from django.utils import timezone
 from dashboard.models import Profile
 from marketing.management.commands.sync_mail import push_to_mailchimp
 from marketing.models import EmailSubscriber
-from retail.emails import render_nth_day_email_campaign
 from test_plus.test import TestCase
 
 

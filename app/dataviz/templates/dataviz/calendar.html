@@ -1,8 +1,10 @@
-{% load i18n static %}
+{% load i18n static bundle %}
 <!DOCTYPE html>
 <body>
 <a href="..">&lt; back</a>
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
 {% include "dataviz/shared/nav.html" %}
 <br><br>
 <script src="https://d3js.org/d3.v4.min.js"></script>

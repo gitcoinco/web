@@ -133,9 +133,9 @@ def embed(request):
             avatar = Image.open(filepath, 'r').convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
-            if not remote_user.get('avatar_url', False):
+            if not hasattr(remote_user, 'avatar_url'):
                 return JsonResponse({'msg': 'invalid user'}, status=422)
-            remote_avatar_url = remote_user['avatar_url']
+            remote_avatar_url = remote_user.avatar_url
 
             r = requests.get(remote_avatar_url, stream=True)
             chunk_size = 20000

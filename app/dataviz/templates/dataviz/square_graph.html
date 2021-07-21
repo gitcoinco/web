@@ -1,4 +1,4 @@
-{% load i18n static %}
+{% load i18n static bundle %}
 
 <style>
 body {
@@ -47,7 +47,9 @@ svg{
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+        {% bundle merge_js file jquery %}
+          <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+        {% endbundle %}
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>

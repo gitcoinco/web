@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
-from unittest import skip
 
 from django.test import Client, TestCase
 
@@ -61,10 +60,6 @@ class KudosViewsTestCase(TestCase):
     def test_mint(self):
         r = self.client.get('/kudos/mint/')
         self.assertEqual(r.status_code, 200)
-
-    # @skip(reason='stub for future testing')
-    # def test_get_to_emails(self):
-    #     self.client.get('/kudos/1')
 
     # @skip(reason='stub for future testing')
     # def test_kudos_preferred_wallet(self):

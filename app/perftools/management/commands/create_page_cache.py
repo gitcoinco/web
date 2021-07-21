@@ -21,7 +21,6 @@ import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.utils import timezone
 
@@ -31,7 +30,7 @@ from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything
 from grants.models import Contribution, Grant, GrantCategory, GrantType
-from grants.utils import generate_grants_leaderboard, get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata
 from marketing.models import Stat
 from perftools.models import JSONStore
 from quests.helpers import generate_leaderboard
@@ -142,7 +141,7 @@ def create_top_grant_spenders_cache():
 
         from_date = timezone.now()
         for key, val in count_dict.items():
-            if val:
+            if key and val and grant_type.name:
                 #print(key, val)
                 Stat.objects.create(
                     created_on=from_date,
@@ -151,7 +150,7 @@ def create_top_grant_spenders_cache():
                 )
 
         for key, val in sum_dict.items():
-            if val:
+            if key and val and grant_type.name:
                 #print(key, val)
                 Stat.objects.create(
                     created_on=from_date,
@@ -261,17 +260,6 @@ def create_activity_cache():
             key=keyword,
             data=json.loads(json.dumps(data, cls=EncodeAnything)),
             )
-
-def create_grants_cache():
-    print('grants')
-    view = 'grants'
-    keyword = 'leaderboard'
-    data = generate_grants_leaderboard()
-    JSONStore.objects.create(
-        view=view,
-        key=keyword,
-        data=json.loads(json.dumps(data, cls=EncodeAnything)),
-        )
 
 
 def create_quests_cache():
@@ -402,7 +390,6 @@ class Command(BaseCommand):
             operations.append(create_top_grant_spenders_cache)
             operations.append(create_avatar_cache)
             operations.append(create_quests_cache)
-            operations.append(create_grants_cache)
             operations.append(create_contributor_landing_page_context)
             operations.append(create_hackathon_cache)
             operations.append(create_hackathon_list_page_cache)

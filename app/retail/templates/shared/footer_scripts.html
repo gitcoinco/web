@@ -20,41 +20,35 @@
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
   document.contxt = {{ json_context|safe }};
-
 </script>
 <script src="{% url 'javascript-catalog' %}"></script>
-
 
 {% if not ignore_inject_web3 %}
   {% include 'grants/shared/shared_scripts.html' %}
 {% endif %}
+
 {% include 'shared/onboard.html' %}
-
-{% if env == 'prod' %}
-<script src="{% static 'v2/js/lib/vue.js' %}"></script>
-{% else %}
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-{% endif %}
-
 {% include 'shared/sentry.html' %}
 
-<script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8"></script>
+{% bundle merge_js file core %}
+  <script src="vue.js" prod="vue.min.js" base-dir="/node_modules/vue/dist/"></script>
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+  <script src="popper.min.js" base-dir="/node_modules/popper.js/dist/umd/"></script>
+  <script src="bootstrap.min.js" base-dir="/node_modules/bootstrap/dist/js/"></script>
+  <script src="bootstrap-vue.min.js" base-dir="/node_modules/bootstrap-vue/dist/"></script>
+  <script>
+    const bootstrapTooltip = $.fn.tooltip.noConflict()
+    $.fn.bootstrapTooltip = bootstrapTooltip;
+    const bootstrapModal = $.fn.modal.noConflict();
+    $.fn.bootstrapModal = bootstrapModal;
+  </script>
+{% endbundle %}
 
 {% bundle merge_js file libs %}
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
-<script src="{% static "v2/js/lib/popper.min.js" %}"></script>
-<script src="{% static "v2/js/lib/bootstrap.min.js" %}"  ></script>
-<script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
-<script src="{% static "v2/js/lib/moment.min.js" %}"></script>
-<script src="{% static "v2/js/lib/purify.min.js" %}"></script>
-<script src="{% static "v2/js/lib/emoji-button.js" %}"></script>
-<script src="{% static "v2/js/base.js" %}"></script>
-<script>
-  const bootstrapTooltip = $.fn.tooltip.noConflict()
-  $.fn.bootstrapTooltip = bootstrapTooltip;
-  const bootstrapModal = $.fn.modal.noConflict();
-  $.fn.bootstrapModal = bootstrapModal;
-</script>
+  <script src="vue-select.js" base-dir="/node_modules/vue-select/dist/"></script>
+  <script src="moment.min.js" base-dir="/node_modules/moment/min/"></script>
+  <script src="purify.min.js" base-dir="/node_modules/dompurify/dist/"></script>
+  <script src="index.js" base-dir="/node_modules/@joeattardi/emoji-button/dist/"></script>
 {% endbundle %}
 
 <script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.3/dist/index.min.js"></script>
@@ -63,39 +57,44 @@
 <script src="https://cdn.jsdelivr.net/npm/fortmatic/dist/fortmatic.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.4.1/dist/umd/index.min.js"></script>
 
+
 <script src="{% static "v2/js/data-chains.js" %}"></script>
 <script src="{% static "v2/js/wallet.js" %}"></script>
 
 {% bundle merge_js file jquery-extras %}
-<script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
-<script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
-<script src="{% static "v2/js/lib/additional-methods.min.js" %}"></script>
-<script src="{% static "v2/js/lib/jquery.select2.min.js" %}"></script>
+  <script src="js.cookie.js" base-dir="/node_modules/js-cookie/src/"></script>
+  <script src="jquery.validate.min.js" base-dir="/node_modules/jquery-validation/dist/"></script>
+  <script src="additional-methods.min.js" base-dir="/node_modules/jquery-validation/dist/"></script>
+  <script src="select2.min.js" base-dir="/node_modules/select2/dist/js/"></script>
 {% endbundle %}
 
 {% if not slim %}
   {% bundle merge_js file jquery-old %}
-  <script src="{% static "v2/js/lib/jsrender.js" %}"></script>
-  <script src="{% static "v2/js/lib/jquery-ui.js" %}"></script>
-  <script src="{% static "v2/js/lib/tooltip.js" %}"></script>
-  <script src="{% static "v2/js/lib/jquery.modal.min.js" %}"></script>
+    <script src="jquery-ui.min.js" base-dir="/node_modules/jquery-ui-dist/"></script>
+    <script src="jquery.modal.min.js" base-dir="/node_modules/jquery-modal/"></script>
+    <script src="jsrender.min.js" base-dir="/node_modules/jsrender/"></script>
+    <script>
+      $.views.settings.delimiters("[[", "]]", "^");
+    </script>
   {% endbundle %}
 {% endif %}
 
 {% bundle merge_js file main %}
-<script src="{% static "v2/js/mautic.js" %}"></script>
-<script src="{% static "v2/js/ajax-helper.js" %}"></script>
-<script src="{% static "v2/js/cart-data.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/truncate-hash.js" %}"></script>
-<script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
-<script src="{% static "v2/js/RAFThrottle.js" %}"></script>
-<script src="{% static "v2/js/pages/carousel.js" %}"></script>
-<script src="{% static "v2/js/search.js" %}"></script>
-<script src="{% static "v2/js/vue-filters.js" %}"></script>
-<script src="{% static "v2/js/vue-components.js" %}"></script>
-<script src="{% static "v2/js/user_card.js" %}"></script>
-<script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
+  <script src="{% static "v2/js/base.js" %}"></script>
+  <script src="{% static "v2/js/mautic.js" %}"></script>
+  <script src="{% static "v2/js/ajax-helper.js" %}"></script>
+  <script src="{% static "v2/js/cart-data.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/truncate-hash.js" %}"></script>
+  <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+  <script src="{% static "v2/js/RAFThrottle.js" %}"></script>
+  <script src="{% static "v2/js/pages/carousel.js" %}"></script>
+  <script src="{% static "v2/js/search.js" %}"></script>
+  <script src="{% static "v2/js/vue-filters.js" %}"></script>
+  <script src="{% static "v2/js/vue-components.js" %}"></script>
+  <script src="{% static "v2/js/user_card.js" %}"></script>
+  <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
+  <script src="{% static "cookielaw/js/cl.js" %}"></script>
 {% endbundle %}
 
 {% if not onepager %}
@@ -105,10 +104,11 @@
 {% endif %}
 
 {% if user.is_authenticated %}
-  <script src="{% static "v2/js/notifications.js" %}"></script>
-  <script src="{% static "v2/js/onboard.js" %}"></script>
+  {% bundle merge_js file authed %}
+    <script src="{% static "v2/js/notifications.js" %}"></script>
+    <script src="{% static "v2/js/onboard.js" %}"></script>
+  {% endbundle %}
 {% endif %}
-<script src="{% static "cookielaw/js/cl.js" %}"></script>
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");

@@ -17,48 +17,33 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import datetime
 import json
 import logging
 import re
-import time
 from json import loads as json_parse
-from os import walk as walkdir
 
 from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import ValidationError
-from django.core.paginator import Paginator
-from django.core.validators import validate_email
 from django.db.models import Count, Q, Subquery
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
-from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from app.utils import get_default_network, get_profiles_from_text
-from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import (
-    Activity, Bounty, HackathonEvent, Profile, Tip, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
-)
+from app.utils import get_profiles_from_text
+from cacheops import cached_view
+from dashboard.models import Activity, HackathonEvent, Profile, Tip, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
-from grants.models import Grant
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
-from marketing.models import Alumni, EmailInventory, Job, LeaderboardRank
-from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from marketing.models import EmailInventory
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
-from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
-from townsquare.models import PinnedPost
 from townsquare.tasks import increment_view_counts
 from townsquare.utils import can_pin
 
@@ -923,7 +908,12 @@ def create_status_update(request):
     issue_re = re.compile(r'^(?:https?://)?(?:github\.com)/(?:[\w,\-,\_]+)/(?:[\w,\-,\_]+)/issues/(?:[\d]+)')
     response = {}
 
-    if request.POST:
+    if request.POST and request.user.is_authenticated:
+        if (request.user.profile.is_blocked or request.user.profile.shadowbanned):
+            response['status'] = 400
+            response['message'] = 'Status updated!'
+            return JsonResponse(response, status=400)
+
         profile = request.user.profile
         title = request.POST.get('data')
         resource = request.POST.get('resource', '')
@@ -933,12 +923,6 @@ def create_status_update(request):
         attach_amount = request.POST.get('attachAmount', '')
         attach_token_name = request.POST.get('attachTokenName', '')
         tx_id = request.POST.get('attachTxId', '')
-
-        if request.user.is_authenticated and (request.user.profile.is_blocked or request.user.profile.shadowbanned):
-            response['status'] = 200
-            response['message'] = 'Status updated!'
-            return JsonResponse(response, status=400)
-
 
         kwargs = {
             'activity_type': 'status_update',
@@ -1030,6 +1014,11 @@ def create_status_update(request):
             response['message'] = 'Bad Request'
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
             return JsonResponse(response, status=400)
+    else:
+        response['status'] = 401
+        response['message'] = 'Not logged in!'
+        return JsonResponse(status=response['status'], data={'status': 401,'message':response['message']})
+
     return JsonResponse(response)
 
 

@@ -1,5 +1,5 @@
 {% load humanize %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% comment %}
   Copyright (C) 2021 Gitcoin Core
 
@@ -41,7 +41,9 @@ body {
   {% include "dataviz/shared/nav.html" %}
 <br>
 <h1> Hourly Rate of Bounties over Time, by Repo</h1>
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 function average(data){
@@ -51,7 +53,7 @@ function average(data){
 
   var avg = sum / data.length;
   return avg;
-}    
+}
 function standardDeviation(values){
     var avg = average(values);
 
@@ -212,16 +214,16 @@ d3.csv(url, function(error, data) {
 
 <table id="tableview">
   <tr>
-    <td> 
+    <td>
       Repo
     </td>
-    <td> 
+    <td>
       NumBounties
     </td>
-    <td> 
+    <td>
       Hourly Rate
     </td>
-    <td> 
+    <td>
       Standard Deviation
     </td>
   </tr>

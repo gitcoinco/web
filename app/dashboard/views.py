@@ -18,10 +18,8 @@
 '''
 from __future__ import print_function, unicode_literals
 
-import asyncio
 import base64
 import calendar
-import getpass
 import hashlib
 import html
 import json
@@ -41,8 +39,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Avg, Count, Prefetch, Q, Sum
+from django.db.models import Count, Q, Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -50,7 +47,6 @@ from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import escape, strip_tags
 from django.utils.http import is_safe_url
 from django.utils.text import slugify
 from django.utils.timezone import localtime
@@ -59,7 +55,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
-import dateutil.parser
 import ens
 import magic
 import pytz
@@ -67,9 +62,8 @@ import requests
 import tweepy
 from app.services import RedisService, TwilioService
 from app.settings import (
-    BMAS_ENDPOINT, EMAIL_ACCOUNT_VALIDATION, ES_CORE_ENDPOINT, ES_USER_ENDPOINT, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES,
-    SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
-    TWITTER_CONSUMER_SECRET,
+    EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, TWITTER_ACCESS_SECRET,
+    TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
 )
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -80,28 +74,20 @@ from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
-from dashboard.duniter import CERTIFICATIONS_SCHEMA
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
-    get_ens_contract_addresss, get_ens_resolver_contract, get_orgs_perms, get_poap_earliest_owned_token_timestamp,
-    profile_helper,
+    get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
-from ens.auto import ns
-from ens.utils import name_to_hash
 from eth_account.messages import defunct_hash_message
-from eth_utils import is_address, is_same_address, to_checksum_address, to_normalized_address
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import (
-    get_auth_url, get_gh_issue_details, get_github_user_data, get_url_dict, is_github_token_valid, search_users,
-)
-from grants.models import Grant
+from eth_utils import is_address, is_same_address
+from git.utils import get_auth_url, get_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
 from grants.utils import get_clr_rounds_metadata
-from kudos.models import KudosTransfer, Token, Wallet
+from kudos.models import Token
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
 from marketing.mails import admin_contact_funder, bounty_uninterested
@@ -110,7 +96,7 @@ from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
     wall_post_email,
 )
-from marketing.models import EmailSubscriber, Keyword, UpcomingDate
+from marketing.models import Keyword
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from perftools.models import JSONStore
@@ -119,11 +105,10 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
-from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
-from townsquare.views import get_following_tribes, get_tags
+from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
@@ -135,18 +120,16 @@ from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
 from .models import (
-    Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile,
-    ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
-    TribeMember, UserAction, UserDirectory, UserVerificationModel,
+    Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon, Earning,
+    FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
+    MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView, Question,
+    SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
+    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
 from .poh_utils import is_registered_on_poh
-from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
+from .router import HackathonEventSerializer, TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
@@ -164,7 +147,6 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 @protected_resource()
 def oauth_connect(request, *args, **kwargs):
     active_user_profile = Profile.objects.filter(user_id=request.user.id).select_related()[0]
-    from marketing.utils import should_suppress_notification_email
     user_profile = {
         "login": active_user_profile.handle,
         "email": active_user_profile.user.email,
@@ -280,8 +262,8 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
 def helper_handle_access_token(request, access_token):
     # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
     # interest API via token
-    github_user_data = get_github_user_data(access_token)
-    request.session['handle'] = github_user_data['login']
+    github_user_data = get_user(token=access_token)
+    request.session['handle'] = github_user_data.login
     profile = Profile.objects.filter(handle=request.session['handle'].lower()).first()
     request.session['profile_id'] = profile.pk
 
@@ -364,9 +346,9 @@ def new_interest(request, bounty_id):
     access_token = request.GET.get('token')
     if access_token:
         helper_handle_access_token(request, access_token)
-        github_user_data = get_github_user_data(access_token)
+        github_user_data = get_user(access_token)
         profile = Profile.objects.prefetch_related('bounty_set') \
-            .filter(handle=github_user_data['login'].lower()).first()
+            .filter(handle=github_user_data.login.lower()).first()
         profile_id = profile.pk
     else:
         profile = request.user.profile if profile_id else None
@@ -601,8 +583,8 @@ def remove_interest(request, bounty_id):
     access_token = request.GET.get('token')
     if access_token:
         helper_handle_access_token(request, access_token)
-        github_user_data = get_github_user_data(access_token)
-        profile = Profile.objects.filter(handle=github_user_data['login'].lower()).first()
+        github_user_data = get_user(access_token)
+        profile = Profile.objects.filter(handle=github_user_data.login.lower()).first()
         profile_id = profile.pk
 
     if not profile_id:
@@ -823,6 +805,7 @@ def uninterested(request, bounty_id, profile_id):
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
+
 def onboard(request, flow=None):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
@@ -908,6 +891,7 @@ def users_directory(request):
 
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+
 @csrf_exempt
 @staff_member_required
 def user_lookup(request):
@@ -920,28 +904,13 @@ def user_lookup(request):
     from proxy.views import proxy_view
     return proxy_view(request, remote_url)
 
+
 @staff_member_required
 def users_directory_elastic(request):
     """Handle displaying users directory page."""
     from retail.utils import programming_languages, programming_languages_full
     messages.info(request, 'The Andrew-era user directory has been deprecated, please contact the #product-data channel if you need something')
     return redirect('/users')
-    keywords = programming_languages + programming_languages_full
-
-    params = {
-        'is_staff': request.user.is_staff,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')) ,
-        'active': 'users',
-        'title': 'Users',
-        'meta_title': "",
-        'meta_description': "",
-        'keywords': keywords
-    }
-
-    if request.path == '/tribes/explore':
-        params['explore'] = 'explore_tribes'
-
-    return TemplateResponse(request, 'dashboard/users-elastic.html', params)
 
 
 def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = "", only_with_tokens = False):
@@ -1048,6 +1017,7 @@ def output_users_to_csv(request):
 
     return JsonResponse({'message' : 'Your request is processing and will be delivered to your email'})
 
+
 @require_GET
 def users_fetch(request):
     """Handle displaying users."""
@@ -1126,26 +1096,6 @@ def users_fetch(request):
         hackathon_id,
         only_with_tokens
     )
-
-    def previous_worked():
-        if current_user.profile.persona_is_funder:
-            return Count(
-                'fulfilled',
-                filter=Q(
-                    fulfilled__bounty__network=network,
-                    fulfilled__accepted=True,
-                    fulfilled__bounty__bounty_owner_github_username__iexact=current_user.profile.handle
-                )
-            )
-
-        return Count(
-            'bounties_funded__fulfillments',
-            filter=Q(
-                bounties_funded__fulfillments__bounty__network=network,
-                bounties_funded__fulfillments__accepted=True,
-                bounties_funded__fulfillments__profile__handle=current_user.profile.handle
-            )
-        )
 
     if request.GET.get('type') == 'explore_tribes':
         profile_list = Profile.objects.filter(is_org=True).order_by('-follower_count', 'id')
@@ -1946,7 +1896,6 @@ def helper_handle_release_bounty_to_public(request, bounty):
             messages.warning(request, _('This functionality is only for reserved bounties'))
 
 
-
 @login_required
 def bounty_invite_url(request, invitecode):
     """Decode the bounty details and redirect to correct bounty
@@ -2116,14 +2065,14 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
         access_token = request.user.profile.get_access_token()
     else:
         access_token = request.session.get('access_token')
-    github_user_data = get_github_user_data(access_token)
+    github_user_data = get_user(access_token)
 
     try:
         bounty = Bounty.objects.current().filter(network=bounty_network, standard_bounties_id=stdbounties_id).first()
     except Bounty.DoesNotExist:
         raise Http404
 
-    has_fulfilled = bounty.fulfillments.filter(profile__handle=github_user_data['login']).count()
+    has_fulfilled = bounty.fulfillments.filter(profile__handle=github_user_data.login).count()
     if has_fulfilled == 0:
         return JsonResponse({
             'success': False,
@@ -2182,12 +2131,6 @@ def profile_details(request, handle):
         profile = profile_helper(handle, True)
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
-
-    if not settings.DEBUG:
-        network = 'mainnet'
-    else:
-        network = 'rinkeby'
-
 
     response = {
         'avatar': profile.avatar_url,
@@ -2248,7 +2191,6 @@ def user_card(request, handle):
     if response.get('profile',{}).get('data',{}).get('email'):
         del response['profile']['data']['email']
 
-
     return JsonResponse(response, safe=False)
 
 
@@ -2285,7 +2227,6 @@ def profile_quests(request, handle):
 
     from quests.models import QuestPointAward
     qpas = QuestPointAward.objects.filter(profile=profile).order_by('created_on')
-    history = []
 
     response = """date,close"""
     balances = {}
@@ -2302,9 +2243,7 @@ def profile_quests(request, handle):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
-
 
 
 def profile_grants(request, handle):
@@ -2321,7 +2260,6 @@ def profile_grants(request, handle):
 
     from grants.models import Contribution
     contributions = Contribution.objects.filter(subscription__contributor_profile=profile).order_by('-pk')
-    history = []
 
     response = """date,close"""
     balances = {}
@@ -2336,7 +2274,6 @@ def profile_grants(request, handle):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2403,7 +2340,6 @@ def profile_ratings(request, handle, attr):
         balance = balance['sum'] / balance['count']
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2440,7 +2376,6 @@ def profile_earnings(request, handle, direction='to'):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2471,7 +2406,6 @@ def profile_viewers(request, handle):
     for datestr, balance in balances.items():
         response += f"\n{datestr},{balance}"
 
-    mimetype = 'text/x-csv'
     return HttpResponse(response)
 
 
@@ -2517,6 +2451,7 @@ def profile_job_opportunity(request, handle):
     }
     return JsonResponse(response)
 
+
 @require_POST
 @login_required
 def profile_settings(request):
@@ -2546,6 +2481,7 @@ def profile_settings(request):
     }
 
     return JsonResponse(response, status=response.get('status', 200))
+
 
 @require_POST
 @login_required
@@ -2608,6 +2544,7 @@ def profile_backup(request):
     }
 
     return JsonResponse(response, status=response.get('status', 200))
+
 
 @require_POST
 @login_required
@@ -3055,12 +2992,14 @@ def get_profile_tab(request, profile, tab, prev_context):
         raise Http404
     return context
 
+
 def get_profile_by_idena_token(token):
     handle = get_handle_by_idena_token(token)
     try:
         return Profile.objects.get(handle=handle)
     except ObjectDoesNotExist:
         return None
+
 
 def logout_idena(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
@@ -3089,6 +3028,7 @@ def logout_idena(request, handle):
         'next_validation': None,
         'icon_path': static('v2/images/project_logos/idena.svg'),
     })
+
 
 # Response model differ from rest of project because idena client excepts this shape:
 # Using {success, error} instead of {ok, msg}
@@ -3150,6 +3090,7 @@ def start_session_idena(request, handle):
         }
     })
 
+
 # Response model differ from rest of project because idena client excepts this shape:
 # Using {success, error} instead of {ok, msg}
 @csrf_exempt # Call from idena client
@@ -3199,6 +3140,7 @@ def authenticate_idena(request, handle):
         }
     })
 
+
 @login_required
 def recheck_idena_status(request, handle):
     is_logged_in_user = request.user.is_authenticated and request.user.username.lower() == handle.lower()
@@ -3222,6 +3164,7 @@ def recheck_idena_status(request, handle):
         'next_validation': str(localtime(next_validation_time())) if not profile.is_idena_verified else None,
         'icon_path': 'https://robohash.org/%s' % profile.idena_address if profile.is_idena_connected else static('v2/images/project_logos/idena.svg'),
     })
+
 
 def verify_text_for_tweet(handle):
     url = 'https://gitcoin.co/' + handle
@@ -3518,6 +3461,7 @@ def request_verify_google(request, handle):
     )
     return redirect(authorization_url)
 
+
 @login_required
 @require_GET
 def verify_user_google(request):
@@ -3532,7 +3476,7 @@ def verify_user_google(request):
         if r.status_code != 200:
             messages.error(request, _(f'Invalid code'))
             return redirect('profile_by_tab', 'trust')
-    except (ConnectionError, InvalidGrantError):
+    except (Exception):
         messages.error(request, _(f'Invalid code'))
         return redirect('profile_by_tab', 'trust')
 
@@ -4227,6 +4171,7 @@ def terms(request):
     }
     return TemplateResponse(request, 'legal/terms.html', context)
 
+
 def privacy(request):
     return TemplateResponse(request, 'legal/privacy.html', {})
 
@@ -4350,6 +4295,7 @@ def new_hackathon_bounty(request, hackathon=''):
         update=bounty_params
     )
     return TemplateResponse(request, 'dashboard/hackathon/new_bounty.html', params)
+
 
 @csrf_exempt
 def get_suggested_contributors(request):
@@ -4649,6 +4595,7 @@ def get_kudos(request):
         raise Http404
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
 
 @login_required
 def hackathon_prizes(request, hackathon=''):
@@ -5179,7 +5126,6 @@ def hackathon_save_project(request):
             if p in video_url:
                 kwargs['extra']['video_provider'] = p
 
-
     if categories:
         kwargs['categories'] = categories
 
@@ -5700,7 +5646,6 @@ def funder_dashboard(request, bounty_type):
                               for b in bounties], safe=False)
 
 
-
 def contributor_dashboard(request, bounty_type):
     """JSON data for the contributor dashboard"""
 
@@ -5885,8 +5830,6 @@ def join_tribe(request, handle):
         )
 
 
-
-
 @csrf_exempt
 @require_POST
 def tribe_leader(request):
@@ -6025,6 +5968,7 @@ def save_tribe(request,handle):
             status=500
         )
 
+
 @csrf_exempt
 @require_POST
 def create_bounty_v1(request):
@@ -6126,7 +6070,7 @@ def create_bounty_v1(request):
     # bounty github data
     try:
         kwargs = get_url_dict(bounty.github_url)
-        bounty.github_issue_details = get_gh_issue_details(**kwargs)
+        bounty.github_issue_details = get_issue_details(**kwargs)
     except Exception as e:
         logger.error(e)
 
@@ -6649,7 +6593,6 @@ def close_bounty_v1(request, bounty_id):
     return JsonResponse(response)
 
 
-
 @staff_member_required
 def bulkemail(request):
     handles = request.POST.get('handles', '')
@@ -6832,7 +6775,7 @@ def validate_verification(request, handle):
     profile = request.user.profile
 
     has_previous_validation = profile.last_validation_request
-    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
+    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8') if redis.get(f'verification:{request.user.id}:phone') else None
 
     if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
         pk=profile.id).exists():
@@ -7219,6 +7162,7 @@ def file_upload(request):
         data = {'is_valid': False}
 
     return JsonResponse(data)
+
 
 @csrf_exempt
 def mautic_api(request, endpoint=''):

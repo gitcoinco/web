@@ -1,6 +1,6 @@
 from dashboard.models import Profile
 from grants.models import *
-from grants.utils import get_leaderboard, is_grant_team_member
+from grants.utils import is_grant_team_member
 
 handles = [
     'adamstallard',

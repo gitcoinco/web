@@ -38,7 +38,9 @@
 {% block content %}
   <head>
   <meta charset="utf-8">
-  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  {% bundle merge_js file jquery %}
+    <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+  {% endbundle %}
   <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
   <style>
   .colMS{

@@ -18,13 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
-from dashboard.utils import get_tx_status, has_tx_mined
-from grants.models import Contribution, Grant, GrantCLR
-from marketing.mails import warn_subscription_failed
+from grants.models import GrantCLR
 
 
 class Command(BaseCommand):
