@@ -6551,11 +6551,10 @@ def payout_bounty_v1(request, fulfillment_id):
 
 @csrf_exempt
 @require_POST
-def payout_tx_forwarder_v1(request, tenant):
+def reverse_proxy_rpc_v1(request, tenant):
     '''
         Proxy payout transaction to external node to bypass CORS restriction on browser.
     '''
-    import requests
 
     if tenant.upper() == 'CASPER':
         # casper

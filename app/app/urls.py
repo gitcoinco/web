@@ -71,7 +71,7 @@ urlpatterns = [
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
     path('api/v1/bounty/<int:bounty_id>/close', dashboard.views.close_bounty_v1, name='close_bounty_v1'),
     path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
-    path('api/v1/bounty/payout/broadcast/<str:tenant>', dashboard.views.payout_tx_forwarder_v1, name='payout_tx_forwarder_v1'),
+    path('api/v1/reverse-proxy/<str:tenant>', dashboard.views.reverse_proxy_rpc_v1, name='payout_tx_forwarder_v1'),
     re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
 
     # inbox

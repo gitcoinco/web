@@ -5,7 +5,7 @@ const payWithCasperExtension = async(fulfillment_id, to_address, vm, modal) => {
   const tenant = vm.getTenant(token_name, vm.bounty.web3_type);
 
   const { CasperClient, DeployUtil, PublicKey, Signer } = casper;
-  const casperClient = new CasperClient(`/api/v1/bounty/payout/broadcast/${tenant}`);
+  const casperClient = new CasperClient(`/api/v1/reverse-proxy/${tenant}`);
 
   const isConnected = await Signer.isConnected();
 
@@ -14,18 +14,24 @@ const payWithCasperExtension = async(fulfillment_id, to_address, vm, modal) => {
       Signer.sendConnectionRequest();
     } catch (e) {
       _alert({ message: gettext('Please download or enable CasperLabs Signer extension.') }, 'danger');
+      return;
     }
   }
 
   const selectedAddress = await Signer.getActivePublicKey();
 
-  const paymentAmount = 10000;
+  const paymentAmount = 10000; // for native-transfers the payment price is fixed
   const id = fulfillment_id;
+  const gasPrice = 1; // gasPrice for native transfers can be set to 1
+
+  // time that the deploy will remain valid for, in milliseconds
+  // the default value is 1800000 ms (30 minutes)
   const ttl = 1800000;
+
   const fromPublicKey = PublicKey.fromHex(selectedAddress);
   const toPublicKey = PublicKey.fromHex(to_address);
   
-  let deployParams = new DeployUtil.DeployParams(fromPublicKey, 'casper', ttl);
+  let deployParams = new DeployUtil.DeployParams(fromPublicKey, 'casper', gasPrice, ttl);
 
   const session = DeployUtil.ExecutableDeployItem.newTransfer(
     amount * 10 ** vm.decimals,
