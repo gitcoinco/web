@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from cacheops import cached_as
 from perftools.models import JSONStore
 
+
 @cached_as(JSONStore.objects.filter(view='bundleTags', key='bundleTags'), timeout=60)
 def templateTags():
 

@@ -31,11 +31,12 @@ def get_casper_txn_status(fulfillment):
         result = casper_response['result']
 
         if result:
+            transfer_args = result["deploy"]["session"]["Transfer"]["args"]
             if (
                 result["deploy"]["hash"] == txnid
                 and result["deploy"]["header"]["account"] == funderAddress
                 and float([
-                    x for x in result["deploy"]["session"]["Transfer"]["args"] if x[0] == 'amount'
+                    arg for arg in transfer_args if arg[0] == 'amount'
                 ][0][1]['parsed']) == float(amount) * 10 ** 9
             ):
                 if result["execution_results"][0]["result"].get("Success", False) != False:
