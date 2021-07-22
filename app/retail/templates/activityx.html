@@ -1,0 +1,63 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize i18n static bundle %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="title" content="Bounty Activity Feed | Gitcoin">
+    <meta name="description" content="See open source development in real-time with the Gitcoin Activity Feed.">
+    <link rel="canonical" href="{% url 'activity' %}">
+    {% include 'shared/head.html' %}
+    {% bundle css file activity %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/town_square.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+    {% endbundle %}
+  </head>
+  <body class="{{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="header">
+      {% include 'home/nav.html' %}
+    </div>
+
+    <div class="" id="gc-activity">
+      <div @scroll.passive="onScroll($event)" class="mh-100 overflow-auto" style="height: 100vh;" id="scrollArea">
+        <div class="minihero row pt-0 pb-1 mr-0 ml-0 text-center" style="background-image: linear-gradient(to right, rgb(250, 250, 250), rgba(238, 238, 238, 0.933), rgb(255, 255, 255), rgba(221, 221, 221, 0.867));"><div class="col"><img src="/static/v2/images/new-logos/gc-h-pos.svg" width="600px" class="about-gc-logo mb-2"> <div class="w-100"></div> <h1 class="minihero__title">Activity Feed</h1></div></div>
+        <div class="m-auto" style="width: 800px;">
+          <div v-for="(activity, index) in activities" :key="activity.pk">
+
+            <activity-card :data="activity" :index="index"></activity-card>
+          </div>
+          <loading-screen v-if="loadingActivity"></loading-screen>
+        </div>
+      </div>
+
+    </div>
+
+    {% csrf_token %}
+    {% include 'shared/components/activity-card.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/activityx.js" %}"></script>
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+
+    </script>
+  </body>
+</html>

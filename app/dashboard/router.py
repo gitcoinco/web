@@ -28,7 +28,10 @@ from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_flex_fields import FlexFieldsModelSerializer
 from retail.helpers import get_ip
+from townsquare.models import Comment, Favorite, Flag, Like, PinnedPost
+
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
@@ -106,18 +109,70 @@ class KudosTokenSerializer(serializers.ModelSerializer):
                   'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
 
 
-class ActivitySerializer(serializers.ModelSerializer):
+class NewProfileSerializer(FlexFieldsModelSerializer):
+    class Meta:
+        model = Profile
+        fields = (  'id', 'handle', 'github_url', 'avatar_url', 'keywords',
+                    'organizations')
+
+
+class LikeSerializer(FlexFieldsModelSerializer):
+    profile = NewProfileSerializer()
+    class Meta:
+        model = Like
+        fields = (  'id', 'profile', 'activity')
+
+
+class CommentSerializer(FlexFieldsModelSerializer):
+    profile = NewProfileSerializer()
+
+    class Meta:
+        model = Comment
+        fields = (  'id', 'created_on', 'profile', 'activity', 'comment', 'tip', 'likes',
+                    'likes_handles', 'tip_count_eth', 'is_edited')
+
+
+class ActivitySerializer(FlexFieldsModelSerializer):
     """Handle serializing the Activity object."""
 
-    profile = ProfileSerializer()
+    profile = NewProfileSerializer()
     kudos = KudosTokenSerializer()
+    comments_count = serializers.SerializerMethodField()
 
     class Meta:
         """Define the activity serializer metadata."""
 
         model = Activity
-        fields = ('activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
+        fields = (  'activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty',
+                    'tip', 'kudos', 'grant', 'subscription', 'hackathonevent',
+                    'view_count', 'other_profile', 'hidden', 'comments', 'likes')
+        expandable_fields = {
+          'comments': (CommentSerializer, {'many': True, 'expand': ["profile.handle"]}),
+          'likes': (LikeSerializer, {'many': True, 'expand': ["profile.handle"]})
+        }
 
+    def comments_count(self, obj):
+        print(obj)
+        return Comment.objects.filter(activity=obj).count()
+
+class ActivityPagination(PageNumberPagination):
+    page_size = 10
+
+class ActivityViewSet(viewsets.ModelViewSet):
+    queryset = Activity.objects.all().order_by('-id')
+    print(queryset)
+    serializer_class = ActivitySerializer
+    pagination_class = ActivityPagination
+
+
+    # def get_queryset(self):
+
+    #     q = self.request.query_params.get('search', '')
+    #     what = self.request.query_params.get('what', 'everywhere')
+    #     trending_only = self.request.query_params.get('trending_only', 0)
+    #     # queryset = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
+
+    #     return queryset
 
 class InterestSerializer(serializers.ModelSerializer):
     """Handle serializing the Interest object."""
@@ -662,6 +717,7 @@ router = routers.DefaultRouter()
 router.register(r'bounties/slim', BountiesViewSetSlim)
 router.register(r'bounties', BountiesViewSet)
 router.register(r'checkin', BountiesViewSetCheckIn)
+router.register(r'activities', ActivityViewSet)
 
 router.register(r'bounty', BountyViewSet)
 router.register(r'projects_fetch', HackathonProjectsViewSet)

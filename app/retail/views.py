@@ -856,6 +856,10 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
 
     return activities
 
+def activityx(request):
+    context = {}
+
+    return TemplateResponse(request, 'activityx.html', context)
 
 def activity(request):
     """Render the Activity response."""

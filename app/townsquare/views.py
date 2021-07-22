@@ -865,7 +865,7 @@ def extract_metadata_page(request):
     url = request.GET.get('url')
 
     if url:
-        page = metadata_parser.MetadataParser(url=url, url_headers={
+        page = metadata_parser.MetadataParser(url=url, support_malformed=True, search_head_only=True, url_headers={
             'User-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
         })
         meta = page.parsed_result.metadata
@@ -874,9 +874,9 @@ def extract_metadata_page(request):
             'twitter': meta['twitter'],
             'meta': meta['meta'],
             'dc': meta['dc'],
-            'title': page.get_metadatas('title')[0],
+            'title': None if not page.get_metadatas('title') else page.get_metadatas('title', strategy=['meta', 'page', 'og', 'dc',])[0],
             'image': page.get_metadata_link('image'),
-            'description': page.get_metadata('description'),
+            'description': page.get_metadatas('description')[0],
             'link': page.get_discrete_url()
         })
 

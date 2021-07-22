@@ -4317,12 +4317,14 @@ class Profile(SuperModel):
         return {
             'id': instance.id,
             'handle': instance.handle,
+            'data': 'test',
             'github_url': instance.github_url,
             'avatar_url': instance.avatar_url,
             'keywords': instance.keywords,
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
-            'organizations': instance.get_who_works_with(network=None),
+            'organizations': instance.organizations,
+            'get_who_works_with': instance.get_who_works_with(network=None),
             'total_earned': instance.get_eth_sum(network=None)
         }
 

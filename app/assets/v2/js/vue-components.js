@@ -957,3 +957,82 @@ Vue.component('countdown', {
     this.initializeClock();
   }
 });
+
+Vue.component('activity-card', {
+  template: '#activity-card',
+  delimiters: [ '[[', ']]' ],
+  props: [ 'data', 'index' ],
+  data: function() {
+    return {
+      xf: $("input[name='csrfmiddlewaretoken']").val() || ''
+    };
+  },
+  methods: {
+    fetchComments: async function(activityId) {
+      let vm = this;
+      if (!vm.data.comments.length || Object.keys(vm.data.comments[0]).length) {
+        return;
+      }
+      let url = `/api/v0.1/activities/${activityId}/?fields=pk,comments&expand=comments`;
+
+      const res = await fetch(url);
+      const json = await res.json();
+
+
+      vm.$set(vm.data, 'comments', json.comments);
+      // vm.activities.map((activity, index) => {
+      //   if (activity.includes(activityId))
+
+      //     // activity.comments = json.comments;
+      // });
+
+
+
+    },
+    postComment: async function() {
+      let vm = this;
+      let url = `/api/v0.1/activity/${vm.data.pk}`
+      let dataComment = {
+        'method': 'comment',
+        'comment': vm.data.newComment,
+        'csrfmiddlewaretoken': vm.csrf
+
+      }
+      const res = await fetch(url, {
+        method: 'post',
+        body: new FormData(dataComment)
+      });
+      const json = await res.json();
+      if (json) {
+        vm.data.comments.push(json);
+
+      }
+    },
+    editComment: function(commentId) {},
+    deleteComment: function(commentId) {
+      if (!confirm('Are you sure you want to delete this?')) {
+        return;
+      }
+    },
+    isOwner: function(commentIndex) {
+      let vm = this;
+      return document.contxt.github_handle == vm.data.comments[commentIndex].profile.handle;
+
+    }
+  },
+  computed: {
+    isCommentOwner() {
+      if (!document.contxt.github_handle) {
+        return;
+      }
+      return this.data.comments.reduce((acc, item) => {
+        acc[item.id] = item.profile.handle == document.contxt.github_handle;
+        console.log(acc)
+        return acc;
+      }, {});
+    },
+
+
+  }
+
+})

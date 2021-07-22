@@ -1,0 +1,122 @@
+{% comment %}
+    Copyright (C) 2021 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load humanize i18n static grants_extra slug %}
+
+<script type="text/x-template" id="activity-card">
+
+  <div class="border-bottom d-flex flex-wrap py-3">
+
+    <div class="d-flex flex-fill w-100">
+      <div class="d-flex flex-column align-items-center">
+        <img :src="data.profile.avatar_url || `/dynamic/avatar/${data.profile.handle}`" alt="" class="rounded-circle" height="72" width="72">
+        <div class="">
+          <img :src="`/dynamic/avatar/${org}`" alt="" class="rounded-circle" height="15" width="15" v-for="org in data.profile.organizations">
+        </div>
+      </div>
+      <div class="d-flex flex-column flex-fill justify-content-between ml-3">
+        <div class="d-flex justify-content-between">
+          <a :href="data.profile.handle" class=""  :data-usercard="data.profile.handle">@[[data.profile.handle]]</a>
+          <time class="" :datetime="[[ data.created ]]" :title="[[ data.created ]]">
+            [[ data.created | moment-fromnow ]]
+          </time>
+        </div>
+        [[data.metadata.title]]
+        <template v-if="data.activity_type==='joined'">
+          Joined Gitcoin
+        </template>
+        <div class="">
+          <span class="btn btn-sm" data-toggle="tooltip" title="The number of views this post has gotten."><i class="far fa-eye"></i> [[data.view_count]]</span>
+          <button class="btn btn-sm" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments.length]]</button>
+
+          <b-button v-b-toggle="`comments-${index}`" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments.length]]</b-button>
+
+          <button class="btn btn-sm"><i class="far fa-heart"></i> [[data.likes.length]]</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="data.metadata.poll_choices" v-for="choice in data.metadata.poll_choices" class="w-100">
+      <div class="border p-2 m-1">[[ choice.question ]]</div>
+    </div>
+
+
+    <div class="embed-responsive embed-responsive-16by9 mt-2" v-if="data.metadata.resource && data.metadata.resource.provider == 'youtube'">
+      <iframe class="embed-responsive-item" height="315" :src="`https://www.youtube.com/embed/${data.metadata.resource.id}`"
+      frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+    </div>
+
+    <div v-if="data.metadata.resource && data.metadata.resource.type == 'content'" class="d-flex bg-light w-100 p-3">
+
+      <img class="mw-100" width="96" :src="data.metadata.resource.image || `{% static 'v2/images/team/gitcoinbot.png' %}`">
+      <div class="ml-3">
+        <span class="mt-2 mb-1 font-weight-bold">[[data.metadata.resource.title]]</span>
+        <p class="small">[[data.metadata.resource.description]]</p>
+        <a :href="data.metadata.resource.provider" target="_blank" rel="nofollow" style="color: #0056b3" class="d-block">[[data.metadata.resource.provider]]</a>
+      </div>
+
+    </div>
+
+    <div v-for="(item, index) in data.comments" class="d-flex flex-fill w-100 p-3 bg-lightblue" v-if="Object.keys(data.comments[0]).length">
+      <div>
+        <img :src="item.profile.avatar_url || `/dynamic/avatar/${item.profile.handle}`" alt="" class="rounded-circle" height="40" width="40">
+      </div>
+
+      <div class="ml-3">
+        <div class="">
+          <a :href="item.profile.handle" class=""  :data-usercard="item.profile.handle">@[[item.profile.handle]]</a>
+          <time class="" :datetime="[[ item.created_on ]]" :title="[[ item.created_on ]]">
+            [[ item.created_on | moment-fromnow ]] <i class="small" v-if="item.is_edited">edited</i>
+          </time>
+          <div>
+            [[item.comment]]
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center comment_options font-smaller-5 mt-1">
+          <template v-if="isCommentOwner[item.id]">
+            <button class="btn btn-sm" @click="editComment(item.id)">
+              <i class="fas fa-edit grey"></i>
+            </button>
+            <button class="btn btn-sm" @click="deleteComment(item.id)">
+              <i class="fas fa-trash grey"></i>
+            </button>
+          </template>
+          <button class="btn btn-sm" data-toggle="tooltip" :title="item.likes_handles.length ? `Liked by ${item.likes_handles}` : 'Liked by no one. Click to be the first.'">
+            <i class="far fa-heart grey"></i>
+            <span class="like_count">[[item.likes.length]]</span>
+          </button>
+          <button class="btn btn-sm">
+            <i class="fab fa-ethereum grey"></i>
+            <span class="grey">[[Math.round(1000 * item.tip_count_eth) / 1000]]</span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+    <b-collapse class="" :id="`comments-${index}`" >
+
+      <textarea class="mb-4 form-control" name="newcomment" id="" cols="100" rows="3" v-model="data.newComment">[[data.newComment]]</textarea>
+      <button @click="postComment" class="btn btn-primary">Comment</button>
+    </b-collapse>
+
+
+  </div>
+
+</script>

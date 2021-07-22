@@ -537,6 +537,7 @@ urlpatterns = [
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?$', retail.views.results, name='results'),
     re_path(r'^activity/?$', retail.views.activity, name='activity'),
+    re_path(r'^activityx/?$', retail.views.activityx, name='activityx'),
     re_path(r'^townsquare/?$', townsquare.views.town_square, name='townsquare'),
     re_path(r'^$', retail.views.index, name='index'),
     re_path(r'^styleguide/components/?', retail.views.styleguide_components, name='styleguide_components'),
