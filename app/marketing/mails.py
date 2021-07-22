@@ -446,7 +446,7 @@ def funder_stale(to_email, github_username, days=30, time_as_str='about a month'
 
         subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
         __, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net']
+        cc_emails = []
         if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
             send_mail(
                 from_email,
@@ -486,7 +486,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
 
         subject = bounty.github_url
         html, text = render_bounty_feedback(bounty, persona, previous_bounties)
-        cc_emails = [from_email, 'team@gitcoin.co']
+        cc_emails = [from_email, 'product@gitcoin.co']
         if not should_suppress_notification_email(to_email, 'bounty_feedback'):
             send_mail(
                 from_email,
@@ -495,7 +495,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
                 text,
                 html,
                 cc_emails=cc_emails,
-                from_name="Alisa March (Gitcoin.co)",
+                from_name="Gitcoin Product Team",
                 categories=['transactional', func_name()],
             )
     finally:
@@ -840,7 +840,7 @@ def new_token_request(obj):
 
 def new_token_request_approved(obj):
     to_email = obj.metadata.get('email')
-    from_email = 'founders@gitcoin.co'
+    from_email = 'support@gitcoin.co'
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -859,7 +859,7 @@ def new_token_request_approved(obj):
 
 
 def notify_deadbeat_quest(quest):
-    to_email = 'kevin@gitcoin.co'
+    to_email = 'support@gitcoin.co'
     from_email = to_email
     cur_language = translation.get_language()
     try:
@@ -881,7 +881,7 @@ def notify_deadbeat_quest(quest):
 
 def notify_kudos_minted(token_request):
     to_email = token_request.profile.email
-    from_email = 'kevin@gitcoin.co'
+    from_email = 'support@gitcoin.co'
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -902,7 +902,7 @@ def notify_kudos_minted(token_request):
 
 def notify_kudos_rejected(token_request):
     to_email = token_request.profile.email
-    from_email = 'kevin@gitcoin.co'
+    from_email = 'support@gitcoin.co'
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -922,7 +922,7 @@ def notify_kudos_rejected(token_request):
 
 
 def notify_deadbeat_grants(grants):
-    to_email = 'kevin@gitcoin.co'
+    to_email = 'support@gitcoin.co'
     from_email = to_email
     cur_language = translation.get_language()
     try:
@@ -943,7 +943,7 @@ def notify_deadbeat_grants(grants):
 
 
 def new_kudos_request(obj):
-    to_email = 'founders@gitcoin.co'
+    to_email = 'support@gitcoin.co'
     from_email = obj.profile.email
     cur_language = translation.get_language()
     try:
@@ -1915,7 +1915,7 @@ def setup_lang(to_email):
 
 
 def new_bounty_request(model):
-    to_email = 'vivek.singh@consensys.net'
+    to_email = 'support@gitcoin.co'
     from_email = model.requested_by.email or settings.SERVER_EMAIL
     cur_language = translation.get_language()
 
@@ -1954,7 +1954,7 @@ def new_bounty_request(model):
 
 
 def new_funding_limit_increase_request(profile, cleaned_data):
-    to_email = 'founders@gitcoin.co'
+    to_email = 'support@gitcoin.co'
     from_email = profile.email or settings.SERVER_EMAIL
     cur_language = translation.get_language()
     usdt_per_tx = cleaned_data.get('usdt_per_tx', 0)
@@ -1982,7 +1982,7 @@ def new_funding_limit_increase_request(profile, cleaned_data):
 
 
 def bounty_request_feedback(profile):
-    from_email = 'vivek.singh@consensys.net'
+    from_email = 'product@gitcoin.co'
     to_email = profile.email
     if not to_email:
         if profile and profile.user:
@@ -1995,8 +1995,8 @@ def bounty_request_feedback(profile):
         setup_lang(to_email)
         subject = _(f'Bounty Request Feedback, @{profile.username} <> Gitcoin')
         body = f'Howdy @{profile.username},\n\n' \
-            'This is Vivek from Gitcoin. ' \
-            'I noticed you made a funded Gitcoin Requests ' \
+            'This is the Product team from Gitcoin. ' \
+            'I noticed you made a bounty ' \
             'a few months ago and just wanted to check in. ' \
             'How\'d it go? Any feedback for us?\n\n' \
             'Let us know if you have any bounties in your near future ' \
@@ -2004,14 +2004,14 @@ def bounty_request_feedback(profile):
             'Gitcoin Requests (https://gitcoin.co/requests/) ' \
             'from you as we know you\'ve suggested good things ' \
             'in the past 🙂\n\n' \
-            'Best,\n\nV'
+            'Best,\n\nthe product team'
 
         send_mail(
             from_email,
             to_email,
             subject,
             body,
-            from_name=_('Vivek Singh (Gitcoin.co)'),
+            from_name=_('Gitcoin Product team (Gitcoin.co)'),
         )
     finally:
         translation.activate(cur_language)
