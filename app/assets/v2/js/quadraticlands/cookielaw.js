@@ -2,10 +2,12 @@
 document.addEventListener('DOMContentLoaded', function() {
   const cookielawbutton = document.getElementById('cookielawbutton');
 
-  cookielawbutton.addEventListener('click', () => {
-    createCookieLaw();
-  });
-  checkCookieLaw();
+  if (cookielawbutton) {
+    cookielawbutton.addEventListener('click', () => {
+      createCookieLaw();
+    });
+    checkCookieLaw();
+  }
 });
 
 // creates a cookie with name "cookielaw_accepted"

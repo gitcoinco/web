@@ -68,8 +68,9 @@ rm -f output/w*_*.pdf; rm -f assets/other/wp.pdf;
 
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
+    yarn install --non-interactive --frozen-lockfile
     python3 manage.py bundle
-    yarn install --non-interactive --frozen-lockfile && yarn run build
+    yarn run build
     python3 manage.py collectstatic --noinput -i other
 fi
 
