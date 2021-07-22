@@ -1119,7 +1119,7 @@ var show_interest_modal = function() {
           _alert({ message: gettext('Please provide an action plan for this ticket. (min 30 chars)') }, 'danger');
           return false;
         }
-
+        $('#submit').attr('disabled', true);
         add_interest(document.result['pk'], {
           issue_message: msg
         }).then(success => {
@@ -1156,20 +1156,6 @@ var show_interest_modal = function() {
   });
   modals.bootstrapModal('show');
 };
-
-// $('body').on('click', '.issue_description img', function() {
-//   var content = $.parseHTML(
-//     '<div><div class="row"><div class="col-12 closebtn">' +
-//       '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
-//         '<span aria-hidden="true">&times;</span>' +
-//       '</a>' +
-//     '</div>' +
-//     '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
-
-//   $(content).appendTo('body').modal({
-//     modalClass: 'modal magnify'
-//   });
-// });
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
