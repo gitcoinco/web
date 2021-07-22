@@ -600,7 +600,7 @@ def render_funder_stale(github_username, days=60, time_as_str='a couple months')
     response_txt = f"""
 hi {github_username},
 
-kyle, frank, and alisa from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+kyle, frank, and alisa from Gitcoin here — i see you haven't funded an issue in {time_as_str}.
 
 in the spirit of making Gitcoin better + checking in:
 
