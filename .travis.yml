@@ -1,7 +1,6 @@
 language: python
 python: 3.7
 dist: bionic
-sudo: true
 
 node_js: 14
 
@@ -56,13 +55,13 @@ jobs:
         - DJANGO_SETTINGS_MODULE="app.settings"
         - SUPRESS_DEBUG_TOOLBAR=1
       deploy:
+        strategy: git
         provider: pages
-        skip-cleanup: true
-        github-token: $GITHUB_TOKEN
-        keep-history: true
-        local-dir: _build/site
+        token: $GITHUB_TOKEN
+        keep_history: true
+        local_dir: _build/site
         fqdn: docs.gitcoin.co
-        target-branch: gh-pages
+        target_branch: gh-pages
         on:
           branch: master
     # Deploy to Docker Hub and initiate a rolling update for web.
