@@ -18,7 +18,7 @@
 {% load i18n static kudos_extras bundle %}
 {% block 'scripts' %}
   {% bundle merge_js file tweenlite %}
-    <script src="TweenMax.js" base-dir="/node_modules/gsap/umd"></script>
+    <script src="gsap.min.js" base-dir="/node_modules/gsap/dist"></script>
   {% endbundle %}
   <script src="{% static "v2/js/pages/kudos_bulk_receive.js" %}"></script>
   <script src="{% static "onepager/js/confetti.js" %}"></script>
