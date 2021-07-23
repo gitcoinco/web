@@ -8,8 +8,8 @@ from .utils import amount_in_wei, get_converted_amount
 class GrantSerializer(serializers.ModelSerializer):
     """Handle serializing the Grant object."""
 
-    admin_profile = ProfileSerializer()
-    team_members = ProfileSerializer(many=True)
+    admin_profile = ProfileSerializer(fields=['handle'])
+    team_members = ProfileSerializer(many=True, fields=['handle'])
 
     class Meta:
         """Define the grant serializer metadata."""
@@ -26,7 +26,7 @@ class GrantSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     """Handle serializing the Subscription object."""
 
-    contributor_profile = ProfileSerializer()
+    contributor_profile = ProfileSerializer(fields=['handle'])
     grant = GrantSerializer()
 
     class Meta:

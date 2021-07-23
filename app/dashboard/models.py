@@ -4718,31 +4718,6 @@ class UserDirectory(models.Model):
     class Meta:
         managed = False
 
-class ProfileSerializer(serializers.BaseSerializer):
-    """Handle serializing the Profile object."""
-
-    class Meta:
-        """Define the profile serializer metadata."""
-
-        model = Profile
-        fields = ('handle', 'github_access_token')
-        extra_kwargs = {'github_access_token': {'write_only': True}}
-
-    def to_representation(self, instance):
-        """Provide the serialized representation of the Profile.
-
-        Args:
-            instance (Profile): The Profile object to be serialized.
-
-        Returns:
-            dict: The serialized Profile.
-
-        """
-        has_representation = instance.as_representation.get('id')
-        if not has_representation:
-            instance.calculate_all()
-            instance.save()
-        return instance.as_representation
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):

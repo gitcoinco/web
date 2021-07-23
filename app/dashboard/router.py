@@ -26,25 +26,35 @@ from django.db.models import Count, F, Q
 import django_filters.rest_framework
 from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
+from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import routers, serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_flex_fields import FlexFieldsModelSerializer
 from retail.helpers import get_ip
 from townsquare.models import Comment, Favorite, Flag, Like, PinnedPost
 
-
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
-    ProfileSerializer, SearchHistory, TribeMember, UserDirectory,
+    SearchHistory, TribeMember,
 )
 from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
 
 
+class ProfileSerializer(FlexFieldsModelSerializer):
+    """Handle serializing the Profile object."""
+
+    class Meta:
+        """Define the profile serializer metadata."""
+
+        model = Profile
+        fields = '__all__'
+        extra_kwargs = {'github_access_token': {'write_only': True}}
+
+
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
     """Handle serializing the BountyFulfillment object."""
-    profile = ProfileSerializer()
+    profile = ProfileSerializer(fields=['handle'])
     fulfiller_email = serializers.ReadOnlyField()
     fulfiller_github_username = serializers.ReadOnlyField()
     class Meta:
@@ -61,7 +71,7 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
 
 class HackathonEventSerializer(serializers.ModelSerializer):
     """Handle serializing the hackathon object."""
-    sponsor_profiles = ProfileSerializer(many=True)
+    sponsor_profiles = ProfileSerializer(many=True, fields=['handle'])
     prizes = serializers.SerializerMethodField()
     winners = serializers.SerializerMethodField()
 
@@ -76,6 +86,7 @@ class HackathonEventSerializer(serializers.ModelSerializer):
 
         model = HackathonEvent
         fields = '__all__'
+
 
 # TODO : REMOVE KudosSerializer
 class KudosSerializer(serializers.ModelSerializer):
@@ -109,22 +120,19 @@ class KudosTokenSerializer(serializers.ModelSerializer):
                   'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
 
 
-class NewProfileSerializer(FlexFieldsModelSerializer):
-    class Meta:
-        model = Profile
-        fields = (  'id', 'handle', 'github_url', 'avatar_url', 'keywords',
-                    'organizations')
-
-
 class LikeSerializer(FlexFieldsModelSerializer):
-    profile = NewProfileSerializer()
+    profile = ProfileSerializer(fields=[
+        'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
+    ])
     class Meta:
         model = Like
         fields = (  'id', 'profile', 'activity')
 
 
 class CommentSerializer(FlexFieldsModelSerializer):
-    profile = NewProfileSerializer()
+    profile = ProfileSerializer(fields=[
+        'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
+    ])
 
     class Meta:
         model = Comment
@@ -135,7 +143,9 @@ class CommentSerializer(FlexFieldsModelSerializer):
 class ActivitySerializer(FlexFieldsModelSerializer):
     """Handle serializing the Activity object."""
 
-    profile = NewProfileSerializer()
+    profile = ProfileSerializer(fields=[
+        'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
+    ])
     kudos = KudosTokenSerializer()
     comments_count = serializers.SerializerMethodField()
 
@@ -143,9 +153,11 @@ class ActivitySerializer(FlexFieldsModelSerializer):
         """Define the activity serializer metadata."""
 
         model = Activity
-        fields = (  'activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty',
-                    'tip', 'kudos', 'grant', 'subscription', 'hackathonevent',
-                    'view_count', 'other_profile', 'hidden', 'comments', 'likes')
+        fields = (
+            'activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty',
+            'tip', 'kudos', 'grant', 'subscription', 'hackathonevent', 'view_count',
+            'other_profile', 'hidden', 'comments', 'likes'
+        )
         expandable_fields = {
           'comments': (CommentSerializer, {'many': True, 'expand': ["profile.handle"]}),
           'likes': (LikeSerializer, {'many': True, 'expand': ["profile.handle"]})
@@ -155,8 +167,10 @@ class ActivitySerializer(FlexFieldsModelSerializer):
         print(obj)
         return Comment.objects.filter(activity=obj).count()
 
+
 class ActivityPagination(PageNumberPagination):
     page_size = 10
+
 
 class ActivityViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all().order_by('-id')
@@ -177,7 +191,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
 class InterestSerializer(serializers.ModelSerializer):
     """Handle serializing the Interest object."""
 
-    profile = ProfileSerializer()
+    profile = ProfileSerializer(fields=['handle'])
 
     class Meta:
         """Define the Interest serializer metadata."""
@@ -261,7 +275,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
 class HackathonProjectSerializer(serializers.ModelSerializer):
     bounty = BountySerializer()
-    profiles = ProfileSerializer(many=True)
+    profiles = ProfileSerializer(many=True, fields=['handle'])
     hackathon = HackathonEventSerializer()
     comments = serializers.SerializerMethodField()
 

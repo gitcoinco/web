@@ -122,14 +122,14 @@ from .helpers import (
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon, Earning,
     FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
-    MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView, Question,
-    SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
+    MediaFile, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor,
+    Tool, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
 from .poh_utils import is_registered_on_poh
-from .router import HackathonEventSerializer, TribesSerializer
+from .router import HackathonEventSerializer, ProfileSerializer, TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
@@ -427,7 +427,7 @@ def new_interest(request, bounty_id):
             status=401)
     return JsonResponse({
         'success': True,
-        'profile': ProfileSerializer(interest.profile).data,
+        'profile': ProfileSerializer(interest.profile, fields=['handle']).data,
         'msg': msg,
         'status': 200
     })
