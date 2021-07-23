@@ -1995,8 +1995,8 @@ def bounty_request_feedback(profile):
         setup_lang(to_email)
         subject = _(f'Bounty Request Feedback, @{profile.username} <> Gitcoin')
         body = f'Howdy @{profile.username},\n\n' \
-            'This is the Product team from Gitcoin. ' \
-            'I noticed you made a bounty ' \
+            'This is the Product Team from Gitcoin. ' \
+            'We noticed you requested a bounty ' \
             'a few months ago and just wanted to check in. ' \
             'How\'d it go? Any feedback for us?\n\n' \
             'Let us know if you have any bounties in your near future ' \
@@ -2004,14 +2004,14 @@ def bounty_request_feedback(profile):
             'Gitcoin Requests (https://gitcoin.co/requests/) ' \
             'from you as we know you\'ve suggested good things ' \
             'in the past 🙂\n\n' \
-            'Best,\n\nthe product team'
+            'Best,\n\nThe Product Team'
 
         send_mail(
             from_email,
             to_email,
             subject,
             body,
-            from_name=_('Gitcoin Product team (Gitcoin.co)'),
+            from_name=_('Gitcoin Product Team (Gitcoin.co)'),
         )
     finally:
         translation.activate(cur_language)
