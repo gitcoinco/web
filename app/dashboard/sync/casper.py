@@ -13,7 +13,6 @@ def get_casper_txn_status(fulfillment):
     token_name = fulfillment.token_name
     funderAddress = fulfillment.funder_address
     amount = fulfillment.payout_amount
-    payeeAddress = fulfillment.fulfiller_address
 
     if token_name != 'CSPR' or not txnid:
         return None
@@ -25,8 +24,8 @@ def get_casper_txn_status(fulfillment):
             'method': 'info_get_deploy',
             'params': [ txnid ]
         }
-
-        casper_response = requests.post('http://3.142.224.108:7777/rpc', json=data).json()
+        casper_rpc_url = 'http://3.142.224.108:7777/rpc'
+        casper_response = requests.post(casper_rpc_url, json=data).json()
 
         result = casper_response['result']
 
