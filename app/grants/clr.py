@@ -23,6 +23,7 @@ from django.utils import timezone
 
 import numpy as np
 from grants.models import Contribution, Grant, GrantCollection
+from townsquare.models import SquelchProfile
 
 CLR_PERCENTAGE_DISTRIBUTED = 0
 
@@ -288,6 +289,10 @@ def fetch_data(clr_round, network='mainnet'):
 
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
+
+    # ignore profiles which have been squelched
+    profiles_to_be_ignored = SquelchProfile.objects.filter(active=True).values_list('profile__pk')
+    contributions = contributions.exclude(profile_for_clr__in=profiles_to_be_ignored)
 
     grants = clr_round.grants.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
 

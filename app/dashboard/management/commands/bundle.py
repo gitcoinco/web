@@ -7,9 +7,8 @@ from django.core.management.base import BaseCommand
 from django.template import Context, Template
 from django.template.loaders.app_directories import get_app_template_dirs
 
-from dashboard.templatetags.bundle import render
-
 from app.bundle_context import context, templateTags
+from dashboard.templatetags.bundle import render
 
 
 def rmdir(loc, depth=1):
