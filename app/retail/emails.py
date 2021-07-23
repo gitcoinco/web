@@ -500,7 +500,7 @@ thanks again for being a member of the community.
 
 kyle, frank & alisa (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :).
 
 """
     elif persona == 'funder':
@@ -526,7 +526,7 @@ thanks for being a member of the community.
 
 kyle, frank & alisa (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
+PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
 
 """
         elif bounty.status == 'cancelled':
@@ -547,7 +547,7 @@ thanks again for being a member of the community.
 
 kyle, frank & alisa (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
+PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
 
 """
         else:
@@ -600,7 +600,7 @@ def render_funder_stale(github_username, days=60, time_as_str='a couple months')
     response_txt = f"""
 hi {github_username},
 
-kyle, frank, and alisa from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+kyle, frank, and alisa from Gitcoin here — i see you haven't funded an issue in {time_as_str}.
 
 in the spirit of making Gitcoin better + checking in:
 
@@ -611,7 +611,7 @@ in the spirit of making Gitcoin better + checking in:
 > are you interested in joining one of our upcoming hackathons? it's possible
 we could do so at a discount, as you're a current funder on the platform.
 
-appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
+appreciate you being a part of the community + if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
 
 ~ kyle, frank & alisa (gitcoin product team)
 
@@ -1420,13 +1420,13 @@ def render_new_bounty_roundup(to_email):
 
 @staff_member_required
 def weekly_recap(request):
-    response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
+    response_html, _ = render_weekly_recap("product@gitcoin.co")
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def unread_notification_email_weekly_roundup(request):
-    response_html, _, _ = render_unread_notification_email_weekly_roundup('sebastian.tharakan97@gmail.com')
+    response_html, _, _ = render_unread_notification_email_weekly_roundup('product@gitcoin.co')
     return HttpResponse(response_html)
 
 @staff_member_required
