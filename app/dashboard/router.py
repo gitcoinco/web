@@ -25,7 +25,6 @@ from django.db.models import Count, F, Q
 
 import django_filters.rest_framework
 from bounty_requests.models import BountyRequest
-from grants.serializers import GrantSerializer
 from kudos.models import KudosTransfer, Token
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import routers, serializers, viewsets
@@ -44,6 +43,11 @@ logger = logging.getLogger(__name__)
 
 class ProfileSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Profile object."""
+    match_this_round = serializers.ReadOnlyField()
+    url = serializers.ReadOnlyField()
+    default_match_estimate = serializers.SerializerMethodField()
+    name = serializers.ReadOnlyField(source='data.name')
+    type = serializers.ReadOnlyField(source='data.type')
 
     class Meta:
         """Define the profile serializer metadata."""
@@ -51,6 +55,9 @@ class ProfileSerializer(FlexFieldsModelSerializer):
         model = Profile
         fields = '__all__'
         extra_kwargs = {'github_access_token': {'write_only': True}}
+
+    def get_default_match_estimate(self, obj):
+        return obj.matchranking_this_round.default_match_estimate if obj.matchranking_this_round else 0
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -70,7 +77,7 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
                   'payout_type', 'fulfiller_identifier', 'funder_identifier')
 
 
-class HackathonEventSerializer(serializers.ModelSerializer):
+class HackathonEventSerializer(FlexFieldsModelSerializer):
     """Handle serializing the hackathon object."""
     sponsor_profiles = ProfileSerializer(many=True, fields=['handle'])
     prizes = serializers.SerializerMethodField()
@@ -89,35 +96,32 @@ class HackathonEventSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# TODO : REMOVE KudosSerializer
-class KudosSerializer(serializers.ModelSerializer):
+class KudosTransferSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Kudos object."""
 
     class Meta:
         """Define the kudos serializer metadata."""
 
         model = KudosTransfer
-        depth = 1
-        fields = ('kudos_token_cloned_from', )
+        fields = ('id', 'kudos_token_cloned_from', 'username')
 
 
-class KudosTokenSerializer(serializers.ModelSerializer):
+class KudosTokenSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Kudos object."""
 
     class Meta:
         """Define the kudos serializer metadata."""
 
         model = Token
-        depth = 1
-        fields = ('price_finney', 'num_clones_allowed', 'num_clones_in_wild',
+        fields = ('price_finney', 'id', 'num_clones_allowed', 'num_clones_in_wild',
                   'num_clones_available_counting_indirect_send',
                   'cloned_from_id', 'popularity', 'popularity_week',
                   'popularity_month', 'popularity_quarter', 'name',
-                  'override_display_name', 'description',
+                  'override_display_name', 'description', 'img_url',
                   'image', 'rarity', 'tags', 'artist', 'platform',
                   'external_url',  'background_color', 'owner_address',
-                  'txid', 'token_id', 'hidden',
-                  'send_enabled_for_non_gitcoin_admins',
+                  'txid', 'token_id', 'hidden', 'ui_name', 'from_username',
+                  'send_enabled_for_non_gitcoin_admins', 'preview_img_url',
                   'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
 
 
@@ -156,7 +160,47 @@ class ActivitySerializer(FlexFieldsModelSerializer):
             'view_count', 'other_profile', 'action_url', 'hidden', 'comments_count', 'likes_count'
         )
         expandable_fields = {
-            'grant': (GrantSerializer, {'fields': ['id', 'title', 'logo', 'description']})
+            'grant': (
+                'grants.serializers.GrantSerializer',
+                {'fields': ['id', 'title', 'logo', 'description']}
+            ),
+            'bounty': (
+                'dashboard.router.BountySerializer',
+                {
+                    'fields': [
+                        'id', 'title', 'value_true', 'value_in_usdt_now', 'token_name', 'network',
+                        'funding_organisation', 'bounty_owner_github_username'
+                    ]
+                }
+            ),
+            'hackathonevent': (
+                'dashboard.router.HackathonEventSerializer',
+                {'fields': ['id', 'slug', 'name', 'relative_url']}
+            ),
+            'kudos': (
+                'dashboard.router.KudosTokenSerializer',
+                {
+                    'fields': [
+                        'id', 'artist', 'url', 'ui_name', 'from_username', 'preview_img_url',
+                        'description', 'img_url'
+                    ]
+                }
+            ),
+            'kudos_transfer': (
+                'dashboard.router.KudosTransferSerializer', {'fields': ['id','username']}
+            ),
+            'profile': (
+                'dashboard.router.ProfileSerializer',
+                {
+                    'fields': [
+                        'id', 'handle', 'avatar_url', 'github_url', 'organizations',
+                        'keywords', 'name', 'type', 'match_this_round', 'default_match_estimate',
+                    ]
+                }
+            ),
+            'other_profile': (
+                'dashboard.router.ProfileSerializer', {'fields': ['url', 'handle']}
+            ),
         }
 
     def get_comments_count(self, obj):
@@ -198,7 +242,7 @@ class InterestSerializer(serializers.ModelSerializer):
 
 
 # Serializers define the API representation.
-class BountySerializer(serializers.HyperlinkedModelSerializer):
+class BountySerializer(FlexFieldsModelSerializer):
     """Handle serializing the Bounty object."""
 
     fulfillments = BountyFulfillmentSerializer(many=True)
@@ -223,7 +267,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
         model = Bounty
         fields = (
-            'url', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
+            'url', 'id', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
             'token_address', 'bounty_type', 'bounty_categories', 'project_length', 'experience_level',
             'github_url', 'github_comments', 'bounty_owner_address', 'bounty_owner_email',
             'bounty_owner_github_username', 'bounty_owner_name', 'fulfillments', 'interested', 'is_open',
