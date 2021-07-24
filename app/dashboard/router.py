@@ -25,6 +25,7 @@ from django.db.models import Count, F, Q
 
 import django_filters.rest_framework
 from bounty_requests.models import BountyRequest
+from grants.serializers import GrantSerializer
 from kudos.models import KudosTransfer, Token
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import routers, serializers, viewsets
@@ -142,12 +143,8 @@ class CommentSerializer(FlexFieldsModelSerializer):
 
 class ActivitySerializer(FlexFieldsModelSerializer):
     """Handle serializing the Activity object."""
-
-    profile = ProfileSerializer(fields=[
-        'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
-    ])
-    kudos = KudosTokenSerializer()
     comments_count = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
 
     class Meta:
         """Define the activity serializer metadata."""
@@ -155,17 +152,18 @@ class ActivitySerializer(FlexFieldsModelSerializer):
         model = Activity
         fields = (
             'activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty',
-            'tip', 'kudos', 'grant', 'subscription', 'hackathonevent', 'view_count',
-            'other_profile', 'hidden', 'comments', 'likes'
+            'tip', 'kudos', 'kudos_transfer', 'grant', 'subscription', 'hackathonevent',
+            'view_count', 'other_profile', 'action_url', 'hidden', 'comments_count', 'likes_count'
         )
         expandable_fields = {
-          'comments': (CommentSerializer, {'many': True, 'expand': ["profile.handle"]}),
-          'likes': (LikeSerializer, {'many': True, 'expand': ["profile.handle"]})
+            'grant': (GrantSerializer, {'fields': ['id', 'title', 'logo', 'description']})
         }
 
-    def comments_count(self, obj):
-        print(obj)
-        return Comment.objects.filter(activity=obj).count()
+    def get_comments_count(self, obj):
+        return obj.comments.count()
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
 
 
 class ActivityPagination(PageNumberPagination):

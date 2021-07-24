@@ -1,11 +1,12 @@
 from dashboard.router import ProfileSerializer
+from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
 from .models import Contribution, Grant, GrantCLR, Subscription
 from .utils import amount_in_wei, get_converted_amount
 
 
-class GrantSerializer(serializers.ModelSerializer):
+class GrantSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Grant object."""
 
     admin_profile = ProfileSerializer(fields=['handle'])

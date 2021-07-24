@@ -2465,7 +2465,6 @@ class Activity(SuperModel):
         except KeyError:
             return 0
 
-
     @property
     def action_url(self):
         if self.bounty:

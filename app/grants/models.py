@@ -1570,8 +1570,6 @@ class Flag(SuperModel):
             activity=activity,
             comment=f"Comment from anonymous user: {self.comments}")
 
-
-
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, processed: {self.processed}, comments: {self.comments} "
