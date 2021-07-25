@@ -136,28 +136,33 @@ class LikeSerializer(FlexFieldsModelSerializer):
 
 class CommentSerializer(FlexFieldsModelSerializer):
     profile = ProfileSerializer(fields=[
-        'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
+        'id', 'handle', 'name', 'type', 'github_url', 'avatar_url', 'keywords', 'organizations'
     ])
 
     class Meta:
         model = Comment
-        fields = (  'id', 'created_on', 'profile', 'activity', 'comment', 'tip', 'likes',
-                    'likes_handles', 'tip_count_eth', 'is_edited')
+        fields = (
+            'id', 'created_on', 'profile', 'activity', 'comment', 'tip', 'likes',
+            'likes_handles', 'tip_count_eth', 'is_edited'
+        )
 
 
 class ActivitySerializer(FlexFieldsModelSerializer):
     """Handle serializing the Activity object."""
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         """Define the activity serializer metadata."""
 
         model = Activity
         fields = (
-            'activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty',
-            'tip', 'kudos', 'kudos_transfer', 'grant', 'subscription', 'hackathonevent',
-            'view_count', 'other_profile', 'action_url', 'hidden', 'comments_count', 'likes_count'
+            'pk', 'activity_type', 'humanized_activity_type', 'profile', 'comments',
+            'metadata', 'bounty', 'tip_count_eth', 'tip_count_usd', 'kudos', 'kudos_transfer',
+            'grant', 'subscription', 'hackathonevent', 'other_profile', 'action_url', 'hidden',
+            'view_count', 'comments_count', 'likes_count', 'show_token_info', 'token_name',
+            'secondary_avatar_url', 'created', 'created_on', 'created_human_time'
         )
         expandable_fields = {
             'grant': (
@@ -201,7 +206,18 @@ class ActivitySerializer(FlexFieldsModelSerializer):
             'other_profile': (
                 'dashboard.router.ProfileSerializer', {'fields': ['url', 'handle']}
             ),
+            'project': (
+                'dashboard.router.HackathonProjectSerializer',
+                {'fields': ['id', 'name', 'logo', 'bounty', 'hackathon']}
+            )
         }
+
+    def get_comments(self, obj):
+        comments = CommentSerializer(
+            obj.comments.order_by('-created_on')[:2], many=True
+        ).data
+        comments.reverse()
+        return comments
 
     def get_comments_count(self, obj):
         return obj.comments.count()
@@ -212,11 +228,11 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
 class ActivityPagination(PageNumberPagination):
     page_size = 10
+    page_size_query_param = 'page_size'
 
 
 class ActivityViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all().order_by('-id')
-    print(queryset)
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
 
@@ -267,7 +283,7 @@ class BountySerializer(FlexFieldsModelSerializer):
 
         model = Bounty
         fields = (
-            'url', 'id', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
+            'url', 'pk', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
             'token_address', 'bounty_type', 'bounty_categories', 'project_length', 'experience_level',
             'github_url', 'github_comments', 'bounty_owner_address', 'bounty_owner_email',
             'bounty_owner_github_username', 'bounty_owner_name', 'fulfillments', 'interested', 'is_open',
@@ -315,15 +331,21 @@ class BountySerializer(FlexFieldsModelSerializer):
         return bounty
 
 
-class HackathonProjectSerializer(serializers.ModelSerializer):
-    bounty = BountySerializer()
+class HackathonProjectSerializer(FlexFieldsModelSerializer):
+    bounty = BountySerializer(fields=[
+        'pk', 'url', 'avatar_url', 'org_name', 'funding_organisation', 'bounty_owner_github_username'
+    ])
     profiles = ProfileSerializer(many=True, fields=['handle'])
-    hackathon = HackathonEventSerializer()
+    hackathon = HackathonEventSerializer(fields=['id', 'name', 'slug'])
     comments = serializers.SerializerMethodField()
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_obj', 'admin_url', 'comments', 'url_project_page')
+        fields = (
+            'pk', 'id', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary',
+            'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message',
+            'looking_members', 'winner', 'grant_obj', 'admin_url', 'comments', 'url_project_page'
+        )
         depth = 1
 
     def get_comments(self, obj):
@@ -339,7 +361,6 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
     pagination_class = HackathonProjectsPagination
 
     def get_queryset(self):
-
         q = self.request.query_params.get('search', '')
         order_by = self.request.query_params.get('order_by', '-created_on')
         skills = self.request.query_params.get('skills', '')
@@ -408,11 +429,10 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 Q(bounty__bounty_state='work_submitted')
             )
 
-        return queryset
+        return self.queryset
 
 
 class BountySerializerSlim(BountySerializer):
-
 
     class Meta:
         """Define the bounty serializer metadata."""
