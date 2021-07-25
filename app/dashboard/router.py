@@ -27,8 +27,10 @@ import django_filters.rest_framework
 from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
 from rest_flex_fields import FlexFieldsModelSerializer
-from rest_framework import routers, serializers, viewsets
+from rest_framework import routers, serializers, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 from retail.helpers import get_ip
 from townsquare.models import Comment, Favorite, Flag, Like, PinnedPost
 
@@ -236,6 +238,25 @@ class ActivityViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
 
+    @action(detail=True, methods=['post', 'delete'], name='Report Activity')
+    def flag(self, request, pk=None):
+        activity = self.get_object()
+
+        if request.method == 'POST':
+            Flag.objects.create(profile=request.user.profile, activity=activity)
+            flag_threshold_to_hide = 3 # hides comment after 3 flags
+            is_hidden_by_users = activity.flags.count() > flag_threshold_to_hide
+            is_hidden_by_staff = activity.flags.filter(profile__user__is_staff=True).count() > 0
+            is_hidden_by_moderators = activity.flags.filter(profile__user__groups__name='Moderators').count() > 0
+            is_hidden = is_hidden_by_users or is_hidden_by_staff or is_hidden_by_moderators
+            if is_hidden:
+                activity.hidden = True
+                activity.save()
+            return Response(status=status.HTTP_201_CREATED)
+
+        elif request.method == 'DELETE':
+            activity.flags.filter(profile=request.user.profile).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     # def get_queryset(self):
 
