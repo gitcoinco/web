@@ -262,6 +262,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
             already_likes = activity.favorites(request.user).exists()
             if not already_likes:
                 Favorite.objects.create(user=request.user, activity=activity)
+            return Response(status=status.HTTP_200_OK)
 
         elif request.method == 'DELETE':
             activity.favorites(request.user).delete()
@@ -281,10 +282,24 @@ class ActivityViewSet(viewsets.ModelViewSet):
             if is_hidden:
                 activity.hidden = True
                 activity.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_200_OK)
 
         elif request.method == 'DELETE':
             activity.flags.filter(profile=request.user.profile).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['POST', 'DELETE'], name='Like Activity')
+    def like(self, request, pk=None):
+        activity = self.get_object()
+
+        if request.method == 'POST':
+            already_likes = request.user.profile.likes.filter(activity=activity).exists()
+            if not already_likes:
+                Like.objects.create(profile=request.user.profile, activity=activity)
+            return Response(status=status.HTTP_200_OK)
+
+        elif request.method == 'DELETE':
+            activity.likes.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['POST', 'DELETE'],
