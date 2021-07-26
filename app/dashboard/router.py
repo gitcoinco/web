@@ -149,15 +149,6 @@ class VoteSerializer(serializers.Serializer):
     choice = serializers.IntegerField(required=True)
 
 
-class LikeSerializer(FlexFieldsModelSerializer):
-    profile = ProfileSerializer(fields=[
-        'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
-    ])
-    class Meta:
-        model = Like
-        fields = (  'id', 'profile', 'activity')
-
-
 class CommentSerializer(FlexFieldsModelSerializer):
     profile = ProfileSerializer(fields=[
         'id', 'handle', 'name', 'type', 'github_url', 'avatar_url', 'keywords', 'organizations'
@@ -176,6 +167,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    likes = serializers.SerializerMethodField()
     profile = ProfileSerializer(fields=[
         'id', 'handle', 'avatar_url', 'github_url', 'organizations',
         'keywords', 'name', 'type', 'match_this_round', 'default_match_estimate',
@@ -186,7 +178,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
         model = Activity
         fields = (
-            'pk', 'activity_type', 'humanized_activity_type', 'profile', 'comments',
+            'pk', 'activity_type', 'humanized_activity_type', 'profile', 'comments', 'likes',
             'metadata', 'bounty', 'tip_count_eth', 'tip_count_usd', 'kudos', 'kudos_transfer',
             'grant', 'subscription', 'hackathonevent', 'other_profile', 'action_url', 'hidden',
             'view_count', 'comments_count', 'likes_count', 'show_token_info', 'token_name',
@@ -240,6 +232,13 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
     def get_comments_count(self, obj):
         return obj.comments.count()
+
+    def get_likes(self, obj):
+        likes = list(
+            obj.likes.order_by('-created_on')\
+                .values_list('profile__handle', flat=True).distinct()[:5]
+        )
+        return likes
 
     def get_likes_count(self, obj):
         return obj.likes.count()
