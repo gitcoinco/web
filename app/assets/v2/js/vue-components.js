@@ -964,7 +964,8 @@ Vue.component('activity-card', {
   props: [ 'data', 'index' ],
   data: function() {
     return {
-      xf: $("input[name='csrfmiddlewaretoken']").val() || ''
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      github_handle: document.contxt.github_handle || '',
     };
   },
   methods: {
@@ -991,16 +992,16 @@ Vue.component('activity-card', {
     },
     postComment: async function() {
       let vm = this;
-      let url = `/api/v0.1/activity/${vm.data.pk}`
+      let url = `/api/v0.1/activity/${vm.data.pk}`;
       let dataComment = {
         'method': 'comment',
         'comment': vm.data.newComment,
         'csrfmiddlewaretoken': vm.csrf
-
       }
+
       const res = await fetch(url, {
         method: 'post',
-        body: new FormData(dataComment)
+        body: dataComment
       });
       const json = await res.json();
       if (json) {
@@ -1008,7 +1009,19 @@ Vue.component('activity-card', {
 
       }
     },
-    editComment: function(commentId) {},
+    editComment: async function(commentId) {
+      let vm = this;
+      let url = `/api/v0.1/comment/${commentId}`;
+      const res = await fetch(url, {
+        method: 'post',
+        body: vm.data.comment
+      });
+      const json = await res.json();
+      if (json) {
+        vm.data.comments.push(json);
+
+      }
+    },
     deleteComment: function(commentId) {
       if (!confirm('Are you sure you want to delete this?')) {
         return;

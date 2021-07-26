@@ -24,13 +24,13 @@ Vue.mixin({
       $.when(getActivities).then(function(response) {
         // newActivities = newData(response.results, vm.activities);
         vm.loadingActivity = false;
+        vm.activityNext = response.next;
+        vm.numActivities = response.count;
 
         response.results.forEach(function(item) {
           vm.activities.push(item);
         });
 
-        vm.activityNext = response.next;
-        vm.numActivities = response.count;
 
 
 
@@ -43,7 +43,7 @@ Vue.mixin({
       // console.log(scrollContainer);
 
       if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight) {
-        if (vm.activityNext) {
+        if (vm.activityNext && !vm.loadingActivity) {
           this.fetchActivity();
         }
       }

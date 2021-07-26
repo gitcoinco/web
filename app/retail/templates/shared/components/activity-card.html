@@ -22,9 +22,11 @@
 
   <div class="border-bottom d-flex flex-wrap py-3">
 
-    <div class="d-flex flex-fill w-100">
-      <div class="d-flex flex-column align-items-center">
+    <div class="d-flex flex-fill w-100 mb-3">
+      <div class="d-flex flex-column align-items-center position-relative">
         <img :src="data.profile.avatar_url || `/dynamic/avatar/${data.profile.handle}`" alt="" class="rounded-circle" height="72" width="72">
+        <img :src="data.metadata.url" alt="" class="rounded-circle secondary_avatar position-absolute" height="32" width="32" style="top:50px; right: 0;" v-if="data.metadata.url">
+
         <div class="">
           <img :src="`/dynamic/avatar/${org}`" alt="" class="rounded-circle" height="15" width="15" v-for="org in data.profile.organizations">
         </div>
@@ -40,13 +42,27 @@
         <template v-if="data.activity_type==='joined'">
           Joined Gitcoin
         </template>
+        <template v-if="data.activity_type==='updated_avatar'">
+          Updated their avatar
+        </template>
         <div class="">
           <span class="btn btn-sm" data-toggle="tooltip" title="The number of views this post has gotten."><i class="far fa-eye"></i> [[data.view_count]]</span>
-          <button class="btn btn-sm" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments.length]]</button>
 
-          <b-button v-b-toggle="`comments-${index}`" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments.length]]</b-button>
+          <b-button v-b-toggle="`comments-${index}`" variant="none" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments.length]]</b-button>
 
           <button class="btn btn-sm"><i class="far fa-heart"></i> [[data.likes.length]]</button>
+          <button class="btn btn-sm"><i class="fab fa-ethereum grey"></i> [[data.tip]]</button>
+          <b-dropdown size="sm"  variant="link" toggle-class="text-decoration-none" no-caret menu-class="font-smaller-5">
+            <template #button-content>
+              <i class="fas fa-ellipsis-h grey"></i><span class="sr-only">more</span>
+            </template>
+            <b-dropdown-item href="#"><i class="fas fa-fw fa-map-pin mr-2"></i> Pin post</b-dropdown-item>
+            <b-dropdown-item href="#"><i class="fas fa-fw fa-link mr-2"></i> Copy link</b-dropdown-item>
+            <b-dropdown-item href="#"><i class="far fa-fw fa-star mr-2"></i> Favorite</b-dropdown-item>
+            <b-dropdown-item href="#"><i class="far fa-fw fa-flag mr-2"></i> Report</b-dropdown-item>
+            <b-dropdown-item href="#"><i class="fas fa-fw fa-trash mr-2"></i> Delete</b-dropdown-item>
+          </b-dropdown>
+
         </div>
       </div>
     </div>
@@ -73,18 +89,25 @@
 
     </div>
 
-    <div v-for="(item, index) in data.comments" class="d-flex flex-fill w-100 p-3 bg-lightblue" v-if="Object.keys(data.comments[0]).length">
+    <div v-for="(item, index) in data.comments" class="d-flex flex-fill w-100 px-3 py-2 bg-lightblue" v-if="Object.keys(data.comments[0]).length">
       <div>
         <img :src="item.profile.avatar_url || `/dynamic/avatar/${item.profile.handle}`" alt="" class="rounded-circle" height="40" width="40">
       </div>
 
-      <div class="ml-3">
+      <div class="flex-fill ml-3">
         <div class="">
-          <a :href="item.profile.handle" class=""  :data-usercard="item.profile.handle">@[[item.profile.handle]]</a>
-          <time class="" :datetime="[[ item.created_on ]]" :title="[[ item.created_on ]]">
-            [[ item.created_on | moment-fromnow ]] <i class="small" v-if="item.is_edited">edited</i>
-          </time>
-          <div>
+          <div class="d-flex justify-content-between">
+            <a :href="item.profile.handle" class=""  :data-usercard="item.profile.handle">@[[item.profile.handle]]</a>
+            <time class="" :datetime="[[ item.created_on ]]" :title="[[ item.created_on ]]">
+              [[ item.created_on | moment-fromnow ]] <i class="small" v-if="item.is_edited">edited</i>
+            </time>
+          </div>
+          <div v-if="item.is_editing">
+            <textarea class="mb-2 form-control enter-activity-comment" name="editcomment" id="" cols="100" rows="3" v-model="item.comment">[[item.comment]]</textarea>
+            <button class="btn btn-sm btn-danger">Cancel</button>
+            <button class="btn btn-sm btn-primary">Send</button>
+          </div>
+          <div v-else>
             [[item.comment]]
           </div>
         </div>
@@ -110,10 +133,16 @@
         </div>
       </div>
     </div>
-    <b-collapse class="" :id="`comments-${index}`" >
-
-      <textarea class="mb-4 form-control" name="newcomment" id="" cols="100" rows="3" v-model="data.newComment">[[data.newComment]]</textarea>
-      <button @click="postComment" class="btn btn-primary">Comment</button>
+    <b-collapse class="bg-lightblue p-3" :id="`comments-${index}`" >
+      <div class="d-flex">
+        <div>
+          <img :src="`/dynamic/avatar/${github_handle}`" alt="" class="rounded-circle" height="40" width="40">
+        </div>
+        <div class="ml-3">
+          <textarea class="mb-2 form-control enter-activity-comment" name="newcomment" id="" cols="100" rows="3" v-model="data.newComment">[[data.newComment]]</textarea>
+          <button @click="postComment" class="btn btn-sm btn-primary">Comment</button>
+        </div>
+      </div>
     </b-collapse>
 
 
