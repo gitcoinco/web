@@ -144,6 +144,10 @@ class PinnedPostSerializer(serializers.ModelSerializer):
         return pinned_post
 
 
+class VoteSerializer(serializers.Serializer):
+    choice = serializers.IntegerField(required=True)
+
+
 class LikeSerializer(FlexFieldsModelSerializer):
     profile = ProfileSerializer(fields=[
         'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
@@ -255,7 +259,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
 
-    @action(detail=True, methods=['post', 'delete'], name='Report Activity')
+    @action(detail=True, methods=['POST', 'DELETE'], name='Report Activity')
     def flag(self, request, pk=None):
         activity = self.get_object()
 
@@ -275,7 +279,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.flags.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['post', 'delete'],
+    @action(detail=True, methods=['POST', 'DELETE'],
         serializer_class=PinnedPostSerializer, name='Pin Post')
     def pin(self, request, pk=None):
         # permission = can_pin(request, what)
@@ -304,17 +308,18 @@ class ActivityViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-    # @action(detail=True, methods=['post'], name='Poll Vote')
-    # def vote(self, request, pk=None):
+    @action(detail=True, methods=['POST'], serializer_class=VoteSerializer, name='Poll Vote')
+    def vote(self, request, pk=None):
+        index = request.data.get('choice')
+        serializer = self.get_serializer(data={'choice': index})
+        serializer.is_valid(raise_exception=True)
+        activity = self.get_object()
 
-    #     activity = self.get_object()
-
-    #     vote = int(request.POST.get('vote'))
-    #     index = vote
-    #     if not activity.has_voted(request.user):
-    #         activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
-    #         activity.save()
-    #         return Response(status=status.HTTP_201_CREATED)
+        if not activity.has_voted(request.user):
+            activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
+            activity.save()
+        
+        return Response(status=status.HTTP_200_OK)
 
     # def get_queryset(self):
 
