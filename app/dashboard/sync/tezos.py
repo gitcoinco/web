@@ -56,10 +56,8 @@ def get_tezos_txn_status(fulfillment):
             and tx_response['sender']['address'] == funderAddress
             and tx_response['target']['address'] == payeeAddress
             and tx_response['amount'] == float(amount) * 10 ** 6
-            and tx_response['status'] == 'applied'
-            and confirmations > 0
         ):
-            if tx_response['status'] == 'applied':
+            if tx_response['status'] == 'applied' and confirmations > 0:
                 return 'success'
             return 'expired'
 

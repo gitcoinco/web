@@ -139,6 +139,10 @@
                         <input type="radio" name="bounty_chain" id="50797_chain" value="50797" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/tezos.svg' %}" alt="" width="16"> Tezos
                       </label>
 
+                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '270895'}">
+                        <input type="radio" name="bounty_chain" id="270895_chain" value="270895" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/casper.svg' %}" alt="" width="16"> Casper
+                      </label>
+
                       <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
                         <input type="radio" name="bounty_chain" id="717171_chain" value="717171" v-model="chainId"> Other
                       </label>

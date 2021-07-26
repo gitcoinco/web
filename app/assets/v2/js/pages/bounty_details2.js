@@ -166,6 +166,10 @@ Vue.mixin({
           url = `https://tzkt.io/${txn}`;
           break;
 
+        case 'CSPR':
+          url = `https://casperstats.io/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -242,6 +246,10 @@ Vue.mixin({
 
         case 'XTZ':
           url = `https://tzkt.io/${address}/operations/`;
+          break;
+
+        case 'CSPR':
+          url = `https://casperstats.io/address/${address}`;
           break;
 
         default:
@@ -492,6 +500,10 @@ Vue.mixin({
           tenant = 'TEZOS';
           break;
 
+        case 'CSPR':
+          tenant = 'CASPER';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -588,6 +600,10 @@ Vue.mixin({
 
         case 'tezos_ext':
           payWithTezosExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'casper_ext':
+          payWithCasperExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -809,6 +825,7 @@ Vue.mixin({
         case 'xinfin_ext':
         case 'algorand_ext':
         case 'tezos_ext':
+        case 'casper_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }

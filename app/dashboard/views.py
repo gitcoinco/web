@@ -6295,7 +6295,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6412,8 +6412,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6479,7 +6479,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6489,6 +6489,32 @@ def payout_bounty_v1(request, fulfillment_id):
         'message': 'bounty payment recorded. verification pending',
         'fulfillment_id': fulfillment_id
     }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def reverse_proxy_rpc_v1(request, tenant):
+    '''
+        Proxy payout transaction to external node to bypass CORS restriction on browser.
+    '''
+
+    if tenant.upper() == 'CASPER':
+        # casper
+        url = 'http://3.142.224.108:7777/rpc'
+    else:
+        return JsonResponse({'error': 'invalid tenant'}, status=400)
+
+    data = json.loads(request.body)
+
+    try:
+        response = requests.post(url, json=data).json()
+
+        if response.get("error", False):
+            return JsonResponse({'error': response["error"]}, status=422)
+    except Exception:
+        return JsonResponse({'error': 'something went wrong!'}, status=422)
 
     return JsonResponse(response)
 
