@@ -50,6 +50,7 @@ class ProfileSerializer(FlexFieldsModelSerializer):
     default_match_estimate = serializers.SerializerMethodField()
     name = serializers.ReadOnlyField(source='data.name')
     type = serializers.ReadOnlyField(source='data.type')
+    avatar_url = serializers.URLField()
 
     class Meta:
         """Define the profile serializer metadata."""
@@ -175,6 +176,10 @@ class ActivitySerializer(FlexFieldsModelSerializer):
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    profile = ProfileSerializer(fields=[
+        'id', 'handle', 'avatar_url', 'github_url', 'organizations',
+        'keywords', 'name', 'type', 'match_this_round', 'default_match_estimate',
+    ])
 
     class Meta:
         """Define the activity serializer metadata."""
@@ -216,15 +221,6 @@ class ActivitySerializer(FlexFieldsModelSerializer):
             ),
             'kudos_transfer': (
                 'dashboard.router.KudosTransferSerializer', {'fields': ['id','username']}
-            ),
-            'profile': (
-                'dashboard.router.ProfileSerializer',
-                {
-                    'fields': [
-                        'id', 'handle', 'avatar_url', 'github_url', 'organizations',
-                        'keywords', 'name', 'type', 'match_this_round', 'default_match_estimate',
-                    ]
-                }
             ),
             'other_profile': (
                 'dashboard.router.ProfileSerializer', {'fields': ['url', 'handle']}
