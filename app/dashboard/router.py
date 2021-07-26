@@ -127,6 +127,23 @@ class KudosTokenSerializer(FlexFieldsModelSerializer):
                   'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
 
 
+class PinnedPostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PinnedPost
+        fields = '__all__'
+
+    def create(self, validated_data):
+        pinned_post, _ = PinnedPost.objects.update_or_create(
+            what=validated_data.get('what'),
+            defaults={
+                'activity': validated_data.get('activity'),
+                'user': validated_data.get('user')
+            }
+        )
+        return pinned_post
+
+
 class LikeSerializer(FlexFieldsModelSerializer):
     profile = ProfileSerializer(fields=[
         'id', 'handle', 'github_url', 'avatar_url', 'keywords', 'organizations'
@@ -258,27 +275,46 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.flags.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['post', 'delete'], name='Pin Post')
+    @action(detail=True, methods=['post', 'delete'],
+        serializer_class=PinnedPostSerializer, name='Pin Post')
     def pin(self, request, pk=None):
         # permission = can_pin(request, what)
-        what = request.query_params.get('what', False)
-
-        if not what:
-            return Response({
-                'what': ['A valid string is required.'],
-                'code': 'invalid'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(
+            data={
+                'activity': pk,
+                'what': request.data.get('what'),
+                'user': request.user.profile.pk
+            }
+        )
+        serializer.is_valid(raise_exception=True)
 
         if request.method == 'POST':
-            PinnedPost.objects.update_or_create(
-                what=what,
-                defaults={'activity': self.get_object(), 'user': request.user.profile}
-            )
-            return Response(status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         elif request.method == 'DELETE':
-            PinnedPost.objects.filter(what=what).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            pinned_post = PinnedPost.objects.filter(what=serializer.data.get('what')).exists()
+
+            if pinned_post:
+                pinned_post.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response(
+                    {'details': 'Pinned post does not exist.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+    # @action(detail=True, methods=['post'], name='Poll Vote')
+    # def vote(self, request, pk=None):
+
+    #     activity = self.get_object()
+
+    #     vote = int(request.POST.get('vote'))
+    #     index = vote
+    #     if not activity.has_voted(request.user):
+    #         activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
+    #         activity.save()
+    #         return Response(status=status.HTTP_201_CREATED)
 
     # def get_queryset(self):
 
