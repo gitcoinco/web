@@ -25,6 +25,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from adminsortable2.admin import SortableInlineAdminMixin
+from perftools.management.commands import create_page_cache
 
 from .models import (
     Activity, Answer, BlockedIP, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
@@ -35,7 +36,6 @@ from .models import (
     TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
-from perftools.management.commands import create_page_cache
 
 class BountyEventAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__', 'event_type']

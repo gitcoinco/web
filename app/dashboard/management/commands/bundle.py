@@ -7,9 +7,8 @@ from django.core.management.base import BaseCommand
 from django.template import Context, Template
 from django.template.loaders.app_directories import get_app_template_dirs
 
-from dashboard.templatetags.bundle import render
-
 from app.bundle_context import context, templateTags
+from dashboard.templatetags.bundle import render
 
 
 def rmdir(loc, depth=1):
@@ -110,9 +109,6 @@ class Command(BaseCommand):
 
                         # render the template with bundleContext
                         block = block.render(bundleContext)
-
-                        # clean static_url from the path (its not required but is included as legacy in most script/link inclusions)
-                        block = block.replace(settings.STATIC_URL, "")
 
                         # render the template (producing a bundle file)
                         rendered[render(block, kind, 'file', name, True)] = True
