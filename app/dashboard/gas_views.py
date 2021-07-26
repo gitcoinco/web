@@ -246,11 +246,16 @@ def gas_history_view(request):
     events = JSONStore.objects.get(key='hackathons', view='hackathons').data[1]
     default_tab = 'current'
 
+    num_current = len([ele for ele in events if ele['type'] == 'current'])
+    num_upcoming = len([ele for ele in events if ele['type'] == 'upcoming'])
+    num_finished = len([ele for ele in events if ele['type'] == 'finished'])
+
     tabs = [
-        ('current', 'happening now'),
-        ('upcoming', 'upcoming'),
-        ('finished', 'completed'),
+        ('current', 'happening now', num_current),
+        ('upcoming', 'upcoming', num_upcoming),
+        ('finished', 'completed', num_finished),
     ]
+
     context = {
         'title': _('Live Ethereum (ETH) Gas History'),
         'card_desc': _('See and comment on the Ethereum (ETH) Gas - Hourly History Graph'),
@@ -262,6 +267,7 @@ def gas_history_view(request):
         'granularity_options': granularity_options,
         'events': events,
         'tabs': tabs,
+        'types': ['current', 'upcoming', 'finished'],
         'default_tab': default_tab
     }
     return TemplateResponse(request, 'gas_history.html', context)

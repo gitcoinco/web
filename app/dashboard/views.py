@@ -24,6 +24,7 @@ import hashlib
 import html
 import json
 import logging
+import random
 import re
 import time
 import uuid
@@ -5415,29 +5416,53 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
-    if settings.DEBUG:
-        from perftools.management.commands import create_page_cache
-
-        create_page_cache.create_hackathon_list_page_cache()
-
+    sponsors = []
     events = get_hackathon_events()
-    num_current = len([ele for ele in events if ele['type'] == 'current'])
-    num_upcoming = len([ele for ele in events if ele['type'] == 'upcoming'])
-    num_finished = len([ele for ele in events if ele['type'] == 'finished'])
+
+    num_current = 0
+    num_upcoming = 0
+    num_finished = 0
+
+    # count the number of each event type
+    for ele in events:
+        if ele['type'] == 'current':
+            num_current += 1
+        elif ele['type'] == 'upcoming':
+            num_upcoming += 1
+        elif ele['type'] == 'finished':
+            num_finished += 1
+
+        # curate the sponsors list
+        if ele.get('sponsor_profiles'):
+            sponsors.extend(ele.get('sponsor_profiles'))
+
     tabs = [
         ('current', 'happening now', num_current),
         ('upcoming', 'upcoming', num_upcoming),
         ('finished', 'completed', num_finished),
     ]
 
+    # shuffle the sponsors
+    random.shuffle(sponsors)
+
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_hackathon-list.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
+        'types': ['current', 'upcoming', 'finished'],
         'events': events,
+        'sponsors': sponsors[:33],
         'default_tab': get_hackathons_page_default_tabs(),
+        'testimonial': {
+            'handle': '@cryptomental',
+            'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",
+            'avatar_url': '',
+            'github_handle': 'cryptomental',
+            'twitter_handle': '',
+            'role': 'Front End Developer'
+        }
     }
 
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
