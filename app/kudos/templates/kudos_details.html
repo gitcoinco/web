@@ -196,7 +196,7 @@
 
       {% include 'shared/footer.html' %}
       {% bundle merge_js file tweenlite %}
-        <script src="TweenMax.js" base-dir="/node_modules/gsap/umd"></script>
+        <script src="gsap.min.js" base-dir="/node_modules/gsap/dist"></script>
       {% endbundle %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
       <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
