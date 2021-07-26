@@ -68,8 +68,8 @@ from economy.models import Token as FTokens
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from grants.models import (
-    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCollection, GrantType, MatchPledge, Subscription,
+    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
+    GrantTag, GrantType, MatchPledge, Subscription,
 )
 from grants.tasks import (
     process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write, update_grant_metadata,
@@ -682,14 +682,6 @@ def get_grant_types(network, filtered_grants=None):
 
     grant_types = sorted(grant_types, key=lambda x: x['funding'], reverse=True)
 
-    for grant_type in grant_types:
-        _keyword = grant_type['keyword']
-        grant_type['sub_categories'] = [{
-            'label': _tuple[0],
-            'count': get_category_size(grant_type, _tuple[0]),
-            # TODO: add in 'funding'
-            } for _tuple in basic_grant_categories(_keyword)]
-
     return grant_types
 
 
@@ -723,17 +715,6 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
             'funding': int(_grant_type.active_clrs_sum),
             'funding_ui': f"${round(int(_grant_type.active_clrs_sum)/1000)}k",
         })
-
-    for grant_type in grant_types: # TODO : Tweak to get only needed categories
-        _keyword = grant_type['keyword']
-        grant_type['sub_categories'] = [{
-            'label': _tuple[0],
-            'count': get_category_size(grant_type, _tuple[0]),
-            } for _tuple in basic_grant_categories(_keyword)]
-        # force the count to represent all matching sub_categories (for clr results)
-        grant_type['count'] = 0
-        for sub_category in grant_type['sub_categories']:
-            grant_type['count'] += sub_category['count']
 
     return grant_types
 
@@ -871,7 +852,6 @@ def grants_by_grant_type(request, grant_type):
     for partner in current_partners:
         current_partners_fund += partner.amount
 
-    categories = [_category[0] for _category in basic_grant_categories(grant_type)]
     grant_types = get_grant_type_cache(network)
 
     try:
@@ -1842,14 +1822,14 @@ def grant_new(request):
 
         grant.team_members.add(*team_members)
 
-        form_category_ids = request.POST.getlist('categories[]')
-        form_category_ids = (form_category_ids[0].split(','))
-        form_category_ids = list(set(form_category_ids))
+        tag_ids = request.POST.getlist('tags[]')
+        tag_ids = (tag_ids[0].split(','))
+        tag_ids = list(set(tag_ids))
 
-        for category_id in form_category_ids:
+        for tag_id in tag_ids:
             try:
-                grant_category = GrantCategory.objects.get(pk=category_id)
-                grant.categories.add(grant_category)
+                tag = GrantTag.objects.get(pk=tag_id)
+                grant.tags.add(tag)
             except Exception as e:
                 pass
 
@@ -1886,34 +1866,15 @@ def grant_new(request):
 
     grant_types = []
     for g_type in GrantType.objects.filter(is_active=True):
-        grant_categories = []
-            # project_pk = request.POST.get('project_pk', None)
-            # if project_pk:
-            #     HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
-
-        for g_category in g_type.categories.all():
-            grant_categories.append({
-                'id': g_category.pk,
-                'name': g_category.category
-            })
-
         grant_type_temp = {
             'id': g_type.pk,
             'name': g_type.name,
             'label': g_type.label,
-            'categories': grant_categories
         }
         if g_type.logo:
             grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
 
         grant_types.append(grant_type_temp)
-
-    project = None
-    # project_id = request.GET.get('project_id', None)
-    # if project_id is not None:
-    #     hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    #     if request.user.profile in hackathon_project.profiles.all():
-    #         project = hackathon_project
 
     params = {
         'active': 'new_grant',
@@ -1922,7 +1883,6 @@ def grant_new(request):
         'profile': profile,
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
         'grant_types': grant_types,
-        'project_data': project
     }
     return TemplateResponse(request, 'grants/_new.html', params)
 
@@ -2470,18 +2430,18 @@ def new_matching_partner(request):
             'name': g_type.label,
         })
 
-    grant_categories = []
-    for g_category in GrantCategory.objects.all():
-        grant_categories.append({
-            'id': g_category.pk,
-            'name': g_category.category
+    grant_tags = []
+    for tag in GrantTag.objects.all():
+        grant_tags.append({
+            'id': tag.pk,
+            'name': tag.name
         })
 
     params = {
         'title': 'Pledge your support.',
         'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
         'grant_types': grant_types,
-        'grant_categories': grant_categories,
+        'grant_tags': grant_tags,
         'grant_collections': grant_collections
     }
 
@@ -2511,13 +2471,13 @@ def create_matching_pledge_v1(request):
         return JsonResponse(response)
 
     grant_types = request.POST.get('grant_types[]', None)
-    grant_categories = request.POST.get('grant_categories[]', None)
+    grant_tags = request.POST.get('grant_tags[]', None)
     grant_collections = request.POST.get('grant_collections[]', None)
 
     if grant_types:
         grant_types = grant_types.split(',')
-    if grant_categories:
-        grant_categories = grant_categories.split(',')
+    if grant_tags:
+        grant_tags = grant_tags.split(',')
     if grant_collections:
         grant_collections = grant_collections.split(',')
 
@@ -2542,8 +2502,8 @@ def create_matching_pledge_v1(request):
             grant_filters = {
                 'grant_type__in': grant_types
             }
-            if grant_categories:
-                grant_filters['categories__in'] = grant_categories
+            if grant_tags:
+                grant_filters['tags__in'] = grant_tags
 
         if grant_collections:
             collection_filters = {
@@ -2599,36 +2559,10 @@ def invoice(request, contribution_pk):
 
     return TemplateResponse(request, 'grants/invoice.html', params)
 
-
-def basic_grant_categories(name):
-    result = []
-    grant_type = GrantType.objects.filter(name=name).first()
-
-    if name and grant_type:
-        grant_categories = grant_type.categories.all()
-        for category in grant_categories:
-            result.append(category.category)
-
-    else:
-        grant_types = GrantType.objects.all()
-        grant_categories = []
-        for grant_type in grant_types:
-            grant_categories = grant_type.categories.all()
-            for category in grant_categories:
-                result.append(category.category)
-
-    result = list(set(result))
-
-    return [ (category,idx) for idx, category in enumerate(result) ]
-
-
 @csrf_exempt
-def grant_categories(request):
-    grant_type = request.GET.get('type', None)
-    categories = basic_grant_categories(grant_type)
-
+def get_grant_tags(request):
     return JsonResponse({
-        'categories': categories
+        'tags': GrantTag.objects.values_list('name')
     })
 
 

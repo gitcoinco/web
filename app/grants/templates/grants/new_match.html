@@ -132,14 +132,14 @@
                   <!-- GRANT CATEGORY -->
                   <div class="form-group">
                     <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
-                    <v-select placeholder="Select Sub categories" :options="grant_categories" label="name" v-model="form.grant_categories" :reduce="state => state.id" multiple>
+                    <v-select placeholder="Select Sub categories" :options="grant_tags" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
                       <template v-slot:option="option">
                         <span class="font-weight-semibold">[[ option.name ]]</span>
                       </template>
                     </v-select>
 
-                    <div class="text-danger" v-if="errors.grant_categories && !form.grant_categories.length">
-                      [[errors.grant_categories]]
+                    <div class="text-danger" v-if="errors.grant_tags && !form.grant_tags.length">
+                      [[errors.grant_tags]]
                     </div>
                   </div>
 
@@ -257,7 +257,7 @@
 
       <script type="application/javascript">
         document.grant_types = {{grant_types|safe}};
-        document.grant_categories = {{grant_categories|safe}};
+        document.grant_tags = {{grant_tags|safe}};
         document.grant_collections = {{grant_collections|safe}};
       </script>
 

@@ -108,11 +108,11 @@
                       All [[grant_type.label]] <sup>([[grant_type.count]])</sup>
                     </a>
                   </li>
-                  <li class="mr-1 d-flex" v-for="category in grant_type.sub_categories">
+                  <!-- <li class="mr-1 d-flex" v-for="category in grant_type.sub_categories">
                     <a @click="filterLink({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`d-inline-block text-truncate mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
-                      [[category.label]] <sup>([[category.count]])</sup>
+                      [[category.label]]
                     </a>
-                  </li>
+                  </li> -->
                 </ul>
               </div>
             </b-collapse>

@@ -469,11 +469,11 @@
                   <div v-if="form.grant_type" class="form-group">
                     <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
                     <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-                    <v-select placeholder="Select categories" :options="type_to_category_mapping()" label="name" v-model="form.grant_categories" :reduce="state => state.id" multiple>
+                    <v-select placeholder="Select categories" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
                       <template #search="{attributes, events}">
                         <input
                           class="vs__search"
-                          :required="!form.grant_categories.length"
+                          :required="!form.grant_tags.length"
                           v-bind="attributes"
                           v-on="events"
                         />
@@ -483,8 +483,8 @@
                       </template>
                     </v-select>
 
-                    <div class="text-danger" v-if="errors.grant_categories">
-                      [[errors.grant_categories]]
+                    <div class="text-danger" v-if="errors.grant_tags">
+                      [[errors.grant_tags]]
                     </div>
                   </div>
 
