@@ -255,6 +255,19 @@ class ActivityViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
 
+    @action(detail=True, methods=['POST', 'DELETE'], name='Favorite Activity')
+    def favorite(self, request, pk=None):
+        activity = self.get_object()
+
+        if request.method == 'POST':
+            already_likes = activity.favorites(request.user).exists()
+            if not already_likes:
+                Favorite.objects.create(user=request.user, activity=activity)
+
+        elif request.method == 'DELETE':
+            activity.favorites(request.user).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=True, methods=['POST', 'DELETE'], name='Report Activity')
     def flag(self, request, pk=None):
         activity = self.get_object()
@@ -293,16 +306,8 @@ class ActivityViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         elif request.method == 'DELETE':
-            pinned_post = PinnedPost.objects.filter(what=serializer.data.get('what')).exists()
-
-            if pinned_post:
-                pinned_post.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            else:
-                return Response(
-                    {'details': 'Pinned post does not exist.'},
-                    status=status.HTTP_404_NOT_FOUND
-                )
+            PinnedPost.objects.filter(what=serializer.data.get('what')).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['POST'], serializer_class=VoteSerializer, name='Poll Vote')
     def vote(self, request, pk=None):
