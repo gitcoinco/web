@@ -27,7 +27,7 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantTag, GrantCLR,
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
@@ -103,7 +103,7 @@ class GrantAdmin(GeneralAdmin):
         'title',
         'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
-        'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 
+        'grant_type', 'categories', 'tags', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
         'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
@@ -120,7 +120,7 @@ class GrantAdmin(GeneralAdmin):
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
-        'emails'
+        'emails', 'tags'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile', 'twitter_verified_by']
@@ -463,6 +463,10 @@ class GrantCategoryAdmin(admin.ModelAdmin):
     readonly_fields = ['pk']
 
 
+class GrantTagAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name']
+    readonly_fields = ['pk']
+
 class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'customer_name', 'total_pot', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active', 'stats_link']
     raw_id_fields = ['owner']
@@ -548,6 +552,7 @@ admin.site.register(Contribution, ContributionAdmin)
 admin.site.register(CartActivity, CartActivityAdmin)
 admin.site.register(GrantType, GrantTypeAdmin)
 admin.site.register(GrantCategory, GrantCategoryAdmin)
+admin.site.register(GrantTag, GrantTagAdmin)
 admin.site.register(GrantCLR, GrantCLRAdmin)
 admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)

@@ -99,16 +99,26 @@ class GrantCategory(SuperModel):
         return f"{self.category}"
 
 
+
+class GrantTag(SuperModel):
+
+    name = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        help_text=_('Grant Tag'),
+    )
+
+    def __str__(self):
+        """Return the string representation of a GrantTag."""
+        return f"{self.name}"
+
 class GrantType(SuperModel):
 
     name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
     label = models.CharField(max_length=25, null=True, help_text="Display Name")
     is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
     is_visible = models.BooleanField(default=True, db_index=True, help_text="Is visible on the Grant filters")
-    categories = models.ManyToManyField(
-        GrantCategory,
-        help_text="Grant Categories associated with Grant Type"
-    )
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
@@ -558,6 +568,7 @@ class Grant(SuperModel):
         blank=True,
     )
     categories = models.ManyToManyField(GrantCategory, blank=True)
+    tags = models.ManyToManyField(GrantTag, blank=True)
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
