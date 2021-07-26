@@ -438,18 +438,28 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         if counter % 10 == 0 or True:
             print(f"- {counter}/{total_count} grants iter, pk:{grant.pk}, at {round(time.time(),1)}")
 
-        for amount in potential_donations:
-            # calculate clr with each additional donation and save to grants model
-            # print(f'using {total_pot_close}')
-            predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
-                grant,
-                amount,
-                grant_contributions_curr,
-                total_pot,
-                v_threshold,
-                uv_threshold
-            )
-            potential_clr.append(predicted_clr)
+        if what == 'final':
+            # this is used when you want to count final distribution and ignore the prediction
+            for amount in potential_donations:
+                if amount == 0:
+                    # actual calculation
+                    predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
+                        grant, amount, grant_contributions_curr, total_pot, v_threshold, uv_threshold
+                    )
+                else:
+                    # ignore the other ones
+                    predicted_clr = 0.0
+                    grants_clr = None
+
+                potential_clr.append(predicted_clr)
+        else:
+            for amount in potential_donations:
+                # calculate clr with each additional donation and save to grants model
+                # print(f'using {total_pot_close}')
+                predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
+                    grant, amount, grant_contributions_curr, total_pot, v_threshold, uv_threshold
+                )
+                potential_clr.append(predicted_clr)
 
         if save_to_db:
             _grant = Grant.objects.get(pk=grant.pk)
