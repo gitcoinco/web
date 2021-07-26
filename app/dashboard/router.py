@@ -253,6 +253,10 @@ class ActivityViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all().order_by('-id')
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
+    filterset_fields = [
+        'activity_type', 'bounty', 'grant', 'hackathonevent', 'project', 'profile',
+        'kudos', 'kudos_transfer', 'subscription', 'tip'
+    ]
 
     @action(detail=True, methods=['POST', 'DELETE'], name='Favorite Activity')
     def favorite(self, request, pk=None):
