@@ -258,6 +258,28 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.flags.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=['post', 'delete'], name='Pin Post')
+    def pin(self, request, pk=None):
+        # permission = can_pin(request, what)
+        what = request.query_params.get('what', False)
+
+        if not what:
+            return Response({
+                'what': ['A valid string is required.'],
+                'code': 'invalid'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.method == 'POST':
+            PinnedPost.objects.update_or_create(
+                what=what,
+                defaults={'activity': self.get_object(), 'user': request.user.profile}
+            )
+            return Response(status=status.HTTP_201_CREATED)
+
+        elif request.method == 'DELETE':
+            PinnedPost.objects.filter(what=what).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
     # def get_queryset(self):
 
     #     q = self.request.query_params.get('search', '')

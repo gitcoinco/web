@@ -2419,8 +2419,6 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
-
-
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
     metadata = JSONField(default=dict, blank=True)
