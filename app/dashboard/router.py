@@ -30,9 +30,11 @@ from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import routers, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from retail.helpers import get_ip
 from townsquare.models import Comment, Favorite, Flag, Like, PinnedPost
+from townsquare.tasks import increment_view_counts
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
@@ -263,6 +265,13 @@ class ActivityViewSet(viewsets.ModelViewSet):
         'kudos', 'kudos_transfer', 'subscription', 'tip'
     ]
 
+    # def get_queryset(self):
+    #     # increment view counts
+    #     activities_pks = [obj.pk for obj in page]
+    #     if len(activities_pks):
+    #         increment_view_counts.delay(activities_pks)
+    #     return Activity.objects.all().order_by('-id')
+
     @action(detail=True, methods=['POST', 'DELETE'], name='Favorite Activity')
     def favorite(self, request, pk=None):
         activity = self.get_object()
@@ -297,7 +306,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.flags.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'DELETE'], name='Like Activity')
+    @action(detail=True, methods=['POST', 'DELETE'], name='Like Activity', permission_classes=[IsAuthenticated])
     def like(self, request, pk=None):
         activity = self.get_object()
 
