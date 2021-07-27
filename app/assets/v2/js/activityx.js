@@ -14,7 +14,7 @@ Vue.mixin({
       vm.loadingActivity = true;
 
 
-      let url = '/api/v0.1/activities/';
+      let url = '/api/v0.1/activities?expand=~all';
       if (vm.activityNext) {
         url = vm.activityNext;
       }
