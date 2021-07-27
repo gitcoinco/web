@@ -1126,6 +1126,7 @@ Gitcoin Grant Team
 
 
 def grant_match_distribution_test_txn(match):
+    raise Exception("no longer supported since we moved to non custodial payouts/email copy needs updated")
     to_email = match.grant.admin_profile.email
     cc_emails = [profile.email for profile in match.grant.team_members.all()]
     from_email = 'kyc@gitcoin.co'
@@ -1203,12 +1204,13 @@ Congratulations on a successful Gitcoin Grants Round {match.round_number}, Your 
 
 What next?
 1. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
-2. Celebrate 🎉 and consider joining us for KERNEL 3 ( https://kernel.community/ ) as you continue growing your project. 🛠🛠
-3. Please take a moment to comment on this thread to let us know what you thought of this grants round [https://github.com/gitcoinco/web/issues/8597]. We'd love to hear how the round went for you.
+2. Celebrate 🎉 and consider joining us for KERNEL 4 ( https://kernel.community/ ) as you continue growing your project. 🛠🛠
+3. Feel free to grab some Gitcoin schwag at store.gitcoin.co - use code GRANTS_ROUND_10_GRANTEE for 45% off.
+4. Please take a moment to comment on this thread to let us know what you thought of this grants round [https://twitter.com/owocki/status/1410651364850495489]. We'd love to hear how the round went for you.
 
 Thanks,
-Team Gitcoin & The Funders League
-"Our mission is to Grow Open Source & provide economic opportunities to software developers" https://gitcoin.co/mission
+Team Gitcoin & The GitcoinDAO
+"Our mission is to build & fund the open web" https://gitcoin.co/mission
 </pre>
 
         """
