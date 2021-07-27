@@ -966,6 +966,7 @@ Vue.component('activity-card', {
     return {
       csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       github_handle: document.contxt.github_handle || '',
+      loadingLike: false,
     };
   },
   methods: {
@@ -973,10 +974,15 @@ Vue.component('activity-card', {
       let vm = this;
       let method = 'POST'
 
+      if (vm.loadingLike) {
+        return;
+      }
+
       if (vm.liked) {
         method = 'DELETE';
       }
 
+      vm.loadingLike = true;
       let url = `/api/v0.1/activities/${vm.data.pk}/like/`;
       const res = await fetch(url,
         {
@@ -994,6 +1000,7 @@ Vue.component('activity-card', {
         vm.data.likes_count -= 1;
         vm.data.likes.splice(vm.data.likes.indexOf(vm.github_handle), 1);
       }
+      vm.loadingLike = false;
     },
     fetchComments: async function(activityId) {
       let vm = this;
