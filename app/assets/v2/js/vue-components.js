@@ -971,18 +971,28 @@ Vue.component('activity-card', {
   methods: {
     async likeActivity() {
       let vm = this;
+      let method = 'POST'
+
+      if (vm.liked) {
+        method = 'DELETE';
+      }
+
       let url = `/api/v0.1/activities/${vm.data.pk}/like/`;
       const res = await fetch(url,
         {
-          method: 'POST',
+          method: method,
           headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': vm.csrf
           }
         });
-      const json = await res.json();
-      if (json.status === 'success') {
-        vm.data.likes += 1;
+
+      if (method === 'POST' && res.status === 200) {
+        vm.data.likes_count += 1;
+        vm.data.likes.push(vm.github_handle);
+      } else if (method === 'DELETE' && res.status === 204) {
+        vm.data.likes_count -= 1;
+        vm.data.likes.splice(vm.data.likes.indexOf(vm.github_handle), 1);
       }
     },
     fetchComments: async function(activityId) {
@@ -1050,6 +1060,17 @@ Vue.component('activity-card', {
     }
   },
   computed: {
+    liked() {
+      if (!document.contxt.github_handle) {
+        return;
+      }
+
+
+      return this.data.likes.some(item => {
+        console.log(item)
+        return item.toLowerCase() === document.contxt.github_handle.toLowerCase();
+      });
+    },
     isCommentOwner() {
       if (!document.contxt.github_handle) {
         return;

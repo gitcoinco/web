@@ -50,7 +50,7 @@
 
           <b-button v-b-toggle="`comments-${index}`" variant="none" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments_count]]</b-button>
 
-          <button class="btn btn-sm" @click="likeActivity"><i class="far fa-heart"></i> [[data.likes.length]]</button>
+          <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': liked}" @click="likeActivity"><i class="far fa-heart" :class="liked ? 'fas' : 'far'"></i> [[data.likes_count]]</button>
           <button class="btn btn-sm"><i class="fab fa-ethereum grey"></i> [[data.tip]]</button>
           <b-dropdown size="sm"  variant="link" toggle-class="text-decoration-none" no-caret menu-class="font-smaller-5">
             <template #button-content>
