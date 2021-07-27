@@ -272,7 +272,8 @@ class ActivityViewSet(viewsets.ModelViewSet):
     #         increment_view_counts.delay(activities_pks)
     #     return Activity.objects.all().order_by('-id')
 
-    @action(detail=True, methods=['POST', 'DELETE'], name='Favorite Activity')
+    @action(detail=True, methods=['POST', 'DELETE'], name='Favorite Activity',
+            permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
         activity = self.get_object()
 
@@ -286,7 +287,8 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.favorites(request.user).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'DELETE'], name='Report Activity')
+    @action(detail=True, methods=['POST', 'DELETE'], name='Report Activity',
+            permission_classes=[IsAuthenticated])
     def flag(self, request, pk=None):
         activity = self.get_object()
 
@@ -306,7 +308,8 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.flags.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'DELETE'], name='Like Activity', permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['POST', 'DELETE'], name='Like Activity',
+            permission_classes=[IsAuthenticated])
     def like(self, request, pk=None):
         activity = self.get_object()
 
@@ -320,8 +323,8 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.likes.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'DELETE'],
-        serializer_class=PinnedPostSerializer, name='Pin Post')
+    @action(detail=True, methods=['POST', 'DELETE'], serializer_class=PinnedPostSerializer,
+            name='Pin Post', permission_classes=[IsAuthenticated])
     def pin(self, request, pk=None):
         # permission = can_pin(request, what)
         serializer = self.get_serializer(
@@ -341,7 +344,8 @@ class ActivityViewSet(viewsets.ModelViewSet):
             PinnedPost.objects.filter(what=serializer.data.get('what')).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST'], serializer_class=VoteSerializer, name='Poll Vote')
+    @action(detail=True, methods=['POST'], serializer_class=VoteSerializer,
+            name='Poll Vote', permission_classes=[IsAuthenticated])
     def vote(self, request, pk=None):
         index = request.data.get('choice')
         serializer = self.get_serializer(data={'choice': index})
