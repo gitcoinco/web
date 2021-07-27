@@ -969,12 +969,28 @@ Vue.component('activity-card', {
     };
   },
   methods: {
+    async likeActivity() {
+      let vm = this;
+      let url = `/api/v0.1/activities/${vm.data.pk}/like/`;
+      const res = await fetch(url,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': vm.csrf
+          }
+        });
+      const json = await res.json();
+      if (json.status === 'success') {
+        vm.data.likes += 1;
+      }
+    },
     fetchComments: async function(activityId) {
       let vm = this;
-      if (!vm.data.comments.length || Object.keys(vm.data.comments[0]).length) {
+      if ((vm.data.comments.length || Object.keys(vm.data.comments[0]).length) >= vm.data.comments_count) {
         return;
       }
-      let url = `/api/v0.1/activities/${activityId}/?fields=pk,comments&expand=comments`;
+      let url = `/api/v0.1/comments?activity=${activityId}`;
 
       const res = await fetch(url);
       const json = await res.json();

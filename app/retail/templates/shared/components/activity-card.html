@@ -48,9 +48,9 @@
         <div class="">
           <span class="btn btn-sm" data-toggle="tooltip" title="The number of views this post has gotten."><i class="far fa-eye"></i> [[data.view_count]]</span>
 
-          <b-button v-b-toggle="`comments-${index}`" variant="none" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments.length]]</b-button>
+          <b-button v-b-toggle="`comments-${index}`" variant="none" @click="fetchComments(data.pk)"><i class="far fa-comment"></i> [[data.comments_count]]</b-button>
 
-          <button class="btn btn-sm"><i class="far fa-heart"></i> [[data.likes.length]]</button>
+          <button class="btn btn-sm" @click="likeActivity"><i class="far fa-heart"></i> [[data.likes.length]]</button>
           <button class="btn btn-sm"><i class="fab fa-ethereum grey"></i> [[data.tip]]</button>
           <b-dropdown size="sm"  variant="link" toggle-class="text-decoration-none" no-caret menu-class="font-smaller-5">
             <template #button-content>
@@ -89,6 +89,7 @@
 
     </div>
 
+    <button class="" v-if="Object.keys(data.comments).length < data.comments_count" @click="fetchComments(data.pk)">[[data.comments_count - Object.keys(data.comments).length ]]</button>
     <div v-for="(item, index) in data.comments" class="d-flex flex-fill w-100 px-3 py-2 bg-lightblue" v-if="Object.keys(data.comments[0]).length">
       <div>
         <img :src="item.profile.avatar_url || `/dynamic/avatar/${item.profile.handle}`" alt="" class="rounded-circle" height="40" width="40">
