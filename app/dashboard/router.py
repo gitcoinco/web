@@ -168,10 +168,6 @@ class ActivitySerializer(FlexFieldsModelSerializer):
     likes_count = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
-    profile = ProfileSerializer(fields=[
-        'id', 'handle', 'avatar_url', 'github_url', 'organizations',
-        'keywords', 'name', 'type', 'match_this_round', 'default_match_estimate',
-    ])
 
     class Meta:
         """Define the activity serializer metadata."""
@@ -185,6 +181,15 @@ class ActivitySerializer(FlexFieldsModelSerializer):
             'secondary_avatar_url', 'created', 'created_on', 'created_human_time'
         )
         expandable_fields = {
+            'profile': (
+                'dashboard.router.ProfileSerializer',
+                {
+                    'fields': [
+                        'id', 'handle', 'avatar_url', 'github_url', 'organizations',
+                        'keywords', 'name', 'type', 'match_this_round', 'default_match_estimate',
+                    ]
+                }
+            ),
             'grant': (
                 'grants.serializers.GrantSerializer',
                 {'fields': ['id', 'title', 'logo', 'description']}

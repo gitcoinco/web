@@ -66,7 +66,6 @@ from economy.utils import ConversionRateNotFoundError, convert_amount, convert_t
 from git.utils import get_issue_comments, get_issue_details, issue_number, org_name, repo_name
 from marketing.mails import fund_request_email, start_work_approved
 from marketing.models import EmailSupressionList, LeaderboardRank
-from rest_framework import serializers
 from townsquare.models import PinnedPost
 from unidecode import unidecode
 from web3 import Web3
@@ -4625,6 +4624,7 @@ def post_logout(sender, request, user, **kwargs):
     """Handle actions to take on user logout."""
     from dashboard.utils import create_user_action
     create_user_action(user, 'Logout', request)
+
 
 class UserDirectoryQuerySet(models.QuerySet):
     """Define the Profile QuerySet to be used as the objects manager."""
