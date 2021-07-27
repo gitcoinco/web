@@ -265,12 +265,20 @@ class ActivityViewSet(viewsets.ModelViewSet):
         'kudos', 'kudos_transfer', 'subscription', 'tip'
     ]
 
-    # def get_queryset(self):
-    #     # increment view counts
-    #     activities_pks = [obj.pk for obj in page]
-    #     if len(activities_pks):
-    #         increment_view_counts.delay(activities_pks)
-    #     return Activity.objects.all().order_by('-id')
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            # increment view counts
+            activities_pks = [obj.pk for obj in page]
+            increment_view_counts.delay(activities_pks)
+
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['POST', 'DELETE'], name='Favorite Activity',
             permission_classes=[IsAuthenticated])
