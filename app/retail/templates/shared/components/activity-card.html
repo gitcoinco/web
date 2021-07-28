@@ -17,6 +17,9 @@
 {% endcomment %}
 
 {% load humanize i18n static grants_extra slug %}
+<script type="text/x-template" id="like-button">
+  <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': data.viewer_reactions.like}" @click="likeActivity"><i class="far fa-heart" :class="data.viewer_reactions.like ? 'fas' : 'far'"></i> [[data.likes_count]]</button>
+</script>
 
 <script type="text/x-template" id="activity-card">
 
@@ -50,8 +53,8 @@
           <span class="btn btn-sm cursor-none" data-toggle="tooltip" title="The number of views this post has gotten."><i class="far fa-eye"></i> [[data.view_count]]</span>
 
           <span class="btn btn-sm cursor-none"><i class="far fa-comment"></i> [[data.comments_count]]</span>
-
-          <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': data.viewer_reactions.like}" @click="likeActivity"><i class="far fa-heart" :class="data.viewer_reactions.like ? 'fas' : 'far'"></i> [[data.likes_count]]</button>
+          <like-button :data="data" api="activities" :id="data.pk"></like-button>
+          <!-- <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': data.viewer_reactions.like}" @click="likeActivity"><i class="far fa-heart" :class="data.viewer_reactions.like ? 'fas' : 'far'"></i> [[data.likes_count]]</button> -->
           <button class="btn btn-sm"><i class="fab fa-ethereum grey"></i> [[data.tip]]</button>
           <b-dropdown size="sm"  variant="link" toggle-class="text-decoration-none" no-caret menu-class="font-smaller-5">
             <template #button-content>
@@ -136,10 +139,12 @@
               <i class="fas fa-trash grey"></i>
             </button>
           </template>
-          <button class="btn btn-sm" data-toggle="tooltip" :title="item.likes_handles.length ? `Liked by ${item.likes_handles}` : 'Liked by no one. Click to be the first.'">
+          <like-button :data="item" api="comments" :id="item.id"></like-button>
+
+          <!-- <button class="btn btn-sm" data-toggle="tooltip" :title="item.likes_handles.length ? `Liked by ${item.likes_handles}` : 'Liked by no one. Click to be the first.'">
             <i class="far fa-heart grey"></i>
             <span class="like_count">[[item.likes.length]]</span>
-          </button>
+          </button> -->
           <button class="btn btn-sm">
             <i class="fab fa-ethereum grey"></i>
             <span class="grey">[[Math.round(1000 * item.tip_count_eth) / 1000]]</span>

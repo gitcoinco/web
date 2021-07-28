@@ -957,6 +957,55 @@ Vue.component('countdown', {
     this.initializeClock();
   }
 });
+Vue.component('like-button', {
+  template: '#like-button',
+  delimiters: [ '[[', ']]' ],
+  props: [ 'data', 'api', 'id'],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      loadingLike: false,
+      github_handle: document.contxt.github_handle || '',
+    }
+  },
+  methods:{
+    async likeActivity() {
+      let vm = this;
+      let method = 'POST'
+
+      if (vm.loadingLike) {
+        return;
+      }
+
+      if (vm.data.viewer_reactions.like) {
+        method = 'DELETE';
+      }
+
+      vm.loadingLike = true;
+      let url = `/api/v0.1/${vm.api}/${vm.id}/like/`;
+      const res = await fetch(url,
+        {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': vm.csrf
+          }
+        });
+
+      if (method === 'POST' && res.status === 200) {
+        vm.data.likes_count += 1;
+        vm.data.likes.push(vm.github_handle);
+        vm.data.viewer_reactions.like = true;
+      } else if (method === 'DELETE' && res.status === 204) {
+        vm.data.likes_count -= 1;
+        vm.data.likes.splice(vm.data.likes.indexOf(vm.github_handle), 1);
+        vm.data.viewer_reactions.like = false;
+      }
+      vm.loadingLike = false;
+    },
+
+  }
+});
 
 Vue.component('activity-card', {
   template: '#activity-card',
@@ -981,7 +1030,7 @@ Vue.component('activity-card', {
         return;
       }
 
-      if (vm.liked) {
+      if (vm.data.viewer_reactions.like) {
         method = 'DELETE';
       }
 
@@ -1095,17 +1144,17 @@ Vue.component('activity-card', {
     linkSingle() {
       return `${document.location.origin + document.location.pathname}?activity=${this.data.pk}`;
     },
-    liked() {
-      if (!document.contxt.github_handle) {
-        return;
-      }
+    // liked() {
+    //   if (!document.contxt.github_handle) {
+    //     return;
+    //   }
 
 
-      return this.data.likes.some(item => {
-        console.log(item)
-        return item.toLowerCase() === document.contxt.github_handle.toLowerCase();
-      });
-    },
+    //   return this.data.likes.some(item => {
+    //     console.log(item)
+    //     return item.toLowerCase() === document.contxt.github_handle.toLowerCase();
+    //   });
+    // },
     isCommentOwner() {
       if (!document.contxt.github_handle) {
         return;
