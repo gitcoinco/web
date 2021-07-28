@@ -40,6 +40,7 @@ from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
     SearchHistory, TribeMember,
 )
+from .permissions import IsOwnerOrReadOnly
 from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
@@ -299,6 +300,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
         'activity_type', 'bounty', 'grant', 'hackathonevent', 'project', 'profile',
         'kudos', 'kudos_transfer', 'subscription', 'tip'
     ]
+    permission_classes = [IsOwnerOrReadOnly]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
