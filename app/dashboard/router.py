@@ -156,13 +156,25 @@ class CommentSerializer(FlexFieldsModelSerializer):
     profile = ProfileSerializer(fields=[
         'id', 'handle', 'name', 'type', 'github_url', 'avatar_url', 'keywords', 'organizations'
     ])
+    viewer_reactions = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = (
             'id', 'created_on', 'profile', 'activity', 'comment', 'tip', 'likes',
-            'likes_handles', 'tip_count_eth', 'is_edited'
+            'likes_handles', 'tip_count_eth', 'is_edited', 'viewer_reactions'
         )
+
+    def get_viewer_reactions(self, obj):
+        user = self.context['request'].user
+        viewer_reactions = None
+
+        if user.is_authenticated:
+            viewer_reactions = {
+                'like': user.profile.pk in obj.likes
+            }
+        
+        return viewer_reactions
 
 
 class CommentPagination(PageNumberPagination):
@@ -215,6 +227,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
         'id', 'handle', 'avatar_url', 'github_url', 'organizations', 'keywords',
         'name', 'type', 'match_this_round', 'default_match_estimate'
     ])
+    viewer_reactions = serializers.SerializerMethodField()
 
     class Meta:
         """Define the activity serializer metadata."""
@@ -225,7 +238,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
             'metadata', 'bounty', 'tip_count_eth', 'tip_count_usd', 'kudos', 'kudos_transfer',
             'grant', 'subscription', 'hackathonevent', 'other_profile', 'action_url', 'hidden',
             'view_count', 'comments_count', 'likes_count', 'show_token_info', 'token_name',
-            'secondary_avatar_url', 'created', 'created_on', 'created_human_time'
+            'secondary_avatar_url', 'created', 'created_on', 'created_human_time', 'viewer_reactions'
         )
         expandable_fields = {
             'grant': (
@@ -268,7 +281,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
     def get_comments(self, obj):
         comments = CommentSerializer(
-            obj.comments.order_by('-created_on')[:2], many=True
+            obj.comments.order_by('-created_on')[:2], many=True, context=self.context
         ).data
         comments.reverse()
         return comments
@@ -285,6 +298,18 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
+
+    def get_viewer_reactions(self, obj):
+        user = self.context['request'].user
+        viewer_reactions = None
+
+        if user.is_authenticated:
+            viewer_reactions = {
+                'like': obj.likes.filter(profile=user.profile).exists(),
+                'favorite': user.favorites.filter(activity=obj).exists()
+            }
+        
+        return viewer_reactions
 
 
 class ActivityPagination(PageNumberPagination):
