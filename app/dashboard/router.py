@@ -173,14 +173,12 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     pagination_class = CommentPagination
-    filterset_fields = ['activity', 'profile', 'tip']
+    filterset_fields = ['activity']
 
     def list(self, request, *args, **kwargs):
         activity = request.query_params.get('activity', False)
-        tip = request.query_params.get('tip', False)
-        profile = request.query_params.get('profile', False)
 
-        if not activity and not tip and not profile:
+        if not activity:
             return Response(
                 {'detail': 'You have not specified a resource type.'},
                 status=status.HTTP_400_BAD_REQUEST
