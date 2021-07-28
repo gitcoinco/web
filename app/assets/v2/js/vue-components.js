@@ -967,6 +967,9 @@ Vue.component('activity-card', {
       csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       github_handle: document.contxt.github_handle || '',
       loadingLike: false,
+      loadingComments: false,
+      commentsNext: '',
+      commentsPreview: true,
     };
   },
   methods: {
@@ -1004,16 +1007,30 @@ Vue.component('activity-card', {
     },
     fetchComments: async function(activityId) {
       let vm = this;
-      if ((vm.data.comments.length || Object.keys(vm.data.comments[0]).length) >= vm.data.comments_count) {
-        return;
+      // if ((vm.data.comments.length || Object.keys(vm.data.comments[0]).length) >= vm.data.comments_count) {
+      //   return;
+      // }
+      vm.loadingComments = true;
+      let url = `/api/v0.1/comments/?activity=${activityId}`;
+      if (vm.commentsNext) {
+        url = vm.commentsNext;
       }
-      let url = `/api/v0.1/comments?activity=${activityId}`;
 
       const res = await fetch(url);
       const json = await res.json();
 
+      vm.commentsNext = json.next;
+      vm.data.comments_count = json.count;
 
-      vm.$set(vm.data, 'comments', json.comments);
+      if (vm.commentsPreview) {
+        vm.data.comments = json.results;
+        vm.commentsPreview = false;
+      } else {
+        vm.data.comments.unshift(...json.results);
+      }
+      vm.loadingComments = false;
+
+      // vm.$set(vm.data, 'comments', json.results);
       // vm.activities.map((activity, index) => {
       //   if (activity.includes(activityId))
 
@@ -1067,6 +1084,15 @@ Vue.component('activity-card', {
     }
   },
   computed: {
+    commentsByDate() {
+      return this.data.comments.sort( ( a, b) => {
+        return new Date(a.created_on) - new Date(b.created_on);
+      });
+
+    },
+    linkSingle() {
+      return `${document.location.origin + document.location.pathname}?activity=${this.data.pk}`;
+    },
     liked() {
       if (!document.contxt.github_handle) {
         return;

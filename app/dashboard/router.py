@@ -171,7 +171,7 @@ class CommentPagination(PageNumberPagination):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
+    queryset = Comment.objects.all().order_by('-created_on')
     serializer_class = CommentSerializer
     pagination_class = CommentPagination
     filterset_fields = ['activity']
@@ -400,7 +400,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
         if not activity.has_voted(request.user):
             activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
             activity.save(update_fields=['metadata'])
-        
+
         return Response(status=status.HTTP_200_OK)
 
     # def get_queryset(self):
