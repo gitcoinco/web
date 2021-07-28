@@ -33,7 +33,10 @@
       </div>
       <div class="d-flex flex-column flex-fill justify-content-between ml-3">
         <div class="d-flex justify-content-between">
-          <a :href="data.profile.handle" class=""  :data-usercard="data.profile.handle">@[[data.profile.handle]]</a>
+          <div class="">
+            <span class="font-weight-bold">[[data.profile.name]]</span>
+            <a :href="data.profile.handle" class=""  :data-usercard="data.profile.handle">@[[data.profile.handle]]</a>
+          </div>
           <time class="" :datetime="[[ data.created ]]" :title="[[ data.created ]]">
             [[ data.created | moment-fromnow ]]
           </time>
@@ -98,7 +101,10 @@
       <div class="flex-fill ml-3">
         <div class="">
           <div class="d-flex justify-content-between">
-            <a :href="item.profile.handle" class=""  :data-usercard="item.profile.handle">@[[item.profile.handle]]</a>
+            <div class="">
+              <span class="font-weight-bold">[[item.profile.name]]</span>
+              <a :href="item.profile.handle" class=""  :data-usercard="item.profile.handle">@[[item.profile.handle]]</a>
+            </div>
             <time class="" :datetime="[[ item.created_on ]]" :title="[[ item.created_on ]]">
               [[ item.created_on | moment-fromnow ]] <i class="small" v-if="item.is_edited">edited</i>
             </time>
