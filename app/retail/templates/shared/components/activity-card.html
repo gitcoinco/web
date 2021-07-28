@@ -49,9 +49,9 @@
         <div class="">
           <span class="btn btn-sm cursor-none" data-toggle="tooltip" title="The number of views this post has gotten."><i class="far fa-eye"></i> [[data.view_count]]</span>
 
-          <b-button variant="none" @click="fetchComments(data.pk)" class="btn-sm"><i class="far fa-comment"></i> [[data.comments_count]]</b-button>
+          <span class="btn btn-sm cursor-none"><i class="far fa-comment"></i> [[data.comments_count]]</span>
 
-          <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': liked}" @click="likeActivity"><i class="far fa-heart" :class="liked ? 'fas' : 'far'"></i> [[data.likes_count]]</button>
+          <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': data.viewer_reactions.like}" @click="likeActivity"><i class="far fa-heart" :class="data.viewer_reactions.like ? 'fas' : 'far'"></i> [[data.likes_count]]</button>
           <button class="btn btn-sm"><i class="fab fa-ethereum grey"></i> [[data.tip]]</button>
           <b-dropdown size="sm"  variant="link" toggle-class="text-decoration-none" no-caret menu-class="font-smaller-5">
             <template #button-content>
@@ -94,13 +94,11 @@
       </div>
 
     </div>
-    <div v-else-if="data?.metadata?.resource?.type == 'gif'">
-      <div class="mt-1 mb-2" >
-        <div class="row align-items-center">
-            <img class="w-100" loading="lazy" :src="data.metadata.resource.id">
-        </div>
-      </div>
+
+    <div class="w-100" v-else-if="data?.metadata?.resource?.type == 'gif'">
+      <img class="w-100" loading="lazy" :src="data.metadata.resource.id" style="max-height: 450px; object-fit: contain;">
     </div>
+
 
     <button class="btn btn-block btn-link bg-lightpurple" :disabled="loadingComments" v-if="Object.keys(data.comments).length < data.comments_count" @click="fetchComments(data.pk)">Load more comments ([[data.comments_count - Object.keys(data.comments).length ]])</button>
     <div v-for="(item, index) in commentsByDate" class="d-flex flex-fill w-100 px-3 py-2 bg-lightblue" v-if="Object.keys(data.comments[0]).length" :key="item.id">
@@ -155,9 +153,9 @@
         <div>
           <img :src="`/dynamic/avatar/${github_handle}`" alt="" class="rounded-circle" height="40" width="40">
         </div>
-        <div class="ml-3">
+        <div class="ml-3 text-right">
           <textarea class="mb-2 form-control enter-activity-comment" name="newcomment" id="" cols="100" rows="3" v-model="data.newComment">[[data.newComment]]</textarea>
-          <button @click="postComment" class="btn btn-sm btn-primary">Comment</button>
+          <button @click="postComment" :disabled="!data.newComment" class="btn btn-sm btn-primary">Comment</button>
         </div>
       </div>
     </div>

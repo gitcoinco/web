@@ -999,9 +999,11 @@ Vue.component('activity-card', {
       if (method === 'POST' && res.status === 200) {
         vm.data.likes_count += 1;
         vm.data.likes.push(vm.github_handle);
+        vm.data.viewer_reactions.like = true;
       } else if (method === 'DELETE' && res.status === 204) {
         vm.data.likes_count -= 1;
         vm.data.likes.splice(vm.data.likes.indexOf(vm.github_handle), 1);
+        vm.data.viewer_reactions.like = false;
       }
       vm.loadingLike = false;
     },
