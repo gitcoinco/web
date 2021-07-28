@@ -164,12 +164,58 @@ class CommentSerializer(FlexFieldsModelSerializer):
         )
 
 
+class CommentPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    pagination_class = CommentPagination
+    filterset_fields = ['activity', 'profile', 'tip']
+
+    def list(self, request, *args, **kwargs):
+        activity = request.query_params.get('activity', False)
+        tip = request.query_params.get('tip', False)
+        profile = request.query_params.get('profile', False)
+
+        if not activity and not tip and not profile:
+            return Response(
+                {'detail': 'You have not specified a resource type.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return super().list(request, *args, **kwargs)
+
+    @action(detail=True, methods=['POST', 'DELETE'], name='Like Comment',
+            permission_classes=[IsAuthenticated])
+    def like(self, request, pk=None):
+        comment = self.get_object()
+        profile_pk = request.user.profile.pk
+
+        if request.method == 'POST':
+            already_likes = profile_pk in comment.likes
+            if not already_likes:
+                comment.likes.append(profile_pk)
+            comment.save(update_fields=['likes'])
+            return Response(status=status.HTTP_200_OK)
+
+        elif request.method == 'DELETE':
+            comment.likes = [ele for ele in comment.likes if ele != profile_pk]
+            comment.save(update_fields=['likes'])
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class ActivitySerializer(FlexFieldsModelSerializer):
     """Handle serializing the Activity object."""
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
+    profile = ProfileSerializer(fields=[
+        'id', 'handle', 'avatar_url', 'github_url', 'organizations', 'keywords',
+        'name', 'type', 'match_this_round', 'default_match_estimate'
+    ])
 
     class Meta:
         """Define the activity serializer metadata."""
@@ -183,15 +229,6 @@ class ActivitySerializer(FlexFieldsModelSerializer):
             'secondary_avatar_url', 'created', 'created_on', 'created_human_time'
         )
         expandable_fields = {
-            'profile': (
-                'dashboard.router.ProfileSerializer',
-                {
-                    'fields': [
-                        'id', 'handle', 'avatar_url', 'github_url', 'organizations',
-                        'keywords', 'name', 'type', 'match_this_round', 'default_match_estimate',
-                    ]
-                }
-            ),
             'grant': (
                 'grants.serializers.GrantSerializer',
                 {'fields': ['id', 'title', 'logo', 'description']}
@@ -309,7 +346,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
             is_hidden = is_hidden_by_users or is_hidden_by_staff or is_hidden_by_moderators
             if is_hidden:
                 activity.hidden = True
-                activity.save()
+                activity.save(update_fields=['hidden'])
             return Response(status=status.HTTP_200_OK)
 
         elif request.method == 'DELETE':
@@ -362,7 +399,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
 
         if not activity.has_voted(request.user):
             activity.metadata['poll_choices'][index]['answers'].append(request.user.profile.pk)
-            activity.save()
+            activity.save(update_fields=['metadata'])
         
         return Response(status=status.HTTP_200_OK)
 
@@ -923,6 +960,7 @@ router.register(r'bounties/slim', BountiesViewSetSlim)
 router.register(r'bounties', BountiesViewSet)
 router.register(r'checkin', BountiesViewSetCheckIn)
 router.register(r'activities', ActivityViewSet)
+router.register(r'comments', CommentViewSet)
 
 router.register(r'bounty', BountyViewSet)
 router.register(r'projects_fetch', HackathonProjectsViewSet)
