@@ -40,7 +40,7 @@ from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
     SearchHistory, TribeMember,
 )
-from .permissions import IsOwnerOrReadOnly
+from .permissions import CanPin, IsOwnerOrReadOnly
 from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
@@ -136,16 +136,6 @@ class PinnedPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = PinnedPost
         fields = '__all__'
-
-    def create(self, validated_data):
-        pinned_post, _ = PinnedPost.objects.update_or_create(
-            what=validated_data.get('what'),
-            defaults={
-                'activity': validated_data.get('activity'),
-                'user': validated_data.get('user')
-            }
-        )
-        return pinned_post
 
 
 class VoteSerializer(serializers.Serializer):
@@ -306,7 +296,8 @@ class ActivitySerializer(FlexFieldsModelSerializer):
         if user.is_authenticated:
             viewer_reactions = {
                 'like': obj.likes.filter(profile=user.profile).exists(),
-                'favorite': user.favorites.filter(activity=obj).exists()
+                'favorite': user.favorites.filter(activity=obj).exists(),
+                'flag': user.profile.flags.filter(activity=obj).exists()
             }
         
         return viewer_reactions
@@ -393,25 +384,33 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.likes.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'DELETE'], serializer_class=PinnedPostSerializer,
-            name='Pin Post', permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['POST', 'GET', 'DELETE'], serializer_class=PinnedPostSerializer,
+            name='Pin Post', permission_classes=[CanPin])
     def pin(self, request, pk=None):
         # permission = can_pin(request, what)
-        serializer = self.get_serializer(
-            data={
-                'activity': pk,
-                'what': request.data.get('what'),
-                'user': request.user.profile.pk
-            }
-        )
-        serializer.is_valid(raise_exception=True)
+        what = request.data.get('what', False)
+
+        if not what:
+            return Response(
+                {'what': ['This field is required.']},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         if request.method == 'POST':
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            pinned_post, _ = PinnedPost.objects.update_or_create(
+                what=what,
+                defaults={
+                    'activity': self.get_object(),
+                    'user': request.user.profile
+                }
+            )
+            return Response(
+                self.get_serializer(pinned_post).data,
+                status=status.HTTP_200_OK
+            )
 
         elif request.method == 'DELETE':
-            PinnedPost.objects.filter(what=serializer.data.get('what')).delete()
+            PinnedPost.objects.filter(what=what).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['POST'], serializer_class=VoteSerializer,
