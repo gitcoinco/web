@@ -152,13 +152,15 @@ class CommentSerializer(FlexFieldsModelSerializer):
     profile = ProfileSerializer(fields=[
         'id', 'handle', 'name', 'type', 'github_url', 'avatar_url', 'keywords', 'organizations'
     ])
+    likes_count = serializers.SerializerMethodField()
     viewer_reactions = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Comment
         fields = (
             'id', 'created_on', 'profile', 'activity', 'comment', 'tip', 'likes',
-            'likes_handles', 'tip_count_eth', 'is_edited', 'viewer_reactions'
+            'likes_handles', 'likes_count', 'tip_count_eth', 'is_edited', 'viewer_reactions'
         )
 
     def get_viewer_reactions(self, obj):
@@ -169,8 +171,11 @@ class CommentSerializer(FlexFieldsModelSerializer):
             viewer_reactions = {
                 'like': user.profile.pk in obj.likes
             }
-        
+
         return viewer_reactions
+
+    def get_likes_count(self, obj):
+        return len(obj.likes)
 
 
 class CommentPagination(PageNumberPagination):
@@ -305,7 +310,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
                 'favorite': user.favorites.filter(activity=obj).exists(),
                 'flag': user.profile.flags.filter(activity=obj).exists()
             }
-        
+
         return viewer_reactions
 
 

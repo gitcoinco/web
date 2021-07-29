@@ -451,8 +451,9 @@ iframe.popout{
 }
 
 textarea.enter-activity-comment {
-  height: 3em;
+  height: 2em;
   transition: .1s all linear;
+  background-color: transparent;
 }
 
 .enter-activity-comment:focus {
