@@ -388,7 +388,7 @@ class Command(BaseCommand):
             total_dai_required = total_dai_required_wei / SCALE 
 
             # Verify that total DAI required (from event logs) equals the expected amount
-            if math.floor(expected_total_dai_amount, 0) != math.floor(total_dai_required, 0):
+            if math.floor(expected_total_dai_amount) != math.floor(total_dai_required):
                 print('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
                 print('Total DAI payout amount in the contract does not equal the expected value!')
                 print('  Total expected amount:  ', expected_total_dai_amount)
