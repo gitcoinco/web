@@ -2252,14 +2252,12 @@ $(document).ready(function() {
     const _3BOX_SPACE = 'gitcoin';
     const _3BOX_FIELD = 'popp';
 
-    let ethAddress;
-    let ethProvider;
     let credential;
     let verifier;
 
     const params = () => ({
-      'network': document.web3network,
-      'coinbase': ethAddress
+      'network': networkName,
+      'coinbase': selectedAccount
     });
 
     const downloadLink = () => {
@@ -2286,10 +2284,10 @@ $(document).ready(function() {
       return `
         <p>This is a ${verifiableCredential} that contains your trust bonus signed by the ${did} <strong>${issuer}</strong>.</p>
         <p>Your trust bonus score is <strong>${value}</strong> for the Ethereum address <strong>${address}</strong>.</p>
-        <textarea style="width: 100%;margin: 0 0 1rem 0;padding: 1rem;" rows="4" class="text-monospace" readonly>${formatted}</textarea>
+        <textarea id="vc-copy" style="width: 100%;margin: 0 0 1rem 0;padding: 1rem;" rows="4" class="text-monospace" readonly>${formatted}</textarea>
         <div style="display: flex;flex-direction: column;">
           <div style="display: flex;">
-            <button ${style} type="button" class="btn btn-info" id="vc-copy">Copy</button>
+            <button ${style} type="button" class="btn btn-info" data-copyclipboard="#vc-copy">Copy</button>
             <a ${style} href="${verifier}" target="_blank" class="btn btn-success">Verify</a>
             <a ${style} href="${href}" class="btn btn-link" download="gitcoin-popp-vc.json"">Download</a>
           </div>
@@ -2356,12 +2354,7 @@ $(document).ready(function() {
         return;
       }
 
-      const accounts = web3.eth.getAccounts();
-
-      $.when(accounts).then((result) => {
-        ethAddress = result[0];
-        ethProvider = web3.currentProvider;
-
+      const call = () => {
         $.get('/passport/verifiable-credential', params(), async function(response) {
           let status = response['status'];
 
@@ -2374,8 +2367,15 @@ $(document).ready(function() {
           verifier = response.verifier;
 
           $('.modal-body').html(baseContent());
+          copyClipboard();
         });
-      });
+      };
+
+      if (!provider) {
+        onConnect().then(call);
+      } else {
+        call();
+      }
     };
 
     const vc3Box = async() => {
@@ -2384,7 +2384,7 @@ $(document).ready(function() {
 
       modal.html(`${base} <hr /> ${get3BoxContent(false)}`);
 
-      const storageBox = await Box.openBox(ethAddress, ethProvider);
+      const storageBox = await Box.openBox(selectedAccount, provider);
 
       modal.html(`${base} <hr /> ${get3BoxContent(true, false)}`);
 
@@ -2403,17 +2403,10 @@ $(document).ready(function() {
       _alert('Your passport has been uploaded to 3Box', 'success', 5000);
     };
 
-    const vcCopy = () => {
-      const str = JSON.stringify(credential, null, 2);
-
-      navigator.clipboard.writeText(str);
-    };
-
-    return { vcPassport, vc3Box, vcCopy };
+    return { vcPassport, vc3Box };
   })();
 
   $(document).on('click', '#vc-passport', passportCredential.vcPassport);
   $(document).on('click', '#vc-3box', passportCredential.vc3Box);
-  $(document).on('click', '#vc-copy', passportCredential.vcCopy);
 
 });
