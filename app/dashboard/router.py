@@ -21,7 +21,7 @@ import logging
 import time
 from datetime import datetime
 
-from django.db.models import Count, F, Q
+from django.db.models import Count, F, Prefetch, Q
 from django.shortcuts import get_object_or_404
 
 import django_filters.rest_framework
@@ -183,7 +183,7 @@ class CommentPagination(PageNumberPagination):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all().order_by('-created_on')
+    queryset = Comment.objects.select_related('profile').order_by('-created_on')
     serializer_class = CommentSerializer
     pagination_class = CommentPagination
     filterset_fields = ['activity']
@@ -281,7 +281,9 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
     def get_comments(self, obj):
         comments = CommentSerializer(
-            obj.comments.order_by('-created_on')[:2], many=True, context=self.context
+            obj.comments.order_by('-created_on')[:2],
+            many=True,
+            context=self.context
         ).data
         comments.reverse()
         return comments
@@ -322,7 +324,22 @@ class ActivityViewSet(mixins.RetrieveModelMixin,
                       mixins.UpdateModelMixin,
                       mixins.DestroyModelMixin,
                       viewsets.GenericViewSet):
-    queryset = Activity.objects.all().order_by('-id')
+    queryset = (
+        Activity.objects
+        .select_related(
+            'profile', 'bounty', 'grant', 'hackathonevent', 'kudos',
+            'kudos_transfer', 'other_profile', 'project'
+        ).prefetch_related(
+            Prefetch(
+                'comments',
+                queryset=Comment.objects.select_related('profile')
+            ),
+            Prefetch(
+                'likes',
+                queryset=Like.objects.select_related('profile')
+            )
+        ).order_by('-id')
+    )
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
     filterset_fields = [
@@ -330,6 +347,13 @@ class ActivityViewSet(mixins.RetrieveModelMixin,
         'kudos', 'kudos_transfer', 'subscription', 'tip'
     ]
     permission_classes = [IsOwnerOrReadOnly]
+
+    def dispatch(self, *args, **kwargs):
+        response = super().dispatch(*args, **kwargs)
+        # For debugging purposes only.
+        from django.db import connection
+        print('# of Queries: {}'.format(len(connection.queries)))
+        return response
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
