@@ -85,7 +85,7 @@ Vue.component('sms-verify-modal', {
                 <strong>Verify Offline</strong>
                 <br />
                 <br />
-                <a href="mailto:kyc@gitcoin.co">Email Gitcoin</a> or <a href="https://keybase.io/gitcoin_verify">Message Gitcoin on Keybase</a>, and we will verify your information within 1-2 business days.
+                <a href="mailto:support@gitcoin.co">Email Gitcoin</a>, and we will verify your information within 5-10 business days.
                 <br />
                 <br />
                 IMPORTANT: Be sure to include (1) your gitcoin username (2) proof of ownership of a SMS number.
