@@ -231,7 +231,10 @@ AUTH_PASSWORD_VALIDATORS = [{
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_FILTER_BACKENDS': (
+        # 'rest_flex_fields.filter_backends.FlexFieldsFilterBackend',
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
     'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle',),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/day',

@@ -29,7 +29,7 @@ from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
 from marketing.mails import tip_comment_awarded_email
 from rest_flex_fields import FlexFieldsModelSerializer
-from rest_framework import routers, serializers, status, viewsets
+from rest_framework import mixins, routers, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
@@ -154,7 +154,6 @@ class CommentSerializer(FlexFieldsModelSerializer):
     ])
     likes_count = serializers.SerializerMethodField()
     viewer_reactions = serializers.SerializerMethodField()
-
 
     class Meta:
         model = Comment
@@ -319,7 +318,10 @@ class ActivityPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
 
 
-class ActivityViewSet(viewsets.ModelViewSet):
+class ActivityViewSet(mixins.RetrieveModelMixin,
+                      mixins.UpdateModelMixin,
+                      mixins.DestroyModelMixin,
+                      viewsets.GenericViewSet):
     queryset = Activity.objects.all().order_by('-id')
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
@@ -418,7 +420,7 @@ class ActivityViewSet(viewsets.ModelViewSet):
             activity.likes.filter(profile=request.user.profile).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['POST', 'GET', 'DELETE'], serializer_class=PinnedPostSerializer,
+    @action(detail=True, methods=['POST', 'DELETE'], serializer_class=PinnedPostSerializer,
             name='Pin Post', permission_classes=[CanPinPost])
     def pin(self, request, pk=None):
         what = request.data.get('what', False)
