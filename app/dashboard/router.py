@@ -42,7 +42,7 @@ from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
     SearchHistory, TribeMember,
 )
-from .permissions import CanPinPost, IsOwnerOrReadOnly
+from .permissions import CanPinPost, IsOwnerOrReadOnly, ReadOnly
 from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
@@ -151,7 +151,7 @@ class AwardCommentSerializer(serializers.Serializer):
 class CommentSerializer(FlexFieldsModelSerializer):
     profile = ProfileSerializer(fields=[
         'id', 'handle', 'name', 'type', 'github_url', 'avatar_url', 'keywords', 'organizations'
-    ])
+    ], read_only=True)
     likes_count = serializers.SerializerMethodField()
     viewer_reactions = serializers.SerializerMethodField()
 
@@ -187,6 +187,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     pagination_class = CommentPagination
     filterset_fields = ['activity']
+    permission_classes=[IsAuthenticated|ReadOnly]
 
     def list(self, request, *args, **kwargs):
         activity = request.query_params.get('activity', False)
@@ -197,6 +198,9 @@ class CommentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return super().list(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(profile=self.request.user.profile)
 
     @action(detail=True, methods=['POST', 'DELETE'], name='Like Comment',
             permission_classes=[IsAuthenticated])
