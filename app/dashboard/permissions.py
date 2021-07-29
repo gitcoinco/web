@@ -1,4 +1,11 @@
 from rest_framework import permissions
+from townsquare.utils import can_pin
+
+
+class CanPin(permissions.IsAuthenticated):
+
+    def has_object_permission(self, request, view, obj):
+        return can_pin(request, request.data.get('what'))
 
 
 class IsOwnerOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
