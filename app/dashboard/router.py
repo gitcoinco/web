@@ -22,10 +22,12 @@ import time
 from datetime import datetime
 
 from django.db.models import Count, F, Q
+from django.shortcuts import get_object_or_404
 
 import django_filters.rest_framework
 from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
+from marketing.mails import tip_comment_awarded_email
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import routers, serializers, status, viewsets
 from rest_framework.decorators import action
@@ -40,7 +42,7 @@ from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
     SearchHistory, TribeMember,
 )
-from .permissions import CanPin, IsOwnerOrReadOnly
+from .permissions import CanPinPost, IsOwnerOrReadOnly
 from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
@@ -140,6 +142,10 @@ class PinnedPostSerializer(serializers.ModelSerializer):
 
 class VoteSerializer(serializers.Serializer):
     choice = serializers.IntegerField(required=True)
+
+
+class AwardCommentSerializer(serializers.Serializer):
+    comment = serializers.IntegerField(required=True)
 
 
 class CommentSerializer(FlexFieldsModelSerializer):
@@ -333,6 +339,29 @@ class ActivityViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['POST'], name='Award Comment',
+            serializer_class=AwardCommentSerializer, permission_classes=[IsAuthenticated])
+    def award(self, request, pk=None):
+        comment_pk = request.data.get('comment')
+        serializer = self.get_serializer(data={'comment': comment_pk})
+        serializer.is_valid(raise_exception=True)
+        comment = get_object_or_404(Comment, id=comment_pk)
+        activity = self.get_object()
+
+        if request.user.profile.pk == activity.profile.pk and comment.activity_id == activity.id:
+            recipient_profile = comment.profile
+            activity.tip.username = recipient_profile.username
+            activity.tip.recipient_profile = comment.profile
+            activity.tip.save(update_fields=['username', 'recipient_profile'])
+            comment.tip = activity.tip
+            comment.save(update_fields=['tip'])
+            tip_comment_awarded_email(comment, [recipient_profile.email])
+        else:
+            return Response(
+                {'detail': 'Only the post creator can award this comment.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
     @action(detail=True, methods=['POST', 'DELETE'], name='Favorite Activity',
             permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):
@@ -385,9 +414,8 @@ class ActivityViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['POST', 'GET', 'DELETE'], serializer_class=PinnedPostSerializer,
-            name='Pin Post', permission_classes=[CanPin])
+            name='Pin Post', permission_classes=[CanPinPost])
     def pin(self, request, pk=None):
-        # permission = can_pin(request, what)
         what = request.data.get('what', False)
 
         if not what:
