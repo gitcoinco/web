@@ -474,7 +474,7 @@ class Bounty(SuperModel):
     def latest_activity(self):
         activity = Activity.objects.filter(bounty=self.pk).order_by('-pk')
         if activity.exists():
-            from dashboard.router import ActivitySerializer
+            from dashboard.serializers import ActivitySerializer
             return ActivitySerializer(activity.first()).data
         return None
 

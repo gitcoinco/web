@@ -1,4 +1,4 @@
-from dashboard.router import ProfileSerializer
+from dashboard.serializers import ProfileSerializer
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 

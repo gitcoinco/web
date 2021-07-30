@@ -129,7 +129,7 @@ from .notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
 from .poh_utils import is_registered_on_poh
-from .router import HackathonEventSerializer, ProfileSerializer, TribesSerializer
+from .serializers import HackathonEventSerializer, ProfileSerializer, TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
