@@ -270,6 +270,20 @@
                   </div>
                 </b-tab>
 
+                {% if is_team_member or is_staff  %}
+                <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
+                  <template v-slot:title>Stats</template>
+                  {% if tab == 'stats' %}
+                    <div id=grant_stats_graph class="content-block content-block--white">
+                      <div class="container">
+                        <iframe src="https://metabase.gitcoin.co/public/question/336dd009-0b96-4733-85a7-336b3447dc16?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
+                        <iframe src="https://metabase.gitcoin.co/public/question/c7dd0ded-7c39-47a3-a0d2-38627d9849b5?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
+                      </div>
+                    </div>
+                  {% endif %}
+                </b-tab>
+                {% endif %}
+
                 {% if is_staff %}
                 <b-tab :title-link-class="'nav-line'" @click="tabChange('sybil_profile')">
                   <template v-slot:title>Sybil Profile</template>
@@ -356,20 +370,6 @@
                     </div>
                 </b-tab>
                 {% endif %}
-                {% if is_team_member or is_staff  %}
-                <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
-                  <template v-slot:title>Stats</template>
-                  {% if tab == 'stats' %}
-                    <div id=grant_stats_graph class="content-block content-block--white">
-                      <div class="container">
-                        <iframe src="https://metabase.gitcoin.co/public/question/336dd009-0b96-4733-85a7-336b3447dc16?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
-                        <iframe src="https://metabase.gitcoin.co/public/question/c7dd0ded-7c39-47a3-a0d2-38627d9849b5?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
-                      </div>
-                    </div>
-                  {% endif %}
-                </b-tab>
-                {% endif %}
-
               </b-tabs>
             </div>
           </div>
