@@ -49,10 +49,10 @@ Vue.mixin({
 
       switch (vm.tab) {
         case 'sybil_profile':
-          vm.tabSelected = 3;
+          vm.tabSelected = 4;
           break;
         case 'stats':
-          vm.tabSelected = 4;
+          vm.tabSelected = 3;
           break;
         default:
           vm.tabSelected = 0;
