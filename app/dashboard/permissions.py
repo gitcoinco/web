@@ -46,3 +46,6 @@ class IsOwner(permissions.IsAuthenticated):
         if view.basename == 'activity':
             return obj.profile and obj.profile == request.user.profile \
                 or obj.other_profile and obj.other_profile == request.user.other_profile
+
+        if view.basename == 'comment':
+            return obj.profile and obj.profile == request.user.profile

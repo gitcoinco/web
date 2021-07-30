@@ -56,7 +56,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     pagination_class = CommentPagination
     filterset_fields = ['activity']
-    permission_classes=[IsAuthenticated|ReadOnly]
+    permission_classes=[IsOwner|ReadOnly]
 
     def list(self, request, *args, **kwargs):
         activity = request.query_params.get('activity', False)
@@ -70,6 +70,12 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(profile=self.request.user.profile)
+
+    def perform_update(self, serializer):
+        serializer.save(
+            profile=self.request.user.profile,
+            is_edited=True
+        )
 
     @action(detail=True, methods=['POST', 'DELETE'], name='Like Comment',
             permission_classes=[IsAuthenticated])
