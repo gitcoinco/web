@@ -42,7 +42,7 @@ from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
     SearchHistory, TribeMember,
 )
-from .permissions import CanPinPost, IsOwnerOrReadOnly, ReadOnly
+from .permissions import CanPinPost, IsOwner, ReadOnly
 from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
@@ -350,14 +350,7 @@ class ActivityViewSet(mixins.RetrieveModelMixin,
         'activity_type', 'bounty', 'grant', 'hackathonevent', 'project', 'profile',
         'kudos', 'kudos_transfer', 'subscription', 'tip'
     ]
-    permission_classes = [IsOwnerOrReadOnly]
-
-    def dispatch(self, *args, **kwargs):
-        response = super().dispatch(*args, **kwargs)
-        # For debugging purposes only.
-        from django.db import connection
-        print('# of Queries: {}'.format(len(connection.queries)))
-        return response
+    permission_classes = [IsOwner|ReadOnly]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -490,14 +483,6 @@ class ActivityViewSet(mixins.RetrieveModelMixin,
 
         return Response(status=status.HTTP_200_OK)
 
-    # def get_queryset(self):
-
-    #     q = self.request.query_params.get('search', '')
-    #     what = self.request.query_params.get('what', 'everywhere')
-    #     trending_only = self.request.query_params.get('trending_only', 0)
-    #     # queryset = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
-
-    #     return queryset
 
 class InterestSerializer(serializers.ModelSerializer):
     """Handle serializing the Interest object."""
