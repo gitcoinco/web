@@ -139,12 +139,13 @@ class CommentSerializer(FlexFieldsModelSerializer):
     ], read_only=True)
     likes_count = serializers.SerializerMethodField()
     viewer_reactions = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = (
             'id', 'created_on', 'profile', 'activity', 'comment', 'tip', 'likes',
-            'likes_handles', 'likes_count', 'tip_count_eth', 'is_edited', 'viewer_reactions'
+            'likes_handles', 'likes_count', 'tip_count_eth', 'is_edited', 'is_owner', 'viewer_reactions'
         )
 
     def get_viewer_reactions(self, obj):
@@ -157,6 +158,10 @@ class CommentSerializer(FlexFieldsModelSerializer):
             }
 
         return viewer_reactions
+
+    def get_is_owner(self, obj):
+        user = self.context['request'].user
+        return user.profile.pk == obj.profile.id
 
     def get_likes_count(self, obj):
         return len(obj.likes)
