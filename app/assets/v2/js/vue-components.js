@@ -1148,7 +1148,10 @@ Vue.component('activity-card', {
         vm.data.comments = json.results;
         vm.commentsPreview = false;
       } else {
-        vm.data.comments.unshift(...json.results);
+        const removeDuplicates = mergeObjArray(vm.data.comments, json.results);
+        vm.data.comments = removeDuplicates;
+
+        // vm.data.comments.unshift(...removeDuplicates);
       }
       vm.loadingComments = false;
 
