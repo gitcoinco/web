@@ -486,15 +486,15 @@ def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
         txt = f"""
 hi{github_username},
 
-thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
+thanks for turning around this bounty. we're hyperfocused on making Gitcoin a great place for blockchain developers to hang out, learn new skills, and git coins.
 
-in that spirit,  i have a few questions for you.
+in that spirit, we have a few questions for you.
 
 > what would you say your average hourly rate was for this bounty? {bounty.github_url}
 
-> what was the best thing about working on the platform?  what was the worst?
+> what was the best thing about working on the platform? what was the worst?
 
-> would you use gitcoin again?
+> would you use Gitcoin again?
 
 thanks again for being a member of the community.
 
@@ -510,15 +510,15 @@ PS - we've got some new gitcoin schwag on order. if you are intersted, you can u
 
 hi{github_username},
 
-thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
+thanks for putting this bounty ({bounty.github_url}) on Gitcoin.  i'm glad to see it was turned around.
 
-we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
+we're hyperfocused on making Gitcoin a great place for blockchain developers to hang out, learn new skills, and git some coins.
 
-in that spirit, i have a few questions for you:
+in that spirit, we have a few questions for you:
 
-> how much coaching/communication did it take the counterparty to turn around the issue?  was this burdensome?
+> how much coaching/communication did it take the counterparty to turn around the issue? was this burdensome?
 
-> what was the best thing about working on the platform?  what was the worst?
+> what was the best thing about working on the platform? what was the worst?
 
 > would you use gitcoin again?
 
@@ -535,9 +535,9 @@ hi{github_username},
 
 we saw that you cancelled this bounty.
 
-i was sorry to see that the bounty did not get done.
+we are sorry to see that the bounty did not get done.
 
-i have a few questions for you.
+we have a few questions for you.
 
 > why did you decide to cancel the bounty?
 
@@ -606,10 +606,9 @@ in the spirit of making Gitcoin better + checking in:
 
 > do you have any issues which might be bounty worthy or projects you're hoping to build?
 
-> do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+> do you have any feedback for us on how we might improve the product to fit your needs?
 
-> are you interested in joining one of our upcoming hackathons? it's possible
-we could do so at a discount, as you're a current funder on the platform.
+> are you interested in hosting or partnering in one of our upcoming hackathons? this is often teh best way to get top talent working on your issues.
 
 appreciate you being a part of the community + if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
 
