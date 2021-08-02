@@ -957,6 +957,109 @@ Vue.component('countdown', {
     this.initializeClock();
   }
 });
+
+const requestComment = async (url, method, bodyData) => {
+  const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const res = await fetch(url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrf
+    },
+    body: JSON.stringify(bodyData)
+  });
+  const json = await res.json();
+  return json;
+
+}
+
+const mergeObjArray = (arr1, arr2) => {
+  const temp = arr1.filter(obj1 => !arr2.some(obj2 => obj1.id === obj2.id))
+  // then just concat it
+  return [...temp, ...arr2];
+}
+
+Vue.component('activity-comment', {
+  template: '#activity-comment',
+  delimiters: [ '[[', ']]' ],
+  props: [ 'item', 'index'],
+  data: function() {
+    return {
+      csrf: document.querySelector('[name=csrfmiddlewaretoken]').value || '',
+      loadingLike: false,
+      github_handle: document.contxt.github_handle || '',
+      loadingComments: false,
+      commentsNext: '',
+      commentsPreview: true,
+      isEditing: false,
+      editedComment: this.item.comment,
+    }
+  },
+  methods:{
+    // requestComment: async function(url, method, bodyData) {
+    //   let vm = this;
+    //   const res = await fetch(url, {
+    //     method: method,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'X-CSRFToken': vm.csrf
+    //     },
+    //     body: JSON.stringify(bodyData)
+    //   });
+    //   const json = await res.json();
+    //   return json;
+    // },
+    toggleEdit(index){
+      let vm = this;
+      vm.isEditing = !vm.isEditing;
+
+      if (vm.isEditing) {
+        setTimeout(function() {
+          vm.$refs[`textArea-${index}`].focus();
+        }, 10);
+      }
+
+    },
+    updateValue: function (value) {
+      this.$emit('update:commentUpdate', value);
+    },
+    editComment: async function(commentId, index) {
+      let vm = this;
+      console.log(index, vm.item.comment, vm.item)
+      let url = `/api/v0.1/comments/${commentId}/`;
+
+      let dataComment = {
+        'comment': vm.editedComment,
+      }
+      const json = await requestComment(url, 'PATCH', dataComment);
+
+      if (json) {
+        vm.updateValue(json);
+        vm.isEditing = false;
+      }
+    },
+    deleteComment: function(commentId) {
+      if (!confirm('Are you sure you want to delete this?')) {
+        return;
+      }
+    },
+
+  },
+  computed: {
+    // isCommentOwner() {
+    //   if (!document.contxt.github_handle) {
+    //     return;
+    //   }
+    //   return this.data.comments.reduce((acc, item) => {
+    //     acc[item.id] = item.profile.handle == document.contxt.github_handle;
+    //     console.log(acc)
+    //     return acc;
+    //   }, {});
+    // },
+
+  }
+});
+
 Vue.component('like-button', {
   template: '#like-button',
   delimiters: [ '[[', ']]' ],
@@ -1015,6 +1118,7 @@ Vue.component('activity-card', {
     return {
       csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       github_handle: document.contxt.github_handle || '',
+      profile_id: document.contxt.profile_id || '',
       loadingLike: false,
       loadingComments: false,
       commentsNext: '',
@@ -1022,40 +1126,7 @@ Vue.component('activity-card', {
     };
   },
   methods: {
-    async likeActivity() {
-      let vm = this;
-      let method = 'POST'
 
-      if (vm.loadingLike) {
-        return;
-      }
-
-      if (vm.data.viewer_reactions.like) {
-        method = 'DELETE';
-      }
-
-      vm.loadingLike = true;
-      let url = `/api/v0.1/activities/${vm.data.pk}/like/`;
-      const res = await fetch(url,
-        {
-          method: method,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': vm.csrf
-          }
-        });
-
-      if (method === 'POST' && res.status === 200) {
-        vm.data.likes_count += 1;
-        vm.data.likes.push(vm.github_handle);
-        vm.data.viewer_reactions.like = true;
-      } else if (method === 'DELETE' && res.status === 204) {
-        vm.data.likes_count -= 1;
-        vm.data.likes.splice(vm.data.likes.indexOf(vm.github_handle), 1);
-        vm.data.viewer_reactions.like = false;
-      }
-      vm.loadingLike = false;
-    },
     fetchComments: async function(activityId) {
       let vm = this;
       // if ((vm.data.comments.length || Object.keys(vm.data.comments[0]).length) >= vm.data.comments_count) {
@@ -1091,43 +1162,71 @@ Vue.component('activity-card', {
 
 
     },
+    // requestComment: async function(url, method, bodyData) {
+    //   let vm = this;
+    //   const res = await fetch(url, {
+    //     method: method,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'X-CSRFToken': vm.csrf
+    //     },
+    //     body: JSON.stringify(bodyData)
+    //   });
+    //   const json = await res.json();
+    //   return json;
+    // },
+    updateEvent: function(eve) {
+      let vm = this;
+
+      console.log(eve);
+
+      vm.data.comments = mergeObjArray(vm.data.comments, [eve]);
+      // vm.item = item
+    },
+    updateComments: async function() {
+      let vm = this;
+      let pageSize = vm.data.comments.length < 10 ? vm.data.comments.length : 10;
+      let url = `/api/v0.1/comments/?activity=${vm.data.pk}&page_size=${pageSize}`;
+      const res = await fetch(url);
+      const json = await res.json();
+
+      vm.data.comments = mergeObjArray(vm.data.comments, json.results);
+      vm.data.comments_count = json.count;
+
+    },
     postComment: async function() {
       let vm = this;
-      let url = `/api/v0.1/activity/${vm.data.pk}`;
+      let url = `/api/v0.1/comments/`;
       let dataComment = {
-        'method': 'comment',
+        'activity': vm.data.pk,
         'comment': vm.data.newComment,
-        'csrfmiddlewaretoken': vm.csrf
       }
+      const json = await requestComment(url, 'POST', dataComment);
 
-      const res = await fetch(url, {
-        method: 'post',
-        body: dataComment
-      });
-      const json = await res.json();
       if (json) {
         vm.data.comments.push(json);
+        vm.updateComments();
+        vm.data.newComment = '';
+      }
+    },
+    // editComment: async function(commentId, index) {
+    //   let vm = this;
+    //   console.log(index, vm.data.comments, vm.data.comments[index])
+    //   let url = `/api/v0.1/comments/${commentId}/`;
+    //   let dataComment = {
+    //     'comment': vm.data.comments[index].comment + index,
+    //   }
+    //   const json = await vm.requestComment(url, 'PATCH', dataComment);
 
-      }
-    },
-    editComment: async function(commentId) {
-      let vm = this;
-      let url = `/api/v0.1/comment/${commentId}`;
-      const res = await fetch(url, {
-        method: 'post',
-        body: vm.data.comment
-      });
-      const json = await res.json();
-      if (json) {
-        vm.data.comments.push(json);
-
-      }
-    },
-    deleteComment: function(commentId) {
-      if (!confirm('Are you sure you want to delete this?')) {
-        return;
-      }
-    },
+    //   if (json) {
+    //     vm.$set(vm.data.comments, index, json);
+    //   }
+    // },
+    // deleteComment: function(commentId) {
+    //   if (!confirm('Are you sure you want to delete this?')) {
+    //     return;
+    //   }
+    // },
     isOwner: function(commentIndex) {
       let vm = this;
       return document.contxt.github_handle == vm.data.comments[commentIndex].profile.handle;
@@ -1155,16 +1254,16 @@ Vue.component('activity-card', {
     //     return item.toLowerCase() === document.contxt.github_handle.toLowerCase();
     //   });
     // },
-    isCommentOwner() {
-      if (!document.contxt.github_handle) {
-        return;
-      }
-      return this.data.comments.reduce((acc, item) => {
-        acc[item.id] = item.profile.handle == document.contxt.github_handle;
-        console.log(acc)
-        return acc;
-      }, {});
-    },
+    // isCommentOwner() {
+    //   if (!document.contxt.github_handle) {
+    //     return;
+    //   }
+    //   return this.data.comments.reduce((acc, item) => {
+    //     acc[item.id] = item.profile.handle == document.contxt.github_handle;
+    //     console.log(acc)
+    //     return acc;
+    //   }, {});
+    // },
 
 
   }
