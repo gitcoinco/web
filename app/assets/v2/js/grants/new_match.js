@@ -146,7 +146,7 @@ Vue.mixin({
               }
             ]
           });
-          _alert('Match Pledge Request Recorded.  To fund the matching pool please visit this Grant.');
+          _alert('Match Pledge Request Recorded.  To fund the matching pool please visit this Grant.', 'success');
           vm.clearForm();
           document.location.href = 'https://gitcoin.co/grants/12/gitcoin-grants-official-matching-pool-fund';
         } else {
