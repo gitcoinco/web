@@ -467,7 +467,7 @@
                     </div>
                   </div>
                   <div v-if="form.grant_type" class="form-group">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Tags</label>
                     <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
                     <v-select placeholder="Select categories" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
                       <template #search="{attributes, events}">

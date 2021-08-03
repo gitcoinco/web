@@ -364,7 +364,7 @@ if (document.getElementById('grants-showcase')) {
           keyword: this.keyword,
           state: this.state,
           collections_page: this.collectionsPage,
-          category: this.category,
+          grant_tag: this.category,
           type: this.current_type
         };
 
@@ -468,7 +468,7 @@ if (document.getElementById('grants-showcase')) {
           network: this.network,
           keyword: this.keyword,
           state: this.state,
-          category: this.category,
+          grant_tag: this.category,
           type: this.current_type
         };
 

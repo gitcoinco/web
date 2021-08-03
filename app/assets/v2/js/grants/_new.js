@@ -135,7 +135,7 @@ Vue.mixin({
         vm.$set(vm.errors, 'grant_type', 'Please select the grant category');
       }
       if (!vm.form.grant_tags.length > 0) {
-        vm.$set(vm.errors, 'grant_tags', 'Please one or more grant subcategory');
+        vm.$set(vm.errors, 'grant_tags', 'Please select one or more grant tag');
       }
       if (vm.form.description_rich.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');

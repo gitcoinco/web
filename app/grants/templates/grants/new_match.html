@@ -131,8 +131,8 @@
 
                   <!-- GRANT CATEGORY -->
                   <div class="form-group">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
-                    <v-select placeholder="Select Sub categories" :options="grant_tags" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Tags</label>
+                    <v-select placeholder="Select Tags" :options="grant_tags" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
                       <template v-slot:option="option">
                         <span class="font-weight-semibold">[[ option.name ]]</span>
                       </template>
