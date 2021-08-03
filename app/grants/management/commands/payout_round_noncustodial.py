@@ -27,8 +27,8 @@
 # ./manage.py payout_round_noncustodial set_payouts mainnet --clr_pks=131,121,120,119,118 --clr_round=9 --process_all
 
 import json
-from decimal import Decimal
 import math
+from decimal import Decimal
 
 from django.conf import settings
 from django.core.management.base import BaseCommand

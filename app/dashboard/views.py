@@ -27,6 +27,7 @@ import logging
 import random
 import re
 import time
+import urllib.parse
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -41,6 +42,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count, Q, Sum
+from django.forms import URLField
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -3437,7 +3439,6 @@ async def verify_user_duniter(request):
 
 
 def connect_google():
-    import urllib.parse
 
     return OAuth2Session(
         settings.GOOGLE_CLIENT_ID,
@@ -3696,7 +3697,6 @@ def disconnect_user_ens(request, handle):
 
 
 def connect_facebook():
-    import urllib.parse
 
     facebook = OAuth2Session (
         settings.FACEBOOK_CLIENT_ID,
@@ -5089,6 +5089,17 @@ def hackathon_save_project(request):
     video_url = request.POST.get('videodemo-url', '')
     categories = request.POST.getlist('categories[]')
     tech_stack = request.POST.getlist('tech-stack[]')
+    work_url = request.POST.get('work_url', '')
+
+    # validate the url
+    validator = URLField()
+    try:
+        validator.clean(work_url)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'msg': 'Please enter a valid URL for "Project Github Repository or Link to Pull Request"',
+        })
 
     if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
@@ -5107,7 +5118,7 @@ def hackathon_save_project(request):
         'logo': request.FILES.get('logo'),
         'bounty': bounty_obj,
         'summary': clean(request.POST.get('summary'), strip=True),
-        'work_url': clean(request.POST.get('work_url'), strip=True),
+        'work_url': clean(work_url, strip=True),
         'looking_members': looking_members,
         'message': '',
         'extra': {
@@ -5204,7 +5215,7 @@ def project_data(project_id):
             'status': project.status,
             'winner': project.winner,
             'looking_members': project.looking_members,
-            'work_url': project.work_url,
+            'work_url': urllib.parse.quote(re.sub(re.compile(r'^javascript:'), '', project.work_url), safe=':/'),
             'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(unidecode(project.name))]),
             'demo': {
                 'url': project.extra.get('video_url', None),
@@ -5256,6 +5267,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
     what = f'project:{project_id}'
+
     params = {
         'title': title,
         'card_desc': desc,
@@ -5273,7 +5285,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
             'status': project.status,
             'winner': project.winner,
             'looking_members': project.looking_members,
-            'work_url': project.work_url,
+            'work_url': urllib.parse.quote(re.sub(re.compile(r'^javascript:'), '', project.work_url), safe=':/'),
             'logo_url': project.logo.url if project.logo else '',
             'demo': {
                 'url': project.extra.get('video_url', None),
