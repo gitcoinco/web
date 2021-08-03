@@ -30,7 +30,7 @@ from grants.views import (
     grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
     grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
     manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
-    toggle_grant_favorite, verify_grant,
+    toggle_grant_favorite, verify_grant
 )
 
 app_name = 'grants/'
@@ -66,7 +66,6 @@ urlpatterns = [
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     path('collections/<int:collection_id>/thumbnail', collection_thumbnail, name='get_collection_thumbnail'),
     re_path(r'^new/?$', grant_new, name='new'),
-    re_path(r'^tags', get_grant_tags, name='get_grant_tags'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
     path('ingest', ingest_contributions, name='ingest_contributions'),
     path('bulk-fund', bulk_fund, name='bulk_fund'),
@@ -91,6 +90,7 @@ urlpatterns = [
     path('<slug:grant_type>', grants_type_redirect, name='grants_type_redirect2'),
     path('explorer/<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('explorer/<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
+    path('v1/api/tags', get_grant_tags, name='get_grant_tags'),
     path('v1/api/grants', grants_info, name='grants_info'),
     path('v1/api/grant/<int:grant_id>/', grant_details_api, name='grant_details_api'),
     path('v1/api/grant/<int:grant_id>/contributions', grant_details_contributions, name='grant_details_contributions'),

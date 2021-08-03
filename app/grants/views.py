@@ -39,6 +39,7 @@ from django.db import connection, transaction
 from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.template import response
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
@@ -979,6 +980,19 @@ def grants_by_grant_type(request, grant_type):
     response = TemplateResponse(request, 'grants/index.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
+
+
+def get_grant_tags(request):
+    """Fetch matching grants tags"""
+
+    tag_phrase = request.GET.get('q', '')
+    tags = GrantTag.objects.filter(name__icontains=tag_phrase).values_list('name', flat=True)
+
+    response = {
+       'status': 200,
+        'tag': list(tags)
+    }
+    return JsonResponse(response)
 
 
 def grants_type_redirect(request, grant_type):
@@ -2558,12 +2572,6 @@ def invoice(request, contribution_pk):
     }
 
     return TemplateResponse(request, 'grants/invoice.html', params)
-
-@csrf_exempt
-def get_grant_tags(request):
-    return JsonResponse({
-        'tags': GrantTag.objects.values_list('name')
-    })
 
 
 @login_required
