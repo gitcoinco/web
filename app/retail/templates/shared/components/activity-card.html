@@ -116,16 +116,16 @@
             <template #button-content>
               <i class="fas fa-ellipsis-h grey"></i><span class="sr-only">more</span>
             </template>
-            <b-dropdown-item href="#"><i class="fas fa-fw fa-map-pin mr-2"></i> Pin post</b-dropdown-item>
+            <b-dropdown-item href="#" v-if="is_staff"><i class="fas fa-fw fa-map-pin mr-2"></i> Pin post</b-dropdown-item>
 
 
             <li role="presentation">
               <copy-clipboard class="dropdown-item" :string="linkSingle"><i class="fas fa-fw fa-link mr-2"></i> Copy link</copy-clipboard>
             </li>
             <!-- <b-dropdown-item href="#"><i class="fas fa-fw fa-link mr-2"></i> Copy link</b-dropdown-item> -->
-            <b-dropdown-item href="#"><i class="far fa-fw fa-star mr-2"></i> Favorite</b-dropdown-item>
-            <b-dropdown-item href="#"><i class="far fa-fw fa-flag mr-2"></i> Report</b-dropdown-item>
-            <b-dropdown-item href="#"><i class="fas fa-fw fa-trash mr-2"></i> Delete</b-dropdown-item>
+            <b-dropdown-item href="#" @click="favActivity(data.pk)"><i class="far fa-fw fa-star mr-2" :class="{'fas': data.viewer_reactions.favorite}"></i> Favorite</b-dropdown-item>
+            <b-dropdown-item href="#" @click="flagActivity(data.pk)"><i class="far fa-fw fa-flag mr-2" :class="{'fas': data.viewer_reactions.flag}"></i> Report</b-dropdown-item>
+            <b-dropdown-item href="#" v-if="data.is_owner"><i class="fas fa-fw fa-trash mr-2"></i> Delete</b-dropdown-item>
           </b-dropdown>
 
         </div>

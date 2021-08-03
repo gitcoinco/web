@@ -1119,6 +1119,7 @@ Vue.component('activity-card', {
       csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       github_handle: document.contxt.github_handle || '',
       profile_id: document.contxt.profile_id || '',
+      is_staff: document.contxt.is_staff || false,
       loadingLike: false,
       loadingComments: false,
       commentsNext: '',
@@ -1165,6 +1166,83 @@ Vue.component('activity-card', {
 
 
     },
+    async flagActivity(activityId) {
+      let vm = this;
+      let method = 'POST'
+
+      // if (vm.loadingLike) {
+      //   return;
+      // }
+
+      if (vm.data.viewer_reactions.flag) {
+        method = 'DELETE';
+      }
+
+      // vm.loadingLike = true;
+      let url = `/api/v0.1/activities/${activityId}/flag/`;
+      const res = await fetch(url,
+        {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': vm.csrf
+          }
+        });
+
+      if (method === 'POST' && res.status === 200) {
+        vm.data.viewer_reactions.flag = true;
+      } else if (method === 'DELETE' && res.status === 204) {
+        vm.data.viewer_reactions.flag = false;
+      }
+      // vm.loadingLike = false;
+    },
+    async favActivity(activityId) {
+      let vm = this;
+      let method = 'POST'
+
+      // if (vm.loadingLike) {
+      //   return;
+      // }
+
+      if (vm.data.viewer_reactions.favorite) {
+        method = 'DELETE';
+      }
+
+      // vm.loadingLike = true;
+      let url = `/api/v0.1/activities/${activityId}/favorite/`;
+      const res = await fetch(url,
+        {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': vm.csrf
+          }
+        });
+
+      if (method === 'POST' && res.status === 200) {
+        vm.data.viewer_reactions.favorite = true;
+      } else if (method === 'DELETE' && res.status === 204) {
+        vm.data.viewer_reactions.favorite = false;
+      }
+      // vm.loadingLike = false;
+    },
+
+
+    // flagActivity: async function(activityId) {
+    //   let vm = this;
+    //   let url = `/api/v0.1/activities/${activityId}/flag/`;
+    //   const res = await fetch(url,
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'X-CSRFToken': vm.csrf
+    //       }
+    //     });
+    //   if (res.status === 200) {
+    //     vm.data.viewer_reactions.flag = true;
+    //   }
+    // },
     // requestComment: async function(url, method, bodyData) {
     //   let vm = this;
     //   const res = await fetch(url, {
