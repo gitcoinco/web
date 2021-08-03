@@ -178,6 +178,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
         'name', 'type', 'match_this_round', 'default_match_estimate'
     ])
     viewer_reactions = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         """Define the activity serializer metadata."""
@@ -188,7 +189,8 @@ class ActivitySerializer(FlexFieldsModelSerializer):
             'metadata', 'bounty', 'tip_count_eth', 'tip_count_usd', 'kudos', 'kudos_transfer',
             'grant', 'subscription', 'hackathonevent', 'other_profile', 'action_url', 'hidden',
             'view_count', 'comments_count', 'likes_count', 'show_token_info', 'token_name',
-            'secondary_avatar_url', 'created', 'created_on', 'created_human_time', 'viewer_reactions'
+            'secondary_avatar_url', 'created', 'created_on', 'created_human_time', 'is_owner',
+            'viewer_reactions'
         )
         expandable_fields = {
             'grant': (
@@ -250,6 +252,10 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
     def get_likes_count(self, obj):
         return obj.likes.count()
+
+    def get_is_owner(self, obj):
+        user = self.context['request'].user
+        return user.profile.pk == obj.profile.id
 
     def get_viewer_reactions(self, obj):
         user = self.context['request'].user
