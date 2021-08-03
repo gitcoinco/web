@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
                 ('modified_on', models.DateTimeField(default=economy.models.get_time)),
-                ('name', models.CharField(help_text='Grant Tag', max_length=50)),
+                ('name', models.CharField(help_text='Grant Tag', max_length=50, unique=True)),
             ],
             options={
                 'abstract': False,

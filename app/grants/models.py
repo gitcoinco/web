@@ -85,6 +85,19 @@ class GrantQuerySet(models.QuerySet):
         )
 
 
+# TODO: REMOVE
+class GrantCategory(SuperModel):
+
+    category = models.CharField(
+        max_length=50,
+        blank=False,
+        null=False,
+        help_text=_('Grant Category'),
+    )
+
+    def __str__(self):
+        """Return the string representation of a Grant Category."""
+        return f"{self.category}"
 
 class GrantTag(SuperModel):
 
@@ -554,6 +567,7 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
+    categories = models.ManyToManyField(GrantCategory, blank=True) # TODO: REMOVE
     tags = models.ManyToManyField(GrantTag, blank=True)
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
