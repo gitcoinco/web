@@ -3,6 +3,7 @@ let activityPage = 1;
 let activityNext = '';
 let activityNumPages = '';
 let numActivities = '';
+let refreshInterval = 55000;
 
 
 Vue.mixin({
@@ -39,10 +40,12 @@ Vue.mixin({
         vm.activities.push(item);
       });
 
+    },
 
-
-
-      // });
+    deleteActivity: async function(index) {
+      console.log(index);
+      let vm = this;
+      vm.activities.splice(index, 1);
     },
     getUrlParameters: function() {
       let vm = this;
@@ -88,7 +91,8 @@ if (document.getElementById('gc-activity')) {
       activityNumPages,
       numActivities,
       loadingActivity: false,
-      activityId: null
+      activityId: null,
+      activityBuffer: [],
     },
     mounted() {
       this.fetchActivity();

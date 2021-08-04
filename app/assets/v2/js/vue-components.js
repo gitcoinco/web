@@ -1127,6 +1127,27 @@ Vue.component('activity-card', {
     };
   },
   methods: {
+    deleteActivity: async function(id) {
+      let vm = this;
+
+      if (!confirm('Are you sure you want to delete this?')) {
+        return;
+      }
+
+      let url = `/api/v0.1/activities/${id}/`;
+      const res = await fetch(url,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': vm.csrf
+          }
+        });
+        console.log(res);
+        if (res.status === 204) {
+          vm.$emit('delete:activity', vm.data);
+        }
+    },
 
     fetchComments: async function(activityId) {
       let vm = this;
