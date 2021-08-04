@@ -1,3 +1,223 @@
+import json
+
+from django.db import models
+from django.db.models import Q
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core import serializers
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.templatetags.static import static
+from django.urls import reverse
+
+from django_extensions.db.fields import AutoSlugField
+
+from economy.models import SuperModel
+from .grant_category import GrantCategory
+from .subscription import Subscription
+from .contribution import Contribution
+from .grant_collection import GrantCollection
+
+from grants.utils import get_upload_filename, is_grant_team_member
+
+from townsquare.models import Favorite
+from web3 import Web3
+
+
+class GrantType(SuperModel):
+
+    name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
+    label = models.CharField(max_length=25, null=True, help_text="Display Name")
+    is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
+    is_visible = models.BooleanField(default=True, db_index=True, help_text="Is visible on the Grant filters")
+    categories = models.ManyToManyField(
+        "GrantCategory",
+        help_text="Grant Categories associated with Grant Type"
+    )
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        max_length=500,
+        help_text=_('The default category\'s marketing banner (aspect ratio = 10:3)'),
+    )
+
+
+    def __str__(self):
+        """Return the string representation."""
+        return f"{self.name}"
+
+    @property
+    def clrs(self):
+        return GrantCLR.objects.filter(grant_filters__grant_type=str(self.pk))
+
+    @property
+    def active_clrs(self):
+        return GrantCLR.objects.filter(is_active=True, grant_filters__grant_type=str(self.pk))
+
+    @property
+    def active_clrs_sum(self):
+        return sum(self.active_clrs.values_list('total_pot', flat=True))
+
+
+class GrantCLR(SuperModel):
+
+    class Meta:
+        unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
+
+    customer_name = models.CharField(
+        max_length=15,
+        default='',
+        blank=True,
+        help_text="used to genrate customer_name/round_num/sub_round_slug"
+    )
+    round_num = models.PositiveIntegerField(
+        help_text="CLR Round Number. used to generate customer_name/round_num/sub_round_slug"
+    )
+    sub_round_slug = models.CharField(
+        max_length=25,
+        default='',
+        blank=True,
+        help_text="used to generate customer_name/round_num/sub_round_slug"
+    )
+    display_text = models.CharField(
+        max_length=25,
+        null=True,
+        blank=True,
+        help_text="sets the custom text in CLR banner on the landing page"
+    )
+    owner = models.ForeignKey(
+        'dashboard.Profile',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text='sets the owners profile photo in CLR banner on the landing page'
+    )
+    is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
+    start_date = models.DateTimeField(help_text="CLR Round Start Date")
+    end_date = models.DateTimeField(help_text="CLR Round End Date")
+    grant_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grants allowed in this CLR round"
+    )
+    subscription_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grant Subscription to be allowed in this CLR round"
+    )
+    collection_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grant Collections to be allowed in this CLR round"
+    )
+    verified_threshold = models.DecimalField(
+        help_text="This is the verfied CLR threshold. You can generally increase the saturation of the round / increase the CLR match by increasing this value, as it has a proportional relationship. However, depending on the pair totals by grant, it may reduce certain matches. In any case, please use the contribution multiplier first.",
+        default=25.0,
+        decimal_places=2,
+        max_digits=5
+    )
+    unverified_threshold = models.DecimalField(
+        help_text="This is the unverified CLR threshold. The relationship with the CLR match is the same as the verified threshold. If you would like to increase the saturation of round / increase the CLR match, increase this value, but please use the contribution multiplier first.",
+        default=5.0,
+        decimal_places=2,
+        max_digits=5
+    )
+    total_pot = models.DecimalField(
+        help_text="Total CLR Pot",
+        default=0,
+        decimal_places=2,
+        max_digits=10
+    )
+    contribution_multiplier = models.DecimalField(
+        help_text="This contribution multipler is applied to each contribution before running CLR calculations. In order to increase the saturation, please increase this value first, before modifying the thresholds.",
+        default=1.0,
+        decimal_places=4,
+        max_digits=10
+    )
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        max_length=500,
+        help_text=_('sets the background in CLR banner on the landing page'),
+    )
+
+    def __str__(self):
+        return f"{self.round_num}"
+
+    @property
+    def happening_now(self):
+        # returns true if we are within the time range for this round
+        now = timezone.now()
+        return now >= self.start_date and now <= self.end_date
+
+    @property
+    def happened_recently(self):
+        # returns true if we are within a week or 2 of this round
+        days = 14
+        now = timezone.now()
+        then = timezone.now() - timezone.timedelta(days=days)
+        return now >= self.start_date and then <= self.end_date
+
+    @property
+    def grants(self):
+
+        grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+        if self.collection_filters:
+            grant_ids = GrantCollection.objects.filter(**self.collection_filters).values_list('grants', flat=True)
+            grants = grants.filter(pk__in=grant_ids)
+        if self.grant_filters:
+            grants = grants.filter(**self.grant_filters)
+        if self.subscription_filters:
+            grants = grants.filter(**self.subscription_filters)
+
+        return grants
+
+
+    def record_clr_prediction_curve(self, grant, clr_prediction_curve):
+        for obj in self.clr_calculations.filter(grant=grant):
+            obj.latest = False
+            obj.save()
+
+        GrantCLRCalculation.objects.create(
+            grantclr=self,
+            grant=grant,
+            clr_prediction_curve=clr_prediction_curve,
+            latest=True,
+        )
+
+
+class GrantQuerySet(models.QuerySet):
+    """Define the Grant default queryset and manager."""
+
+    def active(self):
+        """Filter results down to active grants only."""
+        return self.filter(active=True)
+
+    def inactive(self):
+        """Filter results down to inactive grants only."""
+        return self.filter(active=False)
+
+    def keyword(self, keyword):
+        """Filter results to all Grant objects containing the keywords.
+
+        Args:
+            keyword (str): The keyword to search title, description, and reference URL by.
+
+        Returns:
+            dashboard.models.GrantQuerySet: The QuerySet of grants filtered by keyword.
+
+        """
+        if not keyword:
+            return self
+        return self.filter(
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(reference_url__icontains=keyword)
+        )
+
+
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
@@ -266,7 +486,7 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
-    categories = models.ManyToManyField(GrantCategory, blank=True)
+    categories = models.ManyToManyField("GrantCategory", blank=True)
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
@@ -711,3 +931,21 @@ class Grant(SuperModel):
             self.modified_on = get_time()
 
         return super(Grant, self).save(*args, **kwargs)
+
+
+class GrantCLRCalculation(SuperModel):
+
+    latest = models.BooleanField(default=False, db_index=True, help_text="Is this calc the latest?")
+    grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant'))
+    grantclr = models.ForeignKey(GrantCLR, on_delete=models.CASCADE, related_name='clr_calculations',
+                              help_text=_('The grant CLR Round'))
+
+    clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+
+    def __str__(self):
+        return f'{self.created_on} for g:{self.grant.pk} / gclr:{self.grantclr.pk} : {self.clr_prediction_curve}'

@@ -1,3 +1,9 @@
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+from economy.models import SuperModel
+
+
 class GrantAPIKey(SuperModel):
     """Define the structure of a GrantAPIKey."""
 
