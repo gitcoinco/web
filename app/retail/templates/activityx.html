@@ -41,7 +41,7 @@
         <div class="m-auto" style="width: 800px;">
           <div v-for="(activity, index) in activities" :key="activity.pk" v-if="!activity.hidden">
 
-            <activity-card :data="activity" :index="index"></activity-card>
+            <activity-card :data="activity" :index="index" v-on:delete:activity="deleteActivity(index)"></activity-card>
           </div>
           <loading-screen v-if="loadingActivity"></loading-screen>
         </div>
