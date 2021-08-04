@@ -883,7 +883,7 @@ def grants_by_grant_type(request, grant_type):
     grants_following = Favorite.objects.none()
     collections = []
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile :
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
@@ -1063,7 +1063,7 @@ def grants_by_grant_clr(request, clr_round):
 
     grants_following = Favorite.objects.none()
     collections = []
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(
             Q(profile=request.user.profile) | Q(curators=request.user.profile))
