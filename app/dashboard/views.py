@@ -5488,9 +5488,9 @@ def get_hackathons(request):
 def board(request):
     """Handle the board view."""
 
-    user = request.user if request.user.is_authenticated else None
+    user = request.user
     has_ptoken_auth = user.has_perm('auth.add_pToken_auth')
-    keywords = user.profile.keywords
+    keywords = user.profile.keywords if user.profile else None
     ptoken = PersonalToken.objects.filter(token_owner_profile=user.profile).first()
 
     context = {
