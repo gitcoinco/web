@@ -1,3 +1,12 @@
+from django.db import models
+from django.contrib.postgres.fields import JSONField
+from django.utils.translation import gettext_lazy as _
+
+from economy.models import SuperModel
+
+from .grant import Grant
+
+
 class CartActivity(SuperModel):
     ACTIONS = (
         ('ADD_ITEM', 'Add item to cart'),

@@ -1,3 +1,24 @@
+import pytz
+import logging
+
+from decimal import Decimal
+
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from django.conf import settings
+
+from economy.models import SuperModel
+from economy.utils import ConversionRateNotFoundError, convert_amount
+from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
+
+from .contribution import Contribution
+
+from web3 import Web3
+
+logger = logging.getLogger(__name__)
+
+
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 

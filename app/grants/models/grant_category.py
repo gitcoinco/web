@@ -1,3 +1,10 @@
+from django.db import models
+
+from economy.models import SuperModel
+
+from django.utils.translation import gettext_lazy as _
+
+
 class GrantCategory(SuperModel):
 
     category = models.CharField(
