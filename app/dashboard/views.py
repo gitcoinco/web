@@ -2161,7 +2161,7 @@ def user_card(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile:
         is_following = True if TribeMember.objects.filter(profile=request.user.profile, org=profile).count() else False
     else:
         is_following = False
