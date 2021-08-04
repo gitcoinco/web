@@ -282,16 +282,17 @@ def save_grant_to_notion(grant):
 
         # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
         return notion_write(NOTION_SYBIL_DB, {
-            'Current Status': {
-                'id': 'ea{s',
-                'type': 'select',
-                'select': {
-                    'id': '002e021f-3dde-4282-96e6-b2ce1c3a8380',
-                    'name': 'PENDING - Steward Review',
-                    'color': 'yellow'
+            "Platform Status":{
+                "id": "qwNU",
+                "type": "select",
+                "select":
+                {
+                    "id": "f38a5236-d1d7-4e63-ada0-e52a4e56d06f",
+                    "name": "NEEDS REVIEW",
+                    "color": "default"
                 }
             },
-            'Grant Name': {
+            "Grant Name": {
                 "id": "title",
                 "type": "title",
                 "title": [{

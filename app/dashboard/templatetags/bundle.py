@@ -78,7 +78,7 @@ def clean_block_and_hash(block):
     # clean up the block -- we want to drop anything that gets added by staticfinder (we could remove this if we purge {% static ... %} from tags)
     if isProduction:
         # in prod - staticfinder will attach static_url and an additional hash to the resource which doesn't exist on the local disk
-        block = re.sub(re.compile(r'(' + re.escape(settings.STATIC_URL) + r')([^>]*)(\.[0-9a-zA-Z]{12})?\.(css|scss|js)'), r'\2.\4', block)
+        block = re.sub(re.compile(r'(' + re.escape(settings.STATIC_URL) + r')([^>]*)(\.[0-9a-zA-Z]{12}?)\.(css|scss|js)'), r'\2.\4', block)
     else:
         # in dev - we still need to drop the static_url (but the hash will be absent)
         block = block.replace(settings.STATIC_URL, '')
