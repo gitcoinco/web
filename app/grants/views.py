@@ -655,8 +655,8 @@ def get_grants_by_filters(
         for tenant in tenants.split(','):
             if tenant in tenants:
                 tenant = tenant.lower()
-                tenant_filter = tenant + '_payout_address' if tenant != 'eth' else 'admin_payout_address'
-                _grants = _grants.filter(tenant_filter != '0x0')
+                tenant_filter = tenant + '_payout_address' if tenant != 'eth' else 'admin_address'
+                _grants = _grants.exclude(Q(**{tenant_filter: '0x0'}))
 
 
     # 13. Sort filtered grants
