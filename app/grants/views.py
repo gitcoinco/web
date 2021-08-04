@@ -2363,7 +2363,7 @@ def grants_bulk_add(request, grant_str):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or not request.user.profile:
         raise Http404
     handle = request.user.profile.handle
     return redirect(f'/profile/{handle}/grants')

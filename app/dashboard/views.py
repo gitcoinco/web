@@ -2464,6 +2464,9 @@ def profile_settings(request):
         handle (str): The profile handle.
     """
 
+    if not request.user.is_authenticated or not request.user.profile:
+        raise Http404
+
     handle = request.user.profile.handle
 
     try:
@@ -2471,7 +2474,7 @@ def profile_settings(request):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+    if profile.pk != request.user.profile.pk:
         raise Http404
 
     profile.automatic_backup = not profile.automatic_backup
@@ -2495,6 +2498,9 @@ def profile_backup(request):
         handle (str): The profile handle.
     """
 
+    if not request.user.is_authenticated or not request.user.profile:
+        raise Http404
+
     handle = request.user.profile.handle
 
     try:
@@ -2502,7 +2508,7 @@ def profile_backup(request):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+    if profile.pk != request.user.profile.pk:
         raise Http404
 
     model = request.POST.get('model', None)
@@ -3834,7 +3840,7 @@ def profile(request, handle, tab=None):
     # make sure tab param is correct
     all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'ptokens', 'trust']
     tab = default_tab if tab not in all_tabs else tab
-    if handle in all_tabs and request.user.is_authenticated:
+    if handle in all_tabs and request.user.is_authenticated and request.user.profile:
         # someone trying to go to their own profile?
         tab = handle
         handle = request.user.profile.handle
@@ -5744,6 +5750,9 @@ def contributor_dashboard(request, bounty_type):
 @login_required
 def change_user_profile_banner(request):
     """Handle Profile Banner Uploads"""
+
+    if not request.user.profile:
+        raise Http404
 
     filename = request.POST.get('banner')
 
