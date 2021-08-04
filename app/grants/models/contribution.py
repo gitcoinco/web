@@ -1,3 +1,18 @@
+import requests
+
+from django.db import models
+from django.db.models.signals import post_save, pre_save
+from django.utils.translation import gettext_lazy as _
+from django.contrib.postgres.fields import JSONField
+from django.utils import timezone
+from django.dispatch import receiver
+
+from economy.models import SuperModel
+from townsquare.models import Comment
+
+from web3 import Web3
+
+
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
@@ -269,3 +284,36 @@ def psave_contrib(sender, instance, **kwargs):
             )
         except:
             pass
+
+@receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
+def presave_contrib(sender, instance, **kwargs):
+
+    if not instance.profile_for_clr:
+        if instance.subscription:
+            instance.profile_for_clr = instance.subscription.contributor_profile
+
+    ele = instance
+    sub = ele.subscription
+    grant = sub.grant
+    instance.normalized_data = {
+        'id': grant.id,
+        'logo': grant.logo.url if grant.logo else None,
+        'url': grant.url,
+        'title': grant.title,
+        'amount_per_period_minus_gas_price': float(instance.subscription.amount_per_period_minus_gas_price),
+        'amount_per_period_to_gitcoin': float(instance.subscription.amount_per_period_to_gitcoin),
+        'created_on': ele.created_on.strftime('%Y-%m-%d'),
+        'frequency': int(sub.frequency),
+        'frequency_unit': sub.frequency_unit,
+        'num_tx_approved': int(sub.num_tx_approved),
+        'token_symbol': sub.token_symbol,
+        'amount_per_period_usdt': float(sub.amount_per_period_usdt),
+        'amount_per_period': float(sub.amount_per_period),
+        'admin_address': grant.admin_address,
+        'tx_id': ele.tx_id,
+    }
+
+    if instance.subscription.contributor_profile:
+        scp = instance.subscription.contributor_profile
+        instance.normalized_data['handle'] = scp.handle
+        instance.normalized_data['last_known_ip'] = scp.last_known_ip

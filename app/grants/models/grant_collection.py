@@ -1,5 +1,38 @@
+import traceback
+
+from io import BytesIO
+
+from django.db import models
+from django.db.models import Q
+from django.contrib.postgres.fields import JSONField
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.templatetags.static import static
+from django.utils.translation import gettext_lazy as _
+
+from economy.models import SuperModel
+from grants.utils import get_upload_filename, generate_collection_thumbnail
+
+
+class CollectionsQuerySet(models.QuerySet):
+    """Handle the manager queryset for Collections."""
+
+    def visible(self):
+        """Filter results down to visible collections only."""
+        return self.filter(hidden=False)
+
+    def keyword(self, keyword):
+        if not keyword:
+            return self
+        return self.filter(
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(profile__handle__icontains=keyword)
+        )
+
+
 class GrantCollection(SuperModel):
-    grants = models.ManyToManyField(blank=True, to=Grant, help_text=_('References to grants related to this collection'))
+    grants = models.ManyToManyField(blank=True, to="Grant", help_text=_('References to grants related to this collection'))
     profile = models.ForeignKey('dashboard.Profile', help_text=_('Owner of the collection'), related_name='curator', on_delete=models.CASCADE)
     title = models.CharField(max_length=255, help_text=_('Name of the collection'))
     description = models.TextField(default='', blank=True, help_text=_('The description of the collection'))
