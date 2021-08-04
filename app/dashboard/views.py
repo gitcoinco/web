@@ -3898,8 +3898,12 @@ def profile(request, handle, tab=None):
                 base = base.nocache()
             profile = base.get(pk=profile.pk)
 
-    context['is_my_org'] = request.user.is_authenticated and any(
-        [handle.lower() == org.lower() for org in request.user.profile.organizations])
+    context['is_my_org'] = (
+        request.user.is_authenticated and request.user.profile and
+        request.user.profile.organizations and
+        any([handle.lower() == org.lower() for org in request.user.profile.organizations])
+    )
+
     if request.user.is_authenticated and hasattr(request.user, 'profile'):
         context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower()).exists()
     else:
