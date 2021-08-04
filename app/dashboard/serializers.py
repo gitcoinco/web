@@ -161,7 +161,7 @@ class CommentSerializer(FlexFieldsModelSerializer):
 
     def get_is_owner(self, obj):
         user = self.context['request'].user
-        return user.profile.pk == obj.profile.id
+        return user.profile.pk == obj.profile.id if hasattr(user, 'profile') else None
 
     def get_likes_count(self, obj):
         return len(obj.likes)
@@ -255,7 +255,7 @@ class ActivitySerializer(FlexFieldsModelSerializer):
 
     def get_is_owner(self, obj):
         user = self.context['request'].user
-        return user.profile.pk == obj.profile.id
+        return user.profile.pk == obj.profile.id if hasattr(user, 'profile') else None
 
     def get_viewer_reactions(self, obj):
         user = self.context['request'].user
