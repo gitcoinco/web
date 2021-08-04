@@ -173,13 +173,13 @@ class ActivityViewSet(mixins.RetrieveModelMixin,
         activity = self.get_object()
 
         if request.method == 'POST':
-            already_likes = activity.favorites(request.user).exists()
+            already_likes = Favorite.objects.filter(activity=activity, user=request.user).exists()
             if not already_likes:
                 Favorite.objects.create(user=request.user, activity=activity)
             return Response(status=status.HTTP_200_OK)
 
         elif request.method == 'DELETE':
-            activity.favorites(request.user).delete()
+            Favorite.objects.filter(user=request.user, activity=activity).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['POST', 'DELETE'], name='Report Activity',
