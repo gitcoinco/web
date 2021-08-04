@@ -55,7 +55,7 @@ class Command(BaseCommand):
         parser.add_argument('what',
             default='verify',
             type=str,
-            help="what do we do? (finalize, payout_test, prepare_final_payout, verify, set_payouts_test, set_payouts)"
+            help="what do we do? (finalize, payout_test, prepare_final_payout, verify, set_payouts_test, set_payouts, notify_users)"
         )
         parser.add_argument('network',
             default='rinkeby',
@@ -84,7 +84,7 @@ class Command(BaseCommand):
         network = options['network']
         process_all = options['process_all']
 
-        valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts_test', 'set_payouts']
+        valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts_test', 'set_payouts', 'notify_users']
         if what not in valid_whats:
             raise Exception(f"Invalid value {what} for 'what' arg")
         if network not in ['rinkeby', 'mainnet']:
@@ -226,7 +226,6 @@ class Command(BaseCommand):
             full_payouts_mapping = []
             for key, value in full_payouts_mapping_dict.items():
                 full_payouts_mapping.append([key, str(int(value))])
-            total_amount = sum(int(ele[1]) for ele in full_payouts_mapping)
 
             # In tests, it took 68,080 gas to set 2 payout values. Let's be super conservative
             # and say it's 50k gas per payout mapping. If we are ok using 6M gas per transaction,
@@ -240,103 +239,13 @@ class Command(BaseCommand):
             chunk_size = 250 if not settings.DEBUG else 120
             chunked_payouts_mapping = chunks(full_payouts_mapping, chunk_size)
             # Set payouts
-            from_address = settings.GRANTS_PAYOUT_ADDRESS
-            from_pk = settings.GRANTS_PAYOUT_PRIVATE_KEY
             for payout_mapping in chunked_payouts_mapping:
 
                 #tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
 
                 print(f"#TODO: Send this txn view etherscan {match_payouts_address}")
                 print(json.dumps(payout_mapping))
-
-                # Pause until the next one
-                print("SLEEPING")
-                #time.sleep(WAIT_TIME_BETWEEN_TXS)
-                print("DONE SLEEPING")
-
-            user_input = input("continue? (y/n) ")
-            if user_input != 'y':
-                return
-
-            tx_id = input("enter a txid:  ")
-
-            # All payouts have been successfully set, so now we update the database
-            for match in target_matches.order_by('amount'):
-                # make save state to DB
-                if is_real_payout:
-                    match.payout_tx = tx_id
-                    match.payout_tx_date = timezone.now()
-                    grant_match_distribution_final_txn(match, True)
-                else:
-                    match.test_payout_tx = tx_id
-                    match.test_payout_tx_date = timezone.now()
-                    #grant_match_distribution_test_txn(match)
-                match.save()
-
-                # create payout obj artifacts
-                profile = Profile.objects.get(handle__iexact='gitcoinbot')
-                validator_comment = f"created by ingest payout_round_script"
-                subscription = Subscription()
-                subscription.is_postive_vote = True
-                subscription.active = False
-                subscription.error = True
-                subscription.contributor_address = 'N/A'
-                subscription.amount_per_period = match.amount
-                subscription.real_period_seconds = 2592000
-                subscription.frequency = 30
-                subscription.frequency_unit = 'N/A'
-                subscription.token_address = dai_address
-                subscription.token_symbol = token_name
-                subscription.gas_price = 0
-                subscription.new_approve_tx_id = '0x0'
-                subscription.num_tx_approved = 1
-                subscription.network = network
-                subscription.contributor_profile = profile
-                subscription.grant = match.grant
-                subscription.comments = validator_comment
-                subscription.amount_per_period_usdt = match.amount if is_real_payout else 0
-                subscription.save()
-
-                contrib = Contribution.objects.create(
-                    success=True,
-                    tx_cleared=True,
-                    tx_override=True,
-                    tx_id=tx_id,
-                    subscription=subscription,
-                    validator_passed=True,
-                    validator_comment=validator_comment,
-                )
-                print(f"ingested {subscription.pk} / {contrib.pk}")
-
-                if is_real_payout:
-                    match.payout_contribution = contrib
-                else:
-                    match.test_payout_contribution = contrib
-                match.save()
-
-                metadata = {
-                    'id': subscription.id,
-                    'value_in_token': str(subscription.amount_per_period),
-                    'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
-                    'token_name': subscription.token_symbol,
-                    'title': subscription.grant.title,
-                    'grant_url': subscription.grant.url,
-                    'num_tx_approved': subscription.num_tx_approved,
-                    'category': 'grant',
-                }
-                kwargs = {
-                    'profile': profile,
-                    'subscription': subscription,
-                    'grant': subscription.grant,
-                    'activity_type': 'new_grant_contribution',
-                    'metadata': metadata,
-                }
-
-                activity = Activity.objects.create(**kwargs)
-
-                if is_real_payout:
-                    comment = f"CLR Round {clr_round} Payout"
-                    comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
+                print("UPLOAD THE ABOVE CHUNK TO ETHERSCAN")
 
         # Verify contract is set properly ----------------------------------------------------------
         if what == 'verify':
@@ -421,3 +330,85 @@ class Command(BaseCommand):
                 print('  Excess DAI amount: ', excess)
                 print(f'\n Contract has an excess of {excess} DAI')
             print('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
+
+
+        # Create Contributions and send emails ----------------------------------------------------------
+        if what == 'notify_users':
+
+            token_name = 'DAI'
+            unpaid_scheduled_matches = scheduled_matches.filter(
+                ready_for_payout=True,
+                payout_tx=''
+            )
+            target_matches = unpaid_scheduled_matches if not process_all else scheduled_matches
+
+            tx_id = input("enter the last chunk txid:  ")
+
+            # All payouts have been successfully set, so now we update the database
+            for match in target_matches.order_by('amount'):
+                # make save state to DB
+                match.payout_tx = tx_id
+                match.payout_tx_date = timezone.now()
+                grant_match_distribution_final_txn(match, True)
+                match.save()
+
+                # create payout obj artifacts
+                profile = Profile.objects.get(handle__iexact='gitcoinbot')
+                validator_comment = f"created by ingest payout_round_script"
+                subscription = Subscription()
+                subscription.is_postive_vote = True
+                subscription.active = False
+                subscription.error = True
+                subscription.contributor_address = 'N/A'
+                subscription.amount_per_period = match.amount
+                subscription.real_period_seconds = 2592000
+                subscription.frequency = 30
+                subscription.frequency_unit = 'N/A'
+                subscription.token_address = dai_address
+                subscription.token_symbol = token_name
+                subscription.gas_price = 0
+                subscription.new_approve_tx_id = '0x0'
+                subscription.num_tx_approved = 1
+                subscription.network = network
+                subscription.contributor_profile = profile
+                subscription.grant = match.grant
+                subscription.comments = validator_comment
+                subscription.amount_per_period_usdt = match.amount
+                subscription.save()
+
+                contrib = Contribution.objects.create(
+                    success=True,
+                    tx_cleared=True,
+                    tx_override=True,
+                    tx_id=tx_id,
+                    subscription=subscription,
+                    validator_passed=True,
+                    validator_comment=validator_comment,
+                )
+                print(f"ingested {subscription.pk} / {contrib.pk}")
+
+                match.payout_contribution = contrib
+                match.save()
+
+                metadata = {
+                    'id': subscription.id,
+                    'value_in_token': str(subscription.amount_per_period),
+                    'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
+                    'token_name': subscription.token_symbol,
+                    'title': subscription.grant.title,
+                    'grant_url': subscription.grant.url,
+                    'num_tx_approved': subscription.num_tx_approved,
+                    'category': 'grant',
+                }
+                kwargs = {
+                    'profile': profile,
+                    'subscription': subscription,
+                    'grant': subscription.grant,
+                    'activity_type': 'new_grant_contribution',
+                    'metadata': metadata,
+                }
+
+                activity = Activity.objects.create(**kwargs)
+
+                comment = f"CLR Round {clr_round} Payout"
+                comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
