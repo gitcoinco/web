@@ -16,6 +16,7 @@ from economy.models import SuperModel
 
 from .subscription import Subscription
 from .contribution import Contribution
+from .grant_clr import GrantCLR
 
 from grants.utils import get_upload_filename, is_grant_team_member
 
