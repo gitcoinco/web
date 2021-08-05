@@ -53,6 +53,7 @@ from web3 import Web3
 from .cart_activity import CartActivity
 from .clr_match import CLRMatch
 from .contribution import Contribution
+from .donation import Donation
 from .flag import Flag
 from .grant_category import GrantCategory
 from .grant import Grant, GrantCLR, GrantCLRCalculation, GrantType
@@ -60,6 +61,7 @@ from .subscription import Subscription
 from .grant_collection import GrantCollection
 from .grant_api_key import GrantAPIKey
 from .match_pledge import MatchPledge
+from .phantom_funding import PhantomFunding
 
 logger = logging.getLogger(__name__)
 
@@ -68,136 +70,6 @@ logger = logging.getLogger(__name__)
 def next_month():
     """Get the next month time."""
     return localtime(timezone.now() + timedelta(days=30))
-
-    
-class Donation(SuperModel):
-    """Define the structure of an optional donation. These donations are
-       additional funds sent to Gitcoin as part of contributing or subscribing
-       to a grant."""
-
-    from_address = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_("The sender's address."),
-    )
-    to_address = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_("The destination address."),
-    )
-    profile = models.ForeignKey(
-        'dashboard.Profile',
-        related_name='donations',
-        on_delete=models.SET_NULL,
-        help_text=_("The donator's profile."),
-        null=True,
-    )
-    token_address = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The token address to be used with the Grant.'),
-    )
-    token_symbol = models.CharField(
-        max_length=255,
-        default='',
-        help_text=_("The donation token's symbol."),
-    )
-    token_amount = models.DecimalField(
-        default=0,
-        decimal_places=18,
-        max_digits=64,
-        help_text=_('The donation amount in tokens.'),
-    )
-    token_amount_usdt = models.DecimalField(
-        default=0,
-        decimal_places=4,
-        max_digits=50,
-        help_text=_('The donation amount converted to USD at the moment of donation.'),
-    )
-    tx_id = models.CharField(
-        max_length=255,
-        default='0x0',
-        help_text=_('The transaction ID of the Contribution.'),
-    )
-    network = models.CharField(
-        max_length=8,
-        default='mainnet',
-        help_text=_('The network in which the Subscription resides.'),
-    )
-    donation_percentage = models.DecimalField(
-        default=0,
-        decimal_places=2,
-        max_digits=5,
-        help_text=_('The additional percentage selected when the donation is made'),
-    )
-    subscription = models.ForeignKey(
-        'grants.subscription',
-        related_name='donations',
-        on_delete=models.SET_NULL,
-        help_text=_("The recurring subscription that this donation originated from."),
-        null=True,
-    )
-    contribution = models.ForeignKey(
-        'grants.contribution',
-        related_name='donation',
-        on_delete=models.SET_NULL,
-        help_text=_("The contribution that this donation was a part of."),
-        null=True,
-    )
-
-
-    def __str__(self):
-        """Return the string representation of this object."""
-        from django.contrib.humanize.templatetags.humanize import naturaltime
-        return f"id: {self.pk}; from:{profile.handle}; {tx_id} => ${token_amount_usdt}; {naturaltime(self.created_on)}"
-
-
-
-
-class PhantomFunding(SuperModel):
-    """Define the structure of a PhantomFunding object.
-
-    For Grants, we have a fund we’re contributing on their behalf.  just having a quick button they can push saves all the hassle of (1) asking them their wallet, (2) sending them the DAI (3) contributing it.
-
-    """
-
-    round_number = models.PositiveIntegerField(blank=True, null=True)
-    grant = models.ForeignKey(
-        'grants.Grant',
-        related_name='phantom_funding',
-        on_delete=models.CASCADE,
-        help_text=_('The associated grant being Phantom Funding.'),
-    )
-
-    profile = models.ForeignKey(
-        'dashboard.Profile',
-        related_name='grant_phantom_funding',
-        on_delete=models.CASCADE,
-        help_text=_('The associated profile doing the Phantom Funding.'),
-    )
-
-    def __str__(self):
-        """Return the string representation of this object."""
-        return f"{self.round_number}; {self.profile} <> {self.grant}"
-
-    def competing_phantum_funds(self):
-        return PhantomFunding.objects.filter(profile=self.profile, round_number=self.round_number)
-
-    @property
-    def value(self):
-        return 5/(self.competing_phantum_funds().count())
-
-    def to_mock_contribution(self):
-        context = self.to_standard_dict()
-        context['subscription'] = {
-            'contributor_profile': self.profile,
-            'amount_per_period': self.value,
-            'token_symbol': 'DAI',
-        }
-        context['tx_cleared'] = True
-        context['success'] = True
-        return context
-
 
 
 class CollectionsQuerySet(models.QuerySet):
