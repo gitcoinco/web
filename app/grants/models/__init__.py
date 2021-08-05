@@ -60,6 +60,7 @@ from .grant import Grant, GrantCLR, GrantCLRCalculation, GrantType
 from .subscription import Subscription
 from .grant_collection import GrantCollection
 from .grant_api_key import GrantAPIKey
+from .grant_stat import GrantStat
 from .match_pledge import MatchPledge
 from .phantom_funding import PhantomFunding
 
@@ -70,45 +71,6 @@ logger = logging.getLogger(__name__)
 def next_month():
     """Get the next month time."""
     return localtime(timezone.now() + timedelta(days=30))
-
-
-class CollectionsQuerySet(models.QuerySet):
-    """Handle the manager queryset for Collections."""
-
-    def visible(self):
-        """Filter results down to visible collections only."""
-        return self.filter(hidden=False)
-
-    def keyword(self, keyword):
-        if not keyword:
-            return self
-        return self.filter(
-            Q(description__icontains=keyword) |
-            Q(title__icontains=keyword) |
-            Q(profile__handle__icontains=keyword)
-        )
-
-
-class GrantStat(SuperModel):
-    SNAPSHOT_TYPES = [
-        ('total', 'total'),
-        ('increment', 'increment')
-    ]
-
-    grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='stats',
-                              help_text=_('Grant to add stats for this grant'))
-    data = JSONField(default=dict, blank=True, help_text=_('Stats for this Grant'))
-    snapshot_type = models.CharField(
-        max_length=50,
-        blank=False,
-        null=False,
-        help_text=_('Snapshot Type'),
-        db_index=True,
-        choices=SNAPSHOT_TYPES,
-    )
-
-    def __str__(self):
-        return f'{self.snapshot_type} {self.created_on} for {self.grant.title}'
 
 
 class GrantBrandingRoutingPolicy(SuperModel):
