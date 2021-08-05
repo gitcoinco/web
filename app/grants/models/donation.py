@@ -83,4 +83,4 @@ class Donation(SuperModel):
     def __str__(self):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
-        return f"id: {self.pk}; from:{profile.handle}; {tx_id} => ${token_amount_usdt}; {naturaltime(self.created_on)}"
+        return f"id: {self.pk}; from:{self.profile.handle}; {self.tx_id} => ${self.token_amount_usdt}; {naturaltime(self.created_on)}"
