@@ -68,7 +68,3 @@ from .phantom_funding import PhantomFunding
 logger = logging.getLogger(__name__)
 
 
-
-def next_month():
-    """Get the next month time."""
-    return localtime(timezone.now() + timedelta(days=30))
