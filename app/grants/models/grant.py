@@ -24,42 +24,6 @@ from townsquare.models import Favorite
 from web3 import Web3
 
 
-class GrantType(SuperModel):
-
-    name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
-    label = models.CharField(max_length=25, null=True, help_text="Display Name")
-    is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
-    is_visible = models.BooleanField(default=True, db_index=True, help_text="Is visible on the Grant filters")
-    categories = models.ManyToManyField(
-        "GrantCategory",
-        help_text="Grant Categories associated with Grant Type"
-    )
-    logo = models.ImageField(
-        upload_to=get_upload_filename,
-        null=True,
-        blank=True,
-        max_length=500,
-        help_text=_('The default category\'s marketing banner (aspect ratio = 10:3)'),
-    )
-
-
-    def __str__(self):
-        """Return the string representation."""
-        return f"{self.name}"
-
-    @property
-    def clrs(self):
-        return GrantCLR.objects.filter(grant_filters__grant_type=str(self.pk))
-
-    @property
-    def active_clrs(self):
-        return GrantCLR.objects.filter(is_active=True, grant_filters__grant_type=str(self.pk))
-
-    @property
-    def active_clrs_sum(self):
-        return sum(self.active_clrs.values_list('total_pot', flat=True))
-
-
 class GrantCLR(SuperModel):
 
     class Meta:
@@ -246,7 +210,7 @@ class Grant(SuperModel):
     ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
-    grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
+    grant_type = models.ForeignKey("GrantType", on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
@@ -521,7 +485,7 @@ class Grant(SuperModel):
     )
 
     in_active_clrs = models.ManyToManyField(
-        GrantCLR,
+        "GrantCLR",
         help_text="Active Grants CLR Round"
     )
     is_clr_active = models.BooleanField(default=False, help_text=_('CLR Round active or not? (auto computed)'))
