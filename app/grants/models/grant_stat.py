@@ -11,7 +11,7 @@ class GrantStat(SuperModel):
         ('increment', 'increment')
     ]
 
-    grant = models.ForeignKey("Grant", on_delete=models.CASCADE, related_name='stats',
+    grant = models.ForeignKey('Grant', on_delete=models.CASCADE, related_name='stats',
                               help_text=_('Grant to add stats for this grant'))
     data = JSONField(default=dict, blank=True, help_text=_('Stats for this Grant'))
     snapshot_type = models.CharField(

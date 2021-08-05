@@ -9,9 +9,9 @@ from economy.models import SuperModel
 class GrantCLRCalculation(SuperModel):
 
     latest = models.BooleanField(default=False, db_index=True, help_text="Is this calc the latest?")
-    grant = models.ForeignKey("Grant", on_delete=models.CASCADE, related_name='clr_calculations',
+    grant = models.ForeignKey('Grant', on_delete=models.CASCADE, related_name='clr_calculations',
                               help_text=_('The grant'))
-    grantclr = models.ForeignKey("GrantCLR", on_delete=models.CASCADE, related_name='clr_calculations',
+    grantclr = models.ForeignKey('GrantCLR', on_delete=models.CASCADE, related_name='clr_calculations',
                               help_text=_('The grant CLR Round'))
 
     clr_prediction_curve = ArrayField(

@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
 
+# from .grant import Grant
 from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
 
