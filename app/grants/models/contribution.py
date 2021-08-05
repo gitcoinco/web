@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 from django.dispatch import receiver
+from django.conf import settings
 
 from economy.models import SuperModel
 from townsquare.models import Comment

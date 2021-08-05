@@ -4,8 +4,6 @@ from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
 
-from .grant import Grant
-
 
 class CartActivity(SuperModel):
     ACTIONS = (
@@ -13,7 +11,7 @@ class CartActivity(SuperModel):
         ('REMOVE_ITEM', 'Remove item to cart'),
         ('CLEAR_CART', 'Clear cart')
     )
-    grant = models.ForeignKey(Grant, null=True, on_delete=models.CASCADE, related_name='cart_actions',
+    grant = models.ForeignKey('Grant', null=True, on_delete=models.CASCADE, related_name='cart_actions',
                               help_text=_('Related Grant Activity '))
     profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='cart_activity',
                                 help_text=_('User Cart Activity'))
