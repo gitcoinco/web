@@ -5,7 +5,6 @@ from economy.models import SuperModel
 from grants.utils import get_upload_filename
 
 
-
 class GrantBrandingRoutingPolicy(SuperModel):
     """
     This manages the background that would be put on a grant page (or grant CLR based on a regex matching in the URL)
