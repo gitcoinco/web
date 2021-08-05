@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-
+from .cart_activity import CartActivity
 from .clr_match import CLRMatch
 from .contribution import Contribution
 from .donation import Donation
