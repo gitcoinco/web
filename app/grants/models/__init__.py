@@ -23,10 +23,11 @@ from .clr_match import CLRMatch
 from .contribution import Contribution
 from .donation import Donation
 from .flag import Flag
-from .grant import Grant, GrantCLR, GrantCLRCalculation, GrantType
+from .grant import Grant, GrantCLR, GrantType
 from .grant_api_key import GrantAPIKey
 from .grant_branding_routing_policy import GrantBrandingRoutingPolicy
 from .grant_category import GrantCategory
+from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
 from .grant_stat import GrantStat
 from .match_pledge import MatchPledge
