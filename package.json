@@ -9,7 +9,8 @@
     "stylelint": "stylelint './app/assets/v2/scss/**/**/*.scss'",
     "stylelint:fix": "stylelint --fix './app/assets/v2/scss/**/**/*.scss'",
     "build": "webpack --mode production --progress",
-    "webpack": "webpack --mode development --progress --watch"
+    "webpack": "webpack --mode development --progress --watch",
+    "cypress:run": "./node_modules/.bin/cypress run --headless -b chromium"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.4",
-    "cypress": "^3.8.3",
+    "cypress": "^8.2.0",
     "eslint": "^7.14.0",
     "file-loader": "^6.2.0",
     "filemanager-webpack-plugin": "^4.0.0",
