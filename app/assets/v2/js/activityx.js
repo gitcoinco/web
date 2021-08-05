@@ -39,9 +39,47 @@ Vue.mixin({
       activitiesJson.results.forEach(function(item) {
         vm.activities.push(item);
       });
+      vm.longPoll();
 
     },
+    longPoll: async function() {
+      let vm = this;
+      let diffCounter = vm.numActivityBuffer > 0 ? vm.numActivityBuffer : 4;
+      let url = `/api/v0.1/activities/?expand=~all&page_size=${diffCounter}`;
 
+      if (vm.activityId) {
+        return;
+      }
+
+      if (document.hidden) {
+        return setTimeout(function() {
+          vm.longPoll();
+        }, refreshInterval);
+      }
+
+      let getActivities = await fetch(url);
+      let activitiesJson = await getActivities.json();
+
+      if (vm.numActivities !== activitiesJson.count) {
+        vm.numActivityBuffer = activitiesJson.count - vm.numActivities;
+        vm.activityBuffer = activitiesJson.results.splice(0,vm.numActivityBuffer);
+      }
+
+      setTimeout(function() {
+        vm.longPoll();
+      }, 20000);
+    },
+    loadNewActivities: async function() {
+      let vm = this;
+
+      vm.numActivities = vm.numActivities + vm.numActivityBuffer;
+      vm.activityBuffer.forEach(function(item) {
+        vm.activities.push(item);
+      });
+
+      vm.activityBuffer = [];
+      vm.numActivityBuffer = 0;
+    },
     deleteActivity: async function(index) {
       console.log(index);
       let vm = this;
@@ -93,6 +131,7 @@ if (document.getElementById('gc-activity')) {
       loadingActivity: false,
       activityId: null,
       activityBuffer: [],
+      numActivityBuffer: 0,
     },
     mounted() {
       this.fetchActivity();

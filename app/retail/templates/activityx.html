@@ -39,7 +39,9 @@
       <div @scroll.passive="onScroll($event)" class="mh-100 overflow-auto" style="height: 100vh;" id="scrollArea">
         <div class="minihero row pt-0 pb-1 mr-0 ml-0 text-center" style="background-image: linear-gradient(to right, rgb(250, 250, 250), rgba(238, 238, 238, 0.933), rgb(255, 255, 255), rgba(221, 221, 221, 0.867));"><div class="col"><img src="/static/v2/images/new-logos/gc-h-pos.svg" width="600px" class="about-gc-logo mb-2"> <div class="w-100"></div> <h1 class="minihero__title">Activity Feed</h1></div></div>
         <div class="m-auto" style="width: 800px;">
-          <div v-for="(activity, index) in activities" :key="activity.pk" v-if="!activity.hidden">
+          <div ></div>
+          <button class="btn btn-block btn-link bg-lightpurple" v-if="numActivityBuffer" @click="loadNewActivities">[[numActivityBuffer]] New [[ 'Activit' | pluralize(numActivityBuffer, 'y', 'ies') ]] - Click to Load</button>
+          <div v-for="(activity, index) in sortedItems" :key="activity.pk" v-if="!activity.hidden">
 
             <activity-card :data="activity" :index="index" v-on:delete:activity="deleteActivity(index)"></activity-card>
           </div>
