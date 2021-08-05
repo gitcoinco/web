@@ -29,9 +29,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // make noprovider icon also open the menue.
   const noproviderIcon = document.getElementById('noproviderIcon');
 
-  noproviderIcon.addEventListener('click', () => {
-    walletProvider.classList.toggle('active');
-  });
+  if (noproviderIcon) {
+    noproviderIcon.addEventListener('click', () => {
+      walletProvider.classList.toggle('active');
+    });
+  }
 
 
   // inside the wallet menu i reused the .provider class

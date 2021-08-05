@@ -24,8 +24,10 @@ import hashlib
 import html
 import json
 import logging
+import random
 import re
 import time
+import urllib.parse
 import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -40,6 +42,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count, Q, Sum
+from django.forms import URLField
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -3436,7 +3439,6 @@ async def verify_user_duniter(request):
 
 
 def connect_google():
-    import urllib.parse
 
     return OAuth2Session(
         settings.GOOGLE_CLIENT_ID,
@@ -3695,7 +3697,6 @@ def disconnect_user_ens(request, handle):
 
 
 def connect_facebook():
-    import urllib.parse
 
     facebook = OAuth2Session (
         settings.FACEBOOK_CLIENT_ID,
@@ -5088,6 +5089,17 @@ def hackathon_save_project(request):
     video_url = request.POST.get('videodemo-url', '')
     categories = request.POST.getlist('categories[]')
     tech_stack = request.POST.getlist('tech-stack[]')
+    work_url = request.POST.get('work_url', '')
+
+    # validate the url
+    validator = URLField()
+    try:
+        validator.clean(work_url)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'msg': 'Please enter a valid URL for "Project Github Repository or Link to Pull Request"',
+        })
 
     if error_response and error_response['status'] != 400:
         return JsonResponse(error_response)
@@ -5106,7 +5118,7 @@ def hackathon_save_project(request):
         'logo': request.FILES.get('logo'),
         'bounty': bounty_obj,
         'summary': clean(request.POST.get('summary'), strip=True),
-        'work_url': clean(request.POST.get('work_url'), strip=True),
+        'work_url': clean(work_url, strip=True),
         'looking_members': looking_members,
         'message': '',
         'extra': {
@@ -5203,7 +5215,7 @@ def project_data(project_id):
             'status': project.status,
             'winner': project.winner,
             'looking_members': project.looking_members,
-            'work_url': project.work_url,
+            'work_url': urllib.parse.quote(re.sub(re.compile(r'^javascript:'), '', project.work_url), safe=':/'),
             'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(unidecode(project.name))]),
             'demo': {
                 'url': project.extra.get('video_url', None),
@@ -5255,6 +5267,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     comments = Activity.objects.filter(activity_type='wall_post', project=project).count()
     what = f'project:{project_id}'
+
     params = {
         'title': title,
         'card_desc': desc,
@@ -5272,7 +5285,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name='', tab=
             'status': project.status,
             'winner': project.winner,
             'looking_members': project.looking_members,
-            'work_url': project.work_url,
+            'work_url': urllib.parse.quote(re.sub(re.compile(r'^javascript:'), '', project.work_url), safe=':/'),
             'logo_url': project.logo.url if project.logo else '',
             'demo': {
                 'url': project.extra.get('video_url', None),
@@ -5415,29 +5428,53 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
-    if settings.DEBUG:
-        from perftools.management.commands import create_page_cache
-
-        create_page_cache.create_hackathon_list_page_cache()
-
+    sponsors = []
     events = get_hackathon_events()
-    num_current = len([ele for ele in events if ele['type'] == 'current'])
-    num_upcoming = len([ele for ele in events if ele['type'] == 'upcoming'])
-    num_finished = len([ele for ele in events if ele['type'] == 'finished'])
+
+    num_current = 0
+    num_upcoming = 0
+    num_finished = 0
+
+    # count the number of each event type
+    for ele in events:
+        if ele['type'] == 'current':
+            num_current += 1
+        elif ele['type'] == 'upcoming':
+            num_upcoming += 1
+        elif ele['type'] == 'finished':
+            num_finished += 1
+
+        # curate the sponsors list
+        if ele.get('sponsor_profiles'):
+            sponsors.extend(ele.get('sponsor_profiles'))
+
     tabs = [
         ('current', 'happening now', num_current),
         ('upcoming', 'upcoming', num_upcoming),
         ('finished', 'completed', num_finished),
     ]
 
+    # shuffle the sponsors
+    random.shuffle(sponsors)
+
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_hackathon-list.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
+        'types': ['current', 'upcoming', 'finished'],
         'events': events,
+        'sponsors': sponsors[:33],
         'default_tab': get_hackathons_page_default_tabs(),
+        'testimonial': {
+            'handle': '@cryptomental',
+            'comment': "I think the great thing about Gitcoin is how easy it is for projects to reach out to worldwide talent. Gitcoin helps to find people who have time to contribute and increase speed of project development. Thanks to Gitcoin a bunch of interesting OpenSource projects got my attention!",
+            'avatar_url': '',
+            'github_handle': 'cryptomental',
+            'twitter_handle': '',
+            'role': 'Front End Developer'
+        }
     }
 
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
@@ -6295,7 +6332,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext'] and not fulfiller_address:
+    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext'] and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6412,8 +6449,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6479,7 +6516,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6489,6 +6526,32 @@ def payout_bounty_v1(request, fulfillment_id):
         'message': 'bounty payment recorded. verification pending',
         'fulfillment_id': fulfillment_id
     }
+
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@require_POST
+def reverse_proxy_rpc_v1(request, tenant):
+    '''
+        Proxy payout transaction to external node to bypass CORS restriction on browser.
+    '''
+
+    if tenant.upper() == 'CASPER':
+        # casper
+        url = 'http://3.142.224.108:7777/rpc'
+    else:
+        return JsonResponse({'error': 'invalid tenant'}, status=400)
+
+    data = json.loads(request.body)
+
+    try:
+        response = requests.post(url, json=data).json()
+
+        if response.get("error", False):
+            return JsonResponse({'error': response["error"]}, status=422)
+    except Exception:
+        return JsonResponse({'error': 'something went wrong!'}, status=422)
 
     return JsonResponse(response)
 

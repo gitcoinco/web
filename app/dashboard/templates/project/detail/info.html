@@ -32,7 +32,7 @@
             <div class="ml-md-3">
               <a class="text-decoration-none" :href="project.url"><h1 class="project-title mb-2 font-weight-bold" v-html="project.name"></h1></a>
               <div class="d-flex align-items-baseline">
-                <i class="fab fa-github mr-2"></i> <a class="project__url link-white font-body" :href="project.work_url">[[project.work_url]]</a>
+                <i class="fab fa-github mr-2"></i> <a class="project__url link-white font-body" :href="project.work_url">[[decodeURIComponent(project.work_url)]]</a>
               </div>
               <div class="mt-3 project__actions">
                 <button class="btn btn-link btn-sm text-white p-0 m-0" @click="tabChange(1)"><i class="fas fa-comment mr-1"></i> [[ project.comments || 0 ]] Comment[[ project.comments > 1 ? 's' : '' ]]</button>

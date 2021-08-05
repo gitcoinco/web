@@ -148,14 +148,15 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
         profile.organizations = [ele.login for ele in orgs if ele] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
-        for repo in get_user(handle).get_repos():
-            language = repo.language or ''
-            _keywords = language.split(',')
-            for key in _keywords:
-                if key != '' and key not in keywords:
-                    keywords.append(key)
+        if get_user(handle):
+            for repo in get_user(handle).get_repos():
+                language = repo.language or ''
+                _keywords = language.split(',')
+                for key in _keywords:
+                    if key != '' and key not in keywords:
+                        keywords.append(key)
 
-        profile.keywords = keywords
+            profile.keywords = keywords
         profile.save()
     except UserSocialAuth.DoesNotExist:
         pass
