@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='matchpledge',
             name='end_date',
-            field=models.DateTimeField(default=grants.models.next_month),
+            field=models.DateTimeField(default=grants.models.match_pledge.next_month),
         ),
     ]
