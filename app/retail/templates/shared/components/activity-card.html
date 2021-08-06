@@ -19,7 +19,7 @@
 {% load humanize i18n static grants_extra slug %}
 <!-- TEMPLATE like-button -->
 <script type="text/x-template" id="like-button">
-  <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': data.viewer_reactions.like}" @click="likeActivity"><i class="far fa-heart" :class="data.viewer_reactions.like ? 'fas' : 'far'"></i> [[data.likes_count]]</button>
+  <button class="btn btn-sm" :class="{'animate-sparkle text-highlight-pink': data.viewer_reactions?.like}" @click="likeActivity"><i class="far fa-heart" :class="data.viewer_reactions?.like ? 'fas' : 'far'"></i> [[data.likes_count]]</button>
 </script>
 
 <!-- TEMPLATE activity-comment -->
@@ -123,8 +123,8 @@
               <copy-clipboard class="dropdown-item" :string="linkSingle"><i class="fas fa-fw fa-link mr-2"></i> Copy link</copy-clipboard>
             </li>
             <!-- <b-dropdown-item href="#"><i class="fas fa-fw fa-link mr-2"></i> Copy link</b-dropdown-item> -->
-            <b-dropdown-item href="#" @click="favActivity(data.pk)"><i class="far fa-fw fa-star mr-2" :class="{'fas': data.viewer_reactions.favorite}"></i> Favorite</b-dropdown-item>
-            <b-dropdown-item href="#" @click="flagActivity(data.pk)"><i class="far fa-fw fa-flag mr-2" :class="{'fas': data.viewer_reactions.flag}"></i> Report</b-dropdown-item>
+            <b-dropdown-item href="#" @click="favActivity(data.pk)"><i class="far fa-fw fa-star mr-2" :class="{'fas': data.viewer_reactions?.favorite}"></i> Favorite</b-dropdown-item>
+            <b-dropdown-item href="#" @click="flagActivity(data.pk)"><i class="far fa-fw fa-flag mr-2" :class="{'fas': data.viewer_reactions?.flag}"></i> Report</b-dropdown-item>
             <b-dropdown-item href="#" v-if="data.is_owner" @click="deleteActivity(data.pk)"><i class="fas fa-fw fa-trash mr-2"></i> Delete</b-dropdown-item>
           </b-dropdown>
 
