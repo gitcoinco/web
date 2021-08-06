@@ -113,7 +113,7 @@ class KudosTokenSerializer(FlexFieldsModelSerializer):
                   'override_display_name', 'description', 'img_url',
                   'image', 'rarity', 'tags', 'artist', 'platform',
                   'external_url',  'background_color', 'owner_address',
-                  'txid', 'token_id', 'hidden', 'ui_name', 'from_username',
+                  'txid', 'token_id', 'hidden', 'ui_name',
                   'send_enabled_for_non_gitcoin_admins', 'preview_img_url',
                   'preview_img_mode', 'suppress_sync', 'kudos_token_cloned_from')
 
@@ -214,8 +214,8 @@ class ActivitySerializer(FlexFieldsModelSerializer):
                 'dashboard.serializers.KudosTokenSerializer',
                 {
                     'fields': [
-                        'id', 'artist', 'url', 'ui_name', 'from_username', 'preview_img_url',
-                        'description', 'img_url'
+                        'id', 'artist', 'url', 'ui_name', 'preview_img_url', 'description',
+                        'img_url'
                     ]
                 }
             ),
