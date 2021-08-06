@@ -57,3 +57,7 @@ src/
 _build/
 **/.vs
 **/dist/*
+
+# cypress, ignore screenshots and videos
+cypress/videos/
+cypress/screenshots/
