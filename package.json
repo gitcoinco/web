@@ -29,6 +29,7 @@
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.4",
     "cypress": "^8.2.0",
+    "cypress-metamask": "^1.0.5-development",
     "eslint": "^7.14.0",
     "file-loader": "^6.2.0",
     "filemanager-webpack-plugin": "^4.0.0",
