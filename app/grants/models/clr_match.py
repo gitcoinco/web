@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from economy.models import SuperModel
 
 
-
 class CLRMatch(SuperModel):
     """Define the structure of a CLR Match amount."""
 
