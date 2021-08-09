@@ -10,7 +10,7 @@
     "stylelint:fix": "stylelint --fix './app/assets/v2/scss/**/**/*.scss'",
     "build": "webpack --mode production --progress",
     "webpack": "webpack --mode development --progress --watch",
-    "cypress:run": "./node_modules/.bin/cypress run --headless -b chromium"
+    "cypress:run": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 ./node_modules/.bin/cypress run -b chrome"
   },
   "repository": {
     "type": "git",
