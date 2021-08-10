@@ -554,7 +554,7 @@ def post_issue_comment(owner, repo, issue_num, comment):
     gh_client = github_connect()
     try:
         repo = gh_client.get_repo(f'{owner}/{repo}')
-        issue_comment = repo.get_issue(issue_num).create_comment(comment)
+        issue_comment = repo.get_issue(int(issue_num)).create_comment(comment)
         return issue_comment
     except GithubException as e:
         logger.error(e)
