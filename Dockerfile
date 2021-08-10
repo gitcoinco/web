@@ -6,8 +6,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip inkscape libmagic-dev"
 ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
-ARG CYPRESS_DEPS="libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb chromium-browser"
-WORKDIR /code
+ARG CHROME_DEPS="fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcairo2 libcups2 libcurl3-gnutls libdrm2 libexpat1 libgbm1 libglib2.0-0 libnspr4 libgtk-3-0 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 libxdamage1 libxext6 libxfixes3 libxkbcommon0 libxrandr2 libxshmfence1 xdg-utils"
+ARG CYPRESS_DEPS="libgtk2.0-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libxtst6 xauth xvfb"
 
 # Inkscape
 RUN apt-get update
@@ -19,14 +19,24 @@ RUN apt-get update
 RUN apt-get install -y $PACKAGES
 RUN apt-get update
 RUN apt-get install -y $BUILD_DEPS
+
+# Install google chrome for cypress testing
+WORKDIR /usr/src
+RUN apt-get update && apt-get install -y wget
+RUN wget "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+RUN apt-get install -y $CHROME_DEPS
+RUN dpkg -i google-chrome-stable_current_amd64.deb
+
+# Install cypress dependencies
 RUN apt-get install -y $CYPRESS_DEPS
 
-RUN apt-get install -y wget
 RUN apt-get install -y libsodium-dev
 
 RUN add-apt-repository universe
 RUN apt-get update
 RUN apt-get install -y python3-pip
+
+WORKDIR /code
 
 COPY dist/* ./
 
