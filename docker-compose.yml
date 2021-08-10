@@ -63,6 +63,7 @@ services:
       - "3030:3030"
       - "8001:8001"
       - "35729:35729"
+      - "9222:9222"
     depends_on:
       - db
     stdin_open: true
@@ -79,7 +80,7 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+    command: '-a 10 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
     deploy:
       replicas: 1
       resources:

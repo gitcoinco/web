@@ -74,9 +74,6 @@ load_initial_data: ## Load initial development fixtures.
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
-cypress: ## Open cypress testing UI
-	@npx cypress open
-
 pytest: ## Run pytest (Backend)
 	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
 
@@ -87,6 +84,14 @@ stylelint: ## Run stylelint against the project directory. Requires node, npm, a
 	@npm run stylelint
 
 tests: pytest eslint stylelint ## Run the full test suite.
+
+.PHONY: cypress-run
+cypress-run: ## Run the cypress tests
+	@docker-compose exec web yarn cypress:run
+
+.PHONY: cypress
+cypress: ## Open cypress testing UI
+	@npx cypress open
 
 migrate: ## Migrate the database schema with the latest unapplied migrations.
 	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py migrate

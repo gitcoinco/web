@@ -70,6 +70,7 @@ RUN apt-get install -y yarn
 RUN yarn global add n
 RUN n stable
 
+EXPOSE 9222
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/bin/docker-command.bash"]
 
