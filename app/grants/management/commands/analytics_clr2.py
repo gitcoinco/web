@@ -44,11 +44,8 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
     initial_query = get_contribs_query(clr_round.start_date, clr_round.end_date, network) + get_summed_contribs_query(clr_round)
     # open cursor and execute the groupBy sum for the round
     with connection.cursor() as cursor:
+        # execute to populate shared state for the round
         cursor.execute(initial_query)
-        for _row in cursor.fetchall():
-            profile = Profile.objects.get(pk=_row[1])
-            cursor.execute(f"UPDATE tempUserTotals SET trust_bonus = '{profile.trust_bonus}' WHERE user_id = {_row[1]}")
-
         # calculate clr analytics output
         for grant in grants:
             clr_amount, _, num_contribs, contrib_amount = calculate_clr_for_donation(

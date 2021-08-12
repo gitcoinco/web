@@ -66,16 +66,15 @@ def get_summed_contribs_query(clr_round):
             contributions.normalized_data ->> 'id' as grant_id, 
             contributions.profile_for_clr_id as user_id, 
             SUM((contributions.normalized_data ->> 'amount_per_period_usdt')::FLOAT * {float(clr_round.contribution_multiplier)}),
-            CAST(NULL as DECIMAL) as trust_bonus
+            MAX(dashboard_profile.as_dict ->> 'trust_bonus')::FLOAT as trust_bonus
         INTO TEMP TABLE tempUserTotals
         FROM contributions 
+        LEFT JOIN dashboard_profile 
+        ON (contributions.profile_for_clr_id = dashboard_profile.id)
         GROUP BY contributions.normalized_data ->> 'id', contributions.profile_for_clr_id;
 
         -- index before joining in clr_query
         CREATE INDEX ON tempUserTotals (grant_id, user_id);
-
-        -- return the data here so that we can populate the trust_bonus
-        SELECT * FROM tempUserTotals;
     '''
     return summedContribs
 
@@ -85,7 +84,7 @@ def add_prediction_contrib_query(grant_id, amount):
         -- delete any previous predicition values from the contributions table
         DELETE FROM tempUserTotals WHERE user_id = 999999999;
 
-        -- insert the prediction value into contributions
+        -- insert the prediction value into contributions (grant_id, user_id, amount, trust_bounu)
         {"INSERT INTO tempUserTotals VALUES(" + str(grant_id) + ", 999999999, " + str(amount) + ", 1)" if amount != 0 else ""};
     '''
     return predictionContrib
@@ -227,12 +226,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     initial_query = get_contribs_query(clr_round.start_date, clr_round.end_date, network) + get_summed_contribs_query(clr_round)
     # open cursor and execute the groupBy sum for the round
     with connection.cursor() as cursor:
-        # all of these rounds will be running at the same time - does it make sense to keep this table between calls?
-        # we could stand it up and drop it in estimate_clr.py?
-        cursor.execute(initial_query)
-        for _row in cursor.fetchall():
-            profile = Profile.objects.get(pk=_row[1])
-            cursor.execute(f"UPDATE tempUserTotals SET trust_bonus = '{profile.trust_bonus}' WHERE user_id = {_row[1]}")
+        # execute to populate shared state for the round 
+        cursor.execute(initial_query) # (we could potential do better here by sharing this temp table between rounds)
 
         if what == 'slim':
             # if we are only calculating slim CLR calculations, return here and save 97% compute power
