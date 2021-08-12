@@ -96,7 +96,9 @@ def preprocess(request):
             session_key = request.session._session_key
             utm = _get_utm_from_cookie(request)
             # record the visit as a celery task
-            record_visit.delay(request.user.pk, profile.pk, ip_address, visitorId, useragent, referrer, path, session_key, utm)
+            record_visit.delay(
+                request.user.pk, profile.pk, ip_address, visitorId, useragent, referrer, path, session_key, utm
+            )
 
         if should_record_join:
             # record the joined action as a celery task

@@ -1,8 +1,7 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
-
-from django.utils.translation import gettext_lazy as _
 
 
 class GrantCategory(SuperModel):

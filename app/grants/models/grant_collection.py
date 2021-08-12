@@ -1,17 +1,16 @@
 import traceback
-
 from io import BytesIO
 
-from django.db import models
-from django.db.models import Q
 from django.contrib.postgres.fields import JSONField
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import models
+from django.db.models import Q
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
-from grants.utils import get_upload_filename, generate_collection_thumbnail
+from grants.utils import generate_collection_thumbnail, get_upload_filename
 
 
 class CollectionsQuerySet(models.QuerySet):

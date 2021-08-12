@@ -1,10 +1,10 @@
-from datetime import timedelta 
+from datetime import timedelta
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.utils.timezone import localtime
-from django.contrib.postgres.fields import JSONField
+from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
 

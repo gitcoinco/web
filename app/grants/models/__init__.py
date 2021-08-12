@@ -34,6 +34,3 @@ from .grant_type import GrantType
 from .match_pledge import MatchPledge
 from .phantom_funding import PhantomFunding
 from .subscription import Subscription
-
-
-

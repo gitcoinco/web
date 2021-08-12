@@ -395,13 +395,7 @@ def notion_write(database_id='', payload=None):
     # write to the pages api (https://developers.notion.com/reference/post-page)
     url = "https://api.notion.com/v1/pages"
     # define the parent (database) that we're writing to and set the properties (row content)
-    body = {
-        "parent": {
-            "type": "database_id",
-            "database_id": database_id
-        },
-        "properties": payload
-    }
+    body = {"parent": {"type": "database_id", "database_id": database_id}, "properties": payload}
 
     # return success as dict
     return notion_api_call(url, body)
