@@ -30,7 +30,7 @@ from grants.views import (
     grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
     grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
     manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
-    toggle_grant_favorite, verify_grant,
+    toggle_grant_favorite, verify_grant, get_trust_bonus
 )
 
 app_name = 'grants/'
@@ -99,6 +99,7 @@ urlpatterns = [
     path('v1/api/grant/<int:grant_id>/cancel', cancel_grant_v1, name='cancel_grant_v1'),
 
 
+    path('v1/api/trust-bonus', get_trust_bonus, name='get_trust_bonus'),
     path('v1/api/<int:grant_id>/cart_payload', get_grant_payload, name='grant_payload'),
     path('v1/api/<int:grant_id>/verify', verify_grant, name='verify_grant'),
     path('v1/api/collections/new', save_collection, name='create_collection'),
