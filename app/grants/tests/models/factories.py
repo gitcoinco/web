@@ -7,3 +7,6 @@ class GrantTypeFactory(factory.django.DjangoModelFactory):
         model = GrantType
 
     name = "TestGrantType"
+    label = "TestLabel"
+    is_active = True
+    is_visible = True
