@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel

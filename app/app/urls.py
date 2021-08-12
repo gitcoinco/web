@@ -155,9 +155,21 @@ urlpatterns = [
     ),
 
     # verification services
-    url(r'^api/v0.1/profile/(?P<handle>.*)/request_user_sms/?$', dashboard.views.send_verification, name='request_verification'),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_sms/?$', dashboard.views.validate_verification, name='request_verification'),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_sms/?$', dashboard.views.disconnect_sms, name='disconnect_sms'),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/request_user_sms/?$',
+        dashboard.views.send_verification,
+        name='request_verification'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_sms/?$',
+        dashboard.views.validate_verification,
+        name='request_verification'
+    ),
+    url(
+        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_sms/?$',
+        dashboard.views.disconnect_sms,
+        name='disconnect_sms'
+    ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/start_session_idena',
         dashboard.views.start_session_idena,
@@ -188,19 +200,26 @@ urlpatterns = [
         r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
     ),
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_poap', dashboard.views.disconnect_user_poap, name='disconnect_user_poap'
+        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_poap',
+        dashboard.views.disconnect_user_poap,
+        name='disconnect_user_poap'
     ),
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_brightid', dashboard.views.verify_user_brightid, name='verify_user_brightid'
+        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_brightid',
+        dashboard.views.verify_user_brightid,
+        name='verify_user_brightid'
     ),
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_brightid', dashboard.views.disconnect_user_brightid, name='disconnect_user_brightid'
+        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_brightid',
+        dashboard.views.disconnect_user_brightid,
+        name='disconnect_user_brightid'
     ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poh', dashboard.views.verify_user_poh, name='verify_user_poh',
+        ),
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poh', dashboard.views.verify_user_poh, name='verify_user_poh',
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_poh', dashboard.views.disconnect_user_poh, name='disconnect_user_poh'
+        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_poh',
+        dashboard.views.disconnect_user_poh,
+        name='disconnect_user_poh'
     ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
@@ -224,11 +243,11 @@ urlpatterns = [
         dashboard.views.disconnect_user_facebook,
         name='disconnect_user_facebook'
     ),
+    url(r'api/v0.1/profile/(?P<handle>.*)/verify_user_ens', dashboard.views.verify_user_ens, name='verify_user_ens'),
     url(
-        r'api/v0.1/profile/(?P<handle>.*)/verify_user_ens', dashboard.views.verify_user_ens, name='verify_user_ens'
-    ),
-    url(
-        r'api/v0.1/profile/(?P<handle>.*)/disconnect_user_ens', dashboard.views.disconnect_user_ens, name='disconnect_user_ens'
+        r'api/v0.1/profile/(?P<handle>.*)/disconnect_user_ens',
+        dashboard.views.disconnect_user_ens,
+        name='disconnect_user_ens'
     ),
     # url(
     #     r'^api/v0.1/profile/verify_user_duniter',
@@ -297,7 +316,6 @@ urlpatterns = [
         name='funder_dashboard_bounty_info'
     ),
 
-
     # quests
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
     re_path(r'^quests/next?$', quests.views.next_quest, name='next_quest'),
@@ -314,7 +332,6 @@ urlpatterns = [
     path(
         'contributor_dashboard/<str:bounty_type>/', dashboard.views.contributor_dashboard, name='contributor_dashboard'
     ),
-
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # Hackathons / special events
@@ -599,7 +616,6 @@ urlpatterns = [
     re_path(r'^web3/?$', retail.views.web3, name='web3'),
     re_path(r'^support/?$', retail.views.support, name='support'),
 
-
     # increase funding limit
     re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
 
@@ -764,7 +780,7 @@ urlpatterns = [
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
 
     # docs
-    re_path(r'^_administration/docs/',include('django.contrib.admindocs.urls')),
+    re_path(r'^_administration/docs/', include('django.contrib.admindocs.urls')),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -846,7 +862,6 @@ urlpatterns = [
     url(r'^api/v0.1/users_csv/', dashboard.views.output_users_to_csv, name='users_csv'),
     url(r'^api/v0.1/bounty_mentor/', dashboard.views.bounty_mentor, name='bounty_mentor'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
-
 ]
 
 if settings.ENABLE_SILK:

@@ -1,28 +1,26 @@
 import json
 
-from django.db import models
-from django.db.models import Q
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core import serializers
-from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.db import models
+from django.db.models import Q
 from django.templatetags.static import static
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
-
 from economy.models import SuperModel
+from grants.utils import get_upload_filename, is_grant_team_member
+from townsquare.models import Favorite
+from web3 import Web3
 
-from .subscription import Subscription
 from .contribution import Contribution
 from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
+from .subscription import Subscription
 
-from grants.utils import get_upload_filename, is_grant_team_member
-
-from townsquare.models import Favorite
-from web3 import Web3
 
 class GrantCLR(SuperModel):
 
@@ -895,5 +893,3 @@ class Grant(SuperModel):
             self.modified_on = get_time()
 
         return super(Grant, self).save(*args, **kwargs)
-
-
