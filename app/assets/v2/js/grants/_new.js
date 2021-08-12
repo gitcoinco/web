@@ -134,8 +134,8 @@ Vue.mixin({
       if (!vm.form.grant_type) {
         vm.$set(vm.errors, 'grant_type', 'Please select the grant category');
       }
-      if (!vm.form.grant_categories.length > 0) {
-        vm.$set(vm.errors, 'grant_categories', 'Please one or more grant subcategory');
+      if (!vm.form.grant_tags.length > 0) {
+        vm.$set(vm.errors, 'grant_tags', 'Please select one or more grant tag');
       }
       if (vm.form.description_rich.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
@@ -184,7 +184,7 @@ Vue.mixin({
         'rsk_payout_address': form.rsk_payout_address,
         'algorand_payout_address': form.algorand_payout_address,
         'grant_type': form.grant_type,
-        'categories[]': form.grant_categories,
+        'tags[]': form.grant_tags,
         'network': form.network,
         'region': form.region,
         'has_external_funding': form.has_external_funding
@@ -246,13 +246,6 @@ Vue.mixin({
           console.error(`error: grant creation failed with msg ${err}`);
         }
       });
-    },
-    type_to_category_mapping: function() {
-      let vm = this;
-
-      let grant_type = this.grant_types.filter(grant_type => grant_type.name == vm.form.grant_type);
-
-      return grant_type[0].categories;
     },
     onFileChange(e) {
       let vm = this;
@@ -368,7 +361,7 @@ if (document.getElementById('gc-new-grant')) {
           rsk_payout_address: '',
           algorand_payout_address: '',
           grant_type: '',
-          grant_categories: [],
+          grant_tags: [],
           network: 'mainnet'
         },
         editorOptionPrio: {
@@ -435,7 +428,7 @@ if (document.getElementById('gc-new-grant')) {
         'eth_payout_address',
         'grant_type',
         'team_members',
-        'grant_categories'
+        'grant_tags'
       ];
 
       for (const key of writeToRoot) {

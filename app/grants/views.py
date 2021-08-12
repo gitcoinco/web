@@ -33,11 +33,13 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
+from django.contrib.postgres.search import SearchQuery
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.template import response
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
@@ -67,8 +69,8 @@ from economy.models import Token as FTokens
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from grants.models import (
-    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCollection, GrantType, MatchPledge, Subscription,
+    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
+    GrantTag, GrantType, MatchPledge, Subscription,
 )
 from grants.tasks import (
     process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write, update_grant_metadata,
@@ -93,6 +95,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
+grant_tenants = ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND']
 
 def get_keywords():
     """Get all Keywords."""
@@ -370,7 +373,7 @@ def bulk_grants_for_cart(request):
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
-    category = request.GET.get('category', '')
+    grant_tag = request.GET.get('grant_tag', '')
     idle_grants = request.GET.get('idle', '') == 'true'
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
@@ -388,14 +391,14 @@ def bulk_grants_for_cart(request):
         'network': network,
         'keyword': keyword,
         'state': state,
-        'category': category,
+        'grant_tag': grant_tag,
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
         'clr_round': clr_round,
         'omit_my_grants': True
     }
-    _grants = build_grants_by_type(**filters)
+    _grants = get_grants_by_filters(**filters)
     grants = []
 
     for grant in _grants:
@@ -441,17 +444,17 @@ def get_interrupted_contributions(request):
 
 def get_grants(request):
     grants = []
-    _grants = None
+    collections = []
     paginator = None
-    grant_type = request.GET.get('type', 'all')
 
+    # 1. fetch all query params
+    grant_type = request.GET.get('type', 'all')
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    collections_page = request.GET.get('collections_page', 1)
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
-    category = request.GET.get('category', '')
+    grant_tag = request.GET.get('grant_tag', '')
     idle_grants = request.GET.get('idle', '') == 'true'
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
@@ -461,7 +464,9 @@ def get_grants(request):
     sub_round_slug = request.GET.get('sub_round_slug', '')
     customer_name = request.GET.get('customer_name', '')
     sort = request.GET.get('sort_option', 'weighted_shuffle')
+    tenants = request.GET.get('tenants', '')
 
+    # 2. Fetch GrantCLR if round_num is present
     clr_round = None
     try:
         if round_num:
@@ -474,6 +479,7 @@ def get_grants(request):
     except GrantCLR.DoesNotExist:
         pass
 
+    # 3. Populate filters to fetch grants
     filters = {
         'request': request,
         'grant_type': grant_type,
@@ -481,21 +487,25 @@ def get_grants(request):
         'network': network,
         'keyword': keyword,
         'state': state,
-        'category': category,
+        'grant_tag': grant_tag,
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
-        'clr_round': clr_round
+        'clr_round': clr_round,
+        'tenants': tenants
     }
+    _grants = get_grants_by_filters(**filters)
 
     if grant_type == 'collections':
-        _grants = build_grants_by_type(**filters)
-
-        _collections = get_collections(request.user, keyword, collection_id=collection_id,
-                                       following=following, idle_grants=idle_grants,
-                                       only_contributions=only_contributions, featured=featured)
+        # 4.1 Fetch grants by collection
+        _collections = get_collections(
+            request.user, keyword, collection_id=collection_id,
+            following=following, idle_grants=idle_grants,
+            only_contributions=only_contributions, featured=featured
+        )
 
         if collection_id:
+            # 4.2 Fetch grants within a collection
             collection = _collections.first()
             if collection:
                 paginator = Paginator(collection.grants.all(), 5)
@@ -505,11 +515,7 @@ def get_grants(request):
             paginator = Paginator(_collections, limit)
             collections = paginator.get_page(page)
     else:
-        _grants = build_grants_by_type(**filters)
-        collections = []
-        # disabling collections on the main grant page to improve performance
-        # collections = GrantCollection.objects.filter(grants__in=Subquery(_grants.values('id'))).distinct()[:3].cache(timeout=60)
-
+        # 4.1 Paginate results
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
 
@@ -534,6 +540,7 @@ def get_grants(request):
 
             contributions_by_grant[grant_id] = group
 
+    # Clean up before sending response
     grants_array = []
     for grant in grants:
         grant_json = grant.repr(request.user, request.build_absolute_uri)
@@ -556,7 +563,7 @@ def get_grants(request):
     return JsonResponse({
         'grant_types': get_grant_clr_types(clr_round, _grants, network) if clr_round and _grants else get_grant_type_cache(network),
         'current_type': grant_type,
-        'category': category,
+        'grant_tag': grant_tag,
         'grants': grants_array,
         'collections': [collection.to_json_dict(request.build_absolute_uri) for collection in collections],
         'credentials': {
@@ -570,80 +577,103 @@ def get_grants(request):
     })
 
 
-def build_grants_by_type(
+def get_grants_by_filters(
     request,
     grant_type='',
     sort='weighted_shuffle',
     network='mainnet',
     keyword='',
     state='active',
-    category='',
+    grant_tag='',
     following=False,
     idle_grants=False,
     only_contributions=False,
     omit_my_grants=False,
-    clr_round=None
+    clr_round=None,
+    tenants=''
 ):
-    print(" " + str(round(time.time(), 2)))
 
     sort_by_clr_pledge_matching_amount = None
     profile = request.user.profile if request.user.is_authenticated else None
     three_months_ago = timezone.now() - timezone.timedelta(days=90)
+
+    # 1. Filter grants by network and hidden = false
     _grants = Grant.objects.filter(network=network, hidden=False)
 
+    # 2. Filter grants belonging to a CLR round
     if clr_round:
         if clr_round.collection_filters:
             grant_ids = GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True)
             _grants = _grants.filter(pk__in=grant_ids)
 
         _grants = _grants.filter(**clr_round.grant_filters)
-    if 'match_pledge_amount_' in sort:
-        sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
-    if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
-        grant_type_obj = GrantType.objects.filter(name=grant_type).first()
-        is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
-        if is_there_a_clr_round_active_for_this_grant_type_now:
-            _grants = _grants.filter(is_clr_active=True)
 
     if profile:
         if omit_my_grants:
+            # 3. Exclude grants created by user
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
                         list(profile.grant_admin.all().values_list('pk', flat=True))
             _grants = _grants.exclude(id__in=grants_id)
         elif grant_type == 'me':
+            # 4. Filter grants created by user
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
                         list(profile.grant_admin.all().values_list('pk', flat=True))
             _grants = _grants.filter(id__in=grants_id)
         elif only_contributions:
+            # 5. Filter grants to which the user has contributed to
             contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
             _grants = _grants.filter(id__in=Subquery(contributions))
 
-    print(" " + str(round(time.time(), 2)))
-    _grants = _grants.keyword(keyword).order_by(sort, 'pk')
-    _grants.first()
+    if keyword:
+        # 6. Filter grants having matching title & description
+        query = SearchQuery(keyword)
+        _grants = _grants.filter(vector_column=query)
 
     if not idle_grants:
+        # 7. Filter grants which are stale (last update was > 3 months )
         _grants = _grants.filter(last_update__gt=three_months_ago)
 
     if state == 'active':
+        # 8. Filter grants which are active
         _grants = _grants.active()
 
-    if grant_type != 'all' and grant_type != 'me' and grant_type != 'collections':
+    if grant_type not in ['all', 'me', 'collectiions']:
+        # 9. Filter grants by GrantType
         _grants = _grants.filter(grant_type__name=grant_type)
 
     if following and request.user.is_authenticated:
+        # 10. Filter grants having matching title & description
         favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
         _grants = _grants.filter(id__in=Subquery(favorite_grants))
 
-    clr_prediction_curve_schema_map = {10**x: x+1 for x in range(0, 5)}
-    if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
-        sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
-        field_name = f'clr_prediction_curve__{sort_by_index}__2'
-        _grants = _grants.order_by(f"-{field_name}")
+    if grant_tag:
+        # 11. Filter grants by tag
+        _grants = _grants.filter(Q(tags__name__icontains=grant_tag))
 
-    print(" " + str(round(time.time(), 2)))
-    if category:
-        _grants = _grants.filter(Q(categories__category__icontains=category))
+    if tenants:
+        # 12. Filter grants by tenant
+        for tenant in tenants.split(','):
+            if tenant in tenants:
+                tenant = tenant.lower()
+                tenant_filter = tenant + '_payout_address' if tenant != 'eth' else 'admin_address'
+                _grants = _grants.exclude(Q(**{tenant_filter: '0x0'}))
+
+
+    # 13. Sort filtered grants
+    if 'match_pledge_amount_' in sort:
+        sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
+        clr_prediction_curve_schema_map = {10**x: x+1 for x in range(0, 5)}
+        if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
+            sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
+            field_name = f'clr_prediction_curve__{sort_by_index}__2'
+            _grants = _grants.order_by(f"-{field_name}")
+    elif sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
+        grant_type_obj = GrantType.objects.filter(name=grant_type).first()
+        is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
+        if is_there_a_clr_round_active_for_this_grant_type_now:
+            # 3.1 Filter grants to show grants currently active in a CLR
+            _grants = _grants.filter(is_clr_active=True)
+
 
     _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
 
@@ -682,14 +712,6 @@ def get_grant_types(network, filtered_grants=None):
 
     grant_types = sorted(grant_types, key=lambda x: x['funding'], reverse=True)
 
-    for grant_type in grant_types:
-        _keyword = grant_type['keyword']
-        grant_type['sub_categories'] = [{
-            'label': _tuple[0],
-            'count': get_category_size(grant_type, _tuple[0]),
-            # TODO: add in 'funding'
-            } for _tuple in basic_grant_categories(_keyword)]
-
     return grant_types
 
 
@@ -723,17 +745,6 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
             'funding': int(_grant_type.active_clrs_sum),
             'funding_ui': f"${round(int(_grant_type.active_clrs_sum)/1000)}k",
         })
-
-    for grant_type in grant_types: # TODO : Tweak to get only needed categories
-        _keyword = grant_type['keyword']
-        grant_type['sub_categories'] = [{
-            'label': _tuple[0],
-            'count': get_category_size(grant_type, _tuple[0]),
-            } for _tuple in basic_grant_categories(_keyword)]
-        # force the count to represent all matching sub_categories (for clr results)
-        grant_type['count'] = 0
-        for sub_category in grant_type['sub_categories']:
-            grant_type['count'] += sub_category['count']
 
     return grant_types
 
@@ -871,7 +882,6 @@ def grants_by_grant_type(request, grant_type):
     for partner in current_partners:
         current_partners_fund += partner.amount
 
-    categories = [_category[0] for _category in basic_grant_categories(grant_type)]
     grant_types = get_grant_type_cache(network)
 
     try:
@@ -997,8 +1007,21 @@ def grants_by_grant_type(request, grant_type):
 
 
     response = TemplateResponse(request, 'grants/index.html', params)
-    response['X-Frame-Options'] = 'SAMEORIGIN'
+    response['X-Frame-Optionswh'] = 'SAMEORIGIN'
     return response
+
+
+def get_grant_tags(request):
+    """Fetch matching grants tags"""
+
+    tag_phrase = request.GET.get('q', '')
+    tags = GrantTag.objects.filter(name__icontains=tag_phrase).values_list('name', flat=True)
+
+    response = {
+       'status': 200,
+        'grant_tags': list(tags)
+    }
+    return JsonResponse(response)
 
 
 def grants_type_redirect(request, grant_type):
@@ -1017,7 +1040,7 @@ def grants_by_grant_clr(request, clr_round):
     sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
-    category = request.GET.get('category', '')
+    grant_tag = request.GET.get('grant_tag', '')
     only_contributions = request.GET.get('only_contributions', '') == 'true'
 
     if keyword:
@@ -1033,13 +1056,13 @@ def grants_by_grant_clr(request, clr_round):
             'network': network,
             'keyword': keyword,
             'state': 'active',
-            'category': category,
+            'grant_tag': grant_tag,
             'idle_grants': True,
             'only_contributions': only_contributions,
             'clr_round': clr_round
         }
 
-        _grants = build_grants_by_type(**filters)
+        _grants = get_grants_by_filters(**filters)
     except Exception as e:
         print(e)
         return redirect('/grants')
@@ -1563,7 +1586,7 @@ def grant_edit(request, grant_id):
             kusama_payout_address == '0x0' and
             harmony_payout_address == '0x0' and
             binance_payout_address == '0x0' and
-            rsk_payout_address == '0x0' and 
+            rsk_payout_address == '0x0' and
             algorand_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
@@ -1842,14 +1865,14 @@ def grant_new(request):
 
         grant.team_members.add(*team_members)
 
-        form_category_ids = request.POST.getlist('categories[]')
-        form_category_ids = (form_category_ids[0].split(','))
-        form_category_ids = list(set(form_category_ids))
+        tag_ids = request.POST.getlist('tags[]')
+        tag_ids = (tag_ids[0].split(','))
+        tag_ids = list(set(tag_ids))
 
-        for category_id in form_category_ids:
+        for tag_id in tag_ids:
             try:
-                grant_category = GrantCategory.objects.get(pk=category_id)
-                grant.categories.add(grant_category)
+                tag = GrantTag.objects.get(pk=tag_id)
+                grant.tags.add(tag)
             except Exception as e:
                 pass
 
@@ -1886,34 +1909,15 @@ def grant_new(request):
 
     grant_types = []
     for g_type in GrantType.objects.filter(is_active=True):
-        grant_categories = []
-            # project_pk = request.POST.get('project_pk', None)
-            # if project_pk:
-            #     HackathonProject.objects.filter(pk=project_pk).update(grant_obj=grant)
-
-        for g_category in g_type.categories.all():
-            grant_categories.append({
-                'id': g_category.pk,
-                'name': g_category.category
-            })
-
         grant_type_temp = {
             'id': g_type.pk,
             'name': g_type.name,
             'label': g_type.label,
-            'categories': grant_categories
         }
         if g_type.logo:
             grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
 
         grant_types.append(grant_type_temp)
-
-    project = None
-    # project_id = request.GET.get('project_id', None)
-    # if project_id is not None:
-    #     hackathon_project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    #     if request.user.profile in hackathon_project.profiles.all():
-    #         project = hackathon_project
 
     params = {
         'active': 'new_grant',
@@ -1922,7 +1926,6 @@ def grant_new(request):
         'profile': profile,
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
         'grant_types': grant_types,
-        'project_data': project
     }
     return TemplateResponse(request, 'grants/_new.html', params)
 
@@ -2470,18 +2473,18 @@ def new_matching_partner(request):
             'name': g_type.label,
         })
 
-    grant_categories = []
-    for g_category in GrantCategory.objects.all():
-        grant_categories.append({
-            'id': g_category.pk,
-            'name': g_category.category
+    grant_tags = []
+    for tag in GrantTag.objects.all():
+        grant_tags.append({
+            'id': tag.pk,
+            'name': tag.name
         })
 
     params = {
         'title': 'Pledge your support.',
         'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
         'grant_types': grant_types,
-        'grant_categories': grant_categories,
+        'grant_tags': grant_tags,
         'grant_collections': grant_collections
     }
 
@@ -2511,13 +2514,13 @@ def create_matching_pledge_v1(request):
         return JsonResponse(response)
 
     grant_types = request.POST.get('grant_types[]', None)
-    grant_categories = request.POST.get('grant_categories[]', None)
+    grant_tags = request.POST.get('grant_tags[]', None)
     grant_collections = request.POST.get('grant_collections[]', None)
 
     if grant_types:
         grant_types = grant_types.split(',')
-    if grant_categories:
-        grant_categories = grant_categories.split(',')
+    if grant_tags:
+        grant_tags = grant_tags.split(',')
     if grant_collections:
         grant_collections = grant_collections.split(',')
 
@@ -2542,8 +2545,8 @@ def create_matching_pledge_v1(request):
             grant_filters = {
                 'grant_type__in': grant_types
             }
-            if grant_categories:
-                grant_filters['categories__in'] = grant_categories
+            if grant_tags:
+                grant_filters['tags__in'] = grant_tags
 
         if grant_collections:
             collection_filters = {
@@ -2598,38 +2601,6 @@ def invoice(request, contribution_pk):
     }
 
     return TemplateResponse(request, 'grants/invoice.html', params)
-
-
-def basic_grant_categories(name):
-    result = []
-    grant_type = GrantType.objects.filter(name=name).first()
-
-    if name and grant_type:
-        grant_categories = grant_type.categories.all()
-        for category in grant_categories:
-            result.append(category.category)
-
-    else:
-        grant_types = GrantType.objects.all()
-        grant_categories = []
-        for grant_type in grant_types:
-            grant_categories = grant_type.categories.all()
-            for category in grant_categories:
-                result.append(category.category)
-
-    result = list(set(result))
-
-    return [ (category,idx) for idx, category in enumerate(result) ]
-
-
-@csrf_exempt
-def grant_categories(request):
-    grant_type = request.GET.get('type', None)
-    categories = basic_grant_categories(grant_type)
-
-    return JsonResponse({
-        'categories': categories
-    })
 
 
 @login_required
@@ -3105,7 +3076,7 @@ def contribute_to_grants_v1(request):
             })
             continue
 
-        if not tenant in ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND']:
+        if not tenant in grant_tenants:
             invalid_contributions.append({
                 'grant_id': grant_id,
                 'message': 'error: tenant chain is not supported for grant'
