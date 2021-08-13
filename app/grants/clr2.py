@@ -69,7 +69,7 @@ def get_summed_contribs_query(clr_round):
             MAX(dashboard_profile.as_dict ->> 'trust_bonus')::FLOAT as trust_bonus
         INTO TEMP TABLE tempUserTotals
         FROM contributions 
-        LEFT JOIN dashboard_profile 
+        INNER JOIN dashboard_profile 
         ON (contributions.profile_for_clr_id = dashboard_profile.id)
         GROUP BY contributions.normalized_data ->> 'id', contributions.profile_for_clr_id;
 
@@ -100,8 +100,7 @@ def get_calc_query(grant_id, v_threshold):
             SUM((c1.sum * c2.sum) ^ 0.5) pairwise
         INTO TEMP TABLE tempPairTotals
         FROM tempUserTotals c1 
-        LEFT JOIN tempUserTotals c2 ON (c1.grant_id = c2.grant_id AND c2.user_id > c1.user_id)
-        WHERE c2.user_id IS NOT NULL
+        INNER JOIN tempUserTotals c2 ON (c1.grant_id = c2.grant_id AND c2.user_id > c1.user_id)
         GROUP BY c1.user_id, c2.user_id;
 
         -- index before join
@@ -117,9 +116,8 @@ def get_calc_query(grant_id, v_threshold):
             SUM((c1.sum * c2.sum) ^ 0.5 / (pw.pairwise / ({v_threshold} * GREATEST(c2.trust_bonus, c1.trust_bonus)) + 1)) final_clr
         INTO TEMP TABLE tempCLR
         FROM tempUserTotals c1 
-        LEFT JOIN tempUserTotals c2 ON (c1.grant_id = c2.grant_id and c2.user_id > c1.user_id)
-        LEFT JOIN tempPairTotals pw ON (c1.user_id = pw.user_id and c2.user_id = pw.user_id_2)
-        WHERE c2.user_id IS NOT NULL
+        INNER JOIN tempUserTotals c2 ON (c1.grant_id = c2.grant_id and c2.user_id > c1.user_id)
+        INNER JOIN tempPairTotals pw ON (c1.user_id = pw.user_id and c2.user_id = pw.user_id_2)
         GROUP BY c1.grant_id;
 
         -- index before join
@@ -135,7 +133,7 @@ def get_calc_query(grant_id, v_threshold):
             SUM(1) number_contributions, 
             SUM(c1.sum) contribution_amount
         FROM tempUserTotals c1 
-        LEFT JOIN tempCLR clr ON (c1.grant_id = clr.grant_id)
+        INNER JOIN tempCLR clr ON (c1.grant_id = clr.grant_id)
         {"WHERE c1.grant_id = '" + str(grant_id) + "'" if grant_id else ''}
         GROUP BY c1.grant_id
         ORDER BY c1.grant_id;
