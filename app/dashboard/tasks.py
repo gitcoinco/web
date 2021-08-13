@@ -256,7 +256,7 @@ def update_trust_bonus(self, pk):
     profile = Profile.objects.get(pk=pk)
     params = profile.as_dict
     print("Saving - %s" % profile.handle)
-    if profile.trust_bonus != params['trust_bonus']:
+    if profile.trust_bonus != params.get('trust_bonus', None):
         params['trust_bonus'] = profile.trust_bonus
         profile.save()
 
