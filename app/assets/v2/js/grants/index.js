@@ -364,8 +364,8 @@ if (document.getElementById('grants-showcase')) {
           keyword: this.keyword,
           state: this.state,
           collections_page: this.collectionsPage,
-          grant_tag: this.category,
-          type: this.current_type
+          grant_tags: this.category,
+          grant_types: this.current_type
         };
 
         if (this.following) {
@@ -468,8 +468,8 @@ if (document.getElementById('grants-showcase')) {
           network: this.network,
           keyword: this.keyword,
           state: this.state,
-          grant_tag: this.category,
-          type: this.current_type
+          grant_tags: this.category,
+          grant_types: this.current_type
         };
 
         if (this.clr_round_pk) {
