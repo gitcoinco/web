@@ -104,8 +104,6 @@
             {% for fulfillment in bounty.fulfillments.all %}
               {% if fulfillment.fulfiller_github_username %}
                 <a href="{% url 'profile' fulfillment.fulfiller_github_username %}?{{ utm_tracking }}">{{ fulfillment.fulfiller_github_username }}</a>
-              {% elif fulfillment.fulfiller_email %}
-                <a href="mailto:{{ fulfillment.fulfiller_email }}">{{ fulfillment.fulfiller_email }}</a>
               {% else %}
                 <a href="https://etherscan.io/address/{{ fulfillment.fulfiller_address }}?{{ utm_tracking }}">{{ fulfillment.fulfiller_address }}</a>
               {% endif %}

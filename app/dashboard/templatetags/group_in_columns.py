@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test the Kudos models.
+"""Define the add_url_schema template tag to allow cleaning up url in templates.
 
 Copyright (C) 2021 Gitcoin Core
 
@@ -15,8 +15,22 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-"""
-import logging
-import unittest
 
-from django.test import Client, TestCase
+"""
+import itertools
+
+from django import template
+
+register = template.Library()
+
+@register.filter
+def group_in_columns(list_input, number_of_columns):
+    """Groups list_input into columns based on the number_of_columns required (to be used in a loop)"""
+    columns = int(number_of_columns)
+    items = iter(list_input)
+    while True:
+        column = list(itertools.islice(items, columns))
+        if column:
+            yield column
+        else:
+            break

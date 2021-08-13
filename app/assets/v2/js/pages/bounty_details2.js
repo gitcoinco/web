@@ -166,6 +166,10 @@ Vue.mixin({
           url = `https://tzkt.io/${txn}`;
           break;
 
+        case 'CSPR':
+          url = `https://casperstats.io/tx/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -242,6 +246,10 @@ Vue.mixin({
 
         case 'XTZ':
           url = `https://tzkt.io/${address}/operations/`;
+          break;
+
+        case 'CSPR':
+          url = `https://casperstats.io/address/${address}`;
           break;
 
         default:
@@ -492,6 +500,10 @@ Vue.mixin({
           tenant = 'TEZOS';
           break;
 
+        case 'CSPR':
+          tenant = 'CASPER';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -588,6 +600,10 @@ Vue.mixin({
 
         case 'tezos_ext':
           payWithTezosExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'casper_ext':
+          payWithCasperExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -809,6 +825,7 @@ Vue.mixin({
         case 'xinfin_ext':
         case 'algorand_ext':
         case 'tezos_ext':
+        case 'casper_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
@@ -1119,7 +1136,7 @@ var show_interest_modal = function() {
           _alert({ message: gettext('Please provide an action plan for this ticket. (min 30 chars)') }, 'danger');
           return false;
         }
-
+        $('#submit').attr('disabled', true);
         add_interest(document.result['pk'], {
           issue_message: msg
         }).then(success => {
@@ -1156,20 +1173,6 @@ var show_interest_modal = function() {
   });
   modals.bootstrapModal('show');
 };
-
-// $('body').on('click', '.issue_description img', function() {
-//   var content = $.parseHTML(
-//     '<div><div class="row"><div class="col-12 closebtn">' +
-//       '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
-//         '<span aria-hidden="true">&times;</span>' +
-//       '</a>' +
-//     '</div>' +
-//     '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
-
-//   $(content).appendTo('body').modal({
-//     modalClass: 'modal magnify'
-//   });
-// });
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

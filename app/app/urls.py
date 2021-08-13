@@ -71,6 +71,7 @@ urlpatterns = [
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
     path('api/v1/bounty/<int:bounty_id>/close', dashboard.views.close_bounty_v1, name='close_bounty_v1'),
     path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
+    path('api/v1/reverse-proxy/<str:tenant>', dashboard.views.reverse_proxy_rpc_v1, name='payout_tx_forwarder_v1'),
     re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
 
     # inbox
@@ -606,10 +607,6 @@ urlpatterns = [
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
-    # token distribution event
-    # re_path(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
-    # re_path(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
-
     # faucet views
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
@@ -721,11 +718,6 @@ urlpatterns = [
         '_administration/email/tribe_hackathon_prizes',
         retail.emails.tribe_hackathon_prizes,
         name='tribe_hackathon_prizes'
-    ),
-    path(
-        '_administration/email/day_email_campaign/<int:day>',
-        marketing.views.day_email_campaign,
-        name='day_email_campaign'
     ),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',

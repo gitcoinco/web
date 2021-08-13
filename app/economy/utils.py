@@ -17,15 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from cacheops import cached_as
 from economy.models import ConversionRate
-
-
-# All Units in native currency
-class TransactionException(Exception):
-    """Handle general transaction exceptions."""
-
-    pass
 
 
 class ConversionRateNotFoundError(Exception):

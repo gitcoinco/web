@@ -44,9 +44,9 @@ isProduction = settings.ENV in ['prod']
 
 # define variables to include in every script (and react to any changes)
 sassVars = [
-    '/assets/v2/scss/lib/bootstrap/functions',
-    '/assets/v2/scss/lib/bootstrap/variables',
-    '/assets/v2/scss/lib/bootstrap/mixins',
+    '/assets/v2/scss/lib/bootstrap/_functions',
+    '/assets/v2/scss/lib/bootstrap/_variables',
+    '/assets/v2/scss/lib/bootstrap/_mixins',
     '/assets/v2/scss/gc-variables',
     '/assets/v2/scss/lib/bootstrap-overrides'
 ]
@@ -64,32 +64,27 @@ def get_tag(ext, src):
     return '<script src="%s"></script>' % src if ext == "js" else '<link rel="stylesheet" href="%s"/>' % src
 
 
-def get_file_ts(asset):
+def get_file_ts(asset, reportException=False):
     ts = 0
     try:
         ts = os.path.getmtime(asset.replace('/', os.sep))
-    except:
-        pass
+    except Exception as e:
+        if reportException:
+            print(e)
     return ts
 
 
-def clean_block_and_hash(block, forced):
-    # clean up the block -- we want to drop anything that gets added by staticfinder (could we improve this by not using static in the templates?)
-    cleanBlock = block.replace(settings.STATIC_URL, '')
-
-    # drop any quotes that appear inside the tags - keep the input consistent - bs4 will overlook missing quotes
-    findTags = re.compile(r'(<(script|link|style)(.*?)>)')
-    if re.search(findTags, cleanBlock) is not None:
-        for t in re.finditer(findTags, cleanBlock):
-            tag = t.group(0)
-            cleanBlock = cleanBlock.replace(tag, tag.replace('"', '').replace('\'', ''))
-
-    # in production staticfinder will attach an additional hash to the resource which doesn't exist on the local disk
-    if isProduction and forced != True:
-        cleanBlock = re.sub(re.compile(r'(\..{12}\.(css|scss|js))'), r'.\2', cleanBlock)
+def clean_block_and_hash(block):
+    # clean up the block -- we want to drop anything that gets added by staticfinder (we could remove this if we purge {% static ... %} from tags)
+    if isProduction:
+        # in prod - staticfinder will attach static_url and an additional hash to the resource which doesn't exist on the local disk
+        block = re.sub(re.compile(r'(' + re.escape(settings.STATIC_URL) + r')([^>]*)(\.[0-9a-zA-Z]{12}?)\.(css|scss|js)'), r'\2.\4', block)
+    else:
+        # in dev - we still need to drop the static_url (but the hash will be absent)
+        block = block.replace(settings.STATIC_URL, '')
 
     # parse block with bs4
-    block = BeautifulSoup(cleanBlock, "lxml")
+    block = BeautifulSoup(block, "lxml")
     # get a hash of the block we're working on (after parsing the stripped down block -- ensures we're always hashing the same input)
     blockHash = hashlib.sha256(str(block).encode('utf')).hexdigest()
 
@@ -116,7 +111,17 @@ def check_for_changes(elems, attr, kind, outputFile):
     if not changed:
         for el in elems:
             if el.get(attr):
-                ts = get_file_ts('%s/assets/%s' % (settings.BASE_DIR, el[attr]))
+                # check if we're loading an alternative source in production
+                file = el[attr]
+                if isProduction and el.get('prod'):
+                    file = el['prod']
+
+                # discover ts using the absolute path of the given asset
+                if not el.get('base-dir'):
+                    ts = get_file_ts('%s/assets/%s' % (settings.BASE_DIR, file), True)
+                else:
+                    ts = get_file_ts(os.path.normpath(os.path.join(settings.BASE_DIR, '../', el['base-dir'].strip('/'), file.strip('/'))), True)
+
                 # if any of the imported files is newer than the block then we need to regenerate
                 if ts == 0 or ts > blockTs:
                     changed = True
@@ -153,8 +158,18 @@ def get_bundled(elems, attr, kind, merge):
     for el in elems:
         # is inclusion or inline block?
         if el.get(attr):
+
+            # check if we're loading an alternative source in production
+            file = el[attr]
+            if isProduction and el.get('prod'):
+                file = el['prod']
+
             # absolute path of the given asset
-            asset = '%s/assets/%s' % (settings.BASE_DIR, el[attr])
+            if not el.get('base-dir'):
+                asset = '%s/assets/%s' % (settings.BASE_DIR, file)
+            else:
+                asset = os.path.normpath(os.path.join(settings.BASE_DIR, '../', el['base-dir'].strip('/'), file.strip('/')))
+
             # merged content is read from file and concatenated
             if merge:
                 f = open(asset.replace('/', os.sep), 'r', encoding='utf8')
@@ -204,7 +219,7 @@ def render(block, kind, mode, name='asset', forced=False):
     bundles = 'bundles' if kind == 'js' else bundled
 
     # clean the block and get a hash of the content
-    block, blockHash = clean_block_and_hash(block, forced)
+    block, blockHash = clean_block_and_hash(block)
 
     # in production we don't need to generate new content unless we're running this via the bundle command
     if not isProduction or forced == True:
@@ -273,9 +288,7 @@ def bundle(parser, token):
     mode = 'file'
 
     # file name for the output
-    if len(args) == 4:
-        name = args[3]
-    else:
-        name = None
+    name = args[3] if len(args) == 4 else None
+
 
     return CompressorNode(nodelist, kind, mode, name)

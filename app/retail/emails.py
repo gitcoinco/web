@@ -38,7 +38,6 @@ from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
-from premailer import Premailer
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
@@ -98,26 +97,6 @@ def render_featured_funded_bounty(bounty):
     response_html = premailer_transform(render_to_string("emails/funded_featured_bounty.html", params))
     response_txt = render_to_string("emails/funded_featured_bounty.txt", params)
     subject = _("Your bounty is now live on Gitcoin!")
-
-    return response_html, response_txt, subject
-
-
-def render_nth_day_email_campaign(to_email, nth, firstname):
-    subject_map = {
-        1: "Day 1: Growing Open Source",
-        2: "Day 2: Using Gitcoin's Issue Explorer",
-        3: "Learning Blockchain"
-    }
-
-    subject = subject_map[nth]
-
-    params = {
-        "firstname": firstname,
-        "subscriber": get_or_save_email_subscriber(to_email, "internal"),
-		"email_type": "welcome_mail"
-    }
-    response_html = premailer_transform(render_to_string(f"emails/campaigns/email_campaign_day_{nth}.html", params))
-    response_txt = render_to_string(f"emails/campaigns/email_campaign_day_{nth}.txt", params)
 
     return response_html, response_txt, subject
 
@@ -507,21 +486,21 @@ def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
         txt = f"""
 hi{github_username},
 
-thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
+thanks for turning around this bounty. we're hyperfocused on making Gitcoin a great place for blockchain developers to hang out, learn new skills, and git coins.
 
-in that spirit,  i have a few questions for you.
+in that spirit, we have a few questions for you.
 
 > what would you say your average hourly rate was for this bounty? {bounty.github_url}
 
-> what was the best thing about working on the platform?  what was the worst?
+> what was the best thing about working on the platform? what was the worst?
 
-> would you use gitcoin again?
+> would you use Gitcoin again?
 
 thanks again for being a member of the community.
 
 kyle, frank & alisa (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :).
 
 """
     elif persona == 'funder':
@@ -531,15 +510,15 @@ PS - we've got some new gitcoin schwag on order. send me your mailing address an
 
 hi{github_username},
 
-thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
+thanks for putting this bounty ({bounty.github_url}) on Gitcoin.  i'm glad to see it was turned around.
 
-we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
+we're hyperfocused on making Gitcoin a great place for blockchain developers to hang out, learn new skills, and git some coins.
 
-in that spirit, i have a few questions for you:
+in that spirit, we have a few questions for you:
 
-> how much coaching/communication did it take the counterparty to turn around the issue?  was this burdensome?
+> how much coaching/communication did it take the counterparty to turn around the issue? was this burdensome?
 
-> what was the best thing about working on the platform?  what was the worst?
+> what was the best thing about working on the platform? what was the worst?
 
 > would you use gitcoin again?
 
@@ -547,7 +526,7 @@ thanks for being a member of the community.
 
 kyle, frank & alisa (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
+PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
 
 """
         elif bounty.status == 'cancelled':
@@ -556,9 +535,9 @@ hi{github_username},
 
 we saw that you cancelled this bounty.
 
-i was sorry to see that the bounty did not get done.
+we are sorry to see that the bounty did not get done.
 
-i have a few questions for you.
+we have a few questions for you.
 
 > why did you decide to cancel the bounty?
 
@@ -568,7 +547,7 @@ thanks again for being a member of the community.
 
 kyle, frank & alisa (gitcoin product team)
 
-PS - we've got some new gitcoin schwag on order. if interested, let us know and we can send you a code to order some :)
+PS - we've got some new gitcoin schwag on order. if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
 
 """
         else:
@@ -621,18 +600,17 @@ def render_funder_stale(github_username, days=60, time_as_str='a couple months')
     response_txt = f"""
 hi {github_username},
 
-kyle, frank, and alisa from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}.
+kyle, frank, and alisa from Gitcoin here — i see you haven't funded an issue in {time_as_str}.
 
 in the spirit of making Gitcoin better + checking in:
 
 > do you have any issues which might be bounty worthy or projects you're hoping to build?
 
-> do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+> do you have any feedback for us on how we might improve the product to fit your needs?
 
-> are you interested in joining one of our upcoming hackathons? it's possible
-we could do so at a discount, as you're a current funder on the platform.
+> are you interested in hosting or partnering in one of our upcoming hackathons? this is often teh best way to get top talent working on your issues.
 
-appreciate you being a part of the community + let us know if you'd like some Gitcoin schwag, we can send a link your way to order some :)
+appreciate you being a part of the community + if you are intersted, you can use discount code product-feedback-is-a-gift for 50% off your order :)
 
 ~ kyle, frank & alisa (gitcoin product team)
 
@@ -670,8 +648,7 @@ def email_to_profile(to_email):
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, hackathons=(), latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
     from dateutil.parser import parse
-    from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    from marketing.views import upcoming_dates, email_announcements, trending_avatar
+    from marketing.views import email_announcements, trending_avatar
 
     sub = get_or_save_email_subscriber(to_email, 'internal')
     counter = 0
@@ -1442,13 +1419,13 @@ def render_new_bounty_roundup(to_email):
 
 @staff_member_required
 def weekly_recap(request):
-    response_html, _ = render_weekly_recap("mark.beacom@consensys.net")
+    response_html, _ = render_weekly_recap("product@gitcoin.co")
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def unread_notification_email_weekly_roundup(request):
-    response_html, _, _ = render_unread_notification_email_weekly_roundup('sebastian.tharakan97@gmail.com')
+    response_html, _, _ = render_unread_notification_email_weekly_roundup('product@gitcoin.co')
     return HttpResponse(response_html)
 
 @staff_member_required

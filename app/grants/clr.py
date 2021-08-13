@@ -18,20 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import copy
-import datetime as dt
-import json
-import math
-import time
-from itertools import combinations
 
-from django.conf import settings
 from django.utils import timezone
 
 import numpy as np
-import pytz
 from grants.models import Contribution, Grant, GrantCollection
-from marketing.models import Stat
-from perftools.models import JSONStore
+from townsquare.models import SquelchProfile
 
 CLR_PERCENTAGE_DISTRIBUTED = 0
 
@@ -298,6 +290,10 @@ def fetch_data(clr_round, network='mainnet'):
     if subscription_filters:
         contributions = contributions.filter(**subscription_filters)
 
+    # ignore profiles which have been squelched
+    profiles_to_be_ignored = SquelchProfile.objects.filter(active=True).values_list('profile__pk')
+    contributions = contributions.exclude(profile_for_clr__in=profiles_to_be_ignored)
+
     grants = clr_round.grants.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
 
     if grant_filters:
@@ -447,18 +443,28 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         if counter % 10 == 0 or True:
             print(f"- {counter}/{total_count} grants iter, pk:{grant.pk}, at {round(time.time(),1)}")
 
-        for amount in potential_donations:
-            # calculate clr with each additional donation and save to grants model
-            # print(f'using {total_pot_close}')
-            predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
-                grant,
-                amount,
-                grant_contributions_curr,
-                total_pot,
-                v_threshold,
-                uv_threshold
-            )
-            potential_clr.append(predicted_clr)
+        if what == 'final':
+            # this is used when you want to count final distribution and ignore the prediction
+            for amount in potential_donations:
+                if amount == 0:
+                    # actual calculation
+                    predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
+                        grant, amount, grant_contributions_curr, total_pot, v_threshold, uv_threshold
+                    )
+                else:
+                    # ignore the other ones
+                    predicted_clr = 0.0
+                    grants_clr = None
+
+                potential_clr.append(predicted_clr)
+        else:
+            for amount in potential_donations:
+                # calculate clr with each additional donation and save to grants model
+                # print(f'using {total_pot_close}')
+                predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
+                    grant, amount, grant_contributions_curr, total_pot, v_threshold, uv_threshold
+                )
+                potential_clr.append(predicted_clr)
 
         if save_to_db:
             _grant = Grant.objects.get(pk=grant.pk)

@@ -93,7 +93,9 @@
   <h2>{{key}}</h2>
   {% include "dataviz/shared/nav.html" %}
   <div id="chart"></div>
-  <script src="{% static "v2/js/lib/jquery.js" %}"></script>
+  {% bundle merge_js file jquery %}
+    <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+  {% endbundle %}
   <script>
   var someData = [];
   {% for stat in stats %}

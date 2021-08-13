@@ -15,16 +15,19 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static bundle %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-<script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "onepager/js/receive.js" %}"></script>
-<script src="{% static "onepager/js/confetti.js" %}"></script>
-<script src="{% static "onepager/js/bignumber.js" %}"></script>
-<script src="{% static "onepager/js/tx.js" %}"></script>
+
+  {% bundle merge_js file receive %}
+    <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
+    <script src="secrets.min.js" base-dir="/node_modules/secrets.js-grempe/"></script>
+    <script src="{% static "v2/js/ipfs.js" %}"></script>
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "onepager/js/receive.js" %}"></script>
+    <script src="{% static "onepager/js/confetti.js" %}"></script>
+    <script src="{% static "onepager/js/bignumber.js" %}"></script>
+    <script src="{% static "onepager/js/tx.js" %}"></script>
+  {% endbundle %}
 
 {% endblock %}
 <!-- Main -->

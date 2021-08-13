@@ -10,7 +10,6 @@ from celery.exceptions import SoftTimeLimitExceeded, TimeLimitExceeded
 from celery.utils.log import get_task_logger
 from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from hexbytes import HexBytes
 from kudos.models import KudosTransfer, TokenRequest
 from kudos.utils import kudos_abi
 from marketing.mails import notify_kudos_minted, send_mail

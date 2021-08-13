@@ -25,6 +25,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from adminsortable2.admin import SortableInlineAdminMixin
+from perftools.management.commands import create_page_cache
 
 from .models import (
     Activity, Answer, BlockedIP, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
@@ -501,6 +502,14 @@ class HackathonEventAdmin(admin.ModelAdmin):
             except Exception as e:
                 print(e)
                 self.message_user(request, "unable to update bounty expiry dates")
+        elif "_update_hackathon_events_cache" in request.POST:
+            try:
+                create_page_cache.create_hackathon_list_page_cache()
+                self.message_user(request, "updated hackthon events cache")
+            except Exception as e:
+                print(e)
+                self.message_user(request, "unable to update hackathon events cache")
+
         return redirect(obj.admin_url)
 
 class CouponAdmin(admin.ModelAdmin):

@@ -376,7 +376,7 @@ def mission_diplomacy_room_helper(request, game):
         recipient_address = Web3.toChecksumAddress(moves['account'])
         web3 = get_web3('mainnet')
         gtc = web3.eth.contract(address=Web3.toChecksumAddress('0xde30da39c46104798bb5aa3fe8b9e0e1f348163f'), abi=erc20_abi)
-        balance = gtc.functions.balanceOf(recipient_address).call()
+        balance = int((gtc.functions.balanceOf(recipient_address).call()) / (10 ** 18))
         claimed_balance = int(moves['balance'])
         signer_address = Web3.toChecksumAddress(web3.eth.account.recoverHash(defunct_hash_message(text=package), signature=signature))
         claimed_address = Web3.toChecksumAddress(moves['account'])

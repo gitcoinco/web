@@ -68,9 +68,10 @@ rm -f output/w*_*.pdf; rm -f assets/other/wp.pdf;
 
 echo "- collect static"
 if [ "$ISFRONTENDPUSH" ] && [ "$JOBS_NODE" ]; then
-    python3 manage.py bundle;
-    yarn run build;
-    python3 manage.py collectstatic --noinput -i other;
+    yarn install --non-interactive --frozen-lockfile
+    python3 manage.py bundle
+    yarn run build
+    python3 manage.py collectstatic --noinput -i other
 fi
 
 rm -Rf ~/gitcoin/coin/app/static/other

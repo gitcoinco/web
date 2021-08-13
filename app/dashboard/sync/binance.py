@@ -30,10 +30,6 @@ def get_binance_txn_status(fulfillment):
             'params': [ txnid ]
         }
 
-        headers = {
-            'Host': 'gitcoin.co'
-        }
-
         binance_response = requests.post(binance_url, json=data).json()
 
         result = binance_response['result']

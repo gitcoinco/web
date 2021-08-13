@@ -786,7 +786,9 @@
           <slot></slot>
         </select>
       </script>
-      <script src='{% static "v2/js/lib/markdown-it.js" %}'></script>
+      {% bundle merge_js file new_bounty %}
+        <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>
+      {% endbundle %}
       {{orgs|json_script:"sponsor-list"}}
       {{hackathon_obj|json_script:"hackathon-object"}}
       {{prize_founders|json_script:"prize-founders"}}

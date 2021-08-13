@@ -18,14 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.utils import get_tx_status, has_tx_mined
-from grants.models import Contribution, Grant, GrantCLR
+from grants.clr import predict_clr
+from grants.models import GrantCLR
 from grants.tasks import process_predict_clr
-from marketing.mails import warn_subscription_failed
 
 
 class Command(BaseCommand):
@@ -36,6 +34,7 @@ class Command(BaseCommand):
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
         parser.add_argument('clr_pk', type=str, default="all")
         parser.add_argument('what', type=str, default="full")
+        parser.add_argument('sync', type=str, default="false")
         # slim = just run 0 contribution match upcate calcs
         # full, run [0, 1, 10, 100, calcs across all grants]
 
@@ -45,7 +44,8 @@ class Command(BaseCommand):
         network = options['network']
         clr_pk = options['clr_pk']
         what = options['what']
-        print (network, clr_pk, what)
+        sync = options['sync']
+        print (network, clr_pk, what, sync)
 
         if clr_pk and clr_pk.isdigit():
             active_clr_rounds = GrantCLR.objects.filter(pk=clr_pk)
@@ -54,12 +54,23 @@ class Command(BaseCommand):
 
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
-                process_predict_clr(
-                    save_to_db=True,
-                    from_date=timezone.now(),
-                    clr_round=clr_round,
-                    network=network,
-                    what=what,
-                )
+                if sync == 'true':
+                    # run it sync -> useful for payout / debugging
+                    predict_clr(
+                        save_to_db=True,
+                        from_date=timezone.now(),
+                        clr_round=clr_round,
+                        network=network,
+                        what=what,
+                    )
+                else:
+                    # runs it as celery task.
+                    process_predict_clr(
+                        save_to_db=True,
+                        from_date=timezone.now(),
+                        clr_round=clr_round,
+                        network=network,
+                        what=what,
+                    )
         else:
             print("No active CLRs found")

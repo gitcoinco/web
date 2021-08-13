@@ -438,7 +438,7 @@
                             </div>
 
                             <!-- WEB3 MODAL FLOW -->
-                            <div v-else-if="fulfillment.payout_type == 'algorand_ext' || fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext' || fulfillment.payout_type == 'tezos_ext'" class="px-sm-4">
+                            <div v-else-if="fulfillment.payout_type == 'algorand_ext' || fulfillment.payout_type == 'xinfin_ext' || fulfillment.payout_type == 'rsk_ext' || fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext' || fulfillment.payout_type == 'harmony_ext' || fulfillment.payout_type == 'binance_ext' || fulfillment.payout_type == 'tezos_ext' || fulfillment.payout_type == 'casper_ext'" class="px-sm-4">
 
                               <div class="text-center pb-3">
                                 <p class="mb-3 font-subheader font-weight-bold">Payout</p>
@@ -1097,15 +1097,21 @@
       {% include 'shared/footer.html' %}
       {% include 'shared/current_profile.html' %}
     </div>
-    <script src="{% static "v2/js/lib/highlight.js" %}"></script>
-    <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
 
-    <script src="{% static "v2/js/abi.js" %}"></script>
+    {% bundle merge_js file libs %}
+      <script src="highlight.min.js" base-dir="/node_modules/@highlightjs/cdn-assets/"></script>
+      <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>
+    {% endbundle %}
+
     <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/clipboard.js" %}"></script>
-    <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+
+    {% bundle merge_js file qrcode %}
+      <script src="qrcode.min.js" base-dir="/node_modules/qrcodejs/"></script>
+    {% endbundle %}
 
     <script>
       $('body').bootstrapTooltip({
@@ -1157,6 +1163,11 @@
       <script src="{% static "v2/js/lib/tezos/taquito-beacon-wallet.min.js" %}"></script>
       <script src="{% static "v2/js/pages/bounty_detail/tezos_extension.js" %}"></script>
 
+    {% elif web3_type == 'casper_ext' %}
+
+      <script src="{% static "v2/js/lib/casper/casper_js_sdk.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/casper_extension.js" %}"></script>
+
     {% elif web3_type == 'fiat' %}
 
       {% if PYPL_CLIENT_ID %}
@@ -1165,21 +1176,23 @@
       <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
 
     {% elif web3_type == 'web3_modal' %}
-
-      <script src="{% static "v2/js/pages/bounty_detail/web3_modal.js" %}"></script>
-      <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-      <script src="{% static "v2/js/ipfs.js" %}"></script>
-
+      {% bundle merge_js file web3_modal %}
+        <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
+        <script src="{% static "v2/js/pages/bounty_detail/web3_modal.js" %}"></script>
+        <script src="{% static "v2/js/ipfs.js" %}"></script>
+      {% endbundle %}
     {% endif %}
 
+    {% bundle merge_js file details %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
+      <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
+      <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+      <script src="{% static "v2/js/user-search.js" %}"></script>
+      <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+    {% endbundle %}
 
-    <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
-    <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
-    <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
-    <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
-    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
-    <script src="{% static "v2/js/user-search.js" %}"></script>
-    <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
   </body>
 
 </html>

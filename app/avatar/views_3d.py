@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import json
 import logging
 import xml.etree.ElementTree as ET
 
@@ -28,9 +27,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from avatar.helpers import add_rgb_array, hex_to_rgb_array, rgb_array_to_hex, sub_rgb_array
 from dashboard.utils import create_user_action
-from PIL import Image, ImageOps
 
-from .models import AvatarTextOverlayInput, BaseAvatar, CustomAvatar, SocialAvatar
+from .models import AvatarTextOverlayInput, CustomAvatar
 
 logger = logging.getLogger(__name__)
 

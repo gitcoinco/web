@@ -24,13 +24,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from cacheops import CacheMiss, cache, cached_view, cached_view_as
 from economy.utils import convert_amount
 from gas.models import GasGuzzler
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from perftools.models import JSONStore
-
-from .helpers import handle_bounty_views
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -249,11 +246,16 @@ def gas_history_view(request):
     events = JSONStore.objects.get(key='hackathons', view='hackathons').data[1]
     default_tab = 'current'
 
+    num_current = len([ele for ele in events if ele['type'] == 'current'])
+    num_upcoming = len([ele for ele in events if ele['type'] == 'upcoming'])
+    num_finished = len([ele for ele in events if ele['type'] == 'finished'])
+
     tabs = [
-        ('current', 'happening now'),
-        ('upcoming', 'upcoming'),
-        ('finished', 'completed'),
+        ('current', 'happening now', num_current),
+        ('upcoming', 'upcoming', num_upcoming),
+        ('finished', 'completed', num_finished),
     ]
+
     context = {
         'title': _('Live Ethereum (ETH) Gas History'),
         'card_desc': _('See and comment on the Ethereum (ETH) Gas - Hourly History Graph'),
@@ -265,6 +267,7 @@ def gas_history_view(request):
         'granularity_options': granularity_options,
         'events': events,
         'tabs': tabs,
+        'types': ['current', 'upcoming', 'finished'],
         'default_tab': default_tab
     }
     return TemplateResponse(request, 'gas_history.html', context)

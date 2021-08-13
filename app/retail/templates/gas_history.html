@@ -1,7 +1,9 @@
 {% extends 'onepager/base.html' %}
-{% load i18n static date_fromisoformat timesince_fromisoformat %}
+{% load i18n static date_fromisoformat timesince_fromisoformat bundle %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/lib/jquery.js"%}"></script>
+{% bundle merge_js file jquery %}
+  <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
+{% endbundle %}
 <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
 {% endblock %}
 <!-- Main -->
@@ -44,12 +46,12 @@
     {% endif %}
   </div>
   <div>
-    <div id="tabs" class="row my-4">
+    <div id="tabs" class="hackathon-tabs row my-4">
       <div class="container">
         <ul class="nav nav-tabs mt-3 tablist-small tablist-extra-small" id="myTab" role="tablist">
-          {% for id, title in tabs %}
+          {% for id, title, num in tabs %}
             <li class="nav-item">
-              <a class="nav-link nav-line no-pink {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }}</a>
+              <a class="nav-link nav-line no-pink {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{num}})</a>
             </li>
           {% endfor %}
         </ul>
