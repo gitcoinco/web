@@ -417,7 +417,7 @@ STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
 STATIC_ROOT = root(STATICFILES_LOCATION)
 
-if ENV in ['prod', 'stage']:
+if ENV in ['prod', 'stage', 'test']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     STATIC_HOST = env('STATIC_HOST', default='https://s.gitcoin.co/')
