@@ -1,8 +1,5 @@
 describe('contributing to grant', () => {
-  before(() => {
-    cy.setupMetamask();
-    cy.changeMetamaskNetwork('localhost');
-
+  beforeEach(() => {
     cy.visit('http://localhost:8000/_administrationlogin');
 
     cy.get('[name=username]').type('root');

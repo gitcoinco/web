@@ -25,3 +25,13 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   // failing the test
   return false;
 });
+
+before(() => {
+  cy.setupMetamask();
+  cy.changeMetamaskNetwork('localhost');
+});
+
+after(() => {
+  cy.disconnectWallet();
+  cy.clearWindows();
+});

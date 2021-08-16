@@ -1,8 +1,4 @@
 describe('connect wallet: metamask', () => {
-  before(() => {
-    cy.setupMetamask();
-    cy.changeMetamaskNetwork('localhost');
-  });
   it('pulls address from metamask accounts', () => {
     cy.visit('http://localhost:8000/_administrationlogin');
 
