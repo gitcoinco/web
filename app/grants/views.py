@@ -33,6 +33,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
+from django.contrib.postgres.search import SearchQuery
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
@@ -447,7 +448,6 @@ def get_grants(request):
 
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    collections_page = request.GET.get('collections_page', 1)
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
@@ -618,9 +618,9 @@ def build_grants_by_type(
             contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
             _grants = _grants.filter(id__in=Subquery(contributions))
 
-    print(" " + str(round(time.time(), 2)))
-    _grants = _grants.keyword(keyword).order_by(sort, 'pk')
-    _grants.first()
+    if keyword:
+        query = SearchQuery(keyword)
+        _grants = _grants.filter(vector_column=query)
 
     if not idle_grants:
         _grants = _grants.filter(last_update__gt=three_months_ago)

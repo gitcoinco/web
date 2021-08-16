@@ -27,6 +27,8 @@ from io import BytesIO
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.core import serializers
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -292,6 +294,7 @@ class Grant(SuperModel):
         """Define the metadata for Grant."""
 
         ordering = ['-created_on']
+        indexes = (GinIndex(fields=["vector_column"]),)
 
 
     REGIONS = [
@@ -312,6 +315,7 @@ class Grant(SuperModel):
         ('unknown', 'Unknown')
     ]
 
+    vector_column = SearchVectorField(null=True, help_text=_('Used for full text search. Generated using [title, description]'))
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
@@ -988,6 +992,10 @@ class Grant(SuperModel):
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
         self.clr_round_num = self.calc_clr_round_label
+
+        self.search_vector = (
+            SearchVector('title', weight='A') + SearchVector('description', weight='B')
+        )
 
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
