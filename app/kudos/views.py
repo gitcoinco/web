@@ -830,7 +830,7 @@ def receive_bulk(request, secret):
             messages.error(request, error)
 
     kudos_transfer = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile:
         redemptions = BulkTransferRedemption.objects.filter(redeemed_by=request.user.profile, coupon=coupon)
         if redemptions.exists():
             kudos_transfer = redemptions.first().kudostransfer

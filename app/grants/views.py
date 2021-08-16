@@ -818,7 +818,7 @@ def grants_landing(request):
         'round_end_date': round_end_date,
         'now': now,
         'round_active': round_active,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -883,7 +883,7 @@ def grants_by_grant_type(request, grant_type):
     grants_following = Favorite.objects.none()
     collections = []
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile :
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
@@ -969,7 +969,7 @@ def grants_by_grant_type(request, grant_type):
         'collections': collections,
         'featured': featured,
         'active_rounds': active_rounds,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -1063,7 +1063,7 @@ def grants_by_grant_clr(request, clr_round):
 
     grants_following = Favorite.objects.none()
     collections = []
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(
             Q(profile=request.user.profile) | Q(curators=request.user.profile))
@@ -2363,7 +2363,7 @@ def grants_bulk_add(request, grant_str):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or not request.user.profile:
         raise Http404
     handle = request.user.profile.handle
     return redirect(f'/profile/{handle}/grants')
