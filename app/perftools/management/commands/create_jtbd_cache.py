@@ -65,7 +65,7 @@ def create_jtbd_earn_cache():
         # WalletConnect
         grant_id = 275
     else:
-        grant_id = 19
+        grant_id = 1
 
     try:
         grant_data = Grant.objects.filter(pk=grant_id).values(
