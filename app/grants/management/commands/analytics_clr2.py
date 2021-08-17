@@ -23,7 +23,7 @@ from django.db import connection
 from django.utils import timezone
 
 from dashboard.models import Profile
-from grants.clr2 import calculate_clr_for_donation, fetch_grants, get_contribs_query, get_summed_contribs_query
+from grants.clr2 import calculate_clr_for_donation, fetch_grants, get_summed_contribs_query
 from grants.models import GrantCLR
 
 
@@ -35,28 +35,25 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
     # one-time data call
     total_pot = float(clr_round.total_pot)
     v_threshold = float(clr_round.verified_threshold)
-    uv_threshold = float(clr_round.unverified_threshold)
 
     print(total_pot)
 
     grants = fetch_grants(clr_round, network)
     # collect contributions for clr_round into temp table
-    initial_query = get_contribs_query(clr_round.start_date, clr_round.end_date, network) + get_summed_contribs_query(clr_round)
+    initial_query = get_summed_contribs_query(grants, clr_round.start_date, clr_round.end_date, clr_round.contribution_multiplier, network)
     # open cursor and execute the groupBy sum for the round
     with connection.cursor() as cursor:
         # execute to populate shared state for the round
         cursor.execute(initial_query)
         # calculate clr analytics output
         for grant in grants:
-            clr_amount, _, num_contribs, contrib_amount = calculate_clr_for_donation(
-                grant,
+            _, clr_amount = calculate_clr_for_donation(
+                grant.id,
                 0,
                 cursor,
                 total_pot,
-                v_threshold,
-                uv_threshold
+                v_threshold
             )
-            # debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
             debug_output.append([grant.id, grant.title, grant.positive_round_contributor_count, float(grant.amount_received_in_round), clr_amount])
 
     return debug_output

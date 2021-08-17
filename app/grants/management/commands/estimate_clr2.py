@@ -45,7 +45,7 @@ class Command(BaseCommand):
         clr_pk = options['clr_pk']
         what = options['what']
         sync = options['sync']
-        print (network, clr_pk, what, sync)
+        print ('clr2', network, clr_pk, what, sync)
 
         if clr_pk and clr_pk.isdigit():
             active_clr_rounds = GrantCLR.objects.filter(pk=clr_pk)
