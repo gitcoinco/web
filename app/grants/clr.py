@@ -415,7 +415,12 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         print(f"- starting slim grant calc at {round(time.time(),1)}")
         grants_clr = run_clr_calcs(grant_contributions_curr, v_threshold, uv_threshold, total_pot)
         print(f"- saving slim grant calc at {round(time.time(),1)}")
+        total_count = len(grants_clr.items())
         for grant_calc in grants_clr:
+            counter += 1
+            if counter % 10 == 0 or True:
+                print(f"- {counter}/{total_count} grants iter, pk:{grant_id}, at {round(time.time(),1)}")
+
             pk = grant_calc['id']
             grant = clr_round.grants.using('default').get(pk=pk)
             latest_calc = grant.clr_calculations.using('default').filter(latest=True, grantclr=clr_round).order_by('-pk').first()
@@ -424,10 +429,12 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 continue
             clr_prediction_curve = copy.deepcopy(latest_calc.clr_prediction_curve)
             clr_prediction_curve[0][1] = grant_calc['clr_amount'] # update only the existing match estimate
+            print(clr_prediction_curve)
             clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
             grant.save()
         # if we are only calculating slim CLR calculations, return here and save 97% compute power
         print(f"- done calculating at {round(time.time(),1)}")
+        print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}")
         return
 
     print(f"- starting grants iter at {round(time.time(),1)}")
@@ -460,7 +467,6 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         else:
             for amount in potential_donations:
                 # calculate clr with each additional donation and save to grants model
-                # print(f'using {total_pot_close}')
                 predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
                     grant, amount, grant_contributions_curr, total_pot, v_threshold, uv_threshold
                 )
@@ -480,11 +486,15 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             else:
                 clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
+            print(clr_prediction_curve)
+
             clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
 
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
                 _grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+
+    print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}")
 
     return debug_output
