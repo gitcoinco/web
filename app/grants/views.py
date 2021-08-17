@@ -1023,7 +1023,7 @@ def grants_by_grant_type(request, grant_type):
             params['avatar_url'] = request.build_absolute_uri(collection.cover.url) if collection.cover else ''
 
 
-    response = TemplateResponse(request, 'grants/index.html', params)
+    response = TemplateResponse(request, 'grants/explorer.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
@@ -1181,7 +1181,7 @@ def grants_by_grant_clr(request, clr_round):
             logger.debug(e)
             pass
 
-    response = TemplateResponse(request, 'grants/index.html', params)
+    response = TemplateResponse(request, 'grants/explorer.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 

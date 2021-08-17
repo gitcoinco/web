@@ -8,11 +8,7 @@
       </div>
 
 
-      <div class="d-inline-block" v-if="grants.length">
-        <span class="heading mr-2">View</span>
-        <a href="#" :class="`${view == 'list' ?  'gc-text-blue' : 'text-black' }`" @click="setView('list', $event)"> <i class="fas fa-list"></i> List</a> |
-        <a href="#" :class="`${view == 'grid' ? 'gc-text-blue' : 'text-black' }`" @click="setView('grid', $event)"><i class="fas fa-th-large"></i> Grid</a>
-      </div>
+
       <div class="d-inline-block ml-4" v-if="current_type !== 'collections'">
         <!-- <label class="form__label" for="experience_level">{% trans "Experience Level" %}</label> -->
         <div class="d-flex align-items-baseline" >
@@ -52,6 +48,10 @@
           </v-select>
         </div>
 
+      </div>
+      <div class="d-inline-block" v-if="grants.length">|
+        <a href="#" :class="`${view == 'grid' ? 'gc-text-blue' : 'text-black' }`" @click="setView('grid', $event)" class="btn btn-sm "><i class="fas fa-th-large"></i></a>
+        <a href="#" :class="`${view == 'list' ?  'gc-text-blue' : 'text-black' }`" @click="setView('list', $event)" class="btn btn-sm "> <i class="fas fa-list"></i></a>
       </div>
       <div class="mr-4" v-if="current_type !== 'collections' && !(current_type === 'all' && !clr_round_pk)">
         <button class="btn btn-outline-primary font-caption" @click.event="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
