@@ -23,3 +23,26 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add('loginRootUser', () => {
+  const url = 'http://localhost:8000/_administrationlogin/';
+  cy.request({url, method: 'GET', log: true}).then((response) => {
+    const body = Cypress.$(response.body);
+    const csrfmiddlewaretoken = body.find('input[name=csrfmiddlewaretoken]').val();
+
+    cy.request({
+      url,
+      method: 'POST',
+      body: {
+        csrfmiddlewaretoken,
+        username: 'root',
+        password: 'gitcoinco'
+      },
+      form: true
+    });
+  });
+});
+
+Cypress.Commands.add('impersonateUser', () => {
+  cy.loginRootUser();
+  cy.visit('http://localhost:8000/impersonate/4/');
+});

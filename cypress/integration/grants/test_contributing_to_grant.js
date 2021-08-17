@@ -1,13 +1,6 @@
 describe('contributing to grant', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8000/_administrationlogin');
-
-    cy.get('[name=username]').type('root');
-    cy.get('[name=password]').type('gitcoinco');
-    cy.contains('Log in').click();
-
-    cy.contains('Impersonate Users').click();
-    cy.contains('test3').click();
+    cy.impersonateUser();
 
     cy.get('#navbarDropdownWallet').as('wallet').click();
     cy.contains('Connect Wallet').click();
