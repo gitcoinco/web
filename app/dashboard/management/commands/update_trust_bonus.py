@@ -36,8 +36,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         profiles = Profile.objects.all()
         print(profiles.count())
-        for instance in profiles:
+        for profile in profiles.iterator():
             if (options['call_now']):
-                update_trust_bonus(instance.pk)
+                params = profile.as_dict
+                params['trust_bonus'] = profile.trust_bonus
+                print("Saving - %s - %s" % (profile.handle, params['trust_bonus']))
+                profile.save()
             else:
-                update_trust_bonus.delay(instance.pk)
+                update_trust_bonus.delay(profile.pk)
