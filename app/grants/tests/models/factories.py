@@ -20,4 +20,5 @@ class CartActivityFactory(factory.django.DjangoModelFactory):
     profile = factory.SubFactory(ProfileFactory)
     metadata = {}
     bulk = True
+    latest = True
    
