@@ -367,15 +367,15 @@ urlpatterns = [
         name='hackathon_project_page'
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
-    # TODO: revisit if we need to keep these urls for legacy links
-    # re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
-    # re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
+
     url(r'^hackathon/<str:hackathon>/?$/?', dashboard.views.hackathon, name='hackathon'),
     url(r'^hackathon/<str:hackathon>/<str:panel>/?$/?', dashboard.views.hackathon, name='hackathon'),
-    path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
-    path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
-    re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons3'),
-    re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons4'),
+
+    # list all hackathons
+    re_path(r'^hackathon-list/?$', dashboard.views.get_hackathons, name='get_hackathons'),
+    re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons'),
+    re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons'),
+
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),

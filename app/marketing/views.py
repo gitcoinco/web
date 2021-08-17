@@ -107,7 +107,7 @@ def settings_helper_get_auth(request, key=None):
     es = EmailSubscriber.objects.none()
 
     # check if user's email has changed
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile:
         current_email = get_github_primary_email(request.user.profile.github_access_token)
         if current_email != request.user.profile.email:
             request.user.profile.email = current_email

@@ -280,7 +280,7 @@ def create_hackathon_list_page_cache():
     view = 'hackathons'
     keyword = 'hackathons'
     current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
-    upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
+    upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date')
     finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
 
     events = []
