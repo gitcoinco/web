@@ -4,6 +4,11 @@ from dashboard.models import Profile
 from grants.models import *
 
 
+class GrantFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Grant
+
+
 class ProfileFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Profile
@@ -16,9 +21,9 @@ class ProfileFactory(factory.django.DjangoModelFactory):
 class CartActivityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CartActivity
-
+    
+    grant = factory.SubFactory(GrantFactory)
     profile = factory.SubFactory(ProfileFactory)
     metadata = {}
     bulk = True
     latest = True
-   
