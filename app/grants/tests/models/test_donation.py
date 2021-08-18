@@ -68,6 +68,18 @@ class TestDonation:
         assert hasattr(donation, 'network')
         assert donation.network == 'mainnet'
 
+    def test_donation_has_a_donation_percentage(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'donation_percentage')
+        assert donation.donation_percentage == 0
+
+    def test_donation_belongs_to_subscription(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'subscription')
+        assert donation.subscription == None
+
     
 
 
