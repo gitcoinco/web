@@ -58,4 +58,12 @@ class TestCartActivity:
         assert hasattr(cart_activity, "bulk")
         assert cart_activity.bulk == False
 
+    def test_cart_activity_has_latest_attribute(self):
+        """Test latest attribute and default value (BooleanField)"""
+
+        cart_activity = CartActivityFactory()
+
+        assert hasattr(cart_activity, "latest")
+        assert cart_activity.latest == False
+
 
