@@ -20,8 +20,13 @@ class TestGrantAPIKey:
        assert hasattr(grant_api_key, "key")
        assert grant_api_key.key == ''
 
-    def test_grant_api_key_has_a_secret_attribute(this):
+    def test_grant_api_key_has_a_secret_attribute(self):
        grant_api_key = GrantAPIKeyFactory()
 
        assert hasattr(grant_api_key, "secret")
        assert grant_api_key.secret == ''
+
+    def test_grant_api_key_belongs_to_profile(self):
+        grant_api_key = GrantAPIKeyFactory()
+
+        assert isinstance(grant_api_key.profile, Profile)
