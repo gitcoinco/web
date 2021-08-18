@@ -80,6 +80,12 @@ class TestDonation:
         assert hasattr(donation, 'subscription')
         assert donation.subscription == None
 
+    def test_donation_belongs_to_contribution(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'contribution')
+        assert donation.contribution == None
+
     
 
 
