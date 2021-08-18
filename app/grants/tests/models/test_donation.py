@@ -85,7 +85,3 @@ class TestDonation:
 
         assert hasattr(donation, 'contribution')
         assert donation.contribution == None
-
-    
-
-
