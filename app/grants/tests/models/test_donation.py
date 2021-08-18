@@ -50,4 +50,10 @@ class TestDonation:
         assert hasattr(donation, 'token_amount')
         assert donation.token_amount == 0
 
+    def test_donation_has_a_token_amount_usdt(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'token_amount_usdt')
+        assert donation.token_amount_usdt == 0
+
 
