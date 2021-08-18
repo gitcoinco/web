@@ -161,6 +161,110 @@
   <!-- Checkout buttons -->
   <div class="row justify-content-end">
     <div class="btn-group flex-column flex-grow-1 flex-md-grow-0 flex-md-row" role="group" aria-label="Checkout buttons">
+
+      <grants-cart-ethereum-zksync
+        inline-template
+        @zksync-data-updated="onZkSyncUpdate"
+        :current-tokens="currentTokens"
+        :donation-inputs="donationInputs"
+        :max-cart-items="maxCartItems"
+        :grants-by-tenant="grantsByTenant"
+        :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+        :network="network"
+      >
+        <div class="w-100">
+        <!-- Checkout with Polygon button -->
+          <button
+            @click="zksync.showModal = true"
+            class="btn btn-outline-primary py-2 w-100 text-nowrap mr-0 mr-md-2 mt-2 mt-md-0"
+            :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
+            id='js-zkSyncfundGrants-button'
+            v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
+          >
+            Checkout with Polygon
+          </button>
+
+          <!-- Modal shown when clicking button -->
+          <b-modal
+            id="zksync-modal" :visible="zksync.showModal"
+            @hide="zksync.showModal=false; zksync.showChangeToken=false"
+            class="modal-dialog modal-lg" header-border-variant="transparent"
+            center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+          >
+            <!-- Modal close button -->
+            <template v-slot:modal-header="{ close }">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                @click="close()"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </template>
+
+            <!-- Main content -->
+            <template v-slot:default="{ hide }">
+              <div class="px-4 pb-4">
+                <!-- Header -->
+                <div class="mx-2 mb-4 pb-2 text-center">
+                  <img src="{% static 'v2/images/grants/zksync.svg' %}" alt="zkSync Logo" width="150">
+                  <h1 class="font-weight-bold mt-2">Pay with zkSync</h1>
+                </div>
+
+                <!-- If checkout not started -->
+                <div v-if="zksync.checkoutStatus === 'not-started'">
+                  <p>
+                    zkSync is powered by zkRollup with a universal setup &mdash; an L2
+                    scaling solution. Save gas fees and get faster confirmations.
+                    <a href="https://zksync.io/" target="_blank">Learn more</a>.
+                  </p>
+                  <p>Upon clicking Proceed, a new browser tab will be opened for you to finish checkout on zkSync's website.</p>
+                  <small class="mb-4">
+                    <p>
+                      zkSync fee amount will be displayed on the zkSync website.
+                      This fee will be paid in <span class="font-weight-bold">[[zksync.feeTokenSymbol]]</span>.
+                      <span v-if="cart.tokenList.length > 1 && !zksync.showChangeToken">
+                        <span @click="zksync.showChangeToken=true" class="hyperlink">Change token</span>.
+                      </span>
+                    </p>
+                    <div v-if="zksync.showChangeToken">
+                      <div>Select fee token</div>
+                      <v-select v-model="zksync.feeTokenSymbol" :options="cart.tokenList" :clearable="false"/>
+                    </div>
+                  </small>
+                </div>
+
+                <!-- If checkout is pending -->
+                <div v-else-if="zksync.checkoutStatus === 'pending'">
+                  <div class="text-center mb-3 h4 pt-0">
+                    <i class="fas fa-spinner fa-spin text-primary"></i>
+                  </div>
+                  <p>Checkout in progress. Please complete the checkout process on the zkSync website.</p>
+                </div>
+
+                <!-- Shared warning -->
+                <div class="mt-2 p-2 text-left bg-warning w-100 border rounded">
+                  <div class="font-weight-bold">IMPORTANT: Do not close this tab or the zkSync tab until your transfers are complete!</div>
+                </div>
+
+                <!-- If checkout not started -->
+                <div v-if="zksync.checkoutStatus === 'not-started'" class="text-center pt-4">
+                  <button @click="checkoutWithZksync" class="btn btn-gc-blue shadow-none">
+                  Proceed
+                  </button>
+                  <div class="font-smaller-2 font-italic mt-2">
+                    If the zkSync page does not open, your browser may have blocked it.
+                    Please allow popups from https://gitcoin.co in your browser settings.
+                  </div>
+                </div>
+              </div>
+            </template>
+          </b-modal>
+        </div>
+      </grants-cart-ethereum-zksync>
+
       <grants-cart-ethereum-zksync
         inline-template
         @zksync-data-updated="onZkSyncUpdate"
@@ -175,7 +279,7 @@
         <!-- Checkout with zkSync button -->
           <button
             @click="zksync.showModal = true"
-            class="btn btn-outline-primary py-2 w-100 text-nowrap"
+            class="btn btn-outline-primary py-2 w-100 text-nowrap ml-0 ml-md-2 mt-2 mt-md-0"
             :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
             id='js-zkSyncfundGrants-button'
             v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
