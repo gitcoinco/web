@@ -10,5 +10,3 @@ class GrantAPIKeyFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = GrantAPIKey
-
-    profile = factory.SubFactory(ProfileFactory)
