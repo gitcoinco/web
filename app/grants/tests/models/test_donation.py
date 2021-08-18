@@ -62,6 +62,12 @@ class TestDonation:
         assert hasattr(donation, 'tx_id')
         assert donation.tx_id == '0x0'
 
+    def test_donation_has_a_network(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'network')
+        assert donation.network == 'mainnet'
+
     
 
 
