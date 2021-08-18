@@ -50,3 +50,12 @@ class TestCartActivity:
         assert cart_activity.metadata == {}
         assert len(cart_activity.metadata) == 0
 
+    def test_cart_activity_has_bulk_attribute(self):
+        """Test bulk attribute and default value (BooleanField)"""
+
+        cart_activity = CartActivityFactory()
+
+        assert hasattr(cart_activity, "bulk")
+        assert cart_activity.bulk == False
+
+
