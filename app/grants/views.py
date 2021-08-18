@@ -23,7 +23,6 @@ import json
 import logging
 import math
 import re
-import time
 import uuid
 from datetime import datetime
 from urllib.parse import urlencode
@@ -38,6 +37,7 @@ from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
+from django.http.response import HttpResponseBadRequest, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -67,6 +67,7 @@ from dashboard.utils import get_web3
 from economy.models import Token as FTokens
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
+from grants.clr import fetch_data
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCollection, GrantType, MatchPledge, Subscription,
@@ -81,7 +82,7 @@ from grants.utils import (
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
@@ -3494,3 +3495,69 @@ def ingest_contributions(request):
         return JsonResponse({ 'success': False, 'message': err })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
+
+
+def get_clr_sybil_input(request, round_id):
+    '''
+        This returns a paginated JSON response to return contributions
+        which are considered while calculating the QF match for a given CLR
+    '''
+    token = request.headers['token']
+    page = request.GET.get('page', 1)
+
+    data = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN').data
+
+    if not round_id or not token or not data['token']:
+        return HttpResponseBadRequest("error: missing arguments")
+
+    if token != data['token']:
+        return HttpResponseBadRequest("error: invalid token")
+
+    clr = GrantCLR.objects.filter(pk=round_id).first()
+    if not clr:
+        return HttpResponseBadRequest("error: round not found")
+
+    try:
+        limit = data['limit'] if data['limit'] else 100
+
+        # fetch grant contributions needed for round
+        __, all_clr_contributions = fetch_data(clr)
+        total_count = all_clr_contributions.count()
+
+        # extract only needed fields
+        all_clr_contributions = list(all_clr_contributions.values(
+            'created_on', 'profile_for_clr__handle', 'profile_for_clr_id',
+            'match', 'normalized_data'
+        ))
+
+        # paginate contributions
+        contributions = Paginator(all_clr_contributions, limit)
+        try:
+            contributions_queryset = contributions.page(page)
+        except EmptyPage:
+            response = {
+                'metadata': {
+                    'count': 0,
+                    'current_page': 0,
+                    'num_pages': 0,
+                    'has_next': False
+                },
+                'contributions': []
+            }
+            return HttpResponse(response)
+
+        response = {
+            'metadata': {
+                'count': total_count,
+                'current_page': page,
+                'total_pages': contributions.num_pages,
+                'has_next': contributions_queryset.has_next()
+            },
+            'contributions': contributions_queryset.object_list
+        }
+
+    except Exception as e:
+        print(e)
+        return HttpResponseServerError()
+
+    return JsonResponse(response)

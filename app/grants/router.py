@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, Paginator
 
 import django_filters.rest_framework
 from ratelimit.decorators import ratelimit
