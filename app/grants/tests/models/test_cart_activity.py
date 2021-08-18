@@ -32,3 +32,12 @@ class TestCartActivity:
         
         assert hasattr(cart_activity, "profile")
         assert isinstance(cart_activity.profile, Profile)
+
+    def test_cart_activity_has_action_attribute(self):
+        """Test action attribute and default value (CharField)"""
+
+        cart_activity = CartActivityFactory()
+
+        assert hasattr(cart_activity, "action")
+        assert cart_activity.action == ''
+
