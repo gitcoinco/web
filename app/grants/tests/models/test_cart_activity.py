@@ -41,3 +41,12 @@ class TestCartActivity:
         assert hasattr(cart_activity, "action")
         assert cart_activity.action == ''
 
+    def test_cart_activity_has_metadata_attribute(self):
+        """Test metadata attribute and default value (JSONField)"""
+
+        cart_activity = CartActivityFactory()
+
+        assert hasattr(cart_activity, "metadata")
+        assert cart_activity.metadata == {}
+        assert len(cart_activity.metadata) == 0
+
