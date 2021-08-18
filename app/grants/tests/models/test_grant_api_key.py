@@ -19,3 +19,9 @@ class TestGrantAPIKey:
 
        assert hasattr(grant_api_key, "key")
        assert grant_api_key.key == ''
+
+    def test_grant_api_key_has_a_secret_attribute(this):
+       grant_api_key = GrantAPIKeyFactory()
+
+       assert hasattr(grant_api_key, "secret")
+       assert grant_api_key.secret == ''
