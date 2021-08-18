@@ -38,6 +38,10 @@ class TestDonation:
         assert hasattr(donation, 'token_address')
         assert donation.token_address == '0x0'
 
-    
+    def test_donation_has_a_token_symbol(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'token_symbol')
+        assert donation.token_symbol == ''
 
 
