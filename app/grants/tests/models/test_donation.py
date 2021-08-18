@@ -32,4 +32,12 @@ class TestDonation:
         assert hasattr(donation, 'profile')
         assert donation.profile == None
 
+    def test_donation_has_a_token_address(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'token_address')
+        assert donation.token_address == '0x0'
+
+    
+
 
