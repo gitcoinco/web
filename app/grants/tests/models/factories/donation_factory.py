@@ -1,6 +1,5 @@
 import factory
 import pytest
-# from dashboard.tests.factories.profile_factory import ProfileFactory
 from grants.models.donation import Donation
 
 
