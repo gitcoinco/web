@@ -26,6 +26,10 @@ class TestDonation:
         assert hasattr(donation, 'to_address')
         assert donation.to_address == '0x0'
 
-   
+    def test_donation_belongs_to_profile(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'profile')
+        assert donation.profile == None
 
 
