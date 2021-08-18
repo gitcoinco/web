@@ -17,3 +17,13 @@ class TestCartActivity:
 
         assert isinstance(cart_activity, CartActivity)
 
+    def test_cart_activity_belongs_to_grant(self):
+        """Test grant attribute in CartActivity model (ForeignKey)."""
+
+        cart_activity = CartActivityFactory()
+        
+        assert hasattr(cart_activity, "grant")
+        assert isinstance(cart_activity.grant, Grant)
+
+
+
