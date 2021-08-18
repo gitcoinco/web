@@ -70,6 +70,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% comment %} Main container {% endcomment %}
 
             <div v-if="isLoading" class="text-center mb-5">
+              <div role="presentation" class="nav nav-item ml-auto mt-2 float-right">
+                <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
+                  <i class="fa fa-times pr-1" aria-hidden="true"></i> Clear cart
+                </li>
+              </div>
+
               <loading-screen class="my-5"></loading-screen>
               <div>Fetching cart data...</div>
             </div>
