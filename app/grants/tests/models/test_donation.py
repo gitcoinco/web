@@ -14,4 +14,10 @@ class TestDonation:
 
         assert isinstance(donation, Donation)
 
+    def test_donation_has_a_from_address(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, "from_address")
+        assert donation.from_address == '0x0'
+
 
