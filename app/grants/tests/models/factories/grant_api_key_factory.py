@@ -1,6 +1,5 @@
 import factory
 import pytest
-from dashboard.tests.factories.profile_factory import ProfileFactory
 from grants.models.grant_api_key import GrantAPIKey
 
 

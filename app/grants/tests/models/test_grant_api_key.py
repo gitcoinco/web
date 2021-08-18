@@ -9,23 +9,31 @@ class TestGrantAPIKey:
     """Test GrantAPIKey model."""
 
     def test_creation(self):
+        """Test GrantAPIKey returned by factory is valid."""
+
         grant_api_key = GrantAPIKeyFactory()
 
         assert isinstance(grant_api_key, GrantAPIKey)
 
     def test_grant_api_key_has_a_key(self):
-       grant_api_key = GrantAPIKeyFactory()
+        """Test 'key' attribute and default value."""
 
-       assert hasattr(grant_api_key, "key")
-       assert grant_api_key.key == ''
+        grant_api_key = GrantAPIKeyFactory()
+
+        assert hasattr(grant_api_key, "key")
+        assert grant_api_key.key == ''
 
     def test_grant_api_key_has_a_secret(self):
-       grant_api_key = GrantAPIKeyFactory()
+        """Test 'secret' attribute and default value."""
 
-       assert hasattr(grant_api_key, "secret")
-       assert grant_api_key.secret == ''
+        grant_api_key = GrantAPIKeyFactory()
+
+        assert hasattr(grant_api_key, "secret")
+        assert grant_api_key.secret == ''
 
     def test_grant_api_key_belongs_to_profile(self):
+        """Test 'profile' attribute and default value."""
+
         grant_api_key = GrantAPIKeyFactory()
 
         assert hasattr(grant_api_key, "profile")
