@@ -55,5 +55,13 @@ class TestDonation:
 
         assert hasattr(donation, 'token_amount_usdt')
         assert donation.token_amount_usdt == 0
+    
+    def test_donation_has_a_tx_id(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'tx_id')
+        assert donation.tx_id == '0x0'
+
+    
 
 
