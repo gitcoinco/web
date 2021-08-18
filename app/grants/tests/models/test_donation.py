@@ -17,7 +17,15 @@ class TestDonation:
     def test_donation_has_a_from_address(self):
         donation = DonationFactory()
 
-        assert hasattr(donation, "from_address")
+        assert hasattr(donation, 'from_address')
         assert donation.from_address == '0x0'
+
+    def test_donation_has_a_to_address(self):
+        donation = DonationFactory()
+
+        assert hasattr(donation, 'to_address')
+        assert donation.to_address == '0x0'
+
+   
 
 
