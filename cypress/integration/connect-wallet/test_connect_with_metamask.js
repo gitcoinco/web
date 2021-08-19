@@ -1,4 +1,14 @@
 describe('connect wallet: metamask', () => {
+  before(() => {
+    cy.setupMetamask();
+    cy.changeMetamaskNetwork('localhost');
+  });
+
+  after(() => {
+    cy.disconnectWallet();
+    cy.clearWindows();
+  });
+
   it('pulls address from metamask accounts', () => {
     cy.impersonateUser();
 

@@ -1,20 +1,31 @@
 describe('Creating a new grant', () => {
-  it('can navigate to the new grant screen', () => {
-    cy.impersonateUser();
+  before(() => {
+    cy.setupMetamask();
+  });
+  after(() => {
+    cy.clearWindows();
+  });
 
+  beforeEach(() => {
+    cy.impersonateUser();
+  });
+
+  afterEach(() => {
+    cy.logout();
+  });
+
+  it('can navigate to the new grant screen', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');
     cy.get('[data-submenu=products]').find('[data-submenu=grants]').click();
-    cy.url().should('eq', 'http://localhost:8000/grants/');
+    cy.url().should('eq', 'grants/');
 
     cy.get('#grants-showcase').contains('Create a Grant').click();
-    cy.url().should('eq', 'http://localhost:8000/grants/new');
+    cy.url().should('eq', 'grants/new');
   });
 
   describe('creation:success - required fields only', () => {
     it('submits a grant for review', () => {
-      cy.impersonateUser();
-
-      cy.visit('http://localhost:8000/grants/new');
+      cy.visit('grants/new');
 
       cy.get('form').within(() => {
         cy.get('input[name=title]').type('Gitcoin Fund');

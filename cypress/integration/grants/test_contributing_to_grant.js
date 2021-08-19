@@ -1,29 +1,101 @@
 describe('contributing to grant', () => {
-  beforeEach(() => {
-    cy.impersonateUser();
-
-    cy.get('#navbarDropdownWallet').as('wallet').click();
-    cy.contains('Connect Wallet').click();
-    cy.contains('MetaMask').click();
-    cy.acceptMetamaskAccess();
+  before(() => {
+    cy.setupMetamask();
+    cy.changeMetamaskNetwork('localhost');
   });
 
-  it('contributes eth to a grant', () => {
-    // TODO: This grant is already in the local db - it is NOT created
-    // as part of the test process, creation of these types of entities
-    // should be automated
-    cy.visit('http://localhost:8000/grants/4/local-fund');
+  afterEach(() => {
+    cy.disconnectWallet();
+    cy.logout();
+  });
+
+  after(() => {
+    cy.clearWindows();
+  });
+
+  it('contributes eth to a single grant', () => {
+    cy.createGrantSubmission().then((response) => {
+      const grantUrl = response.body.url;
+
+      cy.approveGrant(grantUrl);
+      cy.impersonateUser();
+
+      cy.visit(grantUrl);
+      cy.get('#CookielawBannerAccept').click();
+
+      cy.get('#navbarDropdownWallet').click();
+      cy.contains('Connect Wallet').click();
+      cy.contains('MetaMask').click();
+
+      cy.acceptMetamaskAccess();
+
+      cy.contains('Add to Cart').click();
+
+      const pk = grantUrl.match(/\/grants\/(\d*)\//)[1];
+
+      cy.get(`#select2-side-cart-currency-${pk}-container`).click();
+      cy.get('input[role=searchbox]').type('ETH{enter}');
+      cy.contains('CHECKOUT').click();
+
+      cy.get('#gitcoin-grant-input-amount').type('{backspace}0');
+      cy.contains('Standard Checkout').click();
+
+      cy.confirmMetamaskTransaction();
+
+      cy.get('body').should('contain.text', 'Thank you for contributing to open source!');
+    });
+  });
+
+  it('contributes eth to multiple grants', () => {
+    cy.createGrantSubmission().then((response) => {
+      const grantUrl = response.body.url;
+
+      cy.wrap(grantUrl).as('grant1');
+
+      cy.approveGrant(grantUrl);
+    });
+
+    cy.createGrantSubmission().then((response) => {
+      const grantUrl = response.body.url;
+
+      cy.wrap(grantUrl).as('grant2');
+
+      cy.approveGrant(grantUrl);
+    });
+
+    cy.impersonateUser();
 
     cy.get('#CookielawBannerAccept').click();
-    cy.contains('Add to Cart').click();
 
-    cy.get('#select2-side-cart-currency-4-container').click();
-    cy.get('input[role=searchbox]').type('ETH{enter}');
-    cy.contains('CHECKOUT').click();
+    cy.get('@grant1').then((grantUrl) => {
+      cy.visit(grantUrl);
+      cy.contains('Add to Cart').click();
+
+      const pk = grantUrl.match(/\/grants\/(\d*)\//)[1];
+
+      cy.get(`#select2-side-cart-currency-${pk}-container`).click();
+      cy.get('input[role=searchbox]').type('ETH{enter}');
+    });
+
+    cy.get('@grant2').then((grantUrl) => {
+      cy.visit(grantUrl);
+      cy.contains('Add to Cart').click({force: true});
+
+      const pk = grantUrl.match(/\/grants\/(\d*)\//)[1];
+
+      cy.get(`#select2-side-cart-currency-${pk}-container`).click();
+      cy.get('input[role=searchbox]').type('ETH{enter}');
+    });
+
+    cy.visit('grants/cart?');
+
+
+    cy.contains('MetaMask').click();
+    cy.acceptMetamaskAccess();
 
     cy.get('#gitcoin-grant-input-amount').type('{backspace}0');
-
     cy.contains('Standard Checkout').click();
+
     cy.confirmMetamaskTransaction();
 
     cy.get('body').should('contain.text', 'Thank you for contributing to open source!');
