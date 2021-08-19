@@ -1,5 +1,6 @@
 import pytest
 from grants.models.clr_match import CLRMatch
+from grants.models.grant import Grant
 
 from .factories.clr_match_factory import CLRMatchFactory
 
@@ -30,3 +31,11 @@ class TestCLRMatch:
 
         assert hasattr(clr_match, 'amount')
         assert clr_match.amount == 0.0
+
+    def test_clr_match_belongs_to_grant(self):
+        """Test CLRMatch has an associated grant."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'grant')
+        assert isinstance(clr_match.grant, Grant)
