@@ -43,15 +43,24 @@ class TestGrantBrandingRoutingPolicy:
 
     def test_grant_branding_routing_policy_has_a_priority_attribute(self):
         """Test priority attribute."""
+
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
-        pass
+
+        assert hasattr(grant_branding_routing_policy, 'priority')
+        assert grant_branding_routing_policy.priority == 1
 
     def test_grant_branding_routing_policy_has_a_background_image(self):
         """Test background_image attribute."""
+
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
-        pass
+
+        assert hasattr(grant_branding_routing_policy, 'background_image')
+        assert grant_branding_routing_policy.backhround_image == None
 
     def test_grant_branding_routing_policy_has_a_inline_css_attribute(self):
         """Test inline_css attribute."""
+
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
-        pass
+
+        assert hasattr(grant_branding_routing_policy, 'inline_css')
+        assert grant_branding_routing_policy.inline_css == ''
