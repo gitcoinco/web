@@ -1,11 +1,3 @@
-const { getAddress } = ethers.utils;
-
-// Wrapper around ethers.js BigNumber which converts undefined values to zero
-const toBigNumber = (value) => {
-  if (!value)
-    return BigNumber.from('0');
-  return BigNumber.from(value);
-};
 
 Vue.component('grantsCartEthereumPolygon', {
   props: {
@@ -19,8 +11,6 @@ Vue.component('grantsCartEthereumPolygon', {
 
   data: function() {
     return {
-      ethersProvider: undefined,
-
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started' // options are 'not-started', 'pending', and 'complete'
@@ -81,16 +71,14 @@ Vue.component('grantsCartEthereumPolygon', {
     donationInputs: {
       immediate: true,
       async handler(donations) {
-        // Setup zkSync if necessary (e.g. when mounted)
-        if (!this.zksync.checkoutManager) {
-          await this.setupPolygon();
-        }
+        // Setup polygon (e.g. when mounted)
+        await this.setupPolygon();
         // Update state and data that frontend needs
         await this.onChangeHandler(donations);
       }
     },
 
-    // When network changes we need to update zkSync config, fetch new balances, etc.
+    // When network changes we need to update Polygon config, fetch new balances, etc.
     network: {
       immediate: true,
       async handler() {
@@ -141,21 +129,41 @@ Vue.component('grantsCartEthereumPolygon', {
       this.polygon.checkoutStatus = 'not-started';
     },
 
-    // Called on page load to initialize Polygon
     async setupPolygon() {
-      const network = this.network || 'mainnet'; // fallback to mainnet if no wallet is connected
-
-      if (!web3Modal || !provider) {
-        return; // exit if web3 isn't defined, and we'll run this function later
+      // Connect to Polygon network with MetaMask
+      try {
+        this.user.address = await ethereum.request({ method: 'eth_requestAccounts' })[0];
+        await ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x13881' }] // Mainnet - 0x89
+        });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask
+        if (switchError.code === 4902) {
+          try {
+            await ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: '0x13881',
+                rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+                chainName: 'Matic Testnet',
+                nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
+              }]
+            });
+          } catch (addError) {
+            if (addError.code === 4001) {
+              _alert({ message: gettext('Please connect MetaMask to Polygon network.') }, 'danger');
+            } else {
+              console.error(addError);
+            }
+          }
+        } else if (switchError.code === 4001) {
+          // this.handleError(new Error('Please connect MetaMask to Polygon network.'));
+          _alert({ message: gettext('Please connect MetaMask to Polygon network.') }, 'danger');
+        } else {
+          console.error(switchError);
+        }
       }
-
-      this.user.address = (await web3.eth.getAccounts())[0];
-      this.ethersProvider = ethers.getDefaultProvider(network, {
-        infura: document.contxt.INFURA_V3_PROJECT_ID
-        // etherscan: YOUR_ETHERSCAN_API_KEY,
-        // alchemy: YOUR_ALCHEMY_API_KEY,
-        // pocket: YOUR_POCKET_APPLICATION_KEY
-      });
     },
 
     // Send a batch transfer based on donation inputs
@@ -166,9 +174,10 @@ Vue.component('grantsCartEthereumPolygon', {
         // TODO: Make sure network is
         const isCorrectNetwork = null;
 
-        // Token approvals and balance checks (just checks data, does not execute approavals)
+        // Token approvals and balance checks from bulk checkout contract
+        // (just checks data, does not execute approvals)
         const allowanceData = await appCart.$refs.cart.getAllowanceData(
-          this.user.address, bulkCheckoutAddress
+          this.user.address, '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973'
         );
 
         // Save off cart data
