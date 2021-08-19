@@ -112,4 +112,10 @@ class TestCLRMatch:
         assert hasattr(clr_match, 'payout_contribution')
         assert clr_match.payout_contribution == None
 
- 
+    def test_clr_match_has_comments(self):
+        """Test 'comments' attribute and default value."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'comments')
+        assert clr_match.comments == ''
