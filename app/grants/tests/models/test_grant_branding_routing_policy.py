@@ -15,4 +15,20 @@ class TestGrantBrandingRoutingPolicy:
 
         assert isinstance(grant_branding_routing_policy, GrantBrandingRoutingPolicy)
 
-    
+    def test_grant_branding_routing_policy_has_a_policy_name(self):
+        pass
+
+    def test_grant_branding_routing_policy_has_a_url_pattern(self):
+        pass
+
+    def test_grant_branding_routing_policy_has_a_banner_image(self):
+        pass
+
+    def test_grant_branding_routing_policy_has_a_priority_attribute(self):
+        pass
+
+    def test_grant_branding_routing_policy_has_a_background_image(self):
+        pass
+
+    def test_grant_branding_routing_policy_has_a_inline_css_attribute(self):
+        pass
