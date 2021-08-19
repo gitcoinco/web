@@ -55,7 +55,7 @@ class TestGrantBrandingRoutingPolicy:
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
 
         assert hasattr(grant_branding_routing_policy, 'background_image')
-        assert grant_branding_routing_policy.backhround_image == None
+        assert grant_branding_routing_policy.background_image == None
 
     def test_grant_branding_routing_policy_has_a_inline_css_attribute(self):
         """Test inline_css attribute."""
