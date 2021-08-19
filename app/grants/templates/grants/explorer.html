@@ -67,6 +67,16 @@ along with this program. If not, see
           <b-tab title-link-class="nav-line font-weight-bold" active>
             <template v-slot:title>Grants</template>
 
+            [[clrData]]
+            <div v-if="clrData.count > 0">
+              <a class="btn rounded-pill" @click="filter_grants({type: 'all', category: '', keyword: ''})" :class="`${ current_type == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
+                All Grants
+              </a>
+              <a class="btn rounded-pill" href="" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ current_type == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
+                [[clr.display_text]]
+              </a>
+
+            </div>
             {% if active_rounds %}
               <div class="">
 

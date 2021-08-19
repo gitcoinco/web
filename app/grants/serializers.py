@@ -1,4 +1,5 @@
 from dashboard.router import ProfileSerializer
+from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
 from .models import Contribution, Grant, GrantCLR, Subscription
@@ -111,7 +112,7 @@ class DonorSerializer(serializers.Serializer):
     gitcoin_maintenance_amount = serializers.SerializerMethodField()
     grant_usd_value = serializers.SerializerMethodField()
     gitcoin_usd_value = serializers.SerializerMethodField()
-    
+
     def get_grant_amount(self, obj):
         subscription = obj.subscription
         grant_amount = format(amount_in_wei(subscription.token_address, subscription.amount_per_period_minus_gas_price), '.0f')
@@ -138,11 +139,13 @@ class DonorSerializer(serializers.Serializer):
         fields = ('grant_name', 'asset', 'timestamp', 'grant_amount', 'gitcoin_maintenance_amount', 'grant_usd_value', 'gitcoin_usd_value')
 
 
-class GrantCLRSerializer(serializers.ModelSerializer):
+class GrantCLRSerializer(FlexFieldsModelSerializer):
     """Handle metadata of CLR rounds"""
     class Meta:
         """Define the GrantCLR serializer metadata."""
         model = GrantCLR
-        fields = (
-            'id', 'display_text', 'round_num', 'is_active', 'start_date', 'end_date'
-        )
+        fields = '__all__'
+        expandable_fields = {
+          'owner': (ProfileSerializer)
+        }
+

@@ -106,6 +106,7 @@ if (document.getElementById('grants-showcase')) {
     data: {
       activePage: document.activePage,
       grants: [],
+      clrData: {},
       grant: {},
       page: 1,
       collectionsPage: 1,
@@ -183,6 +184,14 @@ if (document.getElementById('grants-showcase')) {
         }
 
         this.updateURI();
+      },
+      fetchClrGrants: async function() {
+        let vm = this;
+        let url = 'http://localhost:8000/api/v0.1/grants_clr/';
+        let getClr = await fetch(url);
+        let clrJson = await getClr.json();
+
+        vm.clrData = clrJson;
       },
       updateURI: function() {
         let vm = this;
@@ -536,7 +545,7 @@ if (document.getElementById('grants-showcase')) {
     },
     mounted() {
       let vm = this;
-
+      this.fetchClrGrants();
       this.fetchGrants(this.page);
 
     }

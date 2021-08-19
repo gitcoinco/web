@@ -859,6 +859,7 @@ def grants_landing(request):
 
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
+    print(grant_type)
 
     # limit = request.GET.get('limit', 6)
     # page = request.GET.get('page', 1)
@@ -1161,7 +1162,7 @@ def grants_by_grant_clr(request, clr_round):
         'grants': grants,
         'can_pin': False,# 'selected_category': category,
         'profile': profile,
-        'grants_following': grants_following,
+        # 'grants_following': grants_following,
         # 'only_contributions': only_contributions,round,
         'collections': collections,
         'grant_bg': get_branding_info(request),
