@@ -79,3 +79,11 @@ class TestCLRMatch:
 
         assert hasattr(clr_match, 'test_payout_contribution')
         assert clr_match.test_payout_contribution == None
+
+    def test_clr_match_has_a_ready_for_payout_attribute(self):
+        """Test 'ready_for_payout' attribute and default value."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'ready_for_payout')
+        assert clr_match.ready_for_payout == False
