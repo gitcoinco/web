@@ -16,19 +16,31 @@ class TestGrantBrandingRoutingPolicy:
         assert isinstance(grant_branding_routing_policy, GrantBrandingRoutingPolicy)
 
     def test_grant_branding_routing_policy_has_a_policy_name(self):
+        """Test policy_name attribute."""
+        grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
         pass
 
     def test_grant_branding_routing_policy_has_a_url_pattern(self):
+        """Test url_pattern attribute."""
+        grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
         pass
 
     def test_grant_branding_routing_policy_has_a_banner_image(self):
+        """Test banner_image attribute."""
+        grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
         pass
 
     def test_grant_branding_routing_policy_has_a_priority_attribute(self):
+        """Test priority attribute."""
+        grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
         pass
 
     def test_grant_branding_routing_policy_has_a_background_image(self):
+        """Test background_image attribute."""
+        grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
         pass
 
     def test_grant_branding_routing_policy_has_a_inline_css_attribute(self):
+        """Test inline_css attribute."""
+        grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
         pass
