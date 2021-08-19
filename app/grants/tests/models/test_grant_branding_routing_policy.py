@@ -17,8 +17,11 @@ class TestGrantBrandingRoutingPolicy:
 
     def test_grant_branding_routing_policy_has_a_policy_name(self):
         """Test policy_name attribute."""
+
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
-        pass
+
+        assert hasattr(grant_branding_routing_policy, 'policy_name')
+        assert grant_branding_routing_policy.policy_name == None
 
     def test_grant_branding_routing_policy_has_a_url_pattern(self):
         """Test url_pattern attribute."""
