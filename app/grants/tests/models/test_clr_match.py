@@ -22,3 +22,11 @@ class TestCLRMatch:
 
         assert hasattr(clr_match, 'round_number')
         assert clr_match.round_number == None
+
+    def test_clr_match_has_amount(self):
+        """Test 'amount' attribute and default value."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'amount')
+        assert clr_match.amount == 0.0
