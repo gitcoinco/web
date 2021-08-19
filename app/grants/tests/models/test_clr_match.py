@@ -47,3 +47,11 @@ class TestCLRMatch:
 
         assert hasattr(clr_match, 'has_passed_kyc')
         assert clr_match.has_passed_kyc == False
+
+    def test_clr_match_has_a_ready_for_test_payout_attribute(self):
+        """Test 'ready_for_test_payout' attribute and default value."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'ready_for_test_payout')
+        assert clr_match.ready_for_test_payout == False
