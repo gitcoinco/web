@@ -32,10 +32,18 @@ class TestCLRMatch:
         assert hasattr(clr_match, 'amount')
         assert clr_match.amount == 0.0
 
-    def test_clr_match_belongs_to_grant(self):
+    def test_clr_match_has_an_associated_grant(self):
         """Test CLRMatch has an associated grant."""
 
         clr_match = CLRMatchFactory()
 
         assert hasattr(clr_match, 'grant')
         assert isinstance(clr_match.grant, Grant)
+
+    def test_clr_match_has_a_has_passed_kyc_attribute(self):
+        """Test 'has_passed_kyc' attribute and default value."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'has_passed_kyc')
+        assert clr_match.has_passed_kyc == False
