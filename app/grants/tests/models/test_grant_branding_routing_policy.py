@@ -1,3 +1,5 @@
+from django.db.models.fields.files import ImageFieldFile
+
 import pytest
 from grants.models.grant_branding_routing_policy import GrantBrandingRoutingPolicy
 
@@ -33,8 +35,11 @@ class TestGrantBrandingRoutingPolicy:
 
     def test_grant_branding_routing_policy_has_a_banner_image(self):
         """Test banner_image attribute."""
+
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
-        pass
+
+        assert hasattr(grant_branding_routing_policy, 'banner_image')
+        assert isinstance(grant_branding_routing_policy.banner_image, ImageFieldFile)
 
     def test_grant_branding_routing_policy_has_a_priority_attribute(self):
         """Test priority attribute."""
