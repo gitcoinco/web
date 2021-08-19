@@ -14,3 +14,11 @@ class TestCLRMatch:
         clr_match = CLRMatchFactory()
 
         assert isinstance(clr_match, CLRMatch)
+
+    def test_clr_match_has_round_number(self):
+        """Test 'round_number' attribute and default value."""
+
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'round_number')
+        assert clr_match.round_number == None
