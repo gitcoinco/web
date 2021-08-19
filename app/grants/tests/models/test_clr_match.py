@@ -73,7 +73,7 @@ class TestCLRMatch:
         assert clr_match.test_payout_tx_date == None
 
     def test_clr_match_has_a_test_payout_contribution(self):
-        """Test 'test_payout_contribution' attribute and default value."""
+        """Test 'test_payout_contribution' attribute."""
 
         clr_match = CLRMatchFactory()
 
@@ -97,11 +97,19 @@ class TestCLRMatch:
         assert clr_match.payout_tx == ''
 
     def test_clr_match_has_payout_tx_date(self):
-        """Test 'payout_tx_date attribute and default value."""
+        """Test 'payout_tx_date' attribute."""
 
         clr_match = CLRMatchFactory()
 
         assert hasattr(clr_match, 'payout_tx_date')
         assert clr_match.payout_tx_date == None
 
+    def test_clr_match_has_payout_contribution_attribute(self):
+        """Test 'payout_contribution' attribute."""
 
+        clr_match = CLRMatchFactory()
+
+        assert hasattr(clr_match, 'payout_contribution')
+        assert clr_match.payout_contribution == None
+
+ 
