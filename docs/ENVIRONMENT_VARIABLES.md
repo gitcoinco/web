@@ -143,7 +143,6 @@ If you opt to modify the port or listener interface, you must update your `launc
 
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
-| FAUCET_AMOUNT | The amount of ETH to be distributed for approved faucet requests. | `float` | .0005 |
 | GITTER_TOKEN | The Gitter chat API token. | `str` | False |
 
 

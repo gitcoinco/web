@@ -2891,7 +2891,7 @@ class Profile(SuperModel):
     )
     trust_profile = models.BooleanField(
         default=False,
-        help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
+        help_text='If this option is chosen, the user is able to submit a ens domain registration even if they are new to github',
     )
     dont_autofollow_earnings = models.BooleanField(
         default=False,

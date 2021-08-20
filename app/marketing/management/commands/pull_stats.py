@@ -61,7 +61,6 @@ class Command(BaseCommand):
             stats.joe_dominance_index,
             stats.avg_time_bounty_turnaround,
             stats.user_actions,
-            stats.faucet,
             stats.email_events,
             stats.bounties_hourly_rate
         ]
