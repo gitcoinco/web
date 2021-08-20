@@ -33,4 +33,12 @@ class TestGrantStat:
         assert grant_stat.data == {}
         assert len(grant_stat.data) == 0
 
+    def test_grant_stat_has_snapshot_type(self):
+        """Test 'snapshot_type' attribute."""
+
+        grant_stat = GrantStatFactory()
+
+        assert hasattr(grant_stat, 'snapshot_type')
+        assert grant_stat.snapshot_type == ''
+
     
