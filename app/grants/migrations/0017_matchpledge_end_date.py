@@ -18,4 +18,10 @@ class Migration(migrations.Migration):
             ),
         ]
     except AttributeError:
-        pass
+        operations = [
+            migrations.AddField(
+                model_name='matchpledge',
+                name='end_date',
+                field=models.DateTimeField(default=grants.models.match_pledge.next_month),
+            ),
+        ]
