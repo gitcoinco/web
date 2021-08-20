@@ -39,3 +39,11 @@ class TestFlag:
 
         assert hasattr(flag, 'comments')
         assert flag.comments == ''
+
+    def test_flag_has_processed_attribute(self):
+        """Test processed attribute and default value."""
+
+        flag = FlagFactory()
+
+        assert hasattr(flag, 'processed')
+        assert flag.processed == False
