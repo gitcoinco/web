@@ -335,7 +335,7 @@ def grants(request):
 
 def get_collections(
     user, keyword, sort='-shuffle_rank', collection_id=None, following=None,
-    idle_grants=None, featured=False
+    idle_grants=None, featured=False, only_contributions=None
 ):
     three_months_ago = timezone.now() - timezone.timedelta(days=90)
 
@@ -347,9 +347,9 @@ def get_collections(
     if idle_grants:
         _collections = _collections.filter(grants__last_update__gt=three_months_ago)
 
-    # if only_contributions:
-    #     contributions = user.profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
-    #     _collections = _collections.filter(grants__in=Subquery(contributions))
+    if only_contributions:
+        contributions = user.profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+        _collections = _collections.filter(grants__in=Subquery(contributions))
 
     if following and user.is_authenticated:
         favorite_grants = Favorite.grants().filter(user=user).values('grant_id')
@@ -371,14 +371,14 @@ def get_collections(
 
 def bulk_grants_for_cart(request):
     grant_types = request.GET.get('type', None)
-    # sort = request.GET.get('sort_option', 'weighted_shuffle')
+    sort = request.GET.get('sort_option', None)
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     grant_tags = request.GET.get('grant_tags', '')
     idle_grants = request.GET.get('idle', '') == 'true'
-    # following = request.GET.get('following', '') != ''
-    # only_contributions = request.GET.get('only_contributions', '') == 'true'
+    following = request.GET.get('following', '') != ''
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
 
     try:
         clr_round_pk = request.GET.get('clr_round')
@@ -389,14 +389,14 @@ def bulk_grants_for_cart(request):
     filters = {
         'request': request,
         'grant_types': grant_types,
-        # 'sort': sort,
+        'sort': sort,
         'network': network,
         'keyword': keyword,
         'state': state,
         'grant_tags': grant_tags,
-        # 'following': following,
+        'following': following,
         'idle_grants': idle_grants,
-        # 'only_contributions': only_contributions,
+        'only_contributions': only_contributions,
         'clr_round': clr_round,
         'omit_my_grants': True
     }
@@ -458,14 +458,14 @@ def get_grants(request):
     state = request.GET.get('state', 'active')
     grant_tags = request.GET.get('grant_tags', '')
     idle_grants = request.GET.get('idle', '') == 'true'
-    # following = request.GET.get('following', '') != ''
-    # only_contributions = request.GET.get('only_contributions', '') == 'true'
+    following = request.GET.get('following', '') != ''
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
     featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
     round_num = request.GET.get('round_num', None)
     sub_round_slug = request.GET.get('sub_round_slug', '')
     customer_name = request.GET.get('customer_name', '')
-    # sort = request.GET.get('sort_option', 'weighted_shuffle')
+    sort = request.GET.get('sort_option', None)
     tenants = request.GET.get('tenants', '')
 
     # 2. Fetch GrantCLR if round_num is present
@@ -485,14 +485,14 @@ def get_grants(request):
     filters = {
         'request': request,
         'grant_types': grant_types,
-        # 'sort': sort,
+        'sort': sort,
         'network': network,
         'keyword': keyword,
         'state': state,
         'grant_tags': grant_tags,
-        # 'following': following,
+        'following': following,
         'idle_grants': idle_grants,
-        # 'only_contributions': only_contributions,
+        'only_contributions': only_contributions,
         'clr_round': clr_round,
         'tenants': tenants
     }
@@ -504,9 +504,9 @@ def get_grants(request):
             request.user,
             keyword,
             collection_id=collection_id,
-            # following=following,
+            following=following,
             idle_grants=idle_grants,
-            # only_contributions=only_contributions,
+            only_contributions=only_contributions,
             featured=featured
         )
 
@@ -525,26 +525,28 @@ def get_grants(request):
         paginator = Paginator(_grants, limit)
         grants = paginator.get_page(page)
 
-    # contributions = Contribution.objects.none()
-    # if request.user.is_authenticated and only_contributions:
-    #     contributions = Contribution.objects.filter(
-    #         id__in=request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values(
-    #             'subscription_contribution__id')).prefetch_related('subscription')
+    contributions = Contribution.objects.none()
+    contributions_by_grant = {}
 
-    # contributions_by_grant = {}
-    # if only_contributions:
-    #     for contribution in contributions:
-    #         grant_id = str(contribution.subscription.grant_id)
-    #         group = contributions_by_grant.get(grant_id, [])
+    if only_contributions:
 
-    #         group.append({
-    #             **contribution.normalized_data,
-    #             'id': contribution.id,
-    #             'grant_id': contribution.subscription.grant_id,
-    #             'created_on': contribution.created_on.strftime("%Y-%m-%d %H:%M")
-    #         })
+        if request.user.is_authenticated:
+            contributions = Contribution.objects.filter(
+                id__in=request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values(
+                    'subscription_contribution__id')).prefetch_related('subscription')
 
-    #         contributions_by_grant[grant_id] = group
+        for contribution in contributions:
+            grant_id = str(contribution.subscription.grant_id)
+            group = contributions_by_grant.get(grant_id, [])
+
+            group.append({
+                **contribution.normalized_data,
+                'id': contribution.id,
+                'grant_id': contribution.subscription.grant_id,
+                'created_on': contribution.created_on.strftime("%Y-%m-%d %H:%M")
+            })
+
+            contributions_by_grant[grant_id] = group
 
     # Clean up before sending response
     grants_array = []
@@ -578,7 +580,7 @@ def get_grants(request):
             'is_staff': request.user.is_staff,
             'is_authenticated': request.user.is_authenticated
         },
-        # 'contributions': contributions_by_grant,
+        'contributions': contributions_by_grant,
         'has_next': has_next,
         'count': paginator.count if paginator else 0,
         'num_pages': paginator.num_pages if paginator else 0,
@@ -588,14 +590,14 @@ def get_grants(request):
 def get_grants_by_filters(
     request,
     grant_types,
-    # sort='weighted_shuffle',
+    sort=None,
     network='mainnet',
     keyword='',
     state='active',
     grant_tags='',
-    # following=False,
+    following=False,
     idle_grants=False,
-    # only_contributions=False,
+    only_contributions=False,
     omit_my_grants=False,
     clr_round=None,
     tenants=''
@@ -622,15 +624,15 @@ def get_grants_by_filters(
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
                         list(profile.grant_admin.all().values_list('pk', flat=True))
             _grants = _grants.exclude(id__in=grants_id)
-        # elif grant_types == 'me':
-        #     # 4. Filter grants created by user
-        #     grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-        #                 list(profile.grant_admin.all().values_list('pk', flat=True))
-        #     _grants = _grants.filter(id__in=grants_id)
-        # elif only_contributions:
-        #     # 5. Filter grants to which the user has contributed to
-        #     contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
-        #     _grants = _grants.filter(id__in=Subquery(contributions))
+        elif grant_types == 'me':
+            # 4. Filter grants created by user
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.filter(id__in=grants_id)
+        elif only_contributions:
+            # 5. Filter grants to which the user has contributed to
+            contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+            _grants = _grants.filter(id__in=Subquery(contributions))
 
     if keyword:
         # 6. Filter grants having matching title & description
@@ -654,10 +656,10 @@ def get_grants_by_filters(
 
         _grants = _grants.filter(type_query)
 
-    # if following and request.user.is_authenticated:
-    #     # 10. Filter grants having matching title & description
-    #     favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
-    #     _grants = _grants.filter(id__in=Subquery(favorite_grants))
+    if following and request.user.is_authenticated:
+        # 10. Filter grants having matching title & description
+        favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
+        _grants = _grants.filter(id__in=Subquery(favorite_grants))
 
     if grant_tags:
         tags = grant_tags.split(',')
@@ -681,20 +683,21 @@ def get_grants_by_filters(
         _grants = _grants.filter(tenant_query)
 
 
-    # # 13. Sort filtered grants
-    # if 'match_pledge_amount_' in sort:
-    #     sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
-    #     clr_prediction_curve_schema_map = {10**x: x+1 for x in range(0, 5)}
-    #     if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
-    #         sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
-    #         field_name = f'clr_prediction_curve__{sort_by_index}__2'
-    #         _grants = _grants.order_by(f"-{field_name}")
-    # elif sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
-    #     grant_type_obj = GrantType.objects.filter(name=grant_type).first()
-    #     is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
-    #     if is_there_a_clr_round_active_for_this_grant_type_now:
-    #         # 3.1 Filter grants to show grants currently active in a CLR
-    #         _grants = _grants.filter(is_clr_active=True)
+    # 13. Sort filtered grants
+    if sort:
+        if 'match_pledge_amount_' in sort:
+            sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
+            clr_prediction_curve_schema_map = {10**x: x+1 for x in range(0, 5)}
+            if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
+                sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
+                field_name = f'clr_prediction_curve__{sort_by_index}__2'
+                _grants = _grants.order_by(f"-{field_name}")
+        elif sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
+            grant_type_obj = GrantType.objects.filter(name=grant_type).first()
+            is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
+            if is_there_a_clr_round_active_for_this_grant_type_now:
+                # 3.1 Filter grants to show grants currently active in a CLR
+                _grants = _grants.filter(is_clr_active=True)
 
 
     _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
@@ -867,9 +870,9 @@ def grants_by_grant_type(request, grant_type):
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     # category = request.GET.get('category', '')
-    # following = request.GET.get('following', '') == 'true'
+    following = request.GET.get('following', '') == 'true'
     idle_grants = request.GET.get('idle', '') == 'true'
-    # only_contributions = request.GET.get('only_contributions', '') == 'true'
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
     featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
 
@@ -912,7 +915,7 @@ def grants_by_grant_type(request, grant_type):
     collections = []
 
     if request.user.is_authenticated:
-        # grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
+        grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
             {
@@ -989,10 +992,10 @@ def grants_by_grant_type(request, grant_type):
         'is_staff': request.user.is_staff,
         # 'selected_category': category,
         'profile': profile,
-        # 'grants_following': grants_following,
-        # 'following': following,
+        'grants_following': grants_following,
+        'following': following,
         'idle_grants': idle_grants,
-        # 'only_contributions': only_contributions,
+        'only_contributions': only_contributions,
         'collection_id': collection_id,
         'collections': collections,
         'featured': featured,
@@ -1055,11 +1058,11 @@ def grants_by_grant_clr(request, clr_round):
     grant_types = request.GET.get('type', None)
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    # sort = request.GET.get('sort_option', 'weighted_shuffle')
+    sort = request.GET.get('sort_option', None)
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     grant_tags = request.GET.get('grant_tags', '')
-    # only_contributions = request.GET.get('only_contributions', '') == 'true'
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
 
     profile = get_profile(request)
 
@@ -1068,13 +1071,13 @@ def grants_by_grant_clr(request, clr_round):
         filters = {
             'request': request,
             'grant_types': grant_types,
-            # 'sort': sort,
+            'sort': sort,
             'network': network,
             'keyword': keyword,
             'state': 'active',
             'grant_tags': grant_tags,
             'idle_grants': True,
-            # 'only_contributions': only_contributions,
+            'only_contributions': only_contributions,
             'clr_round': clr_round
         }
 
@@ -1100,10 +1103,10 @@ def grants_by_grant_clr(request, clr_round):
 
     grant_types = get_grant_clr_types(clr_round, network=network)
 
-    # grants_following = Favorite.objects.none()
+    grants_following = Favorite.objects.none()
     collections = []
     if request.user.is_authenticated and request.user.profile:
-        # grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
+        grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(
             Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
@@ -1142,7 +1145,7 @@ def grants_by_grant_clr(request, clr_round):
     params = {
         'active': 'grants_landing',
         'title': title,
-        # 'sort': sort,
+        'sort': sort,
         'network': network,
         'keyword': keyword,
         'type': grant_types,
@@ -1162,8 +1165,9 @@ def grants_by_grant_clr(request, clr_round):
         'grants': grants,
         'can_pin': False,# 'selected_category': category,
         'profile': profile,
-        # 'grants_following': grants_following,
-        # 'only_contributions': only_contributions,round,
+        'grants_following': grants_following,
+        'only_contributions': only_contributions,
+        'clr_round': clr_round,
         'collections': collections,
         'grant_bg': get_branding_info(request),
         'active_rounds': active_rounds
