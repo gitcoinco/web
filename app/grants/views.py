@@ -1380,6 +1380,14 @@ def grant_details(request, grant_id, grant_slug):
     except Exception as e:
         logger.exception(e)
 
+    grant_tags = []
+    for g_tag in GrantTag.objects.all():
+        _grant_tag = {
+            'id': g_tag.pk,
+            'name': g_tag.name
+        }
+        grant_tags.append(_grant_tag)
+
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -1409,7 +1417,8 @@ def grant_details(request, grant_id, grant_slug):
         'user_code': get_user_code(request.user.profile.id, grant, emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
-        'should_show_claim_match_button': should_show_claim_match_button
+        'should_show_claim_match_button': should_show_claim_match_button,
+        'grant_tags': grant_tags
     }
     # Stats
     if tab == 'stats':
@@ -1678,6 +1687,12 @@ def grant_edit(request, grant_id):
         if region:
             grant.region = region
 
+        grant_tags = request.POST.get('grant_tags[]', None)
+        if grant_tags:
+            tags = [d['id'] for d in json.loads(grant_tags)]
+            grant.tags.set(tags)
+
+
         team_members = request.POST.getlist('team_members[]', None)
         if team_members:
             save_team_members = []
@@ -1929,6 +1944,14 @@ def grant_new(request):
 
         grant_types.append(grant_type_temp)
 
+    grant_tags = []
+    for g_tag in GrantTag.objects.all():
+        _grant_tag = {
+            'id': g_tag.pk,
+            'name': g_tag.name
+        }
+        grant_tags.append(_grant_tag)
+
     params = {
         'active': 'new_grant',
         'title': _('New Grant'),
@@ -1936,6 +1959,7 @@ def grant_new(request):
         'profile': profile,
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
         'grant_types': grant_types,
+        'grant_tags': grant_tags
     }
     return TemplateResponse(request, 'grants/_new.html', params)
 

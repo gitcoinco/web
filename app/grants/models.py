@@ -924,14 +924,11 @@ class Grant(SuperModel):
         team_members = serializers.serialize('json', self.team_members.all(),
                             fields=['handle', 'url', 'profile__lazy_avatar_url']
                         )
-        grant_type = None
         if self.grant_type:
-            grant_type = serializers.serialize('json', [self.grant_type],
-                                fields=['name', 'label']
-                            )
+            grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
 
-        categories = serializers.serialize('json', self.categories.all(),
-                            fields=['category'])
+        grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
+
         return {
                 'id': self.id,
                 'active': self.active,
@@ -983,7 +980,7 @@ class Grant(SuperModel):
                 'team_members': json.loads(team_members),
                 'metadata': self.metadata,
                 'grant_type': json.loads(grant_type) if grant_type else None,
-                'categories': json.loads(categories),
+                'grant_tags': json.loads(grant_tags),
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,

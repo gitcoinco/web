@@ -332,6 +332,7 @@ if (document.getElementById('gc-new-grant')) {
       return {
         chainId: '',
         grant_types: document.grant_types,
+        grant_tags: document.grant_tags,
         grant_regions: grant_regions,
         externalFundingOptions: externalFundingOptions,
         usersOptions: [],

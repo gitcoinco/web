@@ -84,7 +84,8 @@ Vue.mixin({
         'rsk_payout_address': vm.grant.rsk_payout_address,
         'algorand_payout_address': vm.grant.algorand_payout_address,
         'region': vm.grant.region?.name || undefined,
-        'has_external_funding': vm.grant.has_external_funding
+        'has_external_funding': vm.grant.has_external_funding,
+        'grant_tags[]': JSON.stringify(vm.grantTagsFormatted)
       };
 
       if (vm.logo) {
@@ -428,6 +429,24 @@ Vue.mixin({
         this.grant.team_members = value;
       }
     },
+    grantTagsFormatted: {
+      get() {
+        return this.grant.grant_tags.map((grant_tag)=> {
+          if (!grant_tag?.fields) {
+            return grant_tag;
+          }
+
+          return {
+            'id': grant_tag.pk,
+            'name': grant_tag.fields.name
+          };
+        });
+
+      },
+      set(value) {
+        this.grant.grant_tags = value;
+      }
+    },
     editor() {
       if (!this.$refs.myQuillEditor) {
         return;
@@ -546,6 +565,7 @@ Vue.component('grant-details', {
         { 'name': 'east_asia', 'label': 'East Asia'},
         { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
       ],
+      grant_tags: document.grant_tags,
       externalFundingOptions: [
         {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
         {'key': 'no', 'value': 'No, this project has not raised external funding.'}

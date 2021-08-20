@@ -148,4 +148,3 @@ class GrantCLRSerializer(FlexFieldsModelSerializer):
         expandable_fields = {
           'owner': (ProfileSerializer)
         }
-

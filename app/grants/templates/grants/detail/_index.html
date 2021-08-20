@@ -432,7 +432,7 @@
         };
         var user_code = JSON.parse(document.getElementById('user_code').textContent);
         var verification_tweet = JSON.parse(document.getElementById('verification_tweet').textContent);
-
+        document.grant_tags = {{ grant_tags|safe }};
       </script>
 
       {% include 'shared/activity_scripts.html' %}

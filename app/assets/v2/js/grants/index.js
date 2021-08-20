@@ -545,6 +545,7 @@ if (document.getElementById('grants-showcase')) {
     },
     mounted() {
       let vm = this;
+
       this.fetchClrGrants();
       this.fetchGrants(this.page);
 
