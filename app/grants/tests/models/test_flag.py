@@ -33,7 +33,7 @@ class TestFlag:
         assert flag.profile == None
 
     def test_flag_has_comments(self):
-        """Test comments attribute and default value."""
+        """Test 'comments' attribute and default value."""
 
         flag = FlagFactory()
 
@@ -41,7 +41,7 @@ class TestFlag:
         assert flag.comments == ''
 
     def test_flag_has_processed_attribute(self):
-        """Test processed attribute and default value."""
+        """Test 'processed' attribute and default value."""
 
         flag = FlagFactory()
 
@@ -49,9 +49,17 @@ class TestFlag:
         assert flag.processed == False
 
     def test_flag_has_comments_admin(self):
-        """Test comments_admin attribute and default."""
+        """Test 'comments_admin' attribute and default."""
 
         flag = FlagFactory()
 
         assert hasattr(flag, 'comments_admin')
         assert flag.comments_admin == ''
+
+    def test_flag_has_tweet_attribute(self):
+        """Test 'tweet' attribute."""
+
+        flag = FlagFactory()
+
+        assert hasattr(flag, 'tweet')
+        assert flag.tweet == ''
