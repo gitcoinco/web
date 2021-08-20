@@ -39,10 +39,10 @@ def get_summed_contribs_query(grants, created_after, created_before, multiplier,
     summedContribs = f'''
         -- drop the table if it exists
         DROP TABLE IF EXISTS tempUserTotals;
- 
+
         -- group by ... sum the contributions $ value for each user
-        SELECT  
-            grants.use_grant_id as grant_id, 
+        SELECT
+            grants.use_grant_id as grant_id,
             grants_contribution.profile_for_clr_id as user_id,
             SUM((grants_contribution.normalized_data ->> 'amount_per_period_usdt')::FLOAT * {float(multiplier)}),
             MAX(dashboard_profile.as_dict ->> 'trust_bonus')::FLOAT as trust_bonus
@@ -60,9 +60,9 @@ def get_summed_contribs_query(grants, created_after, created_before, multiplier,
                     END
                 ) as use_grant_id
             FROM grants_grant
-            WHERE grants_grant.id IN ({grantIds})
         ) grants ON ((grants_contribution.normalized_data ->> 'id')::FLOAT = grants.grant_id)
         WHERE (
+            grants_contribution.normalized_data ->> 'id' IN ({grantIds}) AND
             grants_contribution.created_on >= '{created_after}' AND
             grants_contribution.created_on <= '{created_before}' AND
             grants_contribution.match = True AND
@@ -232,7 +232,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             print(f'- done - No Contributions for CLR {clr_round.round_num}. Exiting')
             print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
             return
-            
+
         print(f"- starting current grant calc (free of predictions) at {round(time.time(),1)}")
         curr_grants_clr, _ = calculate_clr_for_donation(
             None, 0, cursor, total_pot, v_threshold
