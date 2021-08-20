@@ -1,4 +1,5 @@
 import pytest
+from grants.models.grant import Grant
 from grants.models.grant_stat import GrantStat
 
 from .factories.grant_stat_factory import GrantStatFactory
@@ -15,3 +16,12 @@ class TestGrantStat:
 
         assert isinstance(grant_stat, GrantStat)
 
+    def test_grant_stat_belongs_to_grant(self):
+        """Test association with Grant model."""
+
+        grant_stat = GrantStatFactory()
+
+        assert hasattr(grant_stat, 'grant')
+        assert isinstance(grant_stat.grant, Grant)
+
+ 
