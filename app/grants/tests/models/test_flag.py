@@ -1,5 +1,6 @@
 import pytest
 from grants.models.flag import Flag
+from grants.models.grant import Grant
 
 from .factories.flag_factory import FlagFactory
 
@@ -14,3 +15,11 @@ class TestFlag:
         flag = FlagFactory()
 
         assert isinstance(flag, Flag)
+
+    def test_flag_belongs_to_grant(self):
+        """Test relation of Flag to associated Grant."""
+
+        flag = FlagFactory()
+
+        assert hasattr(flag, 'grant')
+        assert isinstance(flag.grant, Grant)
