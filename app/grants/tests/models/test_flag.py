@@ -47,3 +47,11 @@ class TestFlag:
 
         assert hasattr(flag, 'processed')
         assert flag.processed == False
+
+    def test_flag_has_comments_admin(self):
+        """Test comments_admin attribute and default."""
+
+        flag = FlagFactory()
+
+        assert hasattr(flag, 'comments_admin')
+        assert flag.comments_admin == ''
