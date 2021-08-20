@@ -1,5 +1,5 @@
 import pytest
-from grants.models.grant import Grant
+from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
 
 from .factories.grant_clr_calculation_factory import GrantCLRCalculationFactory
@@ -31,3 +31,17 @@ class TestGrantCLRCalculation:
 
         assert hasattr(grant_clr_calculation, 'grant')
         assert isinstance(grant_clr_calculation.grant, Grant)
+
+    def test_grant_clr_calculation_belongs_to_grant_clr(self):
+        """Test GrantCLRCalculation relationship with associated GrantCLR."""
+
+        grant_clr_calculation = GrantCLRCalculationFactory()
+
+        assert hasattr(grant_clr_calculation, 'grantclr')
+        assert isinstance(grant_clr_calculation.grantclr, GrantCLR)
+
+    def test_grant_clr_calculation_has_clr_prediction_curve(self):
+        """Test 'clr_prediction_curve' attribute and default."""
+
+
+
