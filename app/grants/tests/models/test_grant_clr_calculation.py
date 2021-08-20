@@ -43,5 +43,11 @@ class TestGrantCLRCalculation:
     def test_grant_clr_calculation_has_clr_prediction_curve(self):
         """Test 'clr_prediction_curve' attribute and default."""
 
+        grant_clr_calculation = GrantCLRCalculationFactory()
+
+        assert hasattr(grant_clr_calculation, 'clr_prediction_curve')
+        assert grant_clr_calculation.clr_prediction_curve == []
+        assert len(grant_clr_calculation.clr_prediction_curve) == 0
+
 
 
