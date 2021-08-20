@@ -24,4 +24,13 @@ class TestGrantStat:
         assert hasattr(grant_stat, 'grant')
         assert isinstance(grant_stat.grant, Grant)
 
- 
+    def test_grant_stat_has_data_attribute(self):
+        """Test 'data' attribute."""
+
+        grant_stat = GrantStatFactory()
+
+        assert hasattr(grant_stat, 'data')
+        assert grant_stat.data == {}
+        assert len(grant_stat.data) == 0
+
+    
