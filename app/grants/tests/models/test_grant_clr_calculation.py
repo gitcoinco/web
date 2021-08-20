@@ -1,4 +1,5 @@
 import pytest
+from grants.models.grant import Grant
 from grants.models.grant_clr_calculation import GrantCLRCalculation
 
 from .factories.grant_clr_calculation_factory import GrantCLRCalculationFactory
@@ -15,7 +16,7 @@ class TestGrantCLRCalculation:
 
         assert isinstance(grant_clr_calulation, GrantCLRCalculation)
 
-    def test_clr_calculation_has_latest_attribute(self):
+    def test_grant_clr_calculation_has_latest_attribute(self):
         """Test 'latest' attribute and default value."""
 
         grant_clr_calulation = GrantCLRCalculationFactory()
@@ -23,4 +24,10 @@ class TestGrantCLRCalculation:
         assert hasattr(grant_clr_calulation, 'latest')
         assert grant_clr_calulation.latest == False
 
+    def test_grant_clr_calculation_belongs_to_grant(self):
+        """Test GrantCLRCalculation relationship with associated Grant."""
 
+        grant_clr_calculation = GrantCLRCalculationFactory()
+
+        assert hasattr(grant_clr_calculation, 'grant')
+        assert isinstance(grant_clr_calculation.grant, Grant)
