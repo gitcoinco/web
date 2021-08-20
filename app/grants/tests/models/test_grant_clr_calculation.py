@@ -14,3 +14,13 @@ class TestGrantCLRCalculation:
         grant_clr_calulation = GrantCLRCalculationFactory()
 
         assert isinstance(grant_clr_calulation, GrantCLRCalculation)
+
+    def test_clr_calculation_has_latest_attribute(self):
+        """Test 'latest' attribute and default value."""
+
+        grant_clr_calulation = GrantCLRCalculationFactory()
+
+        assert hasattr(grant_clr_calulation, 'latest')
+        assert grant_clr_calulation.latest == False
+
+
