@@ -4400,6 +4400,7 @@ class Profile(SuperModel):
             'card_title': f'@{self.handle} | Gitcoin',
             'org_works_with': org_works_with,
             'card_desc': desc,
+            'trust_bonus': self.trust_bonus,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'count_bounties_completed': total_fulfilled,
             'works_with_collected': works_with_collected,
