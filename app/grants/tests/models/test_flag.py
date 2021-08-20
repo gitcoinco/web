@@ -31,3 +31,11 @@ class TestFlag:
 
         assert hasattr(flag, 'profile')
         assert flag.profile == None
+
+    def test_flag_has_comments(self):
+        """Test comments attribute and default value."""
+
+        flag = FlagFactory()
+
+        assert hasattr(flag, 'comments')
+        assert flag.comments == ''
