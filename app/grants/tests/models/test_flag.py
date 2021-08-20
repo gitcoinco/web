@@ -23,3 +23,11 @@ class TestFlag:
 
         assert hasattr(flag, 'grant')
         assert isinstance(flag.grant, Grant)
+
+    def test_flag_belongs_to_profile(self):
+        """Test relation of Flag to associated Profile and default value."""
+
+        flag = FlagFactory()
+
+        assert hasattr(flag, 'profile')
+        assert flag.profile == None
