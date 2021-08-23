@@ -194,7 +194,11 @@
                 {% if profile %}
                   <div class="user-tooltip" user-id="{{profile.id}}" username="{{profile.username}}" avatar-url="{{profile.avatar_url}}" preferred_payout_address="{{profile.preferred_payout_address}}">
                     <img class="user-img" src="{{profile.avatar_url}}">
-                    <div class='user-tooltip-text tooltip-xs'><a href="{% url 'profile' profile %}" target="_blank">@{{profile.username}}</a></div>
+                    <div class='user-tooltip-text tooltip-xs'>
+                      <a href="{% url 'profile' profile %}" target="_blank" rel="noopener noreferrer">
+                        @{{profile.username}}
+                      </a>
+                    </div>
                   </div>
                 {% endif %}
               {% endfor %}

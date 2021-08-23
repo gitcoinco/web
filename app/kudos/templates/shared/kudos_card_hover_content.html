@@ -44,12 +44,12 @@
   {% endif %}
   <div class="flip-card__extra-data">
     {% if kt.github_url %}
-      <a href="{{kt.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
+      <a rel="noopener noreferrer" href="{{kt.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
     {% endif %}
     {% if kt.receive_txid == 'pending_celery' %}
       Pending Issuance on Chain 
     {% else %}
-      <a title="{% trans 'tx on block explorer' %}" href="{{kt.receive_tx_blockexplorer_link}}" target="_blank" class="mb-1 block_explorer_link">{{ kt.receive_txid|humanize_address }}</a>
+      <a rel="noopener noreferrer" title="{% trans 'tx on block explorer' %}" href="{{kt.receive_tx_blockexplorer_link}}" target="_blank" class="mb-1 block_explorer_link">{{ kt.receive_txid|humanize_address }}</a>
     {% endif %}
     {% if kt.receive_txid == 'pending_celery' or kt.receive_tx_status == 'dropped'  or kt.receive_tx_status == 'unknown' %}
       {% if github_handle == kt.username or github_handle == kt.from_username or 1 %}

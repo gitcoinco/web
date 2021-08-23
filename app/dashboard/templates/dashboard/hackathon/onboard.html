@@ -261,15 +261,13 @@
           <div class="collapse" id="collapse-info">
             <div class="row px-5 my-5" >
               <div class="col-12 col-md-5">
-                  <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
+                <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
               </div>
               <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                  <b class="counter">{% trans "Check out the Prizes" %}</b>
-
-                    <p class="">
-                      Visit the <a target="_blank" href="{% url 'hackathon' hackathon.slug %}">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
-                    </p>
-
+                <b class="counter">{% trans "Check out the Prizes" %}</b>
+                <p class="">
+                  Visit the <a target="_blank" rel="noopener noreferrer" href="{% url 'hackathon' hackathon.slug %}">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
+                </p>
               </div>
             </div>
             <div class="row px-5 my-5">
@@ -280,7 +278,10 @@
                   <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
                   {% blocktrans %}
                     <p class="">
-                      Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://discord.gg/gitcoin">Click here to join the party!</a>.
+                      Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time.
+                      <a rel="noopener noreferrer" target="_blank" href="https://discord.gg/gitcoin">
+                        Click here to join the party!
+                      </a>
                     </p>
                   {% endblocktrans %}
               </div>
