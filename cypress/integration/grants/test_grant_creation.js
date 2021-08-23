@@ -40,7 +40,7 @@ describe('Creating a new grant', () => {
         cy.get('input[placeholder="Pick a category"]').click();
         cy.contains('Community').click();
         cy.get('input[placeholder="Select categories"]').click();
-        cy.contains('subtype').click();
+        cy.contains('education').click();
 
         cy.contains('Create Grant').click();
       });

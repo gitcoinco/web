@@ -29,7 +29,7 @@ describe('contributing to grant', () => {
       cy.changeMetamaskNetwork('localhost');
       cy.acceptMetamaskAccess();
 
-      cy.contains('Add to Cart').click();
+      cy.get('.grant-checkout').contains('Add to Cart').scrollIntoView().click();
 
       const pk = grantUrl.match(/\/grants\/(\d*)\//)[1];
 

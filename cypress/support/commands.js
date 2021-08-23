@@ -83,7 +83,7 @@ Cypress.Commands.add('createGrantSubmission', (options = {}) => {
           reference_url: options.reference_url || 'https://gitcoin.co',
           github_project_url: options.github_project_url || 'https://github.com/gitcoinco/web',
           'team_members[]': options.team_members || '',
-          'categories[]': options.categories || 1
+          'categories[]': options.categories || 4
         },
         form: true
       });
@@ -99,6 +99,7 @@ Cypress.Commands.add('approveGrant', (grantSlug) => {
 
   cy.visit(changePath);
   cy.get('[name=active]').check();
+  cy.get('[name=defer_clr_to]').select(pk);
   cy.get('[name=_save]').click();
 
   cy.logout();
