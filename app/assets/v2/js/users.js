@@ -175,11 +175,12 @@ Vue.mixin({
 
       vm.errorIssueDetails = undefined;
 
-      if (url.indexOf('github.com/') < 0) {
+      if (new URL(url).host == 'github.com') {
         vm.issueDetails = null;
         vm.errorIssueDetails = 'Please paste a github issue url';
         return;
       }
+
       vm.issueDetails = undefined;
       const getIssue = fetchData(apiUrldetails, 'GET');
 

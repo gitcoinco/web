@@ -17,13 +17,13 @@ Vue.mixin({
         return vm.form.issueDetails;
       }
 
-      if (url.indexOf('github.com/') < 0) {
+      const ghIssueUrl = new URL(url);
+
+      if (ghIssueUrl.host == 'github.com') {
         vm.form.issueDetails = null;
         vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url');
         return;
       }
-
-      let ghIssueUrl = new URL(url);
 
       vm.orgSelected = '';
 

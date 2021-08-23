@@ -69,8 +69,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   var force_no_www = function() {
-    if (document.location.href.indexOf('https://www.gitcoin.co') != -1) {
-      var new_url = document.location.href.replace('www.gitcoin.co', 'gitcoin.co');
+    const url = new URL(document.location.href);
+
+    if (url.host == 'www.gitcoin.co') {
+      const new_url = document.location.href.replace('www.gitcoin.co', 'gitcoin.co');
 
       document.location.href = new_url;
     }
