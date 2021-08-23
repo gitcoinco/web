@@ -14,3 +14,13 @@ class TestGrantType:
         grant_type = GrantTypeFactory()
 
         assert isinstance(grant_type, GrantType)
+
+    def test_grant_type_has_a_name(self):
+        """Test 'name' attribute."""
+
+        grant_type = GrantTypeFactory()
+
+        assert hasattr(grant_type, 'name')
+        assert grant_type.name == ''
+
+
