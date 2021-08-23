@@ -3494,3 +3494,35 @@ def ingest_contributions(request):
         return JsonResponse({ 'success': False, 'message': err })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
+
+
+@csrf_exempt
+def get_trust_bonus(request):
+    '''
+        JSON POST endpoint which returns the trust bonus score of given addresses
+    '''
+
+    try:
+        json_body = json.loads(request.body)
+        addresses = json_body.get('addresses')
+        if not addresses:
+            return HttpResponse(status=204)
+    except:
+        return HttpResponse(status=400)
+
+    query = Q()
+    for address in addresses:
+        query |= Q(contributor_address=address)
+
+    subscriptions = Subscription.objects.filter(query).prefetch_related('contributor_profile')
+    response = []
+    _addrs = []
+    for subscription in subscriptions:
+        if subscription.contributor_address not in _addrs:
+            response.append({
+                'address': subscription.contributor_address,
+                'score': subscription.contributor_profile.trust_bonus
+            })
+            _addrs.append(subscription.contributor_address)
+
+    return JsonResponse(response, safe=False)
