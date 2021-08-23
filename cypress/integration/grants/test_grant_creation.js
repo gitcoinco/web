@@ -17,10 +17,9 @@ describe('Creating a new grant', () => {
   it('can navigate to the new grant screen', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');
     cy.get('[data-submenu=products]').find('[data-submenu=grants]').click();
-    cy.url().should('eq', 'grants/');
 
     cy.get('#grants-showcase').contains('Create a Grant').click();
-    cy.url().should('eq', 'grants/new');
+    cy.url().should('contain', 'grants/new');
   });
 
   describe('creation:success - required fields only', () => {

@@ -45,8 +45,8 @@ services:
 
   web:
     restart: unless-stopped
-    ipc: host
     shm_size: '4gb'
+    ipc: host
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONIOENCODING=utf8

@@ -1,7 +1,6 @@
 describe('contributing to grant', () => {
   before(() => {
     cy.setupMetamask();
-    cy.changeMetamaskNetwork('localhost');
   });
 
   afterEach(() => {
@@ -27,6 +26,7 @@ describe('contributing to grant', () => {
       cy.contains('Connect Wallet').click();
       cy.contains('MetaMask').click();
 
+      cy.changeMetamaskNetwork('localhost');
       cy.acceptMetamaskAccess();
 
       cy.contains('Add to Cart').click();
@@ -69,7 +69,7 @@ describe('contributing to grant', () => {
 
     cy.get('@grant1').then((grantUrl) => {
       cy.visit(grantUrl);
-      cy.contains('Add to Cart').click();
+      cy.get('.grant-checkout').contains('Add to Cart').scrollIntoView().click();
 
       const pk = grantUrl.match(/\/grants\/(\d*)\//)[1];
 
@@ -79,7 +79,7 @@ describe('contributing to grant', () => {
 
     cy.get('@grant2').then((grantUrl) => {
       cy.visit(grantUrl);
-      cy.contains('Add to Cart').click({force: true});
+      cy.get('.grant-checkout').contains('Add to Cart').scrollIntoView().click();
 
       const pk = grantUrl.match(/\/grants\/(\d*)\//)[1];
 
@@ -91,6 +91,8 @@ describe('contributing to grant', () => {
 
 
     cy.contains('MetaMask').click();
+
+    cy.changeMetamaskNetwork('localhost');
     cy.acceptMetamaskAccess();
 
     cy.get('#gitcoin-grant-input-amount').type('{backspace}0');
