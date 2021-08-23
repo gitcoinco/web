@@ -1,6 +1,8 @@
 import pytest
+from grants.models.grant_category import GrantCategory
 from grants.models.grant_type import GrantType
 
+from .factories.grant_category_factory import GrantCategoryFactory
 from .factories.grant_type_factory import GrantTypeFactory
 
 
@@ -47,3 +49,13 @@ class TestGrantType:
         assert hasattr(grant_type, 'is_visible')
         assert grant_type.is_visible == True
 
+    def test_grant_type_has_many_categories(self):
+        "Test relation to GrantCategory."
+
+        grant_categories = (GrantCategoryFactory(), GrantCategoryFactory())
+
+        grant_type = GrantTypeFactory.create(categories=(grant_categories))
+
+        assert hasattr(grant_type, 'categories')
+        assert len(grant_type.categories.all()) == len(grant_categories)
+        assert isinstance(grant_type.categories.first(), GrantCategory)
