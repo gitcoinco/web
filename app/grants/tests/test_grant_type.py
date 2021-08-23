@@ -31,4 +31,11 @@ class TestGrantType:
         assert hasattr(grant_type, 'label')
         assert grant_type.label == None
 
+    def test_grant_type_has_a_is_active_attribute(self):
+        "Test 'is_active' attribute and default value."
+
+        grant_type = GrantTypeFactory()
+
+        assert hasattr(grant_type, 'is_active')
+        assert grant_type.is_active == True
 
