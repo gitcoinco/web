@@ -39,3 +39,11 @@ class TestGrantType:
         assert hasattr(grant_type, 'is_active')
         assert grant_type.is_active == True
 
+    def test_grant_type_has_a_is_visible_attribute(self):
+        "Test 'is_visible' attribute and default value."
+
+        grant_type = GrantTypeFactory()
+
+        assert hasattr(grant_type, 'is_visible')
+        assert grant_type.is_visible == True
+
