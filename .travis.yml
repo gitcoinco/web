@@ -2,6 +2,9 @@ language: python
 python: 3.7
 dist: bionic
 
+addons:
+  chrome: stable
+
 node_js: 14
 
 os:
@@ -11,6 +14,7 @@ services:
   - docker
   - postgresql
   - redis
+  - xvfb
 
 cache:
   npm: false
@@ -48,6 +52,8 @@ jobs:
         - npm run stylelint
         - (cd app; python3 ./manage.py collectstatic --noinput --disable-collectfast)
         - pytest -p no:ethereum -p no:warnings
+        # run cypress tests
+        -
         # Generate Markdown documentation and static docs page.
         - pydocmd build
       env:

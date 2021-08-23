@@ -10,7 +10,9 @@
     "stylelint:fix": "stylelint --fix './app/assets/v2/scss/**/**/*.scss'",
     "build": "webpack --mode production --progress",
     "webpack": "webpack --mode development --progress --watch",
-    "cypress:run": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 ./node_modules/.bin/cypress run -b chrome --headed"
+    "cypress:run": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 ./node_modules/.bin/cypress run -b chrome --headed",
+    "cypress:install": "./node_modules/.bin/cypress install",
+    "ganache:start": "./node_modules/.bin/ganache-cli -a 10 --mnemonic ${TEST_MNEMONIC} --host 0.0.0.0 &"
   },
   "repository": {
     "type": "git",
