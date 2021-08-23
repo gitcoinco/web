@@ -23,4 +23,12 @@ class TestGrantType:
         assert hasattr(grant_type, 'name')
         assert grant_type.name == ''
 
+    def test_grant_type_has_a_label(self):
+        "Test 'label' attribute."
+
+        grant_type = GrantTypeFactory()
+
+        assert hasattr(grant_type, 'label')
+        assert grant_type.label == None
+
 
