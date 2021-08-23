@@ -59,3 +59,11 @@ class TestGrantType:
         assert hasattr(grant_type, 'categories')
         assert len(grant_type.categories.all()) == len(grant_categories)
         assert isinstance(grant_type.categories.first(), GrantCategory)
+
+    def test_grant_type_has_a_logo(self):
+        """Test 'logo' attribute."""
+
+        grant_type = GrantTypeFactory()
+
+        assert hasattr(grant_type, 'logo')
+        assert grant_type.logo == None
