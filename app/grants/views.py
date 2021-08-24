@@ -708,11 +708,12 @@ def get_grants_by_filters(
                 field_name = f'clr_prediction_curve__{sort_by_index}__2'
                 _grants = _grants.order_by(f"-{field_name}")
         elif sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
-            grant_type_obj = GrantType.objects.filter(name=grant_type).first()
-            is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
-            if is_there_a_clr_round_active_for_this_grant_type_now:
-                # 3.1 Filter grants to show grants currently active in a CLR
-                _grants = _grants.filter(is_clr_active=True)
+            # grant_type_obj = GrantType.objects.filter(name=grant_type).first()
+            # is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
+            # if is_there_a_clr_round_active_for_this_grant_type_now:
+
+            # 3.1 Filter grants to show grants currently active in a CLR
+            _grants = _grants.filter(is_clr_active=True)
 
 
     _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
