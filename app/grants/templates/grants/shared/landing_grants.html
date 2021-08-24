@@ -22,7 +22,7 @@
       </div>
       <div class="infinite-container row" @scroll.passive="onScroll($event)" v-if="grants">
         <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-          <a class="text-decoration-none" target="_blank" :href="grant.details_url">
+          <a class="text-decoration-none" :href="grant.details_url">
             {% include 'grants/components/card.html' %}
           </a>
         </div>

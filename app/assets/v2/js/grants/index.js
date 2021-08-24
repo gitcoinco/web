@@ -603,7 +603,7 @@ if (document.getElementById('grants-showcase')) {
 
         const base_params = {
           no_pagination: true,
-          sort_option: this.params.sorts,
+          sort_option: this.params.sort_option,
           network: this.params.network,
           keyword: this.params.keyword,
           state: this.params.state,

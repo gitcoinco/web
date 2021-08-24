@@ -31,7 +31,7 @@
             {label: 'ADMIN:Sybil Score', value: '-sybil_score'},
             {% endif %}
 
-          ]" placeholder="Sort by" v-model="params.sorts" :reduce="obj => obj.value" @input="filter_grants({sort: params.sort})">
+          ]" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants()">
             <template #search="{attributes, events}">
               <input
                 class="vs__search"
