@@ -1,3 +1,5 @@
+from django.db.models import QuerySet
+
 import pytest
 from grants.models.grant_category import GrantCategory
 from grants.models.grant_type import GrantType
@@ -67,3 +69,9 @@ class TestGrantType:
 
         assert hasattr(grant_type, 'logo')
         assert grant_type.logo == None
+
+    def test_grant_type_has_clrs_method(self):
+
+        grant_type = GrantTypeFactory()
+
+        assert isinstance(grant_type.clrs, QuerySet)
