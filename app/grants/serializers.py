@@ -2,7 +2,7 @@ from dashboard.router import ProfileSerializer
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-from .models import Contribution, Grant, GrantCLR, Subscription
+from .models import Contribution, Grant, GrantCLR, GrantType, Subscription
 from .utils import amount_in_wei, get_converted_amount
 
 
@@ -148,3 +148,12 @@ class GrantCLRSerializer(FlexFieldsModelSerializer):
         expandable_fields = {
           'owner': (ProfileSerializer)
         }
+
+
+class GrantTypeSerializer(FlexFieldsModelSerializer):
+    """Handle metadata of CLR rounds"""
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantType
+        fields = '__all__'
+

@@ -72,7 +72,7 @@ along with this program. If not, see
               <a class="btn rounded-pill" @click="filter_grants({type: 'all', category: '', keyword: ''})" :class="`${ current_type == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
                 All Grants
               </a>
-              <a class="btn rounded-pill" href="" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ current_type == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
+              <a class="btn rounded-pill" href="" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ clr.sub_round_slug == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
                 [[clr.display_text]]
               </a>
 
@@ -213,6 +213,7 @@ along with this program. If not, see
   {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
   {% include 'grants/shared/shared_scripts.html' %}
   {{collections|json_script:"collections-object"}}
+  {{type|json_script:"current_type"}}
   {{grant_bg.inline_css|json_script:"inline_css"}}
   <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
   <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
@@ -226,7 +227,8 @@ along with this program. If not, see
     </script>
   {% endbundle %}
   <script>
-    document.current_type = "{{ type|default:'all' }}";
+    // document.current_type = "{{ type|default:'all' }}";
+    document.current_type = JSON.parse(document.getElementById('current_type').textContent);
     document.selected_category = "{{ selected_category }}";
     document.network = "{{ network}}";
     document.keyword = "{{ keyword }}";

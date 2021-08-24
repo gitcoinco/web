@@ -188,7 +188,7 @@ if (document.getElementById('grants-showcase')) {
       fetchClrGrants: async function() {
         let vm = this;
         let url = 'http://localhost:8000/api/v0.1/grants_clr/';
-        let getClr = await fetch(url);
+        let getClr = await fetch(url, {cache: "force-cache"});
         let clrJson = await getClr.json();
 
         vm.clrData = clrJson;
@@ -374,7 +374,7 @@ if (document.getElementById('grants-showcase')) {
           state: this.state,
           collections_page: this.collectionsPage,
           grant_tags: this.category,
-          grant_types: this.current_type
+          grant_types: this.current_type[0].keyword
         };
 
         if (this.following) {

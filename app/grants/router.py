@@ -9,9 +9,9 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
+from .models import CLRMatch, Contribution, Grant, GrantCLR, GrantType, Subscription
 from .serializers import (
-    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantSerializer, SubscriptionSerializer,
+    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantTypeSerializer, GrantSerializer, SubscriptionSerializer,
     TransactionsSerializer,
 )
 
@@ -20,11 +20,19 @@ class GrantCLRPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
 
+
 class GrantsClrViewSet(viewsets.ModelViewSet):
     queryset = GrantCLR.objects.select_related('owner').order_by('-created_on')
     serializer_class = GrantCLRSerializer
     pagination_class = GrantCLRPagination
     filterset_fields = ['customer_name']
+
+
+class GrantTypeViewSet(viewsets.ModelViewSet):
+    queryset = GrantType.objects.order_by('id')
+    serializer_class = GrantTypeSerializer
+    # pagination_class = GrantTypePagination
+    # filterset_fields = ['customer_name']
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
@@ -345,3 +353,4 @@ router = routers.DefaultRouter()
 router.register(r'grants', GrantViewSet)
 router.register(r'subscriptions', SubscriptionViewSet)
 router.register(r'grants_clr', GrantsClrViewSet)
+router.register(r'grants_type', GrantTypeViewSet)
