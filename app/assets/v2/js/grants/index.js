@@ -26,80 +26,131 @@ $(document).ready(() => {
   // toggleStyle(document.current_style);
 });
 
-Vue.component('grant-sidebar', {
-  props: [
-    'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-    'idle_grants', 'show_contributions', 'query_params', 'round_num', 'sub_round_slug', 'customer_name',
-    'featured'
-  ],
-  data: function() {
-    return {
-      search: this.keyword,
-      show_filters: false,
-      handle: document.contxt.github_handle
-    };
-  },
-  methods: {
-    toggleFollowing: function(state, event) {
-      event.preventDefault;
-      this.filter_grants({following: state});
-    },
-    toggleIdle: function(state, event) {
-      event.preventDefault;
-      this.filter_grants({idle_grants: state});
-    },
-    toggleContributionView: function(state, event) {
-      event.preventDefault;
-      this.filter_grants({show_contributions: state});
-    },
-    toggleMyGrants: function(state, event) {
-      let me = state ? 'me' : 'all';
+// Vue.component('grant-sidebar', {
+//   props: [
+//     'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
+//     'idle_grants', 'show_contributions', 'query_params', 'round_num', 'sub_round_slug', 'customer_name',
+//     'featured'
+//   ],
+//   data: function() {
+//     return {
+//       search: this.keyword,
+//       show_filters: false,
+//       handle: document.contxt.github_handle
+//     };
+//   },
+//   methods: {
+//     toggleFollowing: function(state, event) {
+//       event.preventDefault;
+//       this.filter_grants({following: state});
+//     },
+//     toggleIdle: function(state, event) {
+//       event.preventDefault;
+//       this.filter_grants({idle_grants: state});
+//     },
+//     toggleContributionView: function(state, event) {
+//       event.preventDefault;
+//       this.filter_grants({show_contributions: state});
+//     },
+//     toggleMyGrants: function(state, event) {
+//       let me = state ? 'me' : 'all';
 
-      event.preventDefault;
-      this.filter_grants({type: me, category: '', keyword: ''});
-    },
-    isMobileDevice: function() {
-      return window.innerWidth < 576;
-    },
-    toggleMyCollections: function(state, event) {
-      let me = state ? {type: 'collections', keyword: this.handle} : {type: 'all', keyword: ''};
+//       event.preventDefault;
+//       this.filter_grants({type: me, category: '', keyword: ''});
+//     },
+//     isMobileDevice: function() {
+//       return window.innerWidth < 576;
+//     },
+//     toggleMyCollections: function(state, event) {
+//       let me = state ? {type: 'collections', keyword: this.handle} : {type: 'all', keyword: ''};
 
-      this.filter_grants(me);
+//       this.filter_grants(me);
 
-      this.search = me.keyword;
-    },
-    filterLink: function(params) {
+//       this.search = me.keyword;
+//     },
+//     filterLink: function(params) {
 
-      return this.filter_grants(params);
-    },
-    searchKeyword: function() {
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-      }
+//       return this.filter_grants(params);
+//     },
+//     searchKeyword: function() {
+//       if (this.timeout) {
+//         clearTimeout(this.timeout);
+//       }
 
-      this.timeout = setTimeout(() => {
-        this.filter_grants({keyword: this.search});
-      }, 1000);
-    },
-    onResize: function() {
-      if (!this.isMobileDevice() && this.show_filters !== null) {
-        this.show_filters = null;
-      } else if (this.isMobileDevice() && this.show_filters === null) {
-        this.show_filters = false;
-      }
-    }
-  },
-  mounted() {
-    window.addEventListener('resize', this.onResize);
-  }
-});
+//       this.timeout = setTimeout(() => {
+//         this.filter_grants({keyword: this.search});
+//       }, 1000);
+//     },
+//     onResize: function() {
+//       if (!this.isMobileDevice() && this.show_filters !== null) {
+//         this.show_filters = null;
+//       } else if (this.isMobileDevice() && this.show_filters === null) {
+//         this.show_filters = false;
+//       }
+//     }
+//   },
+//   mounted() {
+//     window.addEventListener('resize', this.onResize);
+//   }
+// });
 if (document.getElementById('grants-showcase')) {
+  const baseParams = {
+    page: 1,
+    limit: 6,
+    sort_option: 'weighted_shuffle',
+    network: 'mainnet',
+    // keyword: this.keyword,
+    state: 'active',
+    collections_page: 1,
+    grant_types: [],
+    tenants: []
+  };
 
-  let sort = getParam('sort');
+  const grantRegions = [
+    { 'name': 'north_america', 'label': 'North America'},
+    { 'name': 'oceania', 'label': 'Oceania'},
+    { 'name': 'latin_america', 'label': 'Latin America'},
+    { 'name': 'europe', 'label': 'Europe'},
+    { 'name': 'africa', 'label': 'Africa'},
+    { 'name': 'middle_east', 'label': 'Middle East'},
+    { 'name': 'india', 'label': 'India'},
+    { 'name': 'east_asia', 'label': 'East Asia'},
+    { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
+  ];
 
-  if (!sort) {
-    sort = 'weighted_shuffle';
-  }
+  const grantTenants = [
+    {'name': 'ETH', 'label': 'Eth'},
+    {'name': 'ZCASH', 'label': 'Zcash'},
+    {'name': 'ZIL', 'label': 'Zil'},
+    {'name': 'CELO', 'label': 'Celo'},
+    {'name': 'POLKADOT', 'label': 'Polkadot'},
+    {'name': 'HARMONY', 'label': 'Harmony'},
+    {'name': 'KUSAMA', 'label': 'Kusama'},
+    {'name': 'BINANCE', 'label': 'Binance'},
+    {'name': 'RSK', 'label': 'Rsk'},
+    {'name': 'ALGORAND', 'label': 'Algorand'}
+  ];
+
+  const grant_tags = [
+    {'name': 'ETH', 'label': 'Eth'},
+    {'name': 'ZCASH', 'label': 'Zcash'},
+    {'name': 'ZIL', 'label': 'Zil'},
+    {'name': 'CELO', 'label': 'Celo'},
+    {'name': 'POLKADOT', 'label': 'Polkadot'},
+    {'name': 'HARMONY', 'label': 'Harmony'},
+    {'name': 'KUSAMA', 'label': 'Kusama'},
+    {'name': 'BINANCE', 'label': 'Binance'},
+    {'name': 'RSK', 'label': 'Rsk'},
+    {'name': 'ALGORAND', 'label': 'Algorand'}
+  ];
+
+
+
+  // let sort = getParam('sort');
+
+  // if (!sort) {
+  //   sort = 'weighted_shuffle';
+  // }
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
@@ -107,12 +158,12 @@ if (document.getElementById('grants-showcase')) {
       activePage: document.activePage,
       grants: [],
       clrData: {},
+      grantRegions: grantRegions,
+      grantTenants: grantTenants,
+      grant_tags: grant_tags,
       grant: {},
-      page: 1,
       collectionsPage: 1,
-      limit: 6,
       show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
-      sort: sort,
       network: document.network,
       keyword: document.keyword,
       current_type: document.current_type,
@@ -132,15 +183,16 @@ if (document.getElementById('grants-showcase')) {
       bottom: false,
       cart_lock: false,
       collection_id: document.collection_id,
-      round_num: document.round_num,
-      clr_round_pk: document.clr_round_pk,
-      sub_round_slug: document.sub_round_slug,
-      customer_name: document.customer_name,
+      // round_num: document.round_num,
+      // clr_round_pk: document.clr_round_pk,
+      // sub_round_slug: document.sub_round_slug,
+      // customer_name: document.customer_name,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
       numGrants,
-      regex_style: {}
+      regex_style: {},
+      params: Object.assign({}, baseParams)
     },
     methods: {
       toggleStyle: function(style) {
@@ -197,27 +249,27 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
         const q = vm.getQueryParams();
 
-        if (vm.round_num) {
-          let uri = `/grants/clr/${vm.round_num}/`;
+        // if (vm.round_num) {
+        //   let uri = `/grants/clr/${vm.round_num}/`;
 
-          if (vm.sub_round_slug && !vm.customer_name) {
-            uri = `/grants/clr/${vm.round_num}/${vm.sub_round_slug}/`;
-          }
+        //   if (vm.sub_round_slug && !vm.customer_name) {
+        //     uri = `/grants/clr/${vm.round_num}/${vm.sub_round_slug}/`;
+        //   }
 
-          if (!vm.sub_round_slug && vm.customer_name) {
-            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/`;
-          }
+        //   if (!vm.sub_round_slug && vm.customer_name) {
+        //     uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/`;
+        //   }
 
-          if (vm.sub_round_slug && vm.customer_name) {
-            uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/${vm.sub_round_slug}/`;
-          }
+        //   if (vm.sub_round_slug && vm.customer_name) {
+        //     uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/${vm.sub_round_slug}/`;
+        //   }
 
-          if (this.current_type === 'all') {
-            window.history.pushState('', '', `${uri}?${q || ''}`);
-          } else {
-            window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
-          }
-        } else {
+        //   if (this.current_type === 'all') {
+        //     window.history.pushState('', '', `${uri}?${q || ''}`);
+        //   } else {
+        //     window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
+        //   }
+        // } else {
           let uri = '/grants/explorer/';
 
           if (this.current_type === 'all') {
@@ -225,7 +277,7 @@ if (document.getElementById('grants-showcase')) {
           } else {
             window.history.pushState('', '', `${uri}${this.current_type}?${q || ''}`);
           }
-        }
+        // }
 
         if (this.current_type === 'activity') {
           const triggerTS = function() {
@@ -241,96 +293,106 @@ if (document.getElementById('grants-showcase')) {
           setTimeout(triggerTS, 1000);
         }
       },
-      getQueryParams: function() {
-        const query_elements = {};
+      // getQueryParams: function() {
+      //   const query_elements = {};
 
-        if (this.category && this.current_type !== 'all') {
-          query_elements['category'] = this.category;
-        }
+      //   if (this.category && this.current_type !== 'all') {
+      //     query_elements['category'] = this.category;
+      //   }
 
-        if (this.keyword) {
-          query_elements['keyword'] = this.keyword;
-        }
-        if (this.idle_grants) {
-          query_elements['idle'] = this.idle_grants;
-        }
-        if (this.following) {
-          query_elements['following'] = this.following;
-        }
-        if (this.show_contributions) {
-          query_elements['only_contributions'] = this.show_contributions;
-        }
-        if (this.featured) {
-          query_elements['featured'] = this.featured;
-        }
-        if (this.sort !== 'weighted_shuffle') {
-          query_elements['sort'] = this.sort;
-        }
-        if (this.network !== 'mainnet') {
-          query_elements['network'] = this.network;
-        }
-        if (this.current_type === 'collections') {
-          if (this.collection_id) {
-            query_elements['collection_id'] = this.collection_id;
-          }
-        }
+      //   if (this.keyword) {
+      //     query_elements['keyword'] = this.keyword;
+      //   }
+      //   if (this.idle_grants) {
+      //     query_elements['idle'] = this.idle_grants;
+      //   }
+      //   if (this.following) {
+      //     query_elements['following'] = this.following;
+      //   }
+      //   if (this.show_contributions) {
+      //     query_elements['only_contributions'] = this.show_contributions;
+      //   }
+      //   if (this.featured) {
+      //     query_elements['featured'] = this.featured;
+      //   }
+      //   if (this.params.sort !== 'weighted_shuffle') {
+      //     query_elements['sort'] = this.sort;
+      //   }
+      //   if (this.network !== 'mainnet') {
+      //     query_elements['network'] = this.network;
+      //   }
+      //   if (this.current_type === 'collections') {
+      //     if (this.collection_id) {
+      //       query_elements['collection_id'] = this.collection_id;
+      //     }
+      //   }
 
-        return $.param(query_elements);
-      },
-      filter_grants: function(filters, event) {
-        if (event) {
-          event.preventDefault();
-        }
-        if (filters.type == 'all' && location.href.indexOf('grants/explorer') == -1) {
-          location.href = '/grants/explorer';
-          return false;
-        }
-        let current_style;
+      //   return $.param(query_elements);
+      // },
+      // filter_grants: function(filters, event) {
+      //   console.log('filter_grants', filters);
+      //   if (event) {
+      //     event.preventDefault();
+      //   }
+      //   // if (filters.type == 'all' && location.href.indexOf('grants/explorer') == -1) {
+      //   //   // location.href = '/grants/explorer';
+      //   //   return false;
+      //   // }
+      //   let current_style;
 
-        if (filters.type !== null && filters.type !== undefined) {
-          if (!current_style) {
-            current_style = document.all_type_styles[filters.type];
-          }
-          this.current_type = filters.type;
-          if (this.current_type === 'collections') {
-            this.collection_id = null;
-          }
-        }
-        if (filters.category !== null && filters.category !== undefined) {
-          this.category = filters.category;
-        }
-        if (filters.keyword !== null && filters.keyword !== undefined) {
-          this.keyword = filters.keyword;
-        }
-        if (filters.following !== null && filters.following !== undefined) {
-          this.following = filters.following;
-        }
-        if (filters.idle_grants !== null && filters.idle_grants !== undefined) {
-          this.idle_grants = filters.idle_grants;
-        }
-        if (filters.sort !== null && filters.sort !== undefined) {
-          this.sort = filters.sort;
-        }
-        if (filters.show_contributions !== null && filters.show_contributions !== undefined) {
-          this.show_contributions = filters.show_contributions;
-        }
-        if (filters.featured !== null && filters.featured !== undefined) {
-          this.featured = filters.featured;
-        }
-        if (filters.network !== null && filters.network !== undefined) {
-          this.network = filters.network;
-        }
+      //   if (filters.type !== null && filters.type !== undefined) {
+      //     if (!current_style) {
+      //       current_style = document.all_type_styles[filters.type];
+      //     }
+      //     this.current_type = filters.type;
+      //     if (this.current_type === 'collections') {
+      //       this.collection_id = null;
+      //     }
+      //   }
+      //   if (filters.category !== null && filters.category !== undefined) {
+      //     this.category = filters.category;
+      //   }
 
-        if (filters.type === 'collections') {
-          this.collectionsPage = 1;
-        } else {
-          this.clearSingleCollection();
-        }
-        this.page = 1;
-        this.setCurrentType(this.current_type);
-        this.fetchGrants(this.page);
+      //   if (filters.sub_round_slug !== null && filters.sub_round_slug !== undefined) {
+      //     this.sub_round_slug = filters.sub_round_slug;
+      //   }
 
-      },
+      //   if (filters.round_num !== null && filters.round_num !== undefined) {
+      //     this.round_num = filters.round_num;
+      //   }
+
+      //   if (filters.keyword !== null && filters.keyword !== undefined) {
+      //     this.keyword = filters.keyword;
+      //   }
+      //   if (filters.following !== null && filters.following !== undefined) {
+      //     this.following = filters.following;
+      //   }
+      //   if (filters.idle_grants !== null && filters.idle_grants !== undefined) {
+      //     this.idle_grants = filters.idle_grants;
+      //   }
+      //   if (filters.sort !== null && filters.sort !== undefined) {
+      //     this.sort = filters.sort;
+      //   }
+      //   if (filters.show_contributions !== null && filters.show_contributions !== undefined) {
+      //     this.show_contributions = filters.show_contributions;
+      //   }
+      //   if (filters.featured !== null && filters.featured !== undefined) {
+      //     this.featured = filters.featured;
+      //   }
+      //   if (filters.network !== null && filters.network !== undefined) {
+      //     this.network = filters.network;
+      //   }
+
+      //   if (filters.type === 'collections') {
+      //     this.collectionsPage = 1;
+      //   } else {
+      //     this.clearSingleCollection();
+      //   }
+      //   this.params.page = 1;
+      //   this.setCurrentType(this.current_type);
+      //   this.fetchGrants(this.params.page);
+
+      // },
       changeBanner: function() {
         this.regex_style = document.all_routing_policies &&
           document.all_routing_policies.find(policy => {
@@ -343,7 +405,7 @@ if (document.getElementById('grants-showcase')) {
         this.collections = [];
         this.collection_id = null;
         this.activeCollection = null;
-        this.page = 1;
+        this.params.page = 1;
         this.updateURI();
         this.fetchGrants();
       },
@@ -352,65 +414,133 @@ if (document.getElementById('grants-showcase')) {
         this.collections = [];
         this.keyword = '';
         this.grants = [];
-        this.page = 1;
+        this.params.page = 1;
         this.current_type = 'collections';
         this.updateURI();
         this.fetchGrants();
       },
+      // loadUrl: async function() {
+      //   let vm = this;
+
+      //   let urlParams = new URLSearchParams(window.location.search);
+      //   if (vm.params.get(key) === value) return;
+      //   params.set(key, value);
+
+
+      //   const url = new URL(window.location.href);
+      //   const query = url.searchParams;
+      //   const filters = {};
+      //   const query_params = query.toString();
+      //   const query_elements = query_params.split('&');
+      //   query_elements.forEach(element => {
+      //     const [key, value] = element.split('=');
+      //     filters[key] = value;
+      //   });
+      //   this.filter_grants(filters);
+      // },
+      resetFilters: function() {
+        let vm = this;
+
+        console.log(baseParams)
+        vm.params = Object.assign({}, baseParams);
+        console.log(baseParams)
+        vm.fetchGrants();
+
+      },
+      changeQuery: function(query) {
+        let vm = this;
+
+        for (let key in query) {
+          console.log(key)
+          vm.params[key] = query[key];
+
+        }
+        vm.fetchGrants();
+      },
+      getUrlParams: function() {
+        let vm = this;
+
+        const url = new URL(location.href);
+        const params = new URLSearchParams(url.search);
+        // for(var [key, value] of params.entries()) {
+        //   vm.params[key] = value;
+        // }
+
+        for (let p of params) {
+          if (typeof vm.params[p[0]] === 'object') {
+            if (p[1].length > 0) {
+              vm.params[p[0]] = p[1].split(',');
+            } else {
+              vm.$delete(vm.params[p[0]]);
+            }
+          } else {
+            vm.params[p[0]] = p[1];
+          }
+        }
+      },
       fetchGrants: async function(page, append_mode) {
         let vm = this;
+
+        if (page) {
+          vm.params.page = page;
+        }
+
+        // let urlParams = new URLSearchParams(window.location.search);
+        let searchParams = new URLSearchParams(vm.params);
+        console.log(searchParams.toString());
+        window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
 
         if (this.lock)
           return;
 
         this.lock = true;
 
-        const base_params = {
-          page: page || this.page,
-          limit: this.limit,
-          sort_option: this.sort,
-          network: this.network,
-          keyword: this.keyword,
-          state: this.state,
-          collections_page: this.collectionsPage,
-          grant_tags: this.category,
-          grant_types: this.current_type[0].keyword
-        };
+        // const base_params = {
+        //   page: page || this.params.page,
+        //   limit: this.params.limit,
+        //   sort_option: this.params.sorts,
+        //   network: this.network,
+        //   keyword: this.keyword,
+        //   state: this.state,
+        //   collections_page: this.collectionsPage,
+        //   grant_tags: this.category,
+        //   grant_types: this.current_type[0].keyword || this.current_type,
+        // };
 
-        if (this.following) {
-          base_params['following'] = this.following;
-        }
+        // if (this.following) {
+        //   base_params['following'] = this.following;
+        // }
 
-        if (this.idle_grants) {
-          base_params['idle'] = this.idle_grants;
-        }
+        // if (this.idle_grants) {
+        //   base_params['idle'] = this.idle_grants;
+        // }
 
-        if (this.show_contributions) {
-          base_params['only_contributions'] = this.show_contributions;
-        }
+        // if (this.show_contributions) {
+        //   base_params['only_contributions'] = this.show_contributions;
+        // }
 
-        if (this.featured) {
-          base_params['featured'] = this.featured;
-        }
+        // if (this.featured) {
+        //   base_params['featured'] = this.featured;
+        // }
 
-        if (this.current_type === 'collections' && this.collection_id) {
-          base_params['collection_id'] = this.collection_id;
-        }
+        // if (this.current_type === 'collections' && this.collection_id) {
+        //   base_params['collection_id'] = this.collection_id;
+        // }
 
-        if (vm.round_num) {
-          base_params['round_num'] = vm.round_num;
-        }
+        // if (vm.round_num) {
+        //   base_params['round_num'] = vm.round_num;
+        // }
 
-        if (vm.sub_round_slug) {
-          base_params['sub_round_slug'] = vm.sub_round_slug;
-        }
+        // if (vm.sub_round_slug) {
+        //   base_params['sub_round_slug'] = vm.sub_round_slug;
+        // }
 
-        if (vm.customer_name) {
-          base_params['customer_name'] = vm.customer_name;
-        }
+        // if (vm.customer_name) {
+        //   base_params['customer_name'] = vm.customer_name;
+        // }
 
-        const params = new URLSearchParams(base_params).toString();
-        const getGrants = await fetchData(`/grants/cards_info?${params}`);
+        // const params = new URLSearchParams(base_params).toString();
+        const getGrants = await fetchData(`/grants/cards_info?${searchParams.toString()}`);
 
         if (!append_mode) {
           vm.grants = [];
@@ -441,9 +571,9 @@ if (document.getElementById('grants-showcase')) {
         vm.changeBanner();
 
         if (vm.grantsHasNext) {
-          vm.page = ++vm.page;
+          vm.params.page = ++vm.params.page;
         } else {
-          vm.page = 1;
+          vm.params.page = 1;
         }
 
         vm.lock = false;
@@ -460,7 +590,7 @@ if (document.getElementById('grants-showcase')) {
 
         if (bottomOfPage || pageHeight < visible) {
           if (vm.grantsHasNext) {
-            vm.fetchGrants(vm.page, true);
+            vm.fetchGrants(vm.params.page, true);
             vm.grantsHasNext = false;
           }
         }
@@ -473,11 +603,11 @@ if (document.getElementById('grants-showcase')) {
 
         const base_params = {
           no_pagination: true,
-          sort_option: this.sort,
-          network: this.network,
-          keyword: this.keyword,
-          state: this.state,
-          grant_tags: this.category,
+          sort_option: this.params.sorts,
+          network: this.params.network,
+          keyword: this.params.keyword,
+          state: this.params.state,
+          grant_tags: this.params.category,
           grant_types: this.current_type
         };
 
@@ -545,9 +675,9 @@ if (document.getElementById('grants-showcase')) {
     },
     mounted() {
       let vm = this;
-
+      this.getUrlParams();
       this.fetchClrGrants();
-      this.fetchGrants(this.page);
+      this.fetchGrants(this.params.page);
 
     }
   });

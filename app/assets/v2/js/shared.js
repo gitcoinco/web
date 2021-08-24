@@ -1087,41 +1087,18 @@ this.getURLParams = (k) => {
   return k ? p[k] : p;
 };
 
-this.updateParams = (key, value) => {
-  params = new URLSearchParams(window.location.search);
-  if (params.get(key) === value) return;
-  params.set(key, value);
+// this.updateParams = (key, value) => {
+//   params = new URLSearchParams(window.location.search);
+//   if (params.get(key) === value) return;
+//   params.set(key, value);
 
-  let path = '/';
+//   let path = '/';
 
-  if (params.get('type', '')) {
-    path = '/' + params.get('type', '');
-  }
-  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
-};
-
-this.updateMultipleParams = (_newParams) => {
-  params = new URLSearchParams(window.location.search);
-  newParams = Object.entries(_newParams);
-  for (const [ key, value ] of newParams) {
-    params.set(key, value);
-  }
-  let path = '/';
-
-  if (params.get('type', '')) {
-    path = '/' + params.get('type', '');
-  }
-
-  if (params.get('type')) {
-    params.delete('type');
-  }
-  if (!params.get('category')) {
-    params.delete('category');
-  }
-  params.delete('keyword');
-
-  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
-};
+//   if (params.get('type', '')) {
+//     path = '/' + params.get('type', '');
+//   }
+//   window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
+// };
 
 
 /**

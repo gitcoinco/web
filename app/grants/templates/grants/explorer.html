@@ -67,41 +67,15 @@ along with this program. If not, see
           <b-tab title-link-class="nav-line font-weight-bold" active>
             <template v-slot:title>Grants</template>
 
-            [[clrData]]
             <div v-if="clrData.count > 0">
-              <a class="btn rounded-pill" @click="filter_grants({type: 'all', category: '', keyword: ''})" :class="`${ current_type == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
+              <a class="btn rounded-pill" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-blue':'btn-gc-grey'}`">
                 All Grants
               </a>
-              <a class="btn rounded-pill" href="" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ clr.sub_round_slug == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
+              <button class="btn rounded-pill" @click="changeQuery({sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-blue':'btn-gc-grey'}`">
                 [[clr.display_text]]
-              </a>
-
+              </button>
             </div>
-            {% if active_rounds %}
-              <div class="">
 
-                <a class="btn rounded-pill" @click="filter_grants({type: 'all', category: '', keyword: ''})" :class="`${ current_type == 'all'? 'btn-gc-blue':'btn-gc-grey'}`">
-                  All Grants
-                </a>
-
-                {% for active_round in active_rounds %}
-
-                  <a class="btn rounded-pill" href="/grants/clr{% if active_round.customer_name %}/{{ active_round.customer_name }}{% endif %}{% if active_round.round_num %}/{{ active_round.round_num }}{% endif %}{% if active_round.sub_round_slug %}/{{ active_round.sub_round_slug }}{% endif %}"
-                    :class="`btn  ${ sub_round_slug == '{{ active_round.sub_round_slug }}' ? 'btn-gc-blue' : 'btn-gc-grey'}`">
-                    {% if active_round.display_text %}
-                      {{ active_round.display_text|upper }}
-                    {% elif active_round.customer_name %}
-                      {{ active_round.customer_name|upper }} - {{ active_round.round_num }}
-                    {% elif active_round.sub_round_slug %}
-                      {{ active_round.sub_round_slug|upper }} - {{ active_round.round_num }}
-                    {% else %}
-                      {{ active_round.round_num }}
-                    {% endif %}
-                  </a>
-
-                {% endfor %}
-              </div>
-            {% endif %}
             <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
 
             </div>
@@ -122,18 +96,60 @@ along with this program. If not, see
             <template v-else>
 
               <div class="position-sticky top-0 bg-white py-2" style="z-index: 1;">
+
                 <b-dropdown text="Categories" size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
                   <b-dropdown-form>
-                    <b-form-checkbox-group id="checkbox-group-2" v-model="selected" :aria-describedby="ariaDescribedby" name="flavour-2">
-                    <template v-for="grant_type in grant_types" v-if="grant_type.is_visible || round_num">
-                      <b-form-checkbox class="mb-3">[[grant_type.label]]</b-form-checkbox>
-                    </template>
-                  </b-form-checkbox-group>
-                  <b-dropdown-divider></b-dropdown-divider>
-                    <b-button variant="link" size="sm">Clear</b-button>
-                    <b-button variant="primary" size="sm">Apply</b-button>
+                    <b-form-checkbox-group id="checkbox-group-types" v-model="params.grant_types" aria-describedby="ariaDescribedby" name="grant_types">
+                      <template v-for="grant_type in grant_types" v-if="grant_type.is_visible">
+                        <b-form-checkbox class="mb-3" :value="grant_type.keyword">[[grant_type.label]]</b-form-checkbox>
+                      </template>
+                    </b-form-checkbox-group>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-button variant="link" size="sm" @click="params.grant_types=[]">Clear</b-button>
+                    <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
                   </b-dropdown-form>
                 </b-dropdown>
+
+                <b-dropdown text="Tags" size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown-form>
+                    <b-form-checkbox-group id="checkbox-group-tags" v-model="params.grant_tags" aria-describedby="ariaDescribedby" name="grant_tags">
+                      <template v-for="tag in grant_tags">
+                        <b-form-checkbox class="mb-3" :value="tag.name">[[tag.label]]</b-form-checkbox>
+                      </template>
+                    </b-form-checkbox-group>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-button variant="link" size="sm" @click="params.grant_tags=[]">Clear</b-button>
+                    <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                  </b-dropdown-form>
+                </b-dropdown>
+
+                <b-dropdown text="Regions" size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown-form>
+                    <b-form-checkbox-group id="checkbox-group-regions" v-model="params.grant_regions" aria-describedby="ariaDescribedby" name="grant_regions">
+                      <template v-for="region in grantRegions">
+                        <b-form-checkbox class="mb-3" :value="region.name">[[region.label]]</b-form-checkbox>
+                      </template>
+                    </b-form-checkbox-group>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-button variant="link" size="sm" @click="params.grant_regions=[]">Clear</b-button>
+                    <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                  </b-dropdown-form>
+                </b-dropdown>
+
+                <b-dropdown text="Blockchains" size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown-form>
+                    <b-form-checkbox-group id="checkbox-group-tenants" v-model="params.tenants" aria-describedby="ariaDescribedby" name="tenants">
+                      <template v-for="tenant in grantTenants">
+                        <b-form-checkbox class="mb-3" :value="tenant.name">[[tenant.label]]</b-form-checkbox>
+                      </template>
+                    </b-form-checkbox-group>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-button variant="link" size="sm" @click="params.tenants=[]">Clear</b-button>
+                    <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                  </b-dropdown-form>
+                </b-dropdown>
+
+
               </div>
               {% include 'grants/shared/top-filters.html' %}
 
@@ -169,9 +185,7 @@ along with this program. If not, see
               <div style="background-color: rgba(255, 255, 255, 0.92);  padding-bottom: 20px;">
                 <div>
                   <div class="row mx-0">
-                    <div class="col-12 col-lg-3 col-xl-2 pr-lg-0" id="sidebar_container">
-                      {% include 'grants/shared/sidebar_search.html' %}
-                    </div>
+
 
                     <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
                       {% include 'grants/shared/landing_navbar.html' %}
@@ -198,9 +212,7 @@ along with this program. If not, see
             </div>
             {% csrf_token %}
           </div>
-          <div id="side-cart" class="grant-side-cart pb-md-0 pt-md-0 px-0 border-top-2 border-grey mt-n1 mt-md-0" style="display: none;">
-            {% include 'grants/detail/side-cart.html' %}
-          </div>
+
         </div>
 
 
