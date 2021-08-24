@@ -75,3 +75,9 @@ class TestGrantType:
         grant_type = GrantTypeFactory()
 
         assert isinstance(grant_type.clrs, QuerySet)
+
+    def test_grant_type_has_active_clrs_method(self):
+
+        grant_type = GrantTypeFactory()
+
+        assert isinstance(grant_type.active_clrs, QuerySet)
