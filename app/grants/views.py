@@ -3499,16 +3499,20 @@ def ingest_contributions(request):
 @csrf_exempt
 def get_trust_bonus(request):
     '''
-        JSON POST endpoint which returns the trust bonus score of given addresses
+        JSON POST/GET endpoint which returns the trust bonus score of given addresses
     '''
 
-    try:
-        json_body = json.loads(request.body)
-        addresses = json_body.get('addresses')
-        if not addresses:
-            return HttpResponse(status=204)
-    except:
-        return HttpResponse(status=400)
+    addresses = request.GET.get('addresses')
+    if addresses:
+        addresses = addresses.split(',')
+    else:
+        try:
+            json_body = json.loads(request.body)
+            addresses = json_body.get('addresses')
+            if not addresses:
+                return HttpResponse(status=204)
+        except:
+            return HttpResponse(status=400)
 
     query = Q()
     for address in addresses:
