@@ -467,6 +467,7 @@ def get_grants(request):
     customer_name = request.GET.get('customer_name', '')
     sort = request.GET.get('sort_option', None)
     tenants = request.GET.get('tenants', '')
+    grant_regions = request.GET.get('grant_regions', '')
 
     # 2. Fetch GrantCLR if round_num is present
     clr_round = None
@@ -494,7 +495,8 @@ def get_grants(request):
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
         'clr_round': clr_round,
-        'tenants': tenants
+        'tenants': tenants,
+        'grant_regions': grant_regions
     }
     _grants = get_grants_by_filters(**filters)
 
@@ -572,6 +574,7 @@ def get_grants(request):
         'applied_filters': {
             'grant_types': grant_types,
             'grant_tags': grant_tags,
+            'grant_regions': grant_regions,
             'round_num': round_num,
             'sub_round_slug': sub_round_slug,
             'customer_name': customer_name,
@@ -603,7 +606,8 @@ def get_grants_by_filters(
     only_contributions=False,
     omit_my_grants=False,
     clr_round=None,
-    tenants=''
+    tenants='',
+    grant_regions=''
 ):
 
     # sort_by_clr_pledge_matching_amount = None
@@ -684,6 +688,14 @@ def get_grants_by_filters(
 
             # _grants = _grants.exclude(Q(**{tenant_filter: '0x0'}))
         _grants = _grants.filter(tenant_query)
+
+    if grant_regions:
+        regions = grant_regions.split(',')
+        # 13. Fetch grants which have mentnioned regions
+        region_query= Q()
+        for region in regions:
+            region_query |= Q(region=region)
+        _grants = _grants.filter(region_query)
 
 
     # 13. Sort filtered grants
