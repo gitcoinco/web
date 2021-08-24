@@ -81,3 +81,9 @@ class TestGrantType:
         grant_type = GrantTypeFactory()
 
         assert isinstance(grant_type.active_clrs, QuerySet)
+
+    def test_grant_type_has_active_clrs_sum_method(self):
+
+        grant_type = GrantTypeFactory()
+
+        assert grant_type.active_clrs_sum == 0
