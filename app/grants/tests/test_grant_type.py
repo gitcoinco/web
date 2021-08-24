@@ -71,18 +71,21 @@ class TestGrantType:
         assert grant_type.logo == None
 
     def test_grant_type_has_clrs_method(self):
+        """Test GrantType.clrs method."""
 
         grant_type = GrantTypeFactory()
 
         assert isinstance(grant_type.clrs, QuerySet)
 
     def test_grant_type_has_active_clrs_method(self):
+        """Test GrantType.active_clrs method."""
 
         grant_type = GrantTypeFactory()
 
         assert isinstance(grant_type.active_clrs, QuerySet)
 
     def test_grant_type_has_active_clrs_sum_method(self):
+        """Test GrantType.active_clrs_sum method."""
 
         grant_type = GrantTypeFactory()
 
