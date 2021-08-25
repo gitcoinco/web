@@ -679,7 +679,7 @@ def mesh_network_viz(request, ):
         "theme": theme,
         "themes": ['light', 'dark'],
         "show_labels_options": ['1', '0'],
-        'trim_pct_options': range(0,100),
+        'trim_pct_options': range(0, 100),
         'trim_pct': trim_pct,
         "day": day,
         "to_year": to_year,

@@ -141,6 +141,7 @@ class BaseAvatar(SuperModel):
 
         return None, None
 
+
 class CustomAvatar(BaseAvatar):
     recommended_by_staff = models.BooleanField(default=False)
     style = models.CharField(max_length=10, default='original')
