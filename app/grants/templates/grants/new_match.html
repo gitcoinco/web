@@ -205,7 +205,7 @@
               <div class="col-12 mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Amount (in Dai)</label>
                 <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-                <input id="amount" v-model="form.amount" name="amount" :class="`form__input form__input-lg ${errors.amount && Number(form.amount) <= 0 ? 'invalid' : ''}`" required />
+                <input type="number" id="amount" v-model="form.amount" name="amount" :class="`form__input form__input-lg ${errors.amount && Number(form.amount) <= 0 ? 'invalid' : ''}`" required />
 
                 <div class="text-danger" v-if="errors.amount && Number(form.amount) <= 0">
                   [[errors.amount]]
