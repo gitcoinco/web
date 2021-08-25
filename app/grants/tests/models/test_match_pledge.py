@@ -38,3 +38,13 @@ class TestMatchPledge:
 
         assert hasattr(match_pledge, 'amount')
         assert match_pledge.amount == 1
+
+    def test_match_pledge_has_pledge_type_attribute(self):
+        """Test 'pledge_type' attribute."""
+
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'pledge_type')
+        assert match_pledge.pledge_type == None
+
+    
