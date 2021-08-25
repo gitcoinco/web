@@ -30,3 +30,11 @@ class TestMatchPledge:
 
         assert hasattr(match_pledge, 'profile')
         assert match_pledge.profile == None
+
+    def test_match_pledge_has_amount_attribute(self):
+        """Test 'amount' attribute and default value."""
+
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'amount')
+        assert match_pledge.amount == 1
