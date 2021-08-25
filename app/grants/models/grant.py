@@ -488,7 +488,7 @@ class Grant(SuperModel):
     )
 
     in_active_clrs = models.ManyToManyField(
-        GrantCLR,
+        "GrantCLR",
         help_text="Active Grants CLR Round"
     )
     is_clr_active = models.BooleanField(default=False, help_text=_('CLR Round active or not? (auto computed)'))
@@ -885,7 +885,6 @@ class Grant(SuperModel):
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
         self.clr_round_num = self.calc_clr_round_label
-
         self.search_vector = (
             SearchVector('title', weight='A') + SearchVector('description', weight='B')
         )
