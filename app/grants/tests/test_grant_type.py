@@ -1,6 +1,9 @@
+from unittest.mock import Mock, patch
+
 from django.db.models import QuerySet
 
 import pytest
+from grants.models.grant import GrantCLR
 from grants.models.grant_category import GrantCategory
 from grants.models.grant_type import GrantType
 
@@ -70,17 +73,21 @@ class TestGrantType:
         assert hasattr(grant_type, 'logo')
         assert grant_type.logo == None
 
-    def test_grant_type_has_clrs_method(self):
-        """Test GrantType.clrs method."""
+    def test_clrs_method_calls_collaborator_with_appropriate_parameters(self):
+        """Test GrantType.clrs method calls filter on GrantCLR.objects with appropriate parameters."""
 
         grant_type = GrantTypeFactory()
 
-        assert isinstance(grant_type.clrs, QuerySet)
+        with patch.object(GrantCLR.objects, 'filter') as filter:
+            grant_type.clrs
+
+        filter.assert_called_with(grant_filters__grant_type=str(grant_type.pk))
 
     def test_grant_type_has_active_clrs_method(self):
         """Test GrantType.active_clrs method."""
 
         grant_type = GrantTypeFactory()
+
 
         assert isinstance(grant_type.active_clrs, QuerySet)
 
