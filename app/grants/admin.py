@@ -116,7 +116,7 @@ class GrantAdmin(GeneralAdmin):
         'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'emails', 'admin_message', 'has_external_funding'
     ]
     readonly_fields = [
-        'logo_svg_asset', 'logo_asset',
+        'defer_clr_to', 'logo_svg_asset', 'logo_asset',
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',

@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     'retail',
     'ptokens',
     'rest_framework',
+    'django_filters',
     'marketing',
     'economy',
     'dashboard',
