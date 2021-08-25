@@ -83,13 +83,16 @@ class TestGrantType:
 
         filter.assert_called_with(grant_filters__grant_type=str(grant_type.pk))
 
-    def test_grant_type_has_active_clrs_method(self):
-        """Test GrantType.active_clrs method."""
+    def test_active_clrs_method_calls_collaborator_with_appropriate_parameters(self):
+        """Test GrantType.active_clrs method calls filter on GrantCLR.objects with appropriate parameters."""
 
         grant_type = GrantTypeFactory()
 
+        with patch.object(GrantCLR.objects, 'filter') as filter:
+            grant_type.clrs
 
-        assert isinstance(grant_type.active_clrs, QuerySet)
+        filter.assert_called_with(grant_filters__grant_type=str(grant_type.pk))
+
 
     def test_grant_type_has_active_clrs_sum_method(self):
         """Test GrantType.active_clrs_sum method."""
