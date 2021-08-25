@@ -100,6 +100,4 @@ class TestGrantType:
 
         grant_type = GrantTypeFactory()
 
-        active_clr = GrantCLRFactory()
-
         assert grant_type.active_clrs_sum == 0
