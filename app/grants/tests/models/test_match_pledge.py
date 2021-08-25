@@ -47,4 +47,12 @@ class TestMatchPledge:
         assert hasattr(match_pledge, 'pledge_type')
         assert match_pledge.pledge_type == None
 
+    def test_match_pledge_has_comments(self):
+        """Test 'comments' attribute and default value."""
+
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'comments')
+        assert match_pledge.comments == ''
+
     
