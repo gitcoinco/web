@@ -885,7 +885,6 @@ class Grant(SuperModel):
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
         self.clr_round_num = self.calc_clr_round_label
-
         self.search_vector = (
             SearchVector('title', weight='A') + SearchVector('description', weight='B')
         )
