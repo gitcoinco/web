@@ -1,3 +1,6 @@
+web3 = new Web3('https://rpc-mumbai.maticvigil.com');
+const bulkCheckoutAddressPolygon = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
+
 
 Vue.component('grantsCartEthereumPolygon', {
   props: {
@@ -5,12 +8,12 @@ Vue.component('grantsCartEthereumPolygon', {
     donationInputs: { type: Array, required: true }, // donationInputs computed property from cart.js
     grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     maxCartItems: { type: Number, required: true }, // max number of items in cart
-    network: { type: String, required: true }, // web3 network to use
     grantsUnderMinimalContribution: { type: Array, required: true } // Array of grants under min contribution
   },
 
   data: function() {
     return {
+      network: 'mainnet',
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started' // options are 'not-started', 'pending', and 'complete'
@@ -22,7 +25,6 @@ Vue.component('grantsCartEthereumPolygon', {
       },
 
       user: {
-        address: undefined, // connected web3 wallet address
         hasEnoughBalance: true
       }
     };
@@ -59,10 +61,10 @@ Vue.component('grantsCartEthereumPolygon', {
      * reduce problems that arise if zkSync's server is slow
      */
     supportedTokens() {
-      const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN' ];
-      const rinkebyTokens = [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ];
+      const mainnetTokens = [ 'MATIC', 'DAI', 'WETH', 'USDC', 'COMP', 'LEND', 'YFI', 'USDT', 'BUSD', 'MANA', 'WBTC', 'KIWI', 'DUST', 'SPN' ];
+      const testnetTokens = [ 'MATIC', 'WETH', 'DAI' ];
 
-      return this.network === 'rinkeby' ? rinkebyTokens : mainnetTokens;
+      return this.network === 'testnet' ? testnetTokens : mainnetTokens;
     }
   },
 
@@ -92,6 +94,22 @@ Vue.component('grantsCartEthereumPolygon', {
     // Use the same error handler used by cart.js
     handleError(e) {
       appCart.$refs.cart.handleError(e);
+    },
+
+    getDonationInputs() {
+      appCart.$refs.cart.getDonationInputs();
+    },
+
+    async postToDatabase(txHash, contractAddress, userAddress) {
+      await appCart.$refs.cart.postToDatabase(txHash, contractAddress, userAddress, 'eth_polygon');
+    },
+
+    async finalizeCheckout() {
+      await appCart.$refs.cart.finalizeCheckout();
+    },
+
+    async getAllowanceData(userAddress, targetContract) {
+      await appCart.$refs.cart.getAllowanceData(userAddress, targetContract);
     },
 
     // We want to run this whenever wallet or cart content changes
@@ -131,12 +149,13 @@ Vue.component('grantsCartEthereumPolygon', {
 
     async setupPolygon() {
       // Connect to Polygon network with MetaMask
+      indicateMetamaskPopup();
       try {
-        this.user.address = await ethereum.request({ method: 'eth_requestAccounts' })[0];
         await ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: '0x13881' }] // Mainnet - 0x89
         });
+        indicateMetamaskPopup(true);
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
@@ -163,128 +182,88 @@ Vue.component('grantsCartEthereumPolygon', {
         } else {
           console.error(switchError);
         }
+        indicateMetamaskPopup(true);
       }
+      this.network = getDataChains(ethereum.networkVersion, 'chainId')[0] && getDataChains(ethereum.networkVersion, 'chainId')[0].network;
     },
 
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
       try {
-        this.user.address = await appCart.$refs.cart.initializeStandardCheckout();
+        this.setupPolygon();
 
-        // TODO: Make sure network is
-        const isCorrectNetwork = null;
+        if (typeof ga !== 'undefined') {
+          ga('send', 'event', 'Grant Checkout', 'click', 'Person');
+        }
+
+        // Throw if invalid Gitcoin contribution percentage
+        if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
+          throw new Error('Gitcoin contribution amount must be between 0% and 99%');
+        }
+  
+        // Throw if there's negative values in the cart
+        this.donationInputs.forEach(donation => {
+          if (Number(donation.amount) < 0) {
+            throw new Error('Cannot have negative donation amounts');
+          }
+        });
 
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)
-        const allowanceData = await appCart.$refs.cart.getAllowanceData(
-          this.user.address, '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973'
+        const allowanceData = await this.getAllowanceData(
+          ethereum.selectedAddress, bulkCheckoutAddressPolygon
         );
 
         // Save off cart data
         this.polygon.checkoutStatus = 'pending';
 
-        // TODO: Prompt user to complete checkout
-        const txHash = null;
+        if (allowanceData.length === 0) {
+          // Send transaction and exit function
+          this.sendDonationTx(ethereum.selectedAddress);
+          return;
+        }
 
-        // Save contributors to database and redirect to success modal
-        console.log('Transaction hash: ', txHash);
-        _alert('Saving contributions. Please do not leave this page.', 'success', 200);
-        await appCart.$refs.cart.postToDatabase(
-          txHash, // array of transaction hashes for each contribution
-          null, // TODO: this.zksync.contractAddress, // we use the zkSync mainnet contract address to represent zkSync deposits
-          this.user.address
+        // Request approvals then send donations ---------------------------------------------------
+        await this.requestAllowanceApprovalsThenExecuteCallback(
+          allowanceData,
+          ethereum.selectedAddress,
+          bulkCheckoutAddressPolygon,
+          this.sendDonationTx,
+          [ethereum.selectedAddress]
         );
-        this.polygon.checkoutStatus = 'complete'; // allows user to freely close tab now
-        await appCart.$refs.cart.finalizeCheckout(); // Update UI and redirect
 
       } catch (e) {
-        switch (e) {
-          case 'User closed zkSync':
-            _alert('Checkout not complete: User closed the zkSync page. Please try again', 'danger');
-            this.resetZkSyncModal();
-            throw e;
-
-          case 'Failed to open zkSync page':
-            _alert('Checkout not complete: Unable to open the zkSync page. Please try again', 'danger');
-            this.resetZkSyncModal();
-            throw e;
-
-          case 'Took too long for the zkSync page to open':
-            _alert('Checkout not complete: Took too long to open the zkSync page. Please try again', 'danger');
-            this.resetZkSyncModal();
-            throw e;
-
-          default:
-            this.handleError(e);
-        }
+        this.handleError(e);
       }
     },
 
-    // Estimates the total gas cost of a zkSync checkout and sends it to cart.js
+    async sendDonationTx(userAddress) {
+      // Get our donation inputs
+      const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
+      const donationInputsFiltered = this.getDonationInputs();
+
+      // Send transaction
+      indicateMetamaskPopup();
+      bulkTransaction.methods
+        .donate(donationInputsFiltered)
+        .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsEthAmount })
+        .on('transactionHash', async(txHash) => {
+          console.log('Donation transaction hash: ', txHash);
+          indicateMetamaskPopup(true);
+          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
+          await this.postToDatabase([txHash], bulkCheckoutAddressPolygon, userAddress); // Save contributions to database
+          await this.finalizeCheckout(); // Update UI and redirect
+        })
+        .on('error', (error, receipt) => {
+          // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+          this.handleError(error);
+        });
+    },
+
+    // Estimates the total gas cost of a polygon checkout and sends it to cart.js
     estimateGasCost() {
-      // Estimate minimum gas cost based on 550 gas per transfer
-      const gasPerTransfer = toBigNumber('550'); // may decrease as low as 340 as zkSync gets more traction
-      const numberOfTransfers = String(this.donationInputs.length);
-      const minimumCost = gasPerTransfer.mul(numberOfTransfers);
-      let totalCost = minimumCost;
-
-      // If user has enough balance within zkSync, cost equals the minimum amount
-      const { isBalanceSufficient, requiredAmounts } = this.hasEnoughBalanceInZkSync();
-
-      if (isBalanceSufficient) {
-        return totalCost.toString();
-      }
-
-      // If we're here, user needs at least one L1 deposit, so let's calculate the total cost
-      this.cart.tokenList.forEach((tokenSymbol) => {
-        const zksyncBalance = toBigNumber(this.user.zksyncState.committed.balances[tokenSymbol]);
-
-        if (requiredAmounts[tokenSymbol].gt(zksyncBalance)) {
-          if (tokenSymbol === 'ETH') {
-            totalCost = totalCost.add('200000'); // add 200k gas for ETH deposits
-          } else {
-            totalCost = totalCost.add('250000'); // add 250k gas for token deposits
-          }
-        }
-      });
-      return totalCost.toString();
-    },
-
-    // Returns true if user has enough balance within zkSync to avoid L1 deposit, false otherwise
-    hasEnoughBalanceInZkSync() {
-      const zksyncBalances = this.user.zksyncState.committed.balances; // object, keys are token symbols, values are token balances as string
-      const requiredAmounts = {}; // keys are token symbols, values are required amounts as BigNumber
-
-      // Get total amount needed for eack token by summing over donation inputs
-      this.donationInputs.forEach((donation) => {
-        const tokenSymbol = donation.name;
-        const amount = toBigNumber(donation.amount);
-
-        if (!requiredAmounts[tokenSymbol]) {
-          // First time seeing this token, set the field and initial value
-          requiredAmounts[tokenSymbol] = amount;
-        } else {
-          // We've seen this token, so just update the total
-          requiredAmounts[tokenSymbol] = requiredAmounts[tokenSymbol].add(amount);
-        }
-      });
-
-      // Compare amounts needed to balance
-      let isBalanceSufficient = true; // initialize output
-
-      this.cart.tokenList.forEach((tokenSymbol) => {
-        const userAmount = toBigNumber(zksyncBalances[tokenSymbol]);
-        const requiredAmount = requiredAmounts[tokenSymbol];
-
-        if (requiredAmount.gt(userAmount))
-          isBalanceSufficient = false;
-      });
-
-      // Return result and required amounts
-      return {
-        isBalanceSufficient,
-        requiredAmounts
-      };
+      // Estimate minimum gas cost here
+      console.log('write me please');
     }
   }
 });

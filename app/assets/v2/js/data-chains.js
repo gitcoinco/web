@@ -1254,6 +1254,46 @@ var dataChains =
 
     ],
     "infoURL": "https://poa.network"
+  },
+  {
+    "name": "Polygon(Matic) Testnet Mumbai",
+    "chainId": 80001,
+    "shortName": "maticmum",
+    "chain": "Polygon(Matic)",
+    "network": "testnet",
+    "networkId": 80001,
+    "rpc": [
+      "https://rpc-mumbai.maticvigil.com"
+    ],
+    "faucets": [
+      "https://faucet.matic.network/"
+    ],
+    "nativeCurrency": {
+      "name": "Matic",
+      "symbol": "MATIC",
+      "decimals": 18
+    },
+    "infoURL":"https://matic.network/"
+  },
+  {
+    "name": "Polygon(Matic) Mainnet",
+    "chainId": 137,
+    "shortName": "matic",
+    "chain": "Polygon(Matic)",
+    "network": "mainnet",
+    "networkId": 137,
+    "rpc": [
+      "https://rpc-mainnet.maticvigil.com",
+      "https://rpc-mainnet.matic.network",
+      "https://rpc-mainnet.matic.quiknode.pro",
+      "https://matic-mainnet.chainstacklabs.com"
+    ],
+    "nativeCurrency": {
+      "name": "Matic",
+      "symbol": "MATIC",
+      "decimals": 18
+    },
+    "infoURL":"https://matic.network/"
   }
 ];
 

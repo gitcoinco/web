@@ -16,6 +16,7 @@ document.addEventListener('dataWalletReady', function(e) {
 // needWalletConnection();
 
 // Constants
+const MATIC_ADDRESS = '0x0000000000000000000000000000000000001010';
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6'; // Gitcoin donation address for mainnet and rinkeby
 
@@ -747,6 +748,15 @@ Vue.component('grants-cart', {
           decimals: 18,
           priority: 1
         };
+      } else if (name === 'MATIC') {
+        return {
+          addr: MATIC_ADDRESS,
+          address: MATIC_ADDRESS,
+          name: 'MATIC',
+          symbol: 'MATIC',
+          decimals: 18,
+          priority: 1
+        };
       }
       return this.filterByChainId.filter(token => token.name === name)[0];
     },
@@ -837,12 +847,12 @@ Vue.component('grants-cart', {
         const tokenDetails = this.getTokenByName(tokenName);
 
         // If ETH donation no approval is necessary, just check balance
-        if (tokenDetails.name === 'ETH') {
+        if (tokenDetails.name === 'ETH' || tokenDetails.name === 'MATIC') {
           const userEthBalance = await web3.eth.getBalance(userAddress);
 
           if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
             // User ETH balance is too small compared to selected donation amounts
-            throw new Error('Insufficient ETH balance to complete checkout');
+            throw new Error(`Insufficient ${tokenDetails.name} balance to complete checkout`);
           }
           // ETH balance is sufficient, continue to next iteration since no approval check
           continue;
@@ -1033,23 +1043,20 @@ Vue.component('grants-cart', {
     },
 
     // POSTs donation data to database. Wrapped in a try/catch, and if it fails, we fallback to the manual ingestion script
-    async postToDatabase(txHash, contractAddress, userAddress) {
+    async postToDatabase(txHash, contractAddress, userAddress, checkoutType = 'eth_std') {
       try {
         // this.grantsByTenant is the array used for donations, and this.donationInputs is computed from it
         // We loop through each donation to configure the payload then POST the required data
         const donations = this.donationInputs;
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        // All transactions are the same type, so if any hash begins with `sync-tx:` we know it's a zkSync checkout
-        const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
-
         // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
-        const txHashes = checkout_type === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
+        const txHashes = checkoutType === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
 
         // Configure template payload
         const saveSubscriptionPayload = {
           // Values that are constant for all donations
-          checkout_type,
+          checkoutType,
           contributor_address: userAddress,
           csrfmiddlewaretoken,
           frequency_count: 1,
@@ -1093,11 +1100,19 @@ Vue.component('grants-cart', {
           const tokenName = donation.grant.grant_donation_currency;
           const tokenDetails = this.getTokenByName(tokenName);
 
-          // Gitcoin uses the zero address to represent ETH, but the contract does not. Therefore we
-          // get the value of denomination and token_address using the below logic instead of
+          // Gitcoin uses special addresses to represent native chain currencies, but the contract does not.
+          // Therefore we get the value of denomination and token_address using the below logic instead of
           // using tokenDetails.addr
-          const isEth = tokenName === 'ETH';
-          const tokenAddress = isEth ? '0x0000000000000000000000000000000000000000' : tokenDetails.addr;
+          switch (tokenName) {
+            case 'ETH':
+              tokenAddress = '0x0000000000000000000000000000000000000000';
+              break;
+            case 'MATIC':
+              tokenAddress = '0x0000000000000000000000000000000000001010';
+              break;
+            default:
+              tokenAddress = tokenDetails.addr;
+          }
 
           // Replace undefined comments with empty strings
           const comment = donation.grant.grant_comments === undefined ? '' : donation.grant.grant_comments;
@@ -1165,13 +1180,12 @@ Vue.component('grants-cart', {
     },
 
     // Alternative to postToDatabase that uses the manual ingestion process
-    async postToDatabaseManualIngestion(txHash, userAddress) {
+    async postToDatabaseManualIngestion(txHash, userAddress, checkoutType = 'eth_std') {
       // Determine if this was a zkSync checkout or standard L1 checkout. For this endpoint, we pass a txHash
       // to ingest L1 contributions or an address to pass L2 contributions
-      const checkout_type = txHash[0].startsWith('sync') ? 'eth_zksync' : 'eth_std';
 
-      txHash = checkout_type === 'eth_std' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
-      userAddress = checkout_type === 'eth_zksync' ? userAddress : '';
+      txHash = checkoutType === 'eth_std' || checkoutType === 'eth_polygon' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
+      userAddress = checkoutType === 'eth_zksync' ? userAddress : '';
 
       // Get user's signature to prevent ingesting arbitrary transactions under your own username, then ingest
       const { signature, message } = await this.signMessage(userAddress);
@@ -1210,7 +1224,7 @@ Vue.component('grants-cart', {
       const ethersProvider = new ethers.providers.Web3Provider(provider); // ethers provider instance
       const signer = ethersProvider.getSigner(); // ethers signers
       const { chainId } = await ethersProvider.getNetwork(); // append chain ID if not mainnet to mitigate replay attack
-      const message = chainId === 1 ? baseMessage : `${baseMessage}\n\nChain ID: ${chainId}`;
+      const message = chainId === 1 || chainId === 137 ? baseMessage : `${baseMessage}\n\nChain ID: ${chainId}`;
 
       // Get signature from user
       const isValidSignature = (sig) => ethers.utils.isHexString(sig) && sig.length === 132; // used to verify signature
@@ -1237,7 +1251,7 @@ Vue.component('grants-cart', {
      * success alert
      */
     async finalizeCheckout() {
-      // Number of items descides the timeout time
+      // Number of items decides the timeout time
       const timeout_amount = 1500 + (this.grantsByTenant.length * 500);
       // Clear cart, redirect back to grants page, and show success alert
 
