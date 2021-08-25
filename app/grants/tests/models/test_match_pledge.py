@@ -15,3 +15,11 @@ class TestMatchPledge:
 
         assert isinstance(match_pledge, MatchPledge)
 
+    def test_match_pledge_has_active_attribute(self):
+        """Test 'active' attribute and default value."""
+
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'active')
+        assert match_pledge.active == False
+
