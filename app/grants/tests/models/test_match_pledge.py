@@ -23,3 +23,10 @@ class TestMatchPledge:
         assert hasattr(match_pledge, 'active')
         assert match_pledge.active == False
 
+    def test_match_pledge_has_profile_attribute(self):
+        """Test 'profile' attribute and default value."""
+
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'profile')
+        assert match_pledge.profile == None
