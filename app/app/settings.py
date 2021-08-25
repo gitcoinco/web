@@ -115,7 +115,6 @@ INSTALLED_APPS = [
     'economy',
     'dashboard',
     'quests',
-    'faucet',
     'tdi',
     'gas',
     'git',
@@ -772,8 +771,6 @@ S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
-# Faucet App config
-FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.00025)
 
 SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')

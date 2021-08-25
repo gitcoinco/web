@@ -57,7 +57,6 @@ MARKETING_EMAILS = [
 
 TRANSACTIONAL_EMAILS = [
     ('tip', _('Tip Emails'), _('Only when you are sent a tip')),
-    ('faucet', _('Faucet Notification Emails'), _('Only when you are sent a faucet distribution')),
     ('bounty', _('Bounty Notification Emails'), _('Only when you\'re active on a bounty')),
     ('bounty_match', _('Bounty Match Emails'), _('Only when you\'ve posted a open bounty and you have a new match')),
     ('bounty_feedback', _('Bounty Feedback Emails'), _('Only after a bounty you participated in is finished.')),
@@ -1127,37 +1126,6 @@ def render_bounty_unintersted(to_email, bounty, interest):
     return response_html, response_txt
 
 
-def render_faucet_rejected(fr):
-
-    params = {
-        'fr': fr,
-        'amount': settings.FAUCET_AMOUNT,
-        'utm_tracking': build_utm_tracking('faucet_rejected'),
-        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
-    }
-
-    response_html = premailer_transform(render_to_string("emails/faucet_request_rejected.html", params))
-    response_txt = render_to_string("emails/faucet_request_rejected.txt", params)
-
-    return response_html, response_txt
-
-
-def render_faucet_request(fr):
-
-    params = {
-        'fr': fr,
-        'amount': settings.FAUCET_AMOUNT,
-		'email_type': 'faucet',
-        'utm_tracking': build_utm_tracking('faucet_request'),
-        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
-    }
-
-    response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
-    response_txt = render_to_string("emails/faucet_request.txt", params)
-
-    return response_html, response_txt
-
-
 def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
     params = {
         'bounty': bounty,
@@ -1674,22 +1642,6 @@ def start_work_expired(request):
 def start_work_expire_warning(request):
     from dashboard.models import Bounty, Interest
     response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.last(), Interest.objects.all().last(), 5)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def faucet(request):
-    from faucet.models import FaucetRequest
-    fr = FaucetRequest.objects.last()
-    response_html, _ = render_faucet_request(fr)
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def faucet_rejected(request):
-    from faucet.models import FaucetRequest
-    fr = FaucetRequest.objects.exclude(comment_admin='').last()
-    response_html, _ = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
 

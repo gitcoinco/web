@@ -1510,16 +1510,16 @@ class BountyFulfillment(SuperModel):
     def value_in_usdt_at_time(self, at_time):
         try:
             if self.token_name in ['USDT', 'USDC']:
-                return float(self.payout_amount / 10 ** 6)
+                return float(self.payout_amount)
             if self.token_name in settings.STABLE_COINS:
-                return float(self.payout_amount / 10 ** 18)
+                return float(self.payout_amount)
             if self.token_name in ['ETH']:
                 return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
             try:
-                return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
+                return round(float(convert_amount(self.payout_amount, self.token_name, 'USDT', at_time)), 2)
             except ConversionRateNotFoundError:
                 try:
-                    in_eth = round(float(convert_amount(self.value_true, self.token_name, 'ETH', at_time)), 2)
+                    in_eth = round(float(convert_amount(self.payout_amount, self.token_name, 'ETH', at_time)), 2)
                     return round(float(convert_amount(in_eth, 'USDT', 'USDT', at_time)), 2)
                 except ConversionRateNotFoundError:
                     return None
@@ -2891,7 +2891,7 @@ class Profile(SuperModel):
     )
     trust_profile = models.BooleanField(
         default=False,
-        help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
+        help_text='If this option is chosen, the user is able to submit a ens domain registration even if they are new to github',
     )
     dont_autofollow_earnings = models.BooleanField(
         default=False,
@@ -4400,6 +4400,7 @@ class Profile(SuperModel):
             'card_title': f'@{self.handle} | Gitcoin',
             'org_works_with': org_works_with,
             'card_desc': desc,
+            'trust_bonus': self.trust_bonus,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'count_bounties_completed': total_fulfilled,
             'works_with_collected': works_with_collected,
