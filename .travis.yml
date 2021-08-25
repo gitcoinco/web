@@ -51,6 +51,9 @@ jobs:
         - npm run eslint
         - npm run stylelint
         - (cd app; python3 ./manage.py collectstatic --noinput --disable-collectfast)
+        # Run migrations
+        - python3 app/manage.py migrate
+        # Run the tests
         - pytest -p no:ethereum -p no:warnings
         # Run cypress tests
         - bin/ci/cypress-run
