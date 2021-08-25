@@ -16,3 +16,4 @@ class GrantTypeFactory(factory.django.DjangoModelFactory):
         if extracted:
             for category in extracted:
                 self.categories.add(category)
+

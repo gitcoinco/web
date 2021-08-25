@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from django.db.models import QuerySet
 
@@ -8,6 +8,7 @@ from grants.models.grant_category import GrantCategory
 from grants.models.grant_type import GrantType
 
 from .factories.grant_category_factory import GrantCategoryFactory
+from .factories.grant_clr_factory import GrantCLRFactory
 from .factories.grant_type_factory import GrantTypeFactory
 
 
@@ -89,14 +90,16 @@ class TestGrantType:
         grant_type = GrantTypeFactory()
 
         with patch.object(GrantCLR.objects, 'filter') as filter:
-            grant_type.clrs
+            grant_type.active_clrs
 
-        filter.assert_called_with(grant_filters__grant_type=str(grant_type.pk))
+        filter.assert_called_with(is_active=True, grant_filters__grant_type=str(grant_type.pk))
 
 
     def test_grant_type_has_active_clrs_sum_method(self):
         """Test GrantType.active_clrs_sum method."""
 
         grant_type = GrantTypeFactory()
+
+        active_clr = GrantCLRFactory()
 
         assert grant_type.active_clrs_sum == 0
