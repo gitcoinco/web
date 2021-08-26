@@ -2248,12 +2248,22 @@ $(document).ready(function() {
   });
 
   const passportCredential = (() => {
-
-    const _3BOX_SPACE = 'gitcoin';
-    const _3BOX_FIELD = 'popp';
+    const CERAMIC_DOC_FAMILY = 'popp';
+    const CERAMIC_DOC_TAGS = [
+      'gitcoin',
+      'PoPP',
+      'ProofOfPersonhoodPassport',
+      'VerifiableCredential',
+      'DIDKit'
+    ];
 
     let credential;
     let verifier;
+
+    const CERAMIC_DOC_OPTIONS = {
+      family: CERAMIC_DOC_FAMILY,
+      tags: CERAMIC_DOC_TAGS
+    };
 
     const params = () => ({
       'network': networkName,
@@ -2291,26 +2301,26 @@ $(document).ready(function() {
             <a ${style} href="${verifier}" target="_blank" class="btn btn-success">Verify</a>
             <a ${style} href="${href}" class="btn btn-link" download="gitcoin-popp-vc.json"">Download</a>
           </div>
-          <button ${style} type="button" class="btn btn-primary" id="vc-3box">Save to 3Box</button>
+          <button ${style} type="button" class="btn btn-primary" id="vc-ceramic">Save to Ceramic</button>
         </div>
       `;
     };
 
     const messages = {
+      init: [
+        'Initialize Ceramic client',
+        'Initializing Ceramic client',
+        'Initialized Ceramic client'
+      ],
       auth: [
-        'Authenticate with 3Box',
-        'Authenticating with 3Box',
-        'Authenticated with 3Box'
+        'Authenticate with Ceramic client',
+        'Authenticating with Ceramic client',
+        'Authenticated with Ceramic client'
       ],
-      storage: [
-        `Open '${_3BOX_SPACE}' storage space on 3Box`,
-        `Opening '${_3BOX_SPACE}' storage space on 3Box`,
-        `Opened '${_3BOX_SPACE}' storage space on 3Box`
-      ],
-      variable: [
-        `Save passport credential as '${_3BOX_FIELD}'`,
-        `Saving passport credential as '${_3BOX_FIELD}'`,
-        `Saved passport credential as '${_3BOX_FIELD}'`
+      write: [
+        'Save passport credential',
+        'Saving passport credential',
+        'Saved passport credential'
       ]
     };
 
@@ -2323,26 +2333,29 @@ $(document).ready(function() {
       return '<em>' + source[0] + '</em>';
     };
 
-    const get3BoxContent = (auth, storage, variable) => {
+    const getContent = (init, auth, write) => {
       let list = '<ul>';
+
+      list += '<li>';
+      list += getMessage(messages.init, init);
+      list += '</li>';
 
       list += '<li>';
       list += getMessage(messages.auth, auth);
       list += '</li>';
 
       list += '<li>';
-      list += getMessage(messages.storage, storage);
-      list += '</li>';
-
-      list += '<li>';
-      list += getMessage(messages.variable, variable);
+      list += getMessage(messages.write, write);
       list += '</li>';
 
       list += '</ul>';
 
       return `
         <div>
-          <p><strong>3Box integration:</strong> you can save a POPP credential to 3Box.</p>
+          <p>
+            <strong>Ceramic integration:</strong>
+            you can save a POPP credential to Ceramic.
+          </p>
           ${list}
         </div>
       `;
@@ -2378,35 +2391,34 @@ $(document).ready(function() {
       }
     };
 
-    const vc3Box = async() => {
+    const vcCeramic = async() => {
       const modal = $('.modal-body');
       const base = baseContent();
 
-      modal.html(`${base} <hr /> ${get3BoxContent(false)}`);
+      modal.html(`${base} <hr /> ${getContent(false)}`);
 
-      const storageBox = await Box.openBox(selectedAccount, provider);
+      const client = await Ceramic.initializeClient();
 
-      modal.html(`${base} <hr /> ${get3BoxContent(true, false)}`);
 
-      const storageSpace = await storageBox.openSpace(_3BOX_SPACE);
+      modal.html(`${base} <hr /> ${getContent(true, false)}`);
 
-      await storageSpace.syncDone;
+      await Ceramic.authenticateEthAddress(client, selectedAccount);
 
-      modal.html(`${base} <hr /> ${get3BoxContent(true, true, false)}`);
 
-      const json = JSON.stringify(credential);
+      modal.html(`${base} <hr /> ${getContent(true, true, false)}`);
 
-      await storageSpace.public.set(_3BOX_FIELD, json);
+      await Ceramic.writeDocument(client, credential, CERAMIC_DOC_OPTIONS);
 
-      modal.html(`${base} <hr /> ${get3BoxContent(true, true, true)}`);
 
-      _alert('Your passport has been uploaded to 3Box', 'success', 5000);
+      modal.html(`${base} <hr /> ${getContent(true, true, true)}`);
+
+      _alert('Your passport has been uploaded to Ceramic', 'success', 5000);
     };
 
-    return { vcPassport, vc3Box };
+    return { vcPassport, vcCeramic };
   })();
 
   $(document).on('click', '#vc-passport', passportCredential.vcPassport);
-  $(document).on('click', '#vc-3box', passportCredential.vc3Box);
+  $(document).on('click', '#vc-ceramic', passportCredential.vcCeramic);
 
 });
