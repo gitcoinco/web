@@ -67,6 +67,8 @@ Vue.component('grants-cart', {
       // Checkout, zkSync
       zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
+      polygonUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      polygonEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
       isPolkadotExtInstalled: false,
       chainScripts: {
@@ -279,17 +281,25 @@ Vue.component('grants-cart', {
       return donations;
     },
 
-    // Total amount of ETH that needs to be sent along with the transaction
-    donationInputsEthAmount() {
-      // Get the total ETH we need to send
+    // Total amount of native currency that needs to be sent along with the transaction
+    donationInputsNativeAmount() {
+      // Get the total native currency we need to send
       const initialValue = new BN('0');
-      const ethAmountBN = this.donationInputs.reduce((accumulator, currentValue) => {
-        return currentValue.token === ETH_ADDRESS
-          ? accumulator.add(new BN(currentValue.amount)) // ETH donation
+      let nativeCurrencyAddress = this.nativeCurrency === 'MATIC' ? MATIC_ADDRESS : ETH_ADDRESS;
+      const nativeCurrencyAmountBN = this.donationInputs.reduce((accumulator, currentValue) => {
+        return currentValue.token === nativeCurrencyAddress
+          ? accumulator.add(new BN(currentValue.amount)) // native currency donation
           : accumulator.add(new BN('0')); // token donation
       }, initialValue);
 
-      return ethAmountBN.toString(10);
+      return nativeCurrencyAmountBN.toString(10);
+    },
+
+    nativeCurrency() {
+      let providerChainId = Number(web3.eth.currentProvider.chainId);
+      let isPolygon = providerChainId === 80001 || providerChainId === 137;
+
+      return isPolygon ? 'MATIC' : 'ETH';
     },
 
     // Estimated gas limit for the transaction
@@ -352,19 +362,35 @@ Vue.component('grants-cart', {
     checkoutRecommendation() {
       const estimateL1 = Number(this.donationInputsGasLimitL1); // L1 gas cost estimate
       const estimateZkSync = Number(this.zkSyncEstimatedGasCost); // zkSync gas cost estimate
+      const estimatePolygon = Number(this.polygonEstimatedGasCost); // polygon gas cost estimate
 
-      if (estimateL1 < estimateZkSync) {
-        const savingsInGas = estimateZkSync - estimateL1;
-        const savingsInPercent = Math.round(savingsInGas / estimateZkSync * 100);
+      const compareWithL2 = (estimateL2, name) => {
+        if (estimateL1 < estimateL2) {
+          const savingsInGas = estimateL2 - estimateL1;
+          const savingsInPercent = Math.round(savingsInGas / estimateL2 * 100);
+  
+          return { name: 'Standard checkout', savingsInGas, savingsInPercent };
+        }
+  
+        const savingsInGas = estimateL1 - estimateL2;
+        const percentSavings = savingsInGas / estimateL1 * 100;
+        const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
+  
+        return { name: name, savingsInGas, savingsInPercent };
+      };
 
-        return { name: 'Standard checkout', savingsInGas, savingsInPercent };
+      zkSyncComparisonResult = compareWithL2(estimateZkSync, 'zkSync');
+      polygonComparisonResult = compareWithL2(estimatePolygon, 'Polygon');
+      zkSyncSavings = zkSyncComparisonResult.name === 'zkSync' ? zkSyncComparisonResult.savingsInPercent : 0;
+      polygonSavings = polygonComparisonResult.name === 'Polygon' ? polygonComparisonResult.savingsInPercent : 0;
+
+      if (zkSyncSavings > polygonSavings) {
+        return zkSyncComparisonResult;
+      } else if (zkSyncSavings < polygonSavings) {
+        return polygonSavings;
       }
-
-      const savingsInGas = estimateL1 - estimateZkSync;
-      const percentSavings = savingsInGas / estimateL1 * 100;
-      const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
-
-      return { name: 'zkSync', savingsInGas, savingsInPercent };
+      return zkSyncComparisonResult; // recommendation will be standard checkout
+      
     },
 
     isHarmonyExtInstalled() {
@@ -432,6 +458,11 @@ Vue.component('grants-cart', {
     onZkSyncUpdate: function(data) {
       this.zkSyncUnsupportedTokens = data.zkSyncUnsupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
+    },
+
+    onPolygonUpdate: function(data) {
+      this.polygonUnsupportedTokens = data.polygonUnsupportedTokens;
+      this.polygonEstimatedGasCost = data.polygonEstimatedGasCost;
     },
 
     tabChange: async function(input) {
@@ -739,7 +770,7 @@ Vue.component('grants-cart', {
      * @param {String} name Token name, e.g. ETH or DAI
      */
     getTokenByName(name) {
-      if (name === 'ETH') {
+      if (name === 'ETH' && name === this.nativeCurrency) {
         return {
           addr: ETH_ADDRESS,
           address: ETH_ADDRESS,
@@ -748,7 +779,7 @@ Vue.component('grants-cart', {
           decimals: 18,
           priority: 1
         };
-      } else if (name === 'MATIC') {
+      } else if (name === 'MATIC' && name === this.nativeCurrency) {
         return {
           addr: MATIC_ADDRESS,
           address: MATIC_ADDRESS,
@@ -758,7 +789,31 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
-      return this.filterByChainId.filter(token => token.name === name)[0];
+
+      let token = this.filterByChainId.filter(token => token.name === name)[0];
+
+      if (this.nativeCurrency == 'MATIC') {
+        // active network is Polygon (MATIC)
+        token = this.getPolygonMappedToken(token);
+      }
+
+      return token;
+    },
+
+    async getPolygonMappedToken(tokenDetails) {
+      const rootChainManagerAddress = '0xBbD7cBFA79faee899Eaf900F13C9065bF03B1A74';
+      // const rootChainManagerAddress = '0xA0c68C638235ee32657e8f720a23ceC1bFc77C77'; - mainnet
+      const rootChainManagerAbi = [{'anonymous': false, 'inputs': [{'indexed': false, 'internalType': 'address', 'name': 'userAddress', 'type': 'address'}, {'indexed': false, 'internalType': 'address payable', 'name': 'relayerAddress', 'type': 'address'}, {'indexed': false, 'internalType': 'bytes', 'name': 'functionSignature', 'type': 'bytes'}], 'name': 'MetaTransactionExecuted', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': true, 'internalType': 'bytes32', 'name': 'tokenType', 'type': 'bytes32'}, {'indexed': true, 'internalType': 'address', 'name': 'predicateAddress', 'type': 'address'}], 'name': 'PredicateRegistered', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': true, 'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'indexed': true, 'internalType': 'bytes32', 'name': 'previousAdminRole', 'type': 'bytes32'}, {'indexed': true, 'internalType': 'bytes32', 'name': 'newAdminRole', 'type': 'bytes32'}], 'name': 'RoleAdminChanged', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': true, 'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'indexed': true, 'internalType': 'address', 'name': 'account', 'type': 'address'}, {'indexed': true, 'internalType': 'address', 'name': 'sender', 'type': 'address'}], 'name': 'RoleGranted', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': true, 'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'indexed': true, 'internalType': 'address', 'name': 'account', 'type': 'address'}, {'indexed': true, 'internalType': 'address', 'name': 'sender', 'type': 'address'}], 'name': 'RoleRevoked', 'type': 'event'}, {'anonymous': false, 'inputs': [{'indexed': true, 'internalType': 'address', 'name': 'rootToken', 'type': 'address'}, {'indexed': true, 'internalType': 'address', 'name': 'childToken', 'type': 'address'}, {'indexed': true, 'internalType': 'bytes32', 'name': 'tokenType', 'type': 'bytes32'}], 'name': 'TokenMapped', 'type': 'event'}, {'inputs': [], 'name': 'DEFAULT_ADMIN_ROLE', 'outputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [], 'name': 'DEPOSIT', 'outputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [], 'name': 'ERC712_VERSION', 'outputs': [{'internalType': 'string', 'name': '', 'type': 'string'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [], 'name': 'ETHER_ADDRESS', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [], 'name': 'MAPPER_ROLE', 'outputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [], 'name': 'MAP_TOKEN', 'outputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [], 'name': 'checkpointManagerAddress', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [], 'name': 'childChainManagerAddress', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'name': 'childToRootToken', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'rootToken', 'type': 'address'}, {'internalType': 'address', 'name': 'childToken', 'type': 'address'}], 'name': 'cleanMapToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'user', 'type': 'address'}], 'name': 'depositEtherFor', 'outputs': [], 'stateMutability': 'payable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'user', 'type': 'address'}, {'internalType': 'address', 'name': 'rootToken', 'type': 'address'}, {'internalType': 'bytes', 'name': 'depositData', 'type': 'bytes'}], 'name': 'depositFor', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'userAddress', 'type': 'address'}, {'internalType': 'bytes', 'name': 'functionSignature', 'type': 'bytes'}, {'internalType': 'bytes32', 'name': 'sigR', 'type': 'bytes32'}, {'internalType': 'bytes32', 'name': 'sigS', 'type': 'bytes32'}, {'internalType': 'uint8', 'name': 'sigV', 'type': 'uint8'}], 'name': 'executeMetaTransaction', 'outputs': [{'internalType': 'bytes', 'name': '', 'type': 'bytes'}], 'stateMutability': 'payable', 'type': 'function'}, {'inputs': [{'internalType': 'bytes', 'name': 'inputData', 'type': 'bytes'}], 'name': 'exit', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'name': 'getChainId', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'stateMutability': 'pure', 'type': 'function'}, {'inputs': [], 'name': 'getDomainSeperator', 'outputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'user', 'type': 'address'}], 'name': 'getNonce', 'outputs': [{'internalType': 'uint256', 'name': 'nonce', 'type': 'uint256'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}], 'name': 'getRoleAdmin', 'outputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'internalType': 'uint256', 'name': 'index', 'type': 'uint256'}], 'name': 'getRoleMember', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}], 'name': 'getRoleMemberCount', 'outputs': [{'internalType': 'uint256', 'name': '', 'type': 'uint256'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'internalType': 'address', 'name': 'account', 'type': 'address'}], 'name': 'grantRole', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'internalType': 'address', 'name': 'account', 'type': 'address'}], 'name': 'hasRole', 'outputs': [{'internalType': 'bool', 'name': '', 'type': 'bool'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': '_owner', 'type': 'address'}], 'name': 'initialize', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'name': 'initializeEIP712', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'rootToken', 'type': 'address'}, {'internalType': 'address', 'name': 'childToken', 'type': 'address'}, {'internalType': 'bytes32', 'name': 'tokenType', 'type': 'bytes32'}], 'name': 'mapToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'name': 'processedExits', 'outputs': [{'internalType': 'bool', 'name': '', 'type': 'bool'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'tokenType', 'type': 'bytes32'}, {'internalType': 'address', 'name': 'predicateAddress', 'type': 'address'}], 'name': 'registerPredicate', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'rootToken', 'type': 'address'}, {'internalType': 'address', 'name': 'childToken', 'type': 'address'}, {'internalType': 'bytes32', 'name': 'tokenType', 'type': 'bytes32'}], 'name': 'remapToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'internalType': 'address', 'name': 'account', 'type': 'address'}], 'name': 'renounceRole', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': 'role', 'type': 'bytes32'}, {'internalType': 'address', 'name': 'account', 'type': 'address'}], 'name': 'revokeRole', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'name': 'rootToChildToken', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'newCheckpointManager', 'type': 'address'}], 'name': 'setCheckpointManager', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'newChildChainManager', 'type': 'address'}], 'name': 'setChildChainManagerAddress', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': 'newStateSender', 'type': 'address'}], 'name': 'setStateSender', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'name': 'setupContractId', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function'}, {'inputs': [], 'name': 'stateSenderAddress', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'name': 'tokenToType', 'outputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'stateMutability': 'view', 'type': 'function'}, {'inputs': [{'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}], 'name': 'typeToPredicate', 'outputs': [{'internalType': 'address', 'name': '', 'type': 'address'}], 'stateMutability': 'view', 'type': 'function'}, {'stateMutability': 'payable', 'type': 'receive'}];
+      const rootChainManagerContract = new web3.eth.Contract(rootChainManagerAbi, rootChainManagerAddress);
+      const userAddress = await this.initializeStandardCheckout();
+  
+      address = await rootChainManagerContract.methods
+        .rootToChildToken(tokenDetails.addr)
+        .call({ from: web3.utils.toChecksumAddress(userAddress) });
+
+      tokenDetails.polygonAddr = address == '0x0000000000000000000000000000000000000000' ? null : address;
+      
+      return tokenDetails;
     },
 
     async applyAmountToAllGrants(grant) {
@@ -837,7 +892,7 @@ Vue.component('grants-cart', {
         return this.donationInputs.reduce((accumulator, currentValue) => {
           return currentValue.token === tokenDetails.addr
             ? accumulator.add(new BN(currentValue.amount)) // token donation
-            : accumulator.add(new BN('0')); // ETH donation
+            : accumulator.add(new BN('0')); // native currency donation
         }, initialValue);
       };
 
@@ -846,11 +901,11 @@ Vue.component('grants-cart', {
         const tokenName = selectedTokens[i];
         const tokenDetails = this.getTokenByName(tokenName);
 
-        // If ETH donation no approval is necessary, just check balance
-        if (tokenDetails.name === 'ETH' || tokenDetails.name === 'MATIC') {
+        // If native currency donation no approval is necessary, just check balance
+        if (tokenDetails.name === this.nativeCurrency) {
           const userEthBalance = await web3.eth.getBalance(userAddress);
 
-          if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
+          if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsNativeAmount, 10))) {
             // User ETH balance is too small compared to selected donation amounts
             throw new Error(`Insufficient ${tokenDetails.name} balance to complete checkout`);
           }
@@ -1028,7 +1083,7 @@ Vue.component('grants-cart', {
       indicateMetamaskPopup();
       bulkTransaction.methods
         .donate(donationInputsFiltered)
-        .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsEthAmount })
+        .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);

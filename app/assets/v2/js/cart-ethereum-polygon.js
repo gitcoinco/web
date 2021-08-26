@@ -1,4 +1,3 @@
-web3 = new Web3('https://rpc-mumbai.maticvigil.com');
 const bulkCheckoutAddressPolygon = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
 
 
@@ -45,7 +44,6 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Update Polygon checkout connection, state, and data frontend needs when wallet connection changes
     window.addEventListener('dataWalletReady', async(e) => {
-      await this.setupPolygon();
       await this.onChangeHandler(this.donationInputs);
     });
   },
@@ -65,6 +63,10 @@ Vue.component('grantsCartEthereumPolygon', {
       const testnetTokens = [ 'MATIC', 'WETH', 'DAI' ];
 
       return this.network === 'testnet' ? testnetTokens : mainnetTokens;
+    },
+
+    donationInputsNativeAmount() {
+      return appCart.$refs.cart.donationInputsNativeAmount;
     }
   },
 
@@ -91,6 +93,15 @@ Vue.component('grantsCartEthereumPolygon', {
   },
 
   methods: {
+    openBridgeUrl() {
+      window.open('https://wallet.matic.network/bridge', '_blank');
+      this.polygon.checkoutStatus = 'should-deposit';
+    },
+
+    initWeb3() {
+      return new Web3('https://rpc-mumbai.maticvigil.com');
+    },
+
     // Use the same error handler used by cart.js
     handleError(e) {
       appCart.$refs.cart.handleError(e);
@@ -126,7 +137,7 @@ Vue.component('grantsCartEthereumPolygon', {
       // Check if user has enough balance and update this.user.hasEnoughBalance + use insufficientBalanceAlert()
 
       // Update the fee estimate and gas cost based on changes
-      const estimatedGasCost = this.estimateGasCost();
+      const estimatedGasCost = await this.estimateGasCost();
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('polygon-data-updated', {
@@ -137,8 +148,8 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Alert user they have insufficient balance to complete checkout
     insufficientBalanceAlert() {
-      this.polygon.showModal = false; // hide checkout modal if visible
-      this.resetPolygonModal(); // reset modal settings
+      this.closePolygonModal();
+      this.resetPolygonModal();
       this.handleError(new Error('Insufficient balance to complete checkout')); // throw error and show to user
     },
 
@@ -147,15 +158,17 @@ Vue.component('grantsCartEthereumPolygon', {
       this.polygon.checkoutStatus = 'not-started';
     },
 
+    closePolygonModal() {
+      this.polygon.showModal = false;
+    },
+
     async setupPolygon() {
       // Connect to Polygon network with MetaMask
-      indicateMetamaskPopup();
       try {
         await ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: '0x13881' }] // Mainnet - 0x89
         });
-        indicateMetamaskPopup(true);
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
@@ -182,7 +195,6 @@ Vue.component('grantsCartEthereumPolygon', {
         } else {
           console.error(switchError);
         }
-        indicateMetamaskPopup(true);
       }
       this.network = getDataChains(ethereum.networkVersion, 'chainId')[0] && getDataChains(ethereum.networkVersion, 'chainId')[0].network;
     },
@@ -238,18 +250,17 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async sendDonationTx(userAddress) {
+      let web3 = this.initWeb3();
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
 
       // Send transaction
-      indicateMetamaskPopup();
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsEthAmount })
         .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
-          indicateMetamaskPopup(true);
           _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
           await this.postToDatabase([txHash], bulkCheckoutAddressPolygon, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
@@ -261,9 +272,17 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     // Estimates the total gas cost of a polygon checkout and sends it to cart.js
-    estimateGasCost() {
-      // Estimate minimum gas cost here
-      console.log('write me please');
+    async estimateGasCost() {
+      let web3 = this.initWeb3();
+      const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
+      const donationInputsFiltered = this.getDonationInputs();
+      let userAddress = (await web3.eth.getAccounts())[0];
+
+      let totalCost = await bulkTransaction.methods
+        .donate(donationInputsFiltered)
+        .estimateGas({ from: userAddress, value: this.donationInputsNativeAmount });
+      
+      return totalCost.toString();
     }
   }
 });
