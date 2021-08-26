@@ -1,10 +1,13 @@
+from unittest.mock import patch
+
 import pytest
-from dashboard.models import Profile
+from dashboard.models import Activity, Profile
 from grants.models.flag import Flag
 from grants.models.grant import Grant
 from townsquare.models import Comment
 
 from .factories.flag_factory import FlagFactory
+from .factories.profile_factory import ProfileFactory
 
 
 @pytest.mark.django_db
@@ -66,11 +69,17 @@ class TestFlag:
         assert hasattr(flag, 'tweet')
         assert flag.tweet == ''
 
-    def test_flag_has_a_post_flag_method(self):
-        """Test post_flag method."""
+    def test_post_flag_method_calls_collaborators_with_appropriate_attributes(self):
+        """Test post_flag() method calls filter() on Profile.objects, create() on Activity.objects, and create() on Comment.objects."""
         
         flag = FlagFactory()
 
-        flag.post_flag()
+        with patch.object(Profile.objects, 'filter') as filter:
+            with patch.object(Activity.objects, 'create') as activity:
+                with patch.object(Comment.objects, 'create') as comment:
 
-        assert Comment.objects.latest('id').comment == 'Comment from anonymous user: Test comment'
+                    flag.post_flag()
+
+        filter.assert_called_with(handle='gitcoinbot')
+        activity.assert_called_with(profile=filter().first(), activity_type='flagged_grant', grant=flag.grant)
+        comment.assert_called_with(profile=filter().first(), activity=activity(), comment=f"Comment from anonymous user: {flag.comments}")
