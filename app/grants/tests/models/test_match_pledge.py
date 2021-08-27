@@ -1,4 +1,5 @@
 import pytest
+from dashboard.models import Profile
 from grants.models.match_pledge import MatchPledge
 
 from .factories.match_pledge_factory import MatchPledgeFactory
@@ -23,13 +24,13 @@ class TestMatchPledge:
         assert hasattr(match_pledge, 'active')
         assert match_pledge.active == False
 
-    def test_match_pledge_has_profile_attribute(self):
-        """Test 'profile' attribute and default value."""
+    def test_match_pledge_belongs_to_profile(self):
+        """Test relation to Profile."""
 
         match_pledge = MatchPledgeFactory()
 
         assert hasattr(match_pledge, 'profile')
-        assert match_pledge.profile == None
+        assert isinstance(match_pledge.profile, Profile)
 
     def test_match_pledge_has_amount_attribute(self):
         """Test 'amount' attribute and default value."""
@@ -54,5 +55,3 @@ class TestMatchPledge:
 
         assert hasattr(match_pledge, 'comments')
         assert match_pledge.comments == ''
-
-    
