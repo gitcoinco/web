@@ -1,6 +1,5 @@
-import time
+import json
 from datetime import datetime, timedelta
-from typing import Match
 
 from django.utils import timezone
 from django.utils.timezone import localtime
@@ -80,7 +79,7 @@ class TestMatchPledge:
         match_pledge = MatchPledgeFactory()
 
         assert hasattr(match_pledge, 'data')
-        assert match_pledge.data == None
+        assert match_pledge.data == '"test string"'
 
     def test_match_pledge_has_clr_round_num_attribute(self):
         """Test 'clr_round_num' attribute."""
@@ -89,3 +88,11 @@ class TestMatchPledge:
 
         assert hasattr(match_pledge, 'clr_round_num')
         assert isinstance(match_pledge.clr_round_num, GrantCLR)
+
+    def test_data_json(self):
+        """Test 'data_json' property returns data attribute as valid JSON."""
+
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'data_json')
+        assert match_pledge.data_json == 'test string'
