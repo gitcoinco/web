@@ -3,7 +3,7 @@ import operator
 from django.utils import timezone
 
 from grants.models import *
-from grants.models import Contribution, PhantomFunding
+from grants.models import Contribution
 from grants.utils import get_clr_rounds_metadata
 
 # total stats
@@ -12,11 +12,10 @@ from grants.utils import get_clr_rounds_metadata
 _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
 contributions = Contribution.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date, success=True)
-pfs = PhantomFunding.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date)
-total = contributions.count() + pfs.count()
+total = contributions.count()
 
-contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
-amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
+contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True))))
+amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions])
 
 print("contributions", total)
 print("contributors", contributors)
