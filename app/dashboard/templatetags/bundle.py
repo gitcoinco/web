@@ -161,8 +161,8 @@ def get_bundled(elems, attr, kind, merge):
 
             # check if we're loading an alternative source in production
             file = el[attr]
-            if assetsHosted and el.get(settings.ENV):
-                file = el[settings.ENV]
+            if assetsHosted and el.get('prod'):
+                file = el['prod']
 
             # absolute path of the given asset
             if not el.get('base-dir'):
