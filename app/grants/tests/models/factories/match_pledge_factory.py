@@ -1,6 +1,7 @@
 import factory
 from grants.models.match_pledge import MatchPledge
 
+from .grant_clr_factory import GrantCLRFactory
 from .profile_factory import ProfileFactory
 
 
@@ -11,3 +12,4 @@ class MatchPledgeFactory(factory.django.DjangoModelFactory):
         model = MatchPledge
 
     profile = factory.SubFactory(ProfileFactory)
+    clr_round_num = factory.SubFactory(GrantCLRFactory)

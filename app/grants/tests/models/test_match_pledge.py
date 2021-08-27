@@ -7,6 +7,7 @@ from django.utils.timezone import localtime
 
 import pytest
 from dashboard.models import Profile
+from grants.models.grant import GrantCLR
 from grants.models.match_pledge import MatchPledge
 
 from .factories.match_pledge_factory import MatchPledgeFactory
@@ -80,3 +81,11 @@ class TestMatchPledge:
 
         assert hasattr(match_pledge, 'data')
         assert match_pledge.data == None
+
+    def test_match_pledge_has_clr_round_num_attribute(self):
+        """Test 'clr_round_num' attribute."""
+
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'clr_round_num')
+        assert isinstance(match_pledge.clr_round_num, GrantCLR)
