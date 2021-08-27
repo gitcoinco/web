@@ -1,3 +1,9 @@
+import time
+from datetime import datetime, timedelta
+
+from django.utils import timezone
+from django.utils.timezone import localtime
+
 import pytest
 from dashboard.models import Profile
 from grants.models.match_pledge import MatchPledge
@@ -55,3 +61,13 @@ class TestMatchPledge:
 
         assert hasattr(match_pledge, 'comments')
         assert match_pledge.comments == ''
+
+    def test_match_pledge_has_end_date(self):
+        """Test 'end_date' attribute and that default value is 30 days from today's date."""
+
+        next_month = localtime(timezone.now() + timedelta(days=30))
+        match_pledge = MatchPledgeFactory()
+
+        assert hasattr(match_pledge, 'end_date')
+        assert isinstance(match_pledge.end_date, datetime)
+        assert match_pledge.end_date.replace(microsecond=0) == next_month.replace(microsecond=0)
