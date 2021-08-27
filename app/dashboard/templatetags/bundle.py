@@ -111,10 +111,10 @@ def check_for_changes(elems, attr, kind, outputFile):
     if not changed:
         for el in elems:
             if el.get(attr):
-                # check if we're loading an alternative source in production
+                # check if we're loading an alternative source
                 file = el[attr]
-                if assetsHosted and el.get(settings.ENV):
-                    file = el[settings.ENV]
+                if assetsHosted and el.get('prod'):
+                    file = el['prod']
 
                 # discover ts using the absolute path of the given asset
                 if not el.get('base-dir'):
@@ -193,12 +193,13 @@ def get_bundled(elems, attr, kind, merge):
         content = sass.compile(string='%s \n %s' % (get_sass_extras(), content))
 
     # minify the content in production
-    if assetsHosted and 'js' in kind:
-        import rjsmin
-        content = rjsmin.jsmin(content)
-    elif assetsHosted and 'css' in kind:
-        import rcssmin
-        content = rcssmin.cssmin(content)
+    if assetsHosted:
+        if 'js' in kind:
+            import rjsmin
+            content = rjsmin.jsmin(content)
+        elif 'css' in kind:
+            import rcssmin
+            content = rcssmin.cssmin(content)
 
     # content is compiled and minified (if in production)
     return content
