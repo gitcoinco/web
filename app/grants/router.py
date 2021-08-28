@@ -4,14 +4,15 @@ from django.core.paginator import Paginator
 
 import django_filters.rest_framework
 from ratelimit.decorators import ratelimit
-from rest_framework import routers, viewsets
+from rest_framework import generics, mixins, routers, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import CLRMatch, Contribution, Grant, GrantCLR, GrantType, Subscription
+from .models import CLRMatch, Contribution, Grant, GrantCLR, GrantTag, GrantType, Subscription
 from .serializers import (
-    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantTypeSerializer, GrantSerializer, SubscriptionSerializer,
+    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantTagSerializer, GrantTypeSerializer,
+    GrantSerializer, SubscriptionSerializer,
     TransactionsSerializer,
 )
 
@@ -33,6 +34,19 @@ class GrantTypeViewSet(viewsets.ModelViewSet):
     serializer_class = GrantTypeSerializer
     # pagination_class = GrantTypePagination
     # filterset_fields = ['customer_name']
+
+
+class GranTagFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains')
+    class Meta:
+        model = GrantTag
+        fields = ['name']
+
+class GrantTagViewSet(viewsets.ModelViewSet):
+    queryset = GrantTag.objects.order_by('id')
+    serializer_class = GrantTagSerializer
+    filterset_class = GranTagFilter
+
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
@@ -354,3 +368,4 @@ router.register(r'grants', GrantViewSet)
 router.register(r'subscriptions', SubscriptionViewSet)
 router.register(r'grants_clr', GrantsClrViewSet)
 router.register(r'grants_type', GrantTypeViewSet)
+router.register(r'grants_tag', GrantTagViewSet)

@@ -103,7 +103,10 @@ if (document.getElementById('grants-showcase')) {
     state: 'active',
     collections_page: 1,
     grant_types: [],
-    tenants: []
+    grant_tags: [],
+    tenants: [],
+    idle: true
+
   };
 
   const grantRegions = [
@@ -131,18 +134,18 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'ALGORAND', 'label': 'Algorand'}
   ];
 
-  const grant_tags = [
-    {'name': 'ETH', 'label': 'Eth'},
-    {'name': 'ZCASH', 'label': 'Zcash'},
-    {'name': 'ZIL', 'label': 'Zil'},
-    {'name': 'CELO', 'label': 'Celo'},
-    {'name': 'POLKADOT', 'label': 'Polkadot'},
-    {'name': 'HARMONY', 'label': 'Harmony'},
-    {'name': 'KUSAMA', 'label': 'Kusama'},
-    {'name': 'BINANCE', 'label': 'Binance'},
-    {'name': 'RSK', 'label': 'Rsk'},
-    {'name': 'ALGORAND', 'label': 'Algorand'}
-  ];
+  // const grant_tags = [
+  //   {'name': 'ETH', 'label': 'Eth'},
+  //   {'name': 'ZCASH', 'label': 'Zcash'},
+  //   {'name': 'ZIL', 'label': 'Zil'},
+  //   {'name': 'CELO', 'label': 'Celo'},
+  //   {'name': 'POLKADOT', 'label': 'Polkadot'},
+  //   {'name': 'HARMONY', 'label': 'Harmony'},
+  //   {'name': 'KUSAMA', 'label': 'Kusama'},
+  //   {'name': 'BINANCE', 'label': 'Binance'},
+  //   {'name': 'RSK', 'label': 'Rsk'},
+  //   {'name': 'ALGORAND', 'label': 'Algorand'}
+  // ];
 
 
 
@@ -160,7 +163,7 @@ if (document.getElementById('grants-showcase')) {
       clrData: {},
       grantRegions: grantRegions,
       grantTenants: grantTenants,
-      grant_tags: grant_tags,
+      grant_tags: [],
       grant: {},
       collectionsPage: 1,
       show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
@@ -192,7 +195,8 @@ if (document.getElementById('grants-showcase')) {
       grantsHasNext,
       numGrants,
       regex_style: {},
-      params: Object.assign({}, baseParams)
+      params: Object.assign({}, baseParams),
+      tagsOptions: [],
     },
     methods: {
       toggleStyle: function(style) {
@@ -482,7 +486,41 @@ if (document.getElementById('grants-showcase')) {
         });
 
         this.grants = getGrants.grants;
-      }
+      },
+      tagSearch(search, loading) {
+        const vm = this;
+
+        // if (search.length < 3) {
+        //   return;
+        // }
+        loading(true);
+        vm.getTag(loading, search);
+
+      },
+      getTag: async function(loading, search) {
+        console.log(search);
+        const vm = this;
+        const myHeaders = new Headers();
+        const url = `/api/v0.1/grants_tag/?name=${escape(search)}`;
+
+        myHeaders.append('X-Requested-With', 'XMLHttpRequest');
+        return new Promise(resolve => {
+
+          fetch(url, {
+            credentials: 'include',
+            headers: myHeaders
+          }).then(res => {
+            res.json().then(json => {
+              vm.$set(vm, 'tagsOptions', json);
+
+              resolve();
+            });
+            if (loading) {
+              loading(false);
+            }
+          });
+        });
+      },
     },
     computed: {
       currentCLR() {
@@ -491,7 +529,6 @@ if (document.getElementById('grants-showcase')) {
           return;
 
         return vm.clrData?.results.find(item => {
-          console.log(item.sub_round_slug , vm.params?.sub_round_slug);
           return item.sub_round_slug == vm.params?.sub_round_slug;
         })
       },

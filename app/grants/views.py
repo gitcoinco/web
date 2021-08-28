@@ -1052,7 +1052,7 @@ def get_grant_tags(request):
     """Fetch matching grants tags"""
 
     tag_phrase = request.GET.get('q', '')
-    tags = GrantTag.objects.filter(name__icontains=tag_phrase).values_list('name', flat=True)
+    tags = GrantTag.objects.filter(name__icontains=tag_phrase).values_list('name', 'id')
 
     response = {
        'status': 200,
