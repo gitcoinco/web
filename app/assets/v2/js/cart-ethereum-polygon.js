@@ -12,10 +12,11 @@ Vue.component('grantsCartEthereumPolygon', {
 
   data: function() {
     return {
-      network: 'mainnet',
+      network: 'testnet',
       polygon: {
         showModal: false, // true to show modal to user, false to hide
-        checkoutStatus: 'not-started' // options are 'not-started', 'pending', and 'complete'
+        checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
+        estimatedGasCost: '70000'
       },
 
       cart: {
@@ -36,7 +37,7 @@ Vue.component('grantsCartEthereumPolygon', {
     // saved". The ability to change this message was removed by browsers as it's widely considered
     // a security issue. Source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
     window.addEventListener('beforeunload', (e) => {
-      // The below message will likely be ignored as explaned above, but we include it just in case
+      // The below message will likely be ignored as explained above, but we include it just in case
       if (this.polygon.checkoutStatus === 'pending') {
         e.returnValue = 'Polygon checkout in progress. Are you sure you want to leave?';
       }
@@ -50,19 +51,18 @@ Vue.component('grantsCartEthereumPolygon', {
 
   computed: {
     /**
-     * @dev List of tokens supported by zkSync + Gitcoin. To add a token to this list:
-     *   1. Make sure the token is supported by zkSync
-     *        Mainnet list: https://api.zksync.io/api/v0.1/tokens
-     *        Rinkeby list: https://rinkeby-api.zksync.io/api/v0.1/tokens
+     * @dev List of tokens supported by Polygon + Gitcoin. To add a token to this list:
+     *   1. Make sure the token is top 10 used tokens based on Gitcoin's historical data
+     *   2. Confirm the token exists on Polygon's list of supported tokens: https://mapper.matic.today/
      *   2. Add the token symbol to the appropriate list below
-     * @dev We hardcode the list here instead of fetching from the API to improve performance and
-     * reduce problems that arise if zkSync's server is slow
+     * @dev We hardcode the list from Gitcoin's historical data based on the top ten tokens
+     *   on ethereum chain and also Polygon network used by users to checkout
      */
     supportedTokens() {
-      const mainnetTokens = [ 'MATIC', 'DAI', 'WETH', 'USDC', 'COMP', 'LEND', 'YFI', 'USDT', 'BUSD', 'MANA', 'WBTC', 'KIWI', 'DUST', 'SPN' ];
-      const testnetTokens = [ 'MATIC', 'WETH', 'DAI' ];
+      const mainnetTokens = [ 'DAI', 'ETH', 'USDT', 'USDC', 'PAN', 'BNB', 'UNI', 'CELO', 'MASK', 'MATIC' ];
+      const testnetTokens = [ 'MATIC', 'ETH', 'DAI' ];
 
-      return this.network === 'testnet' ? testnetTokens : mainnetTokens;
+      return appCart.$refs.cart.network === 'mainnet' ? mainnetTokens : testnetTokens;
     },
 
     donationInputsNativeAmount() {
@@ -75,8 +75,6 @@ Vue.component('grantsCartEthereumPolygon', {
     donationInputs: {
       immediate: true,
       async handler(donations) {
-        // Setup polygon (e.g. when mounted)
-        await this.setupPolygon();
         // Update state and data that frontend needs
         await this.onChangeHandler(donations);
       }
@@ -86,7 +84,6 @@ Vue.component('grantsCartEthereumPolygon', {
     network: {
       immediate: true,
       async handler() {
-        await this.setupPolygon();
         await this.onChangeHandler(this.donationInputs);
       }
     }
@@ -98,17 +95,16 @@ Vue.component('grantsCartEthereumPolygon', {
       this.polygon.checkoutStatus = 'should-deposit';
     },
 
-    initWeb3() {
-      return new Web3('https://rpc-mumbai.maticvigil.com');
-    },
-
-    // Use the same error handler used by cart.js
     handleError(e) {
       appCart.$refs.cart.handleError(e);
     },
 
     getDonationInputs() {
-      appCart.$refs.cart.getDonationInputs();
+      return appCart.$refs.cart.getDonationInputs();
+    },
+
+    getTokenByName(name) {
+      return appCart.$refs.cart.getTokenByName(name, true);
     },
 
     async postToDatabase(txHash, contractAddress, userAddress) {
@@ -120,7 +116,15 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async getAllowanceData(userAddress, targetContract) {
-      await appCart.$refs.cart.getAllowanceData(userAddress, targetContract);
+      return await appCart.$refs.cart.getAllowanceData(userAddress, targetContract);
+    },
+
+    async requestAllowanceApprovalsThenExecuteCallback(
+      allowanceData, userAddress, targetContract, callback, callbackParams
+    ) {
+      return await appCart.$refs.cart.requestAllowanceApprovalsThenExecuteCallback(
+        allowanceData, userAddress, targetContract, callback, callbackParams
+      );
     },
 
     // We want to run this whenever wallet or cart content changes
@@ -129,28 +133,19 @@ Vue.component('grantsCartEthereumPolygon', {
       // DAI grants and one ETH grant in their cart, this returns `[ 'DAI', 'ETH' ]`
       this.cart.tokenList = [...new Set(donations.map((donation) => donation.name))];
 
-      // Get list of tokens in cart not supported by zkSync
+      // Get list of tokens in cart not supported by Polygon
       this.cart.unsupportedTokens = this.cart.tokenList.filter(
         (token) => !this.supportedTokens.includes(token)
       );
 
-      // Check if user has enough balance and update this.user.hasEnoughBalance + use insufficientBalanceAlert()
-
       // Update the fee estimate and gas cost based on changes
-      const estimatedGasCost = await this.estimateGasCost();
+      this.estimatedGasCost = await this.estimateGasCost();
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('polygon-data-updated', {
         polygonUnsupportedTokens: this.cart.unsupportedTokens,
-        polygonEstimatedGasCost: estimatedGasCost
+        polygonEstimatedGasCost: this.estimatedGasCost
       });
-    },
-
-    // Alert user they have insufficient balance to complete checkout
-    insufficientBalanceAlert() {
-      this.closePolygonModal();
-      this.resetPolygonModal();
-      this.handleError(new Error('Insufficient balance to complete checkout')); // throw error and show to user
     },
 
     // Reset Polygon modal status after a checkout failure
@@ -164,10 +159,12 @@ Vue.component('grantsCartEthereumPolygon', {
 
     async setupPolygon() {
       // Connect to Polygon network with MetaMask
+      let chainId = appCart.$refs.cart.network == 'mainnet' ? '0x89' : '0x13881';
+
       try {
         await ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x13881' }] // Mainnet - 0x89
+          params: [{ chainId }]
         });
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask
@@ -176,7 +173,7 @@ Vue.component('grantsCartEthereumPolygon', {
             await ethereum.request({
               method: 'wallet_addEthereumChain',
               params: [{
-                chainId: '0x13881',
+                chainId,
                 rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
                 chainName: 'Matic Testnet',
                 nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
@@ -250,7 +247,6 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async sendDonationTx(userAddress) {
-      let web3 = this.initWeb3();
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
@@ -258,7 +254,7 @@ Vue.component('grantsCartEthereumPolygon', {
       // Send transaction
       bulkTransaction.methods
         .donate(donationInputsFiltered)
-        .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsEthAmount })
+        .send({ from: userAddress, gas: this.estimatedGasCost, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
@@ -273,16 +269,60 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Estimates the total gas cost of a polygon checkout and sends it to cart.js
     async estimateGasCost() {
-      let web3 = this.initWeb3();
-      const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
-      const donationInputsFiltered = this.getDonationInputs();
-      let userAddress = (await web3.eth.getAccounts())[0];
+      // The below heuristics are used instead of `estimateGas()` so we can send the donation
+      // transaction before the approval txs are confirmed, because if the approval txs
+      // are not confirmed then estimateGas will fail.
+      let networkId = appCart.$refs.cart.networkId;
 
-      let totalCost = await bulkTransaction.methods
-        .donate(donationInputsFiltered)
-        .estimateGas({ from: userAddress, value: this.donationInputsNativeAmount });
-      
-      return totalCost.toString();
+      if (networkId !== '80001' && networkId !== '137') {
+        return;
+      }
+
+      // If we have a cart where all donations are in Dai, we use a linear regression to
+      // estimate gas costs based on real checkout transaction data, and add a 50% margin
+      const donationCurrencies = this.donationInputs.map(donation => donation.token);
+      const daiAddress = this.getTokenByName('DAI')?.addr;
+      const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
+
+      if (isAllDai) {
+        if (donationCurrencies.length === 1) {
+          // Special case since we overestimate here otherwise
+          return 100000;
+        }
+        // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
+        // then generating a conservative best-fit line
+        // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
+        return 27500 * donationCurrencies.length + 125000;
+      }
+
+      // Otherwise, based on contract tests, we use the more conservative heuristic below to get
+      // a gas estimate. The estimates used here are based on testing the cost of a single
+      // donation (i.e. one item in the cart). Because gas prices go down with batched
+      // transactions, whereas this assumes they're constant, this gives us a conservative estimate
+      const gasLimit = this.donationInputs.reduce((accumulator, currentValue) => {
+        const tokenAddr = currentValue.token?.toLowerCase();
+
+        if (currentValue.token === MATIC_ADDRESS) {
+          return accumulator + 70000; // MATIC donation gas estimate
+
+        } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
+          return accumulator + 170000; // ANT donation gas estimate
+
+        } else if (tokenAddr === '0xfC1E690f61EFd961294b3e1Ce3313fBD8aa4f85d'.toLowerCase()) {
+          return accumulator + 500000; // aDAI donation gas estimate
+
+        } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
+          return accumulator + 450000; // cDAI donation gas estimate
+
+        } else if (tokenAddr === '0x3472A5A71965499acd81997a54BBA8D852C6E53d'.toLowerCase()) {
+          return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
+
+        }
+
+        return accumulator + 100000; // generic token donation gas estimate
+      }, 0);
+
+      return gasLimit;
     }
   }
 });
