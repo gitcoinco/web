@@ -3242,12 +3242,14 @@ def verify_user_twitter(request, handle):
 
         last_tweet = api.user_timeline(screen_name=twitter_handle, count=1, tweet_mode="extended",
                                        include_rts=False, exclude_replies=False)[0]
-    except tweepy.TweepError:
+    except tweepy.TweepError as e:
+        logger.error(f"error: verify_user_twitter TweepError {e}")
         return JsonResponse({
             'ok': False,
             'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
         })
-    except IndexError:
+    except IndexError as e:
+        logger.error(f"error: verify_user_twitter IndexError {e}")
         return JsonResponse({
             'ok': False,
             'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
