@@ -1,5 +1,11 @@
 const bulkCheckoutAddressPolygon = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
 
+function objectMap(object, mapFn) {
+  return Object.keys(object).reduce(function(result, key) {
+    result[key] = mapFn(object[key]);
+    return result;
+  }, {});
+}
 
 Vue.component('grantsCartEthereumPolygon', {
   props: {
@@ -16,7 +22,7 @@ Vue.component('grantsCartEthereumPolygon', {
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
-        estimatedGasCost: '70000'
+        estimatedGasCost: '700000'
       },
 
       cart: {
@@ -25,7 +31,7 @@ Vue.component('grantsCartEthereumPolygon', {
       },
 
       user: {
-        hasEnoughBalance: true
+        requiredAmounts: null
       }
     };
   },
@@ -67,6 +73,29 @@ Vue.component('grantsCartEthereumPolygon', {
 
     donationInputsNativeAmount() {
       return appCart.$refs.cart.donationInputsNativeAmount;
+    },
+
+    requiredAmountsString() {
+      let string = '';
+
+      requiredAmounts = this.user.requiredAmounts;
+      Object.keys(requiredAmounts).forEach(key => {
+        // Round to 2 digits
+        if (requiredAmounts[key]) {
+          const amount = requiredAmounts[key];
+          const formattedAmount = amount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+
+          if (string === '') {
+            string += `${formattedAmount} ${key}`;
+          } else {
+            string += ` + ${formattedAmount} ${key}`;
+          }
+        }
+      });
+      return string;
     }
   },
 
@@ -90,9 +119,15 @@ Vue.component('grantsCartEthereumPolygon', {
   },
 
   methods: {
+    initWeb3() {
+      return new Web3(appCart.$refs.cart.network === 'mainnet'
+        ? 'https://rpc-mainnet.maticvigil.com'
+        : 'https://rpc-mumbai.maticvigil.com');
+    },
+
     openBridgeUrl() {
       window.open('https://wallet.matic.network/bridge', '_blank');
-      this.polygon.checkoutStatus = 'should-deposit';
+      this.polygon.checkoutStatus = 'depositing';
     },
 
     handleError(e) {
@@ -116,7 +151,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async getAllowanceData(userAddress, targetContract) {
-      return await appCart.$refs.cart.getAllowanceData(userAddress, targetContract);
+      return await appCart.$refs.cart.getAllowanceData(userAddress, targetContract, true);
     },
 
     async requestAllowanceApprovalsThenExecuteCallback(
@@ -159,7 +194,10 @@ Vue.component('grantsCartEthereumPolygon', {
 
     async setupPolygon() {
       // Connect to Polygon network with MetaMask
-      let chainId = appCart.$refs.cart.network == 'mainnet' ? '0x89' : '0x13881';
+      let network = appCart.$refs.cart.network;
+      let chainId = network === 'mainnet' ? '0x89' : '0x13881';
+      let rpcUrl = network === 'mainnet' ? 'https://rpc-mainnet.maticvigil.com'
+        : 'https://rpc-mumbai.maticvigil.com';
 
       try {
         await ethereum.request({
@@ -174,8 +212,8 @@ Vue.component('grantsCartEthereumPolygon', {
               method: 'wallet_addEthereumChain',
               params: [{
                 chainId,
-                rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
-                chainName: 'Matic Testnet',
+                rpcUrls: [rpcUrl],
+                chainName: `Polygon ${network.replace(/\b[a-z]/g, (x) => x.toUpperCase())}`,
                 nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
               }]
             });
@@ -199,7 +237,7 @@ Vue.component('grantsCartEthereumPolygon', {
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
       try {
-        this.setupPolygon();
+        await this.setupPolygon();
 
         if (typeof ga !== 'undefined') {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
@@ -209,13 +247,28 @@ Vue.component('grantsCartEthereumPolygon', {
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
           throw new Error('Gitcoin contribution amount must be between 0% and 99%');
         }
-  
+
         // Throw if there's negative values in the cart
         this.donationInputs.forEach(donation => {
           if (Number(donation.amount) < 0) {
             throw new Error('Cannot have negative donation amounts');
           }
         });
+
+        // If user has enough balance within zkSync, cost equals the minimum amount
+        let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
+
+        if (!isBalanceSufficient) {
+          this.polygon.showModal = true;
+          this.polygon.checkoutStatus = 'not-started';
+
+          this.user.requiredAmounts = objectMap(requiredAmounts, value => {
+            if (value.isBalanceSufficient == false) {
+              return value.amount;
+            }
+          });
+          return;
+        }
 
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)
@@ -319,10 +372,71 @@ Vue.component('grantsCartEthereumPolygon', {
 
         }
 
-        return accumulator + 100000; // generic token donation gas estimate
+        return accumulator + 700000; // generic token donation gas estimate
       }, 0);
 
       return gasLimit;
+    },
+
+    // Returns true if user has enough balance within Polygon to avoid L1 deposit, false otherwise
+    async hasEnoughBalanceInPolygon() {
+      const requiredAmounts = {}; // keys are token symbols, values are required amounts as BigNumber
+
+      // Get total amount needed for eack token by summing over donation inputs
+      this.donationInputs.forEach((donation) => {
+        const tokenSymbol = donation.name;
+        const amount = toBigNumber(donation.amount);
+
+        if (!requiredAmounts[tokenSymbol]) {
+          // First time seeing this token, set the field and initial value
+          requiredAmounts[tokenSymbol] = { amount };
+        } else {
+          // We've seen this token, so just update the total
+          requiredAmounts[tokenSymbol].amount = requiredAmounts[tokenSymbol].amount.add(amount);
+        }
+      });
+
+      // Compare amounts needed to balance
+      const web3 = this.initWeb3();
+      const userAddress = ethereum.selectedAddress;
+      let isBalanceSufficient = true;
+
+      for (let i = 0; i < this.cart.tokenList.length; i += 1) {
+        let tokenSymbol = this.cart.tokenList[i];
+
+        requiredAmounts[tokenSymbol].isBalanceSufficient = true; // initialize sufficiency result
+        const tokenDetails = this.getTokenByName(tokenSymbol);
+
+        if (tokenDetails.name === 'MATIC') {
+          const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
+
+          if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount)) {
+            // User MATIC balance is too small compared to selected donation amounts
+            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+            requiredAmounts[tokenSymbol].amount = (
+              requiredAmounts[tokenSymbol].amount - userMaticBalance
+            ) / 10 ** tokenDetails.decimals;
+            isBalanceSufficient = false;
+          }
+        } else {
+          const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+          // Check user token balance against required amount
+          const userTokenBalance = toBigNumber(await tokenContract.methods
+            .balanceOf(userAddress)
+            .call({ from: userAddress }));
+
+          if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
+            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+            requiredAmounts[tokenSymbol].amount = (
+              requiredAmounts[tokenSymbol].amount - userTokenBalance
+            ) / 10 ** tokenDetails.decimals;
+            isBalanceSufficient = false;
+          }
+        }
+      }
+
+      // Return result and required amounts
+      return { isBalanceSufficient, requiredAmounts };
     }
   }
 });

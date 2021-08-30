@@ -226,7 +226,7 @@
                       <h3 class="font-subheader">How do I pay with Polygon (Matic)?</h3>
                       <p>
                         To proceed, you’ll need to make a minimum deposit of 
-                        <b>30 DAI + 0.5 MATIC</b> to the Polygon (Matic) network. Upon clicking Deposit Funds, 
+                        <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network. Upon clicking Deposit Funds, 
                         a new browser tab will be opened for you to deposit funds to Polygon (Matic) network.
                       </p>
                     </div>
@@ -237,7 +237,7 @@
                 </div>
 
                 <!-- If user should deposit -->
-                <div v-if="polygon.checkoutStatus === 'should-deposit'">
+                <div v-if="polygon.checkoutStatus === 'depositing'">
                   <div class="px-4">
                     <div class="text-left">
                       <h2 class="mb-3">Complete fund deposit on Polygon (Matic) Web Wallet</h2>
@@ -247,7 +247,7 @@
                       <h3 class="font-subheader">How much do I have to deposit?</h3>
                       <p>
                         To proceed, you’ll need to make a minimum deposit of 
-                        <b>30 DAI + 0.5 MATIC</b> to the Polygon (Matic) network.
+                        <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network.
                       </p>
                       <h3 class="font-subheader">Having issues with depositing funds to Polygon (Matic)?</h3>
                       <p>
@@ -255,7 +255,7 @@
                         with depositing funds to Polygon (Matic).
                       </p>
                     </div>
-                    <button @click="closePolygonModal()" class="mt-2 btn btn-gc-blue shadow-none float-right">
+                    <button @click="closePolygonModal()" class="mt-2 btn btn-lg btn-gc-blue shadow-none float-right">
                       Close modal
                     </button>
                   </div>

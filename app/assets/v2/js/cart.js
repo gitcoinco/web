@@ -794,7 +794,7 @@ Vue.component('grants-cart', {
      * @param {String} name Token name, e.g. ETH or DAI
      */
     getTokenByName(name, isPolygon = false) {
-      if (name === 'ETH') {
+      if (name === 'ETH' && !isPolygon) {
         return {
           addr: ETH_ADDRESS,
           address: ETH_ADDRESS,
@@ -803,7 +803,7 @@ Vue.component('grants-cart', {
           decimals: 18,
           priority: 1
         };
-      } else if (name === 'MATIC') {
+      } else if (name === 'MATIC' && isPolygon) {
         return {
           addr: MATIC_ADDRESS,
           address: MATIC_ADDRESS,
@@ -815,7 +815,7 @@ Vue.component('grants-cart', {
       }
 
       if (isPolygon) {
-        token = this.filterByChainId.filter(token => token.name === name && token.networkId === this.networkId)[0];
+        token = this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
         return token;
       }
       return this.filterByChainId.filter(token => token.name === name)[0];
@@ -885,7 +885,7 @@ Vue.component('grants-cart', {
      * @param targetContract Address of the contract to check allowance against. Currently this
      * should only be the bulkCheckout contract address
      */
-    async getAllowanceData(userAddress, targetContract) {
+    async getAllowanceData(userAddress, targetContract, isPolygon = false) {
       // Get list of tokens user is donating with
       const selectedTokens = Object.keys(this.donationsToGrants);
 
@@ -906,7 +906,7 @@ Vue.component('grants-cart', {
       // Loop over each token in the cart and check allowance
       for (let i = 0; i < selectedTokens.length; i += 1) {
         const tokenName = selectedTokens[i];
-        const tokenDetails = this.getTokenByName(tokenName);
+        const tokenDetails = this.getTokenByName(tokenName, isPolygon);
 
         // If native currency donation no approval is necessary, just check balance
         if (tokenDetails.name === this.nativeCurrency) {
