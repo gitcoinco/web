@@ -24,10 +24,12 @@ class TestSubscription:
         assert subscription.active == True
 
     def test_subscription_has_error_attribute(self):
-        """Terror 'error' attribute and default value."""
+        """Test 'error' attribute and default value."""
 
         subscription = SubscriptionFactory()
 
         assert hasattr(subscription, 'error')
         assert subscription.error == False
     
+    def test_subscription_has_subminer_comments(self):
+        pass
