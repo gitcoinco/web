@@ -6,7 +6,7 @@ yarn exec ganche-cli -m "${SECRET_WORDS}" -h 0.0.0.0 &
 
 # set up and run application
 python3 app/manage.py migrate
-python3 app/manage.py runserver 0.0.0.0:8000
+python3 app/manage.py runserver 0.0.0.0:8000 &
 
 # run cypress tests
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
