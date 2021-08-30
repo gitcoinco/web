@@ -70,3 +70,11 @@ class TestSubscription:
 
         assert hasattr(subscription, 'split_tx_confirmed')
         assert subscription.split_tx_confirmed == False
+
+    def test_subscription_has_subscription_hash_attribute(self):
+        """Test 'subscription_hash' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'subscription_hash')
+        assert subscription.subscription_hash == ''
