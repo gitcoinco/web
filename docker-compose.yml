@@ -82,7 +82,7 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+      command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
     deploy:
       replicas: 1
       resources:
