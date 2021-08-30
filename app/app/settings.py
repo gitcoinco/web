@@ -922,3 +922,8 @@ CELERY_NODE = env.bool('CELERY_NODE', default=False)
 # GTC Token Distribution
 GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
 GTC_DIST_KEY = env('GTC_DIST_KEY', default='')
+
+# Stewards INFO API
+DISCOURSE_API_KEY = env('DISCOURSE_API_KEY', default='your-discourse-api-key')
+THE_GRAPH_DELEGATORS = env('THE_GRAPH_DELEGATORS', default='https://api.thegraph.com/subgraphs/name/withtally/protocol-gitcoin-bravo-v2')
+API_BOARDROOM = env('API_BOARDROOM', default='https://api.boardroom.info/v1/voters/')
