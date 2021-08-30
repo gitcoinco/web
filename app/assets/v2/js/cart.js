@@ -9,15 +9,19 @@ const { Zero: ZERO } = ethers.constants;
 const { BigNumber } = ethers;
 let appCart;
 
-document.addEventListener('dataWalletReady', function(e) {
+document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
   appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
-  ethereum.request({
-    method: 'wallet_switchEthereumChain',
-    params: [{ chainId: networkName == 'mainnet' ? '0x1' : '0x4' }] // mainnet or rinkeby
-  }).catch(e => {
-    console.log(e);
-  });
+  if (!appCart.$refs.cart.userSwitchedToPolygon) {
+    try {
+      await ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: networkName == 'mainnet' ? '0x1' : '0x4' }]
+      }); // mainnet or rinkeby
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }, false);
 
 // needWalletConnection();
@@ -51,6 +55,7 @@ Vue.component('grants-cart', {
         { text: 'Wallet address', value: 'address' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
+      userSwitchedToPolygon: false,
       chainId: '',
       networkId: '',
       network: 'mainnet',

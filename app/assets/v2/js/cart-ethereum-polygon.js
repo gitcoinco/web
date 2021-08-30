@@ -205,6 +205,7 @@ Vue.component('grantsCartEthereumPolygon', {
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
+          network = network === 'rinkeby' ? 'testnet' : network;
           try {
             await ethereum.request({
               method: 'wallet_addEthereumChain',
@@ -236,6 +237,11 @@ Vue.component('grantsCartEthereumPolygon', {
     async checkoutWithPolygon() {
       try {
         await this.setupPolygon();
+        appCart.$refs.cart.userSwitchedToPolygon = true;
+
+        if (appCart.$refs.cart.networkId !== '80001' && appCart.$refs.cart.networkId !== '137') {
+          return;
+        }
 
         if (typeof ga !== 'undefined') {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
