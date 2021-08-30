@@ -14,3 +14,11 @@ class TestSubscription:
         subscription = SubscriptionFactory()
 
         assert isinstance(subscription, Subscription)
+
+    def test_subscription_has_active_attribute(self):
+        """Test 'active' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'active')
+        assert subscription.active == True
