@@ -47,6 +47,7 @@
     "@joeattardi/emoji-button": "^3.1.1",
     "bootstrap": "4.6.0",
     "bootstrap-vue": "2.18.0",
+    "cypress-metamask": "github:gitcoinco/cypress-metamask",
     "daterangepicker": "3.0.5",
     "dompurify": "^2.2.9",
     "gsap": "3.6.0",

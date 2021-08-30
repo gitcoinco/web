@@ -55,6 +55,7 @@ then
         then
             yarn run build
         else
+            yarn cypress install
             yarn run webpack &
         fi
     fi
