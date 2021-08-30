@@ -325,7 +325,7 @@ Vue.component('grantsCartEthereumPolygon', {
       // are not confirmed then estimateGas will fail.
       let networkId = appCart.$refs.cart.networkId;
 
-      if (networkId !== '80001' && networkId !== '137') {
+      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.chainId !== '1') {
         return;
       }
 

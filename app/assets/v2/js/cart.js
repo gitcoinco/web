@@ -407,11 +407,9 @@ Vue.component('grants-cart', {
       polygonSavings = polygonComparisonResult.name === 'Polygon' ? polygonComparisonResult.savingsInPercent : 0;
 
       if (zkSyncSavings > polygonSavings) {
-        console.log('zksync won');
         return zkSyncComparisonResult;
       } else if (zkSyncSavings < polygonSavings) {
-        console.log('polygon won');
-        return polygonSavings;
+        return polygonComparisonResult;
       }
       return zkSyncComparisonResult; // recommendation will be standard checkout
       
