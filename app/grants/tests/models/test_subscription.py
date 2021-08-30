@@ -46,3 +46,11 @@ class TestSubscription:
 
         assert hasattr(subscription, 'comments')
         assert subscription.comments == ''
+
+    def test_subscription_has_split_tx_id(self):
+        """Test 'split_tx_id' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'split_tx_id')
+        assert subscription.split_tx_id == ''
