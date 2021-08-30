@@ -30,6 +30,7 @@ import hmac
 import json
 import logging
 import random
+from re import S
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -213,6 +214,12 @@ def get_stewards():
                 'gtc_address' : s.gtc_address,
                 'profile_link' : s.profile_link,
                 'custom_steward_img': s.custom_steward_img
+                'steward_since': s.steward_since
+                'forum_posts_count': s.forum_posts_count
+                'delegators_count': s.delegators_count
+                'voting_power': s.voting_power
+                'voting_participation': s.voting_participation
+                'score': s.score
             }
             # add to dict
             steward_dict[str(s.profile)] = steward

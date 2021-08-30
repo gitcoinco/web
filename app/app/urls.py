@@ -793,9 +793,6 @@ urlpatterns = [
     path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
     re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
     re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
-    # Stwards endpoints
-    path('/steward/<steward-id>', include('quadraticlands.views.get_steward_data', name='get_steward_data')),
-    path('/steward/', include('quadraticlands.views.get_steward_all_data', name='get_all_steward_data')),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),

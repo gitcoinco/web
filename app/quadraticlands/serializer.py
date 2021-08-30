@@ -9,7 +9,7 @@ class GTCStewardSerializer(FlexFieldsModelSerializer):
     class Meta:
         """Define the GrantCLR serializer metadata."""
         model = GTCSteward
-        fields = ('profile', 'real_name', 'bio', 'gtc_address', 'profile_link', 'custom_steward_img')
+        fields = ('profile', 'real_name', 'bio', 'gtc_address', 'profile_link', 'custom_steward_img', 'steward_since', 'forum_posts_count', 'delegators_count', 'voting_power', 'voting_participation', 'score')
         expandable_fields = {
           'profile': ProfileSerializer
         }

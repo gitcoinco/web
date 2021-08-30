@@ -38,12 +38,22 @@
         </div>
 
         <div class="steward-details">
+          <div class="steward-bar-status">
+            {{ steward.score }}
+          </div>
+          <div class="steard-info-v2">
+            <div class="stewards-since">{{ steward.steward_since }}</div>
+            <div class="stewards-forum-posts">{{ steward.forum_posts_count }}</div>
+            <div class="stewards-delegators">{{ steward.delegators_count }}</div>
+            <div class="stewards-vote-power">{{ steward.voting_power }}</div>
+            <div class="stewards-vote-participation">{{ steward.voting_participation }}</div>
+          </div>
           <div class="wrapper">
-            <a class="btn" target="_blank" href="{{ steward.bio | safe }}">Info's</a>
+            <!-- <a class="btn" target="_blank" href="{{ steward.bio | safe }}">Info's</a> -->
+            <a class="btn green button-steward-select" data-address="{{ steward.gtc_address | safe }}">Statement</a>
             <a class="btn purple button-steward-select" data-address="{{ steward.gtc_address | safe }}">Delegate</a>
           </div>
         </div>
-
       </div>
 
       {% endfor %}

@@ -354,7 +354,7 @@ def mission_diplomacy_room_helper(request, game):
                     request,
                     f'{remove_this_fool} has been removed'
                 )
-    
+
     # delete game
     if is_member and request.GET.get('delete'):
         game.remove_player(request.user.profile.handle)
@@ -403,3 +403,14 @@ def mission_diplomacy_room_helper(request, game):
         'max_players': max_players_per_game,
     }
     return TemplateResponse(request, 'quadraticlands/mission/diplomacy/room.html', params)
+
+
+# Stewards get_swwards data
+@login_required
+def get_steward_all_data(request, stewards):
+
+    return JsonResponse({'msg':'OK', 'data' : steward.data})
+
+@login_required
+def get_stewards_data(request, steward):
+    return JsonResponse({'msg':'OK', 'data' : steward})
