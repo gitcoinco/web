@@ -54,3 +54,19 @@ class TestSubscription:
 
         assert hasattr(subscription, 'split_tx_id')
         assert subscription.split_tx_id == ''
+
+    def test_subscription_has_is_postive_vote_attribute(self):
+        """Test 'is_postive_vote' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'is_postive_vote')
+        assert subscription.is_postive_vote == True
+
+    def test_subscription_has_split_tx_confirmed_attribute(self):
+        """Test 'split_tx_confirmed' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'split_tx_confirmed')
+        assert subscription.split_tx_confirmed == False
