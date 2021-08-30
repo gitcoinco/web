@@ -32,4 +32,9 @@ class TestSubscription:
         assert subscription.error == False
     
     def test_subscription_has_subminer_comments(self):
-        pass
+        """Test 'subminer_comments' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'subminer_comments')
+        assert subscription.subminer_comments == ''
