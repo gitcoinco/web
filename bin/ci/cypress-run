@@ -2,9 +2,10 @@
 set -eou pipefail
 
 # start ganache cli
-yarn exec ganche-cli -m $SECRET_WORDS -h 0.0.0.0 &
+yarn exec ganche-cli -m "$SECRET_WORDS" -h 0.0.0.0 &
 
-# start web-application
+# set up and run application
+python3 app/manage.py migrate
 python3 app/manage.py runserver 0.0.0.0:8000 &
 
 # run cypress tests
