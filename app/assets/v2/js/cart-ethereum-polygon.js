@@ -27,7 +27,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       cart: {
         tokenList: [], // array of tokens in the cart
-        unsupportedTokens: [] // tokens in cart which are not supported by zkSync
+        unsupportedTokens: [] // tokens in cart which are not supported by Polygon
       },
 
       user: {
@@ -37,13 +37,7 @@ Vue.component('grantsCartEthereumPolygon', {
   },
 
   mounted() {
-    // If user started checking out with zkSync, warn them before closing or reloading page. Note
-    // that beforeunload may sometimes be ignored by browsers, e.g. if users have not interacted
-    // with the page. This shows a generic message staying "Leave site? Changes you made may not be
-    // saved". The ability to change this message was removed by browsers as it's widely considered
-    // a security issue. Source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
     window.addEventListener('beforeunload', (e) => {
-      // The below message will likely be ignored as explained above, but we include it just in case
       if (this.polygon.checkoutStatus === 'pending') {
         e.returnValue = 'Polygon checkout in progress. Are you sure you want to leave?';
       }
@@ -126,7 +120,11 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     openBridgeUrl() {
-      window.open('https://wallet.matic.network/bridge', '_blank');
+      let url = appCart.$refs.cart.network == 'mainnet'
+        ? 'https://wallet.matic.network/bridge'
+        : 'https://wallet.matic.today/bridge';
+
+      window.open(url, '_blank');
       this.polygon.checkoutStatus = 'depositing';
     },
 
@@ -255,7 +253,7 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         });
 
-        // If user has enough balance within zkSync, cost equals the minimum amount
+        // If user has enough balance within Polygon, cost equals the minimum amount
         let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
 
         if (!isBalanceSufficient) {
@@ -340,12 +338,12 @@ Vue.component('grantsCartEthereumPolygon', {
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
           // Special case since we overestimate here otherwise
-          return 100000;
+          return 70000;
         }
-        // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
-        // then generating a conservative best-fit line
+        // TODO: find a suitable curve using
         // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
-        return 27500 * donationCurrencies.length + 125000;
+        // return 27500 * donationCurrencies.length + 125000;
+        return 10000 * donationCurrencies.length + 70000;
       }
 
       // Otherwise, based on contract tests, we use the more conservative heuristic below to get
@@ -360,19 +358,9 @@ Vue.component('grantsCartEthereumPolygon', {
 
         } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
           return accumulator + 170000; // ANT donation gas estimate
-
-        } else if (tokenAddr === '0xfC1E690f61EFd961294b3e1Ce3313fBD8aa4f85d'.toLowerCase()) {
-          return accumulator + 500000; // aDAI donation gas estimate
-
-        } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
-          return accumulator + 450000; // cDAI donation gas estimate
-
-        } else if (tokenAddr === '0x3472A5A71965499acd81997a54BBA8D852C6E53d'.toLowerCase()) {
-          return accumulator + 200000; // BADGER donation gas estimate. See https://github.com/gitcoinco/web/issues/8112
-
         }
 
-        return accumulator + 700000; // generic token donation gas estimate
+        return accumulator + 70000; // generic token donation gas estimate
       }, 0);
 
       return gasLimit;
