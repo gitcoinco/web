@@ -1,5 +1,6 @@
 import pytest
 from grants.models.subscription import Subscription
+from grants.models.grant import Grant
 
 from .factories.subscription_factory import SubscriptionFactory
 
@@ -198,5 +199,13 @@ class TestSubscription:
 
         assert hasattr(subscription, 'network')
         assert subscription.network == 'mainnet'
+
+    def test_subscription_has_associated_grant(self):
+        """Test association with Grant."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, "grant")
+        assert isinstance(subscription.grant, Grant)
 
         
