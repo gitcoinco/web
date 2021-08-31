@@ -23,6 +23,7 @@ import json
 import logging
 import math
 import re
+import time
 import uuid
 from datetime import datetime
 from urllib.parse import urlencode
@@ -1564,7 +1565,7 @@ def grant_edit(request, grant_id):
             kusama_payout_address == '0x0' and
             harmony_payout_address == '0x0' and
             binance_payout_address == '0x0' and
-            rsk_payout_address == '0x0' and 
+            rsk_payout_address == '0x0' and
             algorand_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
