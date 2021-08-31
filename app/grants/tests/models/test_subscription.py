@@ -191,4 +191,12 @@ class TestSubscription:
         assert hasattr(subscription, 'num_tx_processed')
         assert subscription.num_tx_processed == 0
 
+    def test_subscription_has_network(self):
+        """Test network attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'network')
+        assert subscription.network == 'mainnet'
+
         
