@@ -95,3 +95,18 @@ class TestSubscription:
         assert hasattr(subscription, 'contributor_address')
         assert subscription.contributor_address == ''
 
+    def test_subscription_has_amount_per_period_attribute(self):
+        """Test 'amount_per_period' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'amount_per_period')
+        assert subscription.amount_per_period == 1
+
+    def test_subscription_has_real_period_seconds_attribute(self):
+        """Test 'real_period_seconds' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'real_period_seconds')
+        assert subscription.real_period_seconds == 2592000
