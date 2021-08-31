@@ -13,4 +13,4 @@ set -x
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
 yarn exec cypress install
 yarn exec wait-on http://0.0.0.0:8000
-yarn exec cypress run --headed -b chrome
+node_modules/.bin/cypress run --headed -b chrome
