@@ -429,8 +429,10 @@ this.applyCartMenuStyles = function() {
   let dot = $('#cart-notification-dot');
 
   if (CartData.hasItems()) {
+    const noOfItems = CartData.length();
+
     dot.addClass('notification__dot_active');
-    dot.text(CartData.length());
+    dot.text(noOfItems > 99 ? '99+' : noOfItems);
   } else {
     dot.removeClass('notification__dot_active');
     if (document.location.href.indexOf('/grants') == -1) {

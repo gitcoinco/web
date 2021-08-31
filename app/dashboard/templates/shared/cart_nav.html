@@ -1,9 +1,47 @@
-<div id="cart-nav" class="nav-item dropdown">
-  <a href="{% url 'grants:cart' %}" class="text-decoration-none">
-    <span class="nav-link dropdown-toggle dropdown-toggle-md-no-caret">
-      <i class="far fa-shopping-cart fa-fw fa-lg"></i>
-      <span class="pl-3 d-md-none">Cart</span>
-      <span id="cart-notification-dot" class="notification__dot ml-2 ml-md-0"></span>
-    </span>
+<!-- nav cart icon/count + dropdown -->
+<div id="gc-cart" class="nav-item dropdown gc-cart order-md-first">
+  <a href="" class="gc-cart__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="cartDropdown" role="button" @click="init"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="far fa-shopping-cart fa-fw fa-lg"></i>
+    <span class="pl-3 d-md-none">Cart</span>
+    <span id="cart-notification-dot" class="notification__dot ml-2 ml-md-0"></span>
   </a>
+  <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn gc-cart-box shadow-lg p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="min-width: 352px;">
+    <gc-cart-content :items="items"/>
+  </div>
 </div>
+
+<!-- cart content -->
+<template id="gc-cart-content">
+  <div>
+    <!-- grant items -->
+    <div class="row">
+      <div class="col-12 overflow-auto spacer-py-4" style="max-height: 182px;">
+        <div v-if="items.length">
+          <div v-for="(item, index) in items" :key="index">
+            <div :class="['row', (index != items.length-1 ? 'pb-3' : '')]">
+              <div class="d-flex col-3 justify-content-center my-auto" style="overflow:hidden;">
+                <img :src="item.grant_logo" width="40">
+              </div>
+              <div class="col-7 line-clamp-1 my-auto cursor-none">
+                [[ item.grant_title ]]
+              </div>
+              <div class="col-1 d-flex align-self-center">
+                <i class="fal fa-times font-bigger-1 icon-hover cursor-pointer my-auto" aria-hidden="true" @click.stop="removeItem(item.grant_id)"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <span>Your cart is empty</span>
+        </div>
+      </div>
+    </div>
+    <!-- checkout button -->
+    <div class="row border-top-1 border-bottom-1 border-bottom-md-0 border-grey-200">
+      <div class="col-12 spacer-pb-3 spacer-pb-md-4 spacer-pt-3">
+        <a href="{% url 'grants:cart' %}" :class="`btn btn-primary w-100 py-2 ${!items.length ? 'disabled' : ''}`">Checkout</a>
+      </div>
+    </div>
+  </div>
+</template>
