@@ -140,7 +140,7 @@ class TestSubscription:
 
         subscription = SubscriptionFactory()
 
-        assert (subscription, 'token_symbol')
+        assert hasattr(subscription, 'token_symbol')
         assert subscription.token_symbol == '0x0'
 
     def test_subscription_has_gas_price(self):
