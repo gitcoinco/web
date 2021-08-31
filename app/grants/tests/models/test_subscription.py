@@ -86,3 +86,12 @@ class TestSubscription:
 
         assert hasattr(subscription, 'contributor_signature')
         assert subscription.contributor_signature == ''
+
+    def test_subscription_has_a_contributor_address(self):
+        """Test 'contributor_address' attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'contributor_address')
+        assert subscription.contributor_address == ''
+
