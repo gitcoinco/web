@@ -119,4 +119,12 @@ class TestSubscription:
         assert hasattr(subscription, 'frequency_unit')
         assert subscription.frequency_unit == ''
 
- 
+    def test_subscription_has_frequency_attribute(self):
+        """Test frequency attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'frequency')
+        assert subscription.frequency == 0
+
+        
