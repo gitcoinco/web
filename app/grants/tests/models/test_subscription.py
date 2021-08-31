@@ -216,7 +216,3 @@ class TestSubscription:
 
         assert hasattr(subscription, 'contributor_profile')
         assert isinstance(subscription.contributor_profile, Profile)
-
-    
-
-    
