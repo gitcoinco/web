@@ -183,4 +183,12 @@ class TestSubscription:
         assert hasattr(subscription, 'num_tx_approved')
         assert subscription.num_tx_approved == 1
 
+    def test_subscription_has_num_tx_processed_attribute(self):
+        """Test num_tx_processed attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'num_tx_processed')
+        assert subscription.num_tx_processed == 0
+
         
