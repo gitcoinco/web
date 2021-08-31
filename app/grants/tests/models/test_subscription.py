@@ -173,6 +173,6 @@ class TestSubscription:
         subscription = SubscriptionFactory()
 
         assert hasattr(subscription, 'cancel_tx_id')
-        assert subscription.concel_tx_id == '0x0'
+        assert subscription.cancel_tx_id == '0x0'
 
         
