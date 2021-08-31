@@ -352,10 +352,12 @@ Vue.component('grantsCartEthereumPolygon', {
         return 10000 * donationCurrencies.length + 70000;
       }
 
-      // Otherwise, based on contract tests, we use the more conservative heuristic below to get
-      // a gas estimate. The estimates used here are based on testing the cost of a single
-      // donation (i.e. one item in the cart). Because gas prices go down with batched
-      // transactions, whereas this assumes they're constant, this gives us a conservative estimate
+      /**
+       * Otherwise, based on contract tests, we use the more conservative heuristic below to get
+       * a gas estimate. The estimates used here are based on testing the cost of a single
+       * donation (i.e. one item in the cart). Because gas prices go down with batched
+       * transactions, whereas this assumes they're constant, this gives us a conservative estimate
+       */
       const gasLimit = this.donationInputs.reduce((accumulator, currentValue) => {
         const tokenAddr = currentValue.token?.toLowerCase();
 
@@ -385,7 +387,7 @@ Vue.component('grantsCartEthereumPolygon', {
           // First time seeing this token, set the field and initial value
           requiredAmounts[tokenSymbol] = { amount };
         } else {
-          // We've seen this token, so just update the total
+          // Increment total required amount of the token with new found value
           requiredAmounts[tokenSymbol].amount = requiredAmounts[tokenSymbol].amount.add(amount);
         }
       });
@@ -396,7 +398,7 @@ Vue.component('grantsCartEthereumPolygon', {
       let isBalanceSufficient = true;
 
       for (let i = 0; i < this.cart.tokenList.length; i += 1) {
-        let tokenSymbol = this.cart.tokenList[i];
+        const tokenSymbol = this.cart.tokenList[i];
 
         requiredAmounts[tokenSymbol].isBalanceSufficient = true; // initialize sufficiency result
         const tokenDetails = this.getTokenByName(tokenSymbol);
