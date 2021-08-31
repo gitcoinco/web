@@ -251,3 +251,11 @@ class TestSubscription:
         assert hasattr(subscription, 'tenant')
         assert subscription.tenant == "ETH"
 
+    def test_subscription_has_a_visitor_id(self):
+        """Test visitorId attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'visitorId')
+        assert subscription.visitorId == ''
+
