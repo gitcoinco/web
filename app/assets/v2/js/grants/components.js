@@ -149,7 +149,7 @@ Vue.component('grant-collection', {
       showSideCart();
     },
     getGrantLogo(index) {
-      return this.collection.grants[index].logo;
+      return `${static_url}${this.collection.cache?.grants[index]?.logo}`;
     }
   }
 });

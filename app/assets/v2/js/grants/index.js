@@ -197,6 +197,8 @@ if (document.getElementById('grants-showcase')) {
       regex_style: {},
       params: Object.assign({}, baseParams),
       tagsOptions: [],
+      tabIndex: null,
+      tabSelected: 'grants',
     },
     methods: {
       toggleStyle: function(style) {
@@ -239,12 +241,12 @@ if (document.getElementById('grants-showcase')) {
           this.clearSingleCollection();
         }
 
-        this.updateURI();
+        // this.updateURI();
       },
       fetchClrGrants: async function() {
         let vm = this;
         let url = 'http://localhost:8000/api/v0.1/grants_clr/';
-        let getClr = await fetch(url, {cache: "force-cache"});
+        let getClr = await fetch(url);
         let clrJson = await getClr.json();
 
         vm.clrData = clrJson;
@@ -315,13 +317,14 @@ if (document.getElementById('grants-showcase')) {
         this.fetchGrants();
       },
       showSingleCollection: function(collectionId) {
+        // http://localhost:8000/api/v0.1/grants_collections/1/?expand=grants
         this.collection_id = collectionId;
         this.collections = [];
         this.keyword = '';
         this.grants = [];
         this.params.page = 1;
-        this.current_type = 'collections';
-        this.updateURI();
+        this.params.grant_types = 'collections';
+        // this.updateURI();
         this.fetchGrants();
       },
 
@@ -413,13 +416,33 @@ if (document.getElementById('grants-showcase')) {
 
         if (vm.grantsHasNext) {
           vm.params.page = ++vm.params.page;
-        } else {
-          vm.params.page = 1;
         }
 
         vm.lock = false;
 
         return vm.grants;
+      },
+      tabChange: function(input) {
+        let vm = this;
+
+        vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
+        console.log(vm.tabSelected);
+        if (vm.tabSelected === 'grants') {
+          this.fetchGrants();
+        } else if (vm.tabSelected === 'collections') {
+          this.fetchCollections();
+        }
+
+      },
+      fetchCollections: async function(loading) {
+        let vm = this;
+
+        let url = `/api/v0.1/grants_collections/`;
+        let getCollections = await fetch(url);
+        let collectionsJson = await getCollections.json();
+        console.log(collectionsJson);
+        vm.collections = collectionsJson.results;
+
       },
       scrollEnd: async function(event) {
         let vm = this;
@@ -428,7 +451,8 @@ if (document.getElementById('grants-showcase')) {
         const visible = document.documentElement.clientHeight;
         const pageHeight = document.documentElement.scrollHeight - 500;
         const bottomOfPage = visible + scrollY >= pageHeight;
-
+        const topOfPage = visible + scrollY <= pageHeight;
+        console.log(bottomOfPage, pageHeight, visible, topOfPage);
         if (bottomOfPage || pageHeight < visible) {
           if (vm.grantsHasNext) {
             vm.fetchGrants(vm.params.page, true);
@@ -562,7 +586,8 @@ if (document.getElementById('grants-showcase')) {
 
       vm.getUrlParams();
       vm.fetchClrGrants();
-      vm.fetchGrants(vm.params.page);
+      // vm.fetchGrants(vm.params.page);
+      vm.getTag(undefined, '');
     }
   });
 }

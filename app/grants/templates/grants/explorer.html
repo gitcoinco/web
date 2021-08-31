@@ -63,8 +63,8 @@ along with this program. If not, see
       <div class="container">
 
 
-        <b-tabs content-class="mt-3" >
-          <b-tab title-link-class="nav-line font-weight-bold" active>
+        <b-tabs content-class="mt-3" @input="tabChange" v-model="tabIndex" ref="grantstabs">
+          <b-tab ref="grants" id="grants" title-link-class="nav-line font-weight-bold" active>
             <template v-slot:title>Grants</template>
 
             <div v-if="clrData.count > 0">
@@ -95,7 +95,7 @@ along with this program. If not, see
             </template>
             <template v-else>
 
-              <div class="position-sticky top-0 bg-white py-2 d-flex" style="z-index: 1;">
+              <div class="position-sticky top-0 bg-white py-2 d-flex justify-content-between" style="z-index: 1;">
                 <div class="flex-basis-50">
 
                   [[currentCLR?.display_text]]
@@ -119,7 +119,7 @@ along with this program. If not, see
                       Tags <span v-if="params.grant_tags?.length"> • [[params.grant_tags.length]]</span>
                     </template>
                     <b-dropdown-form>
-                      <v-select id="team_members" label="name" :close-on-select="false" @search="tagSearch"  :options="tagsOptions" :reduce="tag => tag.name" placeholder="Add your team Gitcoin usernames" v-model="params.grant_tags" multiple>
+                      <!-- <v-select id="team_members" label="name" :close-on-select="false" @search="tagSearch"  :options="tagsOptions" :reduce="tag => tag.name" placeholder="Add your team Gitcoin usernames" v-model="params.grant_tags" multiple>
                         <template slot="no-options">
                           type to search Users..
                         </template>
@@ -133,7 +133,7 @@ along with this program. If not, see
                             <div>[[ option.name ]]</div>
                           </div>
                         </template>
-                      </v-select>
+                      </v-select> -->
                       <b-form-checkbox-group id="checkbox-group-tags" v-model="params.grant_tags" aria-describedby="ariaDescribedby" name="grant_tags">
                         <template v-for="tag in tagsOptions">
                           <b-form-checkbox class="mb-3" :value="tag.name">[[tag.name]]</b-form-checkbox>
@@ -184,7 +184,7 @@ along with this program. If not, see
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-form-checkbox id="only_contributions" v-model="params.only_contributions" name="only_contributions"> My Contributions
                       </b-form-checkbox>
-                      <b-form-checkbox id="me" v-model="params.me" name="me"> My Grants</b-form-checkbox>
+                      <b-form-checkbox id="me" v-model="params.grant_types" value="me" name="me"> My Grants</b-form-checkbox>
                       <b-form-checkbox id="following" v-model="params.following" name="following"> Following</b-form-checkbox>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.grant_regions=[]">Clear</b-button>
@@ -193,7 +193,9 @@ along with this program. If not, see
                   </b-dropdown>
                   <button class="btn btn-sm" @click="resetFilters()"> <i class="fas fa-times"></i> Clear</button>
                 </div>
-                <input class="form-control rounded-pill" type="search" v-model="params.keyword" @input="changeQuery()">
+                <div class="flex-basis-25">
+                  <input class="form-control rounded-pill" type="search" v-model="params.keyword" @input="changeQuery()">
+                </div>
 
 
               </div>
@@ -202,12 +204,33 @@ along with this program. If not, see
               <template v-if="isGrantExplorer && !isGrantCollectionExplorer">
                 <!-- {% include 'grants/shared/active_clr_round.html'%} -->
               </template>
-              {% include 'grants/shared/landing_grants.html' %}
+              <div class="infinite-container row"  v-if="grants">
+                <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                  <a class="text-decoration-none" :href="grant.details_url">
+                    {% include 'grants/components/card.html' %}
+                  </a>
+                </div>
+              </div>
+              <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
+                <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+                <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+                <p class="font-subheader text">
+                  {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+                  {% trans "Please try another search term or browse for a grant." %}
+                </p>
+                <div class="col-12 pt-4 pb-2 mx-auto text-center">
+                  <a class="btn-lg btn-primary py-3 px-5" href="{% url 'grants:grants' %}">
+                    {% trans "Browse Grants" %}
+                  </a>
+                </div>
+              </div>
             </template>
           </b-tab>
-          <b-tab title-link-class="nav-line font-weight-bold">
+          <b-tab ref="collections" id="collections" title-link-class="nav-line font-weight-bold">
             <template v-slot:title>Collections</template>
             contenCollections
+            {% include 'grants/shared/landing_grants.html' %}
+
           </b-tab>
           <template v-slot:tabs-end>
             <li role="presentation" class="flex-fill nav-item text-right">
