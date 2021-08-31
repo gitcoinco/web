@@ -142,3 +142,11 @@ class TestSubscription:
 
         assert (subscription, 'token_symbol')
         assert subscription.token_symbol == '0x0'
+
+    def test_subscription_has_gas_price(self):
+        """Test gas_price attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'gas_price')
+        assert subscription.gas_price == 1
