@@ -127,4 +127,10 @@ class TestSubscription:
         assert hasattr(subscription, 'frequency')
         assert subscription.frequency == 0
 
-        
+    def test_subscription_has_token_address(self):
+        """Test token_address attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'token_address')
+        assert subscription.token_address == '0x0'
