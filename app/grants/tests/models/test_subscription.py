@@ -266,3 +266,8 @@ class TestSubscription:
 
         assert subscription.negative == False
 
+    def status_returns_current_if_next_contribution_date_is_after_todays_date(self):
+        """Test status method returns 'CURRENT' when next_contribution_date is after current datetime."""
+
+        pass # TODO: make this work
+
