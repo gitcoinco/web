@@ -175,4 +175,12 @@ class TestSubscription:
         assert hasattr(subscription, 'cancel_tx_id')
         assert subscription.cancel_tx_id == '0x0'
 
+    def test_subscription_has_num_tx_approved_attribute(self):
+        """Test num_tx_approved attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'num_tx_approved')
+        assert subscription.num_tx_approved == 1
+
         
