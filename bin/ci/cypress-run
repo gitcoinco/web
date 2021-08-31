@@ -12,4 +12,5 @@ python3 app/manage.py runserver 0.0.0.0:8000 &
 set -x
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
 yarn exec cypress install
-yarn exec wait-on http://0.0.0.0:8000 && yarn exec cypress run --headed -b chrome
+yarn exec wait-on http://0.0.0.0:8000
+yarn exec cypress run --headed -b chrome
