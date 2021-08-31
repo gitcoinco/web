@@ -468,6 +468,7 @@ def get_grants(request):
     sort = request.GET.get('sort_option', None)
     tenants = request.GET.get('tenants', '')
     grant_regions = request.GET.get('grant_regions', '')
+    my_grants = request.GET.get('me', None) == 'true'
 
     # 2. Fetch GrantCLR if round_num is present
     clr_round = None
@@ -496,7 +497,8 @@ def get_grants(request):
         'only_contributions': only_contributions,
         'clr_round': clr_round,
         'tenants': tenants,
-        'grant_regions': grant_regions
+        'grant_regions': grant_regions,
+        'my_grants': my_grants
     }
     _grants = get_grants_by_filters(**filters)
 
@@ -607,7 +609,8 @@ def get_grants_by_filters(
     omit_my_grants=False,
     clr_round=None,
     tenants='',
-    grant_regions=''
+    grant_regions='',
+    my_grants=False
 ):
 
     # sort_by_clr_pledge_matching_amount = None
@@ -626,16 +629,16 @@ def get_grants_by_filters(
         _grants = _grants.filter(**clr_round.grant_filters)
 
     if profile:
-        if omit_my_grants:
-            # 3. Exclude grants created by user
-            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                        list(profile.grant_admin.all().values_list('pk', flat=True))
-            _grants = _grants.exclude(id__in=grants_id)
-        elif grant_types == 'me':
-            # 4. Filter grants created by user
+        if my_grants:
+            # 3. Filter grants created by user
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
                         list(profile.grant_admin.all().values_list('pk', flat=True))
             _grants = _grants.filter(id__in=grants_id)
+        if omit_my_grants:
+            # 4. Exclude grants created by user
+            grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                        list(profile.grant_admin.all().values_list('pk', flat=True))
+            _grants = _grants.exclude(id__in=grants_id)
         elif only_contributions:
             # 5. Filter grants to which the user has contributed to
             contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')

@@ -2,7 +2,7 @@ from dashboard.router import ProfileSerializer
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-from .models import Contribution, Grant, GrantCLR, GrantCollection ,GrantTag, GrantType, Subscription
+from .models import Contribution, Grant, GrantCLR, GrantCollection, GrantTag, GrantType, Subscription
 from .utils import amount_in_wei, get_converted_amount
 
 
@@ -185,7 +185,3 @@ class GrantCollectionSerializer(FlexFieldsModelSerializer):
             }
     def get_count(self, obj):
         return obj.grants.count()
-
-
-
-

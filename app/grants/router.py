@@ -11,14 +11,10 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import (
-    CLRMatch, Contribution, Grant, GrantCLR, GrantCollection,
-    GrantTag, GrantType, Subscription
-)
+from .models import CLRMatch, Contribution, Grant, GrantCLR, GrantCollection, GrantTag, GrantType, Subscription
 from .serializers import (
-    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantCollectionSerializer,
-    GrantTagSerializer, GrantTypeSerializer, GrantSerializer, SubscriptionSerializer,
-    TransactionsSerializer,
+    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantCollectionSerializer, GrantSerializer,
+    GrantTagSerializer, GrantTypeSerializer, SubscriptionSerializer, TransactionsSerializer,
 )
 
 
