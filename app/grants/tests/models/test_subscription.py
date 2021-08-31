@@ -259,3 +259,10 @@ class TestSubscription:
         assert hasattr(subscription, 'visitorId')
         assert subscription.visitorId == ''
 
+    def test_negative_property(self):
+        """Test negative property."""
+
+        subscription = SubscriptionFactory()
+
+        assert subscription.negative == False
+
