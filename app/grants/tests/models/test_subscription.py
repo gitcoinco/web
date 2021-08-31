@@ -134,3 +134,11 @@ class TestSubscription:
 
         assert hasattr(subscription, 'token_address')
         assert subscription.token_address == '0x0'
+
+    def test_subscription_has_token_symbol(self):
+        """Test token_symbol attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert (subscription, 'token_symbol')
+        assert subscription.token_symbol == '0x0'
