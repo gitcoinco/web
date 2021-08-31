@@ -234,3 +234,11 @@ class TestSubscription:
 
         assert hasattr(subscription, 'next_contribution_date')
         assert subscription.next_contribution_date == timezone.datetime(1990, 1, 1)
+
+    def test_subscription_has_amount_per_period_usdt_attribute(self):
+        """Test amount_per_period_usdt attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'amount_per_period_usdt')
+        assert subscription.amount_per_period_usdt == 0
