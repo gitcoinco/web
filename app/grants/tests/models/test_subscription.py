@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 import pytest
 from dashboard.models import Profile
 from grants.models.grant import Grant
@@ -216,3 +218,19 @@ class TestSubscription:
 
         assert hasattr(subscription, 'contributor_profile')
         assert isinstance(subscription.contributor_profile, Profile)
+
+    def test_subscription_has_last_contribution_date(self):
+        """Test last_contribution_date attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'last_contribution_date')
+        assert subscription.last_contribution_date == timezone.datetime(1990, 1, 1)
+
+    def test_subscription_has_next_contribution_date(self):
+        """Test next_contribution_date attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'next_contribution_date')
+        assert subscription.next_contribution_date == timezone.datetime(1990, 1, 1)
