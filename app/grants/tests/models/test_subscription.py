@@ -242,3 +242,12 @@ class TestSubscription:
 
         assert hasattr(subscription, 'amount_per_period_usdt')
         assert subscription.amount_per_period_usdt == 0
+        
+    def test_subscription_has_tenant(self):
+        """Test tenant attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'tenant')
+        assert subscription.tenant == "ETH"
+
