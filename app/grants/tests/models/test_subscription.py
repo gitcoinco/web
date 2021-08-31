@@ -1,4 +1,5 @@
 import pytest
+from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.subscription import Subscription
 
@@ -207,3 +208,15 @@ class TestSubscription:
 
         assert hasattr(subscription, "grant")
         assert isinstance(subscription.grant, Grant)
+
+    def test_subscription_has_associated_profile(self):
+        """Test Subscription contributor's Profile attribute."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'contributor_profile')
+        assert isinstance(subscription.contributor_profile, Profile)
+
+    
+
+    
