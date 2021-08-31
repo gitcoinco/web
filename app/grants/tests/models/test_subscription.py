@@ -150,3 +150,11 @@ class TestSubscription:
 
         assert hasattr(subscription, 'gas_price')
         assert subscription.gas_price == 1
+
+    def test_subscription_has_new_approve_tx_id_attribute(self):
+        """Test new_approve_tx_id attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'new_approve_tx_id')
+        assert subscription.new_approve_tx_id == '0x0'
