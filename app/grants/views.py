@@ -502,7 +502,7 @@ def get_grants(request):
     }
     _grants = get_grants_by_filters(**filters)
 
-    if grant_types == 'collections':
+    if collection_id:
         # 4.1 Fetch grants by collection
         _collections = get_collections(
             request.user,
@@ -580,6 +580,7 @@ def get_grants(request):
             'round_num': round_num,
             'sub_round_slug': sub_round_slug,
             'customer_name': customer_name,
+            'collection_id': collection_id
         },
         'grant_types': get_grant_clr_types(clr_round, _grants, network) if clr_round and _grants else get_grant_type_cache(network),
         'grants': grants_array,
