@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 
 from django.core.paginator import Paginator
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_control
 
 import django_filters.rest_framework
 from ratelimit.decorators import ratelimit
@@ -9,10 +11,13 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import CLRMatch, Contribution, Grant, GrantCLR, GrantTag, GrantType, Subscription
+from .models import (
+    CLRMatch, Contribution, Grant, GrantCLR, GrantCollection,
+    GrantTag, GrantType, Subscription
+)
 from .serializers import (
-    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantTagSerializer, GrantTypeSerializer,
-    GrantSerializer, SubscriptionSerializer,
+    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantCollectionSerializer,
+    GrantTagSerializer, GrantTypeSerializer, GrantSerializer, SubscriptionSerializer,
     TransactionsSerializer,
 )
 
@@ -22,11 +27,23 @@ class GrantCLRPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
 
 
+@method_decorator(cache_control(public=True, max_age=3600), name='dispatch')
 class GrantsClrViewSet(viewsets.ModelViewSet):
     queryset = GrantCLR.objects.select_related('owner').order_by('-created_on')
     serializer_class = GrantCLRSerializer
     pagination_class = GrantCLRPagination
     filterset_fields = ['customer_name']
+
+
+class GrantCollectionPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+
+
+class GrantCollectionViewSet(viewsets.ModelViewSet):
+    queryset = GrantCollection.objects.order_by('id')
+    serializer_class = GrantCollectionSerializer
+    pagination_class = GrantCollectionPagination
 
 
 class GrantTypeViewSet(viewsets.ModelViewSet):
@@ -42,6 +59,8 @@ class GranTagFilter(django_filters.FilterSet):
         model = GrantTag
         fields = ['name']
 
+
+@method_decorator(cache_control(public=True, max_age=3600), name='dispatch')
 class GrantTagViewSet(viewsets.ModelViewSet):
     queryset = GrantTag.objects.order_by('id')
     serializer_class = GrantTagSerializer
@@ -369,3 +388,4 @@ router.register(r'subscriptions', SubscriptionViewSet)
 router.register(r'grants_clr', GrantsClrViewSet)
 router.register(r'grants_type', GrantTypeViewSet)
 router.register(r'grants_tag', GrantTagViewSet)
+router.register(r'grants_collections', GrantCollectionViewSet)
