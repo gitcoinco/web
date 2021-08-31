@@ -1,6 +1,6 @@
 import pytest
-from grants.models.subscription import Subscription
 from grants.models.grant import Grant
+from grants.models.subscription import Subscription
 
 from .factories.subscription_factory import SubscriptionFactory
 
@@ -207,5 +207,3 @@ class TestSubscription:
 
         assert hasattr(subscription, "grant")
         assert isinstance(subscription.grant, Grant)
-
-        
