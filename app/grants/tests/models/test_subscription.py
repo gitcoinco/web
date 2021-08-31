@@ -168,6 +168,11 @@ class TestSubscription:
         assert subscription.end_approve_tx_id == '0x0'
 
     def test_subscription_has_cancel_tx_id_attribute(self):
-        """Test cancel_tx_id """
+        """Test cancel_tx_id attribute and default value."""
 
-        pass
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'cancel_tx_id')
+        assert subscription.concel_tx_id == '0x0'
+
+        
