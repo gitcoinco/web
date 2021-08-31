@@ -184,7 +184,7 @@
             class="btn btn-outline-primary py-2 mx-3 w-100 text-nowrap ml-0 ml-md-2 mt-2 mt-md-0"
             :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
             id='js-polygonfundGrants-button'
-            v-b-tooltip.hover.top="'Polygon (Matic) is an Ethereum sidechain solution, which means you can checkout your favorite grants with much lower transaction fees and much faster confirmation time. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheapest option).'"
+            v-b-tooltip.hover.top="'Polygon is a solution that enables low cost transaction fees and transfer of ETH and ERC-20 tokens with fast confirmation time. To take advantage of these benefits, this method of payment requires preloaded funds in Polygon (cheapest option).'"
           >
             Checkout with Polygon
           </button>
@@ -243,13 +243,13 @@
                   <div class="px-4">
                     <div class="text-left">
                       <h2 class="mb-3">Complete fund deposit on Polygon (Matic) Web Wallet</h2>
-                      <p>
-                        You can close this modal and click Checkout with Polygon again once your deposit is completed.
-                      </p>
                       <h3 class="font-subheader">How much do I have to deposit?</h3>
                       <p>
                         To proceed, you’ll need to make a minimum deposit of 
                         <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network.
+                      </p>
+                      <p>
+                        You can close this modal and click Checkout with Polygon again once your deposit is completed.
                       </p>
                       <h3 class="font-subheader">Having issues with depositing funds to Polygon (Matic)?</h3>
                       <p>
