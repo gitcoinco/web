@@ -110,3 +110,13 @@ class TestSubscription:
 
         assert hasattr(subscription, 'real_period_seconds')
         assert subscription.real_period_seconds == 2592000
+
+    def test_subscription_has_frequency_unit(self):
+        """Test frequency_unit attribute and default value."""
+
+        subscription = SubscriptionFactory()
+
+        assert hasattr(subscription, 'frequency_unit')
+        assert subscription.frequency_unit == ''
+
+ 
