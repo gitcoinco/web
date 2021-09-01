@@ -4,6 +4,7 @@ from django.utils import timezone
 
 import pytest
 import pytz
+import secrets
 from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.subscription import Subscription
@@ -317,3 +318,10 @@ class TestSubscription:
         subscription.created_on = timezone.now()
 
         assert subscription.amount_per_period_to_gitcoin == subscription.gas_price
+
+    def test_get_nonce(self):
+        subscription = SubscriptionFactory()
+        address = '0x' + secrets.token_hex(20)
+
+        # assert subscription.get_nonce(address) == 'show me'
+        pass
