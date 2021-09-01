@@ -30,7 +30,7 @@
 
 // .border-bottom-md-[0-5]
 @media (min-width: 768px) {
-  @include border('bottom-md', 0, 5);
+  @include border('bottom', 0, 5, 'md');
 }
 
 // .line-height-[1-5]
