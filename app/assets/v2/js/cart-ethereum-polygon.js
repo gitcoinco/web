@@ -202,7 +202,7 @@ Vue.component('grantsCartEthereumPolygon', {
     async setupPolygon() {
       indicateMetamaskPopup();
       // Connect to Polygon network with MetaMask
-      let network = appCart.$refs.cart.network;
+      const network = appCart.$refs.cart.network;
       let chainId = network === 'mainnet' ? '0x89' : '0x13881';
       let rpcUrl = network === 'mainnet' ? 'https://rpc-mainnet.maticvigil.com'
         : 'https://rpc-mumbai.maticvigil.com';
@@ -215,14 +215,16 @@ Vue.component('grantsCartEthereumPolygon', {
       } catch (switchError) {
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
-          network = network === 'rinkeby' ? 'testnet' : network;
+          let networkText = network === 'rinkeby' || network === 'goerli' ||
+                            network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
+
           try {
             await ethereum.request({
               method: 'wallet_addEthereumChain',
               params: [{
                 chainId,
                 rpcUrls: [rpcUrl],
-                chainName: `Polygon ${network.replace(/\b[a-z]/g, (x) => x.toUpperCase())}`,
+                chainName: `Polygon ${networkText.replace(/\b[a-z]/g, (x) => x.toUpperCase())}`,
                 nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
               }]
             });
@@ -245,8 +247,6 @@ Vue.component('grantsCartEthereumPolygon', {
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
       try {
-        await this.setupPolygon();
-        appCart.$refs.cart.userSwitchedToPolygon = true;
 
         if (typeof ga !== 'undefined') {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
@@ -278,6 +278,9 @@ Vue.component('grantsCartEthereumPolygon', {
           });
           return;
         }
+
+        await this.setupPolygon();
+        appCart.$refs.cart.userSwitchedToPolygon = true;
 
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)
