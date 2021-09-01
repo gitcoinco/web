@@ -296,6 +296,10 @@ class TestSubscription:
 
         mock_addr_to_token.assert_called_with(subscription.token_address, subscription.network)
 
-    def test_amount_per_period_to_gitcoin_returns_gas_price_if_created_on_is_after_6_16_2020(self):
-        pass
+    def test_amount_per_period_to_gitcoin_returns_gas_price_if_created_on_is_after_06_16_2020(self):
+        """Test amount_per_pay_period_to_gitcoin returns gas_price if created_on is after 06/16/2020."""
+        subscription = SubscriptionFactory()
+        subscription.created_on = timezone.now()
+
+        assert subscription.amount_per_period_to_gitcoin == subscription.gas_price
 
