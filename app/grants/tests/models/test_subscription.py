@@ -282,3 +282,6 @@ class TestSubscription:
 
         assert subscription.status == 'PAST DUE'
 
+    def test_amount_per_period_minus_gas_price(self):
+        pass
+
