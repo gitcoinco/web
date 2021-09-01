@@ -19,6 +19,7 @@
 // .border-[grey, primary, secondary, danger, info, dark, light, lighter]
 @include border-colors(
   'grey' #E2E0E7,
+  'grey-200' $gc-grey-200,
   'primary' $blue,
   'secondary' $green,
   'danger' $red,
@@ -26,6 +27,11 @@
   'dark' $dark,
   'light' $light
 );
+
+// .border-bottom-md-[0-5]
+@media (min-width: 768px) {
+  @include border('bottom-md', 0, 5);
+}
 
 // .line-height-[1-5]
 @include line-height(
@@ -279,5 +285,14 @@ div.hr {
     transform: translate(-50%, -50%);
     padding: 15px;
     z-index: 0;
+  }
+}
+
+// icon hover effect
+.icon-hover {
+  color: $gc-grey-300;
+
+  &:hover {
+    color: $gc-grey-500
   }
 }
