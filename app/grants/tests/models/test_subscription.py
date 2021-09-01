@@ -266,8 +266,19 @@ class TestSubscription:
 
         assert subscription.negative == False
 
-    def status_returns_current_if_next_contribution_date_is_after_todays_date(self):
+    def test_status_returns_current_if_next_contribution_date_is_after_todays_date(self):
         """Test status method returns 'CURRENT' when next_contribution_date is after current datetime."""
 
-        pass # TODO: make this work
+        subscription = SubscriptionFactory()
+        subscription.next_contribution_date = timezone.now() + timezone.timedelta(days=1)
+
+        assert subscription.status == 'CURRENT'
+
+    def test_status_returns_past_due_if_next_contribution_date_is_before_todays_date(self):
+        """Test status method returns 'PAST DUE' when next_contribution_date is before current datetime."""
+
+        subscription = SubscriptionFactory()
+        subscription.next_contribution_date = timezone.now() - timezone.timedelta(days=1)
+
+        assert subscription.status == 'PAST DUE'
 
