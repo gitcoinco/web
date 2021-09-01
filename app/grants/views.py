@@ -58,7 +58,7 @@ from app.settings import (
     EMAIL_ACCOUNT_VALIDATION, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
     TWITTER_CONSUMER_SECRET,
 )
-from app.utils import get_profile
+from app.utils import allow_all_origins, get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from dashboard.brightid_utils import get_brightid_status
@@ -3579,9 +3579,9 @@ def get_trust_bonus(request):
             json_body = json.loads(request.body)
             addresses = json_body.get('addresses')
             if not addresses:
-                return HttpResponse(status=204)
+                return allow_all_origins(HttpResponse(status=204))
         except:
-            return HttpResponse(status=400)
+            return allow_all_origins(HttpResponse(status=400))
 
     query = Q()
     for address in addresses:
@@ -3598,4 +3598,4 @@ def get_trust_bonus(request):
             })
             _addrs.append(subscription.contributor_address)
 
-    return JsonResponse(response, safe=False)
+    return allow_all_origins(JsonResponse(response, safe=False))
