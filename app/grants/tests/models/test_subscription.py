@@ -289,8 +289,13 @@ class TestSubscription:
     
     @mock.patch('dashboard.tokens.addr_to_token')
     def test_amount_per_period_to_gitcoin_calls_addr_to_token_with_correct_parameters(self, mock_addr_to_token):
+        """Test amount_per_pay_period_to_gitcoin calls addr_to_token with token_address and network."""
         
         subscription = SubscriptionFactory()
         subscription.amount_per_period_to_gitcoin
 
         mock_addr_to_token.assert_called_with(subscription.token_address, subscription.network)
+
+    def test_amount_per_period_to_gitcoin_returns_gas_price_if_created_on_is_after_6_16_2020(self):
+        pass
+
