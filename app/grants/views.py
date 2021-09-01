@@ -937,7 +937,7 @@ def grants_by_grant_type(request, grant_type):
     except PinnedPost.DoesNotExist:
         pinned = None
 
-    # grants_following = Favorite.objects.none()
+    grants_following = Favorite.objects.none()
     collections = []
 
     if request.user.is_authenticated:
