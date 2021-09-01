@@ -3,6 +3,7 @@ from unittest import mock
 from django.utils import timezone
 
 import pytest
+import pytz
 from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.subscription import Subscription
@@ -284,8 +285,21 @@ class TestSubscription:
 
         assert subscription.status == 'PAST DUE'
 
-    def test_amount_per_period_minus_gas_price(self):
-        pass
+    def test_amount_per_period_minus_gas_price_returns_amount_per_period_in_certain_cases(self):
+        """Test amount_per_period_minus_gas_price returns amount_per_period when amount_per_period is equal to amount_per_period_to_gitcoin."""
+
+        subscription = SubscriptionFactory()
+        subscription.amount_per_period = subscription.amount_per_period_to_gitcoin
+
+        assert subscription.amount_per_period_minus_gas_price == float(subscription.amount_per_period)
+
+    def test_amount_per_period_minus_gas_price_returns_amount_per_period_minus_gas_price_in_certain_cases(self):
+        """Test amount_per_period_minus_gas_price returns amount_per_period minus amount_per_period_to_gitcoin when the two are not equal."""
+
+        subscription = SubscriptionFactory()
+        subscription.amount_per_period = 10
+
+        assert subscription.amount_per_period_minus_gas_price == float(subscription.amount_per_period - subscription.amount_per_period_to_gitcoin)
     
     @mock.patch('dashboard.tokens.addr_to_token')
     def test_amount_per_period_to_gitcoin_calls_addr_to_token_with_correct_parameters(self, mock_addr_to_token):
@@ -296,11 +310,10 @@ class TestSubscription:
 
         mock_addr_to_token.assert_called_with(subscription.token_address, subscription.network)
 
-    def test_amount_per_period_to_gitcoin_returns_gas_price_if_created_on_is_after_06_16_2020(self):
-        """Test amount_per_pay_period_to_gitcoin returns gas_price if created_on is after 06/16/2020."""
-        
+    def test_amount_per_period_to_gitcoin_returns_gas_price(self):
+        """Test amount_per_pay_period_to_gitcoin returns gas_price."""
+
         subscription = SubscriptionFactory()
         subscription.created_on = timezone.now()
 
         assert subscription.amount_per_period_to_gitcoin == subscription.gas_price
-
