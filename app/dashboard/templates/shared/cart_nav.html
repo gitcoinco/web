@@ -40,7 +40,9 @@
     <!-- checkout button -->
     <div class="row border-top-1 border-bottom-1 border-bottom-md-0 border-grey-200">
       <div class="col-12 spacer-pb-3 spacer-pb-md-4 spacer-pt-3">
-        <a href="{% url 'grants:cart' %}" :class="`btn btn-primary w-100 py-2 ${!items.length ? 'disabled' : ''}`">Checkout</a>
+        <a href="{% url 'grants:cart' %}" :class="`btn btn-primary w-100 py-2 ${!items.length ? 'disabled' : ''}`">
+          Checkout <span v-if="items.length">([[ items.length ]] grant<span v-if="items.length !== 1">s</span>)</span>
+        </a>
       </div>
     </div>
   </div>
