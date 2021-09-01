@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.utils import timezone
 
 import pytest
@@ -284,4 +286,11 @@ class TestSubscription:
 
     def test_amount_per_period_minus_gas_price(self):
         pass
+    
+    @mock.patch('dashboard.tokens.addr_to_token')
+    def test_amount_per_period_to_gitcoin_calls_addr_to_token_with_correct_parameters(self, mock_addr_to_token):
+        
+        subscription = SubscriptionFactory()
+        subscription.amount_per_period_to_gitcoin
 
+        mock_addr_to_token.assert_called_with(subscription.token_address, subscription.network)
