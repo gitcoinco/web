@@ -236,7 +236,8 @@ Vue.component('grantsCartEthereumZksync', {
         await appCart.$refs.cart.postToDatabase(
           txHashes, // array of transaction hashes for each contribution
           this.zksync.contractAddress, // we use the zkSync mainnet contract address to represent zkSync deposits
-          this.user.address
+          this.user.address,
+          'eth_zksync'
         );
         this.zksync.checkoutStatus = 'complete'; // allows user to freely close tab now
         await appCart.$refs.cart.finalizeCheckout(); // Update UI and redirect
