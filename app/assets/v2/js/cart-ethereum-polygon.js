@@ -114,9 +114,18 @@ Vue.component('grantsCartEthereumPolygon', {
 
   methods: {
     initWeb3() {
-      return new Web3(appCart.$refs.cart.network === 'mainnet'
-        ? 'https://rpc-mainnet.maticvigil.com'
-        : 'https://rpc-mumbai.maticvigil.com');
+      let url;
+
+      if (appCart.$refs.cart.network === 'mainnet') {
+        appCart.$refs.cart.networkId = '137';
+        url = 'https://rpc-mainnet.maticvigil.com';
+      } else {
+        appCart.$refs.cart.networkId = '80001';
+        appCart.$refs.cart.network = 'testnet';
+        url = 'https://rpc-mumbai.maticvigil.com';
+      }
+
+      return new Web3(url);
     },
 
     openBridgeUrl() {
@@ -218,14 +227,13 @@ Vue.component('grantsCartEthereumPolygon', {
             });
           } catch (addError) {
             if (addError.code === 4001) {
-              _alert({ message: gettext('Please connect MetaMask to Polygon network.') }, 'danger');
+              throw new Error('Please connect MetaMask to Polygon network.');
             } else {
               console.error(addError);
             }
           }
         } else if (switchError.code === 4001) {
-          // this.handleError(new Error('Please connect MetaMask to Polygon network.'));
-          _alert({ message: gettext('Please connect MetaMask to Polygon network.') }, 'danger');
+          throw new Error('Please connect MetaMask to Polygon network.');
         } else {
           console.error(switchError);
         }
@@ -238,10 +246,6 @@ Vue.component('grantsCartEthereumPolygon', {
       try {
         await this.setupPolygon();
         appCart.$refs.cart.userSwitchedToPolygon = true;
-
-        if (appCart.$refs.cart.networkId !== '80001' && appCart.$refs.cart.networkId !== '137') {
-          return;
-        }
 
         if (typeof ga !== 'undefined') {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
