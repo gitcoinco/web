@@ -18,9 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.conf import settings
+from django.conf.urls import include, url
 from django.urls import path, re_path
 
 from quadraticlands.helpers import vote
+from quadraticlands.router import router
 from quadraticlands.views import (
     base, base_auth, dashboard_index, handler400, handler403, handler404, handler500, index, mission_diplomacy,
     mission_diplomacy_room, mission_index, mission_lore, mission_postcard, mission_postcard_svg, mission_schwag,
@@ -52,6 +54,7 @@ urlpatterns = [
     path('mission/diplomacy/<str:uuid>/<str:name>', mission_diplomacy_room, name='mission_diplomacy_room'),
     re_path(r'^mission/diplomacy/?', mission_diplomacy, name='mission_diplomacy'),
 
+    url(r'^api/v1/', include(router.urls)),
 ]
 
 

@@ -587,6 +587,7 @@ Vue.component('grants-cart', {
     confirmClearCart() {
       if (confirm('Are you sure you want to clear your cart?')) {
         this.clearCart();
+        this.isLoading = false;
       }
     },
 

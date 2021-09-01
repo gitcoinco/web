@@ -55,7 +55,7 @@ svgutils==0.3.0
 watchdog==0.9.0
 Werkzeug[watchdog]==0.15.5
 imageio
-boto3==1.7.81
+boto3==1.18.22
 django-storages==1.11.1
 eth-account==0.2.2
 django-classy-tags==0.8.0
@@ -99,7 +99,7 @@ django-queryset-csv
 django-proxy==1.2.1
 ed25519
 tweepy
-attrs==19.3.0
+attrs==20.3.0
 oogway==0.7.0
 icalendar==4.0.7
 duniterpy==0.61.0

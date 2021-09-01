@@ -15,22 +15,32 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+
 from django.core.management.base import BaseCommand
 
-from faucet.models import FaucetRequest
-from marketing.mails import reject_faucet_request
+from dashboard.models import Profile
+from dashboard.tasks import update_trust_bonus
 
 
 class Command(BaseCommand):
 
-    help = 'processes easy to process faucet requests so that admins dont have to.'
+    help = 'Update every users trust_bonus score'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--call-now',
+            type=int,
+            help="disable execution on celery and call now"
+        )
 
     def handle(self, *args, **options):
-        reject_comments = "Please tell us what you're planning on using these funds for in the comments section!  Thanks."
-        requests = FaucetRequest.objects.filter(rejected=False, fulfilled=False, comment='')
-        for faucet_request in requests:
-            faucet_request.comment_admin = reject_comments
-            faucet_request.rejected = True
-            faucet_request.save()
-            reject_faucet_request(faucet_request)
-            print(faucet_request.pk)
+        profiles = Profile.objects.all()
+        print(profiles.count())
+        for profile in profiles.iterator():
+            if (options['call_now']):
+                params = profile.as_dict
+                params['trust_bonus'] = profile.trust_bonus
+                print("Saving - %s - %s" % (profile.handle, params['trust_bonus']))
+                profile.save()
+            else:
+                update_trust_bonus.delay(profile.pk)

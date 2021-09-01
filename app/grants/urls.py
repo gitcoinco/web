@@ -25,7 +25,7 @@ from grants.views import (
     contribution_addr_from_grant_as_json, contribution_addr_from_grant_during_round_as_json,
     contribution_addr_from_round_as_json, contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1,
     flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grant_tags, get_grants,
-    get_interrupted_contributions, get_replaced_tx, grant_activity, grant_details, grant_details_api,
+    get_interrupted_contributions, get_replaced_tx, get_trust_bonus, grant_activity, grant_details, grant_details_api,
     grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grants,
     grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
     grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
@@ -99,6 +99,7 @@ urlpatterns = [
     path('v1/api/grant/<int:grant_id>/cancel', cancel_grant_v1, name='cancel_grant_v1'),
 
 
+    path('v1/api/trust-bonus', get_trust_bonus, name='get_trust_bonus'),
     path('v1/api/<int:grant_id>/cart_payload', get_grant_payload, name='grant_payload'),
     path('v1/api/<int:grant_id>/verify', verify_grant, name='verify_grant'),
     path('v1/api/collections/new', save_collection, name='create_collection'),

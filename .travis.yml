@@ -59,6 +59,7 @@ jobs:
         provider: pages
         token: $GITHUB_TOKEN
         keep_history: true
+        skip_cleanup: true
         local_dir: _build/site
         fqdn: docs.gitcoin.co
         target_branch: gh-pages

@@ -33,19 +33,18 @@ from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged, render_bounty_request,
-    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_faucet_rejected,
-    render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale,
-    render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute,
-    render_grant_txn_failed, render_grant_update, render_match_distribution, render_match_email, render_mention,
-    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_contributions_email, render_new_grant_approved_email, render_new_grant_email, render_new_work_submission,
-    render_no_applicant_reminder, render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart,
-    render_request_amount_email, render_reserved_issue, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
-    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
-    render_tribe_hackathon_prizes, render_unread_notification_email_weekly_roundup, render_wallpost,
-    render_weekly_recap,
+    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_featured_funded_bounty,
+    render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
+    render_grant_cancellation_email, render_grant_recontribute, render_grant_txn_failed, render_grant_update,
+    render_match_distribution, render_match_email, render_mention, render_new_bounty, render_new_bounty_acceptance,
+    render_new_bounty_rejection, render_new_bounty_roundup, render_new_contributions_email,
+    render_new_grant_approved_email, render_new_grant_email, render_new_work_submission, render_no_applicant_reminder,
+    render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
+    render_reserved_issue, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
+    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
+    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
+    render_tax_report, render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
+    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -660,28 +659,6 @@ def grant_update_email(activity):
     translation.activate(cur_language)
 
 
-def new_faucet_request(fr):
-    to_email = "support@gitcoin.co"
-    from_email = settings.SERVER_EMAIL
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-        subject = _("New Faucet Request")
-        body_str = _("A new faucet request was completed. You may fund the request here")
-        body = f"{body_str}: https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
-        if not should_suppress_notification_email(to_email, 'faucet'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                body,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
-            )
-    finally:
-        translation.activate(cur_language)
-
-
 def new_grant_admin(grant):
     to_emails = ['new-grants@gitcoin.co']
     from_email = settings.SERVER_EMAIL
@@ -866,7 +843,7 @@ def notify_deadbeat_quest(quest):
         setup_lang(to_email)
         subject = _("Dead Quest Alert")
         body = f"This quest is dead ({quest.title}): https://gitcoin.co/{quest.admin_url} "
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        if not should_suppress_notification_email(to_email, 'quest'):
             send_mail(
                 from_email,
                 to_email,
@@ -887,7 +864,7 @@ def notify_kudos_minted(token_request):
         setup_lang(to_email)
         subject = _("Kudos has been minted")
         body = f"Your kudos '{token_request.name}' has been minted and should be available on https://gitcoin.co/kudos/marketplace soon."
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        if not should_suppress_notification_email(to_email, 'kudos'):
             send_mail(
                 from_email,
                 to_email,
@@ -908,7 +885,7 @@ def notify_kudos_rejected(token_request):
         setup_lang(to_email)
         subject = _("Kudos has been rejected")
         body = f"Your kudos '{token_request.name}', with the file {token_request.artwork_url} has been rejected.  The reason stated was '{token_request.rejection_reason}.  \n\n You can resubmit the token request at https://gitcoin.co/kudos/new "
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        if not should_suppress_notification_email(to_email, 'kudos'):
             send_mail(
                 from_email,
                 to_email,
@@ -951,7 +928,7 @@ def new_kudos_request(obj):
         subject = _("New Kudos Request")
         body_str = _("A new kudos request was completed. You may approve the kudos request here")
         body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.profile.email}"
-        if not should_suppress_notification_email(to_email, 'faucet'):
+        if not should_suppress_notification_email(to_email, 'kudos'):
             send_mail(
                 from_email,
                 to_email,
@@ -1287,35 +1264,6 @@ def new_reserved_issue(from_email, user, bounty):
         html, text, subject = render_reserved_issue(to_email, user, bounty)
 
         if not should_suppress_notification_email(to_email, 'bounty'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
-    finally:
-        translation.activate(cur_language)
-
-
-def processed_faucet_request(fr):
-    from_email = settings.SERVER_EMAIL
-    subject = _("Faucet Request Processed")
-    to_email = fr.email
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-        html, text = render_faucet_request(fr)
-
-        if not should_suppress_notification_email(to_email, 'faucet'):
-            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
-    finally:
-        translation.activate(cur_language)
-
-
-def reject_faucet_request(fr):
-    from_email = settings.SERVER_EMAIL
-    subject = _("Faucet Request Rejected")
-    to_email = fr.email
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-        html, text = render_faucet_rejected(fr)
-        if not should_suppress_notification_email(to_email, 'faucet'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
