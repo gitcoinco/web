@@ -71,7 +71,7 @@ along with this program. If not, see
               <a class="btn rounded-pill flex-shrink-0" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
                 All Grants
               </a>
-              <button class="btn rounded-pill flex-shrink-0" @click="changeQuery({sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
+              <button class="btn rounded-pill flex-shrink-0" @click="changeQuery({page: 1, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
                 [[clr.display_text]] ($[[clr.total_pot | moneyCompact]])
               </button>
             </div>
