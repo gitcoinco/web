@@ -148,7 +148,6 @@ if (document.getElementById('grants-showcase')) {
   // ];
 
 
-
   // let sort = getParam('sort');
 
   // if (!sort) {
@@ -199,7 +198,7 @@ if (document.getElementById('grants-showcase')) {
       tagsOptions: [],
       tabIndex: null,
       tabSelected: 'grants',
-      loadingCollections: false,
+      loadingCollections: false
     },
     methods: {
       toggleStyle: function(style) {
@@ -246,7 +245,7 @@ if (document.getElementById('grants-showcase')) {
       },
       fetchClrGrants: async function() {
         let vm = this;
-        let url = 'http://localhost:8000/api/v0.1/grants_clr/';
+        let url = '/api/v0.1/grants_clr/';
         let getClr = await fetch(url);
         let clrJson = await getClr.json();
 
@@ -332,9 +331,9 @@ if (document.getElementById('grants-showcase')) {
       resetFilters: function() {
         let vm = this;
 
-        console.log(baseParams)
+        console.log(baseParams);
         vm.params = Object.assign({}, baseParams);
-        console.log(baseParams)
+        console.log(baseParams);
         vm.fetchGrants();
 
       },
@@ -342,17 +341,18 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         for (let key in query) {
-          console.log(key)
+          console.log(key);
           vm.$set(vm.params, key, query[key]);
         }
         vm.fetchGrants();
       },
       filterCollection: function(collectionId) {
         let vm = this;
+
         vm.params = Object.assign({}, baseParams);
 
         vm.changeQuery({collection_id: collectionId});
-        vm.tabIndex=0;
+        vm.tabIndex = 0;
       },
       getUrlParams: function() {
         let vm = this;
@@ -384,6 +384,7 @@ if (document.getElementById('grants-showcase')) {
 
         // let urlParams = new URLSearchParams(window.location.search);
         let searchParams = new URLSearchParams(vm.params);
+
         console.log(searchParams.toString());
         window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
 
@@ -448,16 +449,17 @@ if (document.getElementById('grants-showcase')) {
 
         vm.loadingCollections = true;
 
-        let url = `/api/v0.1/grants_collections/`;
+        let url = '/api/v0.1/grants_collections/';
 
         if (vm.collectionsPage) {
           url = vm.collectionsPage;
         }
         let getCollections = await fetch(url);
         let collectionsJson = await getCollections.json();
+
         console.log(collectionsJson);
 
-        vm.collections = [...vm.collections, ...collectionsJson.results];
+        vm.collections = [ ...vm.collections, ...collectionsJson.results ];
 
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
@@ -472,14 +474,13 @@ if (document.getElementById('grants-showcase')) {
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
         // console.log(bottomOfPage, pageHeight, visible, topOfPage);
+
         if (bottomOfPage || pageHeight < visible) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             vm.fetchCollections(true);
-          } else {
-            if (vm.grantsHasNext) {
-              vm.fetchGrants(vm.params.page, true);
-              vm.grantsHasNext = false;
-            }
+          } else if (vm.grantsHasNext) {
+            vm.fetchGrants(vm.params.page, true);
+            vm.grantsHasNext = false;
           }
         }
       },
@@ -567,17 +568,18 @@ if (document.getElementById('grants-showcase')) {
             }
           });
         });
-      },
+      }
     },
     computed: {
       currentCLR() {
         let vm = this;
+
         if (!vm.clrData.results)
           return;
 
         return vm.clrData?.results.find(item => {
           return item.sub_round_slug == vm.params?.sub_round_slug;
-        })
+        });
       },
       isGrantExplorer() {
         return (this.activePage == 'grants_explorer');

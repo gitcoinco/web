@@ -166,7 +166,7 @@ Vue.filter('moneyCompact', number => {
 
   let formatter = Intl.NumberFormat('en', { notation: 'compact' });
 
-  return formatter.format(number);;
+  return formatter.format(number);
 });
 
 Vue.filter('slugify', (string) => {
