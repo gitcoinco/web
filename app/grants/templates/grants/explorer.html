@@ -111,7 +111,7 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.grant_types=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
                   <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
@@ -141,7 +141,7 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.grant_tags=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
                   <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
@@ -156,7 +156,7 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.grant_regions=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
                   <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
@@ -171,7 +171,7 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.tenants=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
                   <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
@@ -194,7 +194,7 @@ along with this program. If not, see
                       <b-dropdown-text style="width: 230px;">Grants I’ve followed</b-dropdown-text>
                       <b-dropdown-divider></b-dropdown-divider>
 
-                      <b-button variant="primary" size="sm" @click="fetchGrants()">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
                   <button class="btn btn-sm" @click="resetFilters()"> <i class="fas fa-times"></i> Clear</button>
