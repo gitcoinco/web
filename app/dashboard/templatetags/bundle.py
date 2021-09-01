@@ -38,8 +38,8 @@ register = template.Library()
 """
 
 
-# check for production env
-isProduction = settings.ENV in ['prod']
+# If in development, we won't push assets to S3
+isDevelopment = settings.ENV not in ['prod', 'test']
 
 
 # define variables to include in every script (and react to any changes)
@@ -76,7 +76,7 @@ def get_file_ts(asset, reportException=False):
 
 def clean_block_and_hash(block):
     # clean up the block -- we want to drop anything that gets added by staticfinder (we could remove this if we purge {% static ... %} from tags)
-    if isProduction:
+    if not isDevelopment:
         # in prod - staticfinder will attach static_url and an additional hash to the resource which doesn't exist on the local disk
         block = re.sub(re.compile(r'(' + re.escape(settings.STATIC_URL) + r')([^>]*)(\.[0-9a-zA-Z]{12}?)\.(css|scss|js)'), r'\2.\4', block)
     else:
@@ -111,9 +111,9 @@ def check_for_changes(elems, attr, kind, outputFile):
     if not changed:
         for el in elems:
             if el.get(attr):
-                # check if we're loading an alternative source in production
+                # check if we're loading an alternative source
                 file = el[attr]
-                if isProduction and el.get('prod'):
+                if not isDevelopment and el.get('prod'):
                     file = el['prod']
 
                 # discover ts using the absolute path of the given asset
@@ -161,7 +161,7 @@ def get_bundled(elems, attr, kind, merge):
 
             # check if we're loading an alternative source in production
             file = el[attr]
-            if isProduction and el.get('prod'):
+            if not isDevelopment and el.get('prod'):
                 file = el['prod']
 
             # absolute path of the given asset
@@ -193,12 +193,13 @@ def get_bundled(elems, attr, kind, merge):
         content = sass.compile(string='%s \n %s' % (get_sass_extras(), content))
 
     # minify the content in production
-    if isProduction and 'js' in kind:
-        import rjsmin
-        content = rjsmin.jsmin(content)
-    elif isProduction and 'css' in kind:
-        import rcssmin
-        content = rcssmin.cssmin(content)
+    if not isDevelopment:
+        if 'js' in kind:
+            import rjsmin
+            content = rjsmin.jsmin(content)
+        elif 'css' in kind:
+            import rcssmin
+            content = rcssmin.cssmin(content)
 
     # content is compiled and minified (if in production)
     return content
@@ -222,7 +223,7 @@ def render(block, kind, mode, name='asset', forced=False):
     block, blockHash = clean_block_and_hash(block)
 
     # in production we don't need to generate new content unless we're running this via the bundle command
-    if not isProduction or forced == True:
+    if isDevelopment or forced == True:
         # concat all input in the block
         content = ''
         # pull the appropriate tags from the block

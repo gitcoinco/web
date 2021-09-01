@@ -42,13 +42,13 @@ logger = logging.getLogger(__name__)
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
     """Handle serializing the BountyFulfillment object."""
     profile = ProfileSerializer()
-    fulfiller_email = serializers.ReadOnlyField()
     fulfiller_github_username = serializers.ReadOnlyField()
+
     class Meta:
         """Define the bounty fulfillment serializer metadata."""
 
         model = BountyFulfillment
-        fields = ('pk', 'fulfiller_email', 'fulfiller_address',
+        fields = ('pk', 'fulfiller_address',
                   'fulfiller_github_username', 'fulfiller_metadata',
                   'fulfillment_id', 'accepted', 'profile', 'created_on',
                   'accepted_on', 'fulfiller_github_url', 'payout_tx_id',

@@ -33,6 +33,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
+from django.contrib.postgres.search import SearchQuery
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
@@ -447,7 +448,6 @@ def get_grants(request):
 
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
-    collections_page = request.GET.get('collections_page', 1)
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
@@ -618,9 +618,9 @@ def build_grants_by_type(
             contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
             _grants = _grants.filter(id__in=Subquery(contributions))
 
-    print(" " + str(round(time.time(), 2)))
-    _grants = _grants.keyword(keyword).order_by(sort, 'pk')
-    _grants.first()
+    if keyword:
+        query = SearchQuery(keyword)
+        _grants = _grants.filter(vector_column=query)
 
     if not idle_grants:
         _grants = _grants.filter(last_update__gt=three_months_ago)
@@ -818,7 +818,7 @@ def grants_landing(request):
         'round_end_date': round_end_date,
         'now': now,
         'round_active': round_active,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -883,7 +883,7 @@ def grants_by_grant_type(request, grant_type):
     grants_following = Favorite.objects.none()
     collections = []
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile :
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(Q(profile=request.user.profile) | Q(curators=request.user.profile))
         collections = [
@@ -969,7 +969,7 @@ def grants_by_grant_type(request, grant_type):
         'collections': collections,
         'featured': featured,
         'active_rounds': active_rounds,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated else 0
+        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -1063,7 +1063,7 @@ def grants_by_grant_clr(request, clr_round):
 
     grants_following = Favorite.objects.none()
     collections = []
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         allowed_collections = GrantCollection.objects.filter(
             Q(profile=request.user.profile) | Q(curators=request.user.profile))
@@ -2363,7 +2363,7 @@ def grants_bulk_add(request, grant_str):
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or not request.user.profile:
         raise Http404
     handle = request.user.profile.handle
     return redirect(f'/profile/{handle}/grants')
@@ -3494,3 +3494,35 @@ def ingest_contributions(request):
         return JsonResponse({ 'success': False, 'message': err })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
+
+
+@csrf_exempt
+def get_trust_bonus(request):
+    '''
+        JSON POST endpoint which returns the trust bonus score of given addresses
+    '''
+
+    try:
+        json_body = json.loads(request.body)
+        addresses = json_body.get('addresses')
+        if not addresses:
+            return HttpResponse(status=204)
+    except:
+        return HttpResponse(status=400)
+
+    query = Q()
+    for address in addresses:
+        query |= Q(contributor_address=address)
+
+    subscriptions = Subscription.objects.filter(query).prefetch_related('contributor_profile')
+    response = []
+    _addrs = []
+    for subscription in subscriptions:
+        if subscription.contributor_address not in _addrs:
+            response.append({
+                'address': subscription.contributor_address,
+                'score': subscription.contributor_profile.trust_bonus
+            })
+            _addrs.append(subscription.contributor_address)
+
+    return JsonResponse(response, safe=False)
