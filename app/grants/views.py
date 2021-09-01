@@ -458,7 +458,7 @@ def get_grants(request):
     state = request.GET.get('state', 'active')
     grant_tags = request.GET.get('grant_tags', '')
     idle_grants = request.GET.get('idle', '') == 'true'
-    following = request.GET.get('following', '') != ''
+    following = request.GET.get('following', None) == 'true'
     only_contributions = request.GET.get('only_contributions', '') == 'true'
     featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
