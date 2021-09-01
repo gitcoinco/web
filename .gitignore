@@ -57,3 +57,7 @@ src/
 _build/
 **/.vs
 **/dist/*
+
+# cypress artifacts
+cypress/videos
+cypress/screenshots
