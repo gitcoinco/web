@@ -200,6 +200,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async setupPolygon() {
+      indicateMetamaskPopup();
       // Connect to Polygon network with MetaMask
       let network = appCart.$refs.cart.network;
       let chainId = network === 'mainnet' ? '0x89' : '0x13881';
@@ -289,7 +290,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
         if (allowanceData.length === 0) {
           // Send transaction and exit function
-          this.sendDonationTx(ethereum.selectedAddress);
+          await this.sendDonationTx(ethereum.selectedAddress);
           return;
         }
 
@@ -317,6 +318,7 @@ Vue.component('grantsCartEthereumPolygon', {
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.estimatedGasCost, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
+          indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
           _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
           await this.postToDatabase([txHash], bulkCheckoutAddressPolygon, userAddress); // Save contributions to database
