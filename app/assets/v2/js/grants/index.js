@@ -435,9 +435,7 @@ if (document.getElementById('grants-showcase')) {
         vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
         console.log(vm.tabSelected);
         vm.changeQuery({tab: vm.tabSelected});
-        if (vm.tabSelected === 'grants') {
-          this.fetchGrants();
-        } else if (vm.tabSelected === 'collections') {
+        if (vm.tabSelected === 'collections' && vm.collections.length === 0) {
           this.fetchCollections();
         }
 
