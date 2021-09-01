@@ -98,6 +98,7 @@ button:focus {
   border-radius: 3px;
 }
 
+.btn-gc-black,
 .btn-gc-blue,
 .btn-gc-green,
 .btn-gc-dark-green,
@@ -124,6 +125,15 @@ button:focus {
   color: white;
 }
 
+.btn-gc-black {
+  background-color: var(--gc-black);
+}
+
+.btn-gc-black:hover {
+  background-color: lighten(#0d023a, 10%);
+  color: white;
+}
+
 .btn-gc-outline-red {
   border-color: #dc3545;
   color: #dc3545;
@@ -143,6 +153,16 @@ button:focus {
 
 .btn-outline-gc-blue:hover {
   background-color: var(--gc-blue);
+  color: white;
+}
+
+.btn-outline-gc-black {
+  border-color: var(--gc-black);
+  color: var(--gc-black);
+}
+
+.btn-outline-gc-black:hover {
+  background-color: var(--gc-black);
   color: white;
 }
 

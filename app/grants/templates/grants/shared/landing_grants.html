@@ -1,7 +1,7 @@
 {% load humanize static i18n %}
 
     <div class="container" v-cloak>
-      <div :class="`infinite-container mt-4 row ${ current_type !== 'collections' ? 'vertica-scroll' : ''}`"  v-if="(current_type == 'all' || current_type == 'collections') && collections && !activeCollection">
+      <div :class="`infinite-container mt-4 row ${ current_type !== 'collections' ? 'vertical-scroll' : ''}`"  v-if="(current_type == 'all' || current_type == 'collections') && collections && !activeCollection">
         <div :class="`col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card`" v-for="(collection, id) in collections">
           <grant-collection :collection="collection" v-on:collection:show="filterCollection(collection.id)" ></grant-collection>
         </div>
