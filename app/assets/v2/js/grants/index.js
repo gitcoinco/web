@@ -165,7 +165,7 @@ if (document.getElementById('grants-showcase')) {
       grantTenants: grantTenants,
       grant_tags: [],
       grant: {},
-      collectionsPage: 1,
+      collectionsPage: null,
       show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
       network: document.network,
       keyword: document.keyword,
@@ -199,6 +199,7 @@ if (document.getElementById('grants-showcase')) {
       tagsOptions: [],
       tabIndex: null,
       tabSelected: 'grants',
+      loadingCollections: false,
     },
     methods: {
       toggleStyle: function(style) {
@@ -346,6 +347,13 @@ if (document.getElementById('grants-showcase')) {
         }
         vm.fetchGrants();
       },
+      filterCollection: function(collectionId) {
+        let vm = this;
+        vm.params = Object.assign({}, baseParams);
+
+        vm.changeQuery({collection_id: collectionId});
+        vm.tabIndex=0;
+      },
       getUrlParams: function() {
         let vm = this;
 
@@ -383,7 +391,6 @@ if (document.getElementById('grants-showcase')) {
           return;
 
         this.lock = true;
-
         const getGrants = await fetchData(`/grants/cards_info?${searchParams.toString()}`);
 
         if (!append_mode) {
@@ -393,17 +400,17 @@ if (document.getElementById('grants-showcase')) {
           vm.grants.push(item);
         });
 
-        if (this.collection_id) {
-          if (getGrants.collections.length > 0) {
-            this.activeCollection = getGrants.collections[0];
-          }
-        } else if (this.current_type === 'collections') {
-          getGrants.collections.forEach(function(item) {
-            vm.collections.push(item);
-          });
-        } else {
-          vm.collections = getGrants.collections;
-        }
+        // if (this.params.collection_id) {
+        //   if (getGrants.collections.length > 0) {
+        //     this.activeCollection = getGrants.collections[0];
+        //   }
+        // } else if (this.current_type === 'collections') {
+        //   getGrants.collections.forEach(function(item) {
+        //     vm.collections.push(item);
+        //   });
+        // } else {
+        //   vm.collections = getGrants.collections;
+        // }
 
         vm.credentials = getGrants.credentials;
         vm.grant_types = getGrants.grant_types;
@@ -427,6 +434,7 @@ if (document.getElementById('grants-showcase')) {
 
         vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
         console.log(vm.tabSelected);
+        vm.changeQuery({tab: vm.tabSelected});
         if (vm.tabSelected === 'grants') {
           this.fetchGrants();
         } else if (vm.tabSelected === 'collections') {
@@ -437,11 +445,24 @@ if (document.getElementById('grants-showcase')) {
       fetchCollections: async function(loading) {
         let vm = this;
 
+        if (vm.loadingCollections)
+          return;
+
+        vm.loadingCollections = true;
+
         let url = `/api/v0.1/grants_collections/`;
+
+        if (vm.collectionsPage) {
+          url = vm.collectionsPage;
+        }
         let getCollections = await fetch(url);
         let collectionsJson = await getCollections.json();
         console.log(collectionsJson);
-        vm.collections = collectionsJson.results;
+
+        vm.collections = [...vm.collections, ...collectionsJson.results];
+
+        vm.collectionsPage = collectionsJson.next;
+        vm.loadingCollections = false;
 
       },
       scrollEnd: async function(event) {
@@ -452,11 +473,15 @@ if (document.getElementById('grants-showcase')) {
         const pageHeight = document.documentElement.scrollHeight - 500;
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
-        console.log(bottomOfPage, pageHeight, visible, topOfPage);
+        // console.log(bottomOfPage, pageHeight, visible, topOfPage);
         if (bottomOfPage || pageHeight < visible) {
-          if (vm.grantsHasNext) {
-            vm.fetchGrants(vm.params.page, true);
-            vm.grantsHasNext = false;
+          if (vm.params.tab === 'collections' && vm.collectionsPage) {
+            vm.fetchCollections(true);
+          } else {
+            if (vm.grantsHasNext) {
+              vm.fetchGrants(vm.params.page, true);
+              vm.grantsHasNext = false;
+            }
           }
         }
       },

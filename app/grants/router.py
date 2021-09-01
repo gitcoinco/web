@@ -40,6 +40,7 @@ class GrantCollectionViewSet(viewsets.ModelViewSet):
     queryset = GrantCollection.objects.order_by('id')
     serializer_class = GrantCollectionSerializer
     pagination_class = GrantCollectionPagination
+    filterset_fields = ['featured', 'profile']
 
 
 class GrantTypeViewSet(viewsets.ModelViewSet):

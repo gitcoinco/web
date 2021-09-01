@@ -566,9 +566,13 @@ def get_grants(request):
         increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
     has_next = False
+    next_page_number = False
+    has_previous = False
     if paginator:
         try:
             has_next = paginator.page(page).has_next()
+            next_page_number = paginator.page(page).next_page_number()
+            has_previous = paginator.page(page).has_previous()
         except EmptyPage:
             pass
 
@@ -591,6 +595,8 @@ def get_grants(request):
         },
         'contributions': contributions_by_grant,
         'has_next': has_next,
+        'next_page_number': next_page_number,
+        'has_previous': has_previous,
         'count': paginator.count if paginator else 0,
         'num_pages': paginator.num_pages if paginator else 0,
     })
