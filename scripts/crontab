@@ -70,9 +70,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 30 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash process_pending_kudos_distributions 20 20 2 0  >> /var/log/gitcoin/process_pending_kudos_distributions.log  2>&1
 0 0 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_offer_if_none_exists  >> /var/log/gitcoin/create_offer_if_none_exists.log  2>&1
-* * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash share_activity  >> /var/log/gitcoin/share_activity.log  2>&1
-35 14 * * 1,6 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_bounties  >> /var/log/gitcoin/remarket_bounties.log  2>&1
-35 11 * * 0,4 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_bounties  >> /var/log/gitcoin/remarket_bounties.log  2>&1
 45 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration  >> /var/log/gitcoin/expiration_bounty.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_start_work  >> /var/log/gitcoin/expiration_start_work.log  2>&1
 15 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_keywords  >> /var/log/gitcoin/sync_keywords.log  2>&1
