@@ -344,7 +344,7 @@ def get_collections(
     if collection_id:
         _collections = _collections.filter(pk=int(collection_id))
 
-    if idle_grants:
+    if not idle_grants:
         _collections = _collections.filter(grants__last_update__gt=three_months_ago)
 
     if only_contributions:
@@ -514,16 +514,13 @@ def get_grants(request):
             featured=featured
         )
 
-        if collection_id:
-            # 4.2 Fetch grants within a collection
-            collection = _collections.first()
-            if collection:
-                paginator = Paginator(collection.grants.all(), 5)
-                grants = paginator.get_page(page)
-            collections = _collections
-        else:
-            paginator = Paginator(_collections, limit)
-            collections = paginator.get_page(page)
+        # 4.2 Fetch grants within a collection
+        collection = _collections.first()
+        if collection:
+            paginator = Paginator(collection.grants.all(), 5)
+            grants = paginator.get_page(page)
+        collections = _collections
+
     else:
         # 4.1 Paginate results
         paginator = Paginator(_grants, limit)
