@@ -40,7 +40,7 @@ env.read_env(str(root.path('app/.env')))  # reading .env file
 DEBUG = env.bool('DEBUG', default=True)
 QUESTS_LIVE = True
 ENV = env('ENV', default='local')
-DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
+DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test', 'travis'])
 IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
@@ -368,7 +368,7 @@ LOGGING = {
 }
 
 # Production logging
-if ENV not in ['local', 'test', 'staging', 'preview']:
+if ENV not in ['local', 'test', 'staging', 'preview', 'travis']:
     # add AWS monitoring
     boto3_session = Session(
         aws_access_key_id=AWS_ACCESS_KEY_ID,
@@ -417,7 +417,7 @@ STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
 MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
 STATIC_ROOT = root(STATICFILES_LOCATION)
 
-if ENV in ['prod', 'stage']:
+if ENV in ['prod', 'stage', 'test']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     STATIC_HOST = env('STATIC_HOST', default='https://s.gitcoin.co/')
