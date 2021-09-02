@@ -196,12 +196,15 @@ button:focus {
   color: white;
 }
 
-.btn-outline-gc-green.btn-outline-gc-grey {
-  border-color: var(--text-dark);
+.btn-outline-gc-grey {
+  border-color: #E2E0E7;
+  color: #0E0333;
 }
 
-.btn-outline-gc-green.btn-outline-gc-grey:hover {
-  border-color: var(--gc-green--hover);
+.btn-outline-gc-grey:hover {
+  background-color: #0E0333;
+  color: white;
+  border-color: #0E0333;
 }
 
 .btn-gc-purple {

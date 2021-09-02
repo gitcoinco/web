@@ -99,7 +99,7 @@ along with this program. If not, see
                 <div class="flex-basis-50">
 
                   [[currentCLR?.display_text]]
-                  <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret>
                     <template #button-content>
                       Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
                     </template>
@@ -114,7 +114,7 @@ along with this program. If not, see
                       <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
-                  <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret>
                     <template #button-content>
                       Tags <span v-if="params.grant_tags?.length"> • [[params.grant_tags.length]]</span>
                     </template>
@@ -144,7 +144,7 @@ along with this program. If not, see
                       <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
-                  <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret>
                     <template #button-content>
                       Regions <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
                     </template>
@@ -159,7 +159,7 @@ along with this program. If not, see
                       <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
-                  <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret>
                     <template #button-content>
                       Blockchains <span v-if="params.tenants?.length"> • [[params.tenants.length]]</span>
                     </template>
@@ -174,7 +174,7 @@ along with this program. If not, see
                       <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
-                  <b-dropdown size="sm" variant="outline-secondary" toggle-class="rounded-pill" no-caret>
+                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret>
                     <template #button-content>
                       More Filters <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
                     </template>
@@ -199,8 +199,9 @@ along with this program. If not, see
                   </b-dropdown>
                   <button class="btn btn-sm" @click="resetFilters()"> <i class="fas fa-times"></i> Clear</button>
                 </div>
-                <div class="flex-basis-25">
-                  <input class="form-control rounded-pill" type="search" v-model="params.keyword" @input="changeQuery()">
+                <div class="flex-basis-25 flex-nowrap d-flex bg-white" :class="{'position-absolute w-100': searchVisible}">
+                  <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
+                  <input class="form-control form-control-sm rounded-pill" placeholder="Search" type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery()">
                 </div>
 
 

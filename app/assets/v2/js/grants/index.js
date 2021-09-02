@@ -198,7 +198,8 @@ if (document.getElementById('grants-showcase')) {
       tagsOptions: [],
       tabIndex: null,
       tabSelected: 'grants',
-      loadingCollections: false
+      loadingCollections: false,
+      searchVisible: false,
     },
     methods: {
       toggleStyle: function(style) {
