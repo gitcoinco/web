@@ -197,15 +197,12 @@ if (document.getElementById('grants-showcase')) {
       params: Object.assign({}, baseParams),
       tagsOptions: [],
       tabIndex: null,
-      tabSelected: 'grants',
+      tabSelected: undefined,
       loadingCollections: false,
-      searchVisible: false
+      searchVisible: false,
+      searchParams: undefined
     },
     methods: {
-      filterToggled: function() {
-        // reset page to 1 when a new filter is toggled
-        this.params.page = 1;
-      },
       toggleStyle: function(style) {
 
         if (!style) {
@@ -256,54 +253,6 @@ if (document.getElementById('grants-showcase')) {
 
         vm.clrData = clrJson;
       },
-      // updateURI: function() {
-      //   let vm = this;
-      //   const q = vm.getQueryParams();
-
-      //   // if (vm.round_num) {
-      //   //   let uri = `/grants/clr/${vm.round_num}/`;
-
-      //   //   if (vm.sub_round_slug && !vm.customer_name) {
-      //   //     uri = `/grants/clr/${vm.round_num}/${vm.sub_round_slug}/`;
-      //   //   }
-
-      //   //   if (!vm.sub_round_slug && vm.customer_name) {
-      //   //     uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/`;
-      //   //   }
-
-      //   //   if (vm.sub_round_slug && vm.customer_name) {
-      //   //     uri = `/grants/clr/${vm.customer_name}/${vm.round_num}/${vm.sub_round_slug}/`;
-      //   //   }
-
-      //   //   if (this.current_type === 'all') {
-      //   //     window.history.pushState('', '', `${uri}?${q || ''}`);
-      //   //   } else {
-      //   //     window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
-      //   //   }
-      //   // } else {
-      //     let uri = '/grants/explorer/';
-
-      //     if (this.current_type === 'all') {
-      //       window.history.pushState('', '', `${uri}?${q || ''}`);
-      //     } else {
-      //       window.history.pushState('', '', `${uri}${this.current_type}?${q || ''}`);
-      //     }
-      //   // }
-
-      //   if (this.current_type === 'activity') {
-      //     const triggerTS = function() {
-      //       const activeElement = $('.infinite-more-link');
-
-      //       if (activeElement.length) {
-      //         $('.infinite-more-link').click();
-      //       } else {
-      //         setTimeout(triggerTS, 1000);
-      //       }
-      //     };
-
-      //     setTimeout(triggerTS, 1000);
-      //   }
-      // },
 
       changeBanner: function() {
         this.regex_style = document.all_routing_policies &&
@@ -339,7 +288,6 @@ if (document.getElementById('grants-showcase')) {
         console.log(baseParams);
         vm.params = Object.assign({}, baseParams);
         console.log(baseParams);
-        vm.filterToggled();
         vm.fetchGrants();
 
       },
@@ -352,8 +300,12 @@ if (document.getElementById('grants-showcase')) {
             vm.$set(vm.params, key, query[key]);
           }
         }
-        vm.filterToggled();
-        vm.fetchGrants();
+        if (vm.tabSelected === 'grants') {
+          vm.fetchGrants();
+        } else {
+          vm.updateUrlParams();
+
+        }
       },
       filterCollection: function(collectionId) {
         let vm = this;
@@ -389,6 +341,12 @@ if (document.getElementById('grants-showcase')) {
           }
         }
       },
+      updateUrlParams: function() {
+        let vm = this;
+        vm.searchParams = new URLSearchParams(vm.params);
+
+        window.history.replaceState({}, '', `${location.pathname}?${vm.searchParams}`);
+      },
       fetchGrants: async function(page, append_mode) {
         let vm = this;
 
@@ -397,16 +355,17 @@ if (document.getElementById('grants-showcase')) {
         }
 
         // let urlParams = new URLSearchParams(window.location.search);
-        let searchParams = new URLSearchParams(vm.params);
+        // let searchParams = new URLSearchParams(vm.params);
 
-        console.log(searchParams.toString());
-        window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
+
+        vm.updateUrlParams()
+
 
         if (this.lock)
           return;
 
         this.lock = true;
-        const getGrants = await fetchData(`/grants/cards_info?${searchParams.toString()}`);
+        const getGrants = await fetchData(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!append_mode) {
           vm.grants = [];
@@ -450,12 +409,38 @@ if (document.getElementById('grants-showcase')) {
         vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
         console.log(vm.tabSelected);
         vm.changeQuery({tab: vm.tabSelected});
-        if (vm.tabSelected === 'collections' && vm.collections.length === 0) {
+        if (vm.tabSelected === 'collections') {
+          vm.updateUrlParams();
+
           this.fetchCollections();
+        } else {
+          this.fetchGrants(1);
+        }
+      },
+      loadTab: function() {
+        let vm = this;
+        let loadParams = new URLSearchParams(document.location.search);
+        const tabStrings = [
+          {'index': 0, 'string': 'grants'},
+          {'index': 1, 'string': 'collections'},
+        ];
+
+        console.log(loadParams.get('tab'));
+        if (loadParams.has('tab')) {
+          vm.tabSelected = loadParams.get('tab');
+          console.log(tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index);
+          vm.tabIndex = tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index;
+          console.log(vm.tabIndex)
         }
 
+        if (vm.tabSelected === 'collections') {
+          vm.updateUrlParams();
+          this.fetchCollections();
+        } else {
+          this.fetchGrants();
+        }
       },
-      fetchCollections: async function(loading) {
+      fetchCollections: async function(append_mode) {
         let vm = this;
 
         if (vm.loadingCollections)
@@ -473,7 +458,12 @@ if (document.getElementById('grants-showcase')) {
 
         console.log(collectionsJson);
 
-        vm.collections = [ ...vm.collections, ...collectionsJson.results ];
+        if (append_mode) {
+          vm.collections = [ ...vm.collections, ...collectionsJson.results ];
+        } else {
+          vm.collections = collectionsJson.results;
+        }
+
 
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
@@ -530,7 +520,7 @@ if (document.getElementById('grants-showcase')) {
           base_params['only_contributions'] = this.show_contributions;
         }
 
-        const params = new URLSearchParams(base_params).toString();
+        const params = new URLSearchParams(vm.params).toString();
         const getGrants = await fetchData(`/grants/bulk_cart?${params}`);
 
 
@@ -610,6 +600,9 @@ if (document.getElementById('grants-showcase')) {
 
     },
     beforeMount() {
+      this.getUrlParams();
+      this.loadTab();
+
       window.addEventListener('scroll', () => {
         this.bottom = this.scrollEnd();
       }, {passive: true});
@@ -622,7 +615,6 @@ if (document.getElementById('grants-showcase')) {
     mounted() {
       let vm = this;
 
-      vm.getUrlParams();
       vm.fetchClrGrants();
       // vm.fetchGrants(vm.params.page);
       vm.getTag(undefined, '');
