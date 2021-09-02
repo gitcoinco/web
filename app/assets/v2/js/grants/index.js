@@ -202,6 +202,10 @@ if (document.getElementById('grants-showcase')) {
       searchVisible: false,
     },
     methods: {
+      filterToggled: function() {
+        // reset page to 1 when a new filter is toggled
+        this.params.page = 1;
+      },
       toggleStyle: function(style) {
 
         if (!style) {
@@ -335,6 +339,7 @@ if (document.getElementById('grants-showcase')) {
         console.log(baseParams);
         vm.params = Object.assign({}, baseParams);
         console.log(baseParams);
+        vm.filterToggled();
         vm.fetchGrants();
 
       },
@@ -345,6 +350,7 @@ if (document.getElementById('grants-showcase')) {
           console.log(key);
           vm.$set(vm.params, key, query[key]);
         }
+        vm.filterToggled();
         vm.fetchGrants();
       },
       filterCollection: function(collectionId) {
@@ -360,19 +366,24 @@ if (document.getElementById('grants-showcase')) {
 
         const url = new URL(location.href);
         const params = new URLSearchParams(url.search);
-        // for(var [key, value] of params.entries()) {
-        //   vm.params[key] = value;
-        // }
 
+        const param_is_array = ['grant_regions', 'tenants', 'grant_types', 'grant_tags']
+
+        // loop through all URL params
         for (let p of params) {
-          if (typeof vm.params[p[0]] === 'object') {
-            if (p[1].length > 0) {
-              vm.params[p[0]] = p[1].split(',');
+          const param_key = p[0];
+          const param_value = p[1];
+
+          if (typeof vm.params[param_key] === 'object') {
+            if ((param_value.length > 0)) {
+              vm.params[param_key] = param_value.split(',');
             } else {
-              vm.$delete(vm.params[p[0]]);
+              vm.$delete(vm.params[param_key]);
             }
+          } else if (param_is_array.includes(param_key)) {
+            vm.params[param_key] = param_value.split(',');
           } else {
-            vm.params[p[0]] = p[1];
+            vm.params[param_key] = param_value;
           }
         }
       },

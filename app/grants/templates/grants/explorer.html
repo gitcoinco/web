@@ -99,6 +99,8 @@ along with this program. If not, see
                 <div class="flex-basis-50">
 
                   [[currentCLR?.display_text]]
+
+                  <!-- GRANT TYPE FILTERS -->
                   <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
                     <template #button-content>
                       Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
@@ -111,7 +113,7 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.grant_types=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1) && filterToggled()">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
                   <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
@@ -141,9 +143,11 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.grant_tags=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1) && filterToggled()">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
+
+                  <!-- REGION FILTERS -->
                   <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
                     <template #button-content>
                       Regions <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
@@ -156,9 +160,11 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.grant_regions=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1) && filterToggled()">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
+
+                  <!-- TENANT FILTERS -->
                   <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
                     <template #button-content>
                       Blockchains <span v-if="params.tenants?.length"> • [[params.tenants.length]]</span>
@@ -171,9 +177,11 @@ along with this program. If not, see
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
                       <b-button variant="link" size="sm" @click="params.tenants=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1) && filterToggled()">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
+
+                  <!-- MORE FILTERS -->
                   <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
                     <template #button-content>
                       More Filters <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
@@ -194,7 +202,7 @@ along with this program. If not, see
                       <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants I’ve followed</b-dropdown-text>
                       <b-dropdown-divider></b-dropdown-divider>
 
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="fetchGrants(1) && filterToggled()">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
                   <button class="btn btn-sm" @click="resetFilters()"> <i class="fas fa-times"></i> Clear</button>
