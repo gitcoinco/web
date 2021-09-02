@@ -1,15 +1,22 @@
+import secrets
 from unittest import mock
 
 from django.utils import timezone
 
+import eth_utils
 import pytest
 import pytz
-import secrets
 from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.subscription import Subscription
 
 from .factories.subscription_factory import SubscriptionFactory
+
+
+def normalize_32_byte_hex_address(value):
+    as_bytes = eth_utils.to_bytes(hexstr=value)
+    
+    return eth_utils.to_normalized_address(as_bytes[-20:])
 
 
 @pytest.mark.django_db
@@ -319,9 +326,17 @@ class TestSubscription:
 
         assert subscription.amount_per_period_to_gitcoin == subscription.gas_price
 
+    # def test_get_nonce(self):
+    #     subscription = SubscriptionFactory()
+    #     address = '0x000000000000000000000000c305c901078781c232a2a521c2af7980f8385ee9'
+    #     normalized_address = normalize_32_byte_hex_address(address)
+
+    #     assert subscription.get_nonce(normalized_address) == 'show me'
+
     def test_get_nonce(self):
         subscription = SubscriptionFactory()
         address = '0x' + secrets.token_hex(20)
+        checksum_address = eth_utils.to_checksum_address(address)
 
-        # assert subscription.get_nonce(address) == 'show me'
+        # assert subscription.get_nonce(checksum_address) == 'show me'
         pass
