@@ -170,7 +170,7 @@ along with this program. If not, see
                       Blockchains <span v-if="params.tenants?.length"> • [[params.tenants.length]]</span>
                     </template>
                     <b-dropdown-form>
-                      <b-form-checkbox-group id="checkbox-group-tenants" v-model="params.tenants" aria-describedby="ariaDescribedby" name="tenants">
+                      <b-form-checkbox-group id="checkbox-group-tenants" v-model="params.tenants" aria-describedby="ariaDescribedby" name="tenants" stacked>
                         <template v-for="tenant in grantTenants">
                           <b-form-checkbox class="mb-3" :value="tenant.name">[[tenant.label]]</b-form-checkbox>
                         </template>

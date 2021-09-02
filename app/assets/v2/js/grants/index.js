@@ -611,7 +611,7 @@ if (document.getElementById('grants-showcase')) {
     beforeMount() {
       window.addEventListener('scroll', () => {
         this.bottom = this.scrollEnd();
-      }, false);
+      }, {passive: true});
     },
     beforeDestroy() {
       window.removeEventListener('scroll', () => {
