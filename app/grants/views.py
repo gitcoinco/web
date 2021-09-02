@@ -335,7 +335,7 @@ def grants(request):
 
 def get_collections(
     user, keyword, sort='-shuffle_rank', collection_id=None, following=None,
-    idle_grants=None, featured=False, only_contributions=None
+    idle_grants=None, featured=False, only_contributions=None, my_collections=None
 ):
     three_months_ago = timezone.now() - timezone.timedelta(days=90)
 
@@ -351,14 +351,18 @@ def get_collections(
         contributions = user.profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
         _collections = _collections.filter(grants__in=Subquery(contributions))
 
-    if following and user.is_authenticated:
-        favorite_grants = Favorite.grants().filter(user=user).values('grant_id')
-        _collections = _collections.filter(grants__in=Subquery(favorite_grants))
+    if user.is_authenticated:
+        if my_collections:
+            _collections = _collections.filter(Q(profile=user.profile))
+        if following:
+            favorite_grants = Favorite.grants().filter(user=user).values('grant_id')
+            _collections = _collections.filter(grants__in=Subquery(favorite_grants))
 
-    if user.is_authenticated and user.profile.handle == keyword:
-        _collections = _collections.filter(Q(profile=user.profile) | Q(curators=user.profile))
-    else:
-        _collections = _collections.keyword(keyword)
+    if keyword:
+        if user.profile.handle == keyword:
+            _collections = _collections.filter(Q(profile=user.profile) | Q(curators=user.profile))
+        else:
+            _collections = _collections.keyword(keyword)
 
     if featured:
         _collections = _collections.filter(featured=featured)
@@ -469,6 +473,7 @@ def get_grants(request):
     tenants = request.GET.get('tenants', '')
     grant_regions = request.GET.get('grant_regions', '')
     my_grants = request.GET.get('me', None) == 'true'
+    my_collections = request.GET.get('my_collections', None) == 'true'
 
     # 2. Fetch GrantCLR if round_num is present
     clr_round = None
@@ -520,6 +525,15 @@ def get_grants(request):
             paginator = Paginator(collection.grants.all(), 5)
             grants = paginator.get_page(page)
         collections = _collections
+
+    elif request.user.is_authenticated and my_collections:
+        # 4.1 Fetch my collections
+        collections = get_collections(
+            user=request.user,
+            keyword=None,
+            idle_grants=idle_grants,
+            my_collections=my_collections
+        )
 
     else:
         # 4.1 Paginate results
