@@ -199,7 +199,7 @@ if (document.getElementById('grants-showcase')) {
       tabIndex: null,
       tabSelected: 'grants',
       loadingCollections: false,
-      searchVisible: false,
+      searchVisible: false
     },
     methods: {
       filterToggled: function() {
@@ -347,8 +347,10 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         for (let key in query) {
-          console.log(key);
-          vm.$set(vm.params, key, query[key]);
+          if (Object.hasOwnProperty.call(query, key)) {
+            console.log(key);
+            vm.$set(vm.params, key, query[key]);
+          }
         }
         vm.filterToggled();
         vm.fetchGrants();
@@ -367,7 +369,7 @@ if (document.getElementById('grants-showcase')) {
         const url = new URL(location.href);
         const params = new URLSearchParams(url.search);
 
-        const param_is_array = ['grant_regions', 'tenants', 'grant_types', 'grant_tags']
+        const param_is_array = [ 'grant_regions', 'tenants', 'grant_types', 'grant_tags' ];
 
         // loop through all URL params
         for (let p of params) {
@@ -536,7 +538,6 @@ if (document.getElementById('grants-showcase')) {
           CartData.addToCart(grant, true);
         });
 
-        showSideCart();
         _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grants were' : 'grants was'} added to your cart!`, 'success');
         this.cart_lock = false;
       },

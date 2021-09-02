@@ -29,7 +29,6 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
     {% endbundle %}
@@ -399,11 +398,6 @@
             <button class="btn btn-primary btn-block py-3" @click="addToCart()" v-else >Add to Cart</button>
           </template>
 
-        </div>
-
-        <!-- Side-cart -->
-        <div id="side-cart" class="grant-side-cart pb-md-0 pt-md-0 px-0 border-top-2 border-grey mt-n1 mt-md-0" style="display: none;">
-          {% include 'grants/detail/side-cart.html' %}
         </div>
 
       </div>

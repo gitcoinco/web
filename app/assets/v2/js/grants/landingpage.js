@@ -438,8 +438,6 @@ if (document.getElementById('grants-showcase')) {
         (getGrants.grants || []).forEach((grant) => {
           CartData.addToCart(grant, true);
         });
-
-        showSideCart();
         _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grants were' : 'grants was'} added to your cart!`, 'success');
         this.cart_lock = false;
       },

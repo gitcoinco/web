@@ -1,13 +1,13 @@
 <!-- nav cart icon/count + dropdown -->
 <div id="gc-cart" class="nav-item dropdown gc-cart order-md-first">
-  <a href="" class="gc-cart__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="cartDropdown" role="button" @click="init"
+  <a href="" class="gc-cart__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="cartDropdown" role="button" @click="$refs.navcart.init()"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="far fa-shopping-cart fa-fw fa-lg"></i>
     <span class="pl-3 d-md-none">Cart</span>
     <span id="cart-notification-dot" class="notification__dot ml-2 ml-md-0"></span>
   </a>
   <div class="dropdown-menu dropdown-menu-right mt-0 mt-md-2 animation slideDownIn gc-cart-box shadow-lg p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="min-width: 352px;">
-    <gc-cart-content :items="items"/>
+    <gc-cart-content ref="navcart"/>
   </div>
 </div>
 
@@ -27,7 +27,7 @@
                 [[ item.grant_title ]]
               </div>
               <div class="col-1 d-flex align-self-center">
-                <i class="fal fa-times font-bigger-1 icon-hover cursor-pointer my-auto" aria-hidden="true" @click.stop="removeItem(item.grant_id)"></i>
+                <i class="fal fa-times font-bigger-1 icon-hover cursor-pointer my-auto" aria-hidden="true" @click.stop="removeGrantFromCart(item.grant_id)"></i>
               </div>
             </div>
           </div>

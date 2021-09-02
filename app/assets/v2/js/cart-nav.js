@@ -1,11 +1,18 @@
 Vue.component('gc-cart-content', {
   template: '#gc-cart-content',
   delimiters: [ '[[', ']]' ],
-  props: {
-    items: Array
+  data: () => {
+
+    return {
+      items: []
+    };
   },
   methods: {
-    removeItem: function(grant_id) {
+    init: function() {
+      // update items each time we open the dropdown
+      this.items = CartData.loadCart();
+    },
+    removeGrantFromCart: function(grant_id) {
       // remove the item
       CartData.removeIdFromCart(grant_id);
       // refresh the data
@@ -19,6 +26,8 @@ Vue.component('gc-cart-content', {
         });
       } else if (typeof appGrantDetails !== 'undefined' && appGrantDetails.grant.id === Number(grant_id)) {
         appGrantDetails.grant.isInCart = false;
+      } else if (typeof appCart !== 'undefined') {
+        appCart.$refs.cart.removeGrantFromCart(grant_id);
       }
     }
   }
@@ -27,16 +36,7 @@ Vue.component('gc-cart-content', {
 if (document.getElementById('gc-cart')) {
   var app = new Vue({
     delimiters: [ '[[', ']]' ],
-    el: '#gc-cart',
-    data: {
-      items: []
-    },
-    methods: {
-      init: function() {
-        // update items each time we open the dropdown
-        this.items = CartData.loadCart();
-      }
-    }
+    el: '#gc-cart'
   });
 
   $(document).on('click', '.gc-cart .dropdown-menu', function(event) {

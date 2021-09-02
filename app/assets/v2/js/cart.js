@@ -395,14 +395,14 @@ Vue.component('grants-cart', {
         if (estimateL1 < estimateL2) {
           const savingsInGas = estimateL2 - estimateL1;
           const savingsInPercent = Math.round(savingsInGas / estimateL2 * 100);
-  
+
           return { name: 'Standard checkout', savingsInGas, savingsInPercent };
         }
-  
+
         const savingsInGas = estimateL1 - estimateL2;
         const percentSavings = savingsInGas / estimateL1 * 100;
         const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
-  
+
         return { name: name, savingsInGas, savingsInPercent };
       };
 
@@ -417,7 +417,7 @@ Vue.component('grants-cart', {
         return polygonComparisonResult;
       }
       return zkSyncComparisonResult; // recommendation will be standard checkout
-      
+
     },
 
     isHarmonyExtInstalled() {
@@ -823,7 +823,7 @@ Vue.component('grants-cart', {
         return token;
       }
       return this.filterByChainId.filter(token => token.name === name)[0];
-      
+
 
     },
 

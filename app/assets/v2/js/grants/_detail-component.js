@@ -25,20 +25,12 @@ Vue.mixin({
 
       vm.$set(vm.grant, 'isInCart', true);
       CartData.addToCart(response.grant);
-      if (typeof showSideCart != 'undefined') {
-        showSideCart();
-      }
-
     },
     removeFromCart: function() {
       const vm = this;
 
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
-      if (typeof showSideCart != 'undefined') {
-        showSideCart();
-      }
-
     },
     editGrantModal: function() {
       const vm = this;
