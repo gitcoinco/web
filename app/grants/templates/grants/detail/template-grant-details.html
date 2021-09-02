@@ -13,17 +13,17 @@
 
             <div class="col-12 col-md-auto">
               <!-- Grant Type -->
-              <a :href="`/grants/explorer/${item.fields.name}`"
+              <a :href="`/grants/explorer/?grant_types=${item.fields.name}`"
                 v-for="item in grant.grant_type"
                 class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2 text-capitalize">
                 [[item.fields.label]]
               </a>
 
-              <!-- Grant Category -->
-              <a :href="`/grants/explorer/${grant.grant_type[0].fields.name}?category=${item.fields.category}`"
-                v-for="item in grant.categories"
+              <!-- Grant Tags -->
+              <a :href="`/grants/explorer/?grant_tags=${item.fields.name}`"
+                v-for="item in grant.grant_tags"
                 class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">
-                [[item.fields.category]]
+                [[item.fields.name]]
               </a>
 
             </div>
