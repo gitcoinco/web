@@ -106,7 +106,7 @@ along with this program. If not, see
                 class="position-sticky top-0 bg-white py-2 mt-2 d-flex justify-content-between" 
                 :style="`z-index: 1; top: -1px; margin-top: 1px; ${sticky_active ? 'box-shadow: 0px 8px 10px -14px rgba(0, 0, 0, 0.5);' : ''}`"
               >
-                <div class="flex-basis-50 mt-n2">
+                <div class="flex-basis-80 flex-basis-lg-50 mt-n2">
 
                   <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;"> 
                     [[currentCLR?.display_text]]
@@ -225,7 +225,7 @@ along with this program. If not, see
                 </div>
 
                 <!-- SEARCH BAR AND CART -->
-                <div class="flex-basis-50 flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-absolute w-100': searchVisible}">
+                <div class="flex-basis-20 flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-absolute w-100': searchVisible}">
                   <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
                   <i 
                     class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300" 
