@@ -55,4 +55,10 @@ class TestGrant:
 
         assert hasattr(grant, 'slug')
     
-    
+    def test_grant_has_a_description(self):
+        """Test description attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'description')
+        assert grant.description == ''
