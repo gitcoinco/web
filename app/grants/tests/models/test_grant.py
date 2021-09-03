@@ -287,6 +287,14 @@ class TestGrant:
         assert hasattr(grant, 'deploy_tx_id')
         assert grant.deploy_tx_id == '0x0'
 
+    def test_grant_has_cancel_tx_id(self):
+        """Test cancel_tx_id attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'cancel_tx_id')
+        assert grant.cancel_tx_id == '0x0'
+
     
 
     
