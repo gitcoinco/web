@@ -231,6 +231,14 @@ class TestGrant:
         assert hasattr(grant, 'contract_owner_address')
         assert grant.contract_owner_address == '0x0'
 
+    def test_grant_has_amount_received_in_round_attribute(self):
+        """Test amount_received_in_round attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'amount_received_in_round')
+        assert grant.amount_received_in_round == 0
+
     
 
 
