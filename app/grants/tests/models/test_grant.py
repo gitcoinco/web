@@ -207,6 +207,14 @@ class TestGrant:
         assert hasattr(grant, 'binance_payout_address')
         assert grant.binance_payout_address == '0x0'
 
+    def test_grant_has_rsk_payout_address(self):
+        """Test rsk_payout_address_and_default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'rsk_payout_address')
+        assert grant.rsk_payout_address == '0x0'
+
 
     
     
