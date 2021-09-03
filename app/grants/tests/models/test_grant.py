@@ -215,6 +215,16 @@ class TestGrant:
         assert hasattr(grant, 'rsk_payout_address')
         assert grant.rsk_payout_address == '0x0'
 
+    def test_grant_has_algorand_payout_address(self):
+        """Test algorand_payout_address_and_default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'algorand_payout_address')
+        assert grant.algorand_payout_address == '0x0'
+        
+    
+
 
     
     
