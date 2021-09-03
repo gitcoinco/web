@@ -39,3 +39,11 @@ class TestGrant:
 
         assert hasattr(grant, 'grant_type')
         assert isinstance(grant.grant_type, GrantType)
+
+    def test_grant_has_a_title(self):
+        """Test title attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'title')
+        assert grant.title == ''
