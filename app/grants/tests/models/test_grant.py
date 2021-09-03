@@ -151,6 +151,14 @@ class TestGrant:
         assert hasattr(grant, 'admin_address')
         assert grant.admin_address == '0x0'
 
+    def test_grant_has_zcash_payout_address_attribute(self):
+        """Test zcash_payout_address_attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'zcash_payout_address')
+        assert grant.zcash_payout_address == '0x0'
+
     
     
 
