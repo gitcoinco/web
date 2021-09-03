@@ -72,12 +72,20 @@ class TestGrant:
         assert grant.description_rich == ''
 
     def test_grant_has_reference_url(self):
-        """Test reference_url attribute and default."""
+        """Test reference_url attribute."""
 
         grant = GrantFactory()
 
         assert hasattr(grant, 'reference_url')
         assert grant.reference_url == None
+
+    def test_grant_has_github_project_url(self):
+        """Test github_project_url attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'github_project_url')
+        assert grant.github_project_url == None
 
     
 
