@@ -64,12 +64,19 @@ class TestGrant:
         assert grant.description == ''
 
     def test_grant_has_description_rich_attribute(self):
-
         """Test description_rich attribute and default."""
 
         grant = GrantFactory()
 
         assert hasattr(grant, 'description_rich')
         assert grant.description_rich == ''
+
+    def test_grant_has_reference_url(self):
+        """Test reference_url attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'reference_url')
+        assert grant.reference_url == ''
 
     
