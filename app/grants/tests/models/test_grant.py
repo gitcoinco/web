@@ -312,6 +312,22 @@ class TestGrant:
         assert grant.metadata == {}
         assert len(grant.metadata) == 0
 
+    def test_grant_has_network_attribute(self):
+        """Test network attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'network')
+        assert grant.network == 'mainnet'
+
+    def test_grant_has_required_gas_price(self):
+        """Test required_gas_price attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'required_gas_price')
+        assert grant.required_gas_price == 0
+
     
 
     
