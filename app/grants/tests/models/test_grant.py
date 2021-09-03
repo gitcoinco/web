@@ -127,7 +127,21 @@ class TestGrant:
         assert hasattr(grant, 'link_to_new_grant')
         assert grant.link_to_new_grant == None
 
-    
+    def test_grant_has_a_logo_attribute(self):
+        """Test logo attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'logo')
+        assert grant.logo == None
+
+    def test_grant_has_a_logo_svg_attribute(self):
+        """Test logo_svg attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'logo_svg')
+        assert grant.logo_svg == None
     
 
     
