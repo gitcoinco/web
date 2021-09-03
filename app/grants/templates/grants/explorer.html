@@ -42,7 +42,7 @@ along with this program. If not, see
       padding: 0;
       max-width: 136px;
     }
-    
+
     .vs__selected {
       position: absolute;
       min-width: 200px;
@@ -80,35 +80,15 @@ along with this program. If not, see
                 [[clr.display_text]] ($[[clr.total_pot | moneyCompact]])
               </button>
             </div>
-
-            <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
-
-            </div>
-
-            <template v-if="'activity' == current_type">
-              {% include 'grants/shared/landing_activity.html' %}
-            </template>
-            <template v-else-if="'stats' == current_type">
-              <div id="insert_iframe">
-                <div style="background-color: #eee; font-size: 14px; text-align: center;">
-                  <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
-                </div>
-                <br>
-                <iframe :src="`https://metabase.gitcoin.co/public/dashboard/f57f8c61-e2f2-4129-89fc-d851f4d721ac`" style="width: 100%; height: 100%; min-height: 1000px;">
-                </iframe>
-              </div>
-            </template>
-            <template v-else>
-
-              <div 
-                ref="filterNav" 
+            <div
+                ref="filterNav"
                 id="filterNav"
-                class="position-sticky top-0 bg-white py-2 mt-2 d-flex justify-content-between" 
+                class="position-sticky top-0 bg-white py-2 mt-2 d-flex justify-content-between"
                 :style="`z-index: 1; top: -1px; margin-top: 1px; ${sticky_active ? 'box-shadow: 0px 8px 10px -14px rgba(0, 0, 0, 0.5);' : ''}`"
               >
                 <div class="flex-basis-80 flex-basis-lg-50 mt-n2">
 
-                  <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;"> 
+                  <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;">
                     [[currentCLR?.display_text]]
                   </span>
 
@@ -198,7 +178,7 @@ along with this program. If not, see
                   <!-- MORE FILTERS -->
                   <b-dropdown @hide="fetchGrants(1)" ref="moreFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
                     <template #button-content>
-                      More Filters 
+                      More Filters
                       <span v-if="params.idle || params.only_contributions || params.me || params.following">
                       • [[ [params.idle, params.only_contributions, params.me, params.following].filter((v)=>v).length ]]</span>
                     </template>
@@ -227,8 +207,8 @@ along with this program. If not, see
                 <!-- SEARCH BAR AND CART -->
                 <div class="flex-basis-20 flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-absolute w-100': searchVisible}">
                   <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
-                  <i 
-                    class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300" 
+                  <i
+                    class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
                     :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
                   ></i>
                   <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})">
@@ -245,6 +225,27 @@ along with this program. If not, see
                 </div>
 
               </div>
+
+            <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
+
+            </div>
+
+            <template v-if="'activity' == current_type">
+              {% include 'grants/shared/landing_activity.html' %}
+            </template>
+            <template v-else-if="'stats' == current_type">
+              <div id="insert_iframe">
+                <div style="background-color: #eee; font-size: 14px; text-align: center;">
+                  <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
+                </div>
+                <br>
+                <iframe :src="`https://metabase.gitcoin.co/public/dashboard/f57f8c61-e2f2-4129-89fc-d851f4d721ac`" style="width: 100%; height: 100%; min-height: 1000px;">
+                </iframe>
+              </div>
+            </template>
+            <template v-else>
+
+
               {% include 'grants/shared/top-filters.html' %}
 
               <template v-if="isGrantExplorer && !isGrantCollectionExplorer">
