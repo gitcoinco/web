@@ -142,6 +142,16 @@ class TestGrant:
 
         assert hasattr(grant, 'logo_svg')
         assert grant.logo_svg == None
+
+    def test_grant_has_admin_address_attribute(self):
+        """Test admin_address attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'admin_address')
+        assert grant.admin_address == '0x0'
+
+    
     
 
     
