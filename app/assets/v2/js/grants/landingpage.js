@@ -2,79 +2,7 @@ const grantsNumPages = '';
 const grantsHasNext = false;
 const numGrants = '';
 
-$(document).ready(() => {
-  $('#sort_option').select2({
-    minimumResultsForSearch: Infinity
-  });
 
-  if (document.location.href.indexOf('/cart') == -1) {
-    localStorage.setItem('last_all_grants_index', document.location.href);
-    localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
-  }
-
-  $('.select2-selection__rendered').removeAttr('title');
-
-});
-
-// Vue.component('grant-sidebar', {
-//   props: [
-//     'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-//     'idle_grants', 'show_contributions', 'query_params', 'round_num', 'sub_round_slug', 'customer_name',
-//     'featured'
-//   ],
-//   data: function() {
-//     return {
-//       search: this.keyword,
-//       show_filters: false,
-//       handle: document.contxt.github_handle
-//     };
-//   },
-//   methods: {
-//     toggleFollowing: function(state, event) {
-//       event.preventDefault;
-//       this.filter_grants({following: state});
-//     },
-//     toggleIdle: function(state, event) {
-//       event.preventDefault;
-//       this.filter_grants({idle_grants: state});
-//     },
-//     toggleContributionView: function(state, event) {
-//       event.preventDefault;
-//       this.filter_grants({show_contributions: state});
-//     },
-//     toggleMyGrants: function(state, event) {
-//       let me = state ? 'me' : 'all';
-
-//       event.preventDefault;
-//       this.filter_grants({type: me, category: ''});
-//     },
-//     isMobileDevice: function() {
-//       return window.innerWidth < 576;
-//     },
-//     filterLink: function(params) {
-//       return this.filter_grants(params);
-//     },
-//     searchKeyword: function() {
-//       if (this.timeout) {
-//         clearTimeout(this.timeout);
-//       }
-
-//       this.timeout = setTimeout(() => {
-//         this.filter_grants({keyword: this.search});
-//       }, 1000);
-//     },
-//     onResize: function() {
-//       if (!this.isMobileDevice() && this.show_filters !== null) {
-//         this.show_filters = null;
-//       } else if (this.isMobileDevice() && this.show_filters === null) {
-//         this.show_filters = false;
-//       }
-//     }
-//   },
-//   mounted() {
-//     window.addEventListener('resize', this.onResize);
-//   }
-// });
 if (document.getElementById('grants-showcase')) {
 
   let sort = getParam('sort');
@@ -90,7 +18,7 @@ if (document.getElementById('grants-showcase')) {
       grants: [],
       grant: {},
       page: 1,
-      collectionsPage: 1,
+      collectionsPage: null,
       limit: 6,
       show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
       sort: sort,
@@ -122,9 +50,42 @@ if (document.getElementById('grants-showcase')) {
       numGrants,
       mainBanner: document.current_style,
       visibleModal: false,
-      bannerCollapsed: false
+      bannerCollapsed: false,
+      loadingCollections: false,
     },
     methods: {
+      fetchCollections: async function(append_mode) {
+        let vm = this;
+
+        if (vm.loadingCollections)
+          return;
+
+        vm.loadingCollections = true;
+
+        // vm.updateUrlParams();
+
+        let url = '/api/v0.1/grants_collections/?featured=true';
+
+        if (vm.collectionsPage) {
+          url = vm.collectionsPage;
+        }
+        let getCollections = await fetch(url);
+        let collectionsJson = await getCollections.json();
+
+        console.log(collectionsJson);
+
+        if (append_mode) {
+          vm.collections = [ ...vm.collections, ...collectionsJson.results ];
+        } else {
+          vm.collections = collectionsJson.results;
+        }
+
+
+        vm.collectionsPage = collectionsJson.next;
+        vm.loadingCollections = false;
+
+      },
+
       toggleActiveCLRs() {
         this.show_active_clrs = !this.show_active_clrs;
         window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
@@ -428,6 +389,7 @@ if (document.getElementById('grants-showcase')) {
       }
     },
     beforeMount() {
+      this.fetchCollections();
       window.addEventListener('scroll', () => {
         this.bottom = this.scrollEnd();
       }, false);
@@ -440,20 +402,20 @@ if (document.getElementById('grants-showcase')) {
     mounted() {
       const vm = this;
 
-      vm.current_type = 'collections';
+      // vm.current_type = 'collections';
       vm.bannerCollapsed = localStorage.getItem('bannerCollapsed') == 'true';
 
-      vm.fetchGrants(vm.page);
+      // vm.fetchGrants(vm.page);
 
-      $('#sort_option2').select2({
-        minimumResultsForSearch: Infinity,
-        templateSelection: function(data, container) {
-          // Add custom attributes to the <option> tag for the selected option
-          vm.filter_grants({sort: data.id});
+      // $('#sort_option2').select2({
+      //   minimumResultsForSearch: Infinity,
+      //   templateSelection: function(data, container) {
+      //     // Add custom attributes to the <option> tag for the selected option
+      //     vm.filter_grants({sort: data.id});
 
-          return data.text;
-        }
-      });
+      //     return data.text;
+      //   }
+      // });
     }
   });
 }
