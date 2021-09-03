@@ -159,6 +159,14 @@ class TestGrant:
         assert hasattr(grant, 'zcash_payout_address')
         assert grant.zcash_payout_address == '0x0'
 
+    def test_grant_has_celo_payout_address(self):
+        """Test celo_payout_address_and_default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'celo_payout_address')
+        assert grant.celo_payout_address == '0x0'
+
     
     
 
