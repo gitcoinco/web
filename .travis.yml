@@ -53,8 +53,7 @@ jobs:
         - (cd app; python3 ./manage.py collectstatic --noinput --disable-collectfast)
         - pytest -p no:ethereum -p no:warnings
         # Run cypress tests
-        - export SECRET_WORDS="${SECRET_WORDS}"
-        - bin/ci/cypress-run
+        - SECRET_WORDS="${SECRET_WORDS}" PASSWORD="${PASSWORD}" bin/ci/cypress-run
         # Generate Markdown documentation and static docs page.
         - pydocmd build
       env:
