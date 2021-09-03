@@ -1,5 +1,6 @@
 import pytest
 from grants.models.grant import Grant
+from grants.models.grant_type import GrantType
 
 from .factories.grant_factory import GrantFactory
 
@@ -31,3 +32,10 @@ class TestGrant:
         assert hasattr(grant, 'active')
         assert grant.active == True
 
+    def test_grant_has_associated_grant_type(self):
+        """Test association with GrantType."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'grant_type')
+        assert isinstance(grant.grant_type, GrantType)
