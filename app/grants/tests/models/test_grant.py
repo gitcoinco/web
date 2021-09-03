@@ -175,6 +175,14 @@ class TestGrant:
         assert hasattr(grant, 'zil_payout_address')
         assert grant.zil_payout_address == '0x0'
 
+    def test_grant_has_polkadot_payout_address(self):
+        """Test polkadot_payout_address_and_default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'polkadot_payout_address')
+        assert grant.polkadot_payout_address == '0x0'
+
     
 
     
