@@ -118,6 +118,16 @@ class TestGrant:
 
         assert hasattr(grant, 'region')
         assert grant.region == None
+
+    def test_grant_has_link_to_new_grant_attribute(self):
+        """Test link_to_new_grant attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'link_to_new_grant')
+        assert grant.link_to_new_grant == None
+
+    
     
 
     
