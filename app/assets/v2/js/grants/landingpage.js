@@ -403,44 +403,6 @@ if (document.getElementById('grants-showcase')) {
           }
         }
       },
-      addAllToCart: async function() {
-        if (this.cart_lock)
-          return;
-
-        this.cart_lock = true;
-
-        const base_params = {
-          no_pagination: true,
-          sort_option: this.sort,
-          network: this.network,
-          keyword: this.keyword,
-          state: this.state,
-          grant_tags: this.category,
-          grant_types: this.current_type
-        };
-
-        if (this.following) {
-          base_params['following'] = this.following;
-        }
-
-        if (this.idle_grants) {
-          base_params['idle'] = this.idle_grants;
-        }
-
-        if (this.show_contributions) {
-          base_params['only_contributions'] = this.show_contributions;
-        }
-
-        const params = new URLSearchParams(base_params).toString();
-        const getGrants = await fetchData(`/grants/bulk_cart?${params}`);
-
-
-        (getGrants.grants || []).forEach((grant) => {
-          CartData.addToCart(grant, true);
-        });
-        _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grants were' : 'grants was'} added to your cart!`, 'success');
-        this.cart_lock = false;
-      },
       removeCollection: async function({collection, grant, event}) {
         const getGrants = await fetchData(`v1/api/collections/${collection.id}/grants/remove`, 'POST', {
           'grant': grant.id

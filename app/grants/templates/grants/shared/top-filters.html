@@ -8,9 +8,6 @@
       </div>
       <span class="col-12 col-md-6 text-right text-md-left pt-2">
         [[numGrants.toLocaleString()]] Grants
-        <div class="ml-4 d-inline-block" >
-          <button class="btn btn-outline-primary font-caption" @click.event="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
-        </div>
       </span>
 
       <div class="col-12 col-md-6 text-right pt-2">
