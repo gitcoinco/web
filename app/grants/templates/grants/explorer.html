@@ -65,6 +65,26 @@ along with this program. If not, see
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'grants/nav.html' %}
     <div id="grants-showcase" v-cloak>
+      {% if is_staff %}
+        <div class="container-fluid pt-2 grants-search" id="content_navbar">
+          <div class="container">
+            <form>
+              <div class="row font-caption font-weight-semibold alpha-warning" v-if="credentials.is_staff">
+                <div class="col-12">
+                  {% trans "[ Admin ] Choose Network :" %}
+                  <span class="network-container">
+                    <select @change="changeQuery({network: network})" v-model="network" name="network" id="network">
+                      <option value="mainnet">Mainnet</option>
+                      <option value="rinkeby">Rinkeby</option>
+                    </select>
+                  </span>
+                  <button class="btn btn-sm btn-primary" @click="credentials.is_staff = !credentials.is_staff">see as user</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      {% endif %}
       <div class="container">
 
 
@@ -298,15 +318,6 @@ along with this program. If not, see
             <div style="background-size: contain;" id="grant-background-image-mount-point">
               <div style="background-color: rgba(255, 255, 255, 0.92);  padding-bottom: 20px;">
                 <div>
-                  <div class="row mx-0">
-
-
-                    <div class="col-12 px-4 px-lg-0">
-                      {% include 'grants/shared/landing_navbar.html' %}
-
-
-                    </div>
-                  </div>
                   <b-sidebar
                     id="sidebar-quick-view"
                     ref="sidebar-quick-view"

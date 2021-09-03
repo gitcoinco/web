@@ -77,7 +77,28 @@ along with this program. If not, see
                     </div>
 
                     <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
-                      {% include 'grants/shared/landing_navbar.html' %}
+                      <div class="container-fluid pt-2 grants-search" id="content_navbar">
+                        <div class="container">
+                          <form>
+                            {% csrf_token %}
+
+                            {% if is_staff %}
+                              <div class="row font-caption font-weight-semibold alpha-warning" v-if="credentials.is_staff">
+                                <div class="col-12">
+                                  {% trans "[ Admin ] Choose Network :" %}
+                                  <span class="network-container">
+                                    <select @change="filter_grants({network: network})" v-model="network" name="network" id="network">
+                                      <option value="mainnet">Mainnet</option>
+                                      <option value="rinkeby">Rinkeby</option>
+                                    </select>
+                                  </span>
+                                  <button class="btn btn-sm btn-primary" @click="credentials.is_staff = !credentials.is_staff">see as user</button>
+                                </div>
+                              </div>
+                            {% endif %}
+                          </form>
+                        </div>
+                      </div>
 
                       <template v-if="'activity' == current_type">
                         {% include 'grants/shared/landing_activity.html' %}
