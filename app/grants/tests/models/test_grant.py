@@ -255,6 +255,16 @@ class TestGrant:
         assert hasattr(grant, 'amount_received')
         assert grant.amount_received == 0
 
+    def test_grant_has_token_address_attribute(self):
+        """Test token_address attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'token_address')
+        assert grant.token_address == '0x0'
+
+    
+
 
     
     
