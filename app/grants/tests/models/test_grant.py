@@ -95,6 +95,16 @@ class TestGrant:
         assert hasattr(grant, 'is_clr_eligible')
         assert grant.is_clr_eligible == True
 
+    def test_grant_has_admin_message_attribute(self):
+        """Test admin_message attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'admin_message')
+        assert grant.admin_message == ''
+
+    
+
     
 
     
