@@ -330,12 +330,22 @@ class TestGrant:
         assert grant.required_gas_price == 0
 
     def test_grant_has_admin_profile(self):
-        """Test admin_profile attribute."""
+        """Test admin_profile attribute is present and instance of Profile."""
 
-        grant = GrantFactory
+        grant = GrantFactory()
 
         assert hasattr(grant, 'admin_profile')
         assert isinstance(grant.admin_profile, Profile)
+
+    def test_grant_has_team_members(self):
+        """Test team_members attribute is present and instance of Profile."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'team_members')
+        assert isinstance(grant.team_members, Profile)
+
+    
 
     
 
