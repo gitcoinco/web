@@ -15,3 +15,11 @@ class TestGrant:
 
         assert isinstance(grant, Grant)
 
+    def test_grant_has_vector_column(self):
+        """Test vector_column attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'vector_column')
+        assert grant.vector_column == None
+
