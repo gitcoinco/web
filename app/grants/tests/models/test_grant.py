@@ -223,6 +223,14 @@ class TestGrant:
         assert hasattr(grant, 'algorand_payout_address')
         assert grant.algorand_payout_address == '0x0'
         
+    def test_grant_has_contract_owner_address(self):
+        """Test contract_owner_address attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contract_owner_address')
+        assert grant.contract_owner_address == '0x0'
+
     
 
 
