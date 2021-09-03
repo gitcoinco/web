@@ -77,7 +77,7 @@ class TestGrant:
         grant = GrantFactory()
 
         assert hasattr(grant, 'reference_url')
-        assert grant.reference_url == None
+        assert grant.reference_url == ''
 
     def test_grant_has_github_project_url(self):
         """Test github_project_url attribute."""
@@ -86,6 +86,14 @@ class TestGrant:
 
         assert hasattr(grant, 'github_project_url')
         assert grant.github_project_url == None
+
+    def test_grant_has_is_clr_eligible_attribute(self):
+        """Test is_clr_eligible attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'is_clr_eligible')
+        assert grant.is_clr_eligible == True
 
     
 
