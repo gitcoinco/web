@@ -93,7 +93,7 @@ along with this program. If not, see
                   </span>
 
                   <!-- GRANT TYPE FILTERS -->
-                  <b-dropdown @hide="fetchGrants(1)" ref="grantFlitersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                  <b-dropdown @hide="fetchGrants(1)" ref="grantFlitersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip v-if="grant_types.length">
                     <template #button-content>
                       Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
                     </template>
