@@ -111,6 +111,13 @@ class TestGrant:
         assert hasattr(grant, 'visible')
         assert grant.visible == True
 
+    def test_grant_has_region_attribute(self):
+        """Test region attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'region')
+        assert grant.region == None
     
 
     
