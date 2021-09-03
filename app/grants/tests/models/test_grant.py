@@ -183,6 +183,14 @@ class TestGrant:
         assert hasattr(grant, 'polkadot_payout_address')
         assert grant.polkadot_payout_address == '0x0'
 
+    def test_grant_has_kusama_payout_address(self):
+        """Test kusama_payout_address_and_default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'kusama_payout_address')
+        assert grant.kusama_payout_address == '0x0'
+
     
 
     
