@@ -303,6 +303,17 @@ class TestGrant:
         assert hasattr(grant, 'contract_version')
         assert grant.contract_version == 0
 
+    def test_grant_has_metadata(self):
+        """Test metadata attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'metadata')
+        assert grant.metadata == {}
+        assert len(grant.metadata) == 0
+
+    
+
     
 
 
