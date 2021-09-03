@@ -596,16 +596,19 @@ if (document.getElementById('grants-showcase')) {
         this.$refs[ref].hide(true);
       },
       observeFilter() {
-        this.observed = this.$refs.filterNav;
-        // check for sticky position
-        this.observer = new IntersectionObserver(
-          ([e]) => {
-            this.sticky_active = e.intersectionRatio < 1;
-          },
-          { threshold: [1] }
-        );
-        // attach the observer
-        this.observer.observe(this.observed);
+        // ensure the ref is in the dom before observing
+        if (this.$refs.filterNav) {
+          this.observed = this.$refs.filterNav;
+          // check for sticky position
+          this.observer = new IntersectionObserver(
+            ([e]) => {
+              this.sticky_active = e.intersectionRatio < 1;
+            },
+            { threshold: [1] }
+          );
+          // attach the observer
+          this.observer.observe(this.observed);
+        }
       },
       unobserveFilter() {
         if (this.observed) {
