@@ -77,6 +77,8 @@ class TestGrant:
         grant = GrantFactory()
 
         assert hasattr(grant, 'reference_url')
-        assert grant.reference_url == ''
+        assert grant.reference_url == None
+
+    
 
     
