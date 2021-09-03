@@ -1,6 +1,7 @@
 import pytest
 from grants.models.grant import Grant
 from grants.models.grant_type import GrantType
+from dashboard.models import Profile
 
 from .factories.grant_factory import GrantFactory
 
@@ -328,7 +329,13 @@ class TestGrant:
         assert hasattr(grant, 'required_gas_price')
         assert grant.required_gas_price == 0
 
-    
+    def test_grant_has_admin_profile(self):
+        """Test admin_profile attribute."""
+
+        grant = GrantFactory
+
+        assert hasattr(grant, 'admin_profile')
+        assert isinstance(grant.admin_profile, Profile)
 
     
 
