@@ -295,7 +295,13 @@ class TestGrant:
         assert hasattr(grant, 'cancel_tx_id')
         assert grant.cancel_tx_id == '0x0'
 
-    
+    def test_grant_has_a_contract_version(self):
+        """Test contract_version attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contract_version')
+        assert grant.contract_version == 0
 
     
 
