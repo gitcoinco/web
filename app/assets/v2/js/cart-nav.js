@@ -17,18 +17,6 @@ Vue.component('gc-cart-content', {
       CartData.removeIdFromCart(grant_id);
       // refresh the data
       this.items = CartData.loadCart();
-      // remove on grants pages
-      if (typeof appGrants !== 'undefined') {
-        appGrants.grants.filter((grantSingle) => {
-          if (Number(grantSingle.id) === Number(grant_id)) {
-            grantSingle.isInCart = false;
-          }
-        });
-      } else if (typeof appGrantDetails !== 'undefined' && appGrantDetails.grant.id === Number(grant_id)) {
-        appGrantDetails.grant.isInCart = false;
-      } else if (typeof appCart !== 'undefined') {
-        appCart.$refs.cart.removeGrantFromCart(grant_id);
-      }
     }
   }
 });
@@ -36,7 +24,23 @@ Vue.component('gc-cart-content', {
 if (document.getElementById('gc-cart')) {
   var app = new Vue({
     delimiters: [ '[[', ']]' ],
-    el: '#gc-cart'
+    el: '#gc-cart',
+    data: {
+      cart_data_count: CartData.length()
+    },
+    methods: {
+      updateCartCount: function(e) {
+        this.cart_data_count = e.detail.list.length || 0;
+      }
+    },
+    mounted() {
+      // watch for cartUpdates
+      window.addEventListener('cartDataUpdated', this.updateCartCount);
+    },
+    beforeDestroy() {
+      // unwatch cartUpdates
+      window.removeEventListener('cartDataUpdated', this.updateCartCount);
+    }
   });
 
   $(document).on('click', '.gc-cart .dropdown-menu', function(event) {

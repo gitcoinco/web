@@ -18,11 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // TODO: MOVE TO GRANTS shared
-  if (typeof CartData != 'undefined') {
-    applyCartMenuStyles();
-  }
-
   $('body').on('click', '.copy_me', function() {
     $(this).focus();
     $(this).select();
@@ -423,22 +418,6 @@ this.gitcoinUpdates = () => {
     $('#gitcoin_updates').bootstrapModal('dispose');
   });
 
-};
-
-this.applyCartMenuStyles = function() {
-  let dot = $('#cart-notification-dot');
-
-  if (CartData.hasItems()) {
-    const noOfItems = CartData.length();
-
-    dot.addClass('notification__dot_active');
-    dot.text(noOfItems > 99 ? '99+' : noOfItems);
-  } else {
-    dot.removeClass('notification__dot_active');
-    if (document.location.href.indexOf('/grants') == -1) {
-      $('#cart-nav').addClass('hidden');
-    }
-  }
 };
 
 // Turn form data pulled form page into a JS object

@@ -11,11 +11,18 @@ Quill.register('modules/ImageExtend', ImageExtend);
 
 Vue.mixin({
   methods: {
+    updateCartData: function(e) {
+      const vm = this;
+      const grants_in_cart = (e && e.detail && e.detail.list && e.detail.list) || [];
+      const isInCart = grants_in_cart.find((grant) => vm.grant.id == grant.grant_id);
+
+      vm.$set(vm.grant, 'isInCart', isInCart);
+    },
     grantInCart: function() {
       const vm = this;
-      const inCart = CartData.cartContainsGrantWithId(vm.grant.id);
+      const isInCart = CartData.cartContainsGrantWithId(vm.grant.id);
 
-      vm.$set(vm.grant, 'isInCart', inCart);
+      vm.$set(vm.grant, 'isInCart', isInCart);
       return vm.grant.isInCart;
     },
     addToCart: async function() {
@@ -481,6 +488,7 @@ Vue.mixin({
       }
     }
   }
+  
 });
 
 
@@ -573,6 +581,15 @@ Vue.component('grant-details', {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     }
     vm.grantInCart();
+
+    // watch for cartUpdates
+    window.addEventListener('cartDataUpdated', vm.updateCartData);
+  },
+  beforeDestroy() {
+    const vm = this;
+
+    // unwatch cartUpdates
+    window.removeEventListener('cartDataUpdated', vm.updateCartData);
   },
   watch: {
     grant: {

@@ -42,6 +42,12 @@ along with this program. If not, see
       padding: 0;
       max-width: 136px;
     }
+    
+    .vs__selected {
+      position: absolute;
+      min-width: 200px;
+    }
+
     .no-bg {
       background: none !important;
     }
@@ -66,11 +72,11 @@ along with this program. If not, see
           <b-tab ref="grants" id="grants" title-link-class="nav-line font-weight-bold">
             <template v-slot:title>Grants</template>
 
-            <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px;">
+            <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px;height: 42px;padding: 4px 0;">
               <a class="btn rounded-pill flex-shrink-0" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
                 All Grants
               </a>
-              <button class="btn rounded-pill flex-shrink-0" @click="changeQuery({page: 1, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-for="clr in clrData.results" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
+              <button class="btn rounded-pill flex-shrink-0" v-for="clr in clrData.results" @click="changeQuery({page: 1, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
                 [[clr.display_text]] ($[[clr.total_pot | moneyCompact]])
               </button>
             </div>
@@ -94,13 +100,20 @@ along with this program. If not, see
             </template>
             <template v-else>
 
-              <div class="position-sticky top-0 bg-white py-2 d-flex justify-content-between" style="z-index: 1;">
-                <div class="flex-basis-50">
+              <div 
+                ref="filterNav" 
+                id="filterNav"
+                class="position-sticky top-0 bg-white py-2 mt-2 d-flex justify-content-between" 
+                :style="`z-index: 1; top: -1px; margin-top: 1px; ${sticky_active ? 'box-shadow: 0px 8px 10px -14px rgba(0, 0, 0, 0.5);' : ''}`"
+              >
+                <div class="flex-basis-50 mt-n2">
 
-                  [[currentCLR?.display_text]]
+                  <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;"> 
+                    [[currentCLR?.display_text]]
+                  </span>
 
                   <!-- GRANT TYPE FILTERS -->
-                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
+                  <b-dropdown @hide="fetchGrants(1)" ref="grantFlitersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
                     <template #button-content>
                       Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
                     </template>
@@ -111,11 +124,13 @@ along with this program. If not, see
                         </template>
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
-                      <b-button variant="link" size="sm" @click="params.grant_types=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="link" size="sm" @click="params.grant_types=[], closeDropdown('grantFlitersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('grantFlitersDropdown')">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
-                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
+
+                  <!-- TAG FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="tagFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
                     <template #button-content>
                       Tags <span v-if="params.grant_tags?.length"> • [[params.grant_tags.length]]</span>
                     </template>
@@ -141,30 +156,30 @@ along with this program. If not, see
                         </template>
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
-                      <b-button variant="link" size="sm" @click="params.grant_tags=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="link" size="sm" @click="params.grant_tags=[], closeDropdown('tagFiltersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('tagFiltersDropdown')">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
 
                   <!-- REGION FILTERS -->
-                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
+                  <b-dropdown @hide="fetchGrants(1)" ref="regionFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
                     <template #button-content>
                       Regions <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
                     </template>
                     <b-dropdown-form>
-                      <b-form-checkbox-group id="checkbox-group-regions" v-model="params.grant_regions" aria-describedby="ariaDescribedby" name="grant_regions">
+                      <b-form-checkbox-group id="checkbox-group-regions" v-model="params.grant_regions" aria-describedby="ariaDescribedby" name="grant_regions" stacked>
                         <template v-for="region in grantRegions">
                           <b-form-checkbox class="mb-3" :value="region.name">[[region.label]]</b-form-checkbox>
                         </template>
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
-                      <b-button variant="link" size="sm" @click="params.grant_regions=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="link" size="sm" @click="params.grant_regions=[], closeDropdown('regionFiltersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('regionFiltersDropdown')">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
 
                   <!-- TENANT FILTERS -->
-                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
+                  <b-dropdown @hide="fetchGrants(1)" ref="tenantFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
                     <template #button-content>
                       Blockchains <span v-if="params.tenants?.length"> • [[params.tenants.length]]</span>
                     </template>
@@ -175,15 +190,17 @@ along with this program. If not, see
                         </template>
                       </b-form-checkbox-group>
                       <b-dropdown-divider></b-dropdown-divider>
-                      <b-button variant="link" size="sm" @click="params.tenants=[]">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="link" size="sm" @click="params.tenants=[], closeDropdown('tenantFiltersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('tenantFiltersDropdown')">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
 
                   <!-- MORE FILTERS -->
-                  <b-dropdown size="sm" variant="outline-gc-grey" toggle-class="rounded-pill" no-caret no-flip>
+                  <b-dropdown @hide="fetchGrants(1)" ref="moreFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
                     <template #button-content>
-                      More Filters <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
+                      More Filters 
+                      <span v-if="params.idle || params.only_contributions || params.me || params.following">
+                      • [[ [params.idle, params.only_contributions, params.me, params.following].filter((v)=>v).length ]]</span>
                     </template>
                     <b-dropdown-form>
                       <b-form-checkbox id="idle" v-model="params.idle" name="idle"> Show Idle Grants</b-form-checkbox>
@@ -200,17 +217,32 @@ along with this program. If not, see
                       <b-form-checkbox id="following" v-model="params.following" name="following"> Following</b-form-checkbox>
                       <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants I’ve followed</b-dropdown-text>
                       <b-dropdown-divider></b-dropdown-divider>
-
-                      <b-button variant="primary" size="sm" @click="fetchGrants(1)">Apply</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('moreFiltersDropdown')">Apply</b-button>
                     </b-dropdown-form>
                   </b-dropdown>
-                  <button class="btn btn-sm" @click="resetFilters()"> <i class="fas fa-times"></i> Clear</button>
-                </div>
-                <div class="flex-basis-25 flex-nowrap d-flex bg-white" :class="{'position-absolute w-100': searchVisible}">
-                  <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
-                  <input class="form-control form-control-sm rounded-pill" placeholder="Search" type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})">
+
+                  <button class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
                 </div>
 
+                <!-- SEARCH BAR AND CART -->
+                <div class="flex-basis-50 flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-absolute w-100': searchVisible}">
+                  <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
+                  <i 
+                    class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300" 
+                    :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
+                  ></i>
+                  <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})">
+                  <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
+                    <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
+                      <i class="far fa-shopping-cart fa-fw fa-lg"></i>
+                      <span class="cart-notification-dot notification__dot ml-2 mt-n1" :class="{'notification__dot_active': cart_data_count}">[[ cart_data_count ]]</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right gc-cart-box p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="margin-top: 6px; min-width: 352px;">
+                      <gc-cart-content ref="navCart"/>
+                    </div>
+                  </div>
+                </div>
 
               </div>
               {% include 'grants/shared/top-filters.html' %}
@@ -260,7 +292,7 @@ along with this program. If not, see
 
         <!-- {% include 'grants/shared/landing_hero.html' %} -->
 
-        <div class="row grants-details-parent mx-0">
+        <div class="container grants-details-parent mx-auto">
           <div id="grants-details" :class="`no-gutters w-100 ${view == 'list' ? 'list-view' : 'grid-view'}`">
             <div style="background-size: contain;" id="grant-background-image-mount-point">
               <div style="background-color: rgba(255, 255, 255, 0.92);  padding-bottom: 20px;">
@@ -268,7 +300,7 @@ along with this program. If not, see
                   <div class="row mx-0">
 
 
-                    <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
+                    <div class="col-12 px-4 px-lg-0">
                       {% include 'grants/shared/landing_navbar.html' %}
 
 

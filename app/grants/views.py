@@ -374,11 +374,13 @@ def get_collections(
 
 
 def bulk_grants_for_cart(request):
-    grant_types = request.GET.get('type', None)
+    grant_types = request.GET.get('grant_types', None)
     sort = request.GET.get('sort_option', None)
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
+    tenants = request.GET.get('tenants', '')
+    grant_regions = request.GET.get('grant_regions', '')
     grant_tags = request.GET.get('grant_tags', '')
     idle_grants = request.GET.get('idle', '') == 'true'
     following = request.GET.get('following', '') != ''
@@ -397,6 +399,8 @@ def bulk_grants_for_cart(request):
         'network': network,
         'keyword': keyword,
         'state': state,
+        'tenants': tenants,
+        'grant_regions': grant_regions,
         'grant_tags': grant_tags,
         'following': following,
         'idle_grants': idle_grants,

@@ -137,7 +137,7 @@
                     <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?me=true&idle=true">{% trans "Projects" %}</a>
                   </li>
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}collections?keyword={{ user }}&idle=true">{% trans "Collections" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?tab=collections&profile={{ user.profile.pk }}&idle=true">{% trans "Collections" %}</a>
                   </li>
                   <li>
                     <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?only_contributions=true&idle=true">{% trans "Contributions" %}</a>
