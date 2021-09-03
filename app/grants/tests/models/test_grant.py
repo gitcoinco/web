@@ -239,6 +239,14 @@ class TestGrant:
         assert hasattr(grant, 'amount_received_in_round')
         assert grant.amount_received_in_round == 0
 
+    def test_grant_has_monthly_amount_subscribed_attribute(self):
+        """Test monthly_amount_subscribed_attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'monthly_amount_subscribed')
+        assert grant.monthly_amount_subscribed == 0
+
     
 
 
