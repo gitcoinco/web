@@ -47,3 +47,12 @@ class TestGrant:
 
         assert hasattr(grant, 'title')
         assert grant.title == ''
+
+    def test_grant_has_a_slug(self):
+        """Test slug attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'slug')
+    
+    
