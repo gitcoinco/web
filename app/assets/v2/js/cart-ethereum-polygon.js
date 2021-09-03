@@ -1,4 +1,6 @@
-const bulkCheckoutAddressPolygon = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
+const bulkCheckoutAddressPolygon = appCart.$refs.cart.network === 'mainnet'
+  ? '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
+  : '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
 
 function objectMap(object, mapFn) {
   return Object.keys(object).reduce(function(result, key) {
@@ -18,7 +20,6 @@ Vue.component('grantsCartEthereumPolygon', {
 
   data: function() {
     return {
-      network: 'testnet',
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
@@ -216,7 +217,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
           let networkText = network === 'rinkeby' || network === 'goerli' ||
-                            network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
+            network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
 
           try {
             await ethereum.request({
@@ -241,7 +242,6 @@ Vue.component('grantsCartEthereumPolygon', {
           console.error(switchError);
         }
       }
-      this.network = getDataChains(ethereum.networkVersion, 'chainId')[0] && getDataChains(ethereum.networkVersion, 'chainId')[0].network;
     },
 
     // Send a batch transfer based on donation inputs
@@ -353,12 +353,12 @@ Vue.component('grantsCartEthereumPolygon', {
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
           // Special case since we overestimate here otherwise
-          return 70000;
+          return 65000;
         }
         // TODO: find a suitable curve using
         // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
         // return 27500 * donationCurrencies.length + 125000;
-        return 10000 * donationCurrencies.length + 70000;
+        return 10000 * donationCurrencies.length + 45000;
       }
 
       /**
@@ -371,10 +371,7 @@ Vue.component('grantsCartEthereumPolygon', {
         const tokenAddr = currentValue.token?.toLowerCase();
 
         if (currentValue.token === MATIC_ADDRESS) {
-          return accumulator + 70000; // MATIC donation gas estimate
-
-        } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
-          return accumulator + 170000; // ANT donation gas estimate
+          return accumulator + 25000; // MATIC donation gas estimate
         }
 
         return accumulator + 70000; // generic token donation gas estimate
@@ -443,5 +440,22 @@ Vue.component('grantsCartEthereumPolygon', {
       // Return result and required amounts
       return { isBalanceSufficient, requiredAmounts };
     }
+
+    // Fetch current gas price
+    // getGasPrice() {
+    //   const url = '/grants/bulk-fund';
+    //   const headers = {
+    //     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    //   };
+    //   const saveSubscriptionParams = {
+    //     method: 'POST',
+    //     headers,
+    //     body: new URLSearchParams(saveSubscriptionPayload)
+    //   };
+
+    //   // Send saveSubscription request
+    //   const res = await fetch(url, saveSubscriptionParams);
+    //   const json = await res.json();
+    // }
   }
 });

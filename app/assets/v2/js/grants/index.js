@@ -343,6 +343,7 @@ if (document.getElementById('grants-showcase')) {
       },
       updateUrlParams: function() {
         let vm = this;
+
         vm.searchParams = new URLSearchParams(vm.params);
 
         window.history.replaceState({}, '', `${location.pathname}?${vm.searchParams}`);
@@ -358,7 +359,7 @@ if (document.getElementById('grants-showcase')) {
         // let searchParams = new URLSearchParams(vm.params);
 
 
-        vm.updateUrlParams()
+        vm.updateUrlParams();
 
 
         if (this.lock)
@@ -422,7 +423,7 @@ if (document.getElementById('grants-showcase')) {
         let loadParams = new URLSearchParams(document.location.search);
         const tabStrings = [
           {'index': 0, 'string': 'grants'},
-          {'index': 1, 'string': 'collections'},
+          {'index': 1, 'string': 'collections'}
         ];
 
         console.log(loadParams.get('tab'));
@@ -430,7 +431,7 @@ if (document.getElementById('grants-showcase')) {
           vm.tabSelected = loadParams.get('tab');
           console.log(tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index);
           vm.tabIndex = tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index;
-          console.log(vm.tabIndex)
+          console.log(vm.tabIndex);
         }
 
         if (vm.tabSelected === 'collections') {
