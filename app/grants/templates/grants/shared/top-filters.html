@@ -36,7 +36,7 @@
               {label: 'ADMIN:Sybil Score', value: '-sybil_score'},
               {% endif %}
 
-            ]" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants()">
+            ]" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)">
               <template #search="{attributes, events}">
                 <input
                   class="vs__search"
@@ -53,7 +53,7 @@
           <a href="#" :class="`${view == 'grid' ? 'gc-text-blue bg-lightpurple' : 'text-black' }`" @click="setView('grid', $event)" class="btn btn-sm rounded-lg"><i class="fas fa-th-large"></i></a>
           <a href="#" :class="`${view == 'list' ?  'gc-text-blue bg-lightpurple' : 'text-black' }`" @click="setView('list', $event)" class="btn btn-sm rounded-lg"><i class="fas fa-list"></i></a>
         </div>
-        
+
       </div>
     </div>
 
