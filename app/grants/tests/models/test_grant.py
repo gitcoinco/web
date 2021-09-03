@@ -103,7 +103,13 @@ class TestGrant:
         assert hasattr(grant, 'admin_message')
         assert grant.admin_message == ''
 
-    
+    def test_grant_has_visible_attribute(self):
+        """Test visible attribute and default."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'visible')
+        assert grant.visible == True
 
     
 
