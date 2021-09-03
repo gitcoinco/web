@@ -23,3 +23,11 @@ class TestGrant:
         assert hasattr(grant, 'vector_column')
         assert grant.vector_column == None
 
+    def test_grant_has_active_attribute(self):
+        """Test active attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'active')
+        assert grant.active == True
+
