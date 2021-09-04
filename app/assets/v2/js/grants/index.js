@@ -335,7 +335,7 @@ if (document.getElementById('grants-showcase')) {
         // let urlParams = new URLSearchParams(window.location.search);
         // let searchParams = new URLSearchParams(vm.params);
 
-        vm.updateUrlParams();
+        await vm.updateUrlParams();
 
         if (this.lock)
           return;
