@@ -12,12 +12,13 @@ let appCart;
 document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
   appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
-  if (!appCart.$refs.cart.userSwitchedToPolygon) {
+  if (appCart.$refs.cart.autoSwitchNetwork) {
     try {
       await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: networkName == 'mainnet' ? '0x1' : '0x4' }]
       }); // mainnet or rinkeby
+      appCart.$refs.cart.autoSwitchNetwork = false;
     } catch (e) {
       console.log(e);
     }
@@ -55,7 +56,7 @@ Vue.component('grants-cart', {
         { text: 'Wallet address', value: 'address' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
-      userSwitchedToPolygon: false,
+      autoSwitchNetwork: true,
       chainId: '',
       networkId: '',
       network: 'mainnet',
@@ -403,7 +404,7 @@ Vue.component('grants-cart', {
         const percentSavings = savingsInGas / estimateL1 * 100;
         const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
 
-        return { name: name, savingsInGas, savingsInPercent };
+        return { name, savingsInGas, savingsInPercent };
       };
 
       zkSyncComparisonResult = compareWithL2(estimateZkSync, 'zkSync');
@@ -1170,10 +1171,10 @@ Vue.component('grants-cart', {
           // Therefore we get the value of denomination and token_address using the below logic instead of
           // using tokenDetails.addr
           switch (tokenName) {
-            case 'ETH':
+            case 'ETH' && checkoutType !== 'eth_polygon':
               tokenAddress = '0x0000000000000000000000000000000000000000';
               break;
-            case 'MATIC':
+            case 'MATIC' && checkoutType === 'eth_polygon':
               tokenAddress = '0x0000000000000000000000000000000000001010';
               break;
             default:
@@ -1241,7 +1242,7 @@ Vue.component('grants-cart', {
         // Something went wrong, so we use the manual ingestion process instead
         console.error(err);
         console.log('Standard contribution ingestion failed, falling back to manual ingestion');
-        await this.postToDatabaseManualIngestion(txHash, userAddress);
+        await this.postToDatabaseManualIngestion(txHash, userAddress, checkoutType);
       }
     },
 
