@@ -2185,7 +2185,7 @@ class GrantCollection(SuperModel):
             'count': grants.count(),
             'grants': [{
                 'id': grant.id,
-                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
+                'logo': grant.logo.url if grant.logo and grant.logo.url else static(f'v2/images/grants/logos/{grant.id % 3}.png'),
             } for grant in grants]
         }
 
