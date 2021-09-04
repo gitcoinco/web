@@ -63,18 +63,19 @@
                   <!-- is on an ongoing round -->
                   Grants Round [[grant.clr_round_num]]
                 </span>
-                <img class="float-right" height="20" src="{% static "v2/images/chains/ethereum.svg" %}" v-if="grant.tenants.indexOf('ETH') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/zcash.svg" %}" v-if="grant.tenants.indexOf('ZCASH') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/celo.svg" %}" v-if="grant.tenants.indexOf('CELO') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/zilliqa.svg" %}" v-if="grant.tenants.indexOf('ZIL') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/polkadot.svg" %}" v-if="grant.tenants.indexOf('POLKADOT') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/kusama.svg" %}" v-if="grant.tenants.indexOf('KUSAMA') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/harmony.svg" %}" v-if="grant.tenants.indexOf('HARMONY') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/binance.svg" %}" v-if="grant.tenants.indexOf('BINANCE') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/rsk.svg" %}" v-if="grant.tenants.indexOf('RSK') > -1">
-                <img class="float-right" height="20" src="{% static "v2/images/chains/algorand.svg" %}" v-if="grant.tenants.indexOf('ALGORAND') > -1">
+                <span class="mr-1 font-smaller-2">Chains:</span>
+                <img height="15" src="{% static "v2/images/chains/ethereum.svg" %}" v-if="grant.tenants.indexOf('ETH') > -1">
+                <img height="15" src="{% static "v2/images/chains/zcash.svg" %}" v-if="grant.tenants.indexOf('ZCASH') > -1">
+                <img height="15" src="{% static "v2/images/chains/celo.svg" %}" v-if="grant.tenants.indexOf('CELO') > -1">
+                <img height="15" src="{% static "v2/images/chains/zilliqa.svg" %}" v-if="grant.tenants.indexOf('ZIL') > -1">
+                <img height="15" src="{% static "v2/images/chains/polkadot.svg" %}" v-if="grant.tenants.indexOf('POLKADOT') > -1">
+                <img height="15" src="{% static "v2/images/chains/kusama.svg" %}" v-if="grant.tenants.indexOf('KUSAMA') > -1">
+                <img height="15" src="{% static "v2/images/chains/harmony.svg" %}" v-if="grant.tenants.indexOf('HARMONY') > -1">
+                <img height="15" src="{% static "v2/images/chains/binance.svg" %}" v-if="grant.tenants.indexOf('BINANCE') > -1">
+                <img height="15" src="{% static "v2/images/chains/rsk.svg" %}" v-if="grant.tenants.indexOf('RSK') > -1">
+                <img height="15" src="{% static "v2/images/chains/algorand.svg" %}" v-if="grant.tenants.indexOf('ALGORAND') > -1">
               </p>
-              <div class="row align-items-baseline mt-2 mr-0">
+              <div class="row align-items-baseline mt-2 mx-0">
 
                 <div class="col-12 col-lg-auto" v-if="grant.clr_round_num">
                   <!-- is /been on a round -->

@@ -105,7 +105,7 @@
             <div class="col pb-4 d-flex justify-content-between">
               <button @click.stop="shareCollection()" class="btn btn-outline-primary mr-1">
                 <i class="fa fa-fw fa-share" aria-hidden="true"></i>
-                <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/collections?collection_id=${collection.id}`">
+                <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/?collection_id=${collection.id}`">
               </button>
 
               <template v-if="$parent.activeCollection">
@@ -114,7 +114,7 @@
                 </button>
               </template>
               <template v-else>
-                <a class="btn btn-primary ml-1" :href="`/grants/explorer/collections?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
+                <a class="btn btn-primary ml-1" :href="`/grants/explorer/?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
                   <i class="fas fa-fw fa-arrow-right"></i> View
                 </a>
                 <button class="btn btn-primary ml-1" @click="$emit('collection:show', collection.id)" style="flex: 1 1 0px;" v-else>

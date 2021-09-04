@@ -1,55 +1,54 @@
 {% load humanize static i18n %}
 <div class="container">
-  <div id="top-filters" class="row">
+  <div id="top-filters" class="">
 
-    <div class="col-12 col-xl-12 mt-2 mt-xl-0 font-caption text-center text-xl-right sort_container">
-      <div class="float-md-left mb-md-3" v-if="activeCollection">
-        <a href="#" :class="`font-weight-bold`" @click="clearSingleCollection()">Back to collections</a>
-      </div>
-      [[numGrants]] Grants
+    <div class="row mt-2 mb-3 mt-xl-0 font-caption">
 
+      <span class="col-12 col-md-6 text-right text-md-left pt-2 my-auto">
+        [[numGrants.toLocaleString()]] Grant[[ numGrants !== 1 ? 's' : '']]
+      </span>
 
+      <div class="col-12 col-md-6 text-right pt-2">
+        <div class="d-inline-block ml-4 pr-2 sort_container" v-if="current_type !== 'collections'">
+          <div class="d-flex align-items-baseline" >
+            <label class="heading mr-2">{% trans "Sort by" %}</label>
+            <v-select class="vselect-clean rounded-pill" style="min-width:230px;border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="[
+              {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
+              {label: 'Trending', value: '-metadata__upcoming'},
+              {label: 'Undiscovered Gems', value: '-metadata__gem'},
+              {label: 'Newest', value: '-created_on'},
+              {label: 'Match Estimate (This round)', value: '-clr_prediction_curve__0__1'},
+              {label: 'Amount Raised (This round)', value: '-amount_received_in_round'},
+              {label: 'Contributors (This round)', value: '-positive_round_contributor_count'},
+              {label: 'Amount Raised (Alltime)', value: '-amount_received'},
+              {label: 'Most Contributions (Alltime)', value: '-contribution_count'},
+              {label: 'Most Contributors (Alltime)', value: '-contributor_count'},
+              {label: 'Updated Recently', value: '-last_update'},
+              {label: 'Oldest Grants', value: 'created_on'},
+              {label: 'Random', value: '-random_shuffle'},
+              {% if is_staff %}
+              {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
+              {label: 'ADMIN:Sybil Score', value: '-sybil_score'},
+              {% endif %}
 
-      <div class="d-inline-block ml-4" v-if="current_type !== 'collections'">
-        <div class="d-flex align-items-baseline" >
-          <label class="heading">{% trans "Sort by" %}</label>
-          <v-select class="vselect-clean" style="min-width:200px;" id="experience_level" :clearable="false" :options="[
-            {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
-            {label: 'Trending', value: '-metadata__upcoming'},
-            {label: 'Undiscovered Gems', value: '-metadata__gem'},
-            {label: 'Newest', value: '-created_on'},
-            {label: 'Match Estimate (This round)', value: '-clr_prediction_curve__0__1'},
-            {label: 'Amount Raised (This round)', value: '-amount_received_in_round'},
-            {label: 'Contributors (This round)', value: '-positive_round_contributor_count'},
-            {label: 'Amount Raised (Alltime)', value: '-amount_received'},
-            {label: 'Most Contributions (Alltime)', value: '-contribution_count'},
-            {label: 'Most Contributors (Alltime)', value: '-contributor_count'},
-            {label: 'Updated Recently', value: '-last_update'},
-            {label: 'Oldest Grants', value: 'created_on'},
-            {label: 'Random', value: '-random_shuffle'},
-            {% if is_staff %}
-            {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
-            {label: 'ADMIN:Sybil Score', value: '-sybil_score'},
-            {% endif %}
+            ]" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)">
+              <template #search="{attributes, events}">
+                <input
+                  class="vs__search"
+                  v-bind="attributes"
+                  v-on="events"
+                />
+              </template>
+            </v-select>
+          </div>
 
-          ]" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants()">
-            <template #search="{attributes, events}">
-              <input
-                class="vs__search"
-                v-bind="attributes"
-                v-on="events"
-              />
-            </template>
-          </v-select>
+        </div>
+        <div class="d-inline-block position-relative" style="top: -3px;">
+          <span class="mx-2">|</span>
+          <a href="#" :class="`${view == 'grid' ? 'gc-text-blue bg-lightpurple' : 'text-black' }`" @click="setView('grid', $event)" class="btn btn-sm rounded-lg"><i class="fas fa-th-large"></i></a>
+          <a href="#" :class="`${view == 'list' ?  'gc-text-blue bg-lightpurple' : 'text-black' }`" @click="setView('list', $event)" class="btn btn-sm rounded-lg"><i class="fas fa-list"></i></a>
         </div>
 
-      </div>
-      <div class="d-inline-block" v-if="grants.length">|
-        <a href="#" :class="`${view == 'grid' ? 'gc-text-blue' : 'text-black' }`" @click="setView('grid', $event)" class="btn btn-sm "><i class="fas fa-th-large"></i></a>
-        <a href="#" :class="`${view == 'list' ?  'gc-text-blue' : 'text-black' }`" @click="setView('list', $event)" class="btn btn-sm "> <i class="fas fa-list"></i></a>
-      </div>
-      <div class="mr-4" >
-        <button class="btn btn-outline-primary font-caption" @click.event="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
       </div>
     </div>
 

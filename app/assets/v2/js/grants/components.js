@@ -145,7 +145,7 @@ Vue.component('grant-collection', {
       });
     },
     getGrantLogo(index) {
-      return `${static_url}${this.collection.cache?.grants[index]?.logo}`;
+      return `${this.collection.cache?.grants[index]?.logo}`;
     }
   }
 });

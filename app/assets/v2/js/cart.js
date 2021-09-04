@@ -661,6 +661,11 @@ Vue.component('grants-cart', {
       copyToClipboard(CartData.share_url());
     },
 
+    updateCartData(e) {
+      this.grantData = (e && e.detail && e.detail.list && e.detail.list) || [];
+      update_cart_title();
+    },
+
     removeGrantFromCart(id) {
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
@@ -1581,11 +1586,16 @@ Vue.component('grants-cart', {
     // Support responsive design
     window.addEventListener('resize', this.onResize);
 
+    // watch for cartUpdates
+    window.addEventListener('cartDataUpdated', this.updateCartData);
+
     // Show user cart now
     this.isLoading = false;
   },
 
   beforeDestroy() {
+    // unwatch cartUpdates
+    window.removeEventListener('cartDataUpdated', this.updateCartData);
     window.removeEventListener('resize', this.onResize);
   }
 });
