@@ -23,7 +23,7 @@ Vue.component('grantsCartEthereumPolygon', {
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
-        estimatedGasCost: 650000
+        estimatedGasCost: 65000
       },
 
       cart: {
@@ -182,12 +182,12 @@ Vue.component('grantsCartEthereumPolygon', {
       );
 
       // Update the fee estimate and gas cost based on changes
-      this.estimatedGasCost = await this.estimateGasCost();
+      this.polygon.estimatedGasCost = await this.estimateGasCost();
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('polygon-data-updated', {
         polygonUnsupportedTokens: this.cart.unsupportedTokens,
-        polygonEstimatedGasCost: this.estimatedGasCost
+        polygonEstimatedGasCost: this.polygon.estimatedGasCost
       });
     },
 
@@ -318,7 +318,7 @@ Vue.component('grantsCartEthereumPolygon', {
       // Send transaction
       bulkTransaction.methods
         .donate(donationInputsFiltered)
-        .send({ from: userAddress, gas: this.estimatedGasCost, value: this.donationInputsNativeAmount })
+        .send({ from: userAddress, gas: this.polygon.estimatedGasCost, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
           indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
@@ -441,8 +441,9 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         // Check if user has enough MATIC to cover gas costs
+        console.log(this.polygon.estimatedGasCost);
         const gasFeeInWei = web3.utils.toWei(
-          (this.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
+          (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
         );
 
         if (userMaticBalance.lt(gasFeeInWei)) {

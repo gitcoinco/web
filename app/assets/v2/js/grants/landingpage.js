@@ -51,7 +51,7 @@ if (document.getElementById('grants-showcase')) {
       mainBanner: document.current_style,
       visibleModal: false,
       bannerCollapsed: false,
-      loadingCollections: false,
+      loadingCollections: false
     },
     methods: {
       fetchCollections: async function(append_mode) {
@@ -97,9 +97,9 @@ if (document.getElementById('grants-showcase')) {
         const pageHeight = document.documentElement.scrollHeight - 500;
         const bottomOfPage = visible + scrollY >= pageHeight;
 
-        if (bottomOfPage || pageHeight < visible) {
+        // if (bottomOfPage || pageHeight < visible) {
 
-        }
+        // }
       },
       showModal(modalName) {
         this.visibleModal = modalName;
