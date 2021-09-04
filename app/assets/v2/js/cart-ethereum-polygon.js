@@ -441,7 +441,6 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         // Check if user has enough MATIC to cover gas costs
-        console.log(this.polygon.estimatedGasCost);
         const gasFeeInWei = web3.utils.toWei(
           (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
         );
