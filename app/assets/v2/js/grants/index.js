@@ -245,15 +245,6 @@ if (document.getElementById('grants-showcase')) {
         localStorage.setItem('grants_view', mode);
         this.view = mode;
       },
-      setCurrentType: function(currentType) {
-        this.current_type = currentType;
-
-        if (this.current_type === 'collections') {
-          this.clearSingleCollection();
-        }
-
-        // this.updateURI();
-      },
       fetchClrGrants: async function() {
         let vm = this;
         let url = '/api/v0.1/grants_clr/';
@@ -270,26 +261,6 @@ if (document.getElementById('grants-showcase')) {
           });
         this.toggleStyle(this.regex_style || document.current_style);
       },
-      clearSingleCollection: function() {
-        this.grants = [];
-        this.collections = [];
-        this.collection_id = null;
-        this.activeCollection = null;
-        this.params.page = 1;
-        this.updateURI();
-        this.fetchGrants();
-      },
-      showSingleCollection: function(collectionId) {
-        // http://localhost:8000/api/v0.1/grants_collections/1/?expand=grants
-        this.collection_id = collectionId;
-        this.collections = [];
-        this.keyword = '';
-        this.grants = [];
-        this.params.page = 1;
-        this.params.grant_types = 'collections';
-        // this.updateURI();
-        this.fetchGrants();
-      },
       resetFilters: function() {
         let vm = this;
 
@@ -303,7 +274,7 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         vm.$set(vm, 'params', {...vm.params, ...query});
-           
+
         if (vm.tabSelected === 'grants') {
           vm.fetchGrants();
         } else {
@@ -403,7 +374,7 @@ if (document.getElementById('grants-showcase')) {
         if (vm.grantsHasNext) {
           vm.params.page = ++vm.params.page;
         }
-        
+
         this.updateCartData({
           detail: {
             list: CartData.loadCart()
@@ -637,50 +608,3 @@ if (document.getElementById('grants-showcase')) {
     }
   });
 }
-
-// $(document).ready(function() {
-//   $('.selected').parents('.accordion').trigger('click');
-// });
-
-// $('#expand').on('click', () => {
-//   $('#expand').hide();
-//   $('#minimize').show();
-//   $('#sidebar_container form#filters').css({
-//     'height': 'auto',
-//     'display': 'inherit'
-//   });
-// });
-
-// $('#minimize').on('click', () => {
-//   $('#minimize').hide();
-//   $('#expand').show();
-//   $('#sidebar_container form#filters').css({
-//     'height': 0,
-//     'display': 'none'
-//   });
-// });
-
-// $(document).on('click', '.following-action', async(e) => {
-//   e.preventDefault();
-//   const element = (e.target.tagName === 'BUTTON') ? $(e.target) : $(e.target.parentElement);
-//   const grantId = element.data('grant');
-//   const favorite_url = `/grants/${grantId}/favorite`;
-
-//   let response = await fetchData(favorite_url, 'POST');
-
-//   if (response.action === 'follow') {
-//     element.find('i').addClass('fa');
-//     element.find('i').removeClass('far');
-//     element.find('span').text('Following');
-//     element.removeClass('text-muted');
-//   } else {
-//     element.find('i').removeClass('fa');
-//     element.find('i').addClass('far');
-//     element.find('span').text('Follow');
-//     element.addClass('text-muted');
-
-//     if (window.location.pathname === '/grants/following') {
-//       element.closest('.grant-card').hide();
-//     }
-//   }
-// });

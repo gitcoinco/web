@@ -3,9 +3,7 @@
   <div id="top-filters" class="">
 
     <div class="row mt-2 mb-3 mt-xl-0 font-caption">
-      <div class="col-2 text-left mb-md-3" v-if="activeCollection">
-        <a href="#" :class="`font-weight-bold`" @click="clearSingleCollection()">Back to collections</a>
-      </div>
+
       <span class="col-12 col-md-6 text-right text-md-left pt-2 my-auto">
         [[numGrants.toLocaleString()]] Grant[[ numGrants !== 1 ? 's' : '']]
       </span>
