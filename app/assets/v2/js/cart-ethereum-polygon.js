@@ -1,4 +1,6 @@
-const bulkCheckoutAddressPolygon = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
+const bulkCheckoutAddressPolygon = appCart.$refs.cart.network === 'mainnet'
+  ? '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
+  : '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
 
 function objectMap(object, mapFn) {
   return Object.keys(object).reduce(function(result, key) {
@@ -18,11 +20,10 @@ Vue.component('grantsCartEthereumPolygon', {
 
   data: function() {
     return {
-      network: 'testnet',
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
-        estimatedGasCost: '700000'
+        estimatedGasCost: 650000
       },
 
       cart: {
@@ -60,7 +61,7 @@ Vue.component('grantsCartEthereumPolygon', {
      */
     supportedTokens() {
       const mainnetTokens = [ 'DAI', 'ETH', 'USDT', 'USDC', 'PAN', 'BNB', 'UNI', 'CELO', 'MASK', 'MATIC' ];
-      const testnetTokens = [ 'MATIC', 'ETH', 'DAI' ];
+      const testnetTokens = [ 'DAI', 'ETH', 'USDT', 'USDC', 'UNI', 'MATIC' ];
 
       return appCart.$refs.cart.network === 'mainnet' ? mainnetTokens : testnetTokens;
     },
@@ -216,7 +217,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
           let networkText = network === 'rinkeby' || network === 'goerli' ||
-                            network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
+            network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
 
           try {
             await ethereum.request({
@@ -241,7 +242,6 @@ Vue.component('grantsCartEthereumPolygon', {
           console.error(switchError);
         }
       }
-      this.network = getDataChains(ethereum.networkVersion, 'chainId')[0] && getDataChains(ethereum.networkVersion, 'chainId')[0].network;
     },
 
     // Send a batch transfer based on donation inputs
@@ -280,7 +280,6 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         await this.setupPolygon();
-        appCart.$refs.cart.userSwitchedToPolygon = true;
 
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)
@@ -344,6 +343,28 @@ Vue.component('grantsCartEthereumPolygon', {
         return;
       }
 
+      let gasLimit = 0;
+
+      // If user has enough balance within Polygon, cost equals the minimum amount
+      let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
+
+      if (!isBalanceSufficient) {
+        // If we're here, user needs at least one L1 deposit, so let's calculate the total cost
+        requiredAmounts = objectMap(requiredAmounts, value => {
+          if (value.isBalanceSufficient == false) {
+            return value.amount;
+          }
+        });
+
+        for (const tokenSymbol in requiredAmounts) {
+          if (tokenSymbol === 'ETH') {
+            gasLimit += 94659; // add ~94.66k gas for ETH deposits
+          } else {
+            gasLimit += 103000; // add 103k gas for token deposits
+          }
+        }
+      }
+
       // If we have a cart where all donations are in Dai, we use a linear regression to
       // estimate gas costs based on real checkout transaction data, and add a 50% margin
       const donationCurrencies = this.donationInputs.map(donation => donation.token);
@@ -353,12 +374,10 @@ Vue.component('grantsCartEthereumPolygon', {
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
           // Special case since we overestimate here otherwise
-          return 70000;
+          return gasLimit + 65000;
         }
-        // TODO: find a suitable curve using
         // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
-        // return 27500 * donationCurrencies.length + 125000;
-        return 10000 * donationCurrencies.length + 70000;
+        return gasLimit + 10000 * donationCurrencies.length + 45000;
       }
 
       /**
@@ -367,14 +386,11 @@ Vue.component('grantsCartEthereumPolygon', {
        * donation (i.e. one item in the cart). Because gas prices go down with batched
        * transactions, whereas this assumes they're constant, this gives us a conservative estimate
        */
-      const gasLimit = this.donationInputs.reduce((accumulator, currentValue) => {
-        const tokenAddr = currentValue.token?.toLowerCase();
+      gasLimit += this.donationInputs.reduce((accumulator, currentValue) => {
+        // const tokenAddr = currentValue.token?.toLowerCase();
 
         if (currentValue.token === MATIC_ADDRESS) {
-          return accumulator + 70000; // MATIC donation gas estimate
-
-        } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
-          return accumulator + 170000; // ANT donation gas estimate
+          return accumulator + 25000; // MATIC donation gas estimate
         }
 
         return accumulator + 70000; // generic token donation gas estimate
@@ -412,31 +428,50 @@ Vue.component('grantsCartEthereumPolygon', {
         requiredAmounts[tokenSymbol].isBalanceSufficient = true; // initialize sufficiency result
         const tokenDetails = this.getTokenByName(tokenSymbol);
 
-        if (tokenDetails.name === 'MATIC') {
-          const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
+        const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
+        const tokenIsMatic = tokenDetails.name === 'MATIC';
 
-          if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount)) {
-            // User MATIC balance is too small compared to selected donation amounts
-            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-            requiredAmounts[tokenSymbol].amount = (
-              requiredAmounts[tokenSymbol].amount - userMaticBalance
-            ) / 10 ** tokenDetails.decimals;
-            isBalanceSufficient = false;
-          }
-        } else {
-          const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-          // Check user token balance against required amount
-          const userTokenBalance = toBigNumber(await tokenContract.methods
-            .balanceOf(userAddress)
-            .call({ from: userAddress }));
+        // Check user matic balance against required amount
+        if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
+          requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+          requiredAmounts[tokenSymbol].amount = (
+            requiredAmounts[tokenSymbol].amount - userMaticBalance
+          ) / 10 ** tokenDetails.decimals;
+          isBalanceSufficient = false;
+        }
 
-          if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
-            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-            requiredAmounts[tokenSymbol].amount = (
-              requiredAmounts[tokenSymbol].amount - userTokenBalance
-            ) / 10 ** tokenDetails.decimals;
-            isBalanceSufficient = false;
+        // Check if user has enough MATIC to cover gas costs
+        const gasFeeInWei = web3.utils.toWei(
+          (this.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
+        );
+
+        if (userMaticBalance.lt(gasFeeInWei)) {
+          let requiredAmount = parseFloat(Number(
+            web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
+          ).toFixed(5));
+
+          if (requiredAmounts['MATIC']) {
+            requiredAmounts['MATIC'].amount += requiredAmount;
+          } else {
+            requiredAmounts['MATIC'] = {
+              amount: requiredAmount,
+              isBalanceSufficient: false
+            };
           }
+        }
+
+        // Check user token balance against required amount
+        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+        const userTokenBalance = toBigNumber(await tokenContract.methods
+          .balanceOf(userAddress)
+          .call({ from: userAddress }));
+
+        if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
+          requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+          requiredAmounts[tokenSymbol].amount = (
+            requiredAmounts[tokenSymbol].amount - userTokenBalance
+          ) / 10 ** tokenDetails.decimals;
+          isBalanceSufficient = false;
         }
       }
 
