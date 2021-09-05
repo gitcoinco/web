@@ -46,7 +46,7 @@
         <a class="btn btn-lg btn-primary" href="{% url 'grants:grants_explorer' %}">{% trans 'Explore Grants' %}</a>
         <a class="btn btn-lg btn-outline-primary ml-3" href="/grants/new">{% trans 'Create a Grant' %}</a>
       </div>
-      <p>or <a href="{% url 'grants:new_matching_partner' %}">{% trans "become a member of the funder's league" %}</a></p>
+      <p><a href="{% url 'grants:new_matching_partner' %}">{% trans "Join the funder's league" %}</a>, <a href="{% url 'grants:hall_of_fame' %}">{% trans "see the hall of fame" %}</a></p>
     </div>
     <div class="col-auto d-none d-md-block">
       <img src="{% static 'v2/images/grants/rocket.svg' %}" height="241" width="311" />

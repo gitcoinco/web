@@ -1,0 +1,158 @@
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load i18n static bundle %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards.html' %}
+
+    {% bundle css file hall_of_fame %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/hall_of_fame.scss" %} />
+    {% endbundle %}
+
+    <style>
+        #hof-banner {
+            background-image: url("{% static "v2/images/grants/hall_of_fame/hall_of_fame.png" %}");
+            background-size: 1440px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body class="interior {{active}} quickstart g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+        {% include 'shared/tag_manager_2.html' %}
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        {% include 'grants/nav.html' %}
+
+        <div id="hall-of-fame" class="container-fluid">
+            <div id="hof-banner" class="row container-fluid">
+                <div class="container content text-left">
+                    <div class="mt-5"></div>
+                    <h2 id="hof-grants" class="text-center mt-5">{%trans "Grants Hall of Fame" %}</h2>
+                    <h3 id="hof-total-donations" class="text-center mt-2">
+                        {{total_donations}} {% trans 'in Total Donations' %}
+                    </h3>
+                    <div class="row mt-5">
+                        <div id="hof-banner-text" class="offset-2 col-8 text-center">
+                            Top Gitcoin Grant funders and grantees making impact in the web3 ecosystem.
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a class="btn btn-primary btn-lg" href="{%url 'grants:new_matching_partner' %}">
+                            Join the Funder's League
+                        </a>
+                    </div>
+                    <div class="row mt-4"></div>
+                    <div class="row mt-4"></div>
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <div id="partner_section" class="container content text-left">
+                    <div class="mt-5 row"></div>
+                    <h2 id="hof-matching-partners">{%trans "Top Matching Partners" %}</h2>
+                    <div class="mt-3"></div>
+                    <img src={% static 'v2/images/grants/hall_of_fame/partners.png' %} width="1114" height="346" />
+                    <div class="row mt-5"></div>
+                </div>
+            </div>
+
+            <div class="container-fluid hof-bg-violet-500">
+                <div id="donor_section" class="container content text-left">
+                    <div class="row mt-5"></div>
+                    <h2 id="hof-donors" class="mt-5">{%trans "Top Individual Grant Donors" %}</h2>
+                    <div class="row mt-3"></div>
+                    <img src={% static 'v2/images/grants/hall_of_fame/donors.png' %} width="1114" height="346" />
+                    <div class="row mt-5"></div>
+                </div>
+            </div>
+
+            <div class="container text-left">
+                <h2 id="hof-graduated-grantees" class="mt-5">{%trans "Graduated Grantees" %}</h2>
+                <div id="hof-graduated-description" class="mt-3">{{ graduated_grantees_text }}</div>
+
+                <div class="row mt-5"></div>
+                <div class="container">
+                    {% for g in graduated_grantees %}
+                    {% if not forloop.first %}
+                    <div class="row mt-3"></div>
+                    {% endif %}
+                    <div class="row mt-4">
+                        <div class="col-2 text-center">
+                            <img class="rounded-circle" src="{{ g.logo }}" width="125" height="125">
+                            <div>{{ g.username }}</div>
+                        </div>
+                        <div class="col-2">
+                            <div class="hof-grantee-name">{{ g.name }}</div>
+                            <div class="hof-grantee-funded-by">{% trans 'funded by' %}</div>
+                            <div class="hof-grantee-funded-by-name">{{ g.funded_by }}</div>
+                            <br />
+                            <br />
+                            <div class="hof-grantee-amount">{{ g.amount }}</div>
+                            <div class="hof-grantee-raised-on">{% trans 'raised on Gitcoin' %}</div>
+                        </div>
+                        <div class="col-3">
+                            <div>{% trans 'Project Description' %}</div>
+                            <div>{{ g.description }}</div>
+                        </div>
+                        <div class="col-5">
+                            <div>{% trans 'Accomplishment 1' %}</div>
+                            <div>{{ g.accomplishment_1 }}</div>
+                            <div>{% trans 'Accomplishment 1' %}</div>
+                            <div>{{ g.accomplishment_2 }}</div>
+                        </div>
+                    </div>
+                    <div class="row mt-4"></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="container text-left">
+                <div class="row mt-5">
+                    <h2 class="col-4 offset-1">{%trans "Are you a Grantee?" %}</h2>
+                    <div class="col-7">
+                        <div class="float-right" style="position: absolute; top: 0px; right: 0px; width: 350px; height: 200px;">
+                                {% include 'grants/components/hall_of_fame_envelope.html' %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-6 offset-1">{%trans "We'd love to hear your journey. Share your story via email." %}
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="offset-1 col">
+                        <a class="btn btn-primary" href="mailto:scott@gitcoin.co">
+                            Share Your Story
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-5"></div>
+        </div>
+        {% include 'shared/footer_scripts.html' with slim=1 %}
+        {% include 'shared/footer.html' %}
+    </div>
+</body>
