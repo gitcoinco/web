@@ -434,9 +434,9 @@ Vue.component('grantsCartEthereumPolygon', {
         // Check user matic balance against required amount
         if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
           requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-          requiredAmounts[tokenSymbol].amount = (
+          requiredAmounts[tokenSymbol].amount = parseFloat(((
             requiredAmounts[tokenSymbol].amount - userMaticBalance
-          ) / 10 ** tokenDetails.decimals;
+          ) / 10 ** tokenDetails.decimals).toFixed(5));
           isBalanceSufficient = false;
         }
 
@@ -468,9 +468,9 @@ Vue.component('grantsCartEthereumPolygon', {
 
         if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
           requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-          requiredAmounts[tokenSymbol].amount = (
+          requiredAmounts[tokenSymbol].amount = parseFloat(((
             requiredAmounts[tokenSymbol].amount - userTokenBalance
-          ) / 10 ** tokenDetails.decimals;
+          ) / 10 ** tokenDetails.decimals).toFixed(5));
           isBalanceSufficient = false;
         }
       }

@@ -1289,7 +1289,6 @@ Vue.component('grants-cart', {
       }
     },
 
-
     // Asks user to sign a message as verification they own the provided address
     async signMessage(userAddress) {
       const baseMessage = 'Something went wrong, but we want to ensure your contributions are counted!\n\nSign this message as verification that you control the provided wallet address so we can process your contributions'; // base message that will be signed
