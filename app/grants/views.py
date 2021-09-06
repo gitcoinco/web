@@ -86,7 +86,7 @@ from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Announcement, Favorite, PinnedPost
+from townsquare.models import Announcement, Favorite, PinnedPost, SquelchProfile
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
@@ -3599,3 +3599,61 @@ def get_trust_bonus(request):
             _addrs.append(subscription.contributor_address)
 
     return allow_all_origins(JsonResponse(response, safe=False))
+
+
+def toggle_user_sybil(request):
+    '''
+        POST endpoint which allows to mark a list of users as sybil
+        or remove them the sybil tag from them.
+        This is intended to be used by BSCI to ensure they can toggle it
+        every 12 hours based on their findings as opposed to having it done
+        at the end.
+    '''
+
+    json_body = json.loads(request.body)
+
+    token = request.headers['token']
+    sybil_users = json_body.get('sybil_users')
+    non_sybil_users = json_body.get('non_sybil_users')
+
+    data = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN').data
+
+    if (not sybil_users and not non_sybil_users ) or not token or not data['token']:
+        return HttpResponseBadRequest("error: missing arguments")
+
+    if token != data['token']:
+        return HttpResponseBadRequest("error: invalid token")
+
+    squelched_profiles = SquelchProfile.objects.all()
+
+    if sybil_users:
+        # iterate through users which need to be packed as sybil
+        for user in sybil_users:
+            try:
+                # get user profile
+                profile = Profile.objects.get(pk=user.get('id'))
+
+                # check if user has entry in SquelchProfile
+                if not squelched_profiles.filter(profile=profile).first():
+                    # mark user as sybil
+                    SquelchProfile.objects.create(
+                        profile=profile,
+                        comments=f"sybil: marked by bsci - {user.get('comment')}"
+                    )
+            except Exception as e:
+                print(f"error: unable to mark user ${user.get('id')} as sybil. {e}")
+
+
+    if non_sybil_users:
+        # iterate and remove sybil from user
+        for user in non_sybil_users:
+            try:
+                profile = Profile.objects.get(pk=user.get('id'))
+                print(squelched_profiles.filter(profile=profile))
+                squelched_profiles.filter(profile=profile).delete()
+                print(squelched_profiles.filter(profile=profile))
+
+            except Exception as e:
+                print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
+
+    return JsonResponse({'success': 'ok'}, status=200)
