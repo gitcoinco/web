@@ -35,10 +35,7 @@ from dashboard.models import (
     Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
     HackathonEvent, UserAction,
 )
-from dashboard.notifications import (
-    maybe_market_to_email, maybe_market_to_github,
-    notify_of_lowball_bounty,
-)
+from dashboard.notifications import maybe_market_to_email, maybe_market_to_github, notify_of_lowball_bounty
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_issue_details, get_url_dict, org_name
