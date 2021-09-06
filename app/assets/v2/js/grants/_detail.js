@@ -123,11 +123,9 @@ Vue.mixin({
     },
     backNavigation: function() {
       const vm = this;
-      const lgi = localStorage.getItem('last_grants_index');
       const lgt = localStorage.getItem('last_grants_title');
 
       if (lgi && lgt) {
-        vm.$set(vm.backLink, 'url', lgi);
         vm.$set(vm.backLink, 'title', lgt);
       }
     },
@@ -163,6 +161,7 @@ if (document.getElementById('gc-grant-detail')) {
         grant: {},
         tabSelected: 0,
         tab: null,
+        history: history,
         backLink: {
           url: '/grants',
           title: 'Grants'

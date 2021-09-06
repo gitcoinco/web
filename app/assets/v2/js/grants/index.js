@@ -5,10 +5,8 @@ let numGrants = '';
 
 $(document).ready(() => {
 
-  if ($('.grants_type_nav').length) {
-    localStorage.setItem('last_grants_index', document.location.href);
-    localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
-  }
+  localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
+  
   if (document.location.href.indexOf('/cart') == -1) {
     localStorage.setItem('last_all_grants_index', document.location.href);
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
