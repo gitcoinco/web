@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 from django.utils import timezone
 
-from grants.clr3 import calculate_clr_for_donation, fetch_grants, get_summed_contribs_query
+from grants.clr3 import calculate_clr, fetch_grants, get_summed_contribs_query, get_totals_by_pair, normalise
 from grants.models import GrantCLR
 
 
@@ -55,11 +55,15 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
             trust_dict[_row[1]] = _row[3]
             curr_agg[_row[0]][_row[1]] = _row[2]
 
+        ptots = get_totals_by_pair(curr_agg)
+        bigtot, totals = calculate_clr(curr_agg, ptots, trust_dict, v_threshold, total_pot)
+
+        # normalise against a deepcopy of the totals to avoid mutations
+        curr_grants_clr = normalise(bigtot, totals, total_pot)
+        
         # calculate clr analytics output
         for grant in grants:
-            _, clr_amount, num_contribs, contrib_amount = calculate_clr_for_donation(
-                curr_agg, trust_dict, grant.id, 0, v_threshold, total_pot
-            )
+            num_contribs, contrib_amount, clr_amount = curr_grants_clr.get(grant.id, {'num_contribs': 0, 'contrib_amount': 0, 'clr_amount': None}).values()
             # debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
             debug_output.append([grant.id, grant.title, grant.positive_round_contributor_count, float(grant.amount_received_in_round), clr_amount])
 
