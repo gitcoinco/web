@@ -75,7 +75,7 @@
                 <img height="15" src="{% static "v2/images/chains/rsk.svg" %}" v-if="grant.tenants.indexOf('RSK') > -1">
                 <img height="15" src="{% static "v2/images/chains/algorand.svg" %}" v-if="grant.tenants.indexOf('ALGORAND') > -1">
               </p>
-              <div class="row align-items-baseline mt-2 mx-0">
+              <div class="row align-items-baseline mt-2 mx-0 no-gutter">
 
                 <div class="col-12 col-lg-auto" v-if="grant.clr_round_num">
                   <!-- is /been on a round -->
@@ -99,7 +99,7 @@
                     total raised
                   </span>
                 </div>
-                <div class="col-12 col-lg-auto pl-3 mt-2 font-body" v-if="grant.clr_round_num">
+                <div class="col-12 col-lg-auto mt-2 font-body" v-if="grant.clr_round_num">
                   <!-- grant is/was on a round  -->
                   <template v-if="grant.is_clr_eligible">
                     <!-- grant on onboing round -->
