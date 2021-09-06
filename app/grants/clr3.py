@@ -24,6 +24,7 @@ from django.utils import timezone
 
 import numpy as np
 from grants.models import Contribution, Grant, GrantCollection
+from grants.tasks import save_clr_prediction_curve
 from townsquare.models import SquelchProfile
 
 
@@ -414,8 +415,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 print(clr_prediction_curve)
 
                 # save the new predicition curve via the model
-                clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
-                _grant.save()
+                save_clr_prediction_curve.delay(_grant.id, clr_round.id, clr_prediction_curve)
 
             debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
