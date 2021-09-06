@@ -24,9 +24,8 @@ from django.utils import timezone
 
 import numpy as np
 from grants.models import Contribution, Grant, GrantCollection
+from grants.tasks import save_clr_prediction_curve
 from townsquare.models import SquelchProfile
-
-CLR_PERCENTAGE_DISTRIBUTED = 0
 
 
 def fetch_grants(clr_round, network='mainnet'):
@@ -110,28 +109,28 @@ def get_totals_by_pair(contrib_dict):
                 {user_id (str): {user_id (str): pair_total (float)}}
 
     '''
-    tot_overlap = {}
+    pair_totals = {}
 
     # start pairwise match
     for _, contribz in contrib_dict.items():
         for k1, v1 in contribz.items():
-            if k1 not in tot_overlap:
-                tot_overlap[k1] = {}
+            if k1 not in pair_totals:
+                pair_totals[k1] = {}
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
-                if k2 not in tot_overlap[k1]:
-                    tot_overlap[k1][k2] = 0
-                tot_overlap[k1][k2] += (v1 * v2) ** 0.5
+                if k2 not in pair_totals[k1]:
+                    pair_totals[k1][k2] = 0
+                pair_totals[k1][k2] += (v1 * v2) ** 0.5
 
-    return tot_overlap
+    return pair_totals
 
 
-def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold, total_pot):
+def calculate_clr(curr_agg, pair_totals, trust_dict, v_threshold, total_pot):
     '''
         calculates the clr amount at the given threshold and total pot
         args:
-            aggregated contributions by pair nested dict
+            curr_agg
                 {
                     grant_id (str): {
                         user_id (str): aggregated_amount (float)
@@ -145,18 +144,16 @@ def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold
                 float
             total_pot
                 float
-
         returns:
             total clr award by grant, analytics, normalized by the normalization factor
                 [{'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}]
             saturation point
                 boolean
     '''
-
     bigtot = 0
     totals = {}
 
-    for proj, contribz in aggregated_contributions.items():
+    for proj, contribz in curr_agg.items():
         tot = 0
         _num = 0
         _sum = 0
@@ -177,59 +174,23 @@ def calculate_clr(aggregated_contributions, pair_totals, trust_dict, v_threshold
         bigtot += tot
         totals[proj] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
 
-    global CLR_PERCENTAGE_DISTRIBUTED
-
-    if bigtot >= total_pot: # saturation reached
-        # print(f'saturation reached. Total Pot: ${total_pot} | Total Allocated ${bigtot}. Normalizing')
-        CLR_PERCENTAGE_DISTRIBUTED = 100
-        for key, t in totals.items():
-            t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
-    else:
-        CLR_PERCENTAGE_DISTRIBUTED = (bigtot / total_pot) * 100
-        if bigtot == 0:
-            bigtot = 1
-        percentage_increase = np.log(total_pot / bigtot) / 100
-        for key, t in totals.items():
-            t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
-    return totals
+    return bigtot, totals
 
 
-def run_clr_calcs(curr_agg, trust_dict, v_threshold, total_pot):
-    '''
-        clubbed function that runs all calculation functions
-
-        args:
-            curr_agg   :
-                {
-                    grantId (int): {
-                        profileId (str): amount (float)
-                    }
-                }
-            trust_dict  :
-                {
-                    profileId (str): trust_bonus (float)
-                }
-            v_threshold :   float
-            total_pot   :   float
-
-        returns:
-            grants clr award amounts (dict)
-    '''
-
-    # get pair totals
-    ptots = get_totals_by_pair(curr_agg)
-
-    # clr calcluation
-    totals = calculate_clr(curr_agg, ptots, trust_dict, v_threshold, total_pot)
-
-    return totals
-
-
-def calculate_clr_for_donation(curr_agg, trust_dict, grant_id, amount, v_threshold, total_pot):
+def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant_id, amount):
     '''
         clubbed function that runs all calculation functions and returns the result for a single grant_id
 
         args:
+            bigtot     :   float
+            totals     :
+                {
+                    grantId (int): {
+                        number_contributions (int),
+                        contribution_amount (float),
+                        clr_amount (float),
+                    }
+                }
             curr_agg   :
                 {
                     grantId (int): {
@@ -240,10 +201,10 @@ def calculate_clr_for_donation(curr_agg, trust_dict, grant_id, amount, v_thresho
                 {
                     profileId (str): trust_bonus (float)
                 }
-            grant_id    ;   int
-            amount      ;   int
             v_threshold :   float
             total_pot   :   float
+            grant_id    ;   int
+            amount      ;   int
 
         returns:
             (grant clr award amounts (dict), clr_amount (float), number_contributions (int), contribution_amount (float))
@@ -253,10 +214,40 @@ def calculate_clr_for_donation(curr_agg, trust_dict, grant_id, amount, v_thresho
     if curr_agg.get(grant_id) or not grant_id:
         # find grant in contributions list and add donation
         if amount:
-            trust_dict['999999999999'] = 1
-            curr_agg[grant_id]['999999999999'] = amount
+            # set predictions against this user
+            dummy_user = '999999999999'
+            # take a copy to isolate changes
+            totals = copy.deepcopy(totals)
 
-        grants_clr = run_clr_calcs(curr_agg, trust_dict, v_threshold, total_pot)
+            # add prediction amount
+            curr_agg[grant_id][dummy_user] = amount
+
+            # get the contributions for this grant only
+            contribz = curr_agg.get(grant_id)
+
+            # unpack state from the selected grants totals entry
+            total = totals.get(grant_id, {})
+
+            tot = total.get('clr_amount', 0)
+            _num = total.get('number_contributions', 0) + 1
+            _sum = total.get('contribution_amount', 0) + amount
+
+            # remove old total from bigtot
+            bigtot -= tot
+
+            # start pairwise matches
+            for k2, v2 in contribz.items():
+                # pairwise matches to current round
+                if int(dummy_user) > int(k2):
+                    tot += ((amount * v2) ** 0.5) / ((amount * v2) ** 0.5 / (v_threshold * max(trust_dict[k2], 1)) + 1)
+
+          if type(tot) == complex:
+                tot = float(tot.real)
+            
+            totals[grant_id] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
+
+            # normalise the result
+            grants_clr = normalise(bigtot + tot, totals, total_pot)
 
         # find grant we added the contribution to and get the new clr amount
         if grants_clr.get(grant_id):
@@ -272,6 +263,22 @@ def calculate_clr_for_donation(curr_agg, trust_dict, grant_id, amount, v_thresho
 
     # print(f'info: no contributions found for grant {grant}')
     return (grants_clr, 0.0, 0, 0.0)
+    
+
+def normalise(bigtot, totals, total_pot):
+    # check for saturation and normalise if reached
+    if bigtot >= total_pot: 
+        # print(f'saturation reached. Total Pot: ${total_pot} | Total Allocated ${bigtot}. Normalizing')
+        for key, t in totals.items():
+            t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
+    else:
+        if bigtot == 0:
+            bigtot = 1
+        percentage_increase = np.log(total_pot / bigtot) / 100
+        for key, t in totals.items():
+            t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
+
+    return totals
 
 
 def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None, what='full'):
@@ -286,15 +293,15 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     v_threshold = float(clr_round.verified_threshold)
 
     print(f"- starting fetch_grants at {round(time.time(),1)}")
-    # grants, contributions = fetch_data(clr_round, network)
     grants = fetch_grants(clr_round, network)
-
-    if only_grant_pk:
-        grants = grants.filter(pk=only_grant_pk)
 
     print(f"- starting get data and sum at {round(time.time(),1)}")
     # collect contributions for clr_round into temp table
     initial_query = get_summed_contribs_query(grants, clr_round.start_date, clr_round.end_date, clr_round.contribution_multiplier, network)
+
+    if only_grant_pk:
+        grants = grants.filter(pk=40)
+
     # open cursor and execute the groupBy sum for the round
     with connection.cursor() as cursor:
         counter = 0
@@ -313,8 +320,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
             return
 
-        print(f"- starting current grant calc (free of predictions) at {round(time.time(),1)}")
-        curr_grants_clr = run_clr_calcs(curr_agg, trust_dict, v_threshold, total_pot)
+        print(f"- starting current distributions calc at {round(time.time(),1)}")
+        # aggregate pairs and run calculation to get current distribution
+        pair_totals = get_totals_by_pair(curr_agg)
+        bigtot, totals = calculate_clr(curr_agg, pair_totals, trust_dict, v_threshold, total_pot)
+
+        # normalise against a deepcopy of the totals to avoid mutations
+        curr_grants_clr = normalise(bigtot, copy.deepcopy(totals), total_pot)
 
         if what == 'slim':
             # if we are only calculating slim CLR calculations, return here and save 97% compute power
@@ -354,7 +366,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             if counter % 10 == 0 or True:
                 print(f"- {counter}/{total_count} grants iter, pk:{grant.id}, at {round(time.time(),1)}")
 
-            # if no contributions have been made for this grant then the pairwise will fail and no match will be discovered
+            # if no contributions have been made for this grant then the pairwise will fail and there will be no match for this grant
             if not curr_agg.get(grant.id):
                 grants_clr = None
                 potential_clr = [0.0 for x in range(0, 6)]
@@ -373,9 +385,9 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                             grants_clr = None
                             predicted_clr = 0.0
                         else:
-                            # calculate clr with each additional donation
-                            grants_clr, predicted_clr, _, _ = calculate_clr_for_donation(
-                                curr_agg, trust_dict, grant.id, amount, v_threshold, total_pot
+                            # calculate clr with additional donation amount
+                            grants_clr, predicted_clr, _, _ = calculate_clr_for_prediction(
+                                bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant.id, amount
                             )
 
                     # reset potential_donations
@@ -399,11 +411,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                     clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in clr_prediction_curve ]
                 else:
                     clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+                    
                 print(clr_prediction_curve)
 
                 # save the new predicition curve via the model
-                clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
-                _grant.save()
+                save_clr_prediction_curve.delay(grant.id, clr_prediction_curve)
 
             debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
