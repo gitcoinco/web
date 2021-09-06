@@ -235,8 +235,12 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
 
     # find grant in contributions list and add donation
     if amount != 0:
+        added = False
         for grant_contribution in _grant_contributions_curr:
-            if grant_contribution['id'] == grant.id:
+            # prevent the prediction amount from being included multiple times when deferrals (grant.defer_clr_to) are present
+            if added == False and grant_contribution['id'] == grant.id:
+                # add the prediction just once
+                added = True
                 # add this donation with a new profile (id 99999999999) to get impact
                 grant_contribution['contributions'].append({
                     'id': '999999999999',
