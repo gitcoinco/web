@@ -103,6 +103,7 @@ if (document.getElementById('grants-showcase')) {
     // keyword: this.keyword,
     state: 'active',
     profile: false,
+    sub_round_slug: false,
     collections_page: 1,
     grant_regions: [],
     grant_types: [],
@@ -264,9 +265,7 @@ if (document.getElementById('grants-showcase')) {
       resetFilters: function() {
         let vm = this;
 
-        console.log(baseParams);
         vm.params = Object.assign({}, baseParams);
-        console.log(baseParams);
         vm.fetchGrants();
 
       },
@@ -318,14 +317,18 @@ if (document.getElementById('grants-showcase')) {
           }
         }
       },
-      updateUrlParams: function() {
+      updateUrlParams: function(replaceHistory) {
         let vm = this;
-
+        
         vm.searchParams = new URLSearchParams(vm.params);
 
-        window.history.replaceState({}, '', `${location.pathname}?${vm.searchParams}`);
+        if (replaceHistory) {
+          window.history.replaceState({}, '', `${location.pathname}?${vm.searchParams}`);
+        } else {
+          window.history.pushState({}, '', `${location.pathname}?${vm.searchParams}`);
+        }
       },
-      fetchGrants: async function(page, append_mode) {
+      fetchGrants: async function(page, append_mode, replaceHistory) {
         let vm = this;
 
         if (page) {
@@ -335,7 +338,7 @@ if (document.getElementById('grants-showcase')) {
         // let urlParams = new URLSearchParams(window.location.search);
         // let searchParams = new URLSearchParams(vm.params);
 
-        await vm.updateUrlParams();
+        await vm.updateUrlParams(replaceHistory);
 
         if (this.lock)
           return;
@@ -393,9 +396,9 @@ if (document.getElementById('grants-showcase')) {
         vm.changeQuery({tab: vm.tabSelected});
         vm.unobserveFilter();
         vm.params.profile = false;
-        if (vm.tabSelected === 'collections') {
-          vm.updateUrlParams();
+        vm.updateUrlParams();
 
+        if (vm.tabSelected === 'collections') {
           this.fetchCollections();
         } else {
           this.fetchGrants(1);
@@ -410,7 +413,6 @@ if (document.getElementById('grants-showcase')) {
           {'index': 1, 'string': 'collections'}
         ];
 
-        console.log(loadParams.get('tab'));
         if (loadParams.has('tab')) {
           vm.tabSelected = loadParams.get('tab');
           console.log(tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index);
@@ -422,7 +424,7 @@ if (document.getElementById('grants-showcase')) {
           vm.updateUrlParams();
           this.fetchCollections();
         } else {
-          this.fetchGrants();
+          this.fetchGrants(undefined, undefined, true);
         }
       },
       fetchCollections: async function(append_mode) {
@@ -451,10 +453,8 @@ if (document.getElementById('grants-showcase')) {
           vm.collections = collectionsJson.results;
         }
 
-
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
-
       },
       scrollEnd: async function(event) {
         let vm = this;
@@ -470,7 +470,7 @@ if (document.getElementById('grants-showcase')) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             vm.fetchCollections(true);
           } else if (vm.grantsHasNext) {
-            vm.fetchGrants(vm.params.page, true);
+            vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
           }
         }
@@ -551,6 +551,10 @@ if (document.getElementById('grants-showcase')) {
         if (this.observed) {
           this.observer.unobserve(this.observed);
         }
+      },
+      watchHistory(event) {
+        this.getUrlParams();
+        this.fetchGrants(1, undefined, true);
       }
     },
     computed: {
@@ -582,10 +586,13 @@ if (document.getElementById('grants-showcase')) {
       this.getUrlParams();
       this.loadTab();
       window.addEventListener('scroll', this.scrollBottom, {passive: true});
+      // watch for history changes
+      window.addEventListener('popstate', this.watchHistory);
     },
     beforeDestroy() {
       window.removeEventListener('scroll', this.scrollBottom);
       window.removeEventListener('cartDataUpdated', this.updateCartData);
+      window.removeEventListener('popstate', this.watchHistory);
       this.observer.unobserve(vm.$refs.filterNav);
     },
     mounted() {
