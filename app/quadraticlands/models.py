@@ -58,18 +58,18 @@ class Uint256Field(models.DecimalField):
 class QuadLandsFAQ(models.Model):
     '''Table for storing quadlands FAQ items'''
     position = models.IntegerField(
-        blank=False, 
+        blank=False,
         unique=True
     )
     created_on = models.DateTimeField(
         auto_now=True
     )
     question = models.TextField(
-        default='', 
+        default='',
         blank=True
     )
     answer = models.TextField(
-        default='', 
+        default='',
         blank=True
     )
     def __str__(self):
@@ -79,10 +79,10 @@ class QuadLandsFAQ(models.Model):
 class InitialTokenDistribution(models.Model):
     '''Table for storing the initial gitcoin retroactive token distribution details'''
     profile = models.ForeignKey(
-        'dashboard.Profile', 
-        related_name='initial_distribution', 
+        'dashboard.Profile',
+        related_name='initial_distribution',
         on_delete=models.CASCADE
-    ) 
+    )
     created_on = models.DateTimeField(
         auto_now=True
     )
@@ -92,7 +92,7 @@ class InitialTokenDistribution(models.Model):
     distribution = JSONField(
         default=dict
     )
-    
+
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.profile.handle}, {self.claim_total}, {self.created_on}, {self.distribution}'
@@ -100,7 +100,7 @@ class InitialTokenDistribution(models.Model):
 class QLVote(models.Model):
     '''Store signed messages and vote data for QL initial dist vote'''
     profile = models.ForeignKey(
-        'dashboard.Profile', 
+        'dashboard.Profile',
         related_name='vote_status',
         on_delete=models.CASCADE
     )
@@ -125,8 +125,8 @@ class QLVote(models.Model):
 class MissionStatus(models.Model):
     ''' Track which missions a given user has completed'''
     profile = models.ForeignKey(
-        'dashboard.Profile', 
-        related_name='mission_status', 
+        'dashboard.Profile',
+        related_name='mission_status',
         on_delete=models.CASCADE
     )
     proof_of_use = models.BooleanField(
@@ -145,16 +145,16 @@ class MissionStatus(models.Model):
 class GTCSteward(models.Model):
     '''Store data for Gitcoin Stewards'''
     profile = models.ForeignKey(
-        'dashboard.Profile', 
-        related_name='GTCSteward', 
+        'dashboard.Profile',
+        related_name='GTCSteward',
         on_delete=models.CASCADE
     )
     real_name = models.CharField(
-        default=False, 
+        default=False,
         max_length=50
     )
     bio = models.CharField(
-        default=False, 
+        default=False,
         max_length=64
     )
     gtc_address = models.CharField(
@@ -162,7 +162,7 @@ class GTCSteward(models.Model):
         max_length=255,
     )
     profile_link = models.URLField(
-        default=False, 
+        default=False,
         max_length=255
     )
     custom_steward_img = models.ImageField(
@@ -171,10 +171,30 @@ class GTCSteward(models.Model):
         blank=True,
         help_text=_('override steward image as opposed to profile avatar'),
     )
-    
+    steward_since = models.DateField(
+        default=False,
+        max_length=255,
+    )
+    forum_posts_count = models.IntegerField(
+        default=0,
+    )
+    delegators_count = models.IntegerField(
+        default=0,
+    )
+    voting_power = models.FloatField(
+        default=0,
+    )
+    voting_participation = models.FloatField(
+        default=0,
+    )
+    score = models.BigIntegerField(
+        default=0,
+    )
+
+
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.profile.handle}, {self.real_name}, {self.bio}, {self.gtc_address}, {self.profile_link}'
+        return f'{self.profile.handle}, {self.real_name}, {self.bio}, {self.gtc_address}, {self.profile_link},{self.steward_since}, {self.forum_posts_count}, {self.delegators_count}, {self.voting_power},{self.voting_participation}, {self.score}'
 
 
 class SchwagCoupon(models.Model):
@@ -185,14 +205,14 @@ class SchwagCoupon(models.Model):
         ('60_off', '60 OFF'),
     ]
     profile = models.ForeignKey(
-        'dashboard.Profile', 
+        'dashboard.Profile',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         help_text=_('profile which has claimed the coupon'),
     )
     coupon_code = models.CharField(
-        default=False, 
+        default=False,
         max_length=20,
         help_text=_('actual coupon code'),
     )
@@ -245,7 +265,7 @@ class Game(SuperModel):
 
     def get_absolute_url(self):
         return f'/quadraticlands/mission/diplomacy/{self.uuid}/{self.slug}'
-    
+
     @property
     def url(self):
         return self.get_absolute_url()
@@ -297,7 +317,7 @@ class Game(SuperModel):
             )
 
         if player.admin:
-            player.admin = False 
+            player.admin = False
             player.save()
 
             # promote someone new to admin
@@ -340,7 +360,7 @@ class Game(SuperModel):
                 'chat': chat,
             },
             )
-    
+
     def leave_game(self, handle):
 
         return GameFeed.objects.create(
@@ -454,15 +474,15 @@ class GamePlayer(SuperModel):
 
     @property
     def votes_in(self):
-        return self.cached_data['votes_in'] 
+        return self.cached_data['votes_in']
 
     @property
     def tokens_in(self):
-        return self.cached_data['tokens_in'] 
+        return self.cached_data['tokens_in']
 
     @property
     def tokens_out(self):
-        return self.cached_data['tokens_out'] 
+        return self.cached_data['tokens_out']
 
     def compute_votes_in(self):
         return_dict = {

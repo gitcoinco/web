@@ -26,7 +26,7 @@ from quadraticlands.router import router
 from quadraticlands.views import (
     base, base_auth, dashboard_index, handler400, handler403, handler404, handler500, index, mission_diplomacy,
     mission_diplomacy_room, mission_index, mission_lore, mission_postcard, mission_postcard_svg, mission_schwag,
-    workstream_base, workstream_index, get_steward_data, get_steward_all_data
+    workstream_base, workstream_index, get_steward_all_data, get_stewards, get_stewards_data
 )
 
 app_name = 'quadraticlands'
@@ -57,7 +57,7 @@ urlpatterns = [
     url(r'^api/v1/', include(router.urls)),
 
     # Stwards endpoints
-    path('/steward/<steward-id>', get_steward_data, name='get_steward_data'),
+    path('/steward/<steward-id>', get_stewards_data, name='get_stewards_data'),
     path('/steward/', get_steward_all_data , name='get_all_steward_data'),
 ]
 

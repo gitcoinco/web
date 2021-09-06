@@ -33,7 +33,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
 from dashboard.abi import erc20_abi
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, get_graphql_result
 from eth_account.messages import defunct_hash_message
 from quadraticlands.helpers import (
     get_coupon_code, get_FAQ, get_initial_dist, get_initial_dist_breakdown, get_mission_status, get_stewards,
@@ -45,6 +45,10 @@ from .models import Game, GameFeed, GamePlayer, create_game_helper
 
 logger = logging.getLogger(__name__)
 
+DISCOURSE_API_KEY = env('DISCOURSE_API_KEY', default='your-discourse-api-key')
+DISCOURSE_API_USER = env('DISCOURSE_API_USER', default='your-discourse-api-user')
+THE_GRAPH_DELEGATORS = env('THE_GRAPH_DELEGATORS', default='https://api.thegraph.com/subgraphs/name/withtally/protocol-gitcoin-bravo-v2')
+API_BOARDROOM = env('API_BOARDROOM', default='https://api.boardroom.info/v1/voters/')
 
 def index(request):
     '''render template for base index page'''
@@ -375,7 +379,8 @@ def mission_diplomacy_room_helper(request, game):
         signature = request.POST.get('signature')
         recipient_address = Web3.toChecksumAddress(moves['account'])
         web3 = get_web3('mainnet')
-        gtc = web3.eth.contract(address=Web3.toChecksumAddress('0xde30da39c46104798bb5aa3fe8b9e0e1f348163f'), abi=erc20_abi)
+        # gtc = web3.eth.contract(address=Web3.toChecksumAddress('0xde30da39c46104798bb5aa3fe8b9e0e1f348163f'), abi=erc20_abi)
+        gtc = web3.eth.contract(address=Web3.toChecksumAddress('0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea'), abi=erc20_abi)
         balance = int((gtc.functions.balanceOf(recipient_address).call()) / (10 ** 18))
         claimed_balance = int(moves['balance'])
         signer_address = Web3.toChecksumAddress(web3.eth.account.recoverHash(defunct_hash_message(text=package), signature=signature))
@@ -406,11 +411,96 @@ def mission_diplomacy_room_helper(request, game):
 
 
 # Stewards get_swwards data
+def get_steward_since(request):
+    return JsonResponse({}, steward_since)
+
+@login_required
+def forum_posts_count_by_user(request, user_handle):
+    url = "gov.gitcoin.co/u/" + user_handle + ".json"
+    data = request.get(url)
+    forum_posts_count = data.user.post_count
+
+    return JsonResponse({}, forum_posts_count)
+
+def get_steward_since(request, user_handle):
+    user_id = get_discourse_id(user_handle)
+    url = "gov.gitcoin.co/t/" + user_id + "/posts.json"
+    data = request.get(url)
+    return data.post_steam.posts[0].created_at
+
 @login_required
 def get_steward_all_data(request, stewards):
-
-    return JsonResponse({'msg':'OK', 'data' : steward.data})
+    delegators_graph = get_graphql_result(THE_GRAPH_DELEGATORS);
+    return JsonResponse({'msg':'OK', 'data' : delegators_graph})
 
 @login_required
 def get_stewards_data(request, steward):
-    return JsonResponse({'msg':'OK', 'data' : steward})
+    delegators_query = get_delegators_count(steward.address)
+    delegate_count = delegators_query.account.delegationsCurrentlyReceivedCount
+    voting_power = delegators_query.account.percentageOfTotalVotingPower
+    if(voting_power == null):
+        data_power = get_voting_boardroom(steward.address)
+        voting_power = data_power.voting_power
+        vote_participation = data_power.vote_participation
+
+    data_power = get_voting_boardroom(steward.address)
+    vote_participation = data_power.vote_participation
+
+    return JsonResponse({delegate_count, voting_power, vote_participation})
+
+def get_voting_boardroom(request, gtc_address):
+    url_boardroom = API_BOARDROOM.format(gtc_address)
+    request_voter = request.get(url_boardroom)
+    data = request_voter.json()
+    lastCastPower = data.protocols.find(p => p.protocol == 'gitcoin').lastCastPower
+    GTC_total_supply = 100000000
+    userVotesCast = data.protocols.find(p => p.protocol == 'gitcoin').totalVotesCast
+    totalVotes = get_vote_participation()
+    voting_power = lastCastPower/GTC_total_supply
+    vote_participation = userVotesCast * 100 / totalVotes
+    return voting_power, vote_participation
+
+def get_vote_participation(request):
+    result = request.get("https://api.boardroom.info/v1/protocols/gitcoin")
+    data = result.json()
+
+    return data.totalProposals
+
+
+def get_discourse_id(request, user_handle):
+    url = "gov.gitcoin.co/u/" + user_handle + ".json"
+    data_user = request.get(url)
+
+    return data_user.user_badges.user_id
+
+
+
+def get_delegators_count(uri, address):
+    ''' return delegators by user address '''
+    return get_graphql_result(uri, '''
+    {
+        account(id: "%s") {
+            id
+            votes
+            tokenBalance
+            ballotsCastCount
+            proposalsProposedCount
+            percentageOfTotalVotingPower // <-- try using this for voting_power
+            frequencyOfParticipationTotal
+            delegationsCurrentlyReceivedCount // <--- we want this
+            frequencyOfParticipationAsActiveVoter
+        }
+        delegators: accounts(orderBy: tokenBalance, orderDirection: desc, where: {delegatingTo: "%s"}){
+            id
+            votes
+            tokenBalance
+            ballotsCastCount
+            proposalsProposedCount
+            percentageOfTotalVotingPower
+            frequencyOfParticipationTotal
+            delegationsCurrentlyReceivedCount
+            frequencyOfParticipationAsActiveVoter
+        }
+    }
+    ''' % (address, address)
+

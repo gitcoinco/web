@@ -213,12 +213,12 @@ def get_stewards():
                 'bio': s.bio,
                 'gtc_address' : s.gtc_address,
                 'profile_link' : s.profile_link,
-                'custom_steward_img': s.custom_steward_img
-                'steward_since': s.steward_since
-                'forum_posts_count': s.forum_posts_count
-                'delegators_count': s.delegators_count
-                'voting_power': s.voting_power
-                'voting_participation': s.voting_participation
+                'custom_steward_img': s.custom_steward_img,
+                'steward_since': s.steward_since,
+                'forum_posts_count': s.forum_posts_count,
+                'delegators_count': s.delegators_count,
+                'voting_power': s.voting_power,
+                'voting_participation': s.voting_participation,
                 'score': s.score
             }
             # add to dict
