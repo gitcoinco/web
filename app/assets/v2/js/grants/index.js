@@ -306,7 +306,7 @@ if (document.getElementById('grants-showcase')) {
             if ((param_value.length > 0)) {
               vm.params[param_key] = param_value.split(',');
             } else {
-              vm.$delete(vm.params[param_key]);
+              vm.params[param_key] = [];
             }
           } else if (param_is_array.includes(param_key)) {
             vm.params[param_key] = param_value.split(',');
