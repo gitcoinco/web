@@ -726,20 +726,32 @@ def get_grants_by_filters(
     # 13. Sort filtered grants
     if sort:
         if 'match_pledge_amount_' in sort:
+            order = '-' if sort[0] is '-' else ''
             sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
             clr_prediction_curve_schema_map = {10**x: x+1 for x in range(0, 5)}
             if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
                 sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
                 field_name = f'clr_prediction_curve__{sort_by_index}__2'
-                _grants = _grants.order_by(f"-{field_name}")
-        elif sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
-            # grant_type_obj = GrantType.objects.filter(name=grant_type).first()
-            # is_there_a_clr_round_active_for_this_grant_type_now = grant_type_obj and grant_type_obj.active_clrs.exists()
-            # if is_there_a_clr_round_active_for_this_grant_type_now:
+                _grants = _grants.order_by(f"{order}{field_name}")
 
-            # 3.1 Filter grants to show grants currently active in a CLR
-            _grants = _grants.filter(is_clr_active=True)
+        elif 'random_shuffle' in sort:
+            _grants = _grants.order_by('?')
 
+        elif sort.replace('-', '') in [
+            'amount_received_in_round', 'clr_prediction_curve__0__1', 'positive_round_contributor_count'
+        ]:
+            _grants = _grants.filter(is_clr_active=True).order_by(f"{sort}") 
+
+        elif sort.replace('-', '') in [
+            'weighted_shuffle', 'metadata__upcoming', 'metadata__gem', 'created_on', 'amount_received', 'contribution_count', 'contributor_count', 'last_update'
+        ]:
+            print(f"Sort is {sort}")
+            _grants = _grants.order_by(f"{sort}") 
+        
+        elif request.user.is_staff and sort.replace('-', '') in [
+            'weighted_risk_score', 'sybil_score'
+        ]:
+            _grants = _grants.order_by(f"{sort}") 
 
     _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
 
