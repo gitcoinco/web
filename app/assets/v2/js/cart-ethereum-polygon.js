@@ -122,7 +122,7 @@ Vue.component('grantsCartEthereumPolygon', {
         url = 'https://rpc-mainnet.maticvigil.com';
       } else {
         appCart.$refs.cart.networkId = '80001';
-        appCart.$refs.cart.network = 'testnet';
+        appCart.$refs.cart.network = 'rinkeby';
         url = 'https://rpc-mumbai.maticvigil.com';
       }
 
@@ -217,7 +217,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // This error code indicates that the chain has not been added to MetaMask
         if (switchError.code === 4902) {
           let networkText = network === 'rinkeby' || network === 'goerli' ||
-            network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
+            network === 'ropsten' || network === 'kovan' ? 'rinkeby' : network;
 
           try {
             await ethereum.request({
@@ -428,50 +428,53 @@ Vue.component('grantsCartEthereumPolygon', {
         requiredAmounts[tokenSymbol].isBalanceSufficient = true; // initialize sufficiency result
         const tokenDetails = this.getTokenByName(tokenSymbol);
 
-        const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
-        const tokenIsMatic = tokenDetails.name === 'MATIC';
+        if (tokenDetails) {
 
-        // Check user matic balance against required amount
-        if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
-          requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-          requiredAmounts[tokenSymbol].amount = parseFloat(((
-            requiredAmounts[tokenSymbol].amount - userMaticBalance
-          ) / 10 ** tokenDetails.decimals).toFixed(5));
-          isBalanceSufficient = false;
-        }
+          const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
+          const tokenIsMatic = tokenDetails.name === 'MATIC';
 
-        // Check if user has enough MATIC to cover gas costs
-        const gasFeeInWei = web3.utils.toWei(
-          (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
-        );
-
-        if (userMaticBalance.lt(gasFeeInWei)) {
-          let requiredAmount = parseFloat(Number(
-            web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
-          ).toFixed(5));
-
-          if (requiredAmounts['MATIC']) {
-            requiredAmounts['MATIC'].amount += requiredAmount;
-          } else {
-            requiredAmounts['MATIC'] = {
-              amount: requiredAmount,
-              isBalanceSufficient: false
-            };
+          // Check user matic balance against required amount
+          if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
+            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+            requiredAmounts[tokenSymbol].amount = parseFloat(((
+              requiredAmounts[tokenSymbol].amount - userMaticBalance
+            ) / 10 ** tokenDetails.decimals).toFixed(5));
+            isBalanceSufficient = false;
           }
-        }
 
-        // Check user token balance against required amount
-        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-        const userTokenBalance = toBigNumber(await tokenContract.methods
-          .balanceOf(userAddress)
-          .call({ from: userAddress }));
+          // Check if user has enough MATIC to cover gas costs
+          const gasFeeInWei = web3.utils.toWei(
+            (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
+          );
 
-        if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
-          requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-          requiredAmounts[tokenSymbol].amount = parseFloat(((
-            requiredAmounts[tokenSymbol].amount - userTokenBalance
-          ) / 10 ** tokenDetails.decimals).toFixed(5));
-          isBalanceSufficient = false;
+          if (userMaticBalance.lt(gasFeeInWei)) {
+            let requiredAmount = parseFloat(Number(
+              web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
+            ).toFixed(5));
+
+            if (requiredAmounts['MATIC']) {
+              requiredAmounts['MATIC'].amount += requiredAmount;
+            } else {
+              requiredAmounts['MATIC'] = {
+                amount: requiredAmount,
+                isBalanceSufficient: false
+              };
+            }
+          }
+
+          // Check user token balance against required amount
+          const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+          const userTokenBalance = toBigNumber(await tokenContract.methods
+            .balanceOf(userAddress)
+            .call({ from: userAddress }));
+
+          if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
+            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+            requiredAmounts[tokenSymbol].amount = parseFloat(((
+              requiredAmounts[tokenSymbol].amount - userTokenBalance
+            ) / 10 ** tokenDetails.decimals).toFixed(5));
+            isBalanceSufficient = false;
+          }
         }
       }
 
