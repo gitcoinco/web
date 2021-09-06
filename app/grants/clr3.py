@@ -241,7 +241,7 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
                 if int(dummy_user) > int(k2):
                     tot += ((amount * v2) ** 0.5) / ((amount * v2) ** 0.5 / (v_threshold * max(trust_dict[k2], 1)) + 1)
 
-          if type(tot) == complex:
+            if type(tot) == complex:
                 tot = float(tot.real)
             
             totals[grant_id] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
