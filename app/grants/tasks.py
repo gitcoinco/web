@@ -421,3 +421,13 @@ def generate_collection_cache(self, collection_id):
         collection.generate_cache()
     except Exception as e:
         print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def save_clr_prediction_curve(self, grant_id, clr_prediction_curve):
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+        clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
+        grant.save()
+    except Exception as e:
+        print(e)
