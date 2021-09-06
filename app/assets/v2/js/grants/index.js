@@ -6,7 +6,7 @@ let numGrants = '';
 $(document).ready(() => {
 
   localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
-  
+
   if (document.location.href.indexOf('/cart') == -1) {
     localStorage.setItem('last_all_grants_index', document.location.href);
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
@@ -208,7 +208,8 @@ if (document.getElementById('grants-showcase')) {
       searchParams: undefined,
       observer: null,
       observed: null,
-      sticky_active: false
+      sticky_active: false,
+      fetchedPages: []
     },
     methods: {
       toggleStyle: function(style) {
@@ -264,12 +265,13 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         vm.params = Object.assign({}, baseParams);
+        vm.fetchedPages = [];
         vm.fetchGrants();
 
       },
       changeQuery: function(query) {
         let vm = this;
-
+        vm.fetchedPages = [];
         vm.$set(vm, 'params', {...vm.params, ...query});
 
         if (vm.tabSelected === 'grants') {
@@ -317,7 +319,7 @@ if (document.getElementById('grants-showcase')) {
       },
       updateUrlParams: function(replaceHistory) {
         let vm = this;
-        
+
         vm.searchParams = new URLSearchParams(vm.params);
 
         if (replaceHistory) {
@@ -326,9 +328,24 @@ if (document.getElementById('grants-showcase')) {
           window.history.pushState({}, '', `${location.pathname}?${vm.searchParams}`);
         }
       },
+      unshiftGrants: async function(page) {
+        let vm = this;
+        await vm.updateUrlParams();
+
+        vm.searchParams.set('page', page)
+        vm.fetchedPages.push(page)
+
+        const getGrants = await fetchData(`/grants/cards_info?${vm.searchParams.toString()}`);
+        getGrants.grants.forEach(function(item) {
+          vm.grants.unshift(item)
+
+        });
+
+
+      },
       fetchGrants: async function(page, append_mode, replaceHistory) {
         let vm = this;
-
+        console.log(page)
         if (page) {
           vm.params.page = page;
         }
@@ -351,6 +368,11 @@ if (document.getElementById('grants-showcase')) {
           vm.grants.push(item);
         });
 
+        // if (page) {
+        //   vm.fetchedPages = [page];
+        // } else {
+        // }
+        vm.fetchedPages = [...vm.fetchedPages, Number(vm.params.page)];
         // if (this.params.collection_id) {
         //   if (getGrants.collections.length > 0) {
         //     this.activeCollection = getGrants.collections[0];
@@ -394,7 +416,7 @@ if (document.getElementById('grants-showcase')) {
         vm.changeQuery({tab: vm.tabSelected});
         vm.unobserveFilter();
         vm.params.profile = false;
-        vm.updateUrlParams();
+        // vm.updateUrlParams();
 
         if (vm.tabSelected === 'collections') {
           this.fetchCollections();
@@ -419,7 +441,7 @@ if (document.getElementById('grants-showcase')) {
         }
 
         if (vm.tabSelected === 'collections') {
-          vm.updateUrlParams();
+          // vm.updateUrlParams();
           this.fetchCollections();
         } else {
           this.fetchGrants(undefined, undefined, true);
@@ -432,6 +454,7 @@ if (document.getElementById('grants-showcase')) {
           return;
 
         vm.loadingCollections = true;
+        await vm.updateUrlParams();
 
         // vm.updateUrlParams();
 
@@ -465,9 +488,10 @@ if (document.getElementById('grants-showcase')) {
         // console.log(bottomOfPage, pageHeight, visible, topOfPage);
 
         if (bottomOfPage || pageHeight < visible) {
+          console.log('bottmpage')
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             vm.fetchCollections(true);
-          } else if (vm.grantsHasNext) {
+          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page+1)) {
             vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
           }
@@ -553,9 +577,22 @@ if (document.getElementById('grants-showcase')) {
       watchHistory(event) {
         this.getUrlParams();
         this.fetchGrants(1, undefined, true);
+      },
+      pageIsFetched(page) {
+        let vm = this;
+        return vm.fetchedPages.includes(page)
+
       }
     },
     computed: {
+      lowestPage() {
+        let vm = this;
+        return Math.min(...vm.fetchedPages)
+      },
+      grantsHasPrev() {
+        let vm = this;
+        return vm.lowestPage > 1;
+      },
       currentCLR() {
         let vm = this;
 

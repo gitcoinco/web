@@ -5,7 +5,7 @@
     <div class="row mt-2 mb-3 mt-xl-0 font-caption">
 
       <span class="col-12 col-md-6 text-right text-md-left pt-2 my-auto">
-        [[numGrants.toLocaleString()]] Grant[[ numGrants !== 1 ? 's' : '']]
+        [[numGrants.toLocaleString()]] [[ 'Grant' | pluralize(numGrants)]]
       </span>
 
       <div class="col-12 col-md-6 text-right pt-2">
