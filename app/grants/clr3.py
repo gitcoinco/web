@@ -127,6 +127,29 @@ def get_totals_by_pair(contrib_dict):
 
 
 def calculate_clr(curr_agg, pair_totals, trust_dict, v_threshold, total_pot):
+    '''
+        calculates the clr amount at the given threshold and total pot
+        args:
+            curr_agg
+                {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+            pair_totals
+                {user_id (str): {user_id (str): pair_total (float)}}
+            trust_dict
+                {user_id (str): trust_score (float)}
+            v_threshold
+                float
+            total_pot
+                float
+        returns:
+            total clr award by grant, analytics, normalized by the normalization factor
+                [{'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}]
+            saturation point
+                boolean
+    '''
     bigtot = 0
     totals = {}
 
@@ -218,14 +241,13 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
                 if int(dummy_user) > int(k2):
                     tot += ((amount * v2) ** 0.5) / ((amount * v2) ** 0.5 / (v_threshold * max(trust_dict[k2], 1)) + 1)
 
-            if type(tot) == complex:
+          if type(tot) == complex:
                 tot = float(tot.real)
             
-            bigtot += tot
             totals[grant_id] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
-            
+
             # normalise the result
-            grants_clr = normalise(bigtot, totals, total_pot)
+            grants_clr = normalise(bigtot + tot, totals, total_pot)
 
         # find grant we added the contribution to and get the new clr amount
         if grants_clr.get(grant_id):
