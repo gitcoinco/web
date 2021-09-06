@@ -734,8 +734,8 @@ def get_grants_by_filters(
                 field_name = f'clr_prediction_curve__{sort_by_index}__2'
                 _grants = _grants.order_by(f"{order}{field_name}")
 
-        elif 'random_shuffle' in sort:
-            _grants = _grants.order_by('?')
+        # elif 'random_shuffle' in sort:
+        #     _grants = _grants.order_by('?')
 
         elif sort.replace('-', '') in [
             'amount_received_in_round', 'clr_prediction_curve__0__1', 'positive_round_contributor_count'
