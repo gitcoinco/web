@@ -444,6 +444,16 @@ class TestGrant:
         assert hasattr(grant, 'last_clr_calc_date')
         assert grant.last_clr_calc_date == None
 
+    def test_grant_has_next_clr_calc_date_attribute(self):
+        """Test next_clr_calc_date attribute is present and blank."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'next_clr_calc_date')
+        assert grant.next_clr_calc_date == None
+
+    
+
     
 
     
