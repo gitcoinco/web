@@ -75,7 +75,7 @@ class Token(SuperModel):
     Attributes:
         artist (str): The artist that created the kudos image.
         background_color (str): 6 digit hex code background color.  See Open Sea docs for details.
-        cloned_from_id (int): Orignal Kudos that this one was cloned from.
+        cloned_from_id (int): Original Kudos that this one was cloned from.
         contract (FK): Foreing key to the Contract model.
         description (str): Description of the kudos.
         external_url (str): External URL pointer to image asset.  See Open Sea docs for details.
