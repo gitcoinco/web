@@ -1,0 +1,429 @@
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load humanize static i18n bundle %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' with slim=1 %}
+  {% include 'shared/cards_pic.html' %}
+  {% bundle css file grants %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/search_bar.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/kudos/styles.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/collection.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+
+  {% endbundle %}
+  <style>
+
+    #sidebar-quick-view header.b-sidebar-header > strong {
+      font-weight: normal;
+      font-family: 'Miriam Libre';
+    }
+
+    .select2-selection .select2-selection--single {
+      background: none;
+      outline: none;
+      border: none !important;
+      color: var(--gc-blue);
+      padding: 0;
+      max-width: 136px;
+    }
+
+    .vs__selected {
+      position: absolute;
+      min-width: 200px;
+    }
+
+    .no-bg {
+      background: none !important;
+    }
+
+  </style>
+  <style class="page-styles">
+    {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
+  </style>
+
+</head>
+
+<body class="interior {{type}}_grants {{ active }} grant g-font-muli">
+  <div class="content__main min-vh-100 d-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'grants/nav.html' %}
+    <div id="grants-showcase" v-cloak>
+      {% if is_staff %}
+        <div class="container-fluid pt-2 grants-search" id="content_navbar">
+          <div class="container">
+            <form>
+              <div class="row font-caption font-weight-semibold alpha-warning" v-if="credentials.is_staff">
+                <div class="col-12">
+                  {% trans "[ Admin ] Choose Network :" %}
+                  <span class="network-container">
+                    <select @change="changeQuery({network: network})" v-model="network" name="network" id="network">
+                      <option value="mainnet">Mainnet</option>
+                      <option value="rinkeby">Rinkeby</option>
+                    </select>
+                  </span>
+                  <button class="btn btn-sm btn-primary" @click="credentials.is_staff = !credentials.is_staff">see as user</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+      <div class="container mt-1">
+
+        <b-tabs content-class="mt-3" @input="tabChange" v-model="tabIndex" ref="grantstabs" lazy>
+          <b-tab ref="grants" id="grants" title-link-class="nav-line font-weight-bold">
+            <template v-slot:title>Grants</template>
+
+            <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px;height: 42px;padding: 4px 0;">
+              <button class="btn rounded-pill flex-shrink-0" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
+                All Grants
+              </button>
+              <button class="btn rounded-pill flex-shrink-0" v-for="clr in clrData.results" @click="changeQuery({page: 1, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
+                [[clr.display_text]] ($[[clr.total_pot | moneyCompact]])
+              </button>
+            </div>
+            <div
+                ref="filterNav"
+                id="filterNav"
+                class="position-sticky top-0 bg-white py-2 mt-2 d-flex flex-column-reverse flex-md-row justify-content-between"
+                :style="`z-index: 1; top: -1px; margin-top: 1px; ${sticky_active ? 'box-shadow: 0px 8px 10px -14px rgba(0, 0, 0, 0.5);' : ''}`"
+              >
+                <div class="flex-lg-shrink-0 mt-n2">
+
+                  <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;">
+                    [[currentCLR?.display_text]]
+                  </span>
+
+                  <!-- GRANT TYPE FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="grantFlitersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip v-if="grant_types.length">
+                    <template #button-content>
+                      Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox-group id="checkbox-group-types" v-model.lazy="params.grant_types" aria-describedby="ariaDescribedby" name="grant_types">
+                        <template v-for="grant_type in grant_types" v-if="grant_type.is_visible">
+                          <b-form-checkbox class="mb-3" :value="grant_type.keyword">[[grant_type.label]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <b-button variant="link" size="sm" @click="params.grant_types=[], closeDropdown('grantFlitersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('grantFlitersDropdown')">Apply</b-button>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- TAG FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="tagFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      Tags <span v-if="params.grant_tags?.length"> • [[params.grant_tags.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <!-- <v-select id="team_members" label="name" :close-on-select="false" @search="tagSearch"  :options="tagsOptions" :reduce="tag => tag.name" placeholder="Add your team Gitcoin usernames" v-model="params.grant_tags" multiple>
+                        <template slot="no-options">
+                          type to search Users..
+                        </template>
+                        <template slot="option" slot-scope="option">
+                          <div class="d-flex align-items-baseline">
+                            <div>[[ option.name ]]</div>
+                          </div>
+                        </template>
+                        <template slot="selected-option" slot-scope="option">
+                          <div class="d-flex align-items-center">
+                            <div>[[ option.name ]]</div>
+                          </div>
+                        </template>
+                      </v-select> -->
+                      <b-form-checkbox-group id="checkbox-group-tags" v-model="params.grant_tags" aria-describedby="ariaDescribedby" name="grant_tags">
+                        <template v-for="tag in tagsOptions">
+                          <b-form-checkbox class="mb-3" :value="tag.name">[[tag.name]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <b-button variant="link" size="sm" @click="params.grant_tags=[], closeDropdown('tagFiltersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('tagFiltersDropdown')">Apply</b-button>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- REGION FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="regionFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      Regions <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox-group id="checkbox-group-regions" v-model="params.grant_regions" aria-describedby="ariaDescribedby" name="grant_regions" stacked>
+                        <template v-for="region in grantRegions">
+                          <b-form-checkbox class="mb-3" :value="region.name">[[region.label]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <b-button variant="link" size="sm" @click="params.grant_regions=[], closeDropdown('regionFiltersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('regionFiltersDropdown')">Apply</b-button>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- TENANT FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="tenantFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      Blockchains <span v-if="params.tenants?.length"> • [[params.tenants.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox-group id="checkbox-group-tenants" v-model="params.tenants" aria-describedby="ariaDescribedby" name="tenants" stacked>
+                        <template v-for="tenant in grantTenants">
+                          <b-form-checkbox class="mb-3" :value="tenant.name">[[tenant.label]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <b-button variant="link" size="sm" @click="params.tenants=[], closeDropdown('tenantFiltersDropdown')">Clear</b-button>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('tenantFiltersDropdown')">Apply</b-button>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- MORE FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="moreFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      More Filters
+                      <span v-if="params.idle || params.only_contributions || params.me || params.following">
+                      • [[ [params.idle, params.only_contributions, params.me, params.following].filter((v)=>v).length ]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox id="idle" v-model="params.idle" name="idle"> Show Idle Grants</b-form-checkbox>
+                      <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants not updated in 3 months</b-dropdown-text>
+
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <b-dropdown-header id="dropdown-header-shortcuts">
+                        My Shortcuts
+                      </b-dropdown-header>
+                      <b-form-checkbox id="only_contributions" v-model="params.only_contributions" name="only_contributions">My Contributions</b-form-checkbox>
+                      <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants I’ve contributed to</b-dropdown-text>
+                      <b-form-checkbox id="me" v-model="params.me" name="me"> My Grants</b-form-checkbox>
+                      <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants I’ve created</b-dropdown-text>
+                      <b-form-checkbox id="following" v-model="params.following" name="following"> Following</b-form-checkbox>
+                      <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants I’ve followed</b-dropdown-text>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <b-button variant="primary" size="sm" @click="closeDropdown('moreFiltersDropdown')">Apply</b-button>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <button class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
+                </div>
+
+                <!-- SEARCH BAR AND CART -->
+                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-md-absolute w-100': searchVisible}">
+                  <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
+                  <i
+                    class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
+                    :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
+                  ></i>
+                  <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})">
+                  <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
+                    <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
+                      <i class="far fa-shopping-cart fa-fw fa-lg"></i>
+                      <span class="cart-notification-dot notification__dot ml-2 mt-n1" :class="{'notification__dot_active': cart_data_count}">[[ cart_data_count ]]</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right gc-cart-box p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="margin-top: 6px; min-width: 352px;">
+                      <gc-cart-content ref="navCart"/>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
+
+            </div>
+
+            <template v-if="'activity' == current_type">
+              {% include 'grants/shared/landing_activity.html' %}
+            </template>
+            <template v-else-if="'stats' == current_type">
+              <div id="insert_iframe">
+                <div style="background-color: #eee; font-size: 14px; text-align: center;">
+                  <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
+                </div>
+                <br>
+                <iframe :src="`https://metabase.gitcoin.co/public/dashboard/f57f8c61-e2f2-4129-89fc-d851f4d721ac`" style="width: 100%; height: 100%; min-height: 1000px;">
+                </iframe>
+              </div>
+            </template>
+            <template v-else>
+
+
+              {% include 'grants/shared/top-filters.html' %}
+
+              <template v-if="isGrantExplorer && !isGrantCollectionExplorer">
+                <!-- {% include 'grants/shared/active_clr_round.html'%} -->
+              </template>
+              <button class="btn btn-outline-gc-grey btn-sm mb-2" v-if="grantsHasPrev" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+              <div class="infinite-container row"  v-if="grants">
+                <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                  <a class="text-decoration-none" :href="grant.details_url">
+                    {% include 'grants/components/card.html' %}
+                  </a>
+                </div>
+              </div>
+              <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
+                <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+                <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+                <p class="font-subheader text">
+                  {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+                  {% trans "Please try another search term or browse for a grant." %}
+                </p>
+                <div class="col-12 pt-4 pb-2 mx-auto text-center">
+                  <a class="btn-lg btn-primary py-3 px-5" href="{% url 'grants:grants' %}">
+                    {% trans "Browse Grants" %}
+                  </a>
+                </div>
+              </div>
+            </template>
+          </b-tab>
+          <b-tab ref="collections" id="collections" title-link-class="nav-line font-weight-bold">
+            <template v-slot:title>Collections</template>
+            {% include 'grants/shared/landing_grants.html' %}
+          </b-tab>
+          <template v-slot:tabs-end>
+            <li role="presentation" class="flex-fill nav-item text-right">
+              <a href="{% url 'grants:new' %}" class="btn btn-primary">{% trans 'Create a Grant' %}</a>
+            </li>
+          </template>
+
+        </b-tabs>
+      </div>
+
+      <!-- <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
+
+      </div> -->
+        {% include 'shared/grant_thanks_modal.html' %}
+
+        <!-- {% include 'grants/shared/landing_hero.html' %} -->
+
+        <div class="container grants-details-parent mx-auto">
+          <div id="grants-details" :class="`no-gutters w-100 ${view == 'list' ? 'list-view' : 'grid-view'}`">
+            <div style="background-size: contain;" id="grant-background-image-mount-point">
+              <div style="background-color: rgba(255, 255, 255, 0.92);  padding-bottom: 20px;">
+                <div>
+                  <b-sidebar
+                    id="sidebar-quick-view"
+                    ref="sidebar-quick-view"
+                    title="Grant Details"
+                    backdrop-variant="dark"
+                    bg-variant="white"
+                    backdrop
+                    shadow
+                    width="max(80vw, 1000px)"
+                  >
+                    <grant-details :grant="grant" :fullview="false" v-if="grant.id">
+                      <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
+                    </grant-details>
+                  </b-sidebar>
+                </div>
+              </div>
+            </div>
+            {% csrf_token %}
+          </div>
+
+        </div>
+
+
+      </div>
+      {% include 'grants/components/collection.html' %}
+      {% include 'grants/detail/template-grant-details.html' %}
+      {% include 'shared/footer.html' %}
+    </div>
+  </div>
+  {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+  {% include 'grants/shared/shared_scripts.html' %}
+  {{collections|json_script:"collections-object"}}
+  {{type|json_script:"current_type"}}
+  {{grant_bg.inline_css|json_script:"inline_css"}}
+  <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
+  {% bundle js file quill-image-extend-module %}
+    <script>
+      // use webpack to build ImageExtend
+      import { QuillWatch, ImageExtend } from 'quill-image-extend-module';
+      // set to global context
+      window.QuillWatch = QuillWatch;
+      window.ImageExtend = ImageExtend;
+    </script>
+  {% endbundle %}
+  <script>
+    // document.current_type = "{{ type|default:'all' }}";
+    document.current_type = JSON.parse(document.getElementById('current_type').textContent);
+    document.selected_category = "{{ selected_category }}";
+    document.network = "{{ network}}";
+    document.keyword = "{{ keyword }}";
+    document.following = {{ following|yesno:'true,false' }};
+    document.idle_grants = {{ idle_grants|yesno:'true,false' }};
+    document.show_contributions = {{ only_contributions|yesno:'true,false' }};
+    document.featured = {{ featured|yesno:'true,false' }};
+    document.collection_id = {{ collection_id|default:'null' }};
+    document.collections = JSON.parse(document.getElementById('collections-object').textContent);
+    document.activePage = "{{ active }}";
+
+    {% if clr_round %}
+      document.clr_round_pk = "{{clr_round.pk}}";
+      document.round_num = "{{clr_round.round_num}}";
+      document.sub_round_slug = "{{clr_round.sub_round_slug}}";
+      document.customer_name = "{{clr_round.customer_name}}";
+    {% else %}
+      delete document.round_num;
+      delete document.customer_name;
+      delete document.clr_round_pk;
+      delete document.sub_round_slug;
+    {% endif %}
+    let base_style = {
+        bg: '/static/v2/images/bg/{{styles.bg}}',
+        size: "{{styles.bg_size}}",
+        color: "{{styles.bg_color}}",
+        background_image: "url('/static/v2/images/bg/{{bottom_back}}')"
+      };
+
+    document.all_type_styles = {% if all_styles %} {{ all_styles|safe }} {% else %} [] {% endif %};
+
+    document.all_routing_policies = {% if all_routing_policies %} {{ all_routing_policies | safe}} {% else %} [] {% endif %};
+    // document.all_routing_policies.push(base_style);
+
+    {% if grant_bg %}
+    // {{styles}}
+      document.current_style = {
+        banner_image: "{{ grant_bg.banner_image }}",
+        background_image: " url('{{grant_bg.background_image }}')",
+        inline_css: JSON.parse(document.getElementById('inline_css').textContent)
+      }
+    {% else %}
+      document.current_style = base_style
+    {% endif %}
+
+  </script>
+  {% include 'shared/activity_scripts.html' %}
+
+
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/grants/components.js" %}"></script>
+  <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
+  <!-- <script src="{% static "v2/js/grants/funding.js" %}"></script> -->
+  <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
+  <script src="{% static "v2/js/grants/grant-thanks-modal.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
+</body>
+
+
+</html>

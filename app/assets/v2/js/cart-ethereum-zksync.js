@@ -189,7 +189,7 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Called on page load to initialize zkSync
     async setupZkSync() {
-      const network = this.network || 'mainnet'; // fallback to mainnet if no wallet is connected
+      const network = (this.network === 'testnet' ? null : this.network) || 'mainnet'; // fallback to mainnet if no wallet is connected
 
       if (!web3Modal || !provider) {
         return; // exit if web3 isn't defined, and we'll run this function later
@@ -202,6 +202,7 @@ Vue.component('grantsCartEthereumZksync', {
         // alchemy: YOUR_ALCHEMY_API_KEY,
         // pocket: YOUR_POCKET_APPLICATION_KEY
       });
+
       this.zksync.checkoutManager = new ZkSyncCheckout.CheckoutManager(network);
       this.user.zksyncState = await this.zksync.checkoutManager.getState(this.user.address);
     },
@@ -236,7 +237,8 @@ Vue.component('grantsCartEthereumZksync', {
         await appCart.$refs.cart.postToDatabase(
           txHashes, // array of transaction hashes for each contribution
           this.zksync.contractAddress, // we use the zkSync mainnet contract address to represent zkSync deposits
-          this.user.address
+          this.user.address,
+          'eth_zksync'
         );
         this.zksync.checkoutStatus = 'complete'; // allows user to freely close tab now
         await appCart.$refs.cart.finalizeCheckout(); // Update UI and redirect
@@ -266,6 +268,9 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Estimates the total gas cost of a zkSync checkout and sends it to cart.js
     estimateGasCost() {
+      if (!this.user.zksyncState)
+        return;
+
       // Estimate minimum gas cost based on 550 gas per transfer
       const gasPerTransfer = toBigNumber('550'); // may decrease as low as 340 as zkSync gets more traction
       const numberOfTransfers = String(this.donationInputs.length);

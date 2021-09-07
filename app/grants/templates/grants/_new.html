@@ -466,14 +466,14 @@
                       [[errors.grant_type]]
                     </div>
                   </div>
-                  <div v-if="form.grant_type" class="form-group">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Sub Categories</label>
+                  <div class="form-group">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="">Tags</label>
                     <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-                    <v-select placeholder="Select categories" :options="type_to_category_mapping()" label="name" v-model="form.grant_categories" :reduce="state => state.id" multiple>
+                    <v-select placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
                       <template #search="{attributes, events}">
                         <input
                           class="vs__search"
-                          :required="!form.grant_categories.length"
+                          :required="!form.grant_tags.length"
                           v-bind="attributes"
                           v-on="events"
                         />
@@ -483,8 +483,8 @@
                       </template>
                     </v-select>
 
-                    <div class="text-danger" v-if="errors.grant_categories">
-                      [[errors.grant_categories]]
+                    <div class="text-danger" v-if="errors.grant_tags">
+                      [[errors.grant_tags]]
                     </div>
                   </div>
 
@@ -514,6 +514,7 @@
 
       <script>
         document.grant_types = {{grant_types|safe}};
+        document.grant_tags = {{grant_tags|safe}};
       </script>
       <script src="https://cdn.jsdelivr.net/npm/vue-select@3.10.8"></script>
       <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>

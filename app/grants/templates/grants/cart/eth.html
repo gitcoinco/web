@@ -131,7 +131,7 @@
         <li>You are contributing [[donationsToGrantsString]]</li>
         <li>You are additionally contributing [[donationsToGitcoinString]] to the Gitcoin Maintainer Grant</li>
         <li>
-          Note: The exact checkout flow will depend on whether you use standard checkout or zkSync.
+          Note: The exact checkout flow will depend on whether you use Standard Checkout, Polygon, or zkSync.
           <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Read how this works</a>.
         </li>
       </ul>
@@ -148,8 +148,15 @@
   <!-- Checkout recommendation -->
   <div class="row justify-content-end mb-3">
     <small class="col-auto bg-lightpurple p-2">
-      <div v-if="zkSyncUnsupportedTokens.length > 0">
-        zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
+      <div v-if="zkSyncUnsupportedTokens.length > 0 || polygonUnsupportedTokens.length > 0">
+        <div v-if="zkSyncUnsupportedTokens.length > 0">
+          zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
+        </div>
+        {% if is_staff %}
+        <div v-if="polygonUnsupportedTokens.length > 0">
+          Polygon checkout not supported due to [[ polygonUnsupportedTokens.join(', ') ]]
+        </div>
+        {% endif %}
       </div>
       <div v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
         💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
@@ -161,6 +168,114 @@
   <!-- Checkout buttons -->
   <div class="row justify-content-end">
     <div class="btn-group flex-column flex-grow-1 flex-md-grow-0 flex-md-row" role="group" aria-label="Checkout buttons">
+      
+      {% if is_staff %}
+      <!-- CHECKOUT WITH POLYGON -->
+      <grants-cart-ethereum-polygon
+        inline-template
+        @polygon-data-updated="onPolygonUpdate"
+        :current-tokens="currentTokens"
+        :donation-inputs="donationInputs"
+        :max-cart-items="100"
+        :grants-by-tenant="grantsByTenant"
+        :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+      >
+        <div class="w-100 mx-0 mx-md-1">
+        <!-- Checkout with Polygon button -->
+          <button
+            @click="checkoutWithPolygon()"
+            class="btn btn-outline-primary py-2 w-100 text-nowrap ml-0 ml-md-2 mt-2 mt-md-0"
+            :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
+            id='js-polygonfundGrants-button'
+            v-b-tooltip.hover.top="'Polygon is a solution that enables low cost transaction fees and transfer of ETH and ERC-20 tokens with fast confirmation time. To take advantage of these benefits, this method of payment requires preloaded funds in Polygon (cheapest option).'"
+          >
+            Checkout with Polygon
+          </button>
+
+          <!-- Modal shown when clicking button -->
+          <b-modal
+            id="polygon-modal" :visible="polygon.showModal"
+            @hide="polygon.showModal=false;"
+            class="modal-dialog modal-lg" header-border-variant="transparent"
+            center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+          >
+            <!-- Modal close button -->
+            <template v-slot:modal-header="{ close }">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                @click="close()"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </template>
+
+            <!-- Main content -->
+            <template v-slot:default="{ hide }">
+              <div class="px-4 pb-4 mb-5">
+                <!-- If checkout not started -->
+                <div v-if="polygon.checkoutStatus === 'not-started'">
+                  <div class="mx-2 mb-4 pb-2 text-center">
+                    <!-- Header -->
+                    <img class="mb-4" src="{% static 'v2/images/grants/polygon.svg' %}" alt="Polygon Logo" width="150">
+                    <h2 class="mt-2 text-left">Pay with Polygon (Matic)</h2>
+
+                    <div class="text-left mt-2">
+                      <h3 class="font-subheader">What is Polygon (Matic)?</h3>
+                      <p>
+                        Polygon (Matic) is an Ethereum sidechain solution, which means you can checkout
+                        your favorite grants with much lower transaction fees and much faster confirmation time.
+                      </p>
+                      <h3 class="font-subheader">How do I pay with Polygon (Matic)?</h3>
+                      <p>
+                        To proceed, you’ll need to make a minimum deposit of
+                        <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network. Upon clicking Deposit Funds,
+                        a new browser tab will be opened for you to deposit funds to Polygon (Matic) network.
+                      </p>
+                    </div>
+                  </div>
+                  <button @click="openBridgeUrl()" class="btn btn-lg btn-gc-blue shadow-none float-right">
+                    Deposit Funds
+                  </button>
+                </div>
+
+                <!-- If user should deposit -->
+                <div v-if="polygon.checkoutStatus === 'depositing'">
+                  <div class="px-4">
+                    <div class="text-left">
+                      <h2 class="mb-3">Complete fund deposit on Polygon (Matic) Web Wallet</h2>
+                      <h3 class="font-subheader">How much do I have to deposit?</h3>
+                      <p>
+                        To proceed, you’ll need to make a minimum deposit of
+                        <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network.
+                      </p>
+                      <p>
+                        You can close this modal and click Checkout with Polygon again once your deposit is completed.
+                      </p>
+                      <h3 class="font-subheader">Having issues with depositing funds to Polygon (Matic)?</h3>
+                      <p>
+                        Please contact <a href="https://support.polygon.technology/support/home" target="_blank">Polygon Support</a> if you experience any issues or errors
+                        with depositing funds to Polygon (Matic).
+                      </p>
+                    </div>
+                    <button @click="closePolygonModal()" class="mt-2 btn btn-lg btn-gc-blue shadow-none float-right">
+                      Close modal
+                    </button>
+                  </div>
+                </div>
+
+                <!-- If checkout is pending -->
+
+              </div>
+            </template>
+          </b-modal>
+        </div>
+      </grants-cart-ethereum-polygon>
+      {% endif %}
+
+      <!-- CHECKOUT WITH ZKSYNC -->
       <grants-cart-ethereum-zksync
         inline-template
         @zksync-data-updated="onZkSyncUpdate"
@@ -171,11 +286,11 @@
         :grants-under-minimal-contribution="grantsUnderMinimalContribution"
         :network="network"
       >
-        <div class="w-100">
+        <div class="w-100 mx-0 mx-md-1">
         <!-- Checkout with zkSync button -->
           <button
             @click="zksync.showModal = true"
-            class="btn btn-outline-primary py-2 w-100 text-nowrap"
+            class="btn btn-outline-primary py-2 w-100 text-nowrap ml-0 ml-md-2 mt-2 mt-md-0"
             :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
             id='js-zkSyncfundGrants-button'
             v-b-tooltip.hover.top="'zkSync is a scaling solution for Ethereum. It enables extremely low cost transfers of ETH and ERC20 tokens but requires locking funds in layer 2 (cheaper option).'"
@@ -263,13 +378,14 @@
           </b-modal>
         </div>
       </grants-cart-ethereum-zksync>
-
-      <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
-        @click="standardCheckout" :disabled="isCheckoutOngoing || grantsUnderMinimalContribution.length > 0"
-        v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
-      >
-        Standard Checkout
-      </button>
+      <div class="w-100 mx-0 mx-md-1">
+        <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
+          @click="standardCheckout" :disabled="isCheckoutOngoing || grantsUnderMinimalContribution.length > 0"
+          v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
+        >
+          Standard Checkout
+        </button>
+      </div>
     </div>
   </div>
 
@@ -277,7 +393,7 @@
     <div v-if="grantsByTenant.length > maxCartItems" class="text-right">
       Zksync Checkout supports only [[maxCartItems]] items.<br>
       Please remove [[ grantsByTenant.length - maxCartItems ]] item<span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
-      from your cart to use zksync checkout / use standard checkout instead.
+      from your cart to use zksync checkout or use standard checkout instead.
     </div>
     <div v-else-if="isZkSyncDown">
       zkSync is down at the moment, so if you'd like to checkout now you may need to use standard checkout

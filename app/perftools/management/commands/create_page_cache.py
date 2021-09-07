@@ -29,7 +29,7 @@ from avatar.models import AvatarTheme, CustomAvatar
 from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything
-from grants.models import Contribution, Grant, GrantCategory, GrantType
+from grants.models import Contribution, Grant, GrantType
 from grants.utils import get_clr_rounds_metadata
 from marketing.models import Stat
 from perftools.models import JSONStore
@@ -105,17 +105,6 @@ def create_hack_event_cache():
     from dashboard.models import HackathonEvent
     for he in HackathonEvent.objects.all():
         he.save()
-
-
-def create_grant_category_size_cache():
-    print('create_grant_category_size_cache')
-    grant_types = GrantType.objects.all()
-    redis = RedisService().redis
-    for g_type in grant_types:
-        for category in GrantCategory.objects.all():
-            key = f"grant_category_{g_type.name}_{category.category}"
-            val = Grant.objects.filter(active=True, hidden=False, grant_type=g_type, categories__category__contains=category.category).count()
-            redis.set(key, val)
 
 
 def create_top_grant_spenders_cache():
@@ -378,7 +367,6 @@ class Command(BaseCommand):
         operations.append(create_grant_active_clr_mapping)
         operations.append(create_grant_type_cache)
         operations.append(create_grant_clr_cache)
-        operations.append(create_grant_category_size_cache)
 
         if not settings.DEBUG:
             operations.append(create_results_cache)

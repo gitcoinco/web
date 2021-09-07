@@ -11,7 +11,7 @@ Vue.mixin({
         amount: 0,
         stage: '',
         grant_types: [],
-        grant_categories: [],
+        grant_tags: [],
         grant_collections: [],
         anonymous: false,
         comment: '',
@@ -97,7 +97,7 @@ Vue.mixin({
         vm.form.grant_collections = [];
       } else if (vm.grants_to_fund == 'collections') {
         vm.form.grant_types = [];
-        vm.form.grant_categories = [];
+        vm.form.grant_tags = [];
       }
 
       const params = {
@@ -105,7 +105,7 @@ Vue.mixin({
         'amount': form.amount,
         'stage': form.stage,
         'grant_types[]': form.grant_types.join(),
-        'grant_categories[]': form.grant_categories.join(),
+        'grant_tags[]': form.grant_tags.join(),
         'grant_collections[]': form.grant_collections.join(),
         'anonymous': form.anonymous,
         'comment': form.comment
@@ -146,7 +146,7 @@ Vue.mixin({
               }
             ]
           });
-          _alert('Match Pledge Request Recorded.  To fund the matching pool please visit this Grant.');
+          _alert('Match Pledge Request Recorded.  To fund the matching pool please visit this Grant.', 'success');
           vm.clearForm();
           document.location.href = 'https://gitcoin.co/grants/12/gitcoin-grants-official-matching-pool-fund';
         } else {
@@ -201,7 +201,7 @@ if (document.getElementById('gc-new-match')) {
         grants_to_fund: 'types',
         grant_types: document.grant_types,
         grant_collections: document.grant_collections,
-        grant_categories: document.grant_categories,
+        grant_tags: document.grant_tags,
         why_options: why_options,
         stage_options: stage_options,
         network: 'mainnet',
@@ -212,7 +212,7 @@ if (document.getElementById('gc-new-match')) {
           amount: 0,
           stage: '',
           grant_types: [],
-          grant_categories: [],
+          grant_tags: [],
           grant_collections: [],
           anonymous: false,
           comment: '',
