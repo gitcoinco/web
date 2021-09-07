@@ -1,4 +1,4 @@
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
-## CLR
+## Related grants (everyday @ 04:01)
 1 4 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash grant_related  > /var/log/gitcoin/grant_related.log  2>&1

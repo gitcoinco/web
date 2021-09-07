@@ -1,4 +1,4 @@
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
-## CLR
-1 */4 * * * cd gitcoin/coin; bash scripts/run_clr.bash full 2>&1
+## FULL CLR (every 15 minutes)
+*/15 * * * * cd gitcoin/coin; bash scripts/run_clr.bash full 2>&1
