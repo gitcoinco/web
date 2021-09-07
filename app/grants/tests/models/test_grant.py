@@ -476,6 +476,16 @@ class TestGrant:
         assert hasattr(grant, 'twitter_handle_1')
         assert grant.twitter_handle_1 == ''
 
+    def test_grant_has_twitter_handle_2(self):
+        """Test twitter_handle_2 attribute is present and defaults to empty string."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_handle_2')
+        assert grant.twitter_handle_2 == ''
+
+     
+
     
 
     
