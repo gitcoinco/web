@@ -404,7 +404,13 @@ class TestGrant:
         assert hasattr(grant, 'contribution_count')
         assert grant.contribution_count == 0
 
-   
+    def test_grant_has_contributor_count(self):
+        """Test contributor_count attribute is present and defaults to 0."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contributor_count')
+        assert grant.contributor_count == 0
 
     
 
