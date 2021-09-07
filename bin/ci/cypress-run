@@ -19,10 +19,6 @@ python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/users.json"
 # run app server
 python3 app/manage.py runserver 0.0.0.0:8000 &
 
-# create superuser based on credentials in the readme
-export DJANGO_SUPERUSER_PASSWORD=gitcoinco
-python3 app/manage.py createsuperuser --noinput --username root --email root@gitcoin.co
-
 # run cypress tests
 export NETWORK_NAME=localhost
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
