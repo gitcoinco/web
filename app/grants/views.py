@@ -68,7 +68,7 @@ from dashboard.utils import get_web3
 from economy.models import Token as FTokens
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from grants.clr import fetch_data
+from grants.clr_old import fetch_data
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCollection, GrantType, MatchPledge, Subscription,
