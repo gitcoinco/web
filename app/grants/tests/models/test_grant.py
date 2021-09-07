@@ -503,3 +503,11 @@ class TestGrant:
 
         assert hasattr(grant, 'twitter_handle_2_follower_count')
         assert grant.twitter_handle_2_follower_count == 0
+
+    def test_grant_has_sybil_score(self):
+        """Test sybil_score attribute is present and defaults to 0."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'sybil_score')
+        assert grant.sybil_score == 0
