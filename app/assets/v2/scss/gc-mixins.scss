@@ -6,14 +6,15 @@
 @import "./lib/bootstrap-overrides";
 
 // define borders for $position of $width
-@mixin border($position, $minWidth, $maxWidth, $style:"") {
+@mixin border($position, $minWidth, $maxWidth, $infix: '', $style: '') {
   @for $i from $minWidth through $maxWidth {
-    @if $style != "" {
-      .border-#{$style}-#{$position}-#{$i} {
+    $_position: if($infix != '', (#{$position}-#{$infix}), $position);
+    @if $style != '' {
+      .border-#{$style}-#{$_position}-#{$i} {
         border-#{$position}: #{$i}px #{$style};
       }
     } @else {
-      .border-#{$position}-#{$i} {
+      .border-#{$_position}-#{$i} {
         border-#{$position}: #{$i}px solid;
       }
     }

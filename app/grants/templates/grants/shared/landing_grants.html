@@ -1,14 +1,14 @@
 {% load humanize static i18n %}
 
     <div class="container" v-cloak>
-      <div :class="`infinite-container mt-4 row ${ current_type !== 'collections' ? 'vertica-scroll' : ''}`" @scroll.passive="onScroll($event)" v-if="(current_type == 'all' || current_type == 'collections') && collections && !activeCollection">
+      <div class="infinite-container mt-4 row">
         <div :class="`col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card`" v-for="(collection, id) in collections">
-          <grant-collection :collection="collection" v-on:collection:show="showSingleCollection($event)" :small="current_type !== 'collections'"></grant-collection>
+          <grant-collection :collection="collection" v-on:collection:show="filterCollection(collection.id)" ></grant-collection>
         </div>
       </div>
-      <div class="infinite-container mt-4 row" @scroll.passive="onScroll($event)" v-if="activeCollection">
+      <div class="infinite-container mt-4 row"  v-if="activeCollection">
         <div :class="`col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card`" v-for="(collection, id) in [activeCollection]">
-          <grant-collection :collection="collection" v-on:collection:show="showSingleCollection($event)" :activeCollection="true" :small="current_type !== 'collections'"></grant-collection>
+          <grant-collection :collection="collection" v-on:collection:show="filterCollection(collection.id)" :activeCollection="true" :small="current_type !== 'collections'"></grant-collection>
         </div>
       </div>
       <div v-if="current_type === 'collections' && !collections.length && !activeCollection">
@@ -20,25 +20,6 @@
       <div v-if="activeCollection">
         <h3 class="font-subheader my-3">Grants in this collection: </h3>
       </div>
-      <div class="infinite-container row" @scroll.passive="onScroll($event)" v-if="grants">
-        <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-          <a class="text-decoration-none" target="_blank" :href="grant.details_url">
-            {% include 'grants/components/card.html' %}
-          </a>
-        </div>
-      </div>
-      <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
-        <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-        <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
-        <p class="font-subheader text">
-          {% trans "We couldn't match with any grants on Gitcoin." %}</br>
-          {% trans "Please try another search term or browse for a grant." %}
-        </p>
-        <div class="col-12 pt-4 pb-2 mx-auto text-center">
-          <a class="btn-lg btn-primary py-3 px-5" href="{% url 'grants:grants' %}">
-            {% trans "Browse Grants" %}
-          </a>
-        </div>
-      </div>
+      
     </div>
 

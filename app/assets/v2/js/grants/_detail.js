@@ -49,10 +49,10 @@ Vue.mixin({
 
       switch (vm.tab) {
         case 'sybil_profile':
-          vm.tabSelected = 3;
+          vm.tabSelected = 4;
           break;
         case 'stats':
-          vm.tabSelected = 4;
+          vm.tabSelected = 3;
           break;
         default:
           vm.tabSelected = 0;
@@ -123,8 +123,8 @@ Vue.mixin({
     },
     backNavigation: function() {
       const vm = this;
-      const lgi = localStorage.getItem('last_grants_index');
-      const lgt = localStorage.getItem('last_grants_title');
+      const lgt = localStorage.getItem('last_grants_title') || 'Grants';
+      const lgi = document.referrer.indexOf(location.host) != -1 ? 'javascript:history.back()' : '/grants/explorer';
 
       if (lgi && lgt) {
         vm.$set(vm.backLink, 'url', lgi);

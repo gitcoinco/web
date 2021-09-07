@@ -29,7 +29,6 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/side-cart.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
     {% endbundle %}
@@ -84,7 +83,7 @@
           <grant-details :grant="grant" v-if="grant?.id">
             <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
             <div class="container mb-3">
-              <a :href="backLink.url" class="font-body"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
+              <a :href="backLink.url" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
             </div>
           </grant-details>
 
@@ -271,6 +270,20 @@
                   </div>
                 </b-tab>
 
+                {% if is_team_member or is_staff  %}
+                <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
+                  <template v-slot:title>Stats</template>
+                  {% if tab == 'stats' %}
+                    <div id=grant_stats_graph class="content-block content-block--white">
+                      <div class="container">
+                        <iframe src="https://metabase.gitcoin.co/public/question/336dd009-0b96-4733-85a7-336b3447dc16?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
+                        <iframe src="https://metabase.gitcoin.co/public/question/c7dd0ded-7c39-47a3-a0d2-38627d9849b5?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
+                      </div>
+                    </div>
+                  {% endif %}
+                </b-tab>
+                {% endif %}
+
                 {% if is_staff %}
                 <b-tab :title-link-class="'nav-line'" @click="tabChange('sybil_profile')">
                   <template v-slot:title>Sybil Profile</template>
@@ -357,20 +370,6 @@
                     </div>
                 </b-tab>
                 {% endif %}
-                {% if is_team_member or is_staff  %}
-                <b-tab :title-link-class="'nav-line'" @click="tabChange('stats')">
-                  <template v-slot:title>Stats</template>
-                  {% if tab == 'stats' %}
-                    <div id=grant_stats_graph class="content-block content-block--white">
-                      <div class="container">
-                        <iframe src="https://metabase.gitcoin.co/public/question/336dd009-0b96-4733-85a7-336b3447dc16?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
-                        <iframe src="https://metabase.gitcoin.co/public/question/c7dd0ded-7c39-47a3-a0d2-38627d9849b5?id={{secret_id}}" frameborder="0" width="100%" height="800" allowtransparency></iframe>
-                      </div>
-                    </div>
-                  {% endif %}
-                </b-tab>
-                {% endif %}
-
               </b-tabs>
             </div>
           </div>
@@ -401,11 +400,6 @@
 
         </div>
 
-        <!-- Side-cart -->
-        <div id="side-cart" class="grant-side-cart pb-md-0 pt-md-0 px-0 border-top-2 border-grey mt-n1 mt-md-0" style="display: none;">
-          {% include 'grants/detail/side-cart.html' %}
-        </div>
-
       </div>
       {% include 'grants/detail/template-grant-details.html' %}
 
@@ -432,7 +426,7 @@
         };
         var user_code = JSON.parse(document.getElementById('user_code').textContent);
         var verification_tweet = JSON.parse(document.getElementById('verification_tweet').textContent);
-
+        document.grant_tags = {{ grant_tags|safe }};
       </script>
 
       {% include 'shared/activity_scripts.html' %}
