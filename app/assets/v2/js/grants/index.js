@@ -271,6 +271,7 @@ if (document.getElementById('grants-showcase')) {
       },
       changeQuery: function(query) {
         let vm = this;
+
         vm.fetchedPages = [];
         vm.$set(vm, 'params', {...vm.params, ...query});
 
@@ -330,14 +331,16 @@ if (document.getElementById('grants-showcase')) {
       },
       unshiftGrants: async function(page) {
         let vm = this;
+
         await vm.updateUrlParams();
 
-        vm.searchParams.set('page', page)
-        vm.fetchedPages.push(page)
+        vm.searchParams.set('page', page);
+        vm.fetchedPages.push(page);
 
         const getGrants = await fetchData(`/grants/cards_info?${vm.searchParams.toString()}`);
+
         getGrants.grants.forEach(function(item) {
-          vm.grants.unshift(item)
+          vm.grants.unshift(item);
 
         });
 
@@ -345,7 +348,8 @@ if (document.getElementById('grants-showcase')) {
       },
       fetchGrants: async function(page, append_mode, replaceHistory) {
         let vm = this;
-        console.log(page)
+
+        console.log(page);
         if (page) {
           vm.params.page = page;
         }
@@ -372,7 +376,7 @@ if (document.getElementById('grants-showcase')) {
         //   vm.fetchedPages = [page];
         // } else {
         // }
-        vm.fetchedPages = [...vm.fetchedPages, Number(vm.params.page)];
+        vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
         // if (this.params.collection_id) {
         //   if (getGrants.collections.length > 0) {
         //     this.activeCollection = getGrants.collections[0];
@@ -488,10 +492,10 @@ if (document.getElementById('grants-showcase')) {
         // console.log(bottomOfPage, pageHeight, visible, topOfPage);
 
         if (bottomOfPage || pageHeight < visible) {
-          console.log('bottmpage')
+          console.log('bottmpage');
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             vm.fetchCollections(true);
-          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page+1)) {
+          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
             vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
           }
@@ -580,17 +584,20 @@ if (document.getElementById('grants-showcase')) {
       },
       pageIsFetched(page) {
         let vm = this;
-        return vm.fetchedPages.includes(page)
+
+        return vm.fetchedPages.includes(page);
 
       }
     },
     computed: {
       lowestPage() {
         let vm = this;
-        return Math.min(...vm.fetchedPages)
+
+        return Math.min(...vm.fetchedPages);
       },
       grantsHasPrev() {
         let vm = this;
+
         return vm.lowestPage > 1;
       },
       currentCLR() {
