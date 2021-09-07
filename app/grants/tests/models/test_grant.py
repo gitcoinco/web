@@ -348,6 +348,15 @@ class TestGrant:
         assert len(grant.team_members.all()) == len(team_members)
         assert isinstance(grant.team_members.first(), Profile)
 
+    def test_grant_has_image_css(self):
+        """Test image_css attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'image_css')
+        assert grant.image_css == ''
+
+
 
     
         
