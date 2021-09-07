@@ -146,7 +146,6 @@ generate:
     - marketing.management.commands.process_email_events++
     - marketing.management.commands.pull_github++
     - marketing.management.commands.pull_stats++
-    - marketing.management.commands.remarket_bounties++
     - marketing.management.commands.roundup++
     - marketing.management.commands.send_quarterly_stats++
     - marketing.management.commands.sync_github++

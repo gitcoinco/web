@@ -38,6 +38,7 @@ from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
+from django.http.response import HttpResponseBadRequest, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -57,7 +58,7 @@ from app.settings import (
     EMAIL_ACCOUNT_VALIDATION, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
     TWITTER_CONSUMER_SECRET,
 )
-from app.utils import get_profile
+from app.utils import allow_all_origins, get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from dashboard.brightid_utils import get_brightid_status
@@ -67,6 +68,7 @@ from dashboard.utils import get_web3
 from economy.models import Token as FTokens
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
+from grants.clr import fetch_data
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
     GrantCollection, GrantType, MatchPledge, Subscription,
@@ -81,10 +83,10 @@ from grants.utils import (
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Announcement, Favorite, PinnedPost
+from townsquare.models import Announcement, Favorite, PinnedPost, SquelchProfile
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
@@ -1563,7 +1565,7 @@ def grant_edit(request, grant_id):
             kusama_payout_address == '0x0' and
             harmony_payout_address == '0x0' and
             binance_payout_address == '0x0' and
-            rsk_payout_address == '0x0' and 
+            rsk_payout_address == '0x0' and
             algorand_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
@@ -3496,19 +3498,90 @@ def ingest_contributions(request):
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
 
 
+
+def get_clr_sybil_input(request, round_id):
+    '''
+        This returns a paginated JSON response to return contributions
+        which are considered while calculating the QF match for a given CLR
+    '''
+    token = request.headers['token']
+    page = request.GET.get('page', 1)
+
+    data = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN').data
+
+    if not round_id or not token or not data['token']:
+        return HttpResponseBadRequest("error: missing arguments")
+
+    if token != data['token']:
+        return HttpResponseBadRequest("error: invalid token")
+
+    clr = GrantCLR.objects.filter(pk=round_id).first()
+    if not clr:
+        return HttpResponseBadRequest("error: round not found")
+
+    try:
+        limit = data['limit'] if data['limit'] else 100
+
+        # fetch grant contributions needed for round
+        __, all_clr_contributions = fetch_data(clr)
+        total_count = all_clr_contributions.count()
+
+        # extract only needed fields
+        all_clr_contributions = list(all_clr_contributions.values(
+            'created_on', 'profile_for_clr__handle', 'profile_for_clr_id',
+            'match', 'normalized_data'
+        ))
+
+        # paginate contributions
+        contributions = Paginator(all_clr_contributions, limit)
+        try:
+            contributions_queryset = contributions.page(page)
+        except EmptyPage:
+            response = {
+                'metadata': {
+                    'count': 0,
+                    'current_page': 0,
+                    'num_pages': 0,
+                    'has_next': False
+                },
+                'contributions': []
+            }
+            return HttpResponse(response)
+
+        response = {
+            'metadata': {
+                'count': total_count,
+                'current_page': page,
+                'total_pages': contributions.num_pages,
+                'has_next': contributions_queryset.has_next()
+            },
+            'contributions': contributions_queryset.object_list
+        }
+
+    except Exception as e:
+        print(e)
+        return HttpResponseServerError()
+
+    return JsonResponse(response)
+
+
 @csrf_exempt
 def get_trust_bonus(request):
     '''
-        JSON POST endpoint which returns the trust bonus score of given addresses
+        JSON POST/GET endpoint which returns the trust bonus score of given addresses
     '''
 
-    try:
-        json_body = json.loads(request.body)
-        addresses = json_body.get('addresses')
-        if not addresses:
-            return HttpResponse(status=204)
-    except:
-        return HttpResponse(status=400)
+    addresses = request.GET.get('addresses')
+    if addresses:
+        addresses = addresses.split(',')
+    else:
+        try:
+            json_body = json.loads(request.body)
+            addresses = json_body.get('addresses')
+            if not addresses:
+                return allow_all_origins(HttpResponse(status=204))
+        except:
+            return allow_all_origins(HttpResponse(status=400))
 
     query = Q()
     for address in addresses:
@@ -3525,4 +3598,62 @@ def get_trust_bonus(request):
             })
             _addrs.append(subscription.contributor_address)
 
-    return JsonResponse(response, safe=False)
+    return allow_all_origins(JsonResponse(response, safe=False))
+
+
+def toggle_user_sybil(request):
+    '''
+        POST endpoint which allows to mark a list of users as sybil
+        or remove them the sybil tag from them.
+        This is intended to be used by BSCI to ensure they can toggle it
+        every 12 hours based on their findings as opposed to having it done
+        at the end.
+    '''
+
+    json_body = json.loads(request.body)
+
+    token = request.headers['token']
+    sybil_users = json_body.get('sybil_users')
+    non_sybil_users = json_body.get('non_sybil_users')
+
+    data = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN').data
+
+    if (not sybil_users and not non_sybil_users ) or not token or not data['token']:
+        return HttpResponseBadRequest("error: missing arguments")
+
+    if token != data['token']:
+        return HttpResponseBadRequest("error: invalid token")
+
+    squelched_profiles = SquelchProfile.objects.all()
+
+    if sybil_users:
+        # iterate through users which need to be packed as sybil
+        for user in sybil_users:
+            try:
+                # get user profile
+                profile = Profile.objects.get(pk=user.get('id'))
+
+                # check if user has entry in SquelchProfile
+                if not squelched_profiles.filter(profile=profile).first():
+                    # mark user as sybil
+                    SquelchProfile.objects.create(
+                        profile=profile,
+                        comments=f"sybil: marked by bsci - {user.get('comment')}"
+                    )
+            except Exception as e:
+                print(f"error: unable to mark user ${user.get('id')} as sybil. {e}")
+
+
+    if non_sybil_users:
+        # iterate and remove sybil from user
+        for user in non_sybil_users:
+            try:
+                profile = Profile.objects.get(pk=user.get('id'))
+                print(squelched_profiles.filter(profile=profile))
+                squelched_profiles.filter(profile=profile).delete()
+                print(squelched_profiles.filter(profile=profile))
+
+            except Exception as e:
+                print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
+
+    return JsonResponse({'success': 'ok'}, status=200)

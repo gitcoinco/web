@@ -65,7 +65,6 @@ from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
 from .abi import erc20_abi
-from .notifications import maybe_market_to_slack
 
 logger = logging.getLogger(__name__)
 
@@ -1053,8 +1052,6 @@ def re_market_bounty(bounty, auto_save = True):
 
             if auto_save:
                 bounty.save()
-
-            maybe_market_to_slack(bounty, 'issue_remarketed')
 
             result_msg = 'The issue will appear at the top of the issue explorer. '
             further_permitted_remarket_count = settings.RE_MARKET_LIMIT - bounty.remarketed_count

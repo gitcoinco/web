@@ -433,3 +433,11 @@ def notion_api_call(url='', payload=None):
 
     # return success as dict
     return response
+
+
+def allow_all_origins(response):
+    """Pass in a response and add header to allow all CORs requests"""
+
+    response["Access-Control-Allow-Origin"] = "*"
+
+    return response
