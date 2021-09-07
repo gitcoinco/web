@@ -420,6 +420,14 @@ class TestGrant:
         assert hasattr(grant, 'positive_round_contributor_count')
         assert grant.positive_round_contributor_count == 0
 
+    def test_grant_has_negative_round_contributor_count(self):
+        """Test negative_round_contributor_count is present and defaults to 0."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'negative_round_contributor_count')
+        assert grant.negative_round_contributor_count == 0
+
     
 
     
