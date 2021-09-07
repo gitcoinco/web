@@ -372,7 +372,15 @@ class TestGrant:
         assert hasattr(grant, 'activeSubscriptions')
         assert grant.activeSubscriptions == []
 
- 
+    def test_grant_has_hidden_attribute(self):
+        """Test 'hidden' attribute and default value."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'hidden')
+        assert grant.hidden == False
+
+
 
     
 
