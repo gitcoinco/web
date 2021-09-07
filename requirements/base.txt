@@ -49,7 +49,7 @@ django-ipware==2.0.2
 geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.2.1
-ipdb==0.11
+ipdb==0.13.9
 django-autotranslate==1.1.1
 svgutils==0.3.0
 watchdog==0.9.0
