@@ -460,6 +460,16 @@ class TestGrant:
         assert hasattr(grant, 'last_update')
         assert grant.last_update == None
 
+    def test_grant_has_categories(self):
+        """Test categories attribute is present and blank."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'categories')
+        assert grant.categories == None
+
+    
+
     
 
     
