@@ -364,7 +364,19 @@ class TestGrant:
         assert hasattr(grant, 'amount_received_with_phantom_funds')
         assert grant.amount_received_with_phantom_funds == 0
 
+    def test_grant_has_active_subscriptions(self):
+        """Test activeSubscriptions attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'activeSubscriptions')
+        assert grant.activeSubscriptions == []
+
+ 
+
     
+
+
 
     
         
