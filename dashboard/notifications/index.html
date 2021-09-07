@@ -1921,28 +1921,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     github_org (str): The Github organization.</p>
 <p>Returns:
     str: The concatenated string of twitter tags.</p>
-<h2 id="dashboard.notifications.maybe_market_to_twitter">maybe_market_to_twitter</h2>
-
-<pre><code class="python">maybe_market_to_twitter(bounty, event_name)
-</code></pre>
-
-<p>Tweet the specified Bounty event.</p>
-<p>Args:
-    bounty (dashboard.models.Bounty): The Bounty to be marketed.
-    event_name (str): The name of the event.</p>
-<p>Returns:
-    bool: Whether or not the twitter notification was sent successfully.</p>
-<h2 id="dashboard.notifications.maybe_market_to_slack">maybe_market_to_slack</h2>
-
-<pre><code class="python">maybe_market_to_slack(bounty, event_name)
-</code></pre>
-
-<p>Send a Slack message for the specified Bounty.</p>
-<p>Args:
-    bounty (dashboard.models.Bounty): The Bounty to be marketed.
-    event_name (str): The name of the event.</p>
-<p>Returns:
-    bool: Whether or not the Slack notification was sent successfully.</p>
 <h2 id="dashboard.notifications.build_message_for_integration">build_message_for_integration</h2>
 
 <pre><code class="python">build_message_for_integration(bounty, event_name)
@@ -1954,17 +1932,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     event_name (str): The name of the event.</p>
 <p>Returns:
     str: Message to post to slack.</p>
-<h2 id="dashboard.notifications.maybe_market_to_user_slack_helper">maybe_market_to_user_slack_helper</h2>
-
-<pre><code class="python">maybe_market_to_user_slack_helper(bounty, event_name)
-</code></pre>
-
-<p>Send a Slack message to the user's slack channel for the specified Bounty.</p>
-<p>Args:
-    bounty (dashboard.models.Bounty): The Bounty to be marketed.
-    event_name (str): The name of the event.</p>
-<p>Returns:
-    bool: Whether or not the Slack notification was sent successfully.</p>
 <h2 id="dashboard.notifications.maybe_market_tip_to_email">maybe_market_tip_to_email</h2>
 
 <pre><code class="python">maybe_market_tip_to_email(tip, emails)

@@ -2029,17 +2029,33 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Ingest missing contributions
-<h2 id="grants.views.get_trust_bonus">get_trust_bonus</h2></p>
+<h2 id="grants.views.get_clr_sybil_input">get_clr_sybil_input</h2></p>
+<pre><code class="python">get_clr_sybil_input(request, round_id)
+</code></pre>
+
+<p>This returns a paginated JSON response to return contributions
+which are considered while calculating the QF match for a given CLR</p>
+<h2 id="grants.views.get_trust_bonus">get_trust_bonus</h2>
+
 <pre><code class="python">get_trust_bonus(request)
 </code></pre>
 
-<p>JSON POST endpoint which returns the trust bonus score of given addresses</p>
+<p>JSON POST/GET endpoint which returns the trust bonus score of given addresses</p>
 <h3 id="grants.views.get_trust_bonus.csrf_exempt">csrf_exempt</h3>
 
 <p>bool(x) -&gt; bool</p>
 <p>Returns True when the argument x is true, False otherwise.
 The builtins True and False are the only two instances of the class bool.
-The class bool is a subclass of the class int, and cannot be subclassed.</p>
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="grants.views.toggle_user_sybil">toggle_user_sybil</h2></p>
+<pre><code class="python">toggle_user_sybil(request)
+</code></pre>
+
+<p>POST endpoint which allows to mark a list of users as sybil
+or remove them the sybil tag from them.
+This is intended to be used by BSCI to ensure they can toggle it
+every 12 hours based on their findings as opposed to having it done
+at the end.</p>
                 
                   
                 
