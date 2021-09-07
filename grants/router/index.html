@@ -1891,6 +1891,173 @@
                 
                 <h1 id="grants.router">grants.router</h1>
 
+<h2 id="grants.router.GrantCLRPagination">GrantCLRPagination</h2>
+
+<pre><code class="python">GrantCLRPagination(self, /, *args, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantCLRPagination.page_size">page_size</h3>
+
+<p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.<strong>int</strong>().  For floating point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>int('0b100', base=0)
+4
+<h3 id="grants.router.GrantCLRPagination.page_size_query_param">page_size_query_param</h3></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>str(object='') -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.<strong>str</strong>() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to 'strict'.
+<h2 id="grants.router.GrantsClrViewSet">GrantsClrViewSet</h2></p>
+<pre><code class="python">GrantsClrViewSet(self, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantsClrViewSet.filterset_fields">filterset_fields</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="grants.router.GrantsClrViewSet.queryset">queryset</h3></p>
+<p>Represent a lazy database lookup for a set of objects.
+<h3 id="grants.router.GrantsClrViewSet.pagination_class">GrantCLRPagination</h3></p>
+<pre><code class="python">GrantsClrViewSet.GrantCLRPagination(self, /, *args, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantsClrViewSet.serializer_class">GrantCLRSerializer</h3>
+
+<pre><code class="python">GrantsClrViewSet.GrantCLRSerializer(self, *args, **kwargs)
+</code></pre>
+
+<p>Handle metadata of CLR rounds
+<h3 id="grants.router.GrantsClrViewSet.dispatch">dispatch</h3></p>
+<pre><code class="python">GrantsClrViewSet.dispatch(self, request, *args, **kwargs)
+</code></pre>
+
+<p><code>.dispatch()</code> is pretty much the same as Django's regular dispatch,
+but with extra hooks for startup, finalize, and exception handling.</p>
+<h2 id="grants.router.GrantCollectionPagination">GrantCollectionPagination</h2>
+
+<pre><code class="python">GrantCollectionPagination(self, /, *args, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantCollectionPagination.page_size">page_size</h3>
+
+<p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.<strong>int</strong>().  For floating point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>int('0b100', base=0)
+4
+<h3 id="grants.router.GrantCollectionPagination.page_size_query_param">page_size_query_param</h3></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>str(object='') -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.<strong>str</strong>() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to 'strict'.
+<h2 id="grants.router.GrantCollectionViewSet">GrantCollectionViewSet</h2></p>
+<pre><code class="python">GrantCollectionViewSet(self, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantCollectionViewSet.filterset_fields">filterset_fields</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="grants.router.GrantCollectionViewSet.queryset">queryset</h3></p>
+<p>Handle the manager queryset for Collections.
+<h3 id="grants.router.GrantCollectionViewSet.pagination_class">GrantCollectionPagination</h3></p>
+<pre><code class="python">GrantCollectionViewSet.GrantCollectionPagination(self, /, *args, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantCollectionViewSet.serializer_class">GrantCollectionSerializer</h3>
+
+<pre><code class="python">GrantCollectionViewSet.GrantCollectionSerializer(self, *args, **kwargs)
+</code></pre>
+
+<p>Handle metadata of CLR rounds
+<h2 id="grants.router.GrantTypeViewSet">GrantTypeViewSet</h2></p>
+<pre><code class="python">GrantTypeViewSet(self, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantTypeViewSet.queryset">queryset</h3>
+
+<p>Represent a lazy database lookup for a set of objects.
+<h3 id="grants.router.GrantTypeViewSet.serializer_class">GrantTypeSerializer</h3></p>
+<pre><code class="python">GrantTypeViewSet.GrantTypeSerializer(self, *args, **kwargs)
+</code></pre>
+
+<p>Handle metadata of CLR rounds
+<h2 id="grants.router.GranTagFilter">GranTagFilter</h2></p>
+<pre><code class="python">GranTagFilter(self, data=None, queryset=None, *, request=None, prefix=None)
+</code></pre>
+
+<h3 id="grants.router.GranTagFilter.base_filters">base_filters</h3>
+
+<p>Dictionary that remembers insertion order
+<h3 id="grants.router.GranTagFilter.declared_filters">declared_filters</h3></p>
+<p>Dictionary that remembers insertion order
+<h3 id="grants.router.GranTagFilter.Meta">Meta</h3></p>
+<pre><code class="python">GranTagFilter.Meta(self, /, *args, **kwargs)
+</code></pre>
+
+<h2 id="grants.router.GrantTagViewSet">GrantTagViewSet</h2>
+
+<pre><code class="python">GrantTagViewSet(self, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantTagViewSet.queryset">queryset</h3>
+
+<p>Represent a lazy database lookup for a set of objects.
+<h3 id="grants.router.GrantTagViewSet.filterset_class">GranTagFilter</h3></p>
+<pre><code class="python">GrantTagViewSet.GranTagFilter(self, data=None, queryset=None, *, request=None, prefix=None)
+</code></pre>
+
+<h3 id="grants.router.GrantTagViewSet.serializer_class">GrantTagSerializer</h3>
+
+<pre><code class="python">GrantTagViewSet.GrantTagSerializer(self, *args, **kwargs)
+</code></pre>
+
+<p>Handle metadata of CLR rounds
+<h3 id="grants.router.GrantTagViewSet.dispatch">dispatch</h3></p>
+<pre><code class="python">GrantTagViewSet.dispatch(self, request, *args, **kwargs)
+</code></pre>
+
+<p><code>.dispatch()</code> is pretty much the same as Django's regular dispatch,
+but with extra hooks for startup, finalize, and exception handling.</p>
 <h2 id="grants.router.SubscriptionViewSet">SubscriptionViewSet</h2>
 
 <pre><code class="python">SubscriptionViewSet(self, **kwargs)
@@ -1904,6 +2071,11 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
 <p>If the argument is a tuple, the return value is the same object.
 <h3 id="grants.router.SubscriptionViewSet.queryset">queryset</h3></p>
 <p>Represent a lazy database lookup for a set of objects.
+<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3></p>
+<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<p>Handle serializing the Subscription object.
 <h3 id="grants.router.SubscriptionViewSet.get_queryset">get_queryset</h3></p>
 <pre><code class="python">SubscriptionViewSet.get_queryset(self)
 </code></pre>
@@ -1913,13 +2085,8 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
     * Add filter functionality.</p>
 <p>Returns:
     QuerySet: The Subscription queryset.</p>
-<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3>
+<h2 id="grants.router.GrantViewSet">GrantViewSet</h2>
 
-<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
-</code></pre>
-
-<p>Handle serializing the Subscription object.
-<h2 id="grants.router.GrantViewSet">GrantViewSet</h2></p>
 <pre><code class="python">GrantViewSet(self, **kwargs)
 </code></pre>
 
@@ -1932,7 +2099,7 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
 <h3 id="grants.router.GrantViewSet.queryset">queryset</h3></p>
 <p>Define the Grant default queryset and manager.
 <h3 id="grants.router.GrantViewSet.serializer_class">GrantSerializer</h3></p>
-<pre><code class="python">GrantViewSet.GrantSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+<pre><code class="python">GrantViewSet.GrantSerializer(self, *args, **kwargs)
 </code></pre>
 
 <p>Handle serializing the Grant object.

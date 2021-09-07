@@ -1973,6 +1973,41 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h2 id="grants.models.Grant_tags">Grant_tags</h2>
+
+<pre><code class="python">Grant_tags(self, *args, **kwargs)
+</code></pre>
+
+<p>Grant_tags(id, grant, granttag)
+<h3 id="grants.models.Grant_tags.grant">grant</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.Grant_tags.grant_id">grant_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant_tags.granttag">granttag</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="grants.models.Grant_tags.granttag_id">granttag_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant_tags.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h2 id="grants.models.Grant_team_members">Grant_team_members</h2>
 
 <pre><code class="python">Grant_team_members(self, *args, **kwargs)
@@ -2078,41 +2113,6 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="grants.models.GrantType_categories">GrantType_categories</h2>
-
-<pre><code class="python">GrantType_categories(self, *args, **kwargs)
-</code></pre>
-
-<p>GrantType_categories(id, granttype, grantcategory)
-<h3 id="grants.models.GrantType_categories.grantcategory">grantcategory</h3></p>
-<p>Accessor to the related object on the forward side of a many-to-one or
-one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="grants.models.GrantType_categories.grantcategory_id">grantcategory_id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.GrantType_categories.granttype">granttype</h3>
-
-<p>Accessor to the related object on the forward side of a many-to-one or
-one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="grants.models.GrantType_categories.granttype_id">granttype_id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.GrantType_categories.id">id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
 <h2 id="grants.models.GrantQuerySet">GrantQuerySet</h2>
 
 <pre><code class="python">GrantQuerySet(self, model=None, query=None, using=None, hints=None)
@@ -2179,7 +2179,36 @@ a many-to-many relation.</p>
 instances.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="grants.models.GrantCategory.granttype_set">granttype_set</h3>
+<h3 id="grants.models.GrantCategory.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="grants.models.GrantTag">GrantTag</h2>
+
+<pre><code class="python">GrantTag(self, *args, **kwargs)
+</code></pre>
+
+<p>GrantTag(id, created_on, modified_on, name)
+<h3 id="grants.models.GrantTag.get_next_by_created_on">_method</h3></p>
+<pre><code class="python">GrantTag._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantTag.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">GrantTag._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantTag.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">GrantTag._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantTag.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">GrantTag._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="grants.models.GrantTag.grant_set">grant_set</h3>
 
 <p>Accessor to the related objects manager on the forward and reverse sides of
 a many-to-many relation.</p>
@@ -2191,7 +2220,11 @@ a many-to-many relation.</p>
 instances.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="grants.models.GrantCategory.id">id</h3>
+<h3 id="grants.models.GrantTag.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="grants.models.GrantTag.name">name</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2201,19 +2234,7 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>GrantType(id, created_on, modified_on, name, label, is_active, is_visible, logo)
-<h3 id="grants.models.GrantType.categories">categories</h3></p>
-<p>Accessor to the related objects manager on the forward and reverse sides of
-a many-to-many relation.</p>
-<p>In the example::</p>
-<pre><code>class Pizza(Model):
-    toppings = ManyToManyField(Topping, related_name='pizzas')
-</code></pre>
-<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
-instances.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="grants.models.GrantType.get_next_by_created_on">_method</h3>
-
+<h3 id="grants.models.GrantType.get_next_by_created_on">_method</h3></p>
 <pre><code class="python">GrantType._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
 </code></pre>
 
@@ -2948,6 +2969,18 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="grants.models.Grant.tags">tags</h3>
+
+<p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example::</p>
+<pre><code>class Pizza(Model):
+    toppings = ManyToManyField(Topping, related_name='pizzas')
+</code></pre>
+<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="grants.models.Grant.team_members">team_members</h3>
 
 <p>Accessor to the related objects manager on the forward and reverse sides of
