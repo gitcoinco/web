@@ -548,7 +548,7 @@ if (document.getElementById('grants-showcase')) {
 
         this.cart_data_count = grants_in_cart.length;
         this.grants.forEach((grant) => {
-          vm.$set(grant, 'isInCart', (grant_ids_in_cart.indexOf(String(grant.id)) !== -1));
+          this.$set(grant, 'isInCart', (grant_ids_in_cart.indexOf(String(grant.id)) !== -1));
         });
       },
       scrollBottom: function() {
