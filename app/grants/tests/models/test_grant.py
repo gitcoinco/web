@@ -528,4 +528,10 @@ class TestGrant:
         assert hasattr(grant, 'has_external_funding')
         assert grant.has_external_funding == 'unknown'
 
-    
+    def test_grant_has_clr_prediction_curve_attribute(self):
+        """Test clr_prediction_curve attribute is present."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'clr_prediction_curve')
+        assert len(grant.clr_prediction_curve) == 6
