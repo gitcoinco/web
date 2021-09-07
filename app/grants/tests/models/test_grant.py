@@ -428,6 +428,18 @@ class TestGrant:
         assert hasattr(grant, 'negative_round_contributor_count')
         assert grant.negative_round_contributor_count == 0
 
+    def test_grant_has_defer_clr_to_attribute(self):
+        """Test defer_clr_to attribute is present and blank."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'defer_clr_to')
+        assert grant.defer_clr_to == None
+
+    
+
+    
+
     
 
     
