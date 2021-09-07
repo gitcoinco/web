@@ -468,7 +468,13 @@ class TestGrant:
         assert hasattr(grant, 'categories')
         assert grant.categories == None
 
-    
+    def test_grant_has_twitter_handle_1(self):
+        """Test twitter_handle_1 attribute is present and defaults to empty string."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_handle_1')
+        assert grant.twitter_handle_1 == ''
 
     
 
