@@ -10,13 +10,3 @@ class ProfileFactory(factory.django.DjangoModelFactory):
 
     handle = 'gitcoinbot'
     data = {}
-
-
-
-
-
-
-
-
-
-

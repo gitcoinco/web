@@ -1,8 +1,10 @@
 import pytest
 from dashboard.models import Profile
 from grants.models.grant import Grant
+from grants.models.grant_category import GrantCategory
 from grants.models.grant_type import GrantType
 
+from .factories.grant_category_factory import GrantCategoryFactory
 from .factories.grant_factory import GrantFactory
 from .factories.profile_factory import ProfileFactory
 
@@ -462,11 +464,13 @@ class TestGrant:
 
     def test_grant_has_categories(self):
         """Test categories attribute is present and blank."""
-
-        grant = GrantFactory()
+        
+        categories = (GrantCategoryFactory(), GrantCategoryFactory())
+        grant = GrantFactory(categories=(categories))
 
         assert hasattr(grant, 'categories')
-        assert grant.categories == None
+        assert isinstance(grant.categories.first(), GrantCategory)
+        assert len(grant.categories.all()) == 2
 
     def test_grant_has_twitter_handle_1(self):
         """Test twitter_handle_1 attribute is present and defaults to empty string."""
@@ -489,7 +493,7 @@ class TestGrant:
 
         grant = GrantFactory()
 
-        assert hasattr(grant, 'twiiter_handle_1_follower_count')
+        assert hasattr(grant, 'twitter_handle_1_follower_count')
         assert grant.twitter_handle_1_follower_count == 0
 
     def test_grant_has_twitter_handle_2_follower_count(self):
@@ -497,18 +501,5 @@ class TestGrant:
 
         grant = GrantFactory()
 
-        assert hasattr(grant, 'twiiter_handle_2_follower_count')
+        assert hasattr(grant, 'twitter_handle_2_follower_count')
         assert grant.twitter_handle_2_follower_count == 0
-
-    
-
-    
-
-    
-
-    
-
-
-
-    
-        
