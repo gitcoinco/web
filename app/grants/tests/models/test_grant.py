@@ -4,6 +4,7 @@ from grants.models.grant import Grant
 from grants.models.grant_type import GrantType
 
 from .factories.grant_factory import GrantFactory
+from .factories.profile_factory import ProfileFactory
 
 
 @pytest.mark.django_db
@@ -339,8 +340,14 @@ class TestGrant:
 
     def test_grant_has_team_members(self):
         """Test team_members attribute."""
-
-        grant = GrantFactory()
+        
+        team_members = (ProfileFactory(), ProfileFactory(handle='gitcoinbot2'))
+        grant = GrantFactory(team_members=(team_members))
 
         assert hasattr(grant, 'team_members')
+        assert len(grant.team_members.all()) == len(team_members)
+        assert isinstance(grant.team_members.first(), Profile)
+
+
+    
         
