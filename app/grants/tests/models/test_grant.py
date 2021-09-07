@@ -511,3 +511,13 @@ class TestGrant:
 
         assert hasattr(grant, 'sybil_score')
         assert grant.sybil_score == 0
+
+    def test_grant_has_funding_info(self):
+        """Test funding_info attribute is present and defaults to empty string."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'funding_info')
+        assert grant.funding_info == ''
+
+    
