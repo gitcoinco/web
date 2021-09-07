@@ -520,4 +520,12 @@ class TestGrant:
         assert hasattr(grant, 'funding_info')
         assert grant.funding_info == ''
 
+    def test_grant_has_has_external_funding_attribute(self):
+        """Test has_external_funding attribute is present and defaults to 'unknown'."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'has_external_funding')
+        assert grant.has_external_funding == 'unknown'
+
     
