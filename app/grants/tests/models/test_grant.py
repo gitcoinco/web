@@ -356,7 +356,15 @@ class TestGrant:
         assert hasattr(grant, 'image_css')
         assert grant.image_css == ''
 
+    def test_grant_has_amount_received_with_phantom_funds(self):
+        """Test amount_received_with_phantom_funds attribute and default value."""
 
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'amount_received_with_phantom_funds')
+        assert grant.amount_received_with_phantom_funds == 0
+
+    
 
     
         
