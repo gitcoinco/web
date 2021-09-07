@@ -20,9 +20,8 @@ python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/users.json"
 python3 app/manage.py runserver 0.0.0.0:8000 &
 
 # create superuser based on credentials in the readme
-export DJANGO_SUPERUSER_USERNAME=root
 export DJANGO_SUPERUSER_PASSWORD=gitcoinco
-python3 app/manage.py createsuperuser --noinput
+python3 app/manage.py createsuperuser --noinput --username root
 
 # run cypress tests
 export NETWORK_NAME=localhost
