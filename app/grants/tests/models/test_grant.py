@@ -553,3 +553,11 @@ class TestGrant:
 
         assert hasattr(grant, 'in_active_clrs')
         assert isinstance(grant.in_active_clrs.first(), GrantCLR)
+
+    def test_grant_has_clr_round_num_attribute(self):
+        """Test clr_round_num attribute is present and defaults to empty string."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'clr_round_num')
+        assert grant.clr_round_num == ''
