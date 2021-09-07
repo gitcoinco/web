@@ -577,3 +577,19 @@ class TestGrant:
 
         assert hasattr(grant, 'twitter_verified')
         assert grant.twitter_verified == False
+
+    def test_grant_has_twitter_verified_by_attribute(self):
+        """Test twitter_verified_by attribute is present and blank."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_verified_by')
+        assert grant.twitter_verified_by == None
+
+    def test_grant_has_twitter_verified_at_attribute(self):
+        """Test twitter_verified_at attribute is present and blank."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_verified_at')
+        assert grant.twitter_verified_at == None
