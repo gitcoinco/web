@@ -1195,7 +1195,7 @@ class Subscription(SuperModel):
         if self.amount_per_period == self.amount_per_period_to_gitcoin:
             return float(self.amount_per_period)
 
-        return float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
+        return float(self.amount_per_period)
 
     @property
     def amount_per_period_to_gitcoin(self):
@@ -1449,7 +1449,7 @@ next_valid_timestamp: {next_valid_timestamp}
                 logger.info(no_conversion_e)
                 return None
 
-    def get_converted_monthly_amount(self, ignore_gitcoin_fee=False):
+    def get_converted_monthly_amount(self, ignore_gitcoin_fee=True):
         converted_amount = self.get_converted_amount(ignore_gitcoin_fee=ignore_gitcoin_fee) or 0
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
@@ -1485,7 +1485,7 @@ next_valid_timestamp: {next_valid_timestamp}
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
 
-        value_usdt = self.get_converted_amount(False)
+        value_usdt = self.get_converted_amount(True)
         if value_usdt:
             self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)
@@ -1536,7 +1536,7 @@ next_valid_timestamp: {next_valid_timestamp}
         contribution.save()
         grant = self.grant
 
-        value_usdt = self.get_converted_amount(False)
+        value_usdt = self.get_converted_amount(True)
         if value_usdt:
             self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)
@@ -1935,7 +1935,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "from_profile":instance.subscription.contributor_profile,
                     "org_profile":instance.subscription.grant.org_profile,
                     "to_profile":instance.subscription.grant.admin_profile,
-                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(False),
+                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(True),
                     "url":instance.subscription.grant.url,
                     "network":instance.subscription.network,
                     "txid":instance.subscription.split_tx_id,

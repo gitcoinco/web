@@ -216,7 +216,7 @@ Vue.component('grants-cart', {
 
     // Amounts being donated to grants
     donationsToGrants() {
-      return this.donationSummaryTotals(1 - this.gitcoinFactor);
+      return this.donationSummaryTotals(1);
     },
 
     // Amounts being donated to Gitcoin
@@ -226,7 +226,7 @@ Vue.component('grants-cart', {
 
     // Total amounts being donated
     donationsTotal() {
-      return this.donationSummaryTotals(1);
+      return this.donationSummaryTotals(1 + this.gitcoinFactor);
     },
 
     // String describing user's donations to grants
@@ -253,12 +253,9 @@ Vue.component('grants-cart', {
       }
 
       // Generate array of objects containing donation info from cart
-      let gitcoinFactor = String(100 - (100 * this.gitcoinFactor));
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
-        const amount = parseUnits(String(grant.grant_donation_amount || 0), tokenDetails?.decimals)
-          .mul(gitcoinFactor)
-          .div(100);
+        const amount = parseUnits(String(grant.grant_donation_amount || 0), tokenDetails?.decimals);
 
         return {
           token: tokenDetails?.addr,
@@ -735,8 +732,8 @@ Vue.component('grants-cart', {
       this.grantsByTenant.forEach(grant => {
         // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
         const totalDonationAmount = parseEther(String(grant.grant_donation_amount || 0))
-          .mul(String(scaleFactor * 100))
-          .div('100');
+          .mul(String(Math.round(scaleFactor * 10000)))
+          .div('10000');
 
         // Add the number to the totals object
         // First time seeing this token, set the field and initial value

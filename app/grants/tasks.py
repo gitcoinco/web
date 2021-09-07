@@ -92,7 +92,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             # recalculate usdt value
             created_recently = subscription.created_on > (timezone.now() - timezone.timedelta(days=10))
             if not value_usdt and created_recently:
-                value_usdt = subscription.get_converted_amount(False)
+                value_usdt = subscription.get_converted_amount(True)
                 if value_usdt:
                     subscription.amount_per_period_usdt = value_usdt
                     subscription.save()
@@ -209,7 +209,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.comments = package.get('comment', '')
         subscription.save()
 
-        value_usdt = subscription.get_converted_amount(False)
+        value_usdt = subscription.get_converted_amount(True)
         include_for_clr = package.get('include_for_clr')
         if value_usdt < 1 or subscription.contributor_profile.shadowbanned:
             include_for_clr = False
