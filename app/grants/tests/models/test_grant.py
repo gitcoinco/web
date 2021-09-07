@@ -396,6 +396,18 @@ class TestGrant:
         assert hasattr(grant, 'weighted_shuffle')
         assert grant.weighted_shuffle == None
 
+    def test_grant_has_contribution_count(self):
+        """Test contribution_count_attribute and defaults to 0."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contribution_count')
+        assert grant.contribution_count == 0
+
+   
+
+    
+
     
 
 
