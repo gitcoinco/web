@@ -668,16 +668,19 @@ this.actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-this.setUsdAmount = function(givenDenomination) {
+this.setUsdAmount = function(givenDenomination, approx = true) {
   const amount = $('input[name=amount]').val();
   const denomination = givenDenomination || $('#token option:selected').text();
 
   getUSDEstimate(amount, denomination, function(estimate) {
-    if (estimate['value']) {
+
+    const key = approx ? 'value' : 'value_unrounded';
+
+    if (estimate[key]) {
       $('#usd-amount-wrapper').show();
       $('#usd_amount_text').show();
 
-      $('#usd_amount').val(estimate['value']);
+      $('#usd_amount').val(estimate[key]);
       $('#usd_amount_text').html(estimate['rate_text']);
       $('#usd_amount').removeAttr('disabled');
     } else {

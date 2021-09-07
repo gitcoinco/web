@@ -261,7 +261,7 @@ class GrantCLR(SuperModel):
 
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
-        for obj in self.clr_calculations.filter(grant=grant):
+        for obj in self.clr_calculations.filter(grant=grant, latest=True):
             obj.latest = False
             obj.save()
 

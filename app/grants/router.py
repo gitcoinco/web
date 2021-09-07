@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
 
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, Paginator
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_control
-
 import django_filters.rest_framework
 from ratelimit.decorators import ratelimit
 from rest_framework import generics, mixins, routers, viewsets

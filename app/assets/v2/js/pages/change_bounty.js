@@ -226,11 +226,11 @@ $(document).ready(function() {
 
     const denomination = $('input[name=denomination]').val();
 
-    setTimeout(() => setUsdAmount(denomination), 1000);
+    setTimeout(() => setUsdAmount(denomination, false), 1000);
 
-    $('input[name=hours]').keyup(() => setUsdAmount(denomination));
-    $('input[name=hours]').blur(() => setUsdAmount(denomination));
-    $('input[name=amount]').keyup(() => setUsdAmount(denomination));
+    $('input[name=hours]').keyup(() => setUsdAmount(denomination, false));
+    $('input[name=hours]').blur(() => setUsdAmount(denomination, false));
+    $('input[name=amount]').keyup(() => setUsdAmount(denomination, false));
 
     $('input[name=usd_amount]').on('focusin', function() {
       $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
