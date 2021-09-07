@@ -535,3 +535,13 @@ class TestGrant:
 
         assert hasattr(grant, 'clr_prediction_curve')
         assert len(grant.clr_prediction_curve) == 6
+
+    def test_grant_has_weighted_risk_score(self):
+        """Test weighted_risk_score attribute is present and defaults to 0."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'weighted_risk_score')
+        assert grant.weighted_risk_score == 0
+
+    
