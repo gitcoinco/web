@@ -29,3 +29,12 @@ class GrantFactory(factory.django.DjangoModelFactory):
         if grant_categories:
             for grant_category in grant_categories:
                 self.categories.add(grant_category)
+
+    @factory.post_generation
+    def in_active_clrs(self, create, grant_clrs, **kwargs):
+        if not create:
+            return
+
+        if grant_clrs:
+            for grant_clr in grant_clrs:
+                self.in_active_clrs.add(grant_clr)

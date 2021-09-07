@@ -1,10 +1,11 @@
 import pytest
 from dashboard.models import Profile
-from grants.models.grant import Grant
+from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_category import GrantCategory
 from grants.models.grant_type import GrantType
 
 from .factories.grant_category_factory import GrantCategoryFactory
+from .factories.grant_clr_factory import GrantCLRFactory
 from .factories.grant_factory import GrantFactory
 from .factories.profile_factory import ProfileFactory
 
@@ -544,4 +545,11 @@ class TestGrant:
         assert hasattr(grant, 'weighted_risk_score')
         assert grant.weighted_risk_score == 0
 
-    
+    def test_grant_has_in_active_clrs_attribute(self):
+        """Test in_active_clrs_attribute is present."""
+        
+        grant_clrs = (GrantCLRFactory(), GrantCLRFactory(round_num=4))
+        grant = GrantFactory(in_active_clrs=(grant_clrs))
+
+        assert hasattr(grant, 'in_active_clrs')
+        assert isinstance(grant.in_active_clrs.first(), GrantCLR)
