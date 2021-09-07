@@ -484,7 +484,13 @@ class TestGrant:
         assert hasattr(grant, 'twitter_handle_2')
         assert grant.twitter_handle_2 == ''
 
-     
+    def test_grant_has_twitter_handle_1_follower_count(self):
+        """Test twitter_handle_1_follower_count is present and defaults to 0."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twiiter_handle_1_follower_count')
+        assert grant.twitter_handle_1_follower_count == 0
 
     
 
