@@ -2,7 +2,6 @@ describe('connect wallet: metamask', () => {
   before(() => {
     cy.setupMetamask();
     cy.changeMetamaskNetwork('localhost');
-    // change to trigger build
   });
 
   after(() => {
