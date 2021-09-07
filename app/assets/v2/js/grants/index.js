@@ -5,10 +5,8 @@ let numGrants = '';
 
 $(document).ready(() => {
 
-  if ($('.grants_type_nav').length) {
-    localStorage.setItem('last_grants_index', document.location.href);
-    localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
-  }
+  localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
+
   if (document.location.href.indexOf('/cart') == -1) {
     localStorage.setItem('last_all_grants_index', document.location.href);
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
@@ -103,6 +101,7 @@ if (document.getElementById('grants-showcase')) {
     // keyword: this.keyword,
     state: 'active',
     profile: false,
+    sub_round_slug: false,
     collections_page: 1,
     grant_regions: [],
     grant_types: [],
@@ -209,7 +208,8 @@ if (document.getElementById('grants-showcase')) {
       searchParams: undefined,
       observer: null,
       observed: null,
-      sticky_active: false
+      sticky_active: false,
+      fetchedPages: []
     },
     methods: {
       toggleStyle: function(style) {
@@ -264,15 +264,15 @@ if (document.getElementById('grants-showcase')) {
       resetFilters: function() {
         let vm = this;
 
-        console.log(baseParams);
         vm.params = Object.assign({}, baseParams);
-        console.log(baseParams);
+        vm.fetchedPages = [];
         vm.fetchGrants();
 
       },
       changeQuery: function(query) {
         let vm = this;
 
+        vm.fetchedPages = [];
         vm.$set(vm, 'params', {...vm.params, ...query});
 
         if (vm.tabSelected === 'grants') {
@@ -307,7 +307,7 @@ if (document.getElementById('grants-showcase')) {
             if ((param_value.length > 0)) {
               vm.params[param_key] = param_value.split(',');
             } else {
-              vm.$delete(vm.params[param_key]);
+              vm.params[param_key] = [];
             }
           } else if (param_is_array.includes(param_key)) {
             vm.params[param_key] = param_value.split(',');
@@ -318,16 +318,38 @@ if (document.getElementById('grants-showcase')) {
           }
         }
       },
-      updateUrlParams: function() {
+      updateUrlParams: function(replaceHistory) {
         let vm = this;
 
         vm.searchParams = new URLSearchParams(vm.params);
 
-        window.history.replaceState({}, '', `${location.pathname}?${vm.searchParams}`);
+        if (replaceHistory) {
+          window.history.replaceState({}, '', `${location.pathname}?${vm.searchParams}`);
+        } else {
+          window.history.pushState({}, '', `${location.pathname}?${vm.searchParams}`);
+        }
       },
-      fetchGrants: async function(page, append_mode) {
+      unshiftGrants: async function(page) {
         let vm = this;
 
+        await vm.updateUrlParams();
+
+        vm.searchParams.set('page', page);
+        vm.fetchedPages.push(page);
+
+        const getGrants = await fetchData(`/grants/cards_info?${vm.searchParams.toString()}`);
+
+        getGrants.grants.forEach(function(item) {
+          vm.grants.unshift(item);
+
+        });
+
+
+      },
+      fetchGrants: async function(page, append_mode, replaceHistory) {
+        let vm = this;
+
+        console.log(page);
         if (page) {
           vm.params.page = page;
         }
@@ -335,7 +357,7 @@ if (document.getElementById('grants-showcase')) {
         // let urlParams = new URLSearchParams(window.location.search);
         // let searchParams = new URLSearchParams(vm.params);
 
-        await vm.updateUrlParams();
+        await vm.updateUrlParams(replaceHistory);
 
         if (this.lock)
           return;
@@ -350,6 +372,11 @@ if (document.getElementById('grants-showcase')) {
           vm.grants.push(item);
         });
 
+        // if (page) {
+        //   vm.fetchedPages = [page];
+        // } else {
+        // }
+        vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
         // if (this.params.collection_id) {
         //   if (getGrants.collections.length > 0) {
         //     this.activeCollection = getGrants.collections[0];
@@ -393,9 +420,9 @@ if (document.getElementById('grants-showcase')) {
         vm.changeQuery({tab: vm.tabSelected});
         vm.unobserveFilter();
         vm.params.profile = false;
-        if (vm.tabSelected === 'collections') {
-          vm.updateUrlParams();
+        // vm.updateUrlParams();
 
+        if (vm.tabSelected === 'collections') {
           this.fetchCollections();
         } else {
           this.fetchGrants(1);
@@ -410,7 +437,6 @@ if (document.getElementById('grants-showcase')) {
           {'index': 1, 'string': 'collections'}
         ];
 
-        console.log(loadParams.get('tab'));
         if (loadParams.has('tab')) {
           vm.tabSelected = loadParams.get('tab');
           console.log(tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index);
@@ -419,10 +445,10 @@ if (document.getElementById('grants-showcase')) {
         }
 
         if (vm.tabSelected === 'collections') {
-          vm.updateUrlParams();
+          // vm.updateUrlParams();
           this.fetchCollections();
         } else {
-          this.fetchGrants();
+          this.fetchGrants(undefined, undefined, true);
         }
       },
       fetchCollections: async function(append_mode) {
@@ -432,6 +458,7 @@ if (document.getElementById('grants-showcase')) {
           return;
 
         vm.loadingCollections = true;
+        await vm.updateUrlParams();
 
         // vm.updateUrlParams();
 
@@ -451,10 +478,8 @@ if (document.getElementById('grants-showcase')) {
           vm.collections = collectionsJson.results;
         }
 
-
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
-
       },
       scrollEnd: async function(event) {
         let vm = this;
@@ -467,10 +492,11 @@ if (document.getElementById('grants-showcase')) {
         // console.log(bottomOfPage, pageHeight, visible, topOfPage);
 
         if (bottomOfPage || pageHeight < visible) {
+          console.log('bottmpage');
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             vm.fetchCollections(true);
-          } else if (vm.grantsHasNext) {
-            vm.fetchGrants(vm.params.page, true);
+          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
+            vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
           }
         }
@@ -551,9 +577,29 @@ if (document.getElementById('grants-showcase')) {
         if (this.observed) {
           this.observer.unobserve(this.observed);
         }
+      },
+      watchHistory(event) {
+        this.getUrlParams();
+        this.fetchGrants(1, undefined, true);
+      },
+      pageIsFetched(page) {
+        let vm = this;
+
+        return vm.fetchedPages.includes(page);
+
       }
     },
     computed: {
+      lowestPage() {
+        let vm = this;
+
+        return Math.min(...vm.fetchedPages);
+      },
+      grantsHasPrev() {
+        let vm = this;
+
+        return vm.lowestPage > 1;
+      },
       currentCLR() {
         let vm = this;
 
@@ -582,10 +628,13 @@ if (document.getElementById('grants-showcase')) {
       this.getUrlParams();
       this.loadTab();
       window.addEventListener('scroll', this.scrollBottom, {passive: true});
+      // watch for history changes
+      window.addEventListener('popstate', this.watchHistory);
     },
     beforeDestroy() {
       window.removeEventListener('scroll', this.scrollBottom);
       window.removeEventListener('cartDataUpdated', this.updateCartData);
+      window.removeEventListener('popstate', this.watchHistory);
       this.observer.unobserve(vm.$refs.filterNav);
     },
     mounted() {
