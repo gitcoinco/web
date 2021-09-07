@@ -180,11 +180,11 @@
         :grants-by-tenant="grantsByTenant"
         :grants-under-minimal-contribution="grantsUnderMinimalContribution"
       >
-        <div class="w-100">
+        <div class="w-100 mx-0 mx-md-1">
         <!-- Checkout with Polygon button -->
           <button
             @click="checkoutWithPolygon()"
-            class="btn btn-outline-primary py-2 mx-3 w-100 text-nowrap ml-0 ml-md-2 mt-2 mt-md-0"
+            class="btn btn-outline-primary py-2 w-100 text-nowrap ml-0 ml-md-2 mt-2 mt-md-0"
             :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
             id='js-polygonfundGrants-button'
             v-b-tooltip.hover.top="'Polygon is a solution that enables low cost transaction fees and transfer of ETH and ERC-20 tokens with fast confirmation time. To take advantage of these benefits, this method of payment requires preloaded funds in Polygon (cheapest option).'"
@@ -286,7 +286,7 @@
         :grants-under-minimal-contribution="grantsUnderMinimalContribution"
         :network="network"
       >
-        <div class="w-100">
+        <div class="w-100 mx-0 mx-md-1">
         <!-- Checkout with zkSync button -->
           <button
             @click="zksync.showModal = true"
@@ -378,13 +378,14 @@
           </b-modal>
         </div>
       </grants-cart-ethereum-zksync>
-
-      <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
-        @click="standardCheckout" :disabled="isCheckoutOngoing || grantsUnderMinimalContribution.length > 0"
-        v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
-      >
-        Standard Checkout
-      </button>
+      <div class="w-100 mx-0 mx-md-1">
+        <button class="btn btn-primary ml-0 ml-md-2 mt-2 mt-md-0 py-2 rounded-sm w-100" id='js-fundGrants-button'
+          @click="standardCheckout" :disabled="isCheckoutOngoing || grantsUnderMinimalContribution.length > 0"
+          v-b-tooltip.hover.top="'Traditional Ethereum easy payout using funds from your connected wallet (easiest option).'"
+        >
+          Standard Checkout
+        </button>
+      </div>
     </div>
   </div>
 
