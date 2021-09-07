@@ -380,7 +380,21 @@ class TestGrant:
         assert hasattr(grant, 'hidden')
         assert grant.hidden == False
 
+    def test_grant_has_random_shuffle_attribute(self):
+        """Test random_shuffle attribute."""
 
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'random_shuffle')
+        assert grant.random_shuffle == None
+
+    def test_grant_has_weighted_shuffle_attribute(self):
+        """Test weighted_shuffle attribute is present and blank."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'weighted_shuffle')
+        assert grant.weighted_shuffle == None
 
     
 
