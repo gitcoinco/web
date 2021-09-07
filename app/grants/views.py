@@ -742,18 +742,18 @@ def get_grants_by_filters(
         elif sort.replace('-', '') in [
             'amount_received_in_round', 'clr_prediction_curve__0__1', 'positive_round_contributor_count'
         ]:
-            _grants = _grants.filter(is_clr_active=True).order_by(f"{sort}") 
+            _grants = _grants.filter(is_clr_active=True).order_by(f"{sort}")
 
         elif sort.replace('-', '') in [
             'weighted_shuffle', 'metadata__upcoming', 'metadata__gem', 'created_on', 'amount_received', 'contribution_count', 'contributor_count', 'last_update'
         ]:
             print(f"Sort is {sort}")
-            _grants = _grants.order_by(f"{sort}") 
-        
+            _grants = _grants.order_by(f"{sort}")
+
         elif request.user.is_staff and sort.replace('-', '') in [
             'weighted_risk_score', 'sybil_score'
         ]:
-            _grants = _grants.order_by(f"{sort}") 
+            _grants = _grants.order_by(f"{sort}")
 
     _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
 
@@ -898,7 +898,7 @@ def grants_landing(request):
         'title': 'Grants',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1022,7 +1022,7 @@ def grants_by_grant_type(request, grant_type):
         # 'mid_back': mid_back,
         # 'bottom_back': bottom_back,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1213,7 +1213,7 @@ def grants_by_grant_clr(request, clr_round):
         # 'current_partners_fund': current_partners_fund,
         # 'current_partners': current_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -2470,7 +2470,7 @@ def quickstart(request):
     params = {
         'active': 'grants_quickstart',
         'title': _('Quickstart'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
