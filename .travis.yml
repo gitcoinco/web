@@ -57,7 +57,6 @@ jobs:
         # Generate Markdown documentation and static docs page.
         - pydocmd build
       env:
-        - NETWORK_NAME="localhost"
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
         - DJANGO_SETTINGS_MODULE="app.settings"
         - SUPRESS_DEBUG_TOOLBAR=1
