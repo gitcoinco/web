@@ -11,6 +11,7 @@ let appCart;
 
 document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
+  appCart.$refs['cart'].sourceNetwork = networkName;
   appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
   if (appCart.$refs.cart.autoSwitchNetwork) {
     try {
@@ -57,9 +58,11 @@ Vue.component('grants-cart', {
         { text: 'Transaction Hash', value: 'txid' }
       ],
       autoSwitchNetwork: true,
+      checkoutRecommendationIsCompleted: false,
       chainId: '',
       networkId: '',
       network: 'mainnet',
+      sourceNetwork: 'mainnet',
       tabSelected: 'ETH',
       tabIndex: null,
       currentTokens: [], // list of all available tokens
@@ -392,19 +395,24 @@ Vue.component('grants-cart', {
       const estimateZkSync = Number(this.zkSyncEstimatedGasCost); // zkSync gas cost estimate
       const estimatePolygon = Number(this.polygonEstimatedGasCost); // polygon gas cost estimate
 
+      const exit = (recommendation) => {
+        this.checkoutRecommendationIsCompleted = true;
+        return recommendation;
+      };
+
       const compareWithL2 = (estimateL2, name) => {
         if (estimateL1 < estimateL2) {
           const savingsInGas = estimateL2 - estimateL1;
           const savingsInPercent = Math.round(savingsInGas / estimateL2 * 100);
 
-          return { name: 'Standard checkout', savingsInGas, savingsInPercent };
+          return exit({ name: 'Standard checkout', savingsInGas, savingsInPercent });
         }
 
         const savingsInGas = estimateL1 - estimateL2;
         const percentSavings = savingsInGas / estimateL1 * 100;
         const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
 
-        return { name, savingsInGas, savingsInPercent };
+        return exit({ name, savingsInGas, savingsInPercent });
       };
 
       zkSyncComparisonResult = compareWithL2(estimateZkSync, 'zkSync');
@@ -413,12 +421,12 @@ Vue.component('grants-cart', {
       polygonSavings = polygonComparisonResult.name === 'Polygon' ? polygonComparisonResult.savingsInPercent : 0;
 
       if (zkSyncSavings > polygonSavings) {
-        return zkSyncComparisonResult;
+        return exit(zkSyncComparisonResult);
       } else if (zkSyncSavings < polygonSavings) {
-        return polygonComparisonResult;
+        return exit(polygonComparisonResult);
       }
-      return zkSyncComparisonResult; // recommendation will be standard checkout
 
+      return exit(zkSyncComparisonResult); // recommendation will be standard checkout
     },
 
     isHarmonyExtInstalled() {
@@ -804,6 +812,8 @@ Vue.component('grants-cart', {
      * @param {String} name Token name, e.g. ETH or DAI
      */
     getTokenByName(name, isPolygon = false) {
+      let token;
+      
       if (name === 'ETH' && !isPolygon) {
         return {
           addr: ETH_ADDRESS,
@@ -828,9 +838,10 @@ Vue.component('grants-cart', {
         token = this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
         return token;
       }
-      return this.filterByChainId.filter(token => token.name === name)[0];
+      
+      token = this.filterByChainId.filter(token => token.name === name)[0];
 
-
+      return token;
     },
 
     async applyAmountToAllGrants(grant) {
