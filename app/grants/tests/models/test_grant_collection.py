@@ -1,4 +1,5 @@
 import pytest
+from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.grant_collection import GrantCollection
 
@@ -26,5 +27,13 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'grants')
         assert isinstance(grant_collection.grants.first(), Grant)
         assert len(grant_collection.grants.all()) == len(grants)
+
+    def test_grant_collection_has_associated_profile(self):
+        """Test profile attribute is present."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'profile')
+        assert isinstance(grant_collection.profile, Profile)
 
     
