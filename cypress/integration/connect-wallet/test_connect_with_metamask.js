@@ -14,8 +14,6 @@ describe('connect wallet: metamask', () => {
 
     cy.get('#navbarDropdownWallet').as('wallet').click();
     cy.contains('Connect Wallet').click();
-
-    cy.get('.web3modal-modal-card').scrollIntoView();
     cy.contains('MetaMask').click();
 
     cy.acceptMetamaskAccess();
