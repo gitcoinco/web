@@ -68,7 +68,13 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'hidden')
         assert grant_collection.hidden == False
 
-    
+    def test_grant_collection_has_cache(self):
+        """Test cache attibute is present and defaults to empty dictionary."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'cache')
+        assert grant_collection.cache == {}
 
     
 
