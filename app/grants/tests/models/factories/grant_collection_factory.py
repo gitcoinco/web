@@ -11,3 +11,12 @@ class GrantCollectionFactory(factory.django.DjangoModelFactory):
         model = GrantCollection
 
     profile = factory.SubFactory(ProfileFactory)
+
+    @factory.post_generation
+    def grants(self, create, grants, **kwargs):
+        if not create:
+            return
+
+        if grants:
+            for grant in grants:
+                self.grants.add(grant)
