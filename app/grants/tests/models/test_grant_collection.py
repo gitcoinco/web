@@ -52,6 +52,16 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'description')
         assert grant_collection.description == ''
 
+    def test_grant_collection_has_a_cover(self):
+        """Test cover attribute is present."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'cover')
+        assert grant_collection.cover == None
+
+    
+
     
 
     
