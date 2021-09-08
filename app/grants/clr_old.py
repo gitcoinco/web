@@ -22,8 +22,7 @@ import copy
 from django.utils import timezone
 
 import numpy as np
-from grants.models import Contribution, Grant, GrantCollection
-from townsquare.models import SquelchProfile
+from grants.clr_data_src import fetch_contributions, fetch_grants
 
 CLR_PERCENTAGE_DISTRIBUTED = 0
 
@@ -264,53 +263,6 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
     return (None, None, None, None)
 
 
-def fetch_data(clr_round, network='mainnet'):
-    '''
-        Populate Data needed to calculate CLR
-
-        Args:
-            network     :   mainnet | rinkeby
-            clr_round   :   GrantCLR
-        Returns:
-            contributions               : contributions data object
-            grants                      : list of grants based on clr_type
-
-    '''
-
-    clr_start_date = clr_round.start_date
-    clr_end_date = clr_round.end_date
-    grant_filters = clr_round.grant_filters
-    subscription_filters = clr_round.subscription_filters
-    collection_filters = clr_round.collection_filters
-
-    contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(
-        match=True,
-        created_on__gte=clr_start_date,
-        created_on__lte=clr_end_date,
-        success=True,
-        subscription__network='mainnet'
-    ).nocache()
-
-    if subscription_filters:
-        contributions = contributions.filter(**subscription_filters)
-
-    # ignore profiles which have been squelched
-    profiles_to_be_ignored = SquelchProfile.objects.filter(active=True).values_list('profile__pk')
-    contributions = contributions.exclude(profile_for_clr__in=profiles_to_be_ignored)
-
-    grants = clr_round.grants.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
-
-    if grant_filters:
-        # Grant Filters (grant_type, category)
-        grants = grants.filter(**grant_filters)
-    elif collection_filters:
-        # Collection Filters
-        grant_ids = GrantCollection.objects.filter(**collection_filters).values_list('grants', flat=True)
-        grants = grants.filter(pk__in=grant_ids)
-
-    return grants, contributions
-
-
 def populate_data_for_clr(grants, contributions, clr_round):
     '''
         Populate Data needed to calculate CLR
@@ -402,8 +354,9 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     v_threshold = float(clr_round.verified_threshold)
     uv_threshold = float(clr_round.unverified_threshold)
 
-    print(f"- starting fetch_data at {round(time.time(),1)}")
-    grants, contributions = fetch_data(clr_round, network)
+    print(f"- starting fetch_grants & fetch_contributions at {round(time.time(),1)}")
+    grants = fetch_grants(clr_round, network)
+    contributions = fetch_contributions(clr_round, network)
 
     if contributions.count() == 0:
         print(f'No Contributions for CLR {clr_round.round_num}. Exiting')
@@ -479,11 +432,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 potential_clr.append(predicted_clr)
 
         if save_to_db:
-            _grant = Grant.objects.get(pk=grant.pk)
             clr_prediction_curve = list(zip(potential_donations, potential_clr))
             base = clr_prediction_curve[0][1]
-            _grant.last_clr_calc_date = timezone.now()
-            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=60)
+            grant.last_clr_calc_date = timezone.now()
+            grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=60)
 
             can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
 
@@ -494,10 +446,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
             print(clr_prediction_curve)
 
-            clr_round.record_clr_prediction_curve(_grant, clr_prediction_curve)
+            clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
 
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
-                _grant.save()
+                grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
