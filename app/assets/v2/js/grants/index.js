@@ -532,7 +532,6 @@ if (document.getElementById('grants-showcase')) {
             headers: myHeaders
           }).then(res => {
             res.json().then(json => {
-              console.log('GOT', json);
               vm.$set(vm, 'tagsOptions', json.sort((a, b) => {
                 a = a.name.toLocaleLowerCase();
                 b = b.name.toLocaleLowerCase();
