@@ -23,4 +23,14 @@ class TestGrantAPIKey:
         assert hasattr(grant_api_key, 'key')
         assert grant_api_key.key == None
 
+    def test_grant_api_key_has_a_secret(self):
+        """Test secret attribute is present and is blank."""
+
+        grant_api_key = GrantAPIKeyFactory()
+
+        assert hasattr(grant_api_key, 'secret')
+        assert grant_api_key.secret == None
+
     
+
+     
