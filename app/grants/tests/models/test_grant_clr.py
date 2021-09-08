@@ -38,5 +38,18 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'sub_round_slug')
         assert grant_clr.sub_round_slug == ''
 
-    
+    def test_grant_clr_has_display_text_attribute(self):
+        """Test display_text attribute is present."""
 
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'display_text')
+
+    def test_grant_clr_has_owner_attribute(self):
+        """Test owner attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'owner')
+
+    
