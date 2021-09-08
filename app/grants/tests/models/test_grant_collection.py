@@ -76,6 +76,16 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'cache')
         assert grant_collection.cache == {}
 
+    def test_grant_collection_has_featured_attribute(self):
+        """Test featured attribute is present and defaults to False."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'featured')
+        assert grant_collection.featured == False
+
+    
+
     
 
     
