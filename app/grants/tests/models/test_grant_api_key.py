@@ -9,8 +9,11 @@ class TestGrantAPIKey:
     """Test GrantAPIKey model."""
 
     def test_creation(self):
-        """Test GrantStat returned by factory is valid."""
+        """Test GrantAPIKey returned by factory is valid."""
 
         grant_api_key = GrantAPIKeyFactory()
 
         assert isinstance(grant_api_key, GrantAPIKey)
+
+    def test_grant_api_key_has_a_key(self):
+        """Test Gr"""
