@@ -5,6 +5,7 @@ from grants.models.grant_collection import GrantCollection
 
 from .factories.grant_collection_factory import GrantCollectionFactory
 from .factories.grant_factory import GrantFactory
+from .factories.profile_factory import ProfileFactory
 
 
 @pytest.mark.django_db
@@ -91,6 +92,16 @@ class TestGrantCollection:
 
         assert hasattr(grant_collection, 'shuffle_rank')
         assert grant_collection.shuffle_rank == 1
+
+    def test_grant_collection_has_associated_curators(self):
+        """Test curators are present and instances of Profile."""
+
+        curators = (ProfileFactory(), ProfileFactory())
+        grant_collection = GrantCollectionFactory(curators=(curators))
+
+        assert hasattr(grant_collection, 'curators')
+        assert isinstance(grant_collection.curators.first(), Profile)
+        assert len(grant_collection.curators.all()) == len(curators) 
 
     
 

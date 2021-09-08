@@ -20,3 +20,12 @@ class GrantCollectionFactory(factory.django.DjangoModelFactory):
         if grants:
             for grant in grants:
                 self.grants.add(grant)
+
+    @factory.post_generation
+    def curators(self, create, curators, **kwargs):
+        if not create:
+            return
+
+        if curators:
+            for curator in curators:
+                self.curators.add(curator)
