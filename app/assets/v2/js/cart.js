@@ -810,7 +810,7 @@ Vue.component('grants-cart', {
      */
     getTokenByName(name, isPolygon = false) {
       let token;
-      
+
       if (name === 'ETH' && !isPolygon) {
         return {
           addr: ETH_ADDRESS,
@@ -835,7 +835,7 @@ Vue.component('grants-cart', {
         token = this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
         return token;
       }
-      
+
       token = this.filterByChainId.filter(token => token.name === name)[0];
 
       return token;
@@ -1123,7 +1123,7 @@ Vue.component('grants-cart', {
     },
 
     // POSTs donation data to database. Wrapped in a try/catch, and if it fails, we fallback to the manual ingestion script
-    async postToDatabase(txHash, contractAddress, userAddress, checkoutType = 'eth_std') {
+    async postToDatabase(txHash, contractAddress, userAddress, checkout_type = 'eth_std') {
       try {
         // this.grantsByTenant is the array used for donations, and this.donationInputs is computed from it
         // We loop through each donation to configure the payload then POST the required data
@@ -1131,12 +1131,12 @@ Vue.component('grants-cart', {
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
-        const txHashes = checkoutType === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
+        const txHashes = checkout_type === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
 
         // Configure template payload
         const saveSubscriptionPayload = {
           // Values that are constant for all donations
-          checkoutType,
+          checkout_type,
           contributor_address: userAddress,
           csrfmiddlewaretoken,
           frequency_count: 1,
@@ -1184,10 +1184,10 @@ Vue.component('grants-cart', {
           // Therefore we get the value of denomination and token_address using the below logic instead of
           // using tokenDetails.addr
           switch (tokenName) {
-            case 'ETH' && checkoutType !== 'eth_polygon':
+            case 'ETH' && checkout_type !== 'eth_polygon':
               tokenAddress = '0x0000000000000000000000000000000000000000';
               break;
-            case 'MATIC' && checkoutType === 'eth_polygon':
+            case 'MATIC' && checkout_type === 'eth_polygon':
               tokenAddress = '0x0000000000000000000000000000000000001010';
               break;
             default:
@@ -1255,17 +1255,17 @@ Vue.component('grants-cart', {
         // Something went wrong, so we use the manual ingestion process instead
         console.error(err);
         console.log('Standard contribution ingestion failed, falling back to manual ingestion');
-        await this.postToDatabaseManualIngestion(txHash, userAddress, checkoutType);
+        await this.postToDatabaseManualIngestion(txHash, userAddress, checkout_type);
       }
     },
 
     // Alternative to postToDatabase that uses the manual ingestion process
-    async postToDatabaseManualIngestion(txHash, userAddress, checkoutType = 'eth_std') {
+    async postToDatabaseManualIngestion(txHash, userAddress, checkout_type = 'eth_std') {
       // Determine if this was a zkSync checkout or standard L1 checkout. For this endpoint, we pass a txHash
       // to ingest L1 contributions or an address to pass L2 contributions
 
-      txHash = checkoutType === 'eth_std' || checkoutType === 'eth_polygon' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
-      userAddress = checkoutType === 'eth_zksync' ? userAddress : '';
+      txHash = checkout_type === 'eth_std' || checkout_type === 'eth_polygon' ? txHash[0] : ''; // txHash is always an array of hashes from checkout
+      userAddress = checkout_type === 'eth_zksync' ? userAddress : '';
 
       // Get user's signature to prevent ingesting arbitrary transactions under your own username, then ingest
       const { signature, message } = await this.signMessage(userAddress);
