@@ -275,7 +275,7 @@ def new_contributions(grant):
         setup_lang(to_email)
         html, text, subject = render_new_contributions_email(grant)
 
-        if not should_suppress_notification_email(to_email, 'new_contributions'):
+        if not should_suppress_notification_email(to_email, 'new_contributions') and subject:
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
