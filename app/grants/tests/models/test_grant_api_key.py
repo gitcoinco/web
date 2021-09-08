@@ -1,6 +1,6 @@
 import pytest
-from grants.models.grant_api_key import GrantAPIKey
 from dashboard.models import Profile
+from grants.models.grant_api_key import GrantAPIKey
 
 from .factories.grant_api_key_factory import GrantAPIKeyFactory
 
@@ -22,7 +22,7 @@ class TestGrantAPIKey:
         grant_api_key = GrantAPIKeyFactory()
 
         assert hasattr(grant_api_key, 'key')
-        assert grant_api_key.key == None
+        assert grant_api_key.key == ''
 
     def test_grant_api_key_has_a_secret(self):
         """Test secret attribute is present and is blank."""
@@ -30,7 +30,7 @@ class TestGrantAPIKey:
         grant_api_key = GrantAPIKeyFactory()
 
         assert hasattr(grant_api_key, 'secret')
-        assert grant_api_key.secret == None
+        assert grant_api_key.secret == ''
 
     def test_grant_api_key_belongs_to_a_profile(self):
         """Test profile attribute is present."""
@@ -39,5 +39,3 @@ class TestGrantAPIKey:
 
         assert hasattr(grant_api_key, 'profile')
         assert isinstance(grant_api_key.profile, Profile)
-
-     
