@@ -16,4 +16,11 @@ class TestGrantAPIKey:
         assert isinstance(grant_api_key, GrantAPIKey)
 
     def test_grant_api_key_has_a_key(self):
-        """Test Gr"""
+        """Test key attribute is present and is blank."""
+
+        grant_api_key = GrantAPIKeyFactory()
+
+        assert hasattr(grant_api_key, 'key')
+        assert grant_api_key.key == None
+
+    
