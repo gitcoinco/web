@@ -30,4 +30,13 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'round_num')
     
+    def test_grant_clr_has_sub_round_slug_attribute(self):
+        """Test sub_round_slug attribute is present and defailts to empty string."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'sub_round_slug')
+        assert grant_clr.sub_round_slug == ''
+
     
+
