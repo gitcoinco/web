@@ -44,6 +44,14 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'title')
         assert grant_collection.title == ''
 
+    def test_grant_collection_has_a_description(self):
+        """Test description attribute is present and defaults to empty string."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'description')
+        assert grant_collection.description == ''
+
     
 
     
