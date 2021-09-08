@@ -21,7 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from grants.clr_old import calculate_clr_for_donation, fetch_data, populate_data_for_clr
+from grants.clr_data_src import fetch_contributions, fetch_grants
+from grants.clr_old import calculate_clr_for_donation, populate_data_for_clr
 from grants.models import GrantCLR
 
 
@@ -37,7 +38,8 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
 
     print(total_pot)
 
-    grants, contributions = fetch_data(clr_round, network)
+    grants = fetch_grants(clr_round, network)
+    contributions = fetch_contributions(clr_round, network)
 
     grant_contributions_curr = populate_data_for_clr(grants, contributions,  clr_round)
 
