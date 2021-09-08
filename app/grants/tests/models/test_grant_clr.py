@@ -14,3 +14,13 @@ class TestGrantCLR:
         grant_clr = GrantCLRFactory()
 
         assert isinstance(grant_clr, GrantCLR)
+
+    def test_grant_clr_has_a_customer_name(self):
+        """Test customer_name attribute is present and defaults to empty string."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'company_name')
+        assert grant_clr.company_name == ''
+
+    
