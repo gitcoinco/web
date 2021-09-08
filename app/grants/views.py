@@ -33,7 +33,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
-from django.contrib.postgres.search import SearchQuery
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
@@ -670,8 +670,10 @@ def get_grants_by_filters(
 
     if keyword:
         # 6. Filter grants having matching title & description
-        query = SearchQuery(keyword)
-        _grants = _grants.filter(vector_column=query)
+        # query = SearchQuery(keyword)
+        # _grants = _grants.filter(vector_column=query)
+        _grants = _grants.annotate(search=SearchVector('title', 'description')).filter(search=keyword)
+
 
     if not idle_grants:
         # 7. Filter grants which are stale (last update was > 3 months )
