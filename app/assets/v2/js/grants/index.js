@@ -337,7 +337,7 @@ if (document.getElementById('grants-showcase')) {
         vm.searchParams.set('page', page);
         vm.fetchedPages.push(page);
 
-        const getGrants = await fetchData(`/grants/cards_info?${vm.searchParams.toString()}`);
+        const getGrants = await (await fetch(`/grants/cards_info?${vm.searchParams.toString()}`)).json();
 
         getGrants.grants.forEach(function(item) {
           vm.grants.unshift(item);
@@ -349,21 +349,24 @@ if (document.getElementById('grants-showcase')) {
       fetchGrants: async function(page, append_mode, replaceHistory) {
         let vm = this;
 
-        console.log(page);
         if (page) {
           vm.params.page = page;
         }
 
-        // let urlParams = new URLSearchParams(window.location.search);
-        // let searchParams = new URLSearchParams(vm.params);
-
         await vm.updateUrlParams(replaceHistory);
 
-        if (this.lock)
+        if (vm.lock)
           return;
 
-        this.lock = true;
-        const getGrants = await fetchData(`/grants/cards_info?${vm.searchParams.toString()}`);
+        vm.lock = true;
+        const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
+
+        if (!requestGrants.ok) {
+          vm.lock = false;
+          vm.grantsHasNext = true;
+          return;
+        }
+        const getGrants = await requestGrants.json();
 
         if (!append_mode) {
           vm.grants = [];
@@ -416,7 +419,6 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
-        console.log(vm.tabSelected);
         vm.changeQuery({tab: vm.tabSelected});
         vm.unobserveFilter();
         vm.params.profile = false;
@@ -439,13 +441,10 @@ if (document.getElementById('grants-showcase')) {
 
         if (loadParams.has('tab')) {
           vm.tabSelected = loadParams.get('tab');
-          console.log(tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index);
           vm.tabIndex = tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index;
-          console.log(vm.tabIndex);
         }
 
         if (vm.tabSelected === 'collections') {
-          // vm.updateUrlParams();
           this.fetchCollections();
         } else {
           this.fetchGrants(undefined, undefined, true);
@@ -470,8 +469,6 @@ if (document.getElementById('grants-showcase')) {
         let getCollections = await fetch(url);
         let collectionsJson = await getCollections.json();
 
-        console.log(collectionsJson);
-
         if (append_mode) {
           vm.collections = [ ...vm.collections, ...collectionsJson.results ];
         } else {
@@ -489,10 +486,8 @@ if (document.getElementById('grants-showcase')) {
         const pageHeight = document.documentElement.scrollHeight - 500;
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
-        // console.log(bottomOfPage, pageHeight, visible, topOfPage);
 
         if (bottomOfPage || pageHeight < visible) {
-          console.log('bottmpage');
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             vm.fetchCollections(true);
           } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
@@ -519,7 +514,6 @@ if (document.getElementById('grants-showcase')) {
 
       },
       getTag: async function(loading, search) {
-        console.log(search);
         const vm = this;
         const myHeaders = new Headers();
         const url = `/api/v0.1/grants_tag/?name=${escape(search)}`;
