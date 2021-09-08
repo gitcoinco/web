@@ -890,3 +890,33 @@ input[type="search"]::-webkit-search-cancel-button {
 .vs__selected-options > input::placeholder {
   color: var(--form-input-color);
 }
+
+.b-dropdown-form {
+  padding: 0px;
+}
+
+.b-dropdown-form > div:not(:last-of-type) {
+  padding: 0rem 1.5rem 0rem 1.5rem;
+}
+
+.scroll-menu > li {
+  padding-bottom: 0.5rem;
+}
+
+.scroll-menu .custom-control-inline {
+  display: block;
+}
+
+.scroll-menu .b-dropdown-form > div:not(:last-of-type) {
+  max-height: 80vh;
+  min-width: 200px;
+  overflow: auto;
+  margin-bottom: -0.5rem;
+  padding: 0.5rem 1.5rem 0rem 1.5rem;
+}
+
+.b-dropdown-form > div:last-of-type {
+  display: flex;
+  justify-content: space-between;
+  padding: 0rem 1.5rem 0.5rem 1.5rem;
+}

@@ -393,8 +393,14 @@ if (document.getElementById('grants-showcase')) {
         // }
 
         vm.credentials = getGrants.credentials;
-        vm.grant_types = getGrants.grant_types;
         vm.contributions = getGrants.contributions;
+
+        vm.grant_types = getGrants.grant_types.sort((a, b) => {
+          a = a.label.toLocaleLowerCase();
+          b = b.label.toLocaleLowerCase();
+
+          return a > b ? 1 : a == b ? 0 : -1;
+        });
 
         vm.grantsNumPages = getGrants.num_pages;
         vm.grantsHasNext = getGrants.has_next;
@@ -526,7 +532,12 @@ if (document.getElementById('grants-showcase')) {
             headers: myHeaders
           }).then(res => {
             res.json().then(json => {
-              vm.$set(vm, 'tagsOptions', json);
+              vm.$set(vm, 'tagsOptions', json.sort((a, b) => {
+                a = a.name.toLocaleLowerCase();
+                b = b.name.toLocaleLowerCase();
+
+                return a > b ? 1 : a == b ? 0 : -1;
+              }));
 
               resolve();
             });

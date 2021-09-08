@@ -103,8 +103,14 @@ Vue.component('grant-card', {
   computed: {
     has_collections() {
       return this.collections.length;
-    }
+    },
+    isUserLogged() {
+      let vm = this;
 
+      if (document.contxt.github_handle) {
+        return true;
+      }
+    }
   },
   mounted() {
     this.checkIsCurator();
