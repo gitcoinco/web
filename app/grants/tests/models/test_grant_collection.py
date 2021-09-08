@@ -60,6 +60,14 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'cover')
         assert grant_collection.cover == None
 
+    def test_grant_collection_has_hidden_attribute(self):
+        """Test hidden attribute is present and defaults to False."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'hidden')
+        assert grant_collection.hidden == False
+
     
 
     
