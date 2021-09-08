@@ -91,7 +91,7 @@ along with this program. If not, see
           <b-tab ref="grants" id="grants" title-link-class="nav-line font-weight-bold">
             <template v-slot:title>Grants</template>
 
-            <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px;height: 42px;padding: 4px 0;">
+            <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px; padding: 4px 0;">
               <button class="btn rounded-pill flex-shrink-0" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
                 All Grants
               </button>
