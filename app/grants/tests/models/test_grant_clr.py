@@ -20,7 +20,7 @@ class TestGrantCLR:
 
         grant_clr = GrantCLRFactory()
 
-        assert hasattr(grant_clr, 'company_name')
-        assert grant_clr.company_name == ''
+        assert hasattr(grant_clr, 'customer_name')
+        assert grant_clr.customer_name == ''
 
     
