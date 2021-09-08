@@ -23,4 +23,11 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'customer_name')
         assert grant_clr.customer_name == ''
 
+    def test_grant_clr_has_round_num_attribute(self):
+        """Test round_num attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'round_num')
+    
     
