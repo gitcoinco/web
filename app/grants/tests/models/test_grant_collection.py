@@ -36,4 +36,14 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'profile')
         assert isinstance(grant_collection.profile, Profile)
 
+    def test_grant_collection_has_a_title(self):
+        """Test title attribute is present."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'title')
+        assert grant_collection.title == ''
+
+    
+
     
