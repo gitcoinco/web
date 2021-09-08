@@ -84,7 +84,13 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'featured')
         assert grant_collection.featured == False
 
-    
+    def test_grant_collection_has_shuffle_rank(self):
+        """Test shuffle_rank attribute is present and defaults to 1."""
+
+        grant_collection = GrantCollectionFactory()
+
+        assert hasattr(grant_collection, 'shuffle_rank')
+        assert grant_collection.shuffle_rank == 1
 
     
 
