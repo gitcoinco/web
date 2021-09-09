@@ -16,9 +16,13 @@ class TestContribution:
         assert isinstance(contribution, Contribution)
 
     def test_contribution_has_success_attribute(self):
-        
-        pass
+        """Test success attribute is present and defaults to True."""
 
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'success')
+        assert contribution.success == True
+        
     def test_contribution_has_tx_cleard_attribute(self):
         
         pass
