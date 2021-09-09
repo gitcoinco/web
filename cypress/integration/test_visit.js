@@ -16,26 +16,12 @@ describe('Visit Tests', function() {
   it('Visits the Kudos Marketplace', function() {
     cy.visit('http://localhost:8000/kudos/marketplace');
   });
-  /*
-  it('Visits the Kudos Sender', function() {
-    cy.visit('http://localhost:8000/kudos/send');
-    cy.url().should('contain', 'github.com');
-  });
-  */
   it('Visits the Labs Page', function() {
     cy.visit('http://localhost:8000/explorer');
-  });
-  it('Visits the About Page', function() {
-    cy.visit('http://localhost:8000/about');
   });
   it('Visits the Mission Page', function() {
     cy.visit('http://localhost:8000/mission');
   });
-  /*
-  it('Visits the Results Page', function() {
-    cy.visit('http://localhost:8000/results');
-  });
-  */
   it('Visits the Activity Page', function() {
     cy.visit('http://localhost:8000/activity');
   });
