@@ -121,9 +121,16 @@ class TestContribution:
         assert isinstance(contribution.profile_for_clr, Profile)
 
     def test_contribution_has_checkout_type(self):
+        """Test checkout_type attribute is present."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'checkout_type')
 
     def test_contribution_has_anonymous_attribute(self):
+        """Test anonymous attribute is present and defaults to False."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'anonymous')
+        assert contribution.anonymous == False
