@@ -24,8 +24,12 @@ class TestContribution:
         assert contribution.success == True
         
     def test_contribution_has_tx_cleard_attribute(self):
-        
-        pass
+        """Test tx_cleared attribute is present and defaults to False."""
+
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'tx_cleared')
+        assert contribution.tx_cleared == False
 
     def test_contribution_has_tx_override_attribute(self):
 
