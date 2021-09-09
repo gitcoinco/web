@@ -12,7 +12,7 @@ for i in $(echo "$CURRENT_ROUNDS"); do
     SCREEN_NAME="estimate_clr_for_${i}_mode_${j}"
     echo $i $j $SCREEN_NAME
     sleep 3
-    screen -S $SCREEN_NAME -dm bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet $i $j 2>&1 | tee -a /var/log/gitcoin/estimate_clr_$i_$j.log
+    screen -S $SCREEN_NAME -dm bash scripts/run_management_command_if_not_already_running.bash estimate_clr mainnet $i $j true 2>&1 | tee -a /var/log/gitcoin/estimate_clr_$i_$j.log
 done
 sleep 60
 done

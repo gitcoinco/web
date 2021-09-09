@@ -80,7 +80,7 @@ from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
-from dashboard.tasks import increment_view_count
+from dashboard.tasks import increment_view_count, update_trust_bonus
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
@@ -3014,6 +3014,8 @@ def logout_idena(request, handle):
         profile.is_idena_connected = False
         profile.save()
 
+        update_trust_bonus.delay(profile.pk)
+
     return JsonResponse({
         'ok': True,
         'address': profile.idena_address,
@@ -3269,6 +3271,8 @@ def verify_user_twitter(request, handle):
     profile.twitter_handle = twitter_handle
     profile.save()
 
+    update_trust_bonus.delay(profile.pk)
+
     return JsonResponse({
         'ok': True,
         'msg': full_text,
@@ -3292,6 +3296,8 @@ def disconnect_user_twitter(request, handle):
     profile.twitter_handle = None
     profile.is_twitter_verified = False
     profile.save()
+
+    update_trust_bonus.delay(profile.pk)
 
     return JsonResponse({
         'ok': True,
@@ -3426,6 +3432,8 @@ async def verify_user_duniter(request):
     profile.is_duniter_verified = True
     profile.save()
 
+    update_trust_bonus(profile.pk)
+
     return JsonResponse({
         'ok': True,
         'msg': 'Your Duniter Qualified User Check was successful!'
@@ -3489,6 +3497,8 @@ def verify_user_google(request):
         profile.google_user_id = identity_data_google['id']
         profile.save()
 
+        update_trust_bonus.delay(profile.pk)
+
     return redirect('profile_by_tab', 'trust')
 
 
@@ -3508,6 +3518,8 @@ def disconnect_user_google(request, handle):
     profile.identity_data_google = False
     profile.google_user_id = None
     profile.save()
+
+    update_trust_bonus.delay(profile.pk)
 
     return JsonResponse({
         'ok': True,
@@ -3533,6 +3545,8 @@ def verify_user_brightid(request, handle):
         profile.is_brightid_verified = True
         profile.save()
 
+        update_trust_bonus.delay(profile.pk)
+
     return JsonResponse({
         'ok': True,
         'msg': status
@@ -3554,6 +3568,8 @@ def disconnect_user_brightid(request, handle):
     profile.brightid_uuid = uuid.uuid4()
     profile.is_brightid_verified = False
     profile.save()
+
+    update_trust_bonus.delay(profile.pk)
 
     return JsonResponse({
         'ok': True,
@@ -3645,6 +3661,8 @@ def verify_user_ens(request, handle):
         profile.ens_verification_address = user_address
         profile.save()
 
+        update_trust_bonus.delay(profile.pk)
+
         return JsonResponse({
             'error': False,
             'msg': f'Account verified successfully',
@@ -3685,6 +3703,8 @@ def disconnect_user_ens(request, handle):
     profile.ens_verification_address = False
     profile.save()
 
+    update_trust_bonus.delay(profile.pk)
+
     return JsonResponse({
         'ok': True,
         'is_verified': False
@@ -3717,6 +3737,7 @@ def request_verify_facebook(request, handle):
 
     facebook = connect_facebook()
     authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
+    
     return redirect(authorization_url)
 
 
@@ -3757,6 +3778,8 @@ def verify_user_facebook(request):
         profile.facebook_user_id = identity_data_facebook['id']
         profile.save()
 
+        update_trust_bonus.delay(profile.pk)
+
     return redirect('profile_by_tab', 'trust')
 
 
@@ -3776,6 +3799,8 @@ def disconnect_user_facebook(request, handle):
     profile.identity_data_facebook = False
     profile.facebook_user_id = None
     profile.save()
+
+    update_trust_bonus.delay(profile.pk)
 
     return JsonResponse({
         'ok': True,
@@ -6740,6 +6765,8 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
     profile.encoded_number = hash_number
     profile.save()
 
+    update_trust_bonus(profile.pk)
+
     redis.set(f'verification:{user.id}:phone', hash_number)
 
 
@@ -6864,6 +6891,8 @@ def disconnect_sms(request, handle):
 
     profile.sms_verification = False
     profile.save()
+
+    update_trust_bonus(profile.pk)
 
     return JsonResponse({
         'ok': True,
@@ -7074,6 +7103,9 @@ def verify_user_poap(request, handle):
     profile.is_poap_verified = True
     profile.poap_owner_account = signer.lower()
     profile.save()
+
+    update_trust_bonus(profile.pk)
+
     # Success response
     return JsonResponse({
         'ok': True,
@@ -7096,6 +7128,8 @@ def disconnect_user_poap(request, handle):
     profile.is_poap_verified = False
     profile.poap_owner_account = None
     profile.save()
+
+    update_trust_bonus(profile.pk)
 
     return JsonResponse({
         'ok': True,
@@ -7154,6 +7188,8 @@ def verify_user_poh(request, handle):
     profile.poh_handle = signer
     profile.save()
 
+    update_trust_bonus(profile.pk)
+
     return JsonResponse({
         'ok': True,
         'msg': 'User is registered on POH',
@@ -7175,6 +7211,8 @@ def disconnect_user_poh(request, handle):
     profile.is_poh_verified = False
     profile.poh_handle = None
     profile.save()
+
+    update_trust_bonus(profile.pk)
 
     return JsonResponse({
         'ok': True,

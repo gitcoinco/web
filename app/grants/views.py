@@ -33,7 +33,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
-from django.contrib.postgres.search import SearchQuery
+from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
@@ -69,7 +69,7 @@ from dashboard.utils import get_web3
 from economy.models import Token as FTokens
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
-from grants.clr import fetch_data
+from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
     GrantTag, GrantType, MatchPledge, Subscription,
@@ -670,8 +670,10 @@ def get_grants_by_filters(
 
     if keyword:
         # 6. Filter grants having matching title & description
-        query = SearchQuery(keyword)
-        _grants = _grants.filter(vector_column=query)
+        # query = SearchQuery(keyword)
+        # _grants = _grants.filter(vector_column=query)
+        _grants = _grants.annotate(search=SearchVector('title', 'description')).filter(search=keyword)
+
 
     if not idle_grants:
         # 7. Filter grants which are stale (last update was > 3 months )
@@ -742,18 +744,18 @@ def get_grants_by_filters(
         elif sort.replace('-', '') in [
             'amount_received_in_round', 'clr_prediction_curve__0__1', 'positive_round_contributor_count'
         ]:
-            _grants = _grants.filter(is_clr_active=True).order_by(f"{sort}") 
+            _grants = _grants.filter(is_clr_active=True).order_by(f"{sort}")
 
         elif sort.replace('-', '') in [
             'weighted_shuffle', 'metadata__upcoming', 'metadata__gem', 'created_on', 'amount_received', 'contribution_count', 'contributor_count', 'last_update'
         ]:
             print(f"Sort is {sort}")
-            _grants = _grants.order_by(f"{sort}") 
-        
+            _grants = _grants.order_by(f"{sort}")
+
         elif request.user.is_staff and sort.replace('-', '') in [
             'weighted_risk_score', 'sybil_score'
         ]:
-            _grants = _grants.order_by(f"{sort}") 
+            _grants = _grants.order_by(f"{sort}")
 
     _grants = _grants.prefetch_related('categories', 'team_members', 'admin_profile', 'grant_type')
 
@@ -898,7 +900,7 @@ def grants_landing(request):
         'title': 'Grants',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1022,7 +1024,7 @@ def grants_by_grant_type(request, grant_type):
         # 'mid_back': mid_back,
         # 'bottom_back': bottom_back,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1213,7 +1215,7 @@ def grants_by_grant_clr(request, clr_round):
         # 'current_partners_fund': current_partners_fund,
         # 'current_partners': current_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -2470,7 +2472,7 @@ def quickstart(request):
     params = {
         'active': 'grants_quickstart',
         'title': _('Quickstart'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
@@ -3585,7 +3587,7 @@ def get_clr_sybil_input(request, round_id):
         limit = data['limit'] if data['limit'] else 100
 
         # fetch grant contributions needed for round
-        __, all_clr_contributions = fetch_data(clr)
+        all_clr_contributions = fetch_contributions(clr)
         total_count = all_clr_contributions.count()
 
         # extract only needed fields
