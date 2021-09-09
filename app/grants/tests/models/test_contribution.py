@@ -1,5 +1,6 @@
 import pytest
 from grants.models.contribution import Contribution
+from grants.models.subscription import Subscription
 
 from .factories.contribution_factory import ContributionFactory
 
@@ -69,6 +70,7 @@ class TestContribution:
         contribution = ContributionFactory()
 
         assert hasattr(contribution, 'subscription')
+        assert isinstance(contribution.subscription, Subscription)
 
     def test_contribution_has_normalized_data(self):
 
