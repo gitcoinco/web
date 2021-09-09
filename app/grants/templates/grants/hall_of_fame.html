@@ -37,17 +37,17 @@ along with this program. If not, see
     </style>
 </head>
 
-<body class="interior {{active}} quickstart g-font-muli">
+<body class="interior {{active}} hall_of_fame g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
         {% include 'shared/tag_manager_2.html' %}
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'grants/nav.html' %}
 
         <div id="hall-of-fame" class="container-fluid">
-            <div id="hof-banner" class="row container-fluid">
+            <div id="hof-banner" class="container-fluid">
                 <div class="container content text-left">
-                    <div class="mt-5"></div>
-                    <h2 id="hof-grants" class="text-center mt-5">{%trans "Grants Hall of Fame" %}</h2>
+                    <div class="pt-5"></div>
+                    <h2 id="hof-grants" class="text-center pt-4">{%trans "Grants Hall of Fame" %}</h2>
                     <h3 id="hof-total-donations" class="text-center mt-2">
                         {{total_donations}} {% trans 'in Total Donations' %}
                     </h3>
@@ -71,24 +71,24 @@ along with this program. If not, see
                     <div class="mt-5 row"></div>
                     <h2 id="hof-matching-partners">{%trans "Top Matching Partners" %}</h2>
                     <div class="mt-3"></div>
-                    <img src={% static 'v2/images/grants/hall_of_fame/partners.png' %} width="1114" height="346" />
+                    <img class="w-100" src="{{ top_matching_partners_url }}" />
                     <div class="row mt-5"></div>
                 </div>
             </div>
 
             <div class="container-fluid hof-bg-violet-500">
-                <div id="donor_section" class="container content text-left">
+                <div class="container content text-left">
                     <div class="row mt-5"></div>
                     <h2 id="hof-donors" class="mt-5">{%trans "Top Individual Grant Donors" %}</h2>
                     <div class="row mt-3"></div>
-                    <img src={% static 'v2/images/grants/hall_of_fame/donors.png' %} width="1114" height="346" />
+                    <img class="w-100" src="{{ top_individual_donors_url }}" />
                     <div class="row mt-5"></div>
                 </div>
             </div>
 
             <div class="container text-left">
                 <h2 id="hof-graduated-grantees" class="mt-5">{%trans "Graduated Grantees" %}</h2>
-                <div id="hof-graduated-description" class="mt-3">{{ graduated_grantees_text }}</div>
+                <div id="hof-graduated-description" class="mt-3">{{ graduated_grantees_description }}</div>
 
                 <div class="row mt-5"></div>
                 <div class="container">
@@ -98,7 +98,7 @@ along with this program. If not, see
                     {% endif %}
                     <div class="row mt-4">
                         <div class="col-2 text-center">
-                            <img class="rounded-circle" src="{{ g.logo }}" width="125" height="125">
+                            <img class="rounded-circle w-100 hof-grantee-logo" src="{{ g.logo_url }}">
                             <div>{{ g.username }}</div>
                         </div>
                         <div class="col-2">
@@ -117,7 +117,7 @@ along with this program. If not, see
                         <div class="col-5">
                             <div>{% trans 'Accomplishment 1' %}</div>
                             <div>{{ g.accomplishment_1 }}</div>
-                            <div>{% trans 'Accomplishment 1' %}</div>
+                            <div>{% trans 'Accomplishment 2' %}</div>
                             <div>{{ g.accomplishment_2 }}</div>
                         </div>
                     </div>
@@ -143,7 +143,7 @@ along with this program. If not, see
 
                 <div class="row mt-4">
                     <div class="offset-1 col">
-                        <a class="btn btn-primary" href="mailto:scott@gitcoin.co">
+                        <a class="btn btn-primary" href="mailto:{{share_your_story_email}}">
                             Share Your Story
                         </a>
                     </div>

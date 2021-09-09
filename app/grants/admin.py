@@ -24,11 +24,13 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.contrib.messages import constants as messages
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantStat, GrantTag, GrantType, MatchPledge, PhantomFunding, Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
+    GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantHallOfFame, GrantHallOfFameGrantee
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
@@ -536,6 +538,32 @@ class GrantCollectionAdmin(admin.ModelAdmin):
 class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
+class GrantHallOfFameGranteeInline(admin.StackedInline):
+    model = GrantHallOfFameGrantee
+    fields = ['logo', 'username', 'name', 'funded_by', 'amount', 'description', 'accomplishment_1', 'accomplishment_2']
+    extra = 1
+
+
+
+class GrantHallOfFameAdmin(admin.ModelAdmin):
+    inlines = (GrantHallOfFameGranteeInline, )
+    list_display = ['pk', 'total_donations', 'is_published' ]
+    readonly_fields = ['is_published', ]
+
+    actions = ['hall_of_fame_publish']
+
+
+    def hall_of_fame_publish(self, request, queryset):
+        object_list = list(queryset)
+        if len(object_list) == 1:
+            obj = object_list[0]
+            obj.publish()
+            self.message_user(request, f"The object '{obj}'' successfully marked as published.")
+        else:
+            self.message_user(request, f"Only 1 object can be published mode. Please select exactly 1 object to set it in published state.", level=messages.WARNING)
+
+    hall_of_fame_publish.short_description = "Publish"
+
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
@@ -552,3 +580,4 @@ admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
 admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
 admin.site.register(GrantCLRCalculation, GrantCLRCalculationAdmin)
+admin.site.register(GrantHallOfFame, GrantHallOfFameAdmin)

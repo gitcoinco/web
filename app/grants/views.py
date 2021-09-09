@@ -76,7 +76,7 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
-    GrantTag, GrantType, MatchPledge, Subscription,
+    GrantTag, GrantType, MatchPledge, Subscription, GrantHallOfFame, GrantHallOfFameGrantee,
 )
 from grants.tasks import (
     process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write,
@@ -2517,78 +2517,34 @@ def quickstart(request):
 
 def hall_of_fame(request):
     """Display the hall of fame."""
+    hall_of_fame_query = GrantHallOfFame.objects.all()
+    try:
+        hall_of_fame = hall_of_fame_query[:1][0]
+    except IndexError:
+        raise Http404
+
+    print("=" * 40)
+    from pprint import pprint
+    print(hall_of_fame.top_individual_donors.url)
+    print("=" * 40)
+
+    for g in hall_of_fame.grantees.all():
+        print("-" * 40)
+        pprint(g.logo.url)
+        print("-" * 40)
+        
+
     params = {
-        'active': 'grants_quickstart',
+        'active': 'hall_of_fame',
         'title': _('Hall of Fame'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
-        'total_donations': '1234',
-        'graduated_grantees_text': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-        'graduated_grantees': [
-            {
-                'logo': static('v2/images/grants/hall_of_fame/icon.png'),
-                'username': '@my_user',
-                'name': 'Donald Duck',
-                'amount': '$ 20.000',
-                'funded_by': 'John, Mary and Peter',
-                'description': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_1': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_2': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-            },   {
-                'logo': static('v2/images/grants/hall_of_fame/icon.png'),
-                'username': '@my_user',
-                'name': 'Donald Duck',
-                'amount': '$ 20.000',
-                'funded_by': 'John, Mary and Peter',
-                'description': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_1': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_2': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-            },   {
-                'logo': static('v2/images/grants/hall_of_fame/icon.png'),
-                'username': '@my_user',
-                'name': 'Donald Duck',
-                'amount': '$ 20.000',
-                'funded_by': 'John, Mary and Peter',
-                'description': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_1': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_2': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-            },
-              {
-                'logo': static('v2/images/grants/hall_of_fame/icon.png'),
-                'username': '@my_user',
-                'name': 'Donald Duck',
-                'amount': '$ 20.000',
-                'funded_by': 'John, Mary and Peter',
-                'description': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_1': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-                'accomplishment_2': """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, 
-        sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-        At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, n""",
-            },
-        ]
+
+        'total_donations': hall_of_fame.total_donations,
+        'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
+        'top_matching_partners_url': hall_of_fame.top_matching_partners.url,
+        'graduated_grantees_description': hall_of_fame.graduated_grantees_description,
+        'share_your_story_email': hall_of_fame.share_your_story_email,
+        'graduated_grantees': hall_of_fame.get_grantees_data(),
     }
 
     return TemplateResponse(request, 'grants/hall_of_fame.html', params)
