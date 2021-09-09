@@ -1,0 +1,15 @@
+#! /bin/bash
+set -eou pipefail
+
+# start ganache and send to background
+yarn exec ganche-cli -m "${SECRET_WORDS}" -h 0.0.0.0 &
+
+# set up and run web application (sends to background but still writes to stdout)
+python3 app/manage.py migrate
+python3 app/manage.py runserver 0.0.0.0:8000 &
+
+# run cypress tests
+export CYPRESS_REMOTE_DEBUGGING_PORT=9222
+yarn exec cypress install
+yarn exec wait-on http://0.0.0.0:8000
+node_modules/.bin/cypress run --headed -b chrome
