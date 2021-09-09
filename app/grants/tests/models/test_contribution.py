@@ -56,8 +56,12 @@ class TestContribution:
         assert contribution.split_tx_id == ''
 
     def test_contribution_has_split_tx_confirmed_attribute(self):
+        """Test split_tx_confirmed attribute is present and defaults to False."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'split_tx_confirmed')
+        assert contribution.split_tx_confirmed == False
 
     def test_contribution_has_associated_subscription(self):
 
