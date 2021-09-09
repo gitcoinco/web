@@ -64,8 +64,11 @@ class TestContribution:
         assert contribution.split_tx_confirmed == False
 
     def test_contribution_has_associated_subscription(self):
+        """Test subscription attribute is present."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'subscription')
 
     def test_contribution_has_normalized_data(self):
 
