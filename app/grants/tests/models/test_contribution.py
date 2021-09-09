@@ -1,4 +1,5 @@
 import pytest
+from dashboard.models import Profile
 from grants.models.contribution import Contribution
 from grants.models.subscription import Subscription
 
@@ -96,16 +97,28 @@ class TestContribution:
         assert contribution.originated_address == '0x0'
 
     def test_contribution_has_validator_passed_attribute(self):
+        """Test validator_passed attribute is present and defaults to False."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'validator_passed')
+        assert contribution.validator_passed == False
 
     def test_contribution_has_validator_comment_attribute(self):
+        """Test validator_comment attribute is present and defaults to '0x0'."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'validator_comment')
+        assert contribution.validator_comment == '0x0'
 
     def test_contribution_has_profile_for_clr_attribute(self):
+        """Test profile_for_clr attribute is present."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'profile_for_clr')
+        assert isinstance(contribution.profile_for_clr, Profile)
 
     def test_contribution_has_checkout_type(self):
 
