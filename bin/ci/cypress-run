@@ -2,14 +2,31 @@
 set -eou pipefail
 
 # start ganache and send to background
-yarn exec ganche-cli -m "${SECRET_WORDS}" -h 0.0.0.0 &
+node_modules/.bin/ganache-cli -m "${SECRET_WORDS}" -h 0.0.0.0 &
 
-# set up and run web application (sends to background but still writes to stdout)
+# build assets
+mkdir -p app/assets/{static,media}
+export STATICFILES_DIRS="${TRAVIS_BUILD_DIR}/app/assets/"
+python3 app/manage.py bundle
+yarn run build
+
+python3 app/manage.py collectstatic --noinput --disable-collectfast
+
+# set up database
 python3 app/manage.py migrate
+python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/users.json"
+
+# run app server
 python3 app/manage.py runserver 0.0.0.0:8000 &
 
 # run cypress tests
+export NETWORK_NAME=localhost
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
-yarn exec cypress install
-yarn exec wait-on http://0.0.0.0:8000
-node_modules/.bin/cypress run --headed -b chrome
+export VERBOSE=1
+node_modules/.bin/cypress install
+node_modules/.bin/wait-on http://0.0.0.0:8000
+node_modules/.bin/cypress run \
+  --browser chrome \
+  --headed \
+  --record \
+  --key 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
