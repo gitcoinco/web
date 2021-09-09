@@ -192,6 +192,8 @@ urlpatterns = [
         dashboard.views.verify_user_brightid,
         name='verify_user_brightid'
     ),
+    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poh', dashboard.views.verify_user_poh, name='verify_user_poh',
+        ),
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_brightid',
         dashboard.views.disconnect_user_brightid,

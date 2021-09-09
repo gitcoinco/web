@@ -20,17 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.messages import constants as messages
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.contrib.messages import constants as messages
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
-    GrantHallOfFame, GrantHallOfFameGrantee
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantStat, GrantTag, GrantType, MatchPledge,
+    PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
