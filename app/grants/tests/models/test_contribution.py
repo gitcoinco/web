@@ -40,10 +40,15 @@ class TestContribution:
         assert contribution.tx_override == False
 
     def test_contribution_has_tx_id_attribute(self):
+        """Test tx_id attribute is present and defaults to '0x0'."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'tx_id')
+        assert contribution.tx_id == '0x0'
 
     def test_contribution_has_split_tx_id_attribute(self):
+        
 
         pass
 
