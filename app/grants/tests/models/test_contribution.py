@@ -32,8 +32,12 @@ class TestContribution:
         assert contribution.tx_cleared == False
 
     def test_contribution_has_tx_override_attribute(self):
+        """Test tx_override attribute is present and defaults to False."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'tx_override')
+        assert contribution.tx_override == False
 
     def test_contribution_has_tx_id_attribute(self):
 
