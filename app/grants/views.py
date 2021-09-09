@@ -2518,22 +2518,11 @@ def quickstart(request):
 
 def hall_of_fame(request):
     """Display the hall of fame."""
-    hall_of_fame_query = GrantHallOfFame.objects.all()
+    hall_of_fame_query = GrantHallOfFame.objects.filter(is_published=True)
     try:
         hall_of_fame = hall_of_fame_query[:1][0]
     except IndexError:
         raise Http404
-
-    print("=" * 40)
-    from pprint import pprint
-    print(hall_of_fame.top_individual_donors.url)
-    print("=" * 40)
-
-    for g in hall_of_fame.grantees.all():
-        print("-" * 40)
-        pprint(g.logo.url)
-        print("-" * 40)
-        
 
     params = {
         'active': 'hall_of_fame',
