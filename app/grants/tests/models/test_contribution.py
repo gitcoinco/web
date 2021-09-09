@@ -73,16 +73,27 @@ class TestContribution:
         assert isinstance(contribution.subscription, Subscription)
 
     def test_contribution_has_normalized_data(self):
+        """Test normalized_data attribute is present and defaults to {}."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'normalized_data')
 
     def test_contribution_has_match_attribute(self):
+        """Test match attribute is present defaults to True."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'match')
+        assert contribution.match == True
 
     def test_contribution_has_originated_address(self):
+        """Test originated_address attribute is present and defaults to '0x0'."""
 
-        pass
+        contribution = ContributionFactory()
+
+        assert hasattr(contribution, 'originated_address')
+        assert contribution.originated_address == '0x0'
 
     def test_contribution_has_validator_passed_attribute(self):
 
