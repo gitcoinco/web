@@ -30,4 +30,4 @@ class DashboardConfig(AppConfig):
 
     def ready(self):
         """Handle signals on ready."""
-        import .signals # noqa
+        from . import signals # noqa
