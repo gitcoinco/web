@@ -338,7 +338,66 @@ Vue.component('grantsCartEthereumPolygon', {
       // transaction before the approval txs are confirmed, because if the approval txs
       // are not confirmed then estimateGas will fail.
 
-      return 70000;
+      let networkId = appCart.$refs.cart.networkId;
+
+      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.chainId !== '1') {
+        return;
+      }
+
+      let gasLimit = 0;
+
+      // If user has enough balance within Polygon, cost equals the minimum amount
+      let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
+
+      if (!isBalanceSufficient) {
+        // If we're here, user needs at least one L1 deposit, so let's calculate the total cost
+        requiredAmounts = objectMap(requiredAmounts, value => {
+          if (value.isBalanceSufficient == false) {
+            return value.amount;
+          }
+        });
+
+        for (const tokenSymbol in requiredAmounts) {
+          if (tokenSymbol === 'ETH') {
+            gasLimit += 94659; // add ~94.66k gas for ETH deposits
+          } else {
+            gasLimit += 103000; // add 103k gas for token deposits
+          }
+        }
+      }
+
+      // If we have a cart where all donations are in Dai, we use a linear regression to
+      // estimate gas costs based on real checkout transaction data, and add a 50% margin
+      const donationCurrencies = this.donationInputs.map(donation => donation.token);
+      const daiAddress = this.getTokenByName('DAI')?.addr;
+      const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
+
+      if (isAllDai) {
+        if (donationCurrencies.length === 1) {
+          // Special case since we overestimate here otherwise
+          return gasLimit + 65000;
+        }
+        // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
+        return gasLimit + 10000 * donationCurrencies.length + 45000;
+      }
+
+      /**
+       * Otherwise, based on contract tests, we use the more conservative heuristic below to get
+       * a gas estimate. The estimates used here are based on testing the cost of a single
+       * donation (i.e. one item in the cart). Because gas prices go down with batched
+       * transactions, whereas this assumes they're constant, this gives us a conservative estimate
+       */
+      gasLimit += this.donationInputs.reduce((accumulator, currentValue) => {
+        // const tokenAddr = currentValue.token?.toLowerCase();
+
+        if (currentValue.token === MATIC_ADDRESS) {
+          return accumulator + 25000; // MATIC donation gas estimate
+        }
+
+        return accumulator + 70000; // generic token donation gas estimate
+      }, 0);
+
+      return gasLimit;
     },
 
     // Returns true if user has enough balance within Polygon to avoid L1 deposit, false otherwise
