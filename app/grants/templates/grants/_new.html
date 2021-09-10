@@ -40,7 +40,7 @@
       </div>
 
       <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-new-grant">
-        <form action="" @submit="checkForm" ref="formNewGrant" :class="`${Object.keys(errors).length ? 'invalid' : ''}`" v-cloak>
+        <form action="" @submit="submitForm($event)" ref="formNewGrant" :class="`${Object.keys(errors).length ? 'invalid' : ''}`" v-cloak>
           <div class="container mt-3 mb-3  position-relative col-lg-6 mx-auto">
             <img :src="grant_type_logo" v-if="grant_type_logo" class="d-block m-auto mw-100">
 
@@ -495,7 +495,7 @@
             <div class="container mt-5">
               <div class="row">
                 <div class="col-12 text-center">
-                  <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="submitForm($event)">Create Grant</button>
+                  <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit">Create Grant</button>
                 </div>
                 <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
                   Please verify forms errors and try again
