@@ -136,7 +136,7 @@
         <li>You are contributing [[donationsToGrantsString]]</li>
         <li>You are contributing [[donationsToGitcoinString]] to the Gitcoin Match Pool Fund</li>
         <li>
-          Note: The exact checkout flow will depend on whether you use Standard Checkout{% if is_staff %}, Polygon,{% endif %} or zkSync.
+          Note: The exact checkout flow will depend on whether you use Standard Checkout, Polygon, or zkSync.
           <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Read how this works</a>.
         </li>
       </ul>
@@ -157,11 +157,9 @@
         <div v-if="zkSyncUnsupportedTokens.length > 0">
           zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
         </div>
-        {% if is_staff %}
         <div v-if="polygonUnsupportedTokens.length > 0">
           Polygon checkout not supported due to [[ polygonUnsupportedTokens.join(', ') ]]
         </div>
-        {% endif %}
       </div>
       <div v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
         💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
@@ -173,8 +171,7 @@
   <!-- Checkout buttons -->
   <div class="row justify-content-end">
     <div class="btn-group flex-column flex-grow-1 flex-md-grow-0 flex-md-row" role="group" aria-label="Checkout buttons">
-      
-      {% if is_staff %}
+
       <!-- CHECKOUT WITH POLYGON -->
       <grants-cart-ethereum-polygon
         inline-template
@@ -278,7 +275,6 @@
           </b-modal>
         </div>
       </grants-cart-ethereum-polygon>
-      {% endif %}
 
       <!-- CHECKOUT WITH ZKSYNC -->
       <grants-cart-ethereum-zksync
