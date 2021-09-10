@@ -340,9 +340,11 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Estimates the total gas cost of a polygon checkout and sends it to cart.js
     async estimateGasCost() {
-      // The below heuristics are used instead of `estimateGas()` so we can send the donation
-      // transaction before the approval txs are confirmed, because if the approval txs
-      // are not confirmed then estimateGas will fail.
+      /**
+       * The below heuristics are used instead of `estimateGas()` so we can send the donation
+       * transaction before the approval txs are confirmed, because if the approval txs
+       * are not confirmed then estimateGas will fail.
+       */
 
       let networkId = appCart.$refs.cart.networkId;
 
@@ -365,6 +367,11 @@ Vue.component('grantsCartEthereumPolygon', {
         });
 
         for (const tokenSymbol in requiredAmounts) {
+          /**
+           * The below estimates were got by analyzing gas usages for deposit transactions
+           * on the RootChainManagerProxy contract. View the link below,
+           * https://goerli.etherscan.io/address/0xbbd7cbfa79faee899eaf900f13c9065bf03b1a74
+           */
           if (tokenSymbol === 'ETH') {
             gasLimit += 94659; // add ~94.66k gas for ETH deposits
           } else {
@@ -384,7 +391,8 @@ Vue.component('grantsCartEthereumPolygon', {
           // Special case since we overestimate here otherwise
           return gasLimit + 65000;
         }
-        // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
+        // The Below curve found by running script with the repo https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis.
+        // View the chart here -> https://chart-studio.plotly.com/~chibie/1/
         return gasLimit + 10000 * donationCurrencies.length + 80000;
       }
 
