@@ -1,7 +1,3 @@
-const bulkCheckoutAddressPolygon = appCart.$refs.cart.network === 'mainnet'
-  ? '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
-  : '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
-
 function objectMap(object, mapFn) {
   return Object.keys(object).reduce(function(result, key) {
     result[key] = mapFn(object[key]);
@@ -138,6 +134,12 @@ Vue.component('grantsCartEthereumPolygon', {
       this.polygon.checkoutStatus = 'depositing';
     },
 
+    getBulkCheckoutAddress() {
+      return appCart.$refs.cart.network === 'mainnet'
+        ? '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
+        : '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
+    },
+
     handleError(e) {
       appCart.$refs.cart.handleError(e);
     },
@@ -246,6 +248,8 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
+      const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
+
       try {
 
         if (typeof ga !== 'undefined') {
@@ -311,6 +315,8 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async sendDonationTx(userAddress) {
+      const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
+
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
@@ -379,7 +385,7 @@ Vue.component('grantsCartEthereumPolygon', {
           return gasLimit + 65000;
         }
         // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
-        return gasLimit + 10000 * donationCurrencies.length + 45000;
+        return gasLimit + 10000 * donationCurrencies.length + 80000;
       }
 
       /**
