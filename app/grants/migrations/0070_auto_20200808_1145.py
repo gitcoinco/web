@@ -21,6 +21,30 @@ def create_grant_type(apps, schema_editor):
         print(f'Succesfully Created Grant Type {_type}')
 
 
+def create_grant_categories(apps, schema_editor):
+    GrantCategory = apps.get_model('grants', 'GrantCategory')
+    category_names = [
+        'blog',
+        'community',
+        'COVID19 research',
+        'COVID19 response',
+        'defi',
+        'devEx',
+        'education',
+        'eth1.x',
+        'eth2.0',
+        'notes',
+        'reddit',
+        'scalability',
+        'security',
+        'twitter',
+        'usability',
+        'wallets',
+    ]
+    for category_name in category_names:
+        GrantCategory.objects.get_or_create(category=category_name)
+
+
 def map_grant_type_to_catergories(apps, schema_editor):
     try:
         GrantType = apps.get_model('grants', 'GrantType')
@@ -74,6 +98,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(create_grant_type),
+        migrations.RunPython(create_grant_categories),
         migrations.RunPython(map_grant_type_to_catergories),
         migrations.RunPython(migrate_grant_type)
     ]
