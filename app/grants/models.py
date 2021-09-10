@@ -1681,6 +1681,7 @@ class Contribution(SuperModel):
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
         ('eth_zksync', 'eth_zksync'),
+        ('eth_polygon', 'eth_polygon'),
         ('zcash_std', 'zcash_std'),
         ('celo_std', 'celo_std'),
         ('zil_std', 'zil_std'),
@@ -1767,6 +1768,9 @@ class Contribution(SuperModel):
     def blockexplorer_url_helper(self, tx_id):
         if self.checkout_type == 'eth_zksync':
             return f'https://zkscan.io/explorer/transactions/{tx_id.replace("sync-tx:", "")}'
+        if self.checkout_type == 'eth_polygon':
+            network_sub = f"mumbai." if self.subscription and self.subscription.network != 'mainnet' else ''
+            return f'https://{network_sub}polygonscan.com/tx/{tx_id}'
         if self.checkout_type == 'eth_std':
             network_sub = f"{self.subscription.network}." if self.subscription and self.subscription.network != 'mainnet' else ''
             return f'https://{network_sub}etherscan.io/tx/{tx_id}'
@@ -1808,7 +1812,7 @@ class Contribution(SuperModel):
                     "comment":comment,
                     "is_edited":True,
                 }
-                );
+            )
         except Exception as e:
             print(e)
 
