@@ -2532,6 +2532,8 @@ def hall_of_fame(request):
         'total_donations': hall_of_fame.total_donations,
         'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
         'top_matching_partners_url': hall_of_fame.top_matching_partners.url,
+        'top_individual_donors_mobile_url': hall_of_fame.top_individual_donors_mobile.url,
+        'top_matching_partners_mobile_url': hall_of_fame.top_matching_partners_mobile.url,
         'graduated_grantees_description': hall_of_fame.graduated_grantees_description,
         'share_your_story_email': hall_of_fame.share_your_story_email,
         'graduated_grantees': hall_of_fame.get_grantees_data(),

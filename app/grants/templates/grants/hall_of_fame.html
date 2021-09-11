@@ -29,8 +29,8 @@ along with this program. If not, see
 
     <style>
         #hof-banner {
-            background-image: url("{% static "v2/images/grants/hall_of_fame/hall_of_fame.png" %}");
-            background-size: 1440px;
+            background-image: url("{% static "v2/images/grants/hall_of_fame/hall_of_fame.svg" %}");
+            background-size: auto 100%;
             background-repeat: no-repeat;
             background-position: center;
         }
@@ -43,114 +43,164 @@ along with this program. If not, see
         {% include 'shared/top_nav.html' with class='d-md-flex' %}
         {% include 'grants/nav.html' %}
 
-        <div id="hall-of-fame" class="container-fluid">
+        <div id="hall-of-fame" class="container-fluid px-0">
             <div id="hof-banner" class="container-fluid">
                 <div class="container content text-left">
                     <div class="pt-5"></div>
-                    <h2 id="hof-grants" class="text-center pt-4">{%trans "Grants Hall of Fame" %}</h2>
-                    <h3 id="hof-total-donations" class="text-center mt-2">
-                        {{total_donations}} {% trans 'in Total Donations' %}
-                    </h3>
-                    <div class="row mt-5">
-                        <div id="hof-banner-text" class="offset-2 col-8 text-center">
+                    <h2 class="text-center pt-4">{%trans "Grants Hall of Fame" %}</h2>
+
+                    <div class="d-block d-sm-none row pt-3 text-violet-400">
+                        <div class="col-xs-12 col-sm-6">
+                            <h3 class="text-center">
+                                {{total_donations}}
+                            </h3>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="d-none d-sm-block"></div>
+                            <h4 class="text-center pt-2">
+                                {% trans 'in Total Donations' %}
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="d-none d-sm-block row pt-2 text-violet-400">
+                        <div class="col-12">
+                            <h3 class="text-center">
+                                {{total_donations}} {% trans 'in Total Donations' %}
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="d-block d-sm-none pt-3"></div>
+                    <div class="d-none d-sm-block pt-5"></div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-8 offset-sm-2 text-center text-grey-400 text font-header">
                             Top Gitcoin Grant funders and grantees making impact in the web3 ecosystem.
                         </div>
                     </div>
-                    <div class="text-center mt-3">
+                    <div class="d-block d-sm-none pt-4"></div>
+                    <div class="d-none d-sm-block pt-3"></div>
+                    <div class="text-center">
                         <a class="btn btn-primary btn-lg" href="{%url 'grants:new_matching_partner' %}">
                             Join the Funder's League
                         </a>
                     </div>
-                    <div class="row mt-4"></div>
-                    <div class="row mt-4"></div>
+                    <div class="d-block d-sm-none pt-5"></div>
+                    <div class="d-none d-sm-block pt-4"></div>
+                    <div class="d-none d-sm-block pt-4"></div>
                 </div>
             </div>
 
-            <div class="container-fluid">
+            <div class="container-fluid px-0">
                 <div id="partner_section" class="container content text-left">
-                    <div class="mt-5 row"></div>
-                    <h2 id="hof-matching-partners">{%trans "Top Matching Partners" %}</h2>
-                    <div class="mt-3"></div>
-                    <img class="w-100" src="{{ top_matching_partners_url }}" />
-                    <div class="row mt-5"></div>
+                    <div class="d-block d-sm-none pt-4"></div>
+                    <div class="d-none d-sm-block pt-5"></div>
+                    <h2 class="text-grey-500">{%trans "Top Matching Partners" %}</h2>
+                    <div class="pt-3"></div>
+
+                    <picture>
+                        <source media="(max-width: 320px)" srcset="{{ top_matching_partners_mobile_url }}">
+                        <source media="(min-width: 321px)" srcset="{{ top_matching_partners_url }}">
+                        <img class="w-100" src="{{ top_matching_partners_url }}" alt="Top matching partners">
+                    </picture>
+                    <div class="pt-5"></div>
                 </div>
             </div>
 
-            <div class="container-fluid hof-bg-violet-500">
+            <div class="container-fluid pb-5 hof-bg-violet-500">
                 <div class="container content text-left">
-                    <div class="row mt-5"></div>
-                    <h2 id="hof-donors" class="mt-5">{%trans "Top Individual Grant Donors" %}</h2>
-                    <div class="row mt-3"></div>
-                    <img class="w-100" src="{{ top_individual_donors_url }}" />
-                    <div class="row mt-5"></div>
+                    <div class="d-block d-sm-none pt-4"></div>
+                    <div class="d-none d-sm-block pt-5"></div>
+                    <h2 class="text-white">{%trans "Top Individual Grant Donors" %}</h2>
+                    <div class="pt-3"></div>
+                    <picture>
+                        <source media="(max-width: 320px)" srcset="{{ top_individual_donors_mobile_url }}">
+                        <source media="(min-width: 321px)" srcset="{{ top_individual_donors_url }}">
+                        <img class="w-100" src="{{ top_individual_donors_url }}" alt="Top individual donors">
+                    </picture>
                 </div>
             </div>
 
-            <div class="container text-left">
-                <h2 id="hof-graduated-grantees" class="mt-5">{%trans "Graduated Grantees" %}</h2>
-                <div id="hof-graduated-description" class="mt-3">{{ graduated_grantees_description }}</div>
+            <div class="d-block d-sm-none pt-4"></div>
+            <div class="d-none d-sm-block pt-5"></div>
 
-                <div class="row mt-5"></div>
+            <div class="container text-left pb-5">
+                <h2 class="text-grey-500">{%trans "Graduated Grantees" %}</h2>
+                <div class="mt-3 text-grey-400">{{ graduated_grantees_description }}</div>
+
+                <div class="d-block d-sm-none pt-4"></div>
+                <div class="d-none d-sm-block pt-5"></div>
+
                 <div class="container">
                     {% for g in graduated_grantees %}
                     {% if not forloop.first %}
                     <div class="row mt-3"></div>
                     {% endif %}
-                    <div class="row mt-4">
-                        <div class="col-2 text-center">
+                    <div class="row pb-4 hof-grantee-border">
+                        <div class="d-none d-sm-block col-sm-2 text-center mt-4">
                             <img class="rounded-circle w-100 hof-grantee-logo" src="{{ g.logo_url }}">
                             <div>{{ g.username }}</div>
                         </div>
-                        <div class="col-2">
-                            <div class="hof-grantee-name">{{ g.name }}</div>
-                            <div class="hof-grantee-funded-by">{% trans 'funded by' %}</div>
-                            <div class="hof-grantee-funded-by-name">{{ g.funded_by }}</div>
-                            <br />
-                            <br />
-                            <div class="hof-grantee-amount">{{ g.amount }}</div>
-                            <div class="hof-grantee-raised-on">{% trans 'raised on Gitcoin' %}</div>
+                        <div class="d-block d-sm-none col-xs-12 col-sm-2 mt-4">
+                            <img class="d-inline d-sm-block rounded-circle w-100 hof-grantee-logo"
+                                src="{{ g.logo_url }}">
+                            <div class="d-inline d-sm-block">{{ g.username }}</div>
                         </div>
-                        <div class="col-3">
-                            <div>{% trans 'Project Description' %}</div>
+                        <div class="col-xs-12 col-sm-2 mt-4">
+                            <div class="font-title">{{ g.name }}</div>
+                            <div class="font-caption text-grey-400">{% trans 'funded by' %}</div>
+                            <div class="font-caption">{{ g.funded_by }}</div>
+                            <div class="font-title mt-3">{{ g.amount }}</div>
+                            <div class="font-caption text-grey-400">{% trans 'raised on Gitcoin' %}</div>
+                        </div>
+                        <div class="col-xs-12 col-sm-3 mt-4">
+                            <h5 class="font-body">{% trans 'Project Description' %}</h5>
                             <div>{{ g.description }}</div>
                         </div>
-                        <div class="col-5">
-                            <div>{% trans 'Accomplishment 1' %}</div>
-                            <div>{{ g.accomplishment_1 }}</div>
-                            <div>{% trans 'Accomplishment 2' %}</div>
-                            <div>{{ g.accomplishment_2 }}</div>
+                        <div class="col-xs-12 col-sm-5 mt-4">
+                            <h5 class="font-body">{% trans 'Accomplishment 1' %}</h5>
+                            <div class="font-body">{{ g.accomplishment_1 }}</div>
+                            <h5 class="font-body mt-4">{% trans 'Accomplishment 2' %}</h5>
+                            <div class="font-body">{{ g.accomplishment_2 }}</div>
                         </div>
                     </div>
-                    <div class="row mt-4"></div>
                     {% endfor %}
                 </div>
             </div>
 
-            <div class="container text-left">
-                <div class="row mt-5">
-                    <h2 class="col-4 offset-1">{%trans "Are you a Grantee?" %}</h2>
-                    <div class="col-7">
-                        <div class="float-right" style="position: absolute; top: 0px; right: 0px; width: 350px; height: 200px;">
+            <div class="container-fluid bg-violet-100">
+                <div class="d-block d-sm-none pt-4"></div>
+                <div class="d-none d-sm-block pt-5"></div>
+
+                <div class="container text-left">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 offset-sm-1 container pb-5">
+                            <div class="row">
+                                <h2 class="col">{%trans "Are you a Grantee?" %}</h2>
+                            </div>
+
+                            <div class="row">
+                                <div class="col mt-3 font-subheader">{%trans "We'd love to hear your journey. Share your story via email." %}
+                                </div>
+                            </div>
+
+                            <div class="d-block d-sm-none pt-3"></div>
+                            <div class="d-none d-sm-block pt-4"></div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <a class="btn btn-primary" href="mailto:{{share_your_story_email}}">
+                                        Share Your Story
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5 d-none d-sm-block">
+                            <div class="float-right w-100 hof-letter">
                                 {% include 'grants/components/hall_of_fame_envelope.html' %}
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="row mt-3">
-                    <div class="col-6 offset-1">{%trans "We'd love to hear your journey. Share your story via email." %}
-                    </div>
-                </div>
-
-                <div class="row mt-4">
-                    <div class="offset-1 col">
-                        <a class="btn btn-primary" href="mailto:{{share_your_story_email}}">
-                            Share Your Story
-                        </a>
-                    </div>
-                </div>
             </div>
-
-            <div class="container mt-5"></div>
         </div>
         {% include 'shared/footer_scripts.html' with slim=1 %}
         {% include 'shared/footer.html' %}
