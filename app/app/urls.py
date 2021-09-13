@@ -34,6 +34,8 @@ import dashboard.gas_views
 import dashboard.helpers
 import dashboard.tip_views
 import dashboard.views
+import send_email.views 
+
 import dataviz.d3_views
 import dataviz.views
 import gitcoinbot.views
@@ -72,6 +74,9 @@ urlpatterns = [
     path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
     path('api/v1/reverse-proxy/<str:tenant>', dashboard.views.reverse_proxy_rpc_v1, name='payout_tx_forwarder_v1'),
     re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
+
+    # send email
+    path('api/v1/bounty/send_email/', send_email.views.send_email, name="send_email_v1"),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),

@@ -14,11 +14,19 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/highlight_github.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/send_email.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/user_popover.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/rating.scss" %} />
     {% endbundle %}
+    <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/vue-material.min.css">
     {% include 'shared/fbpixel.html' %}
+    <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/vue-material.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/vue-material/dist/theme/default.css">
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>    
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -173,6 +181,26 @@
                     Stop Work
                   </button>
                 </template>
+                <div id="app" class="d-inline-block">
+                  <button v-on:click="show_email_template()" class="btn btn-primary btn-sm mr-2 px-3 font-caption">
+                    <i class="fa fa-envelope-o font-caption mr-2"></i>
+                    <span>{% trans "Contact Funder" %}</span>
+                  </button>
+                  <div class="popup">
+                      <form class="popuptext p-3 " id="myPopup">
+                          <md-field class="w-50 p-3">
+                          <label>{% trans "Subject" %}</label>
+                          <md-input v-model="email_subject" md-counter="30"></md-input>
+                          </md-field>
+                          <md-field :class="messageClass" class="w-75 p-3">
+                          <label>{% trans "Textarea" %}</label>
+                          <md-textarea v-model="email_text" required></md-textarea>
+                          </md-field>
+                          <md-button v-on:click="close_email" class="md-dense md-raised md-primary">{% trans "Close" %}</md-button>
+                          <md-button v-on:click="send_email" class="md-dense md-raised md-primary">{% trans "Send Email" %}</md-button>
+                      </form>
+                  </div>  
+                </div>                
                 <template v-else-if="bounty.is_open && !isOwner">
                   <button class="btn btn-primary btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
                     Express Interest
@@ -859,6 +887,26 @@
                       </a>
 
                     </div>
+                    <div id="app" class="d-inline-block">
+                      <button v-on:click="show_email_template()" class="modal-link btn btn-secondary font-caption">
+                        <i class="fa fa-envelope-o font-caption mr-2"></i>
+                        <span>{% trans "Contact Worker" %}</span>
+                      </button>
+                      <div class="popup">
+                          <form class="popuptext p-3 " id="myPopup">
+                              <md-field class="w-50 p-3">
+                              <label>{% trans "Subject" %}</label>
+                              <md-input v-model="email_subject" md-counter="30"></md-input>
+                              </md-field>
+                              <md-field :class="messageClass" class="w-75 p-3">
+                              <label>Textarea</label>
+                              <md-textarea v-model="email_text" required></md-textarea>
+                              </md-field>
+                              <md-button v-on:click="close_email" class="md-dense md-raised md-primary">{% trans "Close" %}</md-button>
+                              <md-button v-on:click="send_email" class="md-dense md-raised md-primary">{% trans "Send Email" %}</md-button>
+                          </form>
+                      </div>  
+                    </div>
                     <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
                       <time class="text-black-60 text-capitalize" :datetime="interest.created" :title="interest.created | momentFormat">
                         [[ interest.created | moment ]]
@@ -1104,6 +1152,70 @@
     {% endbundle %}
 
     <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="https://unpkg.com/vue-material"></script>
+    <script type="module" src="{% static "v2/js/send_email.js" %}"></script>
+    <script>
+      Vue.use(VueMaterial.default)
+      new Vue(
+          {
+              el: '#app',
+              data: {
+                  email_subject:"",
+                  email_text:""
+              },
+              methods: {
+                  send_email: function () {
+  
+                          this.hide_email_tempalte();
+                          debugger;
+  
+                          // TODO : Finding some better way to get funder name
+                          let funder_name =  document.getElementById("bounty_owner_github_username").childNodes[0].innerHTML;
+                          let worker_name = "{{user.username}}";
+  
+                          let email_options = {
+                              "to_user_name": worker_name,
+                              "from_user_name": funder_name,
+                              "email_text":this.email_text,
+                              "email_subject":this.email_subject,
+                          };
+  
+                          console.log(email_options);
+  
+                          const headers = new Headers({
+                              'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val(),
+                              "Content-Type": "application/json"
+                          });
+  
+                          const requestOptions = {
+                              method: "POST",
+                              headers: headers,
+                              body: JSON.stringify(email_options)
+                          };
+  
+                          // TODO : Replace the url with the host name
+                          fetch("/api/v1/bounty/send_email/", requestOptions)
+                          .then(response => response.json())
+                          .then(data => (this.postId = data.id));
+                  },
+                  
+                  show_email_template: function () {
+                      var popup = document.getElementById("myPopup");
+                      popup.classList.toggle("show");
+                  },
+                  hide_email_tempalte: function() {
+                      var popup = document.getElementById("myPopup");
+                      popup.classList.toggle("show");                        
+                  },
+                  close_email: function() {
+                      this.hide_email_tempalte();
+                      this.email_text = "";
+                      this.email_subject = "";                        
+                  }
+              },
+          }
+      )
+  </script> 
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>

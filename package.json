@@ -69,7 +69,8 @@
     "quill-image-extend-module": "^1.1.2",
     "secrets.js-grempe": "^2.0.0",
     "select2": "4.0.11",
-    "vue": "2.6.11",
+    "vue": "^2.6.11",
+    "vue-material": "^1.0.0-beta-15",
     "vue-plyr": "^7.0.0",
     "vue-select": "3.10.8",
     "vue-tel-input": "^4.4.1"

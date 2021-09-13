@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'send_email',
     'quests',
     'tdi',
     'gas',
