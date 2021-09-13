@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 
+from app.grants.utils import toggle_user_sybil
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
@@ -16,7 +17,7 @@ from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
-from townsquare.models import Comment
+from townsquare.models import Comment, SquelchProfile
 from unidecode import unidecode
 
 logger = get_task_logger(__name__)
@@ -421,3 +422,13 @@ def generate_collection_cache(self, collection_id):
         collection.generate_cache()
     except Exception as e:
         print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_bsci_sybil_csv(url):
+    '''fetch csv from bsci and toggle'''
+    # TODO: fetch .csv from S3
+    # TODO: wire in script
+    sybil_users = None
+    non_sybil_users = None
+    toggle_user_sybil(sybil_users, non_sybil_users)

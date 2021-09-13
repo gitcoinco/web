@@ -31,6 +31,7 @@ from django.utils import timezone
 from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
 from avatar.utils import convert_img
+from dashboard.models import Profile
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
 from grants.sync.algorand import sync_algorand_payout
@@ -43,6 +44,7 @@ from grants.sync.zcash import sync_zcash_payout
 from grants.sync.zil import sync_zil_payout
 from perftools.models import JSONStore, StaticJsonEnv
 from PIL import Image, ImageDraw, ImageOps
+from townsquare.models import SquelchProfile
 
 logger = logging.getLogger(__name__)
 
@@ -308,3 +310,40 @@ def save_grant_to_notion(grant):
                 }]
             }
         })
+
+
+def toggle_user_sybil(sybil_users, non_sybil_users):
+    '''util function which marks users as sybil/not'''
+
+    squelched_profiles = SquelchProfile.objects.all()
+    if sybil_users:
+        # iterate through users which need to be packed as sybil
+        for user in sybil_users:
+            try:
+                # get user profile
+                profile = Profile.objects.get(pk=user.get('id'))
+                label = user.get('label')
+                comment = user.get('comment')
+
+                # check if user has entry in SquelchProfile
+                if (
+                    not squelched_profiles.filter(profile=profile).first() and
+                    label and comment
+                ):
+                    # mark user as sybil
+                    SquelchProfile.objects.create(
+                        profile=profile,
+                        label=label,
+                        comments=comment
+                    )
+            except Exception as e:
+                print(f"error: unable to mark user ${user.get('id')} as sybil. {e}")
+
+    if non_sybil_users:
+        # iterate and remove sybil from user
+        for user in non_sybil_users:
+            try:
+                profile = Profile.objects.get(pk=user.get('id'))
+                squelched_profiles.filter(profile=profile).delete()
+            except Exception as e:
+                print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
