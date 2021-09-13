@@ -284,7 +284,7 @@ def ipfs_cat_requests(key):
         return None, 500
 
 
-def get_web3(network, sockets=False):
+def get_web3(network, sockets=False, is_polygon=False):
     """Get a Web3 session for the provided network.
 
     Attributes:
@@ -298,8 +298,10 @@ def get_web3(network, sockets=False):
         web3.main.Web3: A web3 instance for the provided network.
 
     """
-    if network in ['mainnet', 'rinkeby', 'ropsten']:
-        if sockets:
+    if network in ['mainnet', 'rinkeby', 'ropsten', 'testnet']:
+        network = 'polygon-mainnet' if is_polygon and network == 'mainnet' else 'polygon-mumbai'
+
+        if sockets and not is_polygon: # polygon doesn't yet have socket support in infura
             if settings.INFURA_USE_V3:
                 provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
             else:
