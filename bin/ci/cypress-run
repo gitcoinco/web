@@ -2,6 +2,8 @@
 set -eou pipefail
 
 # start ganache and send to background
+# using published ganache mnemonic - known globally and not a secret
+export SECRET_WORDS="chief loud snack trend chief net field husband vote message decide replace"
 node_modules/.bin/ganache-cli -m "${SECRET_WORDS}" -h 0.0.0.0 &
 
 # build assets
@@ -15,12 +17,14 @@ python3 app/manage.py collectstatic --noinput --disable-collectfast
 # set up database
 python3 app/manage.py migrate
 python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/users.json"
+python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/profiles.json"
 
 # run app server
 python3 app/manage.py runserver 0.0.0.0:8000 &
 
-# run cypress tests
+# set required env vars and run cypress tests
 export NETWORK_NAME=localhost
+export PASSWORD="g1tc01nc0" # used in readme for root user account
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
 export VERBOSE=1
 node_modules/.bin/cypress install
