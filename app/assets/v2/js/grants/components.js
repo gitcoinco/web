@@ -84,14 +84,12 @@ Vue.component('grant-card', {
 
       vm.$set(vm.grant, 'isInCart', true);
       CartData.addToCart(response.grant);
-      showSideCart();
     },
     removeFromCart: function() {
       let vm = this;
 
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
-      showSideCart();
     },
     addToCollection: async function(collection, grant) {
       const collectionAddGrantURL = `/grants/v1/api/collections/${collection.id}/grants/add`;
@@ -145,11 +143,9 @@ Vue.component('grant-collection', {
       (collection.grants || []).forEach((grant) => {
         CartData.addToCart(grant);
       });
-
-      showSideCart();
     },
     getGrantLogo(index) {
-      return this.collection.grants[index].logo;
+      return `${this.collection.cache?.grants[index]?.logo}`;
     }
   }
 });

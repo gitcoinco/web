@@ -11,7 +11,7 @@ from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
-from grants.models import Grant, GrantCollection, Subscription
+from grants.models import Grant, GrantCLR, GrantCollection, Subscription
 from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,

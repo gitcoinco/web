@@ -24,13 +24,13 @@ from grants.views import (
     collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
     contribution_addr_from_grant_as_json, contribution_addr_from_grant_during_round_as_json,
     contribution_addr_from_round_as_json, contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1,
-    flag, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grants,
-    get_interrupted_contributions, get_replaced_tx, get_trust_bonus, grant_activity, grant_categories, grant_details,
-    grant_details_api, grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new,
-    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
+    flag, get_clr_sybil_input, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grant_tags,
+    get_grants, get_interrupted_contributions, get_replaced_tx, get_trust_bonus, grant_activity, grant_details, grant_details_api,
+    grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grant_new, grants,
+    grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
     grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
     manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
-    toggle_grant_favorite, verify_grant,
+    toggle_grant_favorite, toggle_user_sybil, verify_grant,
 )
 
 app_name = 'grants/'
@@ -66,7 +66,6 @@ urlpatterns = [
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     path('collections/<int:collection_id>/thumbnail', collection_thumbnail, name='get_collection_thumbnail'),
     re_path(r'^new/?$', grant_new, name='new'),
-    re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
     path('ingest', ingest_contributions, name='ingest_contributions'),
     path('bulk-fund', bulk_fund, name='bulk_fund'),
@@ -91,6 +90,7 @@ urlpatterns = [
     path('<slug:grant_type>', grants_type_redirect, name='grants_type_redirect2'),
     path('explorer/<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('explorer/<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
+    path('v1/api/tags', get_grant_tags, name='get_grant_tags'),
     path('v1/api/grants', grants_info, name='grants_info'),
     path('v1/api/grant/<int:grant_id>/', grant_details_api, name='grant_details_api'),
     path('v1/api/grant/<int:grant_id>/contributions', grant_details_contributions, name='grant_details_contributions'),
@@ -114,5 +114,8 @@ urlpatterns = [
     path('v1/api/export_addresses/grant<int:grant_id>_round<int:round_id>.json', contribution_addr_from_grant_during_round_as_json, name='contribution_addr_from_grant_during_round_as_json'),
     path('v1/api/export_info/grant<int:grant_id>_round<int:round_id>.json', contribution_info_from_grant_during_round_as_json, name='contribution_addr_from_grant_during_round_as_json'),
 
+    # custom API
+    path('v1/api/get-clr-data/<int:round_id>', get_clr_sybil_input, name='get_clr_sybil_input'),
+    path('v1/api/toggle_user_sybil', toggle_user_sybil, name='toggle_user_sybil')
 
 ]

@@ -1,11 +1,12 @@
 from dashboard.router import ProfileSerializer
+from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-from .models import Contribution, Grant, GrantCLR, Subscription
+from .models import Contribution, Grant, GrantCLR, GrantCollection, GrantTag, GrantType, Subscription
 from .utils import amount_in_wei, get_converted_amount
 
 
-class GrantSerializer(serializers.ModelSerializer):
+class GrantSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Grant object."""
 
     admin_profile = ProfileSerializer()
@@ -16,7 +17,7 @@ class GrantSerializer(serializers.ModelSerializer):
 
         model = Grant
         fields = (
-            'active', 'title', 'slug', 'description', 'reference_url', 'logo', 'admin_address',
+            'id', 'active', 'title', 'slug', 'description', 'reference_url', 'logo', 'admin_address',
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
             'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
             'clr_round_num', 'is_clr_active', 'amount_received_in_round', 'positive_round_contributor_count',
@@ -111,7 +112,7 @@ class DonorSerializer(serializers.Serializer):
     gitcoin_maintenance_amount = serializers.SerializerMethodField()
     grant_usd_value = serializers.SerializerMethodField()
     gitcoin_usd_value = serializers.SerializerMethodField()
-    
+
     def get_grant_amount(self, obj):
         subscription = obj.subscription
         grant_amount = format(amount_in_wei(subscription.token_address, subscription.amount_per_period_minus_gas_price), '.0f')
@@ -138,11 +139,49 @@ class DonorSerializer(serializers.Serializer):
         fields = ('grant_name', 'asset', 'timestamp', 'grant_amount', 'gitcoin_maintenance_amount', 'grant_usd_value', 'gitcoin_usd_value')
 
 
-class GrantCLRSerializer(serializers.ModelSerializer):
+class GrantCLRSerializer(FlexFieldsModelSerializer):
     """Handle metadata of CLR rounds"""
     class Meta:
         """Define the GrantCLR serializer metadata."""
         model = GrantCLR
-        fields = (
-            'id', 'display_text', 'round_num', 'is_active', 'start_date', 'end_date'
-        )
+        fields = '__all__'
+        expandable_fields = {
+          'owner': (ProfileSerializer)
+        }
+
+
+class GrantTypeSerializer(FlexFieldsModelSerializer):
+    """Handle metadata of CLR rounds"""
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantType
+        fields = '__all__'
+
+
+class GrantTagSerializer(FlexFieldsModelSerializer):
+    """Handle metadata of CLR rounds"""
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantTag
+        fields = ('id', 'name')
+
+
+class GrantCollectionSerializer(FlexFieldsModelSerializer):
+    """Handle metadata of CLR rounds"""
+    profile = ProfileSerializer()
+    curators = ProfileSerializer(many=True)
+    count = serializers.SerializerMethodField()
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantCollection
+        fields = ('id', 'title', 'description', 'cover', 'featured', 'cache', 'curators', 'grants', 'profile', 'count')
+
+        expandable_fields = {
+            'grants': (
+                'grants.serializers.GrantSerializer',
+                {'many': True, 'fields': ['pk', 'title', 'logo']}
+
+            )
+            }
+    def get_count(self, obj):
+        return obj.grants.count()

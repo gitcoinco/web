@@ -668,16 +668,19 @@ this.actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-this.setUsdAmount = function(givenDenomination) {
+this.setUsdAmount = function(givenDenomination, approx = true) {
   const amount = $('input[name=amount]').val();
   const denomination = givenDenomination || $('#token option:selected').text();
 
   getUSDEstimate(amount, denomination, function(estimate) {
-    if (estimate['value']) {
+
+    const key = approx ? 'value' : 'value_unrounded';
+
+    if (estimate[key]) {
       $('#usd-amount-wrapper').show();
       $('#usd_amount_text').show();
 
-      $('#usd_amount').val(estimate['value']);
+      $('#usd_amount').val(estimate[key]);
       $('#usd_amount_text').html(estimate['rate_text']);
       $('#usd_amount').removeAttr('disabled');
     } else {
@@ -1087,41 +1090,18 @@ this.getURLParams = (k) => {
   return k ? p[k] : p;
 };
 
-this.updateParams = (key, value) => {
-  params = new URLSearchParams(window.location.search);
-  if (params.get(key) === value) return;
-  params.set(key, value);
+// this.updateParams = (key, value) => {
+//   params = new URLSearchParams(window.location.search);
+//   if (params.get(key) === value) return;
+//   params.set(key, value);
 
-  let path = '/';
+//   let path = '/';
 
-  if (params.get('type', '')) {
-    path = '/' + params.get('type', '');
-  }
-  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
-};
-
-this.updateMultipleParams = (_newParams) => {
-  params = new URLSearchParams(window.location.search);
-  newParams = Object.entries(_newParams);
-  for (const [ key, value ] of newParams) {
-    params.set(key, value);
-  }
-  let path = '/';
-
-  if (params.get('type', '')) {
-    path = '/' + params.get('type', '');
-  }
-
-  if (params.get('type')) {
-    params.delete('type');
-  }
-  if (!params.get('category')) {
-    params.delete('category');
-  }
-  params.delete('keyword');
-
-  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
-};
+//   if (params.get('type', '')) {
+//     path = '/' + params.get('type', '');
+//   }
+//   window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
+// };
 
 
 /**
