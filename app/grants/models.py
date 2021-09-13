@@ -44,10 +44,10 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
-from app.dashboard.utils import get_web3
-from app.economy.tx import check_for_replaced_tx
+from dashboard.utils import get_web3
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
+from economy.tx import check_for_replaced_tx
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
@@ -1823,8 +1823,6 @@ class Contribution(SuperModel):
         """Updates tx status for Ethereum contributions."""
         try:
             from economy.tx import grants_transaction_validator
-            from dashboard.utils import get_tx_status
-            from economy.tx import getReplacedTX
 
             # If `tx_override` is True, we don't run the validator for this contribution
             if self.tx_override:
