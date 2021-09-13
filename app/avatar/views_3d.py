@@ -556,7 +556,7 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [],
             'skin_tones': [],
             'tone_maps': [],
-            'path': 'assets/v2/images/avatar3d/Moloch1.svg',
+            'path': 'assets/v2/images/avatar3d/Moloch111.svg',
         },
         'starbot': {
             'preview_viewbox': {
