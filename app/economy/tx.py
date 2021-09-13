@@ -3,9 +3,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.utils import timezone
 
-import requests
 from dashboard.abi import erc20_abi
-from dashboard.utils import get_tx_status, get_web3
 from economy.models import Token
 from web3 import Web3
 from web3.exceptions import BadFunctionCallOutput
@@ -112,6 +110,8 @@ def check_for_replaced_tx(tx_hash, network, datetime=None, is_polygon=False):
     Get status of the provided transaction hash, and look for a replacement transaction hash. If a
     replacement exists, return the status and hash of the new transaction
     """
+    from dashboard.utils import get_tx_status
+
     if not datetime:
         datetime = timezone.now()
 
