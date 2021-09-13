@@ -299,7 +299,10 @@ def get_web3(network, sockets=False, is_polygon=False):
 
     """
     if network in ['mainnet', 'rinkeby', 'ropsten', 'testnet']:
-        network = 'polygon-mainnet' if is_polygon and network == 'mainnet' else 'polygon-mumbai'
+        if network == 'mainnet' and is_polygon:
+            network = 'polygon-mainnet'
+        elif network == 'testnet':
+            network = 'polygon-mumbai'
 
         if sockets and not is_polygon: # polygon doesn't yet have socket support in infura
             if settings.INFURA_USE_V3:
