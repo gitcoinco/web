@@ -670,10 +670,11 @@ def get_grants_by_filters(
 
     if keyword:
         # 6. Filter grants having matching title & description
-        # query = SearchQuery(keyword)
-        # _grants = _grants.filter(vector_column=query)
-        _grants = _grants.annotate(search=SearchVector('title', 'description')).filter(search=keyword)
+        _grants = _grants.annotate(search=SearchVector('description'))
+        keyword_query = Q(title__icontains=keyword)
+        keyword_query |= Q(search=keyword)
 
+        _grants = _grants.filter(keyword_query)
 
     if not idle_grants:
         # 7. Filter grants which are stale (last update was > 3 months )
