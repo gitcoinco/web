@@ -44,7 +44,6 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
-from dashboard.utils import get_web3
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from economy.tx import check_for_replaced_tx
@@ -1822,6 +1821,7 @@ class Contribution(SuperModel):
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
         try:
+            from dashboard.utils import get_web3
             from economy.tx import grants_transaction_validator
 
             # If `tx_override` is True, we don't run the validator for this contribution
