@@ -11,15 +11,7 @@ class PrimaryDBRouter:
         Else go to default DB
         """
         replicas = ['read_replica_1', 'read_replica_2']
-<<<<<<< HEAD
         return random.choice(replicas)
-=======
-        if settings.JOBS_NODE:
-            return random.choice(replicas)
-        if settings.CELERY_NODE:
-            return random.choice(replicas)
-        return 'default'
->>>>>>> 87fcaba38 (Extract grants models into individual files (#9341))
 
     def db_for_write(self, model, **hints):
         """
