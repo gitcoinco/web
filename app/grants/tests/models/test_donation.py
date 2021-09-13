@@ -1,4 +1,3 @@
-
 import pytest
 from grants.models.donation import Donation
 
@@ -17,7 +16,7 @@ class TestDonation:
         assert isinstance(donation, Donation)
 
     def test_donation_has_a_from_address(self):
-        """Test from_address attribute and default value."""
+        """Test from_address attribute is present and defaults to '0x0'."""
 
         donation = DonationFactory()
 
