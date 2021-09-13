@@ -30,6 +30,7 @@ from .grant_category import GrantCategory
 from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
 from .grant_stat import GrantStat
+from .grant_tag import GrantTag
 from .grant_type import GrantType
 from .match_pledge import MatchPledge
 from .phantom_funding import PhantomFunding
