@@ -1890,7 +1890,7 @@ class Contribution(SuperModel):
                     return
 
                 # Validate that the token transfers occurred
-                response = grants_transaction_validator(self, w3)
+                response = grants_transaction_validator(self, w3, is_polygon=is_polygon)
                 if len(response['originator']):
                     self.originated_address = response['originator'][0]
                 self.validator_passed = response['validation']['passed']
