@@ -187,7 +187,7 @@
             class="btn btn-outline-primary py-2 w-100 text-nowrap ml-0 ml-md-2 mt-2 mt-md-0"
             :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
             id='js-polygonfundGrants-button'
-            v-b-tooltip.hover.top="'Polygon is a solution that enables low cost transaction fees and transfer of ETH and ERC-20 tokens with fast confirmation time. To take advantage of these benefits, this method of payment requires preloaded funds in Polygon (cheapest option).'"
+            v-b-tooltip.hover.top="'Checking out with Polygon enables the transfer of ETH and ERC-20 tokens with low-cost transaction fees and fast confirmation. To take advantage of these benefits you must have preloaded funds in Polygon (cheapest option).'"
           >
             Checkout with Polygon
           </button>
@@ -225,7 +225,7 @@
                     <div class="text-left mt-2">
                       <h3 class="font-subheader">What is Polygon (Matic)?</h3>
                       <p>
-                        Polygon (Matic) is an Ethereum sidechain solution, which means you can checkout
+                        Polygon (Matic) is an Ethereum sidechain solution, which means you can contribute to
                         your favorite grants with much lower transaction fees and much faster confirmation time.
                       </p>
                       <h3 class="font-subheader">How do I pay with Polygon (Matic)?</h3>
@@ -261,7 +261,7 @@
                       </p>
                     </div>
                     <button @click="closePolygonModal()" class="mt-2 btn btn-lg btn-gc-blue shadow-none float-right">
-                      Close modal
+                      Close
                     </button>
                   </div>
                 </div>
