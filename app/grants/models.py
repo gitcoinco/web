@@ -44,6 +44,8 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+from app.dashboard.utils import get_web3
+from app.economy.tx import check_for_replaced_tx
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -1853,20 +1855,18 @@ class Contribution(SuperModel):
                 self.tx_cleared = True
                 self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
 
-            elif self.checkout_type == 'eth_std':
-                # Standard L1 checkout using the BulkCheckout contract
+            elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
+                # Standard L1 and Polygon L2 checkout using the BulkCheckout contract
 
+                is_polygon = True if self.checkout_type == 'eth_polygon' else False
+                
                 # Prepare web3 provider
-                PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
-                w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+                w3 = get_web3(network, is_polygon=is_polygon)
 
                 # Handle dropped/replaced transactions
-                split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-                if split_tx_status in ['pending', 'dropped', 'unknown', '']:
-                    new_tx = getReplacedTX(self.split_tx_id)
-                    if new_tx:
-                        self.split_tx_id = new_tx
-                        split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+                _, split_tx_status, _ = check_for_replaced_tx(
+                    self.split_tx_id, network, self.created_on, is_polygon=is_polygon
+                )
 
                 # Handle pending txns
                 if split_tx_status in ['pending']:

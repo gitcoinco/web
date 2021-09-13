@@ -107,38 +107,48 @@ def parse_token_amount(token_symbol, amount, network):
     parsed_amount = int(amount * 10 ** decimals)
     return parsed_amount
 
-def check_for_replaced_tx(tx_hash, network):
+def check_for_replaced_tx(tx_hash, network, datetime=None, is_polygon=False):
     """
     Get status of the provided transaction hash, and look for a replacement transaction hash. If a
     replacement exists, return the status and hash of the new transaction
     """
-    status, timestamp = get_tx_status(tx_hash, network, timezone.now())
+    if not datetime:
+        datetime = timezone.now()
+
+    status, timestamp = get_tx_status(tx_hash, network, datetime, is_polygon=is_polygon)
     if status in ['pending', 'dropped', 'unknown', '']:
         new_tx = getReplacedTX(tx_hash)
         if new_tx:
             tx_hash = new_tx
-            status, timestamp = get_tx_status(tx_hash, network, timezone.now())
+            status, timestamp = get_tx_status(tx_hash, network, datetime)
 
     return tx_hash, status, timestamp
 
 
-def grants_transaction_validator(contribution, w3):
+def grants_transaction_validator(contribution, w3, is_polygon=False):
     """
-    This function is used to validate contributions sent on L1 through the BulkCheckout contract.
+    This function is used to validate contributions sent on L1 & Polygon L2 through the BulkCheckout contract.
     This contract can be found here:
       - On GitHub: https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BulkCheckout.sol
       - On mainnet: https://etherscan.io/address/0x7d655c57f71464b6f83811c55d84009cd9f5221c
+      - On Polygon mainnet: https://polygonscan.com/address/0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877
+      - On Polygon testnet: https://mumbai.polygonscan.com/address/0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973
 
-    To facilitate testing on Rinkeby, we pass in a web3 instance instead of using the mainnet
+    To facilitate testing on Rinkeby and Mumbai, we pass in a web3 instance instead of using the mainnet
     instance defined at the top of this file
     """
-
-    # Get bulk checkout contract instance
-    bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=bulk_checkout_abi)
 
     # Get specific info about this contribution that we use later
     tx_hash = contribution.split_tx_id
     network = contribution.subscription.network
+
+    if network == 'mainnet' and is_polygon:
+        bulk_checkout_address = '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
+    elif network == 'testnet':
+        bulk_checkout_address = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973'
+
+    # Get bulk checkout contract instance
+    bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=bulk_checkout_abi)
 
     # Response that calling function uses to set fields on Contribution. Set the defaults here
     response = {
@@ -168,7 +178,7 @@ def grants_transaction_validator(contribution, w3):
         return response
 
     # Check for dropped and replaced txn
-    tx_hash, status, timestamp = check_for_replaced_tx(tx_hash, network)
+    tx_hash, status, _ = check_for_replaced_tx(tx_hash, network, is_polygon=is_polygon)
 
     # If transaction was successful, continue to validate it
     if status == 'success':

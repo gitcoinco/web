@@ -927,12 +927,12 @@ def is_valid_eth_address(eth_address):
     return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
 
-def get_tx_status(txid, network, created_on):
-    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on)
+def get_tx_status(txid, network, created_on, is_polygon=False):
+    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on, is_polygon=is_polygon)
     return status, timestamp
 
 
-def get_tx_status_and_details(txid, network, created_on):
+def get_tx_status_and_details(txid, network, created_on, is_polygon=False):
     from django.utils import timezone
 
     import pytz
@@ -946,7 +946,7 @@ def get_tx_status_and_details(txid, network, created_on):
     if txid == 'override':
         return 'success', None #overridden by admin
     try:
-        web3 = get_web3(network)
+        web3 = get_web3(network, is_polygon=is_polygon)
         tx = web3.eth.getTransactionReceipt(txid)
         if not tx:
             drop_dead_date = created_on + timezone.timedelta(days=DROPPED_DAYS)
