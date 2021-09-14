@@ -981,7 +981,7 @@ def get_tx_status_and_details(txid, network, created_on):
 
 def is_blocked(handle):
     # check admin block list
-    is_on_blocked_list = BlockedUser.objects.filter(handle__icontains=handle, active=True).exists()
+    is_on_blocked_list = BlockedUser.objects.filter(handle=handle.lower(), active=True).exists()
     if is_on_blocked_list:
         return True
 
