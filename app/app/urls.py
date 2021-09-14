@@ -44,7 +44,6 @@ import marketing.views
 import marketing.webhookviews
 import passport.views
 import perftools.views
-import ptokens.views
 import quests.views
 import retail.emails
 import retail.views
@@ -78,20 +77,6 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
-
-    # personal_tokens (now called Time Tokens)
-    re_path(r'^ptoken/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
-    re_path(r'^ptoken/faq/?', ptokens.views.faq, name='ptokens_faq'),
-    path('ptokens/redemptions/<int:redemption_id>/', ptokens.views.ptoken_redemption, name='token_redemption'),
-    path('ptokens/<int:token_id>/purchase/', ptokens.views.ptoken_purchases, name='token_purchase'),
-    path('ptokens/<int:token_id>/redemptions/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
-    path('ptokens/redemptions/<str:redemption_state>/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
-    path('ptokens/me/', ptokens.views.ptoken, name='personal_token'),
-    path('ptokens/<int:token_id>/', ptokens.views.ptoken, name='token'),
-    path('ptokens/<str:token_state>/', ptokens.views.tokens, name='tokens'),
-    path('ptokens/', ptokens.views.tokens, name='tokens'),
-    path('ptokens/update', ptokens.views.process_ptokens, name='process_ptokens'),
-    path('ptokens/verify', ptokens.views.verification, name='ptoken_verification'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),

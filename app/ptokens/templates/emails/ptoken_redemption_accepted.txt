@@ -1,7 +1,0 @@
-{% load i18n %}
-
-Redemption Request Accepted
-
-📥 @{{ redeem.token.token_owner_profile.handle }} accepted your request to redeem {{ redeem.total }} {{ ptoken.token_symbol }}
-
-{{ redeem.reason }}

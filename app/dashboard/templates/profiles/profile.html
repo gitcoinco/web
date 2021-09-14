@@ -70,11 +70,9 @@
                   {% include 'profiles/header_avatar.html' %}
                   {% include 'profiles/header_details.html' %}
                 </div>
-                {% if is_staff %}
-                  {% include 'profiles/scorecard_ptoken.html' %}
-                {% else %}
-                  <div class="col-12 col-lg-3"></div>
-                {% endif %}
+
+                <div class="col-12 col-lg-3"></div>
+
                 {% if profile.is_org %}
                   {% include 'profiles/organization.html' %}
                 {% elif profile.cascaded_persona == 'funder' %}
@@ -89,12 +87,6 @@
 
         {% include 'profiles/tabs.html' %}
         {% include 'profiles/tabs_close.html' %}
-        {% include 'shared/buy_token_modal.html' %}
-        {% include 'shared/redeem_token_modal.html' %}
-        {% include 'shared/redeem_token_success_modal.html' %}
-        {% include 'shared/buy_receipt.html' %}
-        {% include 'shared/redeem_receipt.html' %}
-        {% include 'shared/create_ptoken.html' %}
 
         {% if not profile.is_org %}
           </div>
@@ -144,14 +136,6 @@
         {% if profile.automatic_backup and is_editable %}
           window.profile_automatic_backup = true;
         {% endif %}
-        {% if ptoken %}
-          document.current_ptoken_address = "{{ ptoken.token_address }}";
-          document.current_ptoken_symbol = "{{ ptoken.token_symbol }}";
-          document.current_ptoken_id = {{ ptoken.id }};
-          document.current_ptoken_value = {{ ptoken.value }};
-          document.current_ptoken_total_available = {{ ptoken.total_available }};
-          document.current_hodling = {{ available_to_redeem|default:0 }};
-        {% endif %}
       </script>
 
       {% bundle merge_js file jitsi %}
@@ -172,7 +156,6 @@
         <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
         <script src="{% static "v2/js/activity.js" %}"></script>
         <script src="{% static "v2/js/3box.min.js" %}"></script>
-        <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
       {% endbundle %}
     </div>
   </body>

@@ -109,10 +109,6 @@ const renderPopOverData = function(data) {
 
   let mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
 
-  if (data.profile.has_ptoken) {
-    mount_graph.push(token_total_percent);
-  }
-
 
   let graphs = mount_graph.map((graph) => {
     return `<circle class="donut-segment" cx="50%" cy="50%" r="38%" fill="transparent" stroke="${graph.color}" stroke-width="8%" stroke-dasharray="${graph.percent} ${100 - graph.percent}" stroke-dashoffset="${graph.dashoffset}"></circle>`;
