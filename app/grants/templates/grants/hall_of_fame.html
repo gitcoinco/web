@@ -45,9 +45,9 @@ along with this program. If not, see
 
         <div id="hall-of-fame" class="container-fluid px-0">
             <div id="hof-banner" class="container-fluid">
-                <div class="container content text-left">
-                    <div class="pt-5"></div>
-                    <h2 class="text-center pt-4">{%trans "Grants Hall of Fame" %}</h2>
+                <div id="hof-banner" class="container content text-left pt-5 pb-5">
+
+                    <h2 class="text-center pt-sm-4">{%trans "Grants Hall of Fame" %}</h2>
 
                     <div class="d-block d-sm-none row pt-3 text-violet-400">
                         <div class="col-xs-12 col-sm-6">
@@ -69,31 +69,22 @@ along with this program. If not, see
                             </h3>
                         </div>
                     </div>
-                    <div class="d-block d-sm-none pt-3"></div>
-                    <div class="d-none d-sm-block pt-5"></div>
-                    <div class="row">
+                    <div class="row pt-3 pt-sm-5">
                         <div class="col-xs-12 col-sm-8 offset-sm-2 text-center text-grey-400 text font-header">
                             Top Gitcoin Grant funders and grantees making impact in the web3 ecosystem.
                         </div>
                     </div>
-                    <div class="d-block d-sm-none pt-4"></div>
-                    <div class="d-none d-sm-block pt-3"></div>
-                    <div class="text-center">
+                    <div class="text-center pt-4 pt-sm-3">
                         <a class="btn btn-primary btn-lg" href="{%url 'grants:new_matching_partner' %}">
                             Join the Funder's League
                         </a>
                     </div>
-                    <div class="d-block d-sm-none pt-5"></div>
-                    <div class="d-none d-sm-block pt-4"></div>
-                    <div class="d-none d-sm-block pt-4"></div>
                 </div>
             </div>
 
             <div class="container-fluid px-0">
                 <div id="partner_section" class="container content text-left">
-                    <div class="d-block d-sm-none pt-4"></div>
-                    <div class="d-none d-sm-block pt-5"></div>
-                    <h2 class="text-grey-500">{%trans "Top Matching Partners" %}</h2>
+                    <h2 class="text-grey-500 pt-4 pt-sm-5">{%trans "Top Matching Partners" %}</h2>
                     <div class="pt-3"></div>
 
                     <picture>
@@ -107,9 +98,7 @@ along with this program. If not, see
 
             <div class="container-fluid pb-5 hof-bg-violet-500">
                 <div class="container content text-left">
-                    <div class="d-block d-sm-none pt-4"></div>
-                    <div class="d-none d-sm-block pt-5"></div>
-                    <h2 class="text-white">{%trans "Top Individual Grant Donors" %}</h2>
+                    <h2 class="text-white pt-4 pt-sm-5">{%trans "Top Individual Grant Donors" %}</h2>
                     <div class="pt-3"></div>
                     <picture>
                         <source media="(max-width: 320px)" srcset="{{ top_individual_donors_mobile_url }}">
@@ -119,17 +108,11 @@ along with this program. If not, see
                 </div>
             </div>
 
-            <div class="d-block d-sm-none pt-4"></div>
-            <div class="d-none d-sm-block pt-5"></div>
-
-            <div class="container text-left pb-5">
+            <div class="container text-left pt-4 pt-sm-5 pb-5">
                 <h2 class="text-grey-500">{%trans "Graduated Grantees" %}</h2>
                 <div class="mt-3 text-grey-400">{{ graduated_grantees_description }}</div>
 
-                <div class="d-block d-sm-none pt-4"></div>
-                <div class="d-none d-sm-block pt-5"></div>
-
-                <div class="container">
+                <div class="container pt-4 pt-sm-5">
                     {% for g in graduated_grantees %}
                     {% if not forloop.first %}
                     <div class="row mt-3"></div>
@@ -167,10 +150,7 @@ along with this program. If not, see
             </div>
 
             <div class="container-fluid">
-                <div class="d-block d-sm-none pt-4"></div>
-                <div class="d-none d-sm-block pt-5"></div>
-
-                <div class="container text-left">
+                <div class="container text-left pt-4 pt-sm-5">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6 offset-sm-1 container pb-5">
                             <div class="row">
@@ -182,10 +162,7 @@ along with this program. If not, see
                                 </div>
                             </div>
 
-                            <div class="d-block d-sm-none pt-3"></div>
-                            <div class="d-none d-sm-block pt-4"></div>
-
-                            <div class="row">
+                            <div class="row pt-3 pt-sm-4">
                                 <div class="col">
                                     <a class="btn btn-primary" href="mailto:{{share_your_story_email}}">
                                         Share Your Story
