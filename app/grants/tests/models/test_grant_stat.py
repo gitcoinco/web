@@ -16,8 +16,8 @@ class TestGrantStat:
 
         assert isinstance(grant_stat, GrantStat)
 
-    def test_grant_stat_belongs_to_grant(self):
-        """Test association with Grant model."""
+    def test_grant_stat_has_associated_grant(self):
+        """Test 'grant' attribute is present and is an instance of Grant."""
 
         grant_stat = GrantStatFactory()
 
@@ -25,7 +25,7 @@ class TestGrantStat:
         assert isinstance(grant_stat.grant, Grant)
 
     def test_grant_stat_has_data_attribute(self):
-        """Test 'data' attribute."""
+        """Test 'data' attribute is present and defaults to empty dictionary."""
 
         grant_stat = GrantStatFactory()
 
@@ -34,11 +34,10 @@ class TestGrantStat:
         assert len(grant_stat.data) == 0
 
     def test_grant_stat_has_snapshot_type(self):
-        """Test 'snapshot_type' attribute."""
+        """Test 'snapshot_type' attribute is present."""
 
         grant_stat = GrantStatFactory()
 
         assert hasattr(grant_stat, 'snapshot_type')
-        assert grant_stat.snapshot_type == ''
 
     
