@@ -21,16 +21,16 @@ class TestFlag:
 
         assert isinstance(flag, Flag)
 
-    def test_flag_belongs_to_grant(self):
-        """Test relation of Flag to associated Grant."""
+    def test_flag_has_associated_grant(self):
+        """Test 'grant' attribute is present and is an instance of Grant."""
 
         flag = FlagFactory()
 
         assert hasattr(flag, 'grant')
         assert isinstance(flag.grant, Grant)
 
-    def test_flag_belongs_to_profile(self):
-        """Test relation of Flag to associated Profile and default value."""
+    def test_flag_has_associated_profile(self):
+        """Test 'profile' attribute is present and is an instance of Profile."""
 
         flag = FlagFactory()
 
@@ -38,15 +38,15 @@ class TestFlag:
         assert isinstance(flag.profile, Profile)
 
     def test_flag_has_comments(self):
-        """Test 'comments' attribute and default value."""
+        """Test 'comments' attribute is present."""
 
         flag = FlagFactory()
 
         assert hasattr(flag, 'comments')
-        assert flag.comments == 'Test comment'
+        assert flag.comments == ''
 
     def test_flag_has_processed_attribute(self):
-        """Test 'processed' attribute and default value."""
+        """Test 'processed' attribute is present and defaults to False."""
 
         flag = FlagFactory()
 
@@ -54,7 +54,7 @@ class TestFlag:
         assert flag.processed == False
 
     def test_flag_has_comments_admin(self):
-        """Test 'comments_admin' attribute and default."""
+        """Test 'comments_admin' attribute is present and defaults to empty string."""
 
         flag = FlagFactory()
 
@@ -62,12 +62,11 @@ class TestFlag:
         assert flag.comments_admin == ''
 
     def test_flag_has_tweet_attribute(self):
-        """Test 'tweet' attribute."""
+        """Test 'tweet' attribute is present."""
 
         flag = FlagFactory()
 
         assert hasattr(flag, 'tweet')
-        assert flag.tweet == ''
 
     def test_post_flag_method_calls_collaborators_with_appropriate_attributes(self):
         """Test post_flag() method calls filter() on Profile.objects, create() on Activity.objects, and create() on Comment.objects."""

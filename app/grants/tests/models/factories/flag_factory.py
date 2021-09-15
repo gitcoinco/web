@@ -15,4 +15,4 @@ class FlagFactory(factory.django.DjangoModelFactory):
 
     grant = factory.SubFactory(GrantFactory)
     profile = factory.SubFactory(ProfileFactory)
-    comments = 'Test comment'
+    comments = ''
