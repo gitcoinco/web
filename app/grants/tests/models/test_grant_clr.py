@@ -1,4 +1,5 @@
 import pytest
+from dashboard.models import Profile
 from grants.models.grant import GrantCLR
 
 from .factories.grant_clr_factory import GrantCLRFactory
@@ -31,7 +32,7 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'round_num')
     
     def test_grant_clr_has_sub_round_slug_attribute(self):
-        """Test sub_round_slug attribute is present and defailts to empty string."""
+        """Test sub_round_slug attribute is present and defaults to empty string."""
 
         grant_clr = GrantCLRFactory()
 
@@ -46,10 +47,9 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'display_text')
 
     def test_grant_clr_has_owner_attribute(self):
-        """Test owner attribute is present."""
+        """Test owner attribute is present and is an instance of Profile."""
 
         grant_clr = GrantCLRFactory()
 
         assert hasattr(grant_clr, 'owner')
-
-    
+        assert isinstance(grant_clr.owner, Profile)
