@@ -18,23 +18,21 @@ class TestGrantBrandingRoutingPolicy:
         assert isinstance(grant_branding_routing_policy, GrantBrandingRoutingPolicy)
 
     def test_grant_branding_routing_policy_has_a_policy_name(self):
-        """Test policy_name attribute."""
+        """Test policy_name attribute is present."""
 
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
 
         assert hasattr(grant_branding_routing_policy, 'policy_name')
-        assert grant_branding_routing_policy.policy_name == None
 
     def test_grant_branding_routing_policy_has_a_url_pattern(self):
-        """Test url_pattern attribute."""
+        """Test url_pattern attribute is present."""
 
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
 
         assert hasattr(grant_branding_routing_policy, 'url_pattern')
-        assert grant_branding_routing_policy.url_pattern == ''
 
     def test_grant_branding_routing_policy_has_a_banner_image(self):
-        """Test banner_image attribute."""
+        """Test banner_image attribute is present."""
 
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
 
@@ -42,23 +40,21 @@ class TestGrantBrandingRoutingPolicy:
         assert isinstance(grant_branding_routing_policy.banner_image, ImageFieldFile)
 
     def test_grant_branding_routing_policy_has_a_priority_attribute(self):
-        """Test priority attribute."""
+        """Test priority attribute is present."""
 
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
 
         assert hasattr(grant_branding_routing_policy, 'priority')
-        assert grant_branding_routing_policy.priority == 1
 
     def test_grant_branding_routing_policy_has_a_background_image(self):
-        """Test background_image attribute."""
+        """Test background_image attribute is present."""
 
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
 
         assert hasattr(grant_branding_routing_policy, 'background_image')
-        assert grant_branding_routing_policy.background_image == None
 
     def test_grant_branding_routing_policy_has_a_inline_css_attribute(self):
-        """Test inline_css attribute."""
+        """Test inline_css attribute is present and defaults to empty string."""
 
         grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
 
