@@ -20,7 +20,7 @@ class TestGrantCollection:
         assert isinstance(grant_collection, GrantCollection)
 
     def test_grant_collection_has_related_grants(self):
-        """Test grants attribute is present and blank by default."""
+        """Test 'grants' attribute is present and can have many Grants."""
 
         grants = (GrantFactory(), GrantFactory())
         grant_collection = GrantCollectionFactory(grants=(grants))
@@ -30,7 +30,7 @@ class TestGrantCollection:
         assert len(grant_collection.grants.all()) == len(grants)
 
     def test_grant_collection_has_associated_profile(self):
-        """Test profile attribute is present."""
+        """Test profile attribute is present and is an instance of Profile."""
 
         grant_collection = GrantCollectionFactory()
 
@@ -43,7 +43,6 @@ class TestGrantCollection:
         grant_collection = GrantCollectionFactory()
 
         assert hasattr(grant_collection, 'title')
-        assert grant_collection.title == ''
 
     def test_grant_collection_has_a_description(self):
         """Test description attribute is present and defaults to empty string."""
@@ -59,7 +58,6 @@ class TestGrantCollection:
         grant_collection = GrantCollectionFactory()
 
         assert hasattr(grant_collection, 'cover')
-        assert grant_collection.cover == None
 
     def test_grant_collection_has_hidden_attribute(self):
         """Test hidden attribute is present and defaults to False."""
@@ -76,6 +74,7 @@ class TestGrantCollection:
 
         assert hasattr(grant_collection, 'cache')
         assert grant_collection.cache == {}
+        assert len(grant_collection.cache) == 0
 
     def test_grant_collection_has_featured_attribute(self):
         """Test featured attribute is present and defaults to False."""
@@ -94,7 +93,7 @@ class TestGrantCollection:
         assert grant_collection.shuffle_rank == 1
 
     def test_grant_collection_has_associated_curators(self):
-        """Test curators are present and instances of Profile."""
+        """Test curators are present and GrantCollection can have many."""
 
         curators = (ProfileFactory(), ProfileFactory())
         grant_collection = GrantCollectionFactory(curators=(curators))
