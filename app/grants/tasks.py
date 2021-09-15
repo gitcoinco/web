@@ -2,11 +2,13 @@ import inspect
 import math
 import time
 from decimal import Decimal
+from io import StringIO
 
 from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 
+import boto
 from app.grants.utils import toggle_user_sybil
 from app.services import RedisService
 from celery import app
@@ -17,6 +19,7 @@ from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_not
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
+from perftools.models import StaticJsonEnv
 from townsquare.models import Comment, SquelchProfile
 from unidecode import unidecode
 
@@ -425,8 +428,20 @@ def generate_collection_cache(self, collection_id):
 
 
 @app.shared_task(bind=True, max_retries=3)
-def process_bsci_sybil_csv(url):
+def process_bsci_sybil_csv(file_name=None):
     '''fetch csv from bsci and toggle'''
-    csv = None
-    # TODO-BSCI: validate: fetch .csv from S3
-    bsci_script(csv)
+
+    if not file_name:
+        bsciJSON = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN')
+        data = bsciJSON.data
+        file_name = data['csv_url']
+
+    # https://stackoverflow.com/a/46323684
+    s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
+    csv_object = s3.get_object(Bucket= bucket, Key=file_name)
+    body = csv_object['Body']
+    csv_string = body.read().decode('utf-8')
+
+    # run bsci script
+    bsci_script(StringIO(csv_string))

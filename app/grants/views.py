@@ -3721,20 +3721,20 @@ def upload_sybil_csv(request):
     bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
 
     now = datetime.now()
-    fileName = f'{now.strftime("%m/%d/%Y")}.csv'
+    file_name = f'{now.strftime("%m/%d/%Y")}.csv'
     bucketKey = Key(bucket)
-    bucketKey.key = fileName
+    bucketKey.key = file_name
 
-    filepath = 'cache/out.mp4' # WHAT TO SET PATH
+    filepath = file_name
     bucketKey.set_contents_from_filename(filepath)
     bucketKey.set_acl('public-read') # NEEDED ?
 
     url = bucketKey.generate_url(expires_in=0, query_auth=False)
 
     # store latest in JSONStore
-    data['path'] = url
+    data['csv_url'] = file_name
     data.save()
 
-    process_bsci_sybil_csv.delay(url)
+    process_bsci_sybil_csv.delay(file_name)
 
     return JsonResponse({'success': 'ok'}, status=200)
