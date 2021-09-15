@@ -23,15 +23,15 @@ class TestMatchPledge:
         assert isinstance(match_pledge, MatchPledge)
 
     def test_match_pledge_has_active_attribute(self):
-        """Test 'active' attribute and default value."""
+        """Test 'active' attribute is present and defaults to False."""
 
         match_pledge = MatchPledgeFactory()
 
         assert hasattr(match_pledge, 'active')
         assert match_pledge.active == False
 
-    def test_match_pledge_belongs_to_profile(self):
-        """Test relation to Profile."""
+    def test_match_pledge_has_associated_profile(self):
+        """Test 'profile' attribute is present and is an instance of Profile."""
 
         match_pledge = MatchPledgeFactory()
 
@@ -39,7 +39,7 @@ class TestMatchPledge:
         assert isinstance(match_pledge.profile, Profile)
 
     def test_match_pledge_has_amount_attribute(self):
-        """Test 'amount' attribute and default value."""
+        """Test 'amount' attribute is present defaults to 1."""
 
         match_pledge = MatchPledgeFactory()
 
@@ -47,15 +47,14 @@ class TestMatchPledge:
         assert match_pledge.amount == 1
 
     def test_match_pledge_has_pledge_type_attribute(self):
-        """Test 'pledge_type' attribute."""
+        """Test 'pledge_type' attribute is present."""
 
         match_pledge = MatchPledgeFactory()
 
         assert hasattr(match_pledge, 'pledge_type')
-        assert match_pledge.pledge_type == None
 
     def test_match_pledge_has_comments(self):
-        """Test 'comments' attribute and default value."""
+        """Test 'comments' attribute is present and defaults to empty string."""
 
         match_pledge = MatchPledgeFactory()
 
@@ -63,7 +62,7 @@ class TestMatchPledge:
         assert match_pledge.comments == ''
 
     def test_match_pledge_has_end_date(self):
-        """Test 'end_date' attribute and that default value is 30 days from today's date."""
+        """Test 'end_date' attribute is present and that default value is 30 days from today's date."""
 
         next_month = localtime(timezone.now() + timedelta(days=30))
         match_pledge = MatchPledgeFactory()
@@ -78,10 +77,9 @@ class TestMatchPledge:
         match_pledge = MatchPledgeFactory()
 
         assert hasattr(match_pledge, 'data')
-        assert match_pledge.data == '"test string"'
 
     def test_match_pledge_has_clr_round_num_attribute(self):
-        """Test 'clr_round_num' attribute."""
+        """Test 'clr_round_num' attribute is present and is an instance of GrantCLR."""
 
         match_pledge = MatchPledgeFactory()
 
