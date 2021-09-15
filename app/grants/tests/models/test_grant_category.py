@@ -16,9 +16,8 @@ class TestGrantCategory:
         assert isinstance(grant_category, GrantCategory)
 
     def test_grant_category_has_a_category(self):
-        """Test GrantCategory has a category attribute."""
+        """Test 'category' attribute is present."""
 
         grant_category = GrantCategoryFactory()
 
         assert hasattr(grant_category, 'category')
-        assert grant_category.category == ''
