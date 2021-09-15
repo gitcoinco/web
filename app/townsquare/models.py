@@ -440,9 +440,9 @@ class SquelchProfile(SuperModel):
     """Squelches a profile from earning in CLR"""
 
     LABEL_CHOICES = (
-        ('human', 'human'),
-        ('heuristic', 'heuristic'),
-        ('ml', 'ml')
+        ('Human', 'Human'),
+        ('Heuristic', 'Heuristic'),
+        ('Prediction', 'Prediction')
     )
     profile = models.ForeignKey(
         'dashboard.Profile',

@@ -13,7 +13,7 @@ from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCLR, GrantCollection, Subscription
-from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
+from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
@@ -427,8 +427,6 @@ def generate_collection_cache(self, collection_id):
 @app.shared_task(bind=True, max_retries=3)
 def process_bsci_sybil_csv(url):
     '''fetch csv from bsci and toggle'''
-    # TODO: fetch .csv from S3
-    # TODO: wire in script
-    sybil_users = None
-    non_sybil_users = None
-    toggle_user_sybil(sybil_users, non_sybil_users)
+    csv = None
+    # TODO-BSCI: validate: fetch .csv from S3
+    bsci_script(csv)
