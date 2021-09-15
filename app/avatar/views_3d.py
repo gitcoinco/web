@@ -542,6 +542,22 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/Mega2.svg',
         },
+        'moloch': {
+            'preview_viewbox': {
+                'Background': '0 0 350 350',
+                'fog': '0 0 350 350',
+                'face': '0 0 350 350',
+                'shoulder': '0 0 350 350',
+                'horn': '0 0 350 350',
+                'mid': '0 0 350 350',
+                'leg': '0 0 350 350',
+                'hand': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/Moloch111.svg',
+        },
         'starbot': {
             'preview_viewbox': {
                 'Head': '50 20 250 250',

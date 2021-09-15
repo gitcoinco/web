@@ -128,9 +128,7 @@ from .models import (
     MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView, Question,
     SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
 )
-from .notifications import (
-    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
-)
+from .notifications import maybe_market_to_email, maybe_market_to_github
 from .poh_utils import is_registered_on_poh
 from .router import HackathonEventSerializer, TribesSerializer
 from .utils import (
@@ -284,8 +282,6 @@ def create_new_interest_helper(bounty, user, issue_message):
     record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied', interest=interest)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
-    maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
-    maybe_market_to_user_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
     return interest
 
 
@@ -614,8 +610,6 @@ def remove_interest(request, bounty_id):
 
         bounty.interested.remove(interest)
         interest.delete()
-        maybe_market_to_slack(bounty, 'stop_work')
-        maybe_market_to_user_slack(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': [_('You haven\'t expressed interest on this bounty.')],
@@ -768,8 +762,6 @@ def uninterested(request, bounty_id, profile_id):
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
-        maybe_market_to_slack(bounty, 'stop_work')
-        maybe_market_to_user_slack(bounty, 'stop_work')
         if is_staff or is_moderator:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
@@ -1846,18 +1838,13 @@ def helper_handle_approvals(request, bounty):
                 start_work_approved(interest, bounty)
 
                 maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
-                maybe_market_to_slack(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
-                maybe_market_to_user_slack(bounty, 'worker_approved')
             else:
                 start_work_rejected(interest, bounty)
 
                 record_bounty_activity(bounty, request.user, 'worker_rejected', interest)
                 bounty.interested.remove(interest)
                 interest.delete()
-
-                maybe_market_to_slack(bounty, 'worker_rejected')
-                maybe_market_to_user_slack(bounty, 'worker_rejected')
 
             messages.success(request, _(f'{worker} has been {mutate_worker_action_past_tense}'))
         else:
@@ -3242,12 +3229,14 @@ def verify_user_twitter(request, handle):
 
         last_tweet = api.user_timeline(screen_name=twitter_handle, count=1, tweet_mode="extended",
                                        include_rts=False, exclude_replies=False)[0]
-    except tweepy.TweepError:
+    except tweepy.TweepError as e:
+        logger.error(f"error: verify_user_twitter TweepError {e}")
         return JsonResponse({
             'ok': False,
             'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
         })
-    except IndexError:
+    except IndexError as e:
+        logger.error(f"error: verify_user_twitter IndexError {e}")
         return JsonResponse({
             'ok': False,
             'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'

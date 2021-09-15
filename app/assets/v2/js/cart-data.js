@@ -52,7 +52,7 @@ this.CartData = class CartData {
     return bulk_add_cart;
   }
 
-  static addToCart(grantData, no_report) {
+  static addToCart(grantData, no_report, skipEmit) {
     if (this.cartContainsGrantWithId(grantData.grant_id)) {
       return;
     }
@@ -164,7 +164,8 @@ this.CartData = class CartData {
     let cartList = this.loadCart();
 
     cartList.push(grantData);
-    this.setCart(cartList);
+
+    this.setCart(cartList, skipEmit);
 
     if (!no_report) {
       fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
@@ -174,7 +175,7 @@ this.CartData = class CartData {
     }
   }
 
-  static removeIdFromCart(grantId) {
+  static removeIdFromCart(grantId, skipEmit) {
     grantId = String(grantId);
 
     let cartList = this.loadCart();
@@ -186,10 +187,10 @@ this.CartData = class CartData {
       metadata: JSON.stringify(newList)
     }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
-    this.setCart(newList);
+    this.setCart(newList, skipEmit);
   }
 
-  static updateCartItem(grantId, field, value) {
+  static updateCartItem(grantId, field, value, skipEmit) {
     let cartList = this.loadCart();
 
     let grant = null;
@@ -209,11 +210,15 @@ this.CartData = class CartData {
 
     grant[field] = value;
 
-    this.setCart(cartList);
+    this.setCart(cartList, skipEmit);
   }
-
-  static clearCart() {
+ 
+  static clearCart(skipEmit) {
     let cartList = this.loadCart();
+
+    if (!skipEmit) {
+      this.emitDataUpdate([]);
+    }
 
     fetchData('/grants/0/activity', 'POST', {
       action: 'CLEAR_CART',
@@ -222,7 +227,7 @@ this.CartData = class CartData {
     }, { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val() });
 
     localStorage.setItem('grants_cart', JSON.stringify([]));
-    applyCartMenuStyles();
+    
   }
 
   static loadCart() {
@@ -241,9 +246,19 @@ this.CartData = class CartData {
     return parsedCart;
   }
 
-  static setCart(list) {
+  static setCart(list, skipEmit) {
+    if (!skipEmit) {
+      this.emitDataUpdate(list);
+    }
     localStorage.setItem('grants_cart', JSON.stringify(list));
-    applyCartMenuStyles();
+  }
+
+  static emitDataUpdate(list) {
+    window.dispatchEvent(new CustomEvent('cartDataUpdated', {
+      detail: {
+        list: list
+      }
+    }));
   }
 
   static loadCheckedOut() {

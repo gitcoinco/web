@@ -160,6 +160,15 @@ Vue.filter('formatNumberWithDecimal', number => {
   return numberFormat.format(number);
 });
 
+Vue.filter('moneyCompact', number => {
+  if (!number)
+    return number;
+
+  let formatter = Intl.NumberFormat('en', { notation: 'compact' });
+
+  return formatter.format(number);
+});
+
 Vue.filter('slugify', (string) => {
   let slug;
 

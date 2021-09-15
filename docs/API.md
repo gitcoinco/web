@@ -3,7 +3,7 @@
 ## Grants API
 
 * Get a full list of grants at `https://gitcoin.co/grants/grants.json`
-* Get a list of contributors to each Gitcoin Grants Round at `https://gitcoin.co/grants/v1/api/export_addresses/roundX.json` where X is the round number, (1-7 supported as of Oct 2020)
+* Get a list of contributors to each Gitcoin Grants Round at `https://gitcoin.co/grants/v1/api/export_addresses/roundX.json` where X is the round number, (1-10 supported as of Aug 2021)
 * Get a list of contributors to a Gitcoin Grant at `https://gitcoin.co/grants/v1/api/export_addresses/grantX.json` where X is the ID of the grant.  You must be authenticated as a team member of the grant to access the data.
 * Get a list of contributors to a Gitcoin Grant at a specififc round `https://gitcoin.co/grants/v1/api/export_addresses/grantX_roundY.json` where X is the ID of the grant and Y is the round number.  You must be authenticated as a team member of the grant to access the data.
 * We've got an `https://gitcoin.co/grants/v1/api/export_addresses/all.json` endpoint available for those who'd like to just get all addresses that've ever funded a Gitcoin Grant.

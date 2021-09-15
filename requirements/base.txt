@@ -49,13 +49,13 @@ django-ipware==2.0.2
 geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.2.1
-ipdb==0.11
+ipdb==0.13.9
 django-autotranslate==1.1.1
 svgutils==0.3.0
 watchdog==0.9.0
 Werkzeug[watchdog]==0.15.5
 imageio
-boto3==1.7.81
+boto3==1.18.22
 django-storages==1.11.1
 eth-account==0.2.2
 django-classy-tags==0.8.0
@@ -99,7 +99,7 @@ django-queryset-csv
 django-proxy==1.2.1
 ed25519
 tweepy
-attrs==19.3.0
+attrs==20.3.0
 oogway==0.7.0
 icalendar==4.0.7
 duniterpy==0.61.0
@@ -116,3 +116,4 @@ libsass==0.20.1
 graphqlclient==0.2.4
 docutils==0.17.1
 unidecode==1.2.0
+drf-flex-fields==0.9.1

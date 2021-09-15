@@ -71,7 +71,7 @@ from townsquare.models import PinnedPost
 from unidecode import unidecode
 from web3 import Web3
 
-from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
+from .notifications import maybe_market_to_github
 from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
@@ -2195,8 +2195,6 @@ def auto_user_approve(interest, bounty):
     interest.acceptance_date = timezone.now()
     start_work_approved(interest, bounty)
     maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
-    maybe_market_to_slack(bounty, 'worker_approved')
-    maybe_market_to_user_slack(bounty, 'worker_approved')
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")

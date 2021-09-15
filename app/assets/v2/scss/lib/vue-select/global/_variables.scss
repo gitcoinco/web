@@ -1,6 +1,6 @@
 $vs-colors: (
         lightest: rgba(60, 60, 60, 0.26),
-        light: rgba(60, 60, 60, 0.5),
+        light: #A7A2B6,
         dark: #333,
         darkest: rgba(0, 0, 0, .15),
 ) !default;
@@ -31,7 +31,7 @@ $vs-controls-size: 1 !default;
 $vs-controls-deselect-text-shadow: 0 1px 0 #fff;
 
 //  Selected
-$vs-selected-bg: #f0f0f0 !default;
+$vs-selected-bg: #E2E0E7 !default;
 $vs-selected-border-color: $vs-border-color !default;
 $vs-selected-border-style: $vs-border-style !default;
 $vs-selected-border-width: $vs-border-width !default;

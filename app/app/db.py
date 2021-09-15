@@ -10,11 +10,7 @@ class PrimaryDBRouter:
         Else go to default DB
         """
         replicas = ['read_replica_1', 'read_replica_2']
-        if settings.JOBS_NODE:
-        	return random.choice(replicas)
-        if settings.CELERY_NODE:
-        	return random.choice(replicas)
-        return 'default'
+        return random.choice(replicas)
 
     def db_for_write(self, model, **hints):
         """
