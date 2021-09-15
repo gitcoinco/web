@@ -25,7 +25,6 @@ from django.template.defaultfilters import floatformat
 from django.utils import timezone
 
 from dashboard.models import Bounty, BountyEvent, Profile
-from dashboard.notifications import maybe_market_to_twitter
 from marketing.mails import bounty_hypercharged
 from townsquare.models import Offer
 
@@ -75,19 +74,15 @@ class Command(BaseCommand):
             offer_title = f'Work on "{bounty.title}" and receive {floatformat(bounty.value_true)} {bounty.token_name}'
             offer_desc = ''
 
-            event_name = ''
             counter = bounty.metadata['hyper_tweet_counter']
+            # counter is 0 -> new_bounty
+            # counter is 1 -> remarket_bounty
             if counter == 0:
-                event_name = 'new_bounty'
                 notify_previous_workers(bounty)
                 make_secret_offer(profile, offer_title, offer_desc, bounty)
-            elif counter == 1:
-                event_name = 'remarket_bounty'
             elif counter % 2 == 0:
                 make_secret_offer(profile, offer_title, offer_desc, bounty)
 
             bounty.metadata['hyper_tweet_counter'] += 1
             bounty.hyper_next_publication = now + timedelta(hours=12)
             bounty.save()
-
-            maybe_market_to_twitter(bounty, event_name)

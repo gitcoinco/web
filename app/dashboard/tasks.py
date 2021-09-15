@@ -246,18 +246,19 @@ def profile_dict(self, pk, retry: bool = True) -> None:
             profile.save()
 
 
-@app.shared_task(bind=True)
-def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) -> None:
+@app.shared_task(bind=True, max_retries=3)
+def update_trust_bonus(self, pk):
     """
     :param self:
-    :param bounty_pk:
-    :param event_name:
+    :param pk:
     :return:
     """
-    with redis.lock("maybe_market_to_user_slack:bounty", timeout=LOCK_TIMEOUT):
-        bounty = Bounty.objects.get(pk=bounty_pk)
-        from dashboard.notifications import maybe_market_to_user_slack_helper
-        maybe_market_to_user_slack_helper(bounty, event_name)
+    profile = Profile.objects.get(pk=pk)
+    params = profile.as_dict
+    if profile.trust_bonus != params.get('trust_bonus', None):
+        params['trust_bonus'] = profile.trust_bonus
+        print("Saving - %s - %s" % (profile.handle, params['trust_bonus']))
+        profile.save()
 
 
 @app.shared_task(bind=True, soft_time_limit=600, time_limit=660, max_retries=3)

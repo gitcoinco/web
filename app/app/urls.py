@@ -36,7 +36,6 @@ import dashboard.tip_views
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
-import faucet.views
 import gitcoinbot.views
 import healthcheck.views
 import kudos.views
@@ -256,7 +255,6 @@ urlpatterns = [
     ),
     url(r'^api/v0.1/org_perms', dashboard.views.org_perms, name='org_perms'),
     url(r'^api/v0.1/bulk_invite', dashboard.views.bulk_invite, name='bulk_invite'),
-    url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
     url(r'^api/v0.1/', include(grant_router.urls)),
@@ -367,15 +365,15 @@ urlpatterns = [
         name='hackathon_project_page'
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
-    # TODO: revisit if we need to keep these urls for legacy links
-    # re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
-    # re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
+
     url(r'^hackathon/<str:hackathon>/?$/?', dashboard.views.hackathon, name='hackathon'),
     url(r'^hackathon/<str:hackathon>/<str:panel>/?$/?', dashboard.views.hackathon, name='hackathon'),
-    path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
-    path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
-    re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons3'),
-    re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons4'),
+
+    # list all hackathons
+    re_path(r'^hackathon-list/?$', dashboard.views.get_hackathons, name='get_hackathons'),
+    re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons'),
+    re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons'),
+
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
@@ -493,7 +491,6 @@ urlpatterns = [
     re_path(r'^labs/?$', dashboard.views.labs, name='labs'),
 
     # gas views
-    url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
     url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
     url(r'^gas/intro/?', dashboard.gas_views.gas_intro, name='gas_intro'),
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
@@ -608,9 +605,6 @@ urlpatterns = [
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
-    # faucet views
-    re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
-
     # bounty requests
     re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
     url(
@@ -675,8 +669,6 @@ urlpatterns = [
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
     path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
     path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
-    path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
-    path('_administration/email/faucet', retail.emails.faucet, name='email_faucet'),
     path('_administration/email/new_tip', retail.emails.new_tip, name='new_tip'),
     path('_administration/email/new_match', retail.emails.new_match, name='new_match'),
     path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
@@ -724,11 +716,6 @@ urlpatterns = [
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
         name='process_accesscode_request'
-    ),
-    re_path(
-        r'^_administration/process_faucet_request/(.*)$',
-        faucet.views.process_faucet_request,
-        name='process_faucet_request'
     ),
     re_path(r'^_administration/bulkemail/', dashboard.views.bulkemail, name='bulkemail'),
     re_path(

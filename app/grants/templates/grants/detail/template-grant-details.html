@@ -13,17 +13,17 @@
 
             <div class="col-12 col-md-auto">
               <!-- Grant Type -->
-              <a :href="`/grants/explorer/${item.fields.name}`"
+              <a :href="`/grants/explorer/?grant_types=${item.fields.name}`"
                 v-for="item in grant.grant_type"
                 class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2 text-capitalize">
                 [[item.fields.label]]
               </a>
 
-              <!-- Grant Category -->
-              <a :href="`/grants/explorer/${grant.grant_type[0].fields.name}?category=${item.fields.category}`"
-                v-for="item in grant.categories"
+              <!-- Grant Tags -->
+              <a :href="`/grants/explorer/?grant_tags=${item.fields.name}`"
+                v-for="item in grant.grant_tags"
                 class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">
-                [[item.fields.category]]
+                [[item.fields.name]]
               </a>
 
             </div>
@@ -303,7 +303,7 @@
               <template v-else-if="grant.is_on_team && !user_code">
                 <div class="my-2 font-weight-semibold text-center">
                   <p class="mb-1">Visit grant details page to verify the grant.</p>
-                  <a :href="grant.details_url" target="_blank">Go to grant details page</a>
+                  <a :href="grant.details_url">Go to grant details page</a>
                 </div>
               </template>
             </div>
@@ -596,6 +596,29 @@
           </div>
         </div>
 
+        <!-- Grant Tags -->
+        <div class="col-12 mb-3">
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="grant_tags">Tags</label>
+          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+
+          <v-select placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="grantTagsFormatted" multiple>
+            <template #search="{attributes, events}">
+              <input
+                class="vs__search"
+                v-bind="attributes"
+                v-on="events"
+              />
+            </template>
+            <template v-slot:option="option">
+              <span class="font-weight-semibold">[[ option.name ]]</span>
+            </template>
+          </v-select>
+
+          <div class="text-danger" v-if="errors.grant_tags">
+            [[errors.grant_tags]]
+          </div>
+        </div>
+
         <!-- Save/Cancel -->
         <div class="col-12 mb-3 text-right">
           <button @click="saveGrant($event)" class="btn btn-primary">SAVE CHANGES</button>
@@ -687,7 +710,6 @@
 
   .grant-team {
     grid-area: auto / grant-team;
-
   }
 
   .grant-managment {

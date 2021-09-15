@@ -31,7 +31,6 @@ from boto.s3.key import Key
 from dashboard.models import Bounty, Profile
 from dashboard.utils import all_sendcryptoasset_models
 from economy.utils import convert_amount
-from faucet.models import FaucetRequest
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
@@ -128,29 +127,6 @@ class Command(BaseCommand):
             'payee_location': location,
         }
 
-    def format_faucet_distribution(self, fr):
-        location, bio = get_bio(fr.github_username)
-
-        return {
-            'type': 'faucet_distribution',
-            'created_on': fr.created_on,
-            'last_activity': fr.modified_on,
-            'amount': fr.amount,
-            'denomination': 'ETH',
-            'amount_eth': fr.amount,
-            'amount_usdt': convert_amount(fr.amount, 'ETH', 'USDT'),
-            'from_address': '0x4331B095bC38Dc3bCE0A269682b5eBAefa252929',
-            'claimee_address': fr.address,
-            'repo': 'n/a',
-            'from_username': 'admin',
-            'fulfiller_github_username': fr.github_username,
-            'status': 'sent',
-            'comments': f"faucet distribution {fr.pk}",
-            'payee_bio': bio,
-            'payee_location': location,
-        }
-
-
     def upload_to_s3(self, filename, contents):
         s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
         bucket = s3.get_bucket(settings.S3_REPORT_BUCKET)
@@ -167,13 +143,6 @@ class Command(BaseCommand):
         ).order_by('web3_created', 'id')
         formatted_bounties = imap(self.format_bounty, bounties)
 
-        frs = FaucetRequest.objects.filter(
-            created_on__gte=options['start_date'],
-            created_on__lte=options['end_date'],
-            fulfilled=True,
-        ).order_by('created_on', 'id')
-        formatted_frs = imap(self.format_faucet_distribution, frs)
-
         all_scram = []
         for _class in all_sendcryptoasset_models():
             objs = _class.objects.filter(
@@ -186,9 +155,8 @@ class Command(BaseCommand):
             all_scram += objs
 
         # python3 list hack
-        formatted_frs = [x for x in formatted_frs]
         formatted_bounties = [x for x in formatted_bounties]
-        all_items = formatted_bounties + all_scram + formatted_frs
+        all_items = formatted_bounties + all_scram
 
         csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[

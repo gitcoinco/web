@@ -899,7 +899,7 @@ def activity(request):
         'pinned': None,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
-        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
+        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated and request.user.profile else [],
         'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]

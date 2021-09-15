@@ -103,16 +103,6 @@ def gas_faq(request):
     return TemplateResponse(request, 'gas_faq.html', context)
 
 
-def gas_faucet_list(request):
-
-    context = {
-        'title': _('Live Ethereum (ETH) Gas Faucet List'),
-        'card_desc': _('Ethereum (ETH) Gas Faucet List including the Mainnet, Rinkeby Testnet and Ropsten Testnet'),
-        'hide_send_tip': True,
-    }
-    return TemplateResponse(request, 'gas_faucet_list.html', context)
-
-
 def gas_calculator(request):
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
     _cts = conf_time_spread()

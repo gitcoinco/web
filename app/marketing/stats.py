@@ -97,30 +97,6 @@ def profiles_ingested():
         )
 
 
-def faucet():
-    from faucet.models import FaucetRequest
-
-    Stat.objects.create(
-        key='FaucetRequest',
-        val=FaucetRequest.objects.count(),
-        )
-
-    Stat.objects.create(
-        key='FaucetRequest_rejected',
-        val=FaucetRequest.objects.filter(rejected=True).count(),
-        )
-
-    Stat.objects.create(
-        key='FaucetRequest_fulfilled',
-        val=FaucetRequest.objects.filter(fulfilled=True).count(),
-        )
-
-    Stat.objects.create(
-        key='FaucetRequest_pending',
-        val=FaucetRequest.objects.filter(fulfilled=False, rejected=False).count(),
-        )
-
-
 def user_actions():
     from dashboard.models import UserAction
 

@@ -27,6 +27,8 @@ from io import BytesIO
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.core import serializers
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -83,6 +85,7 @@ class GrantQuerySet(models.QuerySet):
         )
 
 
+# TODO: REMOVE
 class GrantCategory(SuperModel):
 
     category = models.CharField(
@@ -93,9 +96,22 @@ class GrantCategory(SuperModel):
     )
 
     def __str__(self):
-        """Return the string representation of a Grant."""
+        """Return the string representation of a Grant Category."""
         return f"{self.category}"
 
+class GrantTag(SuperModel):
+
+    name = models.CharField(
+        unique=True,
+        max_length=50,
+        blank=False,
+        null=False,
+        help_text=_('Grant Tag'),
+    )
+
+    def __str__(self):
+        """Return the string representation of a GrantTag."""
+        return f"{self.name}"
 
 class GrantType(SuperModel):
 
@@ -103,10 +119,6 @@ class GrantType(SuperModel):
     label = models.CharField(max_length=25, null=True, help_text="Display Name")
     is_active = models.BooleanField(default=True, db_index=True, help_text="Is Grant Type currently active")
     is_visible = models.BooleanField(default=True, db_index=True, help_text="Is visible on the Grant filters")
-    categories = models.ManyToManyField(
-        GrantCategory,
-        help_text="Grant Categories associated with Grant Type"
-    )
     logo = models.ImageField(
         upload_to=get_upload_filename,
         null=True,
@@ -249,7 +261,7 @@ class GrantCLR(SuperModel):
 
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
-        for obj in self.clr_calculations.filter(grant=grant):
+        for obj in self.clr_calculations.filter(grant=grant, latest=True):
             obj.latest = False
             obj.save()
 
@@ -292,6 +304,7 @@ class Grant(SuperModel):
         """Define the metadata for Grant."""
 
         ordering = ['-created_on']
+        indexes = (GinIndex(fields=["vector_column"]),)
 
 
     REGIONS = [
@@ -312,6 +325,7 @@ class Grant(SuperModel):
         ('unknown', 'Unknown')
     ]
 
+    vector_column = SearchVectorField(null=True, help_text=_('Used for full text search. Generated using [title, description]'))
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'), db_index=True)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
@@ -553,7 +567,8 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
-    categories = models.ManyToManyField(GrantCategory, blank=True)
+    categories = models.ManyToManyField(GrantCategory, blank=True) # TODO: REMOVE
+    tags = models.ManyToManyField(GrantTag, blank=True)
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
@@ -909,14 +924,11 @@ class Grant(SuperModel):
         team_members = serializers.serialize('json', self.team_members.all(),
                             fields=['handle', 'url', 'profile__lazy_avatar_url']
                         )
-        grant_type = None
         if self.grant_type:
-            grant_type = serializers.serialize('json', [self.grant_type],
-                                fields=['name', 'label']
-                            )
+            grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
 
-        categories = serializers.serialize('json', self.categories.all(),
-                            fields=['category'])
+        grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
+
         return {
                 'id': self.id,
                 'active': self.active,
@@ -968,7 +980,7 @@ class Grant(SuperModel):
                 'team_members': json.loads(team_members),
                 'metadata': self.metadata,
                 'grant_type': json.loads(grant_type) if grant_type else None,
-                'categories': json.loads(categories),
+                'grant_tags': json.loads(grant_tags),
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
@@ -988,6 +1000,10 @@ class Grant(SuperModel):
 
         self.clr_prediction_curve = self.calc_clr_prediction_curve
         self.clr_round_num = self.calc_clr_round_label
+
+        self.search_vector = (
+            SearchVector('title', weight='A') + SearchVector('description', weight='B')
+        )
 
         if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
             from grants.tasks import update_grant_metadata
@@ -2167,7 +2183,7 @@ class GrantCollection(SuperModel):
             'count': grants.count(),
             'grants': [{
                 'id': grant.id,
-                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
+                'logo': grant.logo.url if grant.logo and grant.logo.url else static(f'v2/images/grants/logos/{grant.id % 3}.png'),
             } for grant in grants]
         }
 

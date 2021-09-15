@@ -960,12 +960,12 @@
                                 <div class="d-flex flex-column py-1">
                                   <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
                                   <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
-                                    <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
+                                    <a rel="noopener noreferrer" :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
                                       <i class="fab fa-ethereum mr-2"></i>
                                       Fund Bounty
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <a :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
+                                    <a rel="noopener noreferrer" :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
                                       <i class="fas fa-user mr-2"></i>
                                       View profile
                                     </a>
@@ -1075,7 +1075,7 @@
                               <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
                               <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
                               <span>[[ userSelected.name ]]</span>
-                              <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
+                              <a rel="noopener noreferrer" :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
                                 [[ userSelected.handle ]]
                               </a>
                             </div>
@@ -1083,7 +1083,7 @@
                           <div slot="body" v-if="userSelected.handle">
                             <div v-if="funderBounties.length">
                               <div class="my-2 text-center">
-                                <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
+                                <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" rel="noopener noreferrer" class="font-weight-bold">create a new one</a>
                               </div>
                               <div class="bounties-box">
                                 <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-primary': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
@@ -1101,13 +1101,13 @@
                             <div v-else class="text-center font-subheader mt-4">
                               <p class="font-weight-semibold">You've got NO open bounties</p>
                               <p class="font-body">
-                                <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
+                                <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" rel="noopener noreferrer">Create a bounty</a>
                                 to invite [[ userSelected.handle ]]
                               </p>
                             </div>
                           </div>
                           <div slot="footer" class="d-flex align-items-center flex-fill">
-                            <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
+                            <a v-if="bountySelected" :href="bountySelected.url" target="_blank" rel="noopener noreferrer" class="mr-5">view bounty</a>
                             <div class="ml-auto">
                               <button class="btn btn-outline-primary" data-dismiss="modal">Cancel</button>
                               <button  v-if="funderBounties.length" class="btn btn-primary" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
@@ -1223,7 +1223,7 @@
                               <p class="font-caption text-black-60 mb-1" v-html="suggested_bounty.comment"></p>
                               <div class="row font-caption">
                                 <div class="col-12">
-                                  <a :href="suggested_bounty.github_url" target="_blank">
+                                  <a :href="suggested_bounty.github_url" target="_blank" rel="noopener noreferrer">
                                     <i class="fab fa-github mr-1"></i> {% trans "View Github Issue" %}
                                   </a>
                                   <span class="mx-2 text-grey">
@@ -1245,7 +1245,7 @@
                             </div>
 
                             <div v-if="is_my_org" class="col-5 my-auto text-right">
-                              <a target="_blank" class="btn btn-sm btn-outline-secondary font-smaller-4 mx-2" :href="`{% url 'new_bounty' %}?type=public&url=${suggested_bounty.github_url}&invite=${suggested_bounty.requested_by.id}&amount=${suggested_bounty.amount}`">
+                              <a target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary font-smaller-4 mx-2" :href="`{% url 'new_bounty' %}?type=public&url=${suggested_bounty.github_url}&invite=${suggested_bounty.requested_by.id}&amount=${suggested_bounty.amount}`">
                                 <i class="fas fa-plus-circle mr-1"></i>
                                 {% trans "Fund Request" %}
                               </a>

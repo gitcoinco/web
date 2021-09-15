@@ -128,9 +128,7 @@ from .models import (
     MediaFile, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor,
     Tool, TribeMember, UserAction, UserVerificationModel,
 )
-from .notifications import (
-    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
-)
+from .notifications import maybe_market_to_email, maybe_market_to_github
 from .poh_utils import is_registered_on_poh
 from .serializers import HackathonEventSerializer, ProfileSerializer, TribesSerializer
 from .utils import (
@@ -284,8 +282,6 @@ def create_new_interest_helper(bounty, user, issue_message):
     record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied', interest=interest)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
-    maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
-    maybe_market_to_user_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
     return interest
 
 
@@ -614,8 +610,6 @@ def remove_interest(request, bounty_id):
 
         bounty.interested.remove(interest)
         interest.delete()
-        maybe_market_to_slack(bounty, 'stop_work')
-        maybe_market_to_user_slack(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': [_('You haven\'t expressed interest on this bounty.')],
@@ -768,8 +762,6 @@ def uninterested(request, bounty_id, profile_id):
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
-        maybe_market_to_slack(bounty, 'stop_work')
-        maybe_market_to_user_slack(bounty, 'stop_work')
         if is_staff or is_moderator:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
@@ -1846,18 +1838,13 @@ def helper_handle_approvals(request, bounty):
                 start_work_approved(interest, bounty)
 
                 maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
-                maybe_market_to_slack(bounty, 'worker_approved')
                 record_bounty_activity(bounty, request.user, 'worker_approved', interest)
-                maybe_market_to_user_slack(bounty, 'worker_approved')
             else:
                 start_work_rejected(interest, bounty)
 
                 record_bounty_activity(bounty, request.user, 'worker_rejected', interest)
                 bounty.interested.remove(interest)
                 interest.delete()
-
-                maybe_market_to_slack(bounty, 'worker_rejected')
-                maybe_market_to_user_slack(bounty, 'worker_rejected')
 
             messages.success(request, _(f'{worker} has been {mutate_worker_action_past_tense}'))
         else:
@@ -2161,7 +2148,7 @@ def user_card(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.profile:
         is_following = True if TribeMember.objects.filter(profile=request.user.profile, org=profile).count() else False
     else:
         is_following = False
@@ -2464,6 +2451,9 @@ def profile_settings(request):
         handle (str): The profile handle.
     """
 
+    if not request.user.is_authenticated or not request.user.profile:
+        raise Http404
+
     handle = request.user.profile.handle
 
     try:
@@ -2471,7 +2461,7 @@ def profile_settings(request):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+    if profile.pk != request.user.profile.pk:
         raise Http404
 
     profile.automatic_backup = not profile.automatic_backup
@@ -2495,6 +2485,9 @@ def profile_backup(request):
         handle (str): The profile handle.
     """
 
+    if not request.user.is_authenticated or not request.user.profile:
+        raise Http404
+
     handle = request.user.profile.handle
 
     try:
@@ -2502,7 +2495,7 @@ def profile_backup(request):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
-    if not request.user.is_authenticated or profile.pk != request.user.profile.pk:
+    if profile.pk != request.user.profile.pk:
         raise Http404
 
     model = request.POST.get('model', None)
@@ -3236,12 +3229,14 @@ def verify_user_twitter(request, handle):
 
         last_tweet = api.user_timeline(screen_name=twitter_handle, count=1, tweet_mode="extended",
                                        include_rts=False, exclude_replies=False)[0]
-    except tweepy.TweepError:
+    except tweepy.TweepError as e:
+        logger.error(f"error: verify_user_twitter TweepError {e}")
         return JsonResponse({
             'ok': False,
             'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
         })
-    except IndexError:
+    except IndexError as e:
+        logger.error(f"error: verify_user_twitter IndexError {e}")
         return JsonResponse({
             'ok': False,
             'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
@@ -3834,7 +3829,7 @@ def profile(request, handle, tab=None):
     # make sure tab param is correct
     all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'ptokens', 'trust']
     tab = default_tab if tab not in all_tabs else tab
-    if handle in all_tabs and request.user.is_authenticated:
+    if handle in all_tabs and request.user.is_authenticated and request.user.profile:
         # someone trying to go to their own profile?
         tab = handle
         handle = request.user.profile.handle
@@ -3898,8 +3893,12 @@ def profile(request, handle, tab=None):
                 base = base.nocache()
             profile = base.get(pk=profile.pk)
 
-    context['is_my_org'] = request.user.is_authenticated and any(
-        [handle.lower() == org.lower() for org in request.user.profile.organizations])
+    context['is_my_org'] = (
+        request.user.is_authenticated and request.user.profile and
+        request.user.profile.organizations and
+        any([handle.lower() == org.lower() for org in request.user.profile.organizations])
+    )
+
     if request.user.is_authenticated and hasattr(request.user, 'profile'):
         context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower()).exists()
     else:
@@ -5484,9 +5483,9 @@ def get_hackathons(request):
 def board(request):
     """Handle the board view."""
 
-    user = request.user if request.user.is_authenticated else None
+    user = request.user
     has_ptoken_auth = user.has_perm('auth.add_pToken_auth')
-    keywords = user.profile.keywords
+    keywords = user.profile.keywords if user.profile else None
     ptoken = PersonalToken.objects.filter(token_owner_profile=user.profile).first()
 
     context = {
@@ -5740,6 +5739,9 @@ def contributor_dashboard(request, bounty_type):
 @login_required
 def change_user_profile_banner(request):
     """Handle Profile Banner Uploads"""
+
+    if not request.user.profile:
+        raise Http404
 
     filename = request.POST.get('banner')
 

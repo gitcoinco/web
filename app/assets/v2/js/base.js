@@ -18,11 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // TODO: MOVE TO GRANTS shared
-  if (typeof CartData != 'undefined') {
-    applyCartMenuStyles();
-  }
-
   $('body').on('click', '.copy_me', function() {
     $(this).focus();
     $(this).select();
@@ -69,8 +64,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   var force_no_www = function() {
-    if (document.location.href.indexOf('https://www.gitcoin.co') != -1) {
-      var new_url = document.location.href.replace('www.gitcoin.co', 'gitcoin.co');
+    const url = new URL(document.location.href);
+
+    if (url.host == 'www.gitcoin.co') {
+      const new_url = document.location.href.replace('www.gitcoin.co', 'gitcoin.co');
 
       document.location.href = new_url;
     }
@@ -423,20 +420,6 @@ this.gitcoinUpdates = () => {
     $('#gitcoin_updates').bootstrapModal('dispose');
   });
 
-};
-
-this.applyCartMenuStyles = function() {
-  let dot = $('#cart-notification-dot');
-
-  if (CartData.hasItems()) {
-    dot.addClass('notification__dot_active');
-    dot.text(CartData.length());
-  } else {
-    dot.removeClass('notification__dot_active');
-    if (document.location.href.indexOf('/grants') == -1) {
-      $('#cart-nav').addClass('hidden');
-    }
-  }
 };
 
 // Turn form data pulled form page into a JS object

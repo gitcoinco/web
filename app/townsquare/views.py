@@ -450,7 +450,7 @@ def town_square(request):
         'pinned': pinned,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
-        'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
+        'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated and request.user.profile else None,
         'matching_leaderboard': matching_leaderboard,
         'current_match_round': current_match_round,
         'admin_link': admin_link,
@@ -463,7 +463,7 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
-        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
+        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated and request.user.profile else [],
         'following_tribes': following_tribes,
         'suggested_tribes': suggested_tribes,
         'audience': audience

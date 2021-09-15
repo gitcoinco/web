@@ -22,18 +22,19 @@ Vue.mixin({
         return vm.form.issueDetails;
       }
 
-      if (url.indexOf('github.com/') < 0) {
+      const ghIssueUrl = new URL(url);
+
+      if (ghIssueUrl.host == 'github.com') {
         vm.form.issueDetails = undefined;
         vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url');
         return;
       }
 
-      if (url.indexOf('/pull/') > 0) {
+      if (ghIssueUrl.pathname.contains('/pull/')) {
         vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url and not a PR');
         return;
       }
 
-      let ghIssueUrl = new URL(url);
 
       vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
 

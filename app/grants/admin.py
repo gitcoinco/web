@@ -27,8 +27,8 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
-    GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, PhantomFunding, Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
+    GrantCollection, GrantStat, GrantTag, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
@@ -85,7 +85,7 @@ class GrantCLRCalculationAdmin(admin.ModelAdmin):
         'grant','grantclr','clr_prediction_curve'
     ]
     search_fields = [
-        'grant','grantclr'
+        'grantclr'
     ]
 
 class CLRMatchAdmin(admin.ModelAdmin):
@@ -103,8 +103,8 @@ class GrantAdmin(GeneralAdmin):
         'title',
         'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
-        'grant_type', 'categories', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address', 
-        'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed',
+        'grant_type', 'tags', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
+        'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed', 'defer_clr_to',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
@@ -116,7 +116,7 @@ class GrantAdmin(GeneralAdmin):
         'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'emails', 'admin_message', 'has_external_funding'
     ]
     readonly_fields = [
-        'logo_svg_asset', 'logo_asset',
+        'defer_clr_to', 'logo_svg_asset', 'logo_asset',
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
@@ -458,10 +458,9 @@ class GrantTypeAdmin(admin.ModelAdmin):
         return super().response_change(request, obj)
 
 
-class GrantCategoryAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'category']
+class GrantTagAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name']
     readonly_fields = ['pk']
-
 
 class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'customer_name', 'total_pot', 'round_num', 'sub_round_slug', 'start_date', 'end_date','is_active', 'stats_link']
@@ -547,7 +546,7 @@ admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
 admin.site.register(CartActivity, CartActivityAdmin)
 admin.site.register(GrantType, GrantTypeAdmin)
-admin.site.register(GrantCategory, GrantCategoryAdmin)
+admin.site.register(GrantTag, GrantTagAdmin)
 admin.site.register(GrantCLR, GrantCLRAdmin)
 admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)

@@ -98,7 +98,11 @@
         {% elif is_registered and bounty.event %}
           <form class="mt-3 border-top pt-3" id="projectForm">
               <p class="alert-danger p-2">
-                  This bounty is part of <b>{{bounty.event.name}}</b>, please read the <a href="{% url 'hackathon_onboard' bounty.event.slug %}" target="_blank">rules to participate</a> before you continue.
+                This bounty is part of <b>{{bounty.event.name}}</b>, please read the
+                <a href="{% url 'hackathon_onboard' bounty.event.slug %}" target="_blank" rel="noopener noreferrer">
+                  rules to participate
+                </a>
+                before you continue.
               </p>
               <input type="hidden" name="bounty_id" value="{{bounty.id}}">
               <div class="form-group">

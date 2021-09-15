@@ -392,14 +392,15 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
     try:
         repo = gh_client.get_repo(f'{owner}/{repo}')
         if issue:
+            issue = int(issue)
             if comment_id:
+                comment_id = int(comment_id)
                 issue_comment = repo.get_issue(issue).get_comment(comment_id)
                 return issue_comment
             else:
                 paginated_list = repo.get_issue(issue).get_comments().get_page(page)
         else:
             paginated_list = repo.get_issues_comments(sort='created', direction='desc').get_page(page)
-
         return paginated_list
     except Exception as e:
         logger.error(
@@ -554,7 +555,7 @@ def post_issue_comment(owner, repo, issue_num, comment):
     gh_client = github_connect()
     try:
         repo = gh_client.get_repo(f'{owner}/{repo}')
-        issue_comment = repo.get_issue(issue_num).create_comment(comment)
+        issue_comment = repo.get_issue(int(issue_num)).create_comment(comment)
         return issue_comment
     except GithubException as e:
         logger.error(e)

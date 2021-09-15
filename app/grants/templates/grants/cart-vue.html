@@ -70,6 +70,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% comment %} Main container {% endcomment %}
 
             <div v-if="isLoading" class="text-center mb-5">
+              <div role="presentation" class="nav nav-item ml-auto mt-2 float-right">
+                <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
+                  <i class="fa fa-times pr-1" aria-hidden="true"></i> Clear cart
+                </li>
+              </div>
+
               <loading-screen class="my-5"></loading-screen>
               <div>Fetching cart data...</div>
             </div>
@@ -151,9 +157,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% bundle merge_js file qrcode %}
       <script src="qrcode.min.js" base-dir="/node_modules/qrcodejs/"></script>
     {% endbundle %}
-    <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>
     <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
     <script src="{% static "v2/js/cart.js" %}"></script>
+    <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>
+    <script src="{% static "v2/js/cart-ethereum-polygon.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
     <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
