@@ -24,23 +24,21 @@ class TestGrantType:
         assert isinstance(grant_type, GrantType)
 
     def test_grant_type_has_a_name(self):
-        """Test 'name' attribute."""
+        """Test 'name' attribute is present."""
 
         grant_type = GrantTypeFactory()
 
         assert hasattr(grant_type, 'name')
-        assert grant_type.name == ''
 
     def test_grant_type_has_a_label(self):
-        "Test 'label' attribute."
+        "Test 'label' attribute is present."
 
         grant_type = GrantTypeFactory()
 
         assert hasattr(grant_type, 'label')
-        assert grant_type.label == None
 
     def test_grant_type_has_a_is_active_attribute(self):
-        "Test 'is_active' attribute and default value."
+        "Test 'is_active' attribute is present and defaults to True."
 
         grant_type = GrantTypeFactory()
 
@@ -48,15 +46,15 @@ class TestGrantType:
         assert grant_type.is_active == True
 
     def test_grant_type_has_a_is_visible_attribute(self):
-        "Test 'is_visible' attribute and default value."
+        "Test 'is_visible' attribute is present and defaults to True."
 
         grant_type = GrantTypeFactory()
 
         assert hasattr(grant_type, 'is_visible')
         assert grant_type.is_visible == True
 
-    def test_grant_type_has_many_categories(self):
-        "Test relation to GrantCategory."
+    def test_grant_type_has_associated_categories(self):
+        "Test 'categories' arribute is present and can be more than one."
 
         grant_categories = (GrantCategoryFactory(), GrantCategoryFactory())
 
@@ -67,12 +65,11 @@ class TestGrantType:
         assert isinstance(grant_type.categories.first(), GrantCategory)
 
     def test_grant_type_has_a_logo(self):
-        """Test 'logo' attribute."""
+        """Test 'logo' attribute is present."""
 
         grant_type = GrantTypeFactory()
 
         assert hasattr(grant_type, 'logo')
-        assert grant_type.logo == None
 
     def test_clrs_method_calls_collaborator_with_appropriate_parameters(self):
         """Test GrantType.clrs method calls filter on GrantCLR.objects with appropriate parameters."""
@@ -93,7 +90,6 @@ class TestGrantType:
             grant_type.active_clrs
 
         filter.assert_called_with(is_active=True, grant_filters__grant_type=str(grant_type.pk))
-
 
     def test_grant_type_has_active_clrs_sum_method(self):
         """Test GrantType.active_clrs_sum method."""
