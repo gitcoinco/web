@@ -31,7 +31,7 @@
                     {% for podium_item in podium_items %}
                       <div class="winner mt-5">
                         {% if not is_linked_to_profile %}
-                          <a href="{{ podium_item.url }}" data-usercard="{{ podium_item.profile.handle }}" target="_blank">
+                          <a rel="noopener noreferrer" href="{{ podium_item.url }}" data-usercard="{{ podium_item.profile.handle }}" target="_blank">
                             <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
                           </a>
                         {% endif %}
@@ -41,7 +41,7 @@
                             {% if forloop.counter == 1 %}
                               <img src="/static/v2/images/leaderboard-1.png" style="max-width: 2rem; float: left; position: relative; bottom: 3px;"></img>
                             {% endif %}
-                            <a href="{{ podium_item.url }}" class="font-weight-semibold" target="_blank">
+                            <a rel="noopener noreferrer" href="{{ podium_item.url }}" class="font-weight-semibold" target="_blank">
                               {{ podium_item.at_ify_username }}
                             </a>
                           {% endif %}
@@ -167,7 +167,7 @@
                               {% endif %}
                               <div class="ml-3 item-count-bounties" style="white-space: nowrap">
                                 {% if not is_linked_to_profile %}
-                                  <a href="/profile/{{item.github_username}}" data-usercard="{{item.github_username}}" target="_blank" >
+                                  <a rel="noopener noreferrer" href="/profile/{{item.github_username}}" data-usercard="{{item.github_username}}" target="_blank" >
                                     {{item.at_ify_username}}
                                   </a>
                                 {% else %}

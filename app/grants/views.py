@@ -1105,7 +1105,7 @@ def grants_type_redirect(request, grant_type):
     base_url = reverse('grants:grants_by_category', kwargs={"grant_type":grant_type})
     query_string =  urlencode(request.GET)
     url = '{}?{}'.format(base_url, query_string)
-    return redirect(url)
+    return redirect(url, code=302)
 
 
 def grants_by_grant_clr(request, clr_round):

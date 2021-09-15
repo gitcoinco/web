@@ -218,7 +218,7 @@
                           {% endif %}
 
                           <div class="text-center mt-2">
-                            <a href="{{project.url_bounty_page}}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
+                            <a href="{{project.url_bounty_page}}" target="_blank" rel="noopener noreferrer" class="font-weight-bold card-subtitle">{{project.name}}</a>
                             <div class="mb-2">
                               <b class="text-muted font-smaller-2">Team Members</b>
                               <div class="mt-1">
@@ -273,11 +273,11 @@
         <span [[if id]] id="[[>id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]] [[/if]]
           title='<div class="tooltip-info tooltip-sm">[[>title]]</div>'>
           [[if pending_acceptance]]
-            <a class="btn btn-primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[>href]]" target="[[>target]]">
+            <a rel="noopener noreferrer" class="btn btn-primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[>href]]" target="[[>target]]">
               <span class="font-caption">[[:text]] ( [[>pending_acceptance]] )</span>
             </a>
           [[else]]
-            <a class="btn [[if primary]]btn-primary[[else]]btn-outline-primary[[/if]] mr-2 font-caption [[if !enabled]]disabled[[/if]] [[>buttonclass]]" role="button" href="[[>href]]" target="[[>target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
+            <a rel="noopener noreferrer" class="btn [[if primary]]btn-primary[[else]]btn-outline-primary[[/if]] mr-2 font-caption [[if !enabled]]disabled[[/if]] [[>buttonclass]]" role="button" href="[[>href]]" target="[[>target]]" [[if modal]] data-toggle="modal" data-target=".share-modal" [[/if]]>
               <span class="font-caption">[[:text]]</span>
             </a>
           [[/if]]
@@ -294,7 +294,7 @@
             </div>
             <div class="col-12 col-md-2">
               <div class="activity-name text-center text-md-left">
-                <a href="/profile/[[>name]]" target="_blank" data-usercard="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
+                <a href="/profile/[[>name]]" rel="noopener noreferrer" target="_blank" data-usercard="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
                   [[>name]]
                 </a>
               </div>
@@ -341,7 +341,7 @@
                 <div class="activity-status">
                   [[>text]]
                   [[if activity_type == 'worker_approved']]
-                    <a href="/profile/[[>worker_handle]]" target="_blank">
+                    <a rel="noopener noreferrer" href="/profile/[[>worker_handle]]" target="_blank">
                       [[>worker_handle]]
                     </a> to work on the bounty
                   [[/if]]
@@ -388,7 +388,7 @@
               <div class="col-12 col-md-7 text-center text-md-left">
                 <div class="activity-status">
                   [[>text]]
-                  <a href="/profile/[[>worker_handle]]" target="_blank">
+                  <a rel="noopener noreferrer" href="/profile/[[>worker_handle]]" target="_blank">
                     [[>worker_handle]]
                   </a>
                 </div>
@@ -398,7 +398,7 @@
                 <div class="activity-status">
                   [[>text]]
                   [[if fulfiller_github_url]]
-                  <a target="_blank" href="[[>fulfiller_github_url]]">[{% trans "View Work" %}]</a>
+                    <a rel="noopener noreferrer" target="_blank" href="[[>fulfiller_github_url]]">[{% trans "View Work" %}]</a>
                   [[/if]]
                 </div>
                 [[if slash_possible]]
