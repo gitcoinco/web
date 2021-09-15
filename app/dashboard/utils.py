@@ -318,7 +318,7 @@ def get_web3(network, sockets=False, is_polygon=False):
                 provider = HTTPProvider(f'https://{network}.infura.io')
 
         if is_polygon:
-            provider = HTTPProvider('https://rpc-mumbai.maticvigil.com/ws/v1/3f94a58d205bf265cb40aac1a5933e076bcb112c')
+            provider = HTTPProvider('https://rpc-mumbai.maticvigil.com/v1/3f94a58d205bf265cb40aac1a5933e076bcb112c')
 
         w3 = Web3(provider)
         if network == 'rinkeby':
