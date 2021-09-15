@@ -1,4 +1,4 @@
-from dashboard.models import ProfileSerializer
+from dashboard.serializers import ProfileSerializer
 from rest_flex_fields import FlexFieldsModelSerializer
 
 from .models import GTCSteward
