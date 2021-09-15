@@ -11,6 +11,7 @@ from django.utils.text import slugify
 import boto
 from app.grants.utils import toggle_user_sybil
 from app.services import RedisService
+from boto.s3.key import Key
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
@@ -439,7 +440,11 @@ def process_bsci_sybil_csv(file_name=None):
     # https://stackoverflow.com/a/46323684
     s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
     bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
-    csv_object = s3.get_object(Bucket= bucket, Key=file_name)
+
+    bucket_key = Key(bucket)
+    bucket_key.key = file_name
+
+    csv_object = bucket_key.get_contents_from_filename(file_name)
     body = csv_object['Body']
     csv_string = body.read().decode('utf-8')
 

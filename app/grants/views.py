@@ -3722,14 +3722,12 @@ def upload_sybil_csv(request):
 
     now = datetime.now()
     file_name = f'{now.strftime("%m/%d/%Y")}.csv'
-    bucketKey = Key(bucket)
-    bucketKey.key = file_name
 
-    filepath = file_name
-    bucketKey.set_contents_from_filename(filepath)
-    bucketKey.set_acl('public-read') # NEEDED ?
+    bucket_key = Key(bucket)
+    bucket_key.key = file_name
 
-    url = bucketKey.generate_url(expires_in=0, query_auth=False)
+    bucket_key.set_contents_from_filename(uploaded_file)
+    bucket_key.set_acl('public-read')
 
     # store latest in JSONStore
     data['csv_url'] = file_name
