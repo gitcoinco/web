@@ -1,5 +1,8 @@
 import pytest
+from dashboard.models import Profile
+from grants.models.contribution import Contribution
 from grants.models.donation import Donation
+from grants.models.subscription import Subscription
 
 from .factories.donation_factory import DonationFactory
 
@@ -24,7 +27,7 @@ class TestDonation:
         assert donation.from_address == '0x0'
 
     def test_donation_has_a_to_address(self):
-        """Test to_address attribute and default value."""
+        """Test to_address attribute is present and defaults to '0x0'."""
 
         donation = DonationFactory()
 
@@ -32,15 +35,15 @@ class TestDonation:
         assert donation.to_address == '0x0'
 
     def test_donation_belongs_to_profile(self):
-        """Test profile attribute and default value."""
+        """Test profile attribute is present and is an instance of Profile."""
 
         donation = DonationFactory()
 
         assert hasattr(donation, 'profile')
-        assert donation.profile == None
+        assert isinstance(donation.profile, Profile)
 
     def test_donation_has_a_token_address(self):
-        """Test token_address attribute and default value."""
+        """Test token_address attribute is present and defaults to '0x0'."""
 
         donation = DonationFactory()
 
@@ -48,7 +51,7 @@ class TestDonation:
         assert donation.token_address == '0x0'
 
     def test_donation_has_a_token_symbol(self):
-        """Test token_symbol attribute and default value."""
+        """Test token_symbol attribute is present and defaults to empty string."""
 
         donation = DonationFactory()
 
@@ -56,7 +59,7 @@ class TestDonation:
         assert donation.token_symbol == ''
 
     def test_donation_has_a_token_amount(self):
-        """Test token_amount attribute and default value."""
+        """Test token_amount attribute is present and defaults to 0."""
 
         donation = DonationFactory()
 
@@ -64,7 +67,7 @@ class TestDonation:
         assert donation.token_amount == 0
 
     def test_donation_has_a_token_amount_usdt(self):
-        """Test amount_usdt attribute and defailt value."""
+        """Test token_amount_usdt attribute is present and defaults to 0."""
 
         donation = DonationFactory()
 
@@ -72,7 +75,7 @@ class TestDonation:
         assert donation.token_amount_usdt == 0
     
     def test_donation_has_a_tx_id(self):
-        """Test tx_id attribute and default value."""
+        """Test tx_id attribute is present and defaults to '0x0'."""
 
         donation = DonationFactory()
 
@@ -80,7 +83,7 @@ class TestDonation:
         assert donation.tx_id == '0x0'
 
     def test_donation_has_a_network(self):
-        """Test network attribute and default value."""
+        """Test network attribute is present and defaults to 'mainnet'."""
 
         donation = DonationFactory()
 
@@ -88,25 +91,25 @@ class TestDonation:
         assert donation.network == 'mainnet'
 
     def test_donation_has_a_donation_percentage(self):
-        """Test donation_percentage attribute and default value."""
+        """Test donation_percentage attribute is present and defaults to 0."""
 
         donation = DonationFactory()
 
         assert hasattr(donation, 'donation_percentage')
         assert donation.donation_percentage == 0
 
-    def test_donation_belongs_to_subscription(self):
-        """Test subscription attribute and default value."""
+    def test_donation_has_related_subscription(self):
+        """Test subscription attribute is present and is an instance of Subscription."""
 
         donation = DonationFactory()
 
         assert hasattr(donation, 'subscription')
-        assert donation.subscription == None
+        assert isinstance(donation.subscription, Subscription)
 
-    def test_donation_belongs_to_contribution(self):
-        """Test contribution attribute and default value."""
+    def test_donation_has_related_contribution(self):
+        """Test contribution attribute is present and is an instance of Contribution."""
 
         donation = DonationFactory()
 
         assert hasattr(donation, 'contribution')
-        assert donation.contribution == None
+        assert isinstance(donation.contribution, Contribution)
