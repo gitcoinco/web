@@ -17,23 +17,21 @@ class TestGrantAPIKey:
         assert isinstance(grant_api_key, GrantAPIKey)
 
     def test_grant_api_key_has_a_key(self):
-        """Test key attribute is present and is blank."""
+        """Test 'key' attribute is present."""
 
         grant_api_key = GrantAPIKeyFactory()
 
         assert hasattr(grant_api_key, 'key')
-        assert grant_api_key.key == ''
 
     def test_grant_api_key_has_a_secret(self):
-        """Test secret attribute is present and is blank."""
+        """Test secret attribute is present."""
 
         grant_api_key = GrantAPIKeyFactory()
 
         assert hasattr(grant_api_key, 'secret')
-        assert grant_api_key.secret == ''
 
-    def test_grant_api_key_belongs_to_a_profile(self):
-        """Test profile attribute is present."""
+    def test_grant_api_key_has_associated_profile(self):
+        """Test profile attribute is present and is an instance of Profile."""
 
         grant_api_key = GrantAPIKeyFactory()
 
