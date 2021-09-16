@@ -127,4 +127,14 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'total_pot')
         assert grant_clr.total_pot == 0
 
+    def test_grant_clr_contribution_multiplier(self):
+        """Test contribution_multiplier is present and defaults to 1.0."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'contribution_multiplier')
+        assert grant_clr.contribution_multiplier == 1.0
+
+    
+
     
