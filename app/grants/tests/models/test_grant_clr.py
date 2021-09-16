@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 import pytest
 from dashboard.models import Profile
 from grants.models.grant import GrantCLR
@@ -142,6 +144,11 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'logo')
 
-    
+    def test_happening_now_returns_true_if_current_time_is_within_time_range_for_round(self):
+        """Test happening_now method returns true if we are within the time range for this round."""
 
-    
+        grant_clr = GrantCLRFactory()
+        grant_clr.start_date = timezone.now() - timezone.timedelta(days=3)
+        grant_clr.end_date = timezone.now() + timezone.timedelta(days=4)
+
+        assert grant_clr.happening_now == True
