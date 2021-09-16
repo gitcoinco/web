@@ -119,4 +119,12 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'unverified_threshold')
         assert grant_clr.unverified_threshold == 5.0
 
+    def test_grant_clr_has_total_pot(self):
+        """Test total_pot is present and defaults to 0."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'total_pot')
+        assert grant_clr.total_pot == 0
+
     
