@@ -76,4 +76,13 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'end_date')
 
+    def test_grant_clr_has_grant_filters(self):
+        """Test grant_filters attribute is present and defaults to an empty dictionary."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'grant_filters')
+        assert grant_clr.grant_filters == {}
+        assert len(grant_clr.grant_filters) == 0
+
     
