@@ -3722,14 +3722,14 @@ def upload_sybil_csv(request):
     file_name = f'{now.strftime("%m-%d-%Y")}.csv'
 
     # upload to S3
-    # s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-    # bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
+    s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
 
-    # bucket_key = Key(bucket)
-    # bucket_key.key = file_name
+    bucket_key = Key(bucket)
+    bucket_key.key = file_name
 
-    # bucket_key.set_contents_from_filename(uploaded_file)
-    # bucket_key.set_acl('public-read')
+    bucket_key.set_contents_from_filename(uploaded_file)
+    bucket_key.set_acl('public-read')
 
     # store latest in JSONStore
     bsciJSON.data['csv_url'] = file_name
