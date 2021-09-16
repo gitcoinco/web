@@ -136,7 +136,7 @@
         <li>You are contributing [[donationsToGrantsString]]</li>
         <li>You are contributing [[donationsToGitcoinString]] to the Gitcoin Match Pool Fund</li>
         <li>
-          Note: The exact checkout flow will depend on whether you use Standard Checkout, Polygon, or zkSync.
+          Note: The exact checkout flow will depend on whether you use Standard Checkout{% if is_staff %}, Polygon,{% endif %} or zkSync.
           <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">Read how this works</a>.
         </li>
       </ul>
@@ -172,6 +172,7 @@
   <div class="row justify-content-end">
     <div class="btn-group flex-column flex-grow-1 flex-md-grow-0 flex-md-row" role="group" aria-label="Checkout buttons">
 
+      {% if is_staff %}
       <!-- CHECKOUT WITH POLYGON -->
       <grants-cart-ethereum-polygon
         inline-template
@@ -275,6 +276,7 @@
           </b-modal>
         </div>
       </grants-cart-ethereum-polygon>
+      {% endif %}
 
       <!-- CHECKOUT WITH ZKSYNC -->
       <grants-cart-ethereum-zksync
