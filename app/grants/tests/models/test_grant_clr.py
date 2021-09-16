@@ -69,4 +69,11 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'start_date')
 
+    def test_grant_clr_has_end_date_attribute(self):
+        """Test end_date is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'end_date')
+
     
