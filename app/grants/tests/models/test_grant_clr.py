@@ -62,4 +62,11 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'is_active')
         assert grant_clr.is_active == False
 
+    def test_grant_clr_has_start_date_attribute(self):
+        """Test start_date is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'start_date')
+
     
