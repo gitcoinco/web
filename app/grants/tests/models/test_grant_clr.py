@@ -144,7 +144,7 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'logo')
 
-    def test_happening_now_returns_true_if_current_time_is_within_time_range_for_round(self):
+    def test_happening_now_returns_true_if_round_is_currently_happening(self):
         """Test happening_now method returns true if we are within the time range for this round."""
 
         grant_clr = GrantCLRFactory()
@@ -153,7 +153,7 @@ class TestGrantCLR:
 
         assert grant_clr.happening_now == True
 
-    def test_happening_now_returns_false_if_current_time_is_not_within_time_range_for_round(self):
+    def test_happening_now_returns_false_if_round_is_not_currently_happening(self):
         """Test happening_now method returns false if we are outside the time range for this round."""
 
         grant_clr = GrantCLRFactory()
@@ -161,5 +161,25 @@ class TestGrantCLR:
         grant_clr.end_date = timezone.now() + timezone.timedelta(days=10)
 
         assert grant_clr.happening_now == False
+
+    def test_happened_recently_returns_true_if_round_happened_recently(self):
+        """Test happened_recently method returns true if grant_clr.end_date is within two weeks of current round."""
+
+        grant_clr = GrantCLRFactory()
+        grant_clr.start_date = timezone.now()
+        grant_clr.end_date = timezone.now() - timezone.timedelta(days=10)
+
+        assert grant_clr.happened_recently == True
+
+    def test_happened_recently_returns_false_if_round_did_not_happen_recently(self):
+        """Test happened_recently method returns false if grant_clr.end_date is not within two weeks of current round."""
+
+        grant_clr = GrantCLRFactory()
+        grant_clr.start_date = timezone.now()
+        grant_clr.end_date = timezone.now() - timezone.timedelta(days=20)
+
+        assert grant_clr.happened_recently == False
+    
+
 
     
