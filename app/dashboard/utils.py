@@ -304,21 +304,16 @@ def get_web3(network, sockets=False, is_polygon=False):
         elif network == 'testnet':
             network = 'polygon-mumbai'
 
-        INFURA_V3_PROJECT_ID = settings.INFURA_V3_PROJECT_ID_POLYGON if is_polygon else settings.INFURA_V3_PROJECT_ID
-
         if sockets and not is_polygon: # polygon doesn't yet have socket support in infura
             if settings.INFURA_USE_V3:
-                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{INFURA_V3_PROJECT_ID}')
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
             else:
                 provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
         else:
             if settings.INFURA_USE_V3:
-                provider = HTTPProvider(f'https://{network}.infura.io/v3/{INFURA_V3_PROJECT_ID}')
+                provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
             else:
                 provider = HTTPProvider(f'https://{network}.infura.io')
-
-        if is_polygon:
-            provider = HTTPProvider('https://rpc-mumbai.maticvigil.com/v1/3f94a58d205bf265cb40aac1a5933e076bcb112c')
 
         w3 = Web3(provider)
         if network == 'rinkeby':

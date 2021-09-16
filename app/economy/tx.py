@@ -230,7 +230,7 @@ def grants_transaction_validator(contribution, w3, is_polygon=False):
             is_correct_token = event['args']['token'].lower() == expected_token
 
             transfer_amount = event['args']['amount']
-            is_correct_amount = transfer_amount > expected_amount_min and transfer_amount < expected_amount_max
+            is_correct_amount = transfer_amount >= expected_amount_min and transfer_amount <= expected_amount_max
 
             if is_correct_recipient and is_correct_token and is_correct_amount:
                 # We found the event log corresponding to the contribution parameters
