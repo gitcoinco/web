@@ -107,7 +107,7 @@ Vue.mixin({
           vm.$set(vm.errors, 'eth_payout_address', 'Please enter ETH address');
         } else if (vm.form.eth_payout_address.trim().endsWith('.eth')) {
           vm.$set(vm.errors, 'eth_payout_address', 'ENS is not supported. Please enter ETH address');
-        } else if (!web3.utils.isAddress(vm.form.eth_payout_address)) {
+        } else if (!Web3.utils.isAddress(vm.form.eth_payout_address)) {
           vm.$set(vm.errors, 'eth_payout_address', 'Please enter a valid ETH address');
         }
       } else if (
