@@ -135,6 +135,13 @@ class TestGrantCLR:
         assert hasattr(grant_clr, 'contribution_multiplier')
         assert grant_clr.contribution_multiplier == 1.0
 
+    def test_grant_clr_has_logo_attribute(self):
+        """Test logo attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'logo')
+
     
 
     
