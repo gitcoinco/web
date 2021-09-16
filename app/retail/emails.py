@@ -126,10 +126,24 @@ def render_new_contributions_email(grant):
     amount_raised = sum(contributions.values_list('normalized_data__amount_per_period_usdt', flat=True))
     num_of_contributors = len(set(contributions.values_list('profile_for_clr', flat=True)))
 
+    # amount raised in L2/sidechains
+    amount_raised_zksync = sum(
+        contributions.filter(checkout_type='eth_zksync').values_list(
+            'normalized_data__amount_per_period_usdt', flat=True
+        )
+    )
+    amount_raised_polygon = sum(
+        contributions.filter(checkout_type='eth_polygon').values_list(
+            'normalized_data__amount_per_period_usdt', flat=True
+        )
+    )
+
     params = {
         'grant': grant,
         'hours_ago': hours_ago,
         'amount_raised': amount_raised,
+        'amount_raised_zksync': amount_raised_zksync,
+        'amount_raised_polygon': amount_raised_polygon,
         'num_of_contributors': num_of_contributors,
         'media_url': settings.MEDIA_URL,
         'utm_tracking': build_utm_tracking('new_contributions'),
