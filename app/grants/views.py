@@ -26,6 +26,7 @@ import re
 import time
 import uuid
 from datetime import datetime
+from io import StringIO
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -3697,6 +3698,8 @@ def api_toggle_user_sybil(request):
     return JsonResponse({'success': 'ok'}, status=200)
 
 
+@csrf_exempt
+@require_POST
 def upload_sybil_csv(request):
     '''
         This endpoint would be used by bsci to upload the csv
@@ -3714,25 +3717,24 @@ def upload_sybil_csv(request):
         return HttpResponseBadRequest("error: wrong file type")
 
     bsciJSON = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN')
-    data = bsciJSON.data
-
-    # upload to S3
-    s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-    bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
 
     now = datetime.now()
-    file_name = f'{now.strftime("%m/%d/%Y")}.csv'
+    file_name = f'{now.strftime("%m-%d-%Y")}.csv'
 
-    bucket_key = Key(bucket)
-    bucket_key.key = file_name
+    # upload to S3
+    # s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    # bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
 
-    bucket_key.set_contents_from_filename(uploaded_file)
-    bucket_key.set_acl('public-read')
+    # bucket_key = Key(bucket)
+    # bucket_key.key = file_name
+
+    # bucket_key.set_contents_from_filename(uploaded_file)
+    # bucket_key.set_acl('public-read')
 
     # store latest in JSONStore
-    data['csv_url'] = file_name
-    data.save()
-
-    process_bsci_sybil_csv.delay(file_name)
+    bsciJSON.data['csv_url'] = file_name
+    bsciJSON.save()
+        
+    process_bsci_sybil_csv.delay(file_name, uploaded_file)
 
     return JsonResponse({'success': 'ok'}, status=200)

@@ -451,8 +451,9 @@ class SquelchProfile(SuperModel):
     )
     label = models.CharField(
         choices=LABEL_CHOICES,
-        default='human',
-        help_text='means used to mark user as sybil'
+        default='Human',
+        help_text='means used to mark user as sybil',
+        max_length=20
     )
     comments = models.TextField(default='', blank=True)
     active = models.BooleanField(help_text='Is squelch applied?', default=True)

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import math
 import os
 import re
 import urllib.request
@@ -28,10 +29,11 @@ from secrets import token_hex
 
 from django.utils import timezone
 
+import numpy as np
+import pandas as pd
 from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
 from avatar.utils import convert_img
-from dashboard.models import Profile
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
 from grants.sync.algorand import sync_algorand_payout
@@ -42,7 +44,7 @@ from grants.sync.polkadot import sync_polkadot_payout
 from grants.sync.rsk import sync_rsk_payout
 from grants.sync.zcash import sync_zcash_payout
 from grants.sync.zil import sync_zil_payout
-from perftools.models import JSONStore, StaticJsonEnv
+from perftools.models import StaticJsonEnv
 from PIL import Image, ImageDraw, ImageOps
 from townsquare.models import SquelchProfile
 
@@ -315,29 +317,37 @@ def save_grant_to_notion(grant):
 def toggle_user_sybil(sybil_users, non_sybil_users):
     '''util function which marks users as sybil/not'''
 
+    from dashboard.models import Profile
+
     squelched_profiles = SquelchProfile.objects.all()
     if sybil_users:
         # iterate through users which need to be packed as sybil
         for user in sybil_users:
             try:
-                # get user profile
-                profile = Profile.objects.get(pk=user.get('id'))
-                label = user.get('label')
-                comment = user.get('comment')
+                # get user profile. note
+                profile = Profile.objects.filter(handle=user.get('handle')).first()
+                if profile:
+                    label = user.get('label')
+                    comment = user.get('comment')
 
-                # check if user has entry in SquelchProfile
-                if (
-                    not squelched_profiles.filter(profile=profile).first() and
-                    label and comment
-                ):
-                    # mark user as sybil
-                    SquelchProfile.objects.create(
-                        profile=profile,
-                        label=label,
-                        comments=comment
-                    )
+                    if comment and isNaN(comment):
+                        comment = 'added by bsci'
+
+                    # check if user has entry in SquelchProfile
+                    if (
+                        not squelched_profiles.filter(profile=profile).first() and
+                        label and comment
+                    ):
+                        # mark user as sybil
+                        SquelchProfile.objects.create(
+                            profile=profile,
+                            label=label,
+                            comments=comment
+                        )
+                else:
+                    print(f"error: profile not found for ${user.get('handle')} as sybil.")
             except Exception as e:
-                print(f"error: unable to mark user ${user.get('id')} as sybil. {e}")
+                print(f"error: unable to mark user ${user.get('handle')} as sybil. {e}")
 
     if non_sybil_users:
         # iterate and remove sybil from user
@@ -351,12 +361,7 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
 
 
 def bsci_script(csv):
-    # TODO-BSCI: install import
-    import pandas as pd
-    import numpy as np
-
     try:
-
         # choose the specific csv you want to use
         endpoint_df = pd.read_csv(csv)
 
@@ -369,7 +374,7 @@ def bsci_script(csv):
         human_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] >= 0.99)  & (endpoint_df['is_sybil_y'] >= 0.99)]
         endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_sybil.handle)]
         human_sybil = human_sybil[['handle', 'flag_type_y', 'notes']]
-        human_sybil = human_sybil.rename({'handle': 'id', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        human_sybil = human_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
         sybil_df = sybil_df.append(human_sybil)
 
         '''
@@ -378,7 +383,7 @@ def bsci_script(csv):
         heuristic_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] >= 0.99)]
         endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_sybil.handle)]
         heuristic_sybil = heuristic_sybil[['handle', 'flag_type_x', 'notes']]
-        hueristic_sybil = heuristic_sybil.rename({'handle': 'id', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        hueristic_sybil = heuristic_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
         sybil_df = sybil_df.append(heuristic_sybil)
 
         '''
@@ -389,7 +394,7 @@ def bsci_script(csv):
         ml_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Prediction') & (endpoint_df['ml_score'] >= 0.9)]
         endpoint_df = endpoint_df[~endpoint_df.handle.isin(ml_sybil.handle)]
         ml_sybil = ml_sybil[['handle', 'flag_type_x', 'notes']]
-        ml_sybil = ml_sybil.rename({'handle': 'id', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        ml_sybil = ml_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
         sybil_df = sybil_df.append(ml_sybil)
 
         '''
@@ -399,7 +404,7 @@ def bsci_script(csv):
         human_non_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] != np.nan)]
         endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_non_sybil.handle)]
         human_non_sybil = human_non_sybil[['handle', 'flag_type_y', 'notes']]
-        human_non_sybil = human_non_sybil.rename({'handle': 'id', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        human_non_sybil = human_non_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
         non_sybil_df = non_sybil_df.append(human_non_sybil)
 
         '''
@@ -408,7 +413,7 @@ def bsci_script(csv):
         heuristic_non_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] <= 0.01)]
         endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_non_sybil.handle)]
         heuristic_non_sybil = heuristic_non_sybil[['handle', 'flag_type_x', 'notes']]
-        hueristic_non_sybil = heuristic_non_sybil.rename({'handle': 'id', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        hueristic_non_sybil = heuristic_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
         non_sybil_df = non_sybil_df.append(heuristic_non_sybil)
 
         '''
@@ -416,7 +421,7 @@ def bsci_script(csv):
         '''
         ml_non_sybil = endpoint_df
         ml_non_sybil = ml_non_sybil[['handle', 'flag_type_x', 'notes']]
-        ml_non_sybil = ml_non_sybil.rename({'handle': 'id', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        ml_non_sybil = ml_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
         non_sybil_df = non_sybil_df.append(ml_non_sybil)
 
         '''
@@ -426,15 +431,15 @@ def bsci_script(csv):
         sybil_users = sybil_df.to_dict('records')
         non_sybil_users = non_sybil_df.to_dict('records')
 
-        print(sybil_users)
-        print(non_sybil_users)
-        # TODO-BSCI: validate
+        # print('=================SYBIL=================')
+        # print(sybil_users)
+        # print('=================NON SYBIL=================')
+        # print(non_sybil_users)
+
         toggle_user_sybil(sybil_users, non_sybil_users)
 
-        # endpoint_dict = {"sybil_users": None, "non_sybil_users": None}
-        # endpoint_dict['sybil_users'] = sybil_endpoint
-        # endpoint_dict['non_sybil_users'] = non_sybil_endpoint
-        # endpoint_json = json.dumps(endpoint_dict)
-        #requests.post('https://gitcoin.co/grants/v1/api/toggle_user_sybil', data = endpoint_json)
     except Exception as e:
         logger.error(f'error: bsci_sybil_script - {e}')
+
+def isNaN(string):
+    return string != string

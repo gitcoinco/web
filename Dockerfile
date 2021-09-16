@@ -16,8 +16,8 @@ RUN apt-get update
 
 # Install general dependencies.
 RUN apt-get install -y $PACKAGES
-RUN apt-get update
-RUN apt-get install -y $BUILD_DEPS
+RUN apt-get update --fix-missing
+RUN apt-get install -y $BUILD_DEPS --fix-missing
 
 RUN apt-get install -y wget
 RUN apt-get install -y libsodium-dev
