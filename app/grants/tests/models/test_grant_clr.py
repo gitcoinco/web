@@ -53,3 +53,13 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'owner')
         assert isinstance(grant_clr.owner, Profile)
+
+    def test_grant_clr_has_is_active_attribute(self):
+        """Test is_active attribute is present and defaults to False."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'is_active')
+        assert grant_clr.is_active == False
+
+    
