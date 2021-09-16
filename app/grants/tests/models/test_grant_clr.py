@@ -110,3 +110,13 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'verified_threshold')
         assert grant_clr.verified_threshold == 25.0
+
+    def test_grant_clr_has_unverified_threshold(self):
+        """Test unverified_threshold is present and defaults to 5.0."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'unverified_threshold')
+        assert grant_clr.unverified_threshold == 5.0
+
+    
