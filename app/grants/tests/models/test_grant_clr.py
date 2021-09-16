@@ -158,7 +158,7 @@ class TestGrantCLR:
 
         grant_clr = GrantCLRFactory()
         grant_clr.start_date = timezone.now() + timezone.timedelta(days=3)
-        grant_clr.end_date = timezone.now() + timezone.timedelta(day=10)
+        grant_clr.end_date = timezone.now() + timezone.timedelta(days=10)
 
         assert grant_clr.happening_now == False
 
