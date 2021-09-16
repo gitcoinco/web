@@ -9,7 +9,7 @@ class PrimaryDBRouter:
         Reads go to a randomly-chosen replica if backend node
         Else go to default DB
         """
-        replicas = ['read_replica_1', 'read_replica_2']
+        replicas = ['read_replica_1', 'read_replica_2', 'read_replica_3']
         return random.choice(replicas)
 
     def db_for_write(self, model, **hints):
@@ -23,7 +23,7 @@ class PrimaryDBRouter:
         Relations between objects are allowed if both objects are
         in the primary/replica pool.
         """
-        db_set = {'default', 'read_replica_1', 'read_replica_2'}
+        db_set = {'default', 'read_replica_1', 'read_replica_2', 'read_replica_3'}
         if obj1._state.db in db_set and obj2._state.db in db_set:
             return True
         return True # TODO: be more stringent about this IFF we ever have a situation in which diff tables are on diff DBs

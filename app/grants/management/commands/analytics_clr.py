@@ -19,43 +19,40 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 from django.core.management.base import BaseCommand
+from django.db import connection
 from django.utils import timezone
 
-from grants.clr import calculate_clr_for_donation, fetch_data, populate_data_for_clr
+from grants.clr import calculate_clr, get_totals_by_pair, normalise
+from grants.clr_data_src import fetch_grants, fetch_summed_contributions
 from grants.models import GrantCLR
 
 
 def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
     # setup
-    # clr_calc_start_time = timezone.now()
     debug_output = [['grant_id', 'grant_title', 'number_contributions', 'contribution_amount', 'clr_amount']]
 
     # one-time data call
     total_pot = float(clr_round.total_pot)
     v_threshold = float(clr_round.verified_threshold)
-    uv_threshold = float(clr_round.unverified_threshold)
 
     print(total_pot)
 
-    grants, contributions = fetch_data(clr_round, network)
+    # fetch data
+    grants = fetch_grants(clr_round, network)
+    curr_agg, trust_dict = fetch_summed_contributions(grants, clr_round, network)
 
-    grant_contributions_curr = populate_data_for_clr(grants, contributions,  clr_round)
-
+    # run calculation
+    ptots = get_totals_by_pair(curr_agg)
+    bigtot, totals = calculate_clr(curr_agg, ptots, trust_dict, v_threshold, total_pot)
+    curr_grants_clr = normalise(bigtot, totals, total_pot)
+    
     # calculate clr analytics output
     for grant in grants:
-        clr_amount, _, num_contribs, contrib_amount = calculate_clr_for_donation(
-            grant,
-            0,
-            grant_contributions_curr,
-            total_pot,
-            v_threshold,
-            uv_threshold
-        )
+        num_contribs, contrib_amount, clr_amount = curr_grants_clr.get(grant.id, {'num_contribs': 0, 'contrib_amount': 0, 'clr_amount': None}).values()
         # debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
         debug_output.append([grant.id, grant.title, grant.positive_round_contributor_count, float(grant.amount_received_in_round), clr_amount])
 
     return debug_output
-
 
 
 class Command(BaseCommand):

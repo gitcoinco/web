@@ -137,6 +137,11 @@ def render_new_contributions_email(grant):
     response_html = premailer_transform(render_to_string("emails/grants/new_contributions.html", params))
     response_txt = render_to_string("emails/grants/new_contributions.txt", params)
     subject = _("You have new Grant contributions!")
+
+    if amount_raised < 1:
+        # trigger to prevent email sending for negligible amounts
+        subject = ''
+
     return response_html, response_txt, subject
 
 

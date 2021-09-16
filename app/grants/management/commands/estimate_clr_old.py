@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from grants.clr3 import predict_clr
+from grants.clr_old import predict_clr
 from grants.models import GrantCLR
 from grants.tasks import process_predict_clr
 
@@ -45,7 +45,7 @@ class Command(BaseCommand):
         clr_pk = options['clr_pk']
         what = options['what']
         sync = options['sync']
-        print ('clr3', network, clr_pk, what, sync)
+        print (network, clr_pk, what, sync)
 
         if clr_pk and clr_pk.isdigit():
             active_clr_rounds = GrantCLR.objects.filter(pk=clr_pk)
