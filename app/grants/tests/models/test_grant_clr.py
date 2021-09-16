@@ -103,4 +103,10 @@ class TestGrantCLR:
         assert grant_clr.collection_filters == {}
         assert len(grant_clr.collection_filters) == 0
 
-    
+    def test_grant_clr_has_verified_threshold(self):
+        """Test verified_threshold is present and defaults to 25.0."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'verified_threshold')
+        assert grant_clr.verified_threshold == 25.0
