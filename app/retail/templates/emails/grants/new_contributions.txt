@@ -2,11 +2,20 @@
 
 {% trans "New Contributions to Your Grant" %}
 
-{{ hours_ago }} hours</span>, your grant has earned approximately:
+{{ hours_ago }} hours, your grant has earned approximately:
 
 ${{ amount_raised|floatformat:2|intcomma }}
 
 from {{ num_of_contributors }} contributor{{ num_of_contributors|pluralize }}
+
+{% if show_zksync_amount or show_polygon_amount %}
+including {% if show_zksync_amount %}
+${{ amount_raised_zksync|floatformat:2|intcomma }} in zkSync{% endif %}
+{% if show_polygon_amount %}{% if show_zksync_amount %} + {% endif %}
+${{ amount_raised_polygon|floatformat:2|intcomma }} in Polygon{% endif %}.
+
+{% trans "Read more about zkSync and Polygon" %} https://support.gitcoin.co/kb/article/75-how-can-i-withdraw-my-funds-from-zksync/
+{% endif %}
 
 {{ grant.title }}
 
