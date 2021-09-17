@@ -2524,6 +2524,12 @@ def hall_of_fame(request):
     except IndexError:
         raise Http404
 
+    if hall_of_fame.top_individual_donors:
+        top_individual_donors_svg = hall_of_fame.top_individual_donors.name.endswith('.svg')
+
+    if hall_of_fame.top_matching_partners:
+        top_matching_partners_svg = hall_of_fame.top_matching_partners.name.endswith('.svg')
+
     params = {
         'active': 'hall_of_fame',
         'title': _('Hall of Fame'),
@@ -2532,6 +2538,8 @@ def hall_of_fame(request):
         'total_donations': hall_of_fame.total_donations,
         'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
         'top_matching_partners_url': hall_of_fame.top_matching_partners.url,
+        'top_individual_donors_svg': top_individual_donors_svg,
+        'top_matching_partners_svg': top_matching_partners_svg,
         'top_individual_donors_mobile_url': hall_of_fame.top_individual_donors_mobile.url,
         'top_matching_partners_mobile_url': hall_of_fame.top_matching_partners_mobile.url,
         'graduated_grantees_description': hall_of_fame.graduated_grantees_description,

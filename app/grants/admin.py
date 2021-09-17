@@ -25,6 +25,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django import forms
 
 import twitter
 from grants.models import (
@@ -34,6 +35,8 @@ from grants.models import (
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
+
+from django_svg_image_form_field import SvgAndImageFormField
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -544,8 +547,19 @@ class GrantHallOfFameGranteeInline(admin.StackedInline):
     extra = 1
 
 
+class GrantHallOfFameForm(forms.ModelForm):
+    class Meta:
+        model = GrantHallOfFame
+        exclude = []
+        field_classes = {
+            'top_matching_partners': SvgAndImageFormField,
+            'top_matching_partners_mobile': SvgAndImageFormField,
+            'top_individual_donors': SvgAndImageFormField,
+            'top_individual_donors_mobile': SvgAndImageFormField,
+        }
 
 class GrantHallOfFameAdmin(admin.ModelAdmin):
+    form = GrantHallOfFameForm
     inlines = (GrantHallOfFameGranteeInline, )
     list_display = ['pk', 'total_donations', 'is_published' ]
     readonly_fields = ['is_published', ]
