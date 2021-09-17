@@ -101,7 +101,7 @@ along with this program. If not, see
       <p style="font-size: 14px; line-height: 1px;">
         including {% if show_zksync_amount %}
         <strong>${{ amount_raised_zksync|floatformat:2|intcomma }}</strong> in zkSync{% endif %}
-        {% if show_polygon_amount %}{% if show_zksync_amount %} + {% endif %}
+        {% if show_polygon_amount and is_staff %}{% if show_zksync_amount %} + {% endif %}
         <strong>${{ amount_raised_polygon|floatformat:2|intcomma }}</strong> in Polygon{% endif %}.
       </p>
       <a href="https://support.gitcoin.co/kb/article/75-how-can-i-withdraw-my-funds-from-zksync/" target="_blank" style="font-size: 12px;">
