@@ -97,12 +97,17 @@ along with this program. If not, see
     <p style="font-weight: bold; font-size: 24px; color: #11BC92; line-height: 1px;">${{ amount_raised|floatformat:2|intcomma }}
       <span style="font-weight: normal; font-size: 16px; color: #15003E;">from {{ num_of_contributors }} contributor{{ num_of_contributors|pluralize }}</span>
     </p>
-    <p style="font-size: 14px; line-height: 1px;">
-      including <strong>${{ amount_raised_zksync|floatformat:2|intcomma }}</strong> in zkSync{% if is_staff %} + <strong>${{ amount_raised_polygon|floatformat:2|intcomma }}</strong> in Polygon{% endif %}.
-    </p>
-    <a href="https://support.gitcoin.co/kb/article/75-how-can-i-withdraw-my-funds-from-zksync/" target="_blank" style="font-size: 12px;">
-      Read more about zkSync and Polygon
-    </a>
+    {% if show_zksync_amount or show_polygon_amount %}
+      <p style="font-size: 14px; line-height: 1px;">
+        including {% if show_zksync_amount %}
+        <strong>${{ amount_raised_zksync|floatformat:2|intcomma }}</strong> in zkSync{% endif %}
+        {% if show_polygon_amount %}{% if show_zksync_amount %} + {% endif %}
+        <strong>${{ amount_raised_polygon|floatformat:2|intcomma }}</strong> in Polygon{% endif %}.
+      </p>
+      <a href="https://support.gitcoin.co/kb/article/75-how-can-i-withdraw-my-funds-from-zksync/" target="_blank" style="font-size: 12px;">
+        Read more about zkSync and Polygon
+      </a>
+    {% endif %}
   <hr style="margin-left: 0;">
   <div style="display: inline-block; margin-top: 1.5em; margin-bottom: 2em; text-align: center;">
     <div class="grant-logo">

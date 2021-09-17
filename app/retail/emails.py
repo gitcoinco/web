@@ -144,6 +144,8 @@ def render_new_contributions_email(grant):
         'amount_raised': amount_raised,
         'amount_raised_zksync': amount_raised_zksync,
         'amount_raised_polygon': amount_raised_polygon,
+        'show_zksync_amount': False if amount_raised_zksync < 1 else True,
+        'show_polygon_amount': False if amount_raised_polygon < 1 else True,
         'num_of_contributors': num_of_contributors,
         'media_url': settings.MEDIA_URL,
         'utm_tracking': build_utm_tracking('new_contributions'),
