@@ -1,6 +1,56 @@
 {% load static humanize i18n grants_extra %}
 <script type="text/x-template" id="template-grant-details">
   <div>
+    {% if should_show_claim_match_button %}
+      <div id="claim-payout-banner" class="mt-5 mb-4">
+        <div class="alert alert-primary border-primary align-items-center mx-auto
+          col-12 col-md-8
+          d-flex flex-column flex-md-row justify-content-lg-between
+        ">
+          <p class="my-0">
+            Your grant has received
+            <span class="font-weight-semibold">matching funds from Gitcoin Grants Matching Pool.</span>
+          </p>
+          <b-button v-b-modal.claim-payout-modal variant="primary"
+            class="btn-block mt-2 mt-md-0 w-md-auto"
+          >
+            Claim Funds
+          </b-button>
+        </div>
+      </div>
+
+      <b-modal id="claim-payout-modal" hide-header hide-footer>
+        <div class="mx-md-4">
+          <div class="text-center">
+            <img class="my-4" src="{% static 'v2/images/grants/claim.svg' %}" alt="claim funds">
+          </div>
+
+          <h2 class="text-center mb-4">
+            Claim your grant funds
+          </h2>
+
+          <hr/>
+          <div class="row">
+            <div class="col-8">
+              <p class="mb-1 mt-2 font-subheader">Matching Funds</p>
+              <p class="mt-0">
+                You’ve received
+                <span class="font-weight-semibold">${{ amount_available }}</span>
+                from the Gitcoin Grants Matching Pool
+              </p>
+            </div>
+
+            <div class="col-4 my-auto">
+              <button @click="claimMatch(grant.admin_address); $bvModal.hide('claim-payout-modal')"
+                class="btn btn-primary mb-2 w-100" id="claim-match">
+                Claim
+              </button>
+            </div>
+          </div>
+        </div>
+      </b-modal>
+    {% endif %}
+
     <slot></slot>
     <div class="container grid grid-template-sidebar">
       <div class="grant-data">
@@ -343,19 +393,6 @@
             <button class="btn btn-block btn-outline-danger" @click="removeFromCart()" v-if="grant.isInCart">Remove From Cart</button>
             <button class="btn btn-block btn-primary" @click="addToCart()" v-else >Add to Cart</button>
           </template>
-
-
-          {% if should_show_claim_match_button %}
-            <div id="match-payout-section">
-              <hr class="my-4">
-              <button @click="claimMatch(grant.admin_address)" class="btn btn-primary btn-block mb-2" id="claim-match">
-                Claim Match
-              </button>
-              <div class="font-smaller-1 text-center">
-                Match payouts are ready to be claimed! Use the button above to send the earned match amount to this grant.
-              </div>
-            </div>
-          {% endif %}
         </div>
 
         <div class="col-12 mt-2">

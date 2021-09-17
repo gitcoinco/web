@@ -399,8 +399,8 @@ Vue.mixin({
         .send({from: user})
         .on('transactionHash', async function(txHash) {
           waitingState(false);
-          $('#match-payout-section').hide();
-          _alert("Match payout claimed! Funds will be sent to this grant's address", 'success');
+          $('#claim-payout-banner').hide();
+          _alert("Match payout claimed! Funds will be sent to your grant's address", 'success');
         })
         .on('error', function(error) {
           waitingState(false);

@@ -1427,6 +1427,7 @@ def grant_details(request, grant_id, grant_slug):
 
         # calculate whether is available
         # TODO - do this asyncronously so as not to block the pageload
+        amount_available = 0
         if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc and grant.admin_address != '0x0':
             if is_team_member or is_staff or is_admin:
                 w3 = get_web3(grant.network)
@@ -1480,6 +1481,7 @@ def grant_details(request, grant_id, grant_slug):
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
         'should_show_claim_match_button': should_show_claim_match_button,
+        'amount_to_claim': amount_available,
         'grant_tags': grant_tags
     }
     # Stats
