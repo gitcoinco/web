@@ -28,7 +28,7 @@
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.4",
     "cypress": "^8.3.1",
-    "cypress-metamask": "https://github.com/gitcoinco/cypress-metamask",
+    "cypress-metamask": "github:gitcoinco/cypress-metamask#v1.0.9-dev",
     "eslint": "^7.14.0",
     "file-loader": "^6.2.0",
     "filemanager-webpack-plugin": "^4.0.0",
