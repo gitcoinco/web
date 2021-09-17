@@ -123,10 +123,19 @@ class ActivityViewSet(mixins.RetrieveModelMixin,
     )
     serializer_class = ActivitySerializer
     pagination_class = ActivityPagination
-    filterset_fields = [
-        'activity_type', 'bounty', 'grant', 'hackathonevent', 'project', 'profile',
-        'kudos', 'kudos_transfer', 'subscription', 'tip'
-    ]
+    filterset_fields = {
+        'activity_type': ["in", "exact"],
+        'bounty': ["exact"],
+        'grant': ["exact"],
+        'hackathonevent': ["exact"],
+        'project': ["exact"],
+        'profile': ["exact"],
+        'kudos': ["exact"],
+        'kudos_transfer': ["exact"],
+        'subscription': ["exact"],
+        'tip': ["exact"]
+    }
+
     permission_classes = [IsOwner|ReadOnly]
 
     def list(self, request, *args, **kwargs):
