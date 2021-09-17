@@ -1,10 +1,14 @@
+from unittest.mock import patch
+
 from django.utils import timezone
 
 import pytest
 from dashboard.models import Profile
 from grants.models.grant import GrantCLR
+from grants.models.grant_clr_calculation import GrantCLRCalculation
 
 from .factories.grant_clr_factory import GrantCLRFactory
+from .factories.grant_factory import GrantFactory
 
 
 @pytest.mark.django_db
@@ -179,7 +183,20 @@ class TestGrantCLR:
         grant_clr.end_date = timezone.now() - timezone.timedelta(days=20)
 
         assert grant_clr.happened_recently == False
-    
+
+    def test_record_clr_prediction_curve_calls_collaborator_with_expected_parameters(self):
+        """Test record_clr_prediction_curve calls create on GrantCLRCalculation.objects with expected params."""
 
 
-    
+        grant = GrantFactory()
+        grant_clr = GrantCLRFactory()
+        
+        with patch.object(GrantCLRCalculation.objects, 'create') as create:
+            grant_clr.record_clr_prediction_curve(grant, grant.clr_prediction_curve)
+
+        create.assert_called_with(
+            grantclr=grant_clr, 
+            grant=grant, 
+            clr_prediction_curve=grant.clr_prediction_curve,
+            latest=True
+        )
