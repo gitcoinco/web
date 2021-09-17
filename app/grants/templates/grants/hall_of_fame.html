@@ -122,12 +122,12 @@ along with this program. If not, see
             {% endif %}
           <div class="row pb-4 hof-grantee-border">
             <div class="d-none d-sm-block col-sm-2 text-center mt-4">
-              <img class="rounded-circle w-100 hof-grantee-logo" src="{{ g.logo_url }}">
-              <div>{{ g.username }}</div>
+              <img class="rounded-circle w-100 hof-grantee-logo" src="/dynamic/avatar/{{ g.grantee_handle }}">
+              <div>@{{ g.grantee_handle }}</div>
             </div>
             <div class="d-block d-sm-none col-xs-12 col-sm-2 mt-4">
-              <img class="d-inline d-sm-block rounded-circle w-100 hof-grantee-logo" src="{{ g.logo_url }}">
-              <div class="d-inline d-sm-block">{{ g.username }}</div>
+              <img class="d-inline d-sm-block rounded-circle w-100 hof-grantee-logo" src="/dynamic/avatar/{{ g.grantee_handle }}">
+              <div class="d-inline d-sm-block">{{ g.name }}</div>
             </div>
             <div class="col-xs-12 col-sm-2 mt-4">
               <div class="font-title">{{ g.name }}</div>

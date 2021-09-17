@@ -543,7 +543,8 @@ class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
 
 class GrantHallOfFameGranteeInline(admin.StackedInline):
     model = GrantHallOfFameGrantee
-    fields = ['logo', 'username', 'name', 'funded_by', 'amount', 'description', 'accomplishment_1', 'accomplishment_2']
+    fields = ['grantee', 'name', 'funded_by', 'amount', 'description', 'accomplishment_1', 'accomplishment_2']
+    raw_id_fields = ['grantee']
     extra = 1
 
 
@@ -565,7 +566,6 @@ class GrantHallOfFameAdmin(admin.ModelAdmin):
     readonly_fields = ['is_published', ]
 
     actions = ['hall_of_fame_publish']
-
 
     def hall_of_fame_publish(self, request, queryset):
         object_list = list(queryset)
