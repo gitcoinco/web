@@ -77,6 +77,11 @@ logs: ## Print and actively tail the docker compose logs.
 cypress: ## Open cypress testing UI
 	@npx cypress open
 
+cypress-local: ## Run the cypress tests locally - the application MUST already be running for these to pass
+	@source "./app/app/.env"
+	@npx cypress install
+	@npx cypress run --headed --browser chrome
+
 pytest: ## Run pytest (Backend)
 	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
 
