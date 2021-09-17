@@ -23,13 +23,7 @@ class TestCartActivity:
         cart_activity = CartActivityFactory()
         
         assert hasattr(cart_activity, "grant")
-        assert isinstance(cart_activity.grant, Grant)
-
-    def test_cart_activity_belongs_to_grant(self):
-        cart_activity = CartActivityFactory()
-
-        assert hasattr(cart_activity, 'grant')
-        assert isinstance(cart_activity.grant, Grant)
+        assert isinstance(cart_activity.grant, Grant) 
 
     def test_cart_activity_belongs_to_profile(self):
         """Test profile is present and is an instance of Profile."""
@@ -54,6 +48,7 @@ class TestCartActivity:
         assert hasattr(cart_activity, "metadata")
         assert cart_activity.metadata == {}
         assert len(cart_activity.metadata) == 0
+
     def test_cart_activity_has_bulk_attribute(self):
         """Test bulk attribute is present and defaults to False."""
 
