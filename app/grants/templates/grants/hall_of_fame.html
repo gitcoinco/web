@@ -78,17 +78,18 @@ along with this program. If not, see
       <div class="container-fluid px-0">
         <div class="container content text-left pt-4 pt-sm-5 pb-5">
           <h2 class="hof-section-title text-grey-500 mb-0 pb-3">{%trans "Top Matching Partners" %}</h2>
-          {% if top_matching_partners_svg %}
+          {% if top_matching_partners_is_svg %}
             <object class="d-none d-sm-block" type="image/svg+xml" data="{{ top_matching_partners_url }}">
             </object>
+          {% else %}
+            <img class="d-none d-sm-block w-100" src="{{ top_matching_partners_url }}" alt="{%trans 'Top matching partners' %}">
+          {% endif %}
+
+          {% if top_matching_partners_mobile_is_svg %}
             <object class="d-block d-sm-none" type="image/svg+xml" data="{{ top_matching_partners_mobile_url }}">
             </object>
           {% else %}
-            <picture>
-              <source media="(max-width: 320px)" srcset="{{ top_matching_partners_mobile_url }}">
-              <source media="(min-width: 321px)" srcset="{{ top_matching_partners_url }}">
-              <img class="w-100" src="{{ top_matching_partners_url }}" alt="Top matching partners">
-            </picture>
+            <img class="d-block d-sm-none w-100" src="{{ top_matching_partners_mobile_url }}" alt="{%trans 'Top matching partners' %}">
           {% endif %}
         </div>
       </div>
@@ -96,18 +97,20 @@ along with this program. If not, see
       <div class="container-fluid bg-violet-500 px-0">
         <div class="container content text-left pt-4 pt-sm-5 pb-5">
           <h2 class="hof-section-title text-white mb-0 pb-3">{%trans "Top Individual Grant Donors" %}</h2>
-          {% if top_matching_partners_svg %}
+          {% if top_individual_donors_is_svg %}
             <object class="d-none d-sm-block" type="image/svg+xml" data="{{ top_individual_donors_url }}">
             </object>
+          {% else %}
+            <img class="d-none d-sm-block w-100" src="{{ top_individual_donors_url }}" alt="{%trans 'Top individual donors' %}">
+          {% endif %}
+
+          {% if top_individual_donors_mobile_is_svg %}
             <object class="d-block d-sm-none" type="image/svg+xml" data="{{ top_individual_donors_mobile_url }}">
             </object>
           {% else %}
-            <picture>
-              <source media="(max-width: 320px)" srcset="{{ top_individual_donors_mobile_url }}">
-              <source media="(min-width: 321px)" srcset="{{ top_individual_donors_url }}">
-              <img class="w-100" src="{{ top_individual_donors_url }}" alt="Top individual donors">
-            </picture>
+            <img class="d-block d-sm-none w-100" src="{{ top_individual_donors_mobile_url }}" alt="{%trans 'Top individual donors' %}">
           {% endif %}
+
         </div>
       </div>
 
