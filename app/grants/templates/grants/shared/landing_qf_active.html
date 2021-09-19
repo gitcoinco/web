@@ -39,7 +39,7 @@
       <h3 class="text-wrap gc-font-base font-weight-normal mb-4 text-grey-400">
         Gitcoin grants sustain web3 projects with
         <span class="text-nowrap">
-          <a href="https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000" target="_blank">quadratic funding</a>
+          <a rel="noopener noreferrer" href="https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000" target="_blank">quadratic funding</a>
         </span>
       </h3>
       <div class="my-3">
@@ -69,7 +69,7 @@
           </div>
           <div class="banner-sponsors-list d-flex">
             {% for sponsor in sponsors %}
-              <a href="{% url 'profile' sponsor.profile %}" target="_blank" class="d-flex flex-column align-items-center">
+              <a rel="noopener noreferrer" href="{% url 'profile' sponsor.profile %}" target="_blank" class="d-flex flex-column align-items-center">
                 <img class="rounded-circle img-thumbnail" width="90" height="90" src="/dynamic/avatar/{{sponsor.profile}}">
                 <span class="text-break text-black font-weight-semibold d-none d-md-block">@{{sponsor.profile}}</span>
               </a>

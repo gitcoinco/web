@@ -136,6 +136,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
   * 1 tab = 4 spaces for everything else
 * Use `rem` for CSS when applicable
 * Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.  You can run tests via: `make pytest`
+* Gitcoin uses Cypress for system tests. To run those locally you will first need to launch the application, and then use the `make cypress-local` target
 * If you introduce new backend methods or classes, you must include docstrings that conform to PEP-257 and follow the existing patterns throughout the codebase.  See `app/avatar/(models|views|utils).py`  - If you introduce a new django module, like: `avatar` or `marketing`, you must update `pydocmd.yaml` to include relevant python modules from the newly introduced app.
 
 ### Step 4: Commit

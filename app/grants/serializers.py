@@ -125,7 +125,7 @@ class DonorSerializer(serializers.Serializer):
 
     def get_grant_usd_value(self, obj):
         subscription = obj.subscription
-        grant_usd_value = subscription.get_converted_amount(ignore_gitcoin_fee=False)
+        grant_usd_value = subscription.get_converted_amount(ignore_gitcoin_fee=True)
         return grant_usd_value
 
     def get_gitcoin_usd_value(self, obj):

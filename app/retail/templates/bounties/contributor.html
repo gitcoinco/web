@@ -118,10 +118,13 @@
   {% if tech_stack %}
     <script>
       var uri;
-      if(document.location.href.startsWith('https://gitcoin.co'))
+      const url = new URL(document.location.href);
+
+      if (url.host == 'gitcoin.co') {
         uri = 'network=mainnet&idx_status=open&keyword={{ tech_stack }}';
-      else
+      } else {
         uri = 'idx_status=open&keyword={{ tech_stack }}';
+      }
       var additional_callback = function(results){
         if(results.length < 2){
           $(".open-bounties").remove();
