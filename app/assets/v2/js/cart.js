@@ -11,20 +11,7 @@ let appCart;
 
 document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
-  appCart.$refs['cart'].sourceNetwork = networkName;
   appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
-  appCart.$refs['cart'].sourceNetworkId = appCart.$refs['cart'].networkId;
-  if (appCart.$refs.cart.autoSwitchNetwork) {
-    try {
-      await ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: networkName == 'mainnet' ? '0x1' : '0x4' }]
-      }); // mainnet or rinkeby
-      appCart.$refs.cart.autoSwitchNetwork = false;
-    } catch (e) {
-      console.log(e);
-    }
-  }
 }, false);
 
 // needWalletConnection();
@@ -58,14 +45,10 @@ Vue.component('grants-cart', {
         { text: 'Wallet address', value: 'address' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
-      autoSwitchNetwork: true,
-      checkoutRecommendationIsComplete: false,
       standardCheckoutInitiated: false,
       chainId: '',
       networkId: '',
       network: 'mainnet',
-      sourceNetwork: 'mainnet',
-      sourceNetworkId: '1',
       tabSelected: 'ETH',
       tabIndex: null,
       currentTokens: [], // list of all available tokens
@@ -870,6 +853,26 @@ Vue.component('grants-cart', {
         return await onConnect();
       }
 
+      let supportedTestnets = [ 'rinkeby', 'goerli', 'kovan', 'ropsten' ];
+
+      if (!supportedTestnets.includes(networkName) || this.networkId !== '1') {
+        // User MetaMask must be connected to Ethereum mainnet or a supported testnet
+        try {
+          await ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x1' }]
+          });
+        } catch (switchError) {
+          if (switchError.code === 4001) {
+            throw new Error('Please connect MetaMask to Ethereum network.');
+          } else if (switchError.code === -32002) {
+            throw new Error('Please respond to a pending MetaMask request.');
+          } else {
+            console.error(switchError);
+          }
+        }
+      }
+
       if (typeof ga !== 'undefined') {
         ga('send', 'event', 'Grant Checkout', 'click', 'Person');
       }
@@ -1032,17 +1035,9 @@ Vue.component('grants-cart', {
       }
     },
 
-    resetNetwork() {
-      if (this.network === 'testnet') {
-        this.network = this.sourceNetwork;
-        this.networkId = this.sourceNetworkId;
-      }
-    },
-
     // Standard L1 checkout flow
     async standardCheckout() {
       this.standardCheckoutInitiated = true;
-      this.resetNetwork();
 
       try {
         // Setup -----------------------------------------------------------------------------------

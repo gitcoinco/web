@@ -240,6 +240,8 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         } else if (switchError.code === 4001) {
           throw new Error('Please connect MetaMask to Polygon network.');
+        } else if (switchError.code === -32002) {
+          throw new Error('Please respond to a pending MetaMask request.');
         } else {
           console.error(switchError);
         }
@@ -348,8 +350,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       let networkId = appCart.$refs.cart.networkId;
 
-      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.chainId !== '1' ||
-          appCart.$refs.cart.standardCheckoutInitiated) {
+      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.chainId !== '1' || this.cart.unsupportedTokens.length > 0) {
         return;
       }
 
@@ -457,22 +458,24 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         // Check if user has enough MATIC to cover gas costs
-        const gasFeeInWei = web3.utils.toWei(
-          (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
-        );
+        if (this.polygon.estimatedGasCost) {
+          const gasFeeInWei = web3.utils.toWei(
+            (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
+          );
 
-        if (userMaticBalance.lt(gasFeeInWei)) {
-          let requiredAmount = parseFloat(Number(
-            web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
-          ).toFixed(5));
+          if (userMaticBalance.lt(gasFeeInWei)) {
+            let requiredAmount = parseFloat(Number(
+              web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
+            ).toFixed(5));
 
-          if (requiredAmounts['MATIC']) {
-            requiredAmounts['MATIC'].amount += requiredAmount;
-          } else {
-            requiredAmounts['MATIC'] = {
-              amount: requiredAmount,
-              isBalanceSufficient: false
-            };
+            if (requiredAmounts['MATIC']) {
+              requiredAmounts['MATIC'].amount += requiredAmount;
+            } else {
+              requiredAmounts['MATIC'] = {
+                amount: requiredAmount,
+                isBalanceSufficient: false
+              };
+            }
           }
         }
 
