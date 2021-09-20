@@ -56,7 +56,6 @@ class Migration(migrations.Migration):
             model_name='grant',
             name='tags',
             field=models.ManyToManyField(blank=True, to='grants.GrantTag'),
-        )
-        #,
-        # migrations.RunPython(port_data)
+        ),
+        migrations.RunPython(port_data)
     ]
