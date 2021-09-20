@@ -3764,9 +3764,9 @@ custom-event-polyfill@^1.0.7:
   resolved "https://registry.yarnpkg.com/custom-event-polyfill/-/custom-event-polyfill-1.0.7.tgz#9bc993ddda937c1a30ccd335614c6c58c4f87aee"
   integrity sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==
 
-"cypress-metamask@github:gitcoinco/cypress-metamask#v1.0.9-dev":
-  version "1.0.9-dev"
-  resolved "https://codeload.github.com/gitcoinco/cypress-metamask/tar.gz/7d2710fcb4eccd1a0344c7e1502d760474987e6a"
+"cypress-metamask@github:gitcoinco/cypress-metamask#v1.0.10-dev":
+  version "1.0.10-dev"
+  resolved "https://codeload.github.com/gitcoinco/cypress-metamask/tar.gz/2450a76f9b6f68718f7cbb8b82ea4b80efa5ae95"
   dependencies:
     cross-zip "^4.0.0"
     cypress "^7.3.0"
