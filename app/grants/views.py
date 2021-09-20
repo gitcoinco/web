@@ -263,7 +263,6 @@ grants_subscription.created_on BETWEEN '{start}' AND '{end}' and grant_id = {gra
 {hide_wallet_address_anonymized_sql}
 order by grants_subscription.id desc
 LIMIT 10
-
     """
     earnings = query_to_results(query)
 

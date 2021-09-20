@@ -876,6 +876,26 @@ Vue.component('grants-cart', {
         return await onConnect();
       }
 
+      let supportedTestnets = [ 'rinkeby', 'goerli', 'kovan', 'ropsten' ];
+
+      if (!supportedTestnets.includes(networkName) || this.networkId !== '1') {
+        // User MetaMask must be connected to Ethereum mainnet or a supported testnet
+        try {
+          await ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x1' }]
+          });
+        } catch (switchError) {
+          if (switchError.code === 4001) {
+            throw new Error('Please connect MetaMask to Ethereum network.');
+          } else if (switchError.code === -32002) {
+            throw new Error('Please respond to a pending MetaMask request.');
+          } else {
+            console.error(switchError);
+          }
+        }
+      }
+
       if (typeof ga !== 'undefined') {
         ga('send', 'event', 'Grant Checkout', 'click', 'Person');
       }

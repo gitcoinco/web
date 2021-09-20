@@ -2637,7 +2637,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     context['active_bounties_count'] = active_bounties.cache().count()
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.cache().count()
     context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).cache().count()
-    context['my_kudos'] = profile.get_my_kudos.cache().distinct('kudos_token_cloned_from__name')[0:7]
+    context['my_kudos'] = [] # Causing perf issues # profile.get_my_kudos.cache().distinct('kudos_token_cloned_from__name')[0:7]
     context['projects_count'] = HackathonProject.objects.filter(profiles__id=profile.id).cache().count()
     context['personal_tokens_count'] = PurchasePToken.objects.filter(token_holder_profile_id=profile.id).distinct('ptoken').cache().count()
     # specific tabs
