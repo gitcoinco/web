@@ -175,7 +175,7 @@ Vue.mixin({
 
       vm.errorIssueDetails = undefined;
 
-      if (new URL(url).host == 'github.com') {
+      if (new URL(url).host != 'github.com') {
         vm.issueDetails = null;
         vm.errorIssueDetails = 'Please paste a github issue url';
         return;
