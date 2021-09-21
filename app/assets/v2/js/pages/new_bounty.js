@@ -22,7 +22,15 @@ Vue.mixin({
         return vm.form.issueDetails;
       }
 
-      const ghIssueUrl = new URL(url);
+      let ghIssueUrl;
+
+      try {
+        ghIssueUrl = new URL(url);
+      } catch (e) {
+        vm.form.issueDetails = undefined;
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url');
+        return;
+      }
 
       if (ghIssueUrl.host != 'github.com') {
         vm.form.issueDetails = undefined;
@@ -30,7 +38,7 @@ Vue.mixin({
         return;
       }
 
-      if (ghIssueUrl.pathname.contains('/pull/')) {
+      if (ghIssueUrl.pathname.includes('/pull/')) {
         vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url and not a PR');
         return;
       }
@@ -131,7 +139,7 @@ Vue.mixin({
           // nervos
           const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
           const isNervosValid = ADDRESS_REGEX.test(vm.form.funderAddress);
-    
+
           if (!isNervosValid && !vm.form.funderAddress.toLowerCase().startsWith('0x')) {
             isValid = false;
           }
@@ -155,7 +163,7 @@ Vue.mixin({
           const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
           const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
           const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
-    
+
           if (!valid_legacy && !valid_segwit) {
             isValid = false;
           }

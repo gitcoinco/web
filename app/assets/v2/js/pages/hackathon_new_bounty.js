@@ -17,7 +17,14 @@ Vue.mixin({
         return vm.form.issueDetails;
       }
 
-      const ghIssueUrl = new URL(url);
+      let ghIssueUrl;
+      try {
+        ghIssueUrl = new URL(url);
+      } catch (e) {
+        vm.form.issueDetails = null;
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url');
+        return;
+      }
 
       if (ghIssueUrl.host != 'github.com') {
         vm.form.issueDetails = null;
