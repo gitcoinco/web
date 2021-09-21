@@ -900,14 +900,6 @@ def user_lookup(request):
     return proxy_view(request, remote_url)
 
 
-@staff_member_required
-def users_directory_elastic(request):
-    """Handle displaying users directory page."""
-    from retail.utils import programming_languages, programming_languages_full
-    messages.info(request, 'The Andrew-era user directory has been deprecated, please contact the #product-data channel if you need something')
-    return redirect('/users')
-
-
 def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = "", only_with_tokens = False):
     if not settings.DEBUG:
         network = 'mainnet'

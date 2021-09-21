@@ -481,7 +481,6 @@ urlpatterns = [
 
     # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
-    re_path(r'^user_directory/?', dashboard.views.users_directory_elastic, name='users_directory_elastic'),
     re_path(r'^user_lookup/?', dashboard.views.user_lookup, name='user_directory_lookup'),
     re_path(r'^tribes/explore', dashboard.views.users_directory, name='tribes_directory'),
 
