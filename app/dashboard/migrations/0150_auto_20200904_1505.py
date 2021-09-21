@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ptokens', '0001_initial'),
+        # ('ptokens', '0001_initial'),
         ('dashboard', '0149_add_twitter_verify_status'),
     ]
 
