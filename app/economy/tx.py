@@ -105,7 +105,7 @@ def parse_token_amount(token_symbol, amount, network):
     parsed_amount = int(amount * 10 ** decimals)
     return parsed_amount
 
-def check_for_replaced_tx(tx_hash, network, datetime=None, is_polygon=False):
+def check_for_replaced_tx(tx_hash, network, datetime=None, chain='std'):
     """
     Get status of the provided transaction hash, and look for a replacement transaction hash. If a
     replacement exists, return the status and hash of the new transaction
@@ -115,7 +115,7 @@ def check_for_replaced_tx(tx_hash, network, datetime=None, is_polygon=False):
     if not datetime:
         datetime = timezone.now()
 
-    status, timestamp = get_tx_status(tx_hash, network, datetime, is_polygon=is_polygon)
+    status, timestamp = get_tx_status(tx_hash, network, datetime, chain=chain)
     if status in ['pending', 'dropped', 'unknown', '']:
         new_tx = getReplacedTX(tx_hash)
         if new_tx:
@@ -125,7 +125,7 @@ def check_for_replaced_tx(tx_hash, network, datetime=None, is_polygon=False):
     return tx_hash, status, timestamp
 
 
-def grants_transaction_validator(contribution, w3, is_polygon=False):
+def grants_transaction_validator(contribution, w3, chain='std'):
     """
     This function is used to validate contributions sent on L1 & Polygon L2 through the BulkCheckout contract.
     This contract can be found here:
@@ -142,7 +142,7 @@ def grants_transaction_validator(contribution, w3, is_polygon=False):
     tx_hash = contribution.split_tx_id
     network = contribution.subscription.network
 
-    if network == 'mainnet' and is_polygon:
+    if network == 'mainnet' and chain == 'polygon':
         bulk_checkout_address = '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
     elif network == 'testnet':
         bulk_checkout_address = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973'
@@ -178,7 +178,7 @@ def grants_transaction_validator(contribution, w3, is_polygon=False):
         return response
 
     # Check for dropped and replaced txn
-    tx_hash, status, _ = check_for_replaced_tx(tx_hash, network, is_polygon=is_polygon)
+    tx_hash, status, _ = check_for_replaced_tx(tx_hash, network, chain=chain)
 
     # If transaction was successful, continue to validate it
     if status == 'success':

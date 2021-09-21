@@ -1824,6 +1824,9 @@ class Contribution(SuperModel):
             from dashboard.utils import get_web3
             from economy.tx import grants_transaction_validator
 
+            # get active chain std/zksync/polygon
+            chain =  self.checkout_type.split('_')[-1]
+
             # If `tx_override` is True, we don't run the validator for this contribution
             if self.tx_override:
                 return
@@ -1854,16 +1857,14 @@ class Contribution(SuperModel):
                 self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
 
             elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
-                # Standard L1 and Polygon L2 checkout using the BulkCheckout contract
-
-                is_polygon = True if self.checkout_type == 'eth_polygon' else False
+                # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
                 
                 # Prepare web3 provider
-                w3 = get_web3(network, is_polygon=is_polygon)
+                w3 = get_web3(network, chain=chain)
 
                 # Handle dropped/replaced transactions
                 _, split_tx_status, _ = check_for_replaced_tx(
-                    self.split_tx_id, network, self.created_on, is_polygon=is_polygon
+                    self.split_tx_id, network, self.created_on, chain=chain
                 )
 
                 # Handle pending txns
@@ -1890,7 +1891,7 @@ class Contribution(SuperModel):
                     return
 
                 # Validate that the token transfers occurred
-                response = grants_transaction_validator(self, w3, is_polygon=is_polygon)
+                response = grants_transaction_validator(self, w3, chain=chain)
                 if len(response['originator']):
                     self.originated_address = response['originator'][0]
                 self.validator_passed = response['validation']['passed']

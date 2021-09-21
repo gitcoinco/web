@@ -284,7 +284,7 @@ def ipfs_cat_requests(key):
         return None, 500
 
 
-def get_web3(network, sockets=False, is_polygon=False):
+def get_web3(network, sockets=False, chain='std'):
     """Get a Web3 session for the provided network.
 
     Attributes:
@@ -299,12 +299,12 @@ def get_web3(network, sockets=False, is_polygon=False):
 
     """
     if network in ['mainnet', 'rinkeby', 'ropsten', 'testnet']:
-        if network == 'mainnet' and is_polygon:
+        if network == 'mainnet' and chain == 'polygon':
             network = 'polygon-mainnet'
         elif network == 'testnet':
             network = 'polygon-mumbai'
 
-        if sockets and not is_polygon: # polygon doesn't yet have socket support in infura
+        if sockets and chain != 'polygon': # polygon doesn't yet have socket support in infura
             if settings.INFURA_USE_V3:
                 provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
             else:
@@ -930,12 +930,12 @@ def is_valid_eth_address(eth_address):
     return (bool(re.match(r"^0x[a-zA-Z0-9]{40}$", eth_address)) or eth_address == "0x0")
 
 
-def get_tx_status(txid, network, created_on, is_polygon=False):
-    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on, is_polygon=is_polygon)
+def get_tx_status(txid, network, created_on, chain='std'):
+    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on, chain=chain)
     return status, timestamp
 
 
-def get_tx_status_and_details(txid, network, created_on, is_polygon=False):
+def get_tx_status_and_details(txid, network, created_on, chain='std'):
     from django.utils import timezone
 
     import pytz
@@ -949,7 +949,7 @@ def get_tx_status_and_details(txid, network, created_on, is_polygon=False):
     if txid == 'override':
         return 'success', None #overridden by admin
     try:
-        web3 = get_web3(network, is_polygon=is_polygon)
+        web3 = get_web3(network, chain=chain)
         tx = web3.eth.getTransactionReceipt(txid)
         if not tx:
             drop_dead_date = created_on + timezone.timedelta(days=DROPPED_DAYS)
