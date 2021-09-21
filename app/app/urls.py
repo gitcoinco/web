@@ -490,15 +490,6 @@ urlpatterns = [
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     re_path(r'^labs/?$', dashboard.views.labs, name='labs'),
 
-    # gas views
-    url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
-    url(r'^gas/intro/?', dashboard.gas_views.gas_intro, name='gas_intro'),
-    url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
-    url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
-    url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
-    url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
-    url(r'^gas/?$', dashboard.gas_views.gas, name='gas'),
-
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
