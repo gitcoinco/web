@@ -1,5 +1,6 @@
 {
   "chromeWebSecurity": true,
   "baseUrl": "http://localhost:8000",
-  "projectId": "e7rv3w"
+  "projectId": "e7rv3w",
+  "pageLoadTimeout": 90000
 }
