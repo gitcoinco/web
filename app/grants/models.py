@@ -1824,9 +1824,6 @@ class Contribution(SuperModel):
             from dashboard.utils import get_web3
             from economy.tx import grants_transaction_validator
 
-            # get active chain std/zksync/polygon
-            chain =  self.checkout_type.split('_')[-1]
-
             # If `tx_override` is True, we don't run the validator for this contribution
             if self.tx_override:
                 return
@@ -1858,6 +1855,9 @@ class Contribution(SuperModel):
 
             elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
                 # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
+
+                # get active chain std/polygon
+                chain =  self.checkout_type.split('_')[-1]
                 
                 # Prepare web3 provider
                 w3 = get_web3(network, chain=chain)
