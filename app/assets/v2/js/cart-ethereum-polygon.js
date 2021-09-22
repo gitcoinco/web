@@ -349,11 +349,15 @@ Vue.component('grantsCartEthereumPolygon', {
        */
 
       let networkId = appCart.$refs.cart.networkId;
-
-      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.chainId !== '1' || this.cart.unsupportedTokens.length > 0) {
+      
+      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.standardCheckoutInitiated == true) {
         return;
       }
 
+      if (this.cart.unsupportedTokens.length > 0) {
+        return;
+      }
+      
       let gasLimit = 0;
 
       // If user has enough balance within Polygon, cost equals the minimum amount
@@ -467,6 +471,10 @@ Vue.component('grantsCartEthereumPolygon', {
             let requiredAmount = parseFloat(Number(
               web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
             ).toFixed(5));
+
+            if (requiredAmount < 0.01) {
+              requiredAmount = 0.01; // approximate neglible gas fees to a reasonable minimum
+            }
 
             if (requiredAmounts['MATIC']) {
               requiredAmounts['MATIC'].amount += requiredAmount;

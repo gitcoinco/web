@@ -853,9 +853,10 @@ Vue.component('grants-cart', {
         return await onConnect();
       }
 
-      let supportedTestnets = [ 'rinkeby', 'goerli', 'kovan', 'ropsten' ];
+      let networkId = String(Number(web3.eth.currentProvider.chainId));
+      let networkName = getDataChains(networkId, 'chainId')[0] && getDataChains(networkId, 'chainId')[0].network;
 
-      if (!supportedTestnets.includes(networkName) || this.networkId !== '1') {
+      if (networkName == 'mainnet' && networkId !== '1') {
         // User MetaMask must be connected to Ethereum mainnet or a supported testnet
         try {
           await ethereum.request({
@@ -1035,9 +1036,17 @@ Vue.component('grants-cart', {
       }
     },
 
+    resetNetwork() {
+      if (this.nativeCurrency == 'MATIC') {
+        this.network = this.network == 'testnet' ? 'rinkeby' : 'mainnet';
+        this.networkId = this.networkId == '80001' ? '4' : '1';
+      }
+    },
+
     // Standard L1 checkout flow
     async standardCheckout() {
       this.standardCheckoutInitiated = true;
+      this.resetNetwork();
 
       try {
         // Setup -----------------------------------------------------------------------------------
