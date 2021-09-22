@@ -3731,10 +3731,9 @@ def upload_sybil_csv(request):
         bsciJSON.save()
 
         # process squelch data
-        process_bsci_sybil_csv(file_name, uploaded_file)
+        process_bsci_sybil_csv.delay(file_name, None)
 
     except Exception as e:
         return JsonResponse({'success': 'failed'}, status=500)
-
 
     return JsonResponse({'success': 'ok'}, status=200)

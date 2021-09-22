@@ -8,9 +8,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 
-import boto
+import boto3
 from app.services import RedisService
-from boto.s3.key import Key
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
@@ -437,14 +436,8 @@ def process_bsci_sybil_csv(self, file_name, csv):
         file_name = data['csv_url']
 
     if not csv:
-        # https://stackoverflow.com/a/46323684
-        s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-        bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
-
-        bucket_key = Key(bucket)
-        bucket_key.key = file_name
-
-        csv_object = bucket_key.get_contents_from_filename(file_name)
+        client = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        csv_object = client.get_object(Bucket=settings.S3_BSCI_SYBIL_BUCKET, Key=file_name)
         csv = csv_object['Body']
 
     csv = StringIO(csv.read().decode('utf-8'))
