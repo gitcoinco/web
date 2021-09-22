@@ -1,4 +1,4 @@
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
-## SLIM CLR (every 2 hours)
-0 */2 * * * cd gitcoin/coin; bash scripts/run_clr.bash slim  2>&1
+## SLIM CLR (every 3 hours)
+0 */3 * * * cd gitcoin/coin; bash scripts/run_clr.bash slim  2>&1
