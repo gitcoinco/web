@@ -23,7 +23,147 @@ import time
 from django.utils import timezone
 
 import numpy as np
-from grants.clr_data_src import fetch_grants, fetch_summed_contributions
+from grants.clr_data_src import fetch_contributions, fetch_grants
+
+
+def populate_data_for_clr(grants, contributions, clr_round):
+    '''
+        Populate Data needed to calculate CLR
+
+        Args:
+            grants                  : grants list
+            contributions           : contributions list for those grants
+            clr_round               : GrantCLR
+
+        Returns:
+            contrib_data_list: {
+                'id': grant_id,
+                'contributions': summed_contributions
+            }
+
+    '''
+
+    contrib_data_list = []
+
+    if not clr_round:
+        print('Error: populate_data_for_clr - missing clr_round')
+        return contrib_data_list
+
+    clr_start_date = clr_round.start_date
+    clr_end_date = clr_round.end_date
+
+    mechanism="profile"
+
+    # 3-4s to get all the contributions
+    _contributions = list(contributions.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date).prefetch_related('profile_for_clr', 'subscription'))
+    _contributions_by_id = {}
+    for ele in _contributions:
+        key = ele.normalized_data.get('id')
+        if key not in _contributions_by_id.keys():
+            _contributions_by_id[key] = []
+        _contributions_by_id[key].append(ele)
+
+    # set up data to load contributions for each grant
+    for grant in grants:
+        grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
+
+        # contributions
+        contribs = _contributions_by_id.get(grant.id, [])
+
+        # create arrays
+        contributing_profile_ids = []
+        contributions_by_id = {}
+        for c in contribs:
+            prof = c.profile_for_clr
+            if prof:
+                key = prof.id
+                if key not in contributions_by_id.keys():
+                    contributions_by_id[key] = []
+                contributions_by_id[key].append(c)
+                contributing_profile_ids.append((prof.id, prof.trust_bonus))
+
+        contributing_profile_ids = list(set(contributing_profile_ids))
+
+        summed_contributions = []
+
+        # contributions
+        if len(contributing_profile_ids) > 0:
+            for profile_id, trust_bonus in contributing_profile_ids:
+                sum_of_each_profiles_contributions = sum(ele.normalized_data.get('amount_per_period_usdt') for ele in contributions_by_id[profile_id]) * float(clr_round.contribution_multiplier)
+
+                summed_contributions.append({
+                    'id': str(profile_id),
+                    'sum_of_each_profiles_contributions': sum_of_each_profiles_contributions,
+                    'profile_trust_bonus': trust_bonus
+                })
+
+            contrib_data_list.append({
+                'id': grant_id,
+                'contributions': summed_contributions
+            })
+
+    return contrib_data_list
+
+
+def translate_data(grants_data):
+    '''
+        translates django grant data structure to a list of lists
+
+        args:
+            django grant data structure
+                {
+                    'id': (string) ,
+                    'contibutions' : [
+                        {
+                            contributor_profile (str) : summed_contributions
+                        }
+                    ]
+                }
+
+        returns:
+            list of lists of grant data
+                [[grant_id (str), user_id (str), contribution_amount (float)]]
+            dictionary of profile_ids and trust scores
+                {user_id (str): trust_score (float)}
+    '''
+    trust_dict = {}
+    grants_list = []
+    for g in grants_data:
+        grant_id = g.get('id')
+        for c in g.get('contributions'):
+            profile_id = c.get('id')
+            trust_bonus = c.get('profile_trust_bonus')
+            if profile_id:
+                val = [grant_id] + [c.get('id')] + [c.get('sum_of_each_profiles_contributions')]
+                grants_list.append(val)
+                trust_dict[profile_id] = trust_bonus
+
+    return grants_list, trust_dict
+
+
+def aggregate_contributions(grant_contributions):
+    '''
+        aggregates contributions by contributor, and calculates total contributions by unique pairs
+
+        args:
+            list of lists of grant data
+                [[grant_id (str), user_id (str), verification_status (str), trust_bonus (float), contribution_amount (float)]]
+
+        returns:
+            aggregated contributions by pair nested dict
+                {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+    '''
+    contrib_dict = {}
+    for proj, user, amount in grant_contributions:
+        if proj not in contrib_dict:
+            contrib_dict[proj] = {}
+        contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
+
+    return contrib_dict
 
 
 def get_totals_by_pair(contrib_dict):
@@ -235,8 +375,15 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     print(f"- starting fetch_grants at {round(time.time(),1)}")
     grants = fetch_grants(clr_round, network)
 
-    print(f"- starting get data and sum at {round(time.time(),1)}")
-    curr_agg, trust_dict = fetch_summed_contributions(grants, clr_round, network)
+    print(f"- starting fetch_contributions at {round(time.time(),1)}")
+    contributions = fetch_contributions(clr_round, network)
+
+    print(f"- starting sum (of {contributions.count()} contributions) at {round(time.time(),1)}")
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
+    curr_round, trust_dict = translate_data(grant_contributions_curr)
+
+    # this aggregates the data into the expected format
+    curr_agg = aggregate_contributions(curr_round)
 
     if len(curr_agg) == 0:
         print(f'- done - no Contributions for CLR {clr_round.round_num}. Exiting')
