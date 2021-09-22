@@ -854,6 +854,7 @@ Vue.component('grants-cart', {
       }
 
       let networkId = String(Number(web3.eth.currentProvider.chainId));
+      let networkName = getDataChains(networkId, 'chainId')[0] && getDataChains(networkId, 'chainId')[0].network;
 
       if (networkName == 'mainnet' && networkId !== '1') {
         // User MetaMask must be connected to Ethereum mainnet or a supported testnet
