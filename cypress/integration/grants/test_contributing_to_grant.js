@@ -31,15 +31,15 @@ describe('contributing to grant', () => {
       cy.acceptMetamaskAccess();
 
       cy.get('.grant-checkout').contains('Add to Cart').scrollIntoView().click();
+      cy.wait(1000); // slow the test down to allow the grant to show up in the cart.
 
       cy.get('#gc-cart').click();
-      cy.wait(1);
       cy.contains('Checkout').click();
 
       cy.get('#vs3__combobox').click().type('ETH{enter}');
 
       cy.contains('0%').click();
-      cy.contains('Standard Checkout').click();
+      cy.contains('Standard Checkout').scrollIntoView().click();
 
       cy.confirmMetamaskTransaction();
 
