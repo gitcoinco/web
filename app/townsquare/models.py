@@ -439,8 +439,22 @@ class PinnedPost(SuperModel):
 class SquelchProfile(SuperModel):
     """Squelches a profile from earning in CLR"""
 
-    profile = models.ForeignKey('dashboard.Profile',
-        on_delete=models.CASCADE, related_name='squelches')
+    LABEL_CHOICES = (
+        ('Human', 'Human'),
+        ('Heuristic', 'Heuristic'),
+        ('Prediction', 'Prediction')
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='squelches'
+    )
+    label = models.CharField(
+        choices=LABEL_CHOICES,
+        default='Human',
+        help_text='means used to mark user as sybil',
+        max_length=20
+    )
     comments = models.TextField(default='', blank=True)
     active = models.BooleanField(help_text='Is squelch applied?', default=True)
 

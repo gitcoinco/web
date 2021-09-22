@@ -17,8 +17,8 @@ RUN apt-get update
 
 # Install general dependencies.
 RUN apt-get install -y $PACKAGES
-RUN apt-get update
-RUN apt-get install -y $BUILD_DEPS
+RUN apt-get update --fix-missing
+RUN apt-get install -y $BUILD_DEPS --fix-missing
 
 # Install google chrome for cypress testing
 WORKDIR /usr/src

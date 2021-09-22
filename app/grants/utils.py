@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import math
 import os
 import re
 import urllib.request
@@ -28,6 +29,8 @@ from secrets import token_hex
 
 from django.utils import timezone
 
+import numpy as np
+import pandas as pd
 from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
 from avatar.utils import convert_img
@@ -41,8 +44,9 @@ from grants.sync.polkadot import sync_polkadot_payout
 from grants.sync.rsk import sync_rsk_payout
 from grants.sync.zcash import sync_zcash_payout
 from grants.sync.zil import sync_zil_payout
-from perftools.models import JSONStore, StaticJsonEnv
+from perftools.models import StaticJsonEnv
 from PIL import Image, ImageDraw, ImageOps
+from townsquare.models import SquelchProfile
 
 logger = logging.getLogger(__name__)
 
@@ -308,3 +312,134 @@ def save_grant_to_notion(grant):
                 }]
             }
         })
+
+
+def toggle_user_sybil(sybil_users, non_sybil_users):
+    '''util function which marks users as sybil/not'''
+
+    from dashboard.models import Profile
+
+    squelched_profiles = SquelchProfile.objects.all()
+    if sybil_users:
+        # iterate through users which need to be packed as sybil
+        for user in sybil_users:
+            try:
+                # get user profile. note
+                profile = Profile.objects.filter(handle=user.get('handle')).first()
+                if profile:
+                    label = user.get('label')
+                    comment = user.get('comment')
+
+                    if comment and isNaN(comment):
+                        comment = 'added by bsci'
+
+                    # check if user has entry in SquelchProfile
+                    if (
+                        not squelched_profiles.filter(profile=profile).first() and
+                        label and comment
+                    ):
+                        # mark user as sybil
+                        SquelchProfile.objects.create(
+                            profile=profile,
+                            label=label,
+                            comments=comment
+                        )
+                else:
+                    print(f"error: profile not found for ${user.get('handle')} as sybil.")
+            except Exception as e:
+                print(f"error: unable to mark user ${user.get('handle')} as sybil. {e}")
+
+    if non_sybil_users:
+        # iterate and remove sybil from user
+        for user in non_sybil_users:
+            try:
+                profile = Profile.objects.get(pk=user.get('id'))
+                squelched_profiles.filter(profile=profile).delete()
+            except Exception as e:
+                print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
+
+
+
+def bsci_script(csv):
+    try:
+        # choose the specific csv you want to use
+        endpoint_df = pd.read_csv(csv)
+
+        sybil_df = pd.DataFrame()
+        non_sybil_df = pd.DataFrame()
+        '''
+        filters human labeled sybils ('reviewer_is_certain (0/1)' and 'is_sybil_y' values can be adjusted)
+        human_sybil_score could also be used as a filter is wanted
+        '''
+        human_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] >= 0.99)  & (endpoint_df['is_sybil_y'] >= 0.99)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_sybil.handle)]
+        human_sybil = human_sybil[['handle', 'flag_type_y', 'notes']]
+        human_sybil = human_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        sybil_df = sybil_df.append(human_sybil)
+
+        '''
+        filters heuristic labeled sybils, nothing can be adjusted here
+        '''
+        heuristic_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] >= 0.99)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_sybil.handle)]
+        heuristic_sybil = heuristic_sybil[['handle', 'flag_type_x', 'notes']]
+        hueristic_sybil = heuristic_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        sybil_df = sybil_df.append(heuristic_sybil)
+
+        '''
+        filters ml predicted sybils, ml_score can be adjusted to be either higher or lower
+        higher ml_score means less people are likely to appeal, but potentially some sybils slip through
+        lower ml_score means more people are likely to appeal, but more sybils are potentially caught
+        '''
+        ml_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Prediction') & (endpoint_df['ml_score'] >= 0.9)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(ml_sybil.handle)]
+        ml_sybil = ml_sybil[['handle', 'flag_type_x', 'notes']]
+        ml_sybil = ml_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        sybil_df = sybil_df.append(ml_sybil)
+
+        '''
+        filters human labeled non-sybil users
+        nothing here should be changed as these are just the remaining users that were marked by humans not included in the sybil filtering
+        '''
+        human_non_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] != np.nan)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_non_sybil.handle)]
+        human_non_sybil = human_non_sybil[['handle', 'flag_type_y', 'notes']]
+        human_non_sybil = human_non_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        non_sybil_df = non_sybil_df.append(human_non_sybil)
+
+        '''
+        filters heuristic non sybils, nothing here needs to be adjusted
+        '''
+        heuristic_non_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] <= 0.01)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_non_sybil.handle)]
+        heuristic_non_sybil = heuristic_non_sybil[['handle', 'flag_type_x', 'notes']]
+        hueristic_non_sybil = heuristic_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        non_sybil_df = non_sybil_df.append(heuristic_non_sybil)
+
+        '''
+        This just filters out the remaining users that were not filtered in the previous sections, nothing can be adjusted here
+        '''
+        ml_non_sybil = endpoint_df
+        ml_non_sybil = ml_non_sybil[['handle', 'flag_type_x', 'notes']]
+        ml_non_sybil = ml_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        non_sybil_df = non_sybil_df.append(ml_non_sybil)
+
+        '''
+        conversion of all the data so that it can be pushed to the toggle_user_sybil endpoint
+        '''
+        #sybil_df = ml_df[ml_df['ml_score'] >= 0.9 and ml_df['flag_type'] != 'Human']
+        sybil_users = sybil_df.to_dict('records')
+        non_sybil_users = non_sybil_df.to_dict('records')
+
+        # print('=================SYBIL=================')
+        # print(sybil_users)
+        # print('=================NON SYBIL=================')
+        # print(non_sybil_users)
+
+        toggle_user_sybil(sybil_users, non_sybil_users)
+
+    except Exception as e:
+        logger.error(f'error: bsci_sybil_script - {e}')
+
+def isNaN(string):
+    return string != string
