@@ -212,7 +212,6 @@ if ENV in ['prod']:
         'default': env.db(),
         'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL'),
         'read_replica_2': env.db('READ_REPLICA_2_DATABASE_URL'),
-        'read_replica_3': env.db('READ_REPLICA_3_DATABASE_URL')
         }
     DATABASE_ROUTERS = ['app.db.PrimaryDBRouter']
 
@@ -772,7 +771,7 @@ CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUS
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
 
-S3_BSCI_SYBIL_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
+S3_BSCI_SYBIL_BUCKET = env('S3_BSCI_SYBIL_BUCKET', default='')  # TODO
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
