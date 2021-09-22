@@ -46,6 +46,7 @@ import pytz
 import requests
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
+from economy.tx import check_for_replaced_tx
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import generate_collection_thumbnail, get_upload_filename, is_grant_team_member
@@ -1681,6 +1682,7 @@ class Contribution(SuperModel):
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
         ('eth_zksync', 'eth_zksync'),
+        ('eth_polygon', 'eth_polygon'),
         ('zcash_std', 'zcash_std'),
         ('celo_std', 'celo_std'),
         ('zil_std', 'zil_std'),
@@ -1767,6 +1769,9 @@ class Contribution(SuperModel):
     def blockexplorer_url_helper(self, tx_id):
         if self.checkout_type == 'eth_zksync':
             return f'https://zkscan.io/explorer/transactions/{tx_id.replace("sync-tx:", "")}'
+        if self.checkout_type == 'eth_polygon':
+            network_sub = f"mumbai." if self.subscription and self.subscription.network != 'mainnet' else ''
+            return f'https://{network_sub}polygonscan.com/tx/{tx_id}'
         if self.checkout_type == 'eth_std':
             network_sub = f"{self.subscription.network}." if self.subscription and self.subscription.network != 'mainnet' else ''
             return f'https://{network_sub}etherscan.io/tx/{tx_id}'
@@ -1808,7 +1813,7 @@ class Contribution(SuperModel):
                     "comment":comment,
                     "is_edited":True,
                 }
-                );
+            )
         except Exception as e:
             print(e)
 
@@ -1816,9 +1821,8 @@ class Contribution(SuperModel):
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
         try:
+            from dashboard.utils import get_web3
             from economy.tx import grants_transaction_validator
-            from dashboard.utils import get_tx_status
-            from economy.tx import getReplacedTX
 
             # If `tx_override` is True, we don't run the validator for this contribution
             if self.tx_override:
@@ -1849,20 +1853,19 @@ class Contribution(SuperModel):
                 self.tx_cleared = True
                 self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
 
-            elif self.checkout_type == 'eth_std':
-                # Standard L1 checkout using the BulkCheckout contract
+            elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
+                # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
 
+                # get active chain std/polygon
+                chain =  self.checkout_type.split('_')[-1]
+                
                 # Prepare web3 provider
-                PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
-                w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+                w3 = get_web3(network, chain=chain)
 
                 # Handle dropped/replaced transactions
-                split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-                if split_tx_status in ['pending', 'dropped', 'unknown', '']:
-                    new_tx = getReplacedTX(self.split_tx_id)
-                    if new_tx:
-                        self.split_tx_id = new_tx
-                        split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+                _, split_tx_status, _ = check_for_replaced_tx(
+                    self.split_tx_id, network, self.created_on, chain=chain
+                )
 
                 # Handle pending txns
                 if split_tx_status in ['pending']:
@@ -1888,7 +1891,7 @@ class Contribution(SuperModel):
                     return
 
                 # Validate that the token transfers occurred
-                response = grants_transaction_validator(self, w3)
+                response = grants_transaction_validator(self, w3, chain=chain)
                 if len(response['originator']):
                     self.originated_address = response['originator'][0]
                 self.validator_passed = response['validation']['passed']
