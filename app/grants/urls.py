@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    add_grant_from_collection, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail, clr_grants, collage,
-    collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
+    add_grant_from_collection, api_toggle_user_sybil, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail,
+    clr_grants, collage, collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
     contribution_addr_from_grant_as_json, contribution_addr_from_grant_during_round_as_json,
     contribution_addr_from_round_as_json, contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1,
     flag, get_clr_sybil_input, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload,
@@ -30,7 +30,7 @@ from grants.views import (
     grant_new, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info,
     grants_landing, grants_type_redirect, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
     manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
-    toggle_grant_favorite, toggle_user_sybil, verify_grant,
+    toggle_grant_favorite, upload_sybil_csv, verify_grant,
 )
 
 app_name = 'grants/'
@@ -116,6 +116,7 @@ urlpatterns = [
 
     # custom API
     path('v1/api/get-clr-data/<int:round_id>', get_clr_sybil_input, name='get_clr_sybil_input'),
-    path('v1/api/toggle_user_sybil', toggle_user_sybil, name='toggle_user_sybil')
+    path('v1/api/toggle_user_sybil', api_toggle_user_sybil, name='api_toggle_user_sybil'),
+    path('v1/api/upload_sybil_csv', upload_sybil_csv, name='upload_sybil_csv')
 
 ]

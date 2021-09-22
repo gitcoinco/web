@@ -2,21 +2,24 @@ import inspect
 import math
 import time
 from decimal import Decimal
+from io import StringIO
 
 from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 
+import boto3
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCLR, GrantCollection, Subscription
-from grants.utils import get_clr_rounds_metadata, save_grant_to_notion
+from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
-from townsquare.models import Comment
+from perftools.models import StaticJsonEnv
+from townsquare.models import Comment, SquelchProfile
 from unidecode import unidecode
 
 logger = get_task_logger(__name__)
@@ -421,3 +424,23 @@ def generate_collection_cache(self, collection_id):
         collection.generate_cache()
     except Exception as e:
         print(e)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def process_bsci_sybil_csv(self, file_name, csv):
+    '''fetch csv from bsci and toggle'''
+
+    if not file_name:
+        bsciJSON = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN')
+        data = bsciJSON.data
+        file_name = data['csv_url']
+
+    if not csv:
+        client = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        csv_object = client.get_object(Bucket=settings.S3_BSCI_SYBIL_BUCKET, Key=file_name)
+        csv = csv_object['Body']
+
+    csv = StringIO(csv.read().decode('utf-8'))
+
+    # run bsci script
+    bsci_script(csv)
