@@ -3731,14 +3731,8 @@ def upload_sybil_csv(request):
         bsciJSON.data['csv_url'] = file_name
         bsciJSON.save()
 
-        print("========SYBIL=========")
-        print(settings.S3_BSCI_SYBIL_BUCKET)
-        print(uploaded_file)
-        print(uploaded_file.read())
-        print(file_name)
-
         # process squelch data
-        process_bsci_sybil_csv(file_name, None)
+        process_bsci_sybil_csv.delay(file_name, None)
 
     except Exception as e:
         return JsonResponse({'success': 'failed'}, status=500)
