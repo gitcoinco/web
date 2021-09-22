@@ -50,7 +50,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-import boto
+import boto3
 import dateutil.parser
 import pytz
 import requests
@@ -61,7 +61,7 @@ from app.settings import (
     TWITTER_CONSUMER_SECRET,
 )
 from app.utils import allow_all_origins, get_profile
-from boto.s3.key import Key
+from boto3.s3.transfer import S3Transfer
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from dashboard.brightid_utils import get_brightid_status
@@ -3721,20 +3721,20 @@ def upload_sybil_csv(request):
     now = datetime.now()
     file_name = f'{now.strftime("%m-%d-%Y")}.csv'
 
-    # upload to S3
-    s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-    bucket = s3.get_bucket(settings.S3_BSCI_SYBIL_BUCKET)
+    try:
+        # upload to S3
+        client = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID, aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        client.put_object(Bucket=settings.S3_BSCI_SYBIL_BUCKET, Key=file_name, Body=uploaded_file.read())
 
-    bucket_key = Key(bucket)
-    bucket_key.key = file_name
+        # store latest in JSONStore
+        bsciJSON.data['csv_url'] = file_name
+        bsciJSON.save()
 
-    bucket_key.set_contents_from_filename(uploaded_file)
-    bucket_key.set_acl('public-read')
+        # process squelch data
+        process_bsci_sybil_csv(file_name, uploaded_file)
 
-    # store latest in JSONStore
-    bsciJSON.data['csv_url'] = file_name
-    bsciJSON.save()
-        
-    process_bsci_sybil_csv.delay(file_name, uploaded_file)
+    except Exception as e:
+        return JsonResponse({'success': 'failed'}, status=500)
+
 
     return JsonResponse({'success': 'ok'}, status=200)
