@@ -472,12 +472,13 @@ Vue.component('grantsCartEthereumPolygon', {
               web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
             ).toFixed(5));
 
+            if (requiredAmount < 0.01) {
+              requiredAmount = 0.01;
+            }
+
             if (requiredAmounts['MATIC']) {
               requiredAmounts['MATIC'].amount += requiredAmount;
             } else {
-              if (requiredAmount < 0.01) {
-                requiredAmount = 0.01;
-              }
               requiredAmounts['MATIC'] = {
                 amount: requiredAmount,
                 isBalanceSufficient: false
