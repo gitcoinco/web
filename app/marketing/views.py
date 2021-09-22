@@ -109,6 +109,9 @@ def settings_helper_get_auth(request, key=None):
     # check if user's email has changed
     if request.user.is_authenticated and request.user.profile:
         current_email = get_github_primary_email(request.user.profile.github_access_token)
+        if not current_email:
+            request.user.profile.github_access_token = ''
+            request.user.profile.save()
         if current_email != request.user.profile.email:
             request.user.profile.email = current_email
             request.user.profile.save()
