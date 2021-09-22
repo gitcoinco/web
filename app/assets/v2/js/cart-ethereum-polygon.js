@@ -1,7 +1,3 @@
-const bulkCheckoutAddressPolygon = appCart.$refs.cart.network === 'mainnet'
-  ? '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
-  : '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
-
 function objectMap(object, mapFn) {
   return Object.keys(object).reduce(function(result, key) {
     result[key] = mapFn(object[key]);
@@ -138,6 +134,12 @@ Vue.component('grantsCartEthereumPolygon', {
       this.polygon.checkoutStatus = 'depositing';
     },
 
+    getBulkCheckoutAddress() {
+      return appCart.$refs.cart.network === 'mainnet'
+        ? '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
+        : '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973';
+    },
+
     handleError(e) {
       appCart.$refs.cart.handleError(e);
     },
@@ -238,6 +240,8 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         } else if (switchError.code === 4001) {
           throw new Error('Please connect MetaMask to Polygon network.');
+        } else if (switchError.code === -32002) {
+          throw new Error('Please respond to a pending MetaMask request.');
         } else {
           console.error(switchError);
         }
@@ -246,6 +250,8 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
+      const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
+
       try {
 
         if (typeof ga !== 'undefined') {
@@ -311,6 +317,8 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async sendDonationTx(userAddress) {
+      const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
+
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
@@ -334,11 +342,78 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Estimates the total gas cost of a polygon checkout and sends it to cart.js
     async estimateGasCost() {
-      // The below heuristics are used instead of `estimateGas()` so we can send the donation
-      // transaction before the approval txs are confirmed, because if the approval txs
-      // are not confirmed then estimateGas will fail.
+      /**
+       * The below heuristics are used instead of `estimateGas()` so we can send the donation
+       * transaction before the approval txs are confirmed, because if the approval txs
+       * are not confirmed then estimateGas will fail.
+       */
 
-      return 70000;
+      let networkId = appCart.$refs.cart.networkId;
+
+      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.chainId !== '1' || this.cart.unsupportedTokens.length > 0) {
+        return;
+      }
+
+      let gasLimit = 0;
+
+      // If user has enough balance within Polygon, cost equals the minimum amount
+      let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
+
+      if (!isBalanceSufficient) {
+        // If we're here, user needs at least one L1 deposit, so let's calculate the total cost
+        requiredAmounts = objectMap(requiredAmounts, value => {
+          if (value.isBalanceSufficient == false) {
+            return value.amount;
+          }
+        });
+
+        for (const tokenSymbol in requiredAmounts) {
+          /**
+           * The below estimates were got by analyzing gas usages for deposit transactions
+           * on the RootChainManagerProxy contract. View the link below,
+           * https://goerli.etherscan.io/address/0xbbd7cbfa79faee899eaf900f13c9065bf03b1a74
+           */
+          if (tokenSymbol === 'ETH') {
+            gasLimit += 94659; // add ~94.66k gas for ETH deposits
+          } else {
+            gasLimit += 103000; // add 103k gas for token deposits
+          }
+        }
+      }
+
+      // If we have a cart where all donations are in Dai, we use a linear regression to
+      // estimate gas costs based on real checkout transaction data, and add a 50% margin
+      const donationCurrencies = this.donationInputs.map(donation => donation.token);
+      const daiAddress = this.getTokenByName('DAI')?.addr;
+      const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
+
+      if (isAllDai) {
+        if (donationCurrencies.length === 1) {
+          // Special case since we overestimate here otherwise
+          return gasLimit + 65000;
+        }
+        // The Below curve found by running script with the repo https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis.
+        // View the chart here -> https://chart-studio.plotly.com/~chibie/1/
+        return gasLimit + 10000 * donationCurrencies.length + 80000;
+      }
+
+      /**
+       * Otherwise, based on contract tests, we use the more conservative heuristic below to get
+       * a gas estimate. The estimates used here are based on testing the cost of a single
+       * donation (i.e. one item in the cart). Because gas prices go down with batched
+       * transactions, whereas this assumes they're constant, this gives us a conservative estimate
+       */
+      gasLimit += this.donationInputs.reduce((accumulator, currentValue) => {
+        // const tokenAddr = currentValue.token?.toLowerCase();
+
+        if (currentValue.token === MATIC_ADDRESS) {
+          return accumulator + 25000; // MATIC donation gas estimate
+        }
+
+        return accumulator + 70000; // generic token donation gas estimate
+      }, 0);
+
+      return gasLimit;
     },
 
     // Returns true if user has enough balance within Polygon to avoid L1 deposit, false otherwise
@@ -383,22 +458,24 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         // Check if user has enough MATIC to cover gas costs
-        const gasFeeInWei = web3.utils.toWei(
-          (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
-        );
+        if (this.polygon.estimatedGasCost) {
+          const gasFeeInWei = web3.utils.toWei(
+            (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
+          );
 
-        if (userMaticBalance.lt(gasFeeInWei)) {
-          let requiredAmount = parseFloat(Number(
-            web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
-          ).toFixed(5));
+          if (userMaticBalance.lt(gasFeeInWei)) {
+            let requiredAmount = parseFloat(Number(
+              web3.utils.fromWei((gasFeeInWei - userMaticBalance).toString(), 'ether')
+            ).toFixed(5));
 
-          if (requiredAmounts['MATIC']) {
-            requiredAmounts['MATIC'].amount += requiredAmount;
-          } else {
-            requiredAmounts['MATIC'] = {
-              amount: requiredAmount,
-              isBalanceSufficient: false
-            };
+            if (requiredAmounts['MATIC']) {
+              requiredAmounts['MATIC'].amount += requiredAmount;
+            } else {
+              requiredAmounts['MATIC'] = {
+                amount: requiredAmount,
+                isBalanceSufficient: false
+              };
+            }
           }
         }
 

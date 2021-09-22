@@ -11,19 +11,7 @@ let appCart;
 
 document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
-  appCart.$refs['cart'].sourceNetwork = networkName;
   appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
-  if (appCart.$refs.cart.autoSwitchNetwork) {
-    try {
-      await ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: networkName == 'mainnet' ? '0x1' : '0x4' }]
-      }); // mainnet or rinkeby
-      appCart.$refs.cart.autoSwitchNetwork = false;
-    } catch (e) {
-      console.log(e);
-    }
-  }
 }, false);
 
 // needWalletConnection();
@@ -57,12 +45,10 @@ Vue.component('grants-cart', {
         { text: 'Wallet address', value: 'address' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
-      autoSwitchNetwork: true,
-      checkoutRecommendationIsCompleted: false,
+      standardCheckoutInitiated: false,
       chainId: '',
       networkId: '',
       network: 'mainnet',
-      sourceNetwork: 'mainnet',
       tabSelected: 'ETH',
       tabIndex: null,
       currentTokens: [], // list of all available tokens
@@ -392,24 +378,19 @@ Vue.component('grants-cart', {
       const estimateZkSync = Number(this.zkSyncEstimatedGasCost); // zkSync gas cost estimate
       const estimatePolygon = Number(this.polygonEstimatedGasCost); // polygon gas cost estimate
 
-      const exit = (recommendation) => {
-        this.checkoutRecommendationIsCompleted = true;
-        return recommendation;
-      };
-
       const compareWithL2 = (estimateL2, name) => {
         if (estimateL1 < estimateL2) {
           const savingsInGas = estimateL2 - estimateL1;
           const savingsInPercent = Math.round(savingsInGas / estimateL2 * 100);
 
-          return exit({ name: 'Standard checkout', savingsInGas, savingsInPercent });
+          return { name: 'Standard checkout', savingsInGas, savingsInPercent };
         }
 
         const savingsInGas = estimateL1 - estimateL2;
         const percentSavings = savingsInGas / estimateL1 * 100;
         const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
 
-        return exit({ name, savingsInGas, savingsInPercent });
+        return { name, savingsInGas, savingsInPercent };
       };
 
       zkSyncComparisonResult = compareWithL2(estimateZkSync, 'zkSync');
@@ -418,12 +399,12 @@ Vue.component('grants-cart', {
       polygonSavings = polygonComparisonResult.name === 'Polygon' ? polygonComparisonResult.savingsInPercent : 0;
 
       if (zkSyncSavings > polygonSavings) {
-        return exit(zkSyncComparisonResult);
+        return zkSyncComparisonResult;
       } else if (zkSyncSavings < polygonSavings) {
-        return exit(polygonComparisonResult);
+        return polygonComparisonResult;
       }
 
-      return exit(zkSyncComparisonResult); // recommendation will be standard checkout
+      return zkSyncComparisonResult; // recommendation will be standard checkout
     },
 
     isHarmonyExtInstalled() {
@@ -809,8 +790,6 @@ Vue.component('grants-cart', {
      * @param {String} name Token name, e.g. ETH or DAI
      */
     getTokenByName(name, isPolygon = false) {
-      let token;
-
       if (name === 'ETH' && !isPolygon) {
         return {
           addr: ETH_ADDRESS,
@@ -836,9 +815,7 @@ Vue.component('grants-cart', {
         return token;
       }
 
-      token = this.filterByChainId.filter(token => token.name === name)[0];
-
-      return token;
+      return this.filterByChainId.filter(token => token.name === name)[0];
     },
 
     async applyAmountToAllGrants(grant) {
@@ -1060,6 +1037,8 @@ Vue.component('grants-cart', {
 
     // Standard L1 checkout flow
     async standardCheckout() {
+      this.standardCheckoutInitiated = true;
+
       try {
         // Setup -----------------------------------------------------------------------------------
         this.isCheckoutOngoing = true;
@@ -1086,6 +1065,7 @@ Vue.component('grants-cart', {
       } catch (err) {
         this.handleError(err);
       }
+      this.standardCheckoutInitiated = false;
     },
 
     /**

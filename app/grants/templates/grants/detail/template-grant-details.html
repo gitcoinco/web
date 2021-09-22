@@ -58,10 +58,18 @@
                   <i class="far fa-copy"></i>
                 </copy-clipboard>
               </span>
-              <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`"
-                class="col-auto badge badge-pill bg-lightpurple text-primary font-weight-semibold" id="wallet-zkscan-link">
-                L2
-              </a>
+              <span>
+                <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${grant.admin_address}`"
+                  class="col-auto badge badge-pill bg-lightpurple text-primary font-weight-semibold" id="wallet-zkscan-link">
+                  zkSync
+                </a>
+                {% if is_staff %}
+                <a target="_blank" :href="`https://polygonscan.com/address/${grant.admin_address}`"
+                  class="col-auto badge badge-pill bg-lightpurple text-primary font-weight-semibold" id="wallet-polygonscan-link">
+                  Polygon
+                </a>
+                {% endif %}
+              </span>
             </template>
 
             <!-- ZCASH -->

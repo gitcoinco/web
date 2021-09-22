@@ -157,11 +157,9 @@
         <div v-if="zkSyncUnsupportedTokens.length > 0">
           zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
         </div>
-        {% if is_staff %}
         <div v-if="polygonUnsupportedTokens.length > 0">
           Polygon checkout not supported due to [[ polygonUnsupportedTokens.join(', ') ]]
         </div>
-        {% endif %}
       </div>
       <div v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
         💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
@@ -173,7 +171,7 @@
   <!-- Checkout buttons -->
   <div class="row justify-content-end">
     <div class="btn-group flex-column flex-grow-1 flex-md-grow-0 flex-md-row" role="group" aria-label="Checkout buttons">
-      
+
       {% if is_staff %}
       <!-- CHECKOUT WITH POLYGON -->
       <grants-cart-ethereum-polygon
