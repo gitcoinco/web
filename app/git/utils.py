@@ -252,8 +252,8 @@ def get_github_event_emails(oauth_token, username):
 
     """
     emails = []
-    userinfo = get_user(username)
-    user_name = userinfo.name
+    userinfo = get_user(username, oauth_token)
+    user_name = userinfo.name if userinfo else None
 
     try:
         gh_client = github_connect(oauth_token)
