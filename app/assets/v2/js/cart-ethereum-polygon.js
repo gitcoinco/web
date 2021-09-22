@@ -473,7 +473,7 @@ Vue.component('grantsCartEthereumPolygon', {
             ).toFixed(5));
 
             if (requiredAmount < 0.01) {
-              requiredAmount = 0.01;
+              requiredAmount = 0.01; // approximate neglible gas fees to a reasonable minimum
             }
 
             if (requiredAmounts['MATIC']) {
