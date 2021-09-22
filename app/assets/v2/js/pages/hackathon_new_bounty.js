@@ -18,6 +18,7 @@ Vue.mixin({
       }
 
       let ghIssueUrl;
+
       try {
         ghIssueUrl = new URL(url);
       } catch (e) {

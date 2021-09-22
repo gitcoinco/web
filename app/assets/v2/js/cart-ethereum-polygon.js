@@ -349,11 +349,15 @@ Vue.component('grantsCartEthereumPolygon', {
        */
 
       let networkId = appCart.$refs.cart.networkId;
-
-      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.chainId !== '1' || this.cart.unsupportedTokens.length > 0) {
+      
+      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.standardCheckoutInitiated == true) {
         return;
       }
 
+      if (this.cart.unsupportedTokens.length > 0) {
+        return;
+      }
+      
       let gasLimit = 0;
 
       // If user has enough balance within Polygon, cost equals the minimum amount
