@@ -68,18 +68,10 @@ const loadDynamicScript = (callback, url, id) => {
             data.append('tribe_description', vm.tribe.tribe_description);
           }
 
-          if (vm.$refs.quillEditorPriority) {
-            data.append('tribe_priority', vm.tribe.tribe_priority);
-            data.append('priority_html_text', vm.$refs.quillEditorPriority.quill.getText(''));
-          }
-
           if (vm.headerFile) {
             data.append('cover_image', vm.headerFile);
           }
 
-          if (vm.params.publish_to_ts) {
-            data.append('publish_to_ts', vm.params.publish_to_ts);
-          }
           const sendSave = async(url, data) => {
             return $.ajax({
               type: 'POST',
@@ -102,84 +94,6 @@ const loadDynamicScript = (callback, url, id) => {
             _alert('Error updating Tribe', 'danger');
             console.error('error: unable to update tribe', error);
           });
-        },
-        suggestBounty: function() {
-          let vm = this;
-          const githubUrl = vm.params.suggest.githubUrl;
-          const tokenName = tokenAddressToDetails(vm.params.suggest.token)['name'];
-          const comment = vm.params.suggest.comment;
-          const tribe = vm.tribe.handle;
-          const url = '/api/v1/bounty_request/create';
-          const amount = vm.params.suggest.amount;
-
-          fetchIssueDetailsFromGithub(githubUrl).then(result => {
-            const title = result.title;
-
-            const createBountyRequest = fetchData(
-              url,
-              'POST',
-              {
-                'github_url': githubUrl,
-                'tribe': tribe,
-                'comment': comment,
-                'token_name': tokenName,
-                'amount': amount,
-                'title': title
-              },
-              {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()}
-            );
-
-            $.when(createBountyRequest).then(function(response) {
-
-              if (response.status == 204) {
-                _alert('Bounty Request has been created');
-                location.reload();
-              } else {
-                _alert(`Error creating bounty request as ${response.message}`, 'danger');
-                console.error(response.message);
-              }
-
-            }).fail(function(error) {
-              _alert(`Error creating bounty request as ${error}`, 'danger');
-              console.error('error: unable to creating bounty request', error);
-            });
-          }).catch(error => {
-            _alert(`Error creating bounty request as ${error}`, 'danger');
-            console.error('error: unable to creating bounty request', error);
-          });
-        },
-        rejectBountyRequest: function(idx, bounty_request_id) {
-          let vm = this;
-
-          const url = '/api/v1/bounty_request/update';
-
-          const createBountyRequest = fetchData(
-            url,
-            'POST',
-            {
-              'bounty_request_id': bounty_request_id,
-              'request_status': 'c'
-            },
-            {'X-CSRFToken': vm.csrf}
-          );
-
-          $.when(createBountyRequest).then(function(response) {
-
-            if (response.status === 200) {
-              _alert('Bounty Request has been rejected');
-              delete vm.tribe.suggested_bounties[idx];
-            } else {
-              _alert(`Error rejecting bounty request as ${response.message}`, 'danger');
-              console.error(response.message);
-            }
-
-          }).fail(function(error) {
-            _alert(`Error rejecting bounty request. ${error}`, 'danger');
-            console.error('error: unable to reject bounty request', error);
-          });
-        },
-        resetBountySuggestion: function() {
-          this.params.suggest = {};
         },
         tabChange: function(input) {
           let vm = this;
@@ -260,10 +174,6 @@ const loadDynamicScript = (callback, url, id) => {
       data: function() {
         return {
           isLoading: true,
-          params: {
-            suggest: {},
-            publish_to_ts: false
-          },
           showCoreTeam: true,
           activePanel: document.activePanel,
           tribe: document.currentProfile,

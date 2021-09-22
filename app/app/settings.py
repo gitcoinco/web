@@ -130,7 +130,6 @@ INSTALLED_APPS = [
     'grants',
     'kudos',
     'django.contrib.postgres',
-    'bounty_requests',
     'perftools',
     'revenue',
     'inbox',

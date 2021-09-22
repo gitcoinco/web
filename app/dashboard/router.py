@@ -24,7 +24,6 @@ from datetime import datetime
 from django.db.models import Count, F, Q
 
 import django_filters.rest_framework
-from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -630,19 +629,9 @@ class TribesTeamSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class BountyRequestSerializer(serializers.ModelSerializer):
-
-    requested_by = TribesTeamSerializer()
-
-    class Meta:
-        model = BountyRequest
-        fields = ('id', 'created_on', 'token_name', 'amount', 'comment', 'github_url', 'title', 'requested_by', 'status')
-        depth = 1
-
 class TribesSerializer(serializers.ModelSerializer):
     """Handle serializing the Profile object."""
     team_or_none_if_timeout = TribesTeamSerializer(many=True, read_only=True)
-    suggested_bounties = BountyRequestSerializer(many=True)
     tribes_cover_image = serializers.ImageField(allow_empty_file=True)
 
     def __init__(self, *args, **kwargs):
@@ -653,7 +642,7 @@ class TribesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         """Define the profile serializer metadata."""
-        fields = ('profile_wallpaper', 'tribes_cover_image', 'rank_org','name', 'linkedin_url', 'team_or_none_if_timeout', 'suggested_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data', 'tribe_priority')
+        fields = ('profile_wallpaper', 'tribes_cover_image', 'rank_org','name', 'linkedin_url', 'team_or_none_if_timeout', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data')
         depth = 1
 
 
