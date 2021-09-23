@@ -54,7 +54,6 @@ generate:
   - dashboard/utils.md:
     - dashboard.utils++
   - dashboard/views.md:
-    - dashboard.gas_views++
     - dashboard.tip_views++
     - dashboard.views++
   - dashboard/templatetags.md:

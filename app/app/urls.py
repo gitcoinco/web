@@ -30,7 +30,6 @@ import avatar.views
 import bounty_requests.views
 import credits.views
 import dashboard.embed
-import dashboard.gas_views
 import dashboard.helpers
 import dashboard.tip_views
 import dashboard.views
