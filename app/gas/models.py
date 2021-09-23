@@ -44,25 +44,6 @@ class GasProfile(SuperModel):
             return "none"
         return f"gas_price: {self.gas_price}, mean_time_to_confirm_minutes: {self.mean_time_to_confirm_minutes} @ {self.created_on} "
 
-
-class GasGuzzler(SuperModel):
-    """Define the Gas Guzzler data model."""
-
-    class Meta:
-        """Define the metadata associated with GasGuzzlers."""
-
-        verbose_name_plural = 'Gas Guzzlers'
-
-    gas_used = models.DecimalField(decimal_places=2, max_digits=50, db_index=True)
-    pct_total = models.DecimalField(decimal_places=2, max_digits=50)
-    address = models.CharField(max_length=50, default='', blank=True)
-    ID = models.CharField(max_length=50, default='', blank=True)
-
-    def __str__(self):
-        """Define the string representation of GasProfile."""
-        return f"{self.address}/{self.pct_total}"
-
-
 class GasAdvisory(SuperModel):
     """Define the Gas Advisory data model."""
 

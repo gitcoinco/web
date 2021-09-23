@@ -20,7 +20,6 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from dashboard.gas_views import lines
 from gas.utils import gas_history
 from perftools.models import JSONStore
 

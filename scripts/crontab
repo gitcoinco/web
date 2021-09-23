@@ -32,7 +32,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash refresh_bounties --remote  >> /var/log/gitcoin/refresh_bounties_remote.log  2>&1
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expire_featured_bounties  >> /var/log/gitcoin/expire_featured_bounties.log  2>&1
 15,45 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_gas_prices  >> /var/log/gitcoin/sync_gas_prices.log  2>&1
-50 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_gas_guzzlers  >> /var/log/gitcoin/sync_gas_guzzlers.log  2>&1
 15 1 * * 0 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
 15 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash calc_profile  >> /var/log/gitcoin/calc_profile.log  2>&1
 15 2 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_es_profiles  >> /var/log/gitcoin/sync_es_profiles.log  2>&1

@@ -21,7 +21,7 @@ from django.utils import timezone
 
 from dashboard.models import Activity
 from economy.models import ConversionRate
-from gas.models import GasGuzzler, GasProfile
+from gas.models import GasProfile
 from marketing.models import LeaderboardRank, Stat
 
 
@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        for model in [GasGuzzler, GasProfile]:
+        for model in [GasProfile]:
             result = model.objects.filter(
                 created_on__lt=self.get_then(7),
                 ).exclude(created_on__minute__lt=10).delete()
