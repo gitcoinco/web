@@ -270,6 +270,10 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         });
 
+        if (!ethereum.selectedAddress) {
+          return await onConnect();
+        }
+
         // If user has enough balance within Polygon, cost equals the minimum amount
         let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
 
@@ -355,6 +359,10 @@ Vue.component('grantsCartEthereumPolygon', {
       }
 
       if (this.cart.unsupportedTokens.length > 0) {
+        return;
+      }
+
+      if (!ethereum.selectedAddress) {
         return;
       }
       
