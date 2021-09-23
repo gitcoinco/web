@@ -210,8 +210,15 @@ class TestGrantCLR:
         filter.assert_called_with(**grant_clr.collection_filters)
         values_list.assert_called_with('grants', flat=True)
 
-        
+    def test_grants_method_does_not_call_filter_if_collection_filters_are_not_present(self):
+        grant_clr = GrantCLRFactory()
 
+        with patch.object(GrantCollection.objects, 'filter') as filter:
+            with patch.object(GrantCollection.objects.filter(**grant_clr.collection_filters), 'values_list') as values_list:
+                grant_clr.grants
+
+        filter.assert_not_called
+        values_list.assert_not_called
 
     def test_record_clr_prediction_curve_calls_collaborator_with_expected_parameters(self):
         """Test record_clr_prediction_curve calls create on GrantCLRCalculation.objects with expected params."""
