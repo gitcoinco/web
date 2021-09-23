@@ -202,6 +202,7 @@ class TestGrantCLR:
     def test_grants_method_calls_filter_with_expected_parameters_if_collection_filters_are_present(self):
         grant_clr = GrantCLRFactory()
         grant_clr.collection_filters={'1': GrantCollectionFactory()}
+        grants = Grant.objects.filter(hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
 
         with patch.object(GrantCollection.objects, 'filter') as filter:
             with patch.object(GrantCollection.objects.filter(**grant_clr.collection_filters), 'values_list') as values_list:
@@ -218,7 +219,7 @@ class TestGrantCLR:
                 grant_clr.grants
 
         filter.assert_not_called
-        values_list.assert_not_called
+        values_list.assert_not_called 
 
     def test_record_clr_prediction_curve_calls_collaborator_with_expected_parameters(self):
         """Test record_clr_prediction_curve calls create on GrantCLRCalculation.objects with expected params."""
