@@ -271,7 +271,7 @@ Vue.component('grantsCartEthereumPolygon', {
         });
 
         if (!ethereum.selectedAddress) {
-          return await onConnect();
+          throw new Error('Please unlock MetaMask to proceed with Polygon checkout');
         }
 
         // If user has enough balance within Polygon, cost equals the minimum amount
