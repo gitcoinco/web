@@ -51,18 +51,7 @@ class TestGrantType:
         grant_type = GrantTypeFactory()
 
         assert hasattr(grant_type, 'is_visible')
-        assert grant_type.is_visible == True
-
-    def test_grant_type_has_associated_categories(self):
-        "Test 'categories' arribute is present and can be more than one."
-
-        grant_categories = (GrantCategoryFactory(), GrantCategoryFactory())
-
-        grant_type = GrantTypeFactory.create(categories=(grant_categories))
-
-        assert hasattr(grant_type, 'categories')
-        assert len(grant_type.categories.all()) == len(grant_categories)
-        assert isinstance(grant_type.categories.first(), GrantCategory)
+        assert grant_type.is_visible == True 
 
     def test_grant_type_has_a_logo(self):
         """Test 'logo' attribute is present."""
