@@ -4,7 +4,7 @@ from django.utils import timezone
 
 import pytest
 from dashboard.models import Profile
-from grants.models.grant import GrantCLR
+from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
 
 from .factories.grant_clr_factory import GrantCLRFactory
@@ -184,9 +184,22 @@ class TestGrantCLR:
 
         assert grant_clr.happened_recently == False
 
+    def test_grants_method_calls_filter_with_expected_parameters(self):
+        grant_clr = GrantCLRFactory()
+
+        with patch.object(Grant.objects, 'filter') as filter:
+            grant_clr.grants
+
+        filter.assert_called_with(
+            hidden=False,
+            active=True,
+            is_clr_eligible=True,
+            link_to_new_grant=None
+        )
+
+
     def test_record_clr_prediction_curve_calls_collaborator_with_expected_parameters(self):
         """Test record_clr_prediction_curve calls create on GrantCLRCalculation.objects with expected params."""
-
 
         grant = GrantFactory()
         grant_clr = GrantCLRFactory()
