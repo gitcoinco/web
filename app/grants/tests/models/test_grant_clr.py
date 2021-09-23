@@ -6,8 +6,10 @@ import pytest
 from dashboard.models import Profile
 from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
+from grants.models.grant_collection import GrantCollection
 
 from .factories.grant_clr_factory import GrantCLRFactory
+from .factories.grant_collection_factory import GrantCollectionFactory
 from .factories.grant_factory import GrantFactory
 
 
@@ -197,6 +199,14 @@ class TestGrantCLR:
             link_to_new_grant=None
         )
 
+    def test_grants_method_calls_filter_with_expected_parameters_if_collection_filters_are_present(self):
+        grant_clr = GrantCLRFactory()
+        grant_clr.collection_filters={'1': GrantCollectionFactory()}
+
+        with patch.object(GrantCollection.objects, 'filter') as filter:
+            grant_clr.grants
+
+        filter.assert_called_with(**grant_clr.collection_filters)
 
     def test_record_clr_prediction_curve_calls_collaborator_with_expected_parameters(self):
         """Test record_clr_prediction_curve calls create on GrantCLRCalculation.objects with expected params."""
