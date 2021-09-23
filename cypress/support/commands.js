@@ -83,7 +83,7 @@ Cypress.Commands.add('createGrantSubmission', (options = {}) => {
           reference_url: options.reference_url || 'https://gitcoin.co',
           github_project_url: options.github_project_url || 'https://github.com/gitcoinco/web',
           'team_members[]': options.team_members || '',
-          'tags[]': options.tags || '1',
+          'tags[]': options.tags || '1'
         },
         form: true
       });
