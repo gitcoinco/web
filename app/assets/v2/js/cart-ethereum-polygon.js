@@ -76,7 +76,7 @@ Vue.component('grantsCartEthereumPolygon', {
           const amount = requiredAmounts[key];
           const formattedAmount = amount.toLocaleString(undefined, {
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 5
           });
 
           if (string === '') {
@@ -419,7 +419,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // const tokenAddr = currentValue.token?.toLowerCase();
 
         if (currentValue.token === MATIC_ADDRESS) {
-          return accumulator + 65000; // MATIC donation gas estimate
+          return accumulator + 50000; // MATIC donation gas estimate
         }
 
         return accumulator + 70000; // generic token donation gas estimate
