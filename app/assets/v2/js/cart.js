@@ -799,15 +799,6 @@ Vue.component('grants-cart', {
           decimals: 18,
           priority: 1
         };
-      } else if (name === 'MATIC' && isPolygon) {
-        return {
-          addr: MATIC_ADDRESS,
-          address: MATIC_ADDRESS,
-          name: 'MATIC',
-          symbol: 'MATIC',
-          decimals: 18,
-          priority: 1
-        };
       }
 
       return this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
