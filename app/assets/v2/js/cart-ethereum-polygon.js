@@ -327,6 +327,8 @@ Vue.component('grantsCartEthereumPolygon', {
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
       
+      // Replace MATIC with 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE to enable
+      // the BulkCheckout contract handle it as a native transfer and not token
       donationInputsFiltered.forEach(donation => {
         if (donation.token === MATIC_ADDRESS) {
           donation.token = ETH_ADDRESS;
