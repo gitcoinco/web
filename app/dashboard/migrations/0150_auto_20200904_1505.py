@@ -13,16 +13,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='activity',
-            name='ptoken',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='ptoken_activities', to='ptokens.PersonalToken'),
-        ),
-        migrations.AddField(
-            model_name='activity',
-            name='redemption',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ptokens.RedemptionToken'),
-        ),
+        # migrations.AddField(
+        #     model_name='activity',
+        #     name='ptoken',
+        #     field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='ptoken_activities', to='ptokens.PersonalToken'),
+        # ),
+        # migrations.AddField(
+        #     model_name='activity',
+        #     name='redemption',
+        #     field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ptokens.RedemptionToken'),
+        # ),
         migrations.AddField(
             model_name='profile',
             name='tokens',
