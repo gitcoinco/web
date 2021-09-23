@@ -419,7 +419,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // const tokenAddr = currentValue.token?.toLowerCase();
 
         if (currentValue.token === MATIC_ADDRESS) {
-          return accumulator + 25000; // MATIC donation gas estimate
+          return accumulator + 65000; // MATIC donation gas estimate
         }
 
         return accumulator + 70000; // generic token donation gas estimate
