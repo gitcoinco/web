@@ -80,7 +80,7 @@ def details(request, quest):
                     answer_level_seconds_to_respond = payload.get('seconds_to_respond', None)
                     if answer_level_seconds_to_respond:
                         this_time_per_answer = answer_level_seconds_to_respond
-                    time_used = (timezone.now() - qa.modified_on).seconds
+                    time_used = (timezone.now() - qa.modified_on).seconds if qa else timezone.now()
                     is_out_of_time = time_used > this_time_per_answer + time_per_answer_buffer
                     if is_out_of_time:
                         # fix for silly issue where the time used is almost exactly
