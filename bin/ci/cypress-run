@@ -23,6 +23,7 @@ python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/profiles.js
 python3 app/manage.py runserver 0.0.0.0:8000 &
 
 # set required env vars and run cypress tests
+export METAMASK_VERSION="9.4.0"
 export NETWORK_NAME=localhost
 export PASSWORD="g1tc01nc0" # used in readme for root user account
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
