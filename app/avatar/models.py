@@ -46,7 +46,7 @@ class BaseAvatar(SuperModel):
 
     ICON_SIZE = (215, 215)
 
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=False, db_index=True)
     profile = models.ForeignKey(
         'dashboard.Profile',
         null=True,
