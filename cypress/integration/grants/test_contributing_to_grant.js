@@ -21,7 +21,6 @@ describe('contributing to grant', () => {
       cy.impersonateUser();
 
       cy.visit(grantUrl);
-      cy.get('#CookielawBannerAccept').click();
 
       cy.get('#navbarDropdownWallet').click();
       cy.contains('Connect Wallet').click();
@@ -64,8 +63,6 @@ describe('contributing to grant', () => {
     });
 
     cy.impersonateUser();
-
-    cy.get('#CookielawBannerAccept').click();
 
     cy.get('@grant1').then((grantUrl) => {
       cy.visit(grantUrl);
