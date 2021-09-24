@@ -350,6 +350,8 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
                 print(f"error: unable to mark user ${user.get('handle')} as sybil. {e}")
 
     if non_sybil_users:
+        # exclude squelches added by manual
+        squelched_profiles = squelched_profiles.exclude(label='Manual')
         # iterate and remove sybil from user
         for user in non_sybil_users:
             try:

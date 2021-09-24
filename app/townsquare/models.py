@@ -442,7 +442,8 @@ class SquelchProfile(SuperModel):
     LABEL_CHOICES = (
         ('Human', 'Human'),
         ('Heuristic', 'Heuristic'),
-        ('Prediction', 'Prediction')
+        ('Prediction', 'Prediction'),
+        ('Manual', 'Manual')
     )
     profile = models.ForeignKey(
         'dashboard.Profile',
@@ -451,7 +452,7 @@ class SquelchProfile(SuperModel):
     )
     label = models.CharField(
         choices=LABEL_CHOICES,
-        default='Human',
+        default='Manual',
         help_text='means used to mark user as sybil',
         max_length=20
     )
