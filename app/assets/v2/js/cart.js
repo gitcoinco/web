@@ -328,7 +328,7 @@ Vue.component('grants-cart', {
       // If we have a cart where all donations are in Dai, we use a linear regression to
       // estimate gas costs based on real checkout transaction data, and add a 50% margin
       const donationCurrencies = this.donationInputs.map(donation => donation.token);
-      const daiAddress = this.getTokenByName('DAI').addr;
+      const daiAddress = this.getTokenByName('DAI')?.addr;
       const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
 
       if (isAllDai) {
@@ -799,23 +799,9 @@ Vue.component('grants-cart', {
           decimals: 18,
           priority: 1
         };
-      } else if (name === 'MATIC' && isPolygon) {
-        return {
-          addr: MATIC_ADDRESS,
-          address: MATIC_ADDRESS,
-          name: 'MATIC',
-          symbol: 'MATIC',
-          decimals: 18,
-          priority: 1
-        };
       }
 
-      if (isPolygon) {
-        token = this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
-        return token;
-      }
-
-      return this.filterByChainId.filter(token => token.name === name)[0];
+      return this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
     },
 
     async applyAmountToAllGrants(grant) {
