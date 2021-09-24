@@ -12,7 +12,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-rate_limit = '30000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
+rate_limit = '300000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
 
 @app.shared_task(bind=True, rate_limit=rate_limit, soft_time_limit=600, time_limit=660, max_retries=1)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
@@ -24,11 +24,9 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
 
     # dont send emails on this server, dispurse them back into the queue
     if settings.FLUSH_QUEUE:
-        redis.sadd('bounty_daily_retry', email_subscriber_id)
         return
 
     if settings.MARKETING_FLUSH_QUEUE:
-        redis.sadd('bounty_daily_retry', email_subscriber_id)
         return
 
     # actually do the task
