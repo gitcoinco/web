@@ -27,7 +27,7 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCategory, GrantCLR,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantTag, GrantCLR,
     GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, Subscription,
 )
 from grants.views import record_grant_activity_helper
