@@ -121,7 +121,7 @@ def preprocess(request):
     header_msg, footer_msg, nav_salt = get_sitewide_announcements()
 
     try:
-        onboard_tasks = JSONStore.objects.get(key='onboard_tasks').data
+        onboard_tasks = JSONStore.objects.cache().get(key='onboard_tasks').data
     except JSONStore.DoesNotExist:
         onboard_tasks = []
 
