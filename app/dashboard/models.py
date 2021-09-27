@@ -1658,7 +1658,7 @@ class SendCryptoAsset(SuperModel):
     from_email = models.CharField(max_length=255, default='', blank=True)
     from_username = models.CharField(max_length=255, default='', blank=True)
     username = models.CharField(max_length=255, default='', blank=True)  # to username
-    network = models.CharField(max_length=255, default='')
+    network = models.CharField(max_length=255, default='', db_index=True)
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='', blank=True)
     received_on = models.DateTimeField(null=True, blank=True)
@@ -1862,7 +1862,7 @@ class SendCryptoAsset(SuperModel):
 class Tip(SendCryptoAsset):
     """ Inherit from SendCryptoAsset base class, and extra fields that are needed for Tips. """
     expires_date = models.DateTimeField(null=True, blank=True)
-    comments_priv = models.TextField(default='', blank=True)
+    comments_priv = models.TextField(default='', blank=True, db_index=True)
     recipient_profile = models.ForeignKey(
         'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
     )

@@ -379,6 +379,18 @@ def record_visit(self, user_pk, profile_pk, ip_address, visitorId, useragent, re
                 utm=utm,
                 metadata=metadata,
             )
+
+            # if the user is from a bad jurisdiction, block themm.
+            # or is named after an entity that is banned, block them
+            from dashboard.utils import should_be_blocked
+            if should_be_blocked(profile.handle):
+                from dashboard.models import BlockedUser
+                BlockedUser.objects.create(
+                    handle=profile.handle,
+                    comments='should_be_blocked',
+                    active=True,
+                    user=user,
+                    )
         except Exception as e:
             logger.exception(e)
 

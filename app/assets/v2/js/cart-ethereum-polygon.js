@@ -76,7 +76,7 @@ Vue.component('grantsCartEthereumPolygon', {
           const amount = requiredAmounts[key];
           const formattedAmount = amount.toLocaleString(undefined, {
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 5
           });
 
           if (string === '') {
@@ -270,6 +270,10 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         });
 
+        if (!ethereum.selectedAddress) {
+          throw new Error('Please unlock MetaMask to proceed with Polygon checkout');
+        }
+
         // If user has enough balance within Polygon, cost equals the minimum amount
         let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
 
@@ -322,6 +326,14 @@ Vue.component('grantsCartEthereumPolygon', {
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
+      
+      // Replace MATIC with 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE to enable
+      // the BulkCheckout contract handle it as a native transfer and not token
+      donationInputsFiltered.forEach(donation => {
+        if (donation.token === MATIC_ADDRESS) {
+          donation.token = ETH_ADDRESS;
+        }
+      });
 
       // Send transaction
       bulkTransaction.methods
@@ -355,6 +367,10 @@ Vue.component('grantsCartEthereumPolygon', {
       }
 
       if (this.cart.unsupportedTokens.length > 0) {
+        return;
+      }
+
+      if (!ethereum.selectedAddress) {
         return;
       }
       
@@ -411,7 +427,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // const tokenAddr = currentValue.token?.toLowerCase();
 
         if (currentValue.token === MATIC_ADDRESS) {
-          return accumulator + 25000; // MATIC donation gas estimate
+          return accumulator + 50000; // MATIC donation gas estimate
         }
 
         return accumulator + 70000; // generic token donation gas estimate

@@ -178,7 +178,7 @@ grants_data_release_date = timezone.datetime(2020, 10, 22)
 hide_wallet_address_anonymized_sql = "AND contributor_profile_id NOT IN (select id from dashboard_profile where hide_wallet_address_anonymized)"
 
 
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def contribution_addr_from_grant_as_json(request, grant_id):
 
     # return all contirbutor addresses to the grant
@@ -204,7 +204,7 @@ def contribution_addr_from_grant_as_json(request, grant_id):
     return helper_grants_output(request, meta_data, earnings, GAK)
 
 
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_id):
 
     # return all contirbutor addresses to the grant
@@ -234,7 +234,7 @@ def contribution_addr_from_grant_during_round_as_json(request, grant_id, round_i
     }
     return helper_grants_output(request, meta_data, earnings, GAK)
 
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
 def contribution_info_from_grant_during_round_as_json(request, grant_id, round_id):
 
     # return all contirbutor addresses to the grant
@@ -264,7 +264,7 @@ from grants_subscription
 INNER JOIN dashboard_profile on dashboard_profile.id = contributor_profile_id
 where
 grants_subscription.created_on BETWEEN '{start}' AND '{end}' and grant_id = {grant_id}
-{hide_wallet_address_anonymized_sql}
+AND hide_wallet_address_anonymized = false
 order by grants_subscription.id desc
 LIMIT 10
     """

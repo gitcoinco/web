@@ -989,7 +989,9 @@ def is_blocked(handle):
     is_on_blocked_list = BlockedUser.objects.filter(handle=handle.lower(), active=True).exists()
     if is_on_blocked_list:
         return True
+    return False
 
+def should_be_blocked(handle):
     # check banned country list
     profiles = Profile.objects.filter(handle=handle.lower())
     if profiles.exists():
