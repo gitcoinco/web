@@ -9,11 +9,19 @@ class Migration(migrations.Migration):
     dependencies = [
         ('grants', '0016_merge_20190305_1435'),
     ]
-
-    operations = [
-        migrations.AddField(
-            model_name='matchpledge',
-            name='end_date',
-            field=models.DateTimeField(default=grants.models.next_month),
-        ),
-    ]
+    try:
+        operations = [
+            migrations.AddField(
+                model_name='matchpledge',
+                name='end_date',
+                field=models.DateTimeField(default=grants.models.next_month),
+            ),
+        ]
+    except AttributeError:
+        operations = [
+            migrations.AddField(
+                model_name='matchpledge',
+                name='end_date',
+                field=models.DateTimeField(default=grants.models.match_pledge.next_month),
+            ),
+        ]
