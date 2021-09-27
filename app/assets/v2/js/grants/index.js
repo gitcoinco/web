@@ -547,6 +547,14 @@ if (document.getElementById('grants-showcase')) {
           });
         });
       },
+      addCollectionToCart: async function(collection_id) {
+        const collectionDetailsURL = `/grants/v1/api/collections/${collection_id}`;
+        const collection = await fetchData(collectionDetailsURL, 'GET');
+
+        (collection.grants || []).forEach((grant) => {
+          CartData.addToCart(grant);
+        });
+      },
       updateCartData: function(e) {
         const grants_in_cart = (e && e.detail && e.detail.list && e.detail.list) || [];
         const grant_ids_in_cart = grants_in_cart.map((grant) => grant.grant_id);

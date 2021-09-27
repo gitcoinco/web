@@ -244,7 +244,7 @@ along with this program. If not, see
                     class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
                     :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
                   ></i>
-                  <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})">
+                  <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})" @keyup.enter="changeQuery({page: 1})">
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
                     <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
@@ -281,10 +281,14 @@ along with this program. If not, see
 
               {% include 'grants/shared/top-filters.html' %}
 
-              <template v-if="isGrantExplorer && !isGrantCollectionExplorer">
-                <!-- {% include 'grants/shared/active_clr_round.html'%} -->
-              </template>
-              <button class="btn btn-outline-gc-grey btn-sm mb-2" v-if="grantsHasPrev" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+              <div class="d-flex">
+                <button class="btn btn-outline-gc-grey btn-sm mb-2" v-if="grantsHasPrev" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+                <template v-if="params.collection_id">
+                  <button @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-sm btn-primary mb-2 ml-auto">
+                    <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add Collection to Cart
+                  </button>
+                </template>
+              </div>
               <div class="infinite-container row"  v-if="grants">
                 <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
                   <a class="text-decoration-none" :href="grant.details_url">

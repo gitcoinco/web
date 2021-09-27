@@ -108,12 +108,8 @@
                 <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/?collection_id=${collection.id}`">
               </button>
 
-              <template v-if="$parent.activeCollection">
-                <button @click.stop="addToCart()" class="btn btn-primary ml-1" style="flex: 1 1 0px;">
-                  <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add to Cart
-                </button>
-              </template>
-              <template v-else>
+
+              <template>
                 <a class="btn btn-primary ml-1" :href="`/grants/explorer/?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
                   <i class="fas fa-fw fa-arrow-right"></i> View
                 </a>
