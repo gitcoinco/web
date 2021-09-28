@@ -26,6 +26,7 @@ describe('contributing to grant', () => {
       cy.contains('Connect Wallet').click();
       cy.contains('MetaMask').click();
 
+      cy.changeMetamaskNetwork('mainnet');
       cy.changeMetamaskNetwork('localhost');
       cy.acceptMetamaskAccess();
 
@@ -79,6 +80,7 @@ describe('contributing to grant', () => {
 
     cy.contains('MetaMask').click();
 
+    cy.changeMetamaskNetwork('mainnet');
     cy.changeMetamaskNetwork('localhost');
     cy.acceptMetamaskAccess();
 
