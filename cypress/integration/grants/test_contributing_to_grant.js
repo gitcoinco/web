@@ -25,7 +25,7 @@ describe('contributing to grant', () => {
       cy.get('#navbarDropdownWallet').click();
       cy.contains('Connect Wallet').click();
       cy.contains('MetaMask').click();
-      
+
       cy.changeMetamaskNetwork('localhost');
       cy.acceptMetamaskAccess();
 
