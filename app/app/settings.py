@@ -109,7 +109,6 @@ INSTALLED_APPS = [
     'app',
     'avatar',
     'retail',
-    'ptokens',
     'rest_framework',
     'django_filters',
     'marketing',
@@ -186,7 +185,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates', 'quadraticlands/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'quadraticlands/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -870,20 +869,6 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
-PTOKEN_BLOCKED_REGION = { 'country_code': 'US', 'region': 'NY' }
-PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
-PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
-PTOKEN_FACTORY_ADDRESS = env('PTOKEN_FACTORY_ADDRESS', default='0x358bcf43fe7ec2659aD829F3604c72781fc93a9E')
-PTOKEN_ABI = ''
-PTOKEN_FACTORY_ABI = ''
-
-if PTOKEN_ABI_PATH:
-    with open(str(root.path(PTOKEN_ABI_PATH))) as f:
-        PTOKEN_ABI = json.load(f)
-
-if PTOKEN_FACTORY_ABI_PATH:
-    with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
-        PTOKEN_FACTORY_ABI = json.load(f)
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')

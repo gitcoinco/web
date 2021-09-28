@@ -103,7 +103,6 @@ from marketing.models import Keyword
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from perftools.models import JSONStore
-from ptokens.models import PersonalToken, PurchasePToken, RedemptionToken
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
@@ -908,7 +907,7 @@ def users_directory_elastic(request):
     return redirect('/users')
 
 
-def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = "", only_with_tokens = False):
+def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = ""):
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -951,9 +950,6 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         profile_list = profile_list.filter(
             hackathon_registration__hackathon=hackathon_id
         )
-    if only_with_tokens:
-        token_owners_profile_ids = PersonalToken.objects.filter(network=network).values_list('token_owner_profile_id', flat=True)
-        profile_list = profile_list.filter(pk__in=token_owners_profile_ids)
     return profile_list
 
 
@@ -1030,7 +1026,6 @@ def users_fetch(request):
     tribe = request.GET.get('tribe', '')
     hackathon_id = request.GET.get('hackathon', '')
     user_filter = request.GET.get('user_filter', '')
-    only_with_tokens = request.GET.get('only_with_token', '') == 'true'
 
     user_id = request.GET.get('user', None)
     if user_id:
@@ -1088,8 +1083,7 @@ def users_fetch(request):
         leaderboard_rank,
         rating,
         organisation,
-        hackathon_id,
-        only_with_tokens
+        hackathon_id
     )
 
     if request.GET.get('type') == 'explore_tribes':
@@ -1492,7 +1486,8 @@ def bulk_invite(request):
         bounties_completed,
         leaderboard_rank,
         rating,
-        organisation)
+        organisation
+    )
 
     invite_url = f'{settings.BASE_URL}issue/{get_bounty_invite_url(request.user.username, bounty_id)}'
 
@@ -2156,9 +2151,6 @@ def user_card(request, handle):
     profile_dict = profile.as_dict
     followers = TribeMember.objects.filter(org=profile).count()
     following = TribeMember.objects.filter(profile=profile).count()
-    purchased_count = PurchasePToken.objects.filter(token_holder_profile=profile, tx_status='success').count()
-    redeemed_count = RedemptionToken.objects.filter(redemption_requester=profile, tx_status='success').count()
-    has_ptoken = PersonalToken.objects.filter(token_owner_profile=profile).exists()
 
     response = {
         'is_authenticated': request.user.is_authenticated,
@@ -2172,9 +2164,6 @@ def user_card(request, handle):
             'data': profile.data,
             'followers':followers,
             'following':following,
-            'purchased_count': purchased_count,
-            'redeemed_count': redeemed_count,
-            'has_ptoken': has_ptoken,
         },
         'profile_dict': profile_dict
     }
@@ -2639,7 +2628,6 @@ def get_profile_tab(request, profile, tab, prev_context):
     context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).cache().count()
     context['my_kudos'] = [] # Causing perf issues # profile.get_my_kudos.cache().distinct('kudos_token_cloned_from__name')[0:7]
     context['projects_count'] = HackathonProject.objects.filter(profiles__id=profile.id).cache().count()
-    context['personal_tokens_count'] = PurchasePToken.objects.filter(token_holder_profile_id=profile.id).distinct('ptoken').cache().count()
     # specific tabs
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
@@ -2807,9 +2795,6 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['kudos'] = profile.get_failed_kudos
         context['kudos_count'] = owned_kudos.count()
         context['sent_kudos_count'] = sent_kudos.count()
-    elif tab == 'ptokens':
-        tokens_list = PurchasePToken.objects.filter(token_holder_profile_id=profile.id).distinct('ptoken').values_list('ptoken', flat=True)
-        context['purchased_ptokens'] = PersonalToken.objects.filter(pk__in=tokens_list)
     elif tab == 'ratings':
         context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
         context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -3852,7 +3837,7 @@ def profile(request, handle, tab=None):
     disable_cache = False
 
     # make sure tab param is correct
-    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'ptokens', 'trust']
+    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'trust']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated and request.user.profile:
         # someone trying to go to their own profile?
@@ -3940,8 +3925,6 @@ def profile(request, handle, tab=None):
             active_tab = 2
         elif tab == "people":
             active_tab = 3
-        elif tab == "ptokens":
-            active_tab = 4
         context['active_panel'] = active_tab
 
         # record profile view
@@ -4010,22 +3993,6 @@ def profile(request, handle, tab=None):
     # record profile view
     if request.user.is_authenticated and not context['is_my_profile']:
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
-
-    if request.user.is_authenticated:
-        ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
-
-        if ptoken:
-            context['ptoken'] = ptoken
-            context['total_minted'] = ptoken.total_minted
-            context['total_purchases'] = ptoken.ptoken_purchases.count()
-            context['total_redemptions'] = RedemptionToken.objects.filter(ptoken=ptoken,
-                                                                          redemption_state='completed').count()
-            context['total_holders'] = len(ptoken.get_holders())
-            context['current_hodling'] = ptoken.get_hodling_amount(request.user.profile)
-            context['locked_amount'] = RedemptionToken.objects.filter(ptoken=ptoken,
-                                                                      redemption_requester=request.user.profile,
-                                                                      redemption_state__in=['request', 'accepted', 'waiting_complete']).aggregate(locked=Sum('total'))['locked'] or 0
-            context['available_to_redeem'] = context['current_hodling'] - context['locked_amount']
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
@@ -5509,9 +5476,7 @@ def board(request):
     """Handle the board view."""
 
     user = request.user
-    has_ptoken_auth = user.has_perm('auth.add_pToken_auth')
     keywords = user.profile.keywords if user.profile else None
-    ptoken = PersonalToken.objects.filter(token_owner_profile=user.profile).first()
 
     context = {
         'is_outside': True,
@@ -5521,8 +5486,6 @@ def board(request):
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
         'keywords': keywords,
-        'ptoken': ptoken,
-        'has_ptoken_auth': has_ptoken_auth,
     }
     return TemplateResponse(request, 'board/index.html', context)
 

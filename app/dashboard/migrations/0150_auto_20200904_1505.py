@@ -8,21 +8,21 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ptokens', '0001_initial'),
+        # ('ptokens', '0001_initial'),
         ('dashboard', '0149_add_twitter_verify_status'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='activity',
-            name='ptoken',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='ptoken_activities', to='ptokens.PersonalToken'),
-        ),
-        migrations.AddField(
-            model_name='activity',
-            name='redemption',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ptokens.RedemptionToken'),
-        ),
+        # migrations.AddField(
+        #     model_name='activity',
+        #     name='ptoken',
+        #     field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='ptoken_activities', to='ptokens.PersonalToken'),
+        # ),
+        # migrations.AddField(
+        #     model_name='activity',
+        #     name='redemption',
+        #     field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='ptokens.RedemptionToken'),
+        # ),
         migrations.AddField(
             model_name='profile',
             name='tokens',
