@@ -1,6 +1,0 @@
-{% load i18n %}
-Your time token is ready
-
-* {% trans "Token name:" %} {{ ptoken.token_name }}
-* {% trans "Token symbol:" %} {{ ptoken.token_symbol }}
-* {% trans "Token address:" %} {{ ptoken.token_address }}
