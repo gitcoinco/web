@@ -10,4 +10,4 @@ class ContributionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Contribution
 
-    subscription = factory.SubFactory(SubscriptionFactory) 
+    subscription = factory.SubFactory(SubscriptionFactory)
