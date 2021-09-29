@@ -28,7 +28,7 @@ from django.utils import timezone
 from dashboard.models import Activity, Earning, Profile
 from economy.utils import convert_token_to_usdt
 from grants.models import *
-from grants.models import CartActivity, Contribution, PhantomFunding
+from grants.models import CartActivity, Contribution
 from grants.utils import get_clr_rounds_metadata
 from townsquare.models import Comment
 
@@ -308,8 +308,7 @@ def grants():
     contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, subscription_network='mainnet')#, subscription__grant__in=grants_pks)
     if must_be_successful:
         contributions = contributions.filter(success=True)
-    pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
-    total = contributions.count() + pfs.count()
+    total = contributions.count()
 
     current_carts = CartActivity.objects.filter(created_on__gt=start, latest=True)#, grant__in=grants_pks)
     num_carts = 0

@@ -27,8 +27,8 @@ from django.utils.safestring import mark_safe
 
 import twitter
 from grants.models import (
-    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantStat, GrantTag, GrantType, MatchPledge, PhantomFunding, Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantTag, GrantCLR,
+    GrantCLRCalculation, GrantCollection, GrantStat, GrantType, MatchPledge, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
@@ -410,24 +410,6 @@ class ContributionAdmin(GeneralAdmin):
         return redirect(obj.admin_url)
 
 
-class PhantomFundingAdmin(admin.ModelAdmin):
-    """Define the GeneralAdmin administration layout."""
-
-    ordering = ['-id']
-    list_display = ['id', 'github_created_on', 'from_ip_address', '__str__']
-    raw_id_fields = ['profile', 'grant']
-
-    def github_created_on(self, instance):
-        return naturaltime(instance.profile.github_created_on)
-
-    def from_ip_address(self, instance):
-        end = instance.created_on + timezone.timedelta(hours=1)
-        start = instance.created_on - timezone.timedelta(hours=1)
-        visits = set(instance.profile.actions.filter(created_on__gt=start, created_on__lte=end).values_list('ip_address', flat=True))
-        visits = [visit for visit in visits if visit]
-        return " , ".join(visits)
-
-
 class CartActivityAdmin(admin.ModelAdmin):
     list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'latest', 'created_on']
     raw_id_fields = ['grant', 'profile']
@@ -537,7 +519,6 @@ class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
 
-admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Flag, FlagAdmin)
