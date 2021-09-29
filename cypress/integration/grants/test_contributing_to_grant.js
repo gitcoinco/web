@@ -76,7 +76,6 @@ describe('contributing to grant', () => {
 
     cy.visit('grants/cart?');
 
-
     cy.contains('MetaMask').click();
 
     cy.changeMetamaskNetwork('localhost');
