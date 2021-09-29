@@ -2248,6 +2248,7 @@ $(document).ready(function() {
   });
 
   const passportCredential = (() => {
+    const CERAMIC_NODE_URL = 'https://ceramic-clay.3boxlabs.com';
     const CERAMIC_DOC_FAMILY = 'popp';
     const CERAMIC_DOC_TAGS = [
       'gitcoin',
@@ -2397,7 +2398,7 @@ $(document).ready(function() {
 
       modal.html(`${base} <hr /> ${getContent(false)}`);
 
-      const client = await Ceramic.initializeClient();
+      const client = await Ceramic.initializeClient(CERAMIC_NODE_URL);
 
 
       modal.html(`${base} <hr /> ${getContent(true, false)}`);
