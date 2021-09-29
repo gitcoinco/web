@@ -91,6 +91,9 @@ pytest: ## Run pytest (Backend)
 pytest-pdb: ## Run pytest with pdb support (Backend)
 	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
+pytest-file: ## Run pytest for a single file (Backend)
+	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum ${file}
+
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint
 
