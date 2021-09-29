@@ -10,4 +10,3 @@ class ProfileFactory(factory.django.DjangoModelFactory):
 
     handle = factory.Sequence(lambda n: "Contributor_%03d" % n)
     data = {} 
-
