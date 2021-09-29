@@ -64,12 +64,6 @@
             {% trans "HACKATHONS" %}
             {% if projects_count %}<span class="nav-badge">({{projects_count}})</span>{% endif %}
         {% endif %}
-        {% if is_staff and personal_tokens_count %}
-          <button type="button" id="nav-description" href="{{profile.url}}/ptokens" class="text-center section-tab {% if tab == "ptokens" %} active {% endif %}">
-            {% trans "TIME TOKENS" %}
-            {% if personal_tokens_count %}<span  class="nav-badge">({{personal_tokens_count}})</span>{%endif%}
-          </button>
-        {% endif %}
         {% if is_editable and profile.viewed_by.count %}
           <button type="button" id="nav-description" href="{{profile.url}}/viewers" class="text-center section-tab {% if tab == "viewers" %} active {% endif %}">
             <i class="fas fa-eye"></i>
@@ -139,8 +133,6 @@
             {% include 'profiles/tab_quests.html' %}
           {% elif tab == 'hackathons' %}
             {% include 'profiles/tab_hackathons.html' %}
-          {% elif tab == 'ptokens' %}
-            {% include 'profiles/tab_ptokens.html' %}
           {% elif tab == 'trust' %}
             {% include 'profiles/trust-vue.html' %}
           {% endif %}

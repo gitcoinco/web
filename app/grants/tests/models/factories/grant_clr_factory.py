@@ -6,7 +6,6 @@ from grants.models.grant import GrantCLR
 
 from .profile_factory import ProfileFactory
 
-
 @pytest.mark.django_db
 class GrantCLRFactory(factory.django.DjangoModelFactory):
     """Create mock GrantCLR for testing."""
