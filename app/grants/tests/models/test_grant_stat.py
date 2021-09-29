@@ -39,5 +39,3 @@ class TestGrantStat:
         grant_stat = GrantStatFactory()
 
         assert hasattr(grant_stat, 'snapshot_type')
-
-    

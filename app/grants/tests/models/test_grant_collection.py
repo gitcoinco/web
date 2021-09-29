@@ -101,7 +101,3 @@ class TestGrantCollection:
         assert hasattr(grant_collection, 'curators')
         assert isinstance(grant_collection.curators.first(), Profile)
         assert len(grant_collection.curators.all()) == len(curators) 
-
-    
-
-    
