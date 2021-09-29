@@ -133,12 +133,12 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
-          _alert('Unable to make contribute to grant. Please try again later', 'danger');
+          _alert('Unable to contribute to grant. Please try again later', 'danger');
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
-        _alert('Unable to make contribute to grant. Please try again later', 'danger');
+        _alert('Unable to contribute to grant. Please try again later', 'danger');
         console.log(error);
       });
     }
