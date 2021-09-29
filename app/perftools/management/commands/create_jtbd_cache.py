@@ -52,7 +52,8 @@ def create_jtbd_earn_cache():
     thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
 
     bounties = list(Bounty.objects.filter(
-        network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago
+        network='mainnet', event=None, idx_status='open', created_on__gt=thirty_days_ago,
+        current_bounty=True
     ).order_by('-_val_usd_db').extra(
         select={'val_usd_db': '_val_usd_db'}
     ).values(
