@@ -34,7 +34,6 @@ from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
 from perftools.models import JSONStore
-from ptokens.models import PersonalToken
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
@@ -74,9 +73,6 @@ def preprocess(request):
     if request.path == '/lbcheck':
         return {}
 
-    ptoken = None
-
-    search_url = ''
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     if user_is_authenticated and profile and profile.pk:
@@ -103,17 +99,6 @@ def preprocess(request):
         if should_record_join:
             # record the joined action as a celery task
             record_join.delay(profile.pk)
-
-        ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
-
-    # Check if user's location supports pTokens
-    try:
-        current_location = profile.locations[-1]
-        is_location_blocked_for_ptokens = current_location['country_code'] == settings.PTOKEN_BLOCKED_REGION['country_code'] \
-            and current_location['region'] == settings.PTOKEN_BLOCKED_REGION['region']
-    except:
-        # If user is not logged in
-        is_location_blocked_for_ptokens = False
 
     # handles marketing callbacks
     if request.GET.get('cb'):
@@ -176,12 +161,6 @@ def preprocess(request):
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
         'onboard_tasks': onboard_tasks,
-        'ptoken_abi': settings.PTOKEN_ABI,
-        'ptoken_factory_address': settings.PTOKEN_FACTORY_ADDRESS,
-        'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI,
-        'ptoken_address': ptoken.token_address if ptoken else '',
-        'ptoken_id': ptoken.id if ptoken else None,
-        'is_location_blocked_for_ptokens': is_location_blocked_for_ptokens,
         'match_payouts_abi': settings.MATCH_PAYOUTS_ABI,
         'match_payouts_address': settings.MATCH_PAYOUTS_ADDRESS,
         'mautic_id': profile.mautic_id if profile else None

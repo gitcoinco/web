@@ -1,6 +1,0 @@
-{% load i18n %}
-Redemption Complete
-
-📥 @{{  redeem.token.token_owner_profile.handle  }} request to complete the redemption {{ redeem.total }} {{ ptoken.token_symbol }}
-
-{{ redeem.reason }}
