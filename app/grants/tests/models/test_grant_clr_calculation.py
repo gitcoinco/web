@@ -48,6 +48,3 @@ class TestGrantCLRCalculation:
         assert hasattr(grant_clr_calculation, 'clr_prediction_curve')
         assert grant_clr_calculation.clr_prediction_curve == []
         assert len(grant_clr_calculation.clr_prediction_curve) == 0
-
-
-

@@ -7,4 +7,3 @@ class GrantTypeFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = GrantType
-
