@@ -84,13 +84,13 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
 
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
-          _alert('Unable to make contribute to grant. Please try again later', 'danger');
+          _alert('Unable to contribute to grant. Please try again later', 'danger');
           harmony_utils.logoutHarmonyExtension(harmonyExt);
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
-        _alert('Unable to make contribute to grant. Please try again later', 'danger');
+        _alert('Unable to contribute to grant. Please try again later', 'danger');
         harmony_utils.logoutHarmonyExtension(harmonyExt);
         console.log(error);
       });

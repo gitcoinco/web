@@ -38,18 +38,12 @@
             <div class="nav nav-tabs" id="myTab" role="tablist">
               <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
               <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
-              {% if is_staff %}
-              <a class="nav-item nav-link nav-line alpha-warning" id="ptokens-tab" data-toggle="tab" href="#nav-ptokens" role="tab" aria-controls="ptokens" aria-selected="true" @click="checkData('personal-tokens')">Time Tokens</a>
-              {% endif %}
             </div>
           </nav>
         </div>
         <div class="tab-content" id="nav-tabContent">
           {% include 'board/funder.html' %}
           {% include 'board/contributor.html' %}
-          {% if is_staff %}
-            {% include 'board/ptokens.html' %}
-          {% endif %}
         </div>
       </div>
       {% include 'shared/footer.html' %}
@@ -62,28 +56,6 @@
         </script>
       {% endif %}
       <script src="{% static "v2/js/vue-components.js" %}"></script>
-      <script>
-        document.has_ptoken_auth = {{ has_ptoken_auth|yesno:"true,false"}};
-        document.user_has_token = {{ ptoken|yesno:"true,false" }};
-        {% if ptoken %}
-        document.ptoken = {
-          id: {{ ptoken.id }},
-          name: "{{ ptoken.token_name }}",
-          symbol: "{{ ptoken.token_symbol}} ",
-          price: parseFloat("{{ ptoken.value }}"),
-          supply: parseFloat("{{ ptoken.total_minted }}"),
-          address: "{{ ptoken.token_address }}",
-          available: parseFloat("{{ ptoken.available_supply }}"),
-          purchases: parseFloat("{{ ptoken.total_purchases }}"),
-          redemptions: parseFloat("{{ ptoken.total_redemptions }}"),
-          tx_status: "{{ ptoken.tx_status }}"
-        }
-        document.current_ptoken_address = "{{ ptoken.token_address }}";
-        {% else  %}
-          document.ptoken = {}
-        {% endif %}
-      </script>
-      <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
       <script src="{% static "v2/js/board.js" %}"></script>
       <script>
         $('body').bootstrapTooltip({
