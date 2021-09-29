@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 import requests
 from economy.models import SuperModel
+from economy.tx import check_for_replaced_tx
 from townsquare.models import Comment
 from web3 import Web3
 
@@ -153,9 +154,8 @@ class Contribution(SuperModel):
     def update_tx_status(self):
         """Updates tx status for Ethereum contributions."""
         try:
+            from dashboard.utils import get_web3
             from economy.tx import grants_transaction_validator
-            from dashboard.utils import get_tx_status
-            from economy.tx import getReplacedTX
 
             # If `tx_override` is True, we don't run the validator for this contribution
             if self.tx_override:
@@ -186,20 +186,19 @@ class Contribution(SuperModel):
                 self.tx_cleared = True
                 self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
 
-            elif self.checkout_type == 'eth_std':
-                # Standard L1 checkout using the BulkCheckout contract
+            elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
+                # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
 
+                # get active chain std/polygon
+                chain =  self.checkout_type.split('_')[-1]
+                
                 # Prepare web3 provider
-                PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
-                w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+                w3 = get_web3(network, chain=chain)
 
                 # Handle dropped/replaced transactions
-                split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-                if split_tx_status in ['pending', 'dropped', 'unknown', '']:
-                    new_tx = getReplacedTX(self.split_tx_id)
-                    if new_tx:
-                        self.split_tx_id = new_tx
-                        split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+                _, split_tx_status, _ = check_for_replaced_tx(
+                    self.split_tx_id, network, self.created_on, chain=chain
+                )
 
                 # Handle pending txns
                 if split_tx_status in ['pending']:
@@ -225,7 +224,7 @@ class Contribution(SuperModel):
                     return
 
                 # Validate that the token transfers occurred
-                response = grants_transaction_validator(self, w3)
+                response = grants_transaction_validator(self, w3, chain=chain)
                 if len(response['originator']):
                     self.originated_address = response['originator'][0]
                 self.validator_passed = response['validation']['passed']
