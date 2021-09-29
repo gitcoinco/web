@@ -64,5 +64,3 @@ class TestCartActivity:
 
         assert hasattr(cart_activity, "latest")
         assert cart_activity.latest == False
-
-
