@@ -108,28 +108,6 @@
           <a data-usercard="{{ row.metadata.to_username }}" href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
-        {% elif row.activity_type == 'create_ptoken' %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "created the" %} {{ row.ptoken.token_symbol }} token.
-        {% elif row.activity_type == 'complete_redemption_ptoken' %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "marked his "%} {{ row.ptoken.token_symbol }}  {% trans "token request from" %}  {{ row.metadata.redemption_requester_name }} {% trans "as complete" %}
-        {% elif row.activity_type == 'mint_ptoken' %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "minted "%} {{ row.ptoken.token_symbol }} tokens.
-        {% elif row.activity_type == 'burn_ptoken' %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "burned "%} {{ row.ptoken.token_symbol }} tokens.
-        {% elif row.activity_type == 'buy_ptoken' %}
-           {% trans "Purchased" %} {{ row.ptoken.token_symbol }} {% trans "time token from" %}  <a href="/{{ row.ptoken.token_owner_profile.handle }}">@{{ row.ptoken.token_owner_profile.handle }}</a>.
-        {% elif row.activity_type == 'edit_price_ptoken' %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "edited the"%} {{ row.ptoken.token_symbol }}  {% trans "token price." %}
-        {% elif row.activity_type == 'accept_redemption_ptoken' %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "accepted a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.redemption.redemption_requester.handle }}
-        {% elif row.activity_type == 'denies_redemption_ptoken' and row.profile.id == row.ptoken.token_owner_profile.id and row.metadata.redemption_state == 'cancelled'%}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "cancelled a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.redemption.redemption_requester.handle }}
-        {% elif row.activity_type == 'denies_redemption_ptoken' and row.profile.id == row.ptoken.token_owner_profile.id %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans "denied a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request from"%} @{{ row.ptoken.token_owner_profile.handle }}
-        {% elif row.activity_type == 'denies_redemption_ptoken' %}
-          @{{ row.redemption.redemption_requester.handle }} {% trans "denied a redemption" %} {{ row.ptoken.token_symbol }} {% trans "token request to"%} @{{ row.ptoken.token_owner_profile.handle }}
-        {% elif row.activity_type == 'incoming_redemption_ptoken' %}
-          @{{ row.ptoken.token_owner_profile.handle }} {% trans " has an incoming redemption finalized by the Buyer "%}
         {% elif row.activity_type == 'mini_clr_payout' %}
           {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}

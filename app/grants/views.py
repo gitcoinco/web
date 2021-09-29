@@ -1857,7 +1857,7 @@ def grant_new(request):
             return JsonResponse(response)
 
         eth_payout_address = request.POST.get('eth_payout_address', request.POST.get('admin_address'))
-        zcash_payout_address = request.POST.get('zcash_payout_address', '0x0')
+        zcash_payout_address = request.POST.get('zcash_payout_address', None)
         celo_payout_address = request.POST.get('celo_payout_address', None)
         zil_payout_address = request.POST.get('zil_payout_address', None)
         polkadot_payout_address = request.POST.get('polkadot_payout_address', None)
