@@ -59,8 +59,7 @@ def modulo(num, val):
     """
     if num and val:
         return num % val
-    else:
-        return 0
+    return 0
 
 @register.simple_tag
 def is_team_member(grant, profile):
