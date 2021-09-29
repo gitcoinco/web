@@ -19,6 +19,7 @@ class Contribution(SuperModel):
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
         ('eth_zksync', 'eth_zksync'),
+        ('eth_polygon', 'eth_polygon'),
         ('zcash_std', 'zcash_std'),
         ('celo_std', 'celo_std'),
         ('zil_std', 'zil_std'),
