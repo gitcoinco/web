@@ -60,6 +60,8 @@ class GrantCLR(SuperModel):
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
     end_date = models.DateTimeField(help_text="CLR Round End Date")
+    claim_start_date = models.DateTimeField(help_text="CLR Claim Start Date", null=True)
+    claim_end_date = models.DateTimeField(help_text="CLR Claim Start Date", null=True)
     grant_filters = JSONField(
         default=dict,
         null=True, blank=True,
