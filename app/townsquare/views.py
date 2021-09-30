@@ -324,6 +324,7 @@ def ignored_suggested_tribe(request, tribeId):
 
 
 def get_suggested_tribes(request):
+    return []
     following_tribes = []
     tribe_limit = 5
 
