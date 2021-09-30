@@ -2268,8 +2268,9 @@ def profile_activity(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
+    date = timezone.now() - timezone.timedelta(days=365)
     activities = list(profile.get_various_activities().values_list('created_on', flat=True))
-    activities += list(profile.actions.values_list('created_on', flat=True))
+    activities += list(profile.actions.filter(created_on__gt=date).values_list('created_on', flat=True))
     response = {}
     prev_date = timezone.now()
     for i in range(1, 12*30):
