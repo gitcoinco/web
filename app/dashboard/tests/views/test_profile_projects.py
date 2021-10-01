@@ -22,7 +22,7 @@ class TestProfileTabProjectCreation:
 
     def test_project_creation_fails_when_url_is_empty(self, django_user_model):
         user = django_user_model.objects.create(username="gitcoin", password="password123")
-        project_data = dict(project_title="My New Project", URL="http")
+        project_data = dict(project_title="My New Project", URL="")
         ProfileFactory(user=user, handle="gitcoin")
 
         client = Client(HTTP_USER_AGENT='chrome')
