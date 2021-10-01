@@ -60,7 +60,6 @@ class TestProfileTabProjectCreation:
 
         client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
-
         response = client.post('/gitcoin/portfolio', project_data)
         messages = [m.message for m in response.context['messages']]
 

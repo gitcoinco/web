@@ -3813,7 +3813,7 @@ def profile_filter_activities(activities, activity_name, activity_tabs):
     return activities.filter(activity_type=activity_name)
 
 
-def profile(request, handle, tab='activity'):
+def profile(request, handle, tab=None):
     """Display profile details.
 
     Args:
