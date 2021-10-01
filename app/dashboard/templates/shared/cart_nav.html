@@ -21,7 +21,7 @@
           <div v-for="(item, index) in items" :key="index">
             <div :class="['row', (index != items.length-1 ? 'pb-3' : '')]">
               <div class="d-flex col-3 justify-content-center my-auto" style="overflow:hidden;">
-                <img :src="item.grant_logo" width="40">
+                <img class="align-self-start" :src="item.grant_logo" width="40">
               </div>
               <div class="col-7 line-clamp-1 my-auto cursor-none">
                 [[ item.grant_title ]]
