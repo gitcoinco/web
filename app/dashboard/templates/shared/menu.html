@@ -280,6 +280,12 @@
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'grants:quickstart' %}">{% trans "About Grants" %}</a>
                     </li>
+                    <li>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}stats">{% trans "Stats" %}</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}activity">{% trans "Activity" %}</a>
+                    </li>
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute {% if '/quests' in request.path %}active{% endif %}">
