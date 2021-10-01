@@ -57,7 +57,6 @@ from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
-from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
 from dashboard.idena_utils import get_idena_status
 from dashboard.tokens import addr_to_token, token_by_name
@@ -2934,7 +2933,6 @@ class Profile(SuperModel):
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
     automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
-    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
 
     tribes_cover_image = models.ImageField(
         upload_to=get_upload_filename,
@@ -3070,10 +3068,6 @@ class Profile(SuperModel):
         if not self.is_org :
             return TribesSubscription.objects.filter(tribe__in=self.organizations_fk.all()).all()
         return TribesSubscription.objects.filter(tribe=self).all()
-
-    @property
-    def suggested_bounties(self):
-        suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
 
     @property
     def sybil_score_str(self):

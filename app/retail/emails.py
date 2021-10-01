@@ -1192,18 +1192,6 @@ def render_reserved_issue(to_email, user, bounty):
     return response_html, response_txt, subject
 
 
-def render_bounty_request(to_email, model, base_url):
-    params = {
-        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'model': model,
-        'base_url': base_url
-    }
-    subject = _("New Bounty Request")
-    response_html = premailer_transform(render_to_string("emails/bounty_request.html", params))
-    response_txt = render_to_string("emails/bounty_request.txt", params)
-    return response_html, response_txt, subject
-
-
 def render_start_work_approved(interest, bounty):
     to_email = interest.profile.email
     params = {

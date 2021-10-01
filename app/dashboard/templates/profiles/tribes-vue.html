@@ -153,11 +153,6 @@
         color: rgba(255,255,255,0.70) !important;
       }
 
-      .suggested_bounties__box {
-        background-color: #EFF3F6;
-      }
-
-      .update-priority-submit,
       .update-priority {
         background-color: white;
       }
@@ -166,18 +161,6 @@
       .priorities img {
         max-width: 4rem;
         height: auto;
-      }
-
-      .update-priority-submit .form__label {
-        font-size: 11px;
-        margin-top: 0.8rem;
-        color: #6587AE;
-      }
-
-      .update-priority-submit .form__label::before {
-        width: 15px;
-        height: 15px;
-        margin-right: 5px
       }
 
       .priority-container .ql-toolbar.ql-snow,
@@ -190,15 +173,6 @@
 
       .priority-container .ql-container {
         min-height: 5rem;
-      }
-
-      .suggested_bounties h2 {
-        color: rgba(0,0,0,0.70);
-      }
-
-      .suggest-bounty-form,
-      .suggested_bounty {
-        background: white;
       }
 
       @media (max-width: 767.98px) {
@@ -1153,13 +1127,10 @@
                       {% trans "Manage" %}
                     </div>
                   </template>
-                  <div class="suggested_bounties row">
+                  <div class="row">
                     <div class="col-10 offset-1">
-                      <div class="rounded py-4 px-md-5 row mx-0 suggested_bounties">
+                      <div class="rounded py-4 px-md-5 row mx-0">
                         <b-col>
-                          <h2 class="mt-2 mb-4 font-bigger-1 font-weight-bold mx-3 ml-lg-0">
-                            {% trans "Update Sidebar" %}
-                          </h2>
                           <div class="col-12 col-md-11 px-0 pr-md-0">
                             <div class="priority-container mt-4">
                               <div class="priorities rounded col-12 py-4">
@@ -1178,110 +1149,12 @@
                                 ></quill-editor>
                               </div>
                             </div>
-                            <div class="priority-container mt-5">
-
-                              <div class="priorities rounded col-12 py-4">
-                                <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
-                                  <p class="mb-3 font-bigger-3"><i class="far fa-star"></i></p>
-                                  <span>Share your priorities to encourage tribe members</span>
-                                  <span class="d-block mt-2">to volunteer to work on bounties which matter</span>
-                                </h2>
-                              </div>
-
-                              <quill-editor
-                                ref="quillEditorPriority"
-                                class="editor bg-white"
-                                v-model="tribe.tribe_priority"
-                                :options="editorOptionPrio"
-                              ></quill-editor>
-                            </div>
                           </div>
-                          <div class="update-priority-submit col-12 col-md-11 p-1">
-                              <div class="form__checkbox d-inline-block p-2">
-                                <b-form-checkbox v-model="params.publish_to_ts" name="check-button" switch>
-                                  {% trans "Post to Townsquare" %}
-                                </b-form-checkbox>
-                              </div>
-                          </div>
-                          <button type="submit" class="btn btn-sm btn-primary font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
+
+                          <button type="submit" class="btn btn-primary font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
                             <i class="fas fa-bullhorn mr-2"></i> {% trans "Update Sidebar" %}
                           </button>
                         </b-col>
-                      </div>
-                      <div v-if="tribe.suggested_bounties && tribe.suggested_bounties.length > 0" class="rounded py-4 px-md-5 row mx-0 suggested_bounties">
-
-                          <b-col>
-                            <!-- SUGGESTED BOUNTIES -->
-                            <h2 class="mt-5 mb-4 font-bigger-1 font-weight-bold mx-3">
-                              {% trans "Suggested Bounties" %}
-                            </h2>
-
-
-                            <div v-for="(suggested_bounty, idx) in tribe.suggested_bounties" :id="suggested_bounty.id" class="row suggested_bounty rounded p-4">
-                            <div class="col-7">
-                              <h3 class="font-subheader font-weight-bold">[[ suggested_bounty.title ]]</h3>
-                              <p class="font-caption text-black-60 mb-1" v-html="suggested_bounty.comment"></p>
-                              <div class="row font-caption">
-                                <div class="col-12">
-                                  <a :href="suggested_bounty.github_url" target="_blank" rel="noopener noreferrer">
-                                    <i class="fab fa-github mr-1"></i> {% trans "View Github Issue" %}
-                                  </a>
-                                  <span class="mx-2 text-grey">
-                                    <i class="far fa-user mr-1"></i>
-                                    [[ suggested_bounty.requested_by.handle ]]
-                                  </span>
-                                  <span class="text-grey mr-2">
-                                    <i class="far fa-clock mr-1"></i>
-                                    [[ suggested_bounty.created_on|moment ]]
-                                  </span>
-                                  <div class="tag usd my-0">
-                                    <p class="font-smaller-5">
-                                      [[ suggested_bounty.amount ]]
-                                      <span>[[ suggested_bounty.token_name ]]</span>
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div v-if="is_my_org" class="col-5 my-auto text-right">
-                              <a target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary font-smaller-4 mx-2" :href="`{% url 'new_bounty' %}?type=public&url=${suggested_bounty.github_url}&invite=${suggested_bounty.requested_by.id}&amount=${suggested_bounty.amount}`">
-                                <i class="fas fa-plus-circle mr-1"></i>
-                                {% trans "Fund Request" %}
-                              </a>
-                              <button class="btn btn-sm btn-outline-danger font-smaller-4 mx-2"
-                                @click.prevent="rejectBountyRequest(idx, suggested_bounty.id);"
-                              >
-                                <i class="fas fa-times-circle mr-1"></i>
-                                {% trans "Cancel Request" %}
-                              </button>
-                            </div>
-                          </div>
-                          </b-col>
-                        </div>
-                      <div v-else-if="is_my_org" class="col-12 suggested_bounties">
-                        <h2 class="text-center font-bigger-1 mt-5">
-                          <p class="mb-3 font-bigger-3"><i class="far fa-lightbulb"></i></p>
-                          <span>No Bounties have been suggested</span>
-                          <span class="d-block mt-2">
-                            Update your tribe's priorities to guide contributors
-                          </span>
-                          <span class="d-block mt-2">
-                            to submit issues they'd wanna <strong>#BUDIL</strong>
-                          </span>
-                        </h2>
-                      </div>
-                      <div v-else class="col-12 suggested_bounties">
-                        <h2 class="text-center font-bigger-1 mt-5">
-                          <p class="mb-3 font-bigger-3"><i class="fas fa-tools"></i></p>
-                          <span>No Bounties have been suggested</span>
-                          <span class="d-block mt-2">
-                            Suggest an issue you'd like bountied out to
-                          </span>
-                          <span class="d-block mt-2">
-                            <strong>#BUDIL</strong> to grow {{ profile.handle }}
-                          </span>
-                        </h2>
                       </div>
                     </div>
                   </div>
@@ -1374,9 +1247,6 @@
                       </b-col>
                     <b-col v-html="tribe.tribe_description" class="mt-3"></b-col>
                     <b-col>
-                      <b-button v-if="!is_my_org && is_on_tribe" variant="primary" v-b-modal.suggest-bounty-modal class="btn btn-block px-3 btn-primary d-none d-md-inline-block">
-                        {% trans "Suggest a Bounty" %}
-                      </b-button>
                       <div v-if="tribe.data && tribe.data.bio" variant="primary" class="col-12 d-md-none profile-header__bio my-3">
                         [[ tribe.data.bio ]]
                       </div>
@@ -1385,24 +1255,6 @@
                       {% endif %}
                     </b-col>
 
-                  <div class="pt-0 mt-3 font-body d-none d-md-inline-block">
-                    <div v-if="tribe.tribe_priority" style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
-                      <h4 class="mx-3 pt-4 font-body font-weight-bold">Currently collecting ideas for</h4>
-                      <ul v-html="tribe.tribe_priority" class="my-0 mx-4 p-0 pb-4">
-                      </ul>
-                    </div>
-                    <div v-if="tribe.suggested_bounties && tribe.suggested_bounties.length > 0" class="card" style="border-radius: 0px 0px 4px 4px;">
-                      <h4 class="px-2 pt-3 font-body font-weight-semibold text-muted">{% trans "Top ideas from the community" %}</h4>
-                      <table class="px-3 table table-borderless">
-                        <tbody>
-                          <tr v-for="suggested_bounty in tribe.suggested_bounties ">
-                            <th class="pr-0 font-weight-normal" scope="row">[[ suggested_bounty.id ]]</th>
-                            <td class="px-3 font-weight-bold">[[ suggested_bounty.title ]]</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1421,56 +1273,6 @@
             <template v-slot:modal-footer>
               <b-button variant="danger" class="btn btn-danger btn-sm" @click="$bvModal.hide('change-tribe-header')">Cancel</b-button>
               <b-button variant="primary" class="btn btn-primary btn-sm" @click.prevent="updateTribe();">Save</b-button>
-            </template>
-          </b-modal>
-          <b-modal size="lg" v-if="!is_my_org" @hide="resetBountySuggestion" @close="resetBountySuggestion" @cancel="resetBountySuggestion"  hide-backdrop content-class="shadow" id="suggest-bounty-modal" tabindex="-1" role="dialog" aria-labelledby="suggestBountyLabel" aria-hidden="true">
-            <template v-slot:modal-title>
-              {% trans "Suggest a Bounty"%}
-            </template>
-            <div class="px-1">
-              <div id="create_bounty_request" class="suggest-bounty-form px-4 pt-2 pb-5 rounded">
-                <div class="mt-3">
-                  <div class="editor-container">
-                    <quill-editor
-                      ref="quillEditorDesc"
-                      class="editor"
-                      v-model="params.suggest.comment"
-                      :options="editorOptionComment"
-                    ></quill-editor>
-                  </div>
-                </div>
-
-                <div>
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for=githubUrl>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-                  <input v-model="params.suggest.githubUrl" id="githubUrl" class="form__input font-smaller-1" type="url" placeholder="https://github.com/user/repo/issues/n" value="" required/>
-                </div>
-
-                <div id="pricing-section" class="mt-2">
-
-                  <label class="font-smaller-1 letter-spacing text-black-60">{% trans "How much would you be willing to build this for?" %}</label>
-                  <div class="d-flex row mb-2">
-                    <div class="col-12 col-md-3">
-                      <div class="form__select2 font-smaller-1">
-                        <select2 v-model.trim="params.suggest.token" data-minimum-results-for-search="Infinity" class="form-control">
-                          <option v-for="option in tokens" v-bind:value="option.addr">
-                            [[ option.name ]]
-                          </option>
-                        </select2>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <input v-model="params.suggest.amount" id='amount' class="form__input font-smaller-1" type="number" value="0.01" step="0.001" min="0.001"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <template v-slot:modal-footer>
-              <b-button variant="danger" class="btn btn-danger btn-sm" @click="$bvModal.hide('suggest-bounty-modal')">Cancel</b-button>
-              <b-button variant="primary" class="btn btn-primary btn-sm" @click.prevent="suggestBounty();">
-                <i class="far fa-arrow-alt-circle-up mr-1"></i>
-                  <span>{% trans "Suggest Bounty"%}</span>
-              </b-button>
             </template>
           </b-modal>
         </div>

@@ -73,7 +73,6 @@ from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
-from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
@@ -3956,13 +3955,6 @@ def profile(request, handle, tab=None):
             raise e # raise so that sentry konws about it and we fix it
             logger.info(str(e))
 
-
-    if tab == 'tribe':
-        context['tribe_priority'] = profile.tribe_priority
-        suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
-        if suggested_bounties:
-            context['suggested_bounties'] = suggested_bounties
-
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
     context['show_follow_tab'] = True
@@ -5948,34 +5940,6 @@ def save_tribe(request,handle):
             tribe = Profile.objects.filter(handle=handle.lower()).first()
             tribe.tribes_cover_image = cover_image
             tribe.save()
-
-        if request.POST.get('tribe_priority'):
-
-            tribe_priority = clean(
-                request.POST.get('tribe_priority'),
-                tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
-                attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
-                styles=[],
-                protocols=['http', 'https', 'mailto'],
-                strip=True,
-                strip_comments=True
-            )
-            tribe = Profile.objects.filter(handle=handle.lower()).first()
-            tribe.tribe_priority = tribe_priority
-            tribe.save()
-
-            if request.POST.get('publish_to_ts'):
-                title = 'updated their priority to ' + request.POST.get('priority_html_text')
-                kwargs = {
-                    'profile': tribe,
-                    'activity_type': 'status_update',
-                    'metadata': {
-                        'title': title,
-                        'ask': '#announce'
-                    }
-                }
-                activity = Activity.objects.create(**kwargs)
-                wall_post_email(activity)
 
         return JsonResponse(
             {
