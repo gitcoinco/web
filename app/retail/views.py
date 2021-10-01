@@ -849,7 +849,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
 
-    activities = activities.filter().exclude(pin__what=what)
+    activities = activities
 
     return activities
 
