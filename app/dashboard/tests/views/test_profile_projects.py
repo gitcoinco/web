@@ -20,7 +20,7 @@ class TestProfileTabProjectCreation:
         assert "Invalid link." in messages
         assert "Portfolio Item added." not in messages
 
-    def test_project_creation_fails_when_url_does_not_start_with_http(self, django_user_model):
+    def test_project_creation_fails_when_url_is_empty(self, django_user_model):
         user = django_user_model.objects.create(username="gitcoin", password="password123")
         project_data = dict(project_title="My New Project", URL="http")
         ProfileFactory(user=user, handle="gitcoin")
