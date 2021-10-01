@@ -21,76 +21,9 @@ $(document).ready(() => {
 
   });
 
-  // toggleStyle(document.current_style);
 });
 
-// Vue.component('grant-sidebar', {
-//   props: [
-//     'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-//     'idle_grants', 'show_contributions', 'query_params', 'round_num', 'sub_round_slug', 'customer_name',
-//     'featured'
-//   ],
-//   data: function() {
-//     return {
-//       search: this.keyword,
-//       show_filters: false,
-//       handle: document.contxt.github_handle
-//     };
-//   },
-//   methods: {
-//     toggleFollowing: function(state, event) {
-//       event.preventDefault;
-//       this.filter_grants({following: state});
-//     },
-//     toggleIdle: function(state, event) {
-//       event.preventDefault;
-//       this.filter_grants({idle_grants: state});
-//     },
-//     toggleContributionView: function(state, event) {
-//       event.preventDefault;
-//       this.filter_grants({show_contributions: state});
-//     },
-//     toggleMyGrants: function(state, event) {
-//       let me = state ? 'me' : 'all';
 
-//       event.preventDefault;
-//       this.filter_grants({type: me, category: '', keyword: ''});
-//     },
-//     isMobileDevice: function() {
-//       return window.innerWidth < 576;
-//     },
-//     toggleMyCollections: function(state, event) {
-//       let me = state ? {type: 'collections', keyword: this.handle} : {type: 'all', keyword: ''};
-
-//       this.filter_grants(me);
-
-//       this.search = me.keyword;
-//     },
-//     filterLink: function(params) {
-
-//       return this.filter_grants(params);
-//     },
-//     searchKeyword: function() {
-//       if (this.timeout) {
-//         clearTimeout(this.timeout);
-//       }
-
-//       this.timeout = setTimeout(() => {
-//         this.filter_grants({keyword: this.search});
-//       }, 1000);
-//     },
-//     onResize: function() {
-//       if (!this.isMobileDevice() && this.show_filters !== null) {
-//         this.show_filters = null;
-//       } else if (this.isMobileDevice() && this.show_filters === null) {
-//         this.show_filters = false;
-//       }
-//     }
-//   },
-//   mounted() {
-//     window.addEventListener('resize', this.onResize);
-//   }
-// });
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
     page: 1,
@@ -98,7 +31,6 @@ if (document.getElementById('grants-showcase')) {
     me: false,
     sort_option: 'weighted_shuffle',
     network: 'mainnet',
-    // keyword: this.keyword,
     state: 'active',
     profile: false,
     sub_round_slug: false,
@@ -108,7 +40,6 @@ if (document.getElementById('grants-showcase')) {
     grant_tags: [],
     tenants: [],
     idle: true
-
   };
 
   const grantRegions = [
@@ -136,25 +67,6 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'ALGORAND', 'label': 'Algorand'}
   ];
 
-  // const grant_tags = [
-  //   {'name': 'ETH', 'label': 'Eth'},
-  //   {'name': 'ZCASH', 'label': 'Zcash'},
-  //   {'name': 'ZIL', 'label': 'Zil'},
-  //   {'name': 'CELO', 'label': 'Celo'},
-  //   {'name': 'POLKADOT', 'label': 'Polkadot'},
-  //   {'name': 'HARMONY', 'label': 'Harmony'},
-  //   {'name': 'KUSAMA', 'label': 'Kusama'},
-  //   {'name': 'BINANCE', 'label': 'Binance'},
-  //   {'name': 'RSK', 'label': 'Rsk'},
-  //   {'name': 'ALGORAND', 'label': 'Algorand'}
-  // ];
-
-
-  // let sort = getParam('sort');
-
-  // if (!sort) {
-  //   sort = 'weighted_shuffle';
-  // }
 
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
@@ -190,10 +102,6 @@ if (document.getElementById('grants-showcase')) {
       sub_round_slug: false,
       cart_lock: false,
       collection_id: document.collection_id,
-      // round_num: document.round_num,
-      // clr_round_pk: document.clr_round_pk,
-      // sub_round_slug: document.sub_round_slug,
-      // customer_name: document.customer_name,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
@@ -217,18 +125,6 @@ if (document.getElementById('grants-showcase')) {
         if (!style) {
           return;
         }
-
-        // let banner;
-
-        // if (style.bg) {
-        //   banner = `url("${style.bg }") center top / ${style.size || ''} ${style.color || ''} no-repeat`;
-        // } else {
-        //   banner = `url("${ style.banner_image }") center  no-repeat`;
-        // }
-        // $('#grant-hero-img').css('background', banner);
-        // if (style.background_image) {
-        //   $('#grant-background-image-mount-point').css('background-image', style.background_image);
-        // }
 
         if (style.inline_css) {
           $('.page-styles').last().text(style.inline_css);
@@ -341,7 +237,6 @@ if (document.getElementById('grants-showcase')) {
 
         getGrants.grants.forEach(function(item) {
           vm.grants.unshift(item);
-
         });
 
 
@@ -375,22 +270,7 @@ if (document.getElementById('grants-showcase')) {
           vm.grants.push(item);
         });
 
-        // if (page) {
-        //   vm.fetchedPages = [page];
-        // } else {
-        // }
         vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
-        // if (this.params.collection_id) {
-        //   if (getGrants.collections.length > 0) {
-        //     this.activeCollection = getGrants.collections[0];
-        //   }
-        // } else if (this.current_type === 'collections') {
-        //   getGrants.collections.forEach(function(item) {
-        //     vm.collections.push(item);
-        //   });
-        // } else {
-        //   vm.collections = getGrants.collections;
-        // }
 
         vm.credentials = getGrants.credentials;
         vm.contributions = getGrants.contributions;
@@ -428,7 +308,6 @@ if (document.getElementById('grants-showcase')) {
         vm.changeQuery({tab: vm.tabSelected});
         vm.unobserveFilter();
         vm.params.profile = false;
-        // vm.updateUrlParams();
 
         if (vm.tabSelected === 'collections') {
           this.fetchCollections();
@@ -464,8 +343,6 @@ if (document.getElementById('grants-showcase')) {
 
         vm.loadingCollections = true;
         await vm.updateUrlParams();
-
-        // vm.updateUrlParams();
 
         let url = `/api/v0.1/grants_collections/?${(vm.params.profile ? 'profile=' + vm.params.profile : '')}`;
 
@@ -619,9 +496,67 @@ if (document.getElementById('grants-showcase')) {
         if (!vm.clrData.results)
           return;
 
-        return vm.clrData?.results.find(item => {
+        const currentCLR = vm.clrData?.results.find(item => {
           return item.sub_round_slug == vm.params?.sub_round_slug;
         });
+
+        function getMDT(date) {
+          if (!date)
+            return;
+          return moment(date).tz('America/Denver').format('MMMM D (hA) z');
+        }
+
+        function getRoundStatus(start_date, end_date, claim_start_date, claim_end_date) {
+          now = moment().tz('America/Denver');
+          start_date = moment(start_date).tz('America/Denver');
+          end_date = moment(end_date).tz('America/Denver');
+
+          if (claim_start_date && claim_end_date) {
+            claim_start_date = moment(claim_start_date).tz('America/Denver');
+            claim_end_date = moment(claim_end_date).tz('America/Denver');
+          }
+
+          console.log(now);
+          console.log(claim_start_date);
+          console.log(claim_end_date);
+
+          if (now.isBefore(start_date)) {
+            // round is yet to start
+            return 'proposed';
+          } else if (now.isBetween(start_date, end_date)) {
+            // round is currently live
+            return 'live';
+          } else if (
+            claim_start_date && claim_end_date &&
+            now.isBetween(claim_start_date, claim_end_date)
+          ) {
+            // claim period is live
+            return 'claim';
+          }
+          // round has ended
+          return 'ended';
+          
+        }
+
+        if (currentCLR) {
+          const formatted_dates = {
+            start_date: getMDT(currentCLR?.start_date),
+            end_date: getMDT(currentCLR?.end_date),
+            claim_start_date: getMDT(currentCLR?.claim_start_date),
+            claim_end_date: getMDT(currentCLR?.claim_end_date),
+            status: getRoundStatus(
+              currentCLR?.start_date,
+              currentCLR?.end_date,
+              currentCLR?.claim_start_date,
+              currentCLR?.claim_end_date
+            )
+          };
+
+          currentCLR.formatted_dates = formatted_dates;
+        }
+
+        return currentCLR;
+
       },
       isGrantExplorer() {
         return (this.activePage == 'grants_explorer');
