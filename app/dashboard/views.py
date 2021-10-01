@@ -2758,8 +2758,6 @@ def get_profile_tab(request, profile, tab, prev_context):
         if title:
             if request.POST.get('URL')[0:4] != "http":
                 messages.error(request, 'Invalid link.')
-            elif not request.POST.get('URL')[0:4]:
-                messages.error(request, 'Please enter some tags.')
             elif not request.user.is_authenticated or request.user.profile.pk != profile.pk:
                 messages.error(request, 'Not Authorized')
             else:
@@ -3721,7 +3719,7 @@ def request_verify_facebook(request, handle):
 
     facebook = connect_facebook()
     authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
-    
+
     return redirect(authorization_url)
 
 
@@ -3811,7 +3809,7 @@ def profile_filter_activities(activities, activity_name, activity_tabs):
     return activities.filter(activity_type=activity_name)
 
 
-def profile(request, handle, tab=None):
+def profile(request, handle, tab='activity'):
     """Display profile details.
 
     Args:
