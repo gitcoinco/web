@@ -219,7 +219,9 @@ def editquest(request, pk=None):
 
 
 def get_package_helper(quest_qs, request):
-    return [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in quest_qs]
+    #return [(ele.is_unlocked_for(request.user), ele.is_beaten(request.user), ele.is_within_cooldown_period(request.user), ele) for ele in quest_qs]
+    success = request.user.profile.quest_attempts.filter(success=True).values_list('quest', flat=True) if request.user.is_authenticated else []
+    return [(True, ele.pk in success, False, ele) for ele in quest_qs]
 
 
 def index(request):
@@ -319,9 +321,9 @@ def index(request):
     point_value = sum(point_history.values_list('value', flat=True))
     print(f" phase4 at {round(time.time(),2)} ")
 
-    quests_attempts_per_day = (abs(round(QuestAttempt.objects.count() /
-                                         (QuestAttempt.objects.first().created_on - timezone.now()).days, 1))
-                               if QuestAttempt.objects.count() else 0)
+    quests_attempts_per_day = (abs(round(QuestAttempt.objects.cache().count() /
+                                         (QuestAttempt.objects.cache().first().created_on - timezone.now()).days, 1))
+                               if QuestAttempt.objects.cache().count() else 0)
     success_ratio = int(success_count / attempt_count * 100) if attempt_count else 0
     # community_created
     params = {
@@ -329,17 +331,17 @@ def index(request):
         'quests': quests,
         'avg_play_count': round(QuestAttempt.objects.count()/(Quest.objects.count() or 1), 1),
         'quests_attempts_total': QuestAttempt.objects.count(),
-        'quests_total': Quest.objects.filter(visible=True).count(),
+        'quests_total': Quest.objects.cache().filter(visible=True).count(),
         'quests_attempts_per_day': quests_attempts_per_day,
-        'total_visible_quest_count': Quest.objects.filter(visible=True).count(),
-        'gitcoin_created': Quest.objects.filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
-        'community_created': Quest.objects.filter(visible=True).exclude(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
+        'total_visible_quest_count': Quest.objects.cache().filter(visible=True).count(),
+        'gitcoin_created': Quest.objects.cache().filter(visible=True).filter(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
+        'community_created': Quest.objects.cache().filter(visible=True).exclude(creator=Profile.objects.filter(handle='gitcoinbot').first()).count(),
         'country_count': 87,
-        'email_count': EmailSubscriber.objects.count(),
+        'email_count': EmailSubscriber.objects.cache().count(),
         'attempt_count': attempt_count,
         'success_count': success_count,
         'success_ratio': success_ratio,
-        'user_count': QuestAttempt.objects.distinct('profile').count(),
+        'user_count': QuestAttempt.objects.cache().distinct('profile').count(),
         'leaderboard': leaderboard,
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,

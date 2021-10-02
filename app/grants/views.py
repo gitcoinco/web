@@ -1326,15 +1326,14 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
 
-
     try:
         grant = None
         try:
-            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+            grant = Grant.objects.prefetch_related('team_members').get(
                 pk=grant_id, slug=grant_slug
             )
         except Grant.DoesNotExist:
-            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+            grant = Grant.objects.prefetch_related('team_members').get(
                 pk=grant_id
             )
 
@@ -1369,8 +1368,8 @@ def grant_details(request, grant_id, grant_slug):
         #     phantom_funds = grant.phantom_funding.all().cache(timeout=60)
         #     contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         # activity_count = len(cancelled_subscriptions) + len(contributions)
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
-        user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
+        user_subscription = None
+        user_non_errored_subscription = None
         add_cancel_params = user_subscription
     except Grant.DoesNotExist:
         raise Http404

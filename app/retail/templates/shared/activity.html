@@ -47,13 +47,6 @@
             {% endfor %}
           </div>
         {% endif %}
-        {% if row.profile.data.type == 'Organization'%}
-          {% if row.profile.handle not in my_tribes|join:"," %}
-            <div style="text-align:center">
-              <a href=# class="align-middle btn btn-outline-primary btn-sm mt-2 font-smaller-7" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>follow</a>
-            </div>
-          {% endif %}
-        {% endif %}
       </div>
     </div>
     <div class="col-10 col-sm-7 pl-3 activity_detail">

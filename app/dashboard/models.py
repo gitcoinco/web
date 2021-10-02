@@ -4104,7 +4104,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url).cache()
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
@@ -5556,7 +5556,8 @@ class TribeMember(SuperModel):
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,
-        blank=True
+        blank=True,
+        db_index=True
     )
     why = models.CharField(
         max_length=20,
