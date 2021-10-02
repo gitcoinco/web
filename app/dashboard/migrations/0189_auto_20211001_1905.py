@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0187_auto_20210928_0700'),
+        ('dashboard', '0188_remove_profile_tribe_priority'),
     ]
 
     operations = [
