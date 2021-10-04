@@ -41,8 +41,8 @@ from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.utils import IntegrityError
 from django.db.models import Count, Q, Sum
+from django.db.utils import IntegrityError
 from django.forms import URLField
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
