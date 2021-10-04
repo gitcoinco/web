@@ -741,7 +741,7 @@ def results(request, keyword=None):
 
 def get_specific_activities(what, trending_only, user, after_pk, request=None):
     # create diff filters
-    activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
+    activities = Activity.objects.filter(hidden=False).order_by('-created_on')
 
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'
@@ -849,8 +849,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
 
-    activities = activities.filter().exclude(pin__what=what)
-
+    activities = activities
     return activities
 
 
@@ -893,7 +892,6 @@ def activity(request):
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
         'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated and request.user.profile else [],
-        'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
 
