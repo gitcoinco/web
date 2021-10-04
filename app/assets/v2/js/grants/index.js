@@ -516,10 +516,6 @@ if (document.getElementById('grants-showcase')) {
             claim_end_date = moment(claim_end_date).tz('America/Denver');
           }
 
-          console.log(now);
-          console.log(claim_start_date);
-          console.log(claim_end_date);
-
           if (now.isBefore(start_date)) {
             // round is yet to start
             return 'proposed';
