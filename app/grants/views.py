@@ -620,6 +620,12 @@ def get_grants(request):
         'has_previous': has_previous,
         'count': paginator.count if paginator else 0,
         'num_pages': paginator.num_pages if paginator else 0,
+        'metadata': {
+            'claim_start_date': clr_round.claim_start_date if clr_round else None,
+            'claim_end_date': clr_round.claim_end_date if clr_round else None,
+            'start_date': clr_round.start_date if clr_round else None,
+            'end_date': clr_round.end_date if clr_round else None,
+        }
     })
 
 
