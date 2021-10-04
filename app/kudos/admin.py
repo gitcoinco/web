@@ -113,7 +113,7 @@ class TokenAdmin(admin.ModelAdmin):
         html = f"<a href={instance.url}>{instance.url}</a>"
         other_items = instance.on_networks
         if other_items:
-            html += "<BR>also avaialble on :"
+            html += "<BR>also available on :"
         for oi in other_items:
             html += f"<BR> - <a href='{oi[1].url}'>{oi[0]}</a>"
         return mark_safe(html)

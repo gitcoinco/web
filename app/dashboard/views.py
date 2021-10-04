@@ -41,6 +41,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.utils import IntegrityError
 from django.db.models import Count, Q, Sum
 from django.forms import URLField
 from django.http import Http404, HttpResponse, JsonResponse
@@ -2758,18 +2759,19 @@ def get_profile_tab(request, profile, tab, prev_context):
         if title:
             if request.POST.get('URL')[0:4] != "http":
                 messages.error(request, 'Invalid link.')
-            elif not request.POST.get('URL')[0:4]:
-                messages.error(request, 'Please enter some tags.')
             elif not request.user.is_authenticated or request.user.profile.pk != profile.pk:
                 messages.error(request, 'Not Authorized')
             else:
-                PortfolioItem.objects.create(
-                    profile=request.user.profile,
-                    title=title,
-                    link=request.POST.get('URL'),
-                    tags=request.POST.get('tags').split(','),
-                    )
-                messages.info(request, 'Portfolio Item added.')
+                try:
+                    PortfolioItem.objects.create(
+                        profile=request.user.profile,
+                        title=title,
+                        link=request.POST.get('URL'),
+                        tags=request.POST.get('tags').split(','),
+                        )
+                    messages.info(request, 'Portfolio Item added.')
+                except IntegrityError:
+                    messages.error(request, 'Portfolio Already Exists.')
         if pk:
             # delete portfolio item
             if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
@@ -3721,7 +3723,7 @@ def request_verify_facebook(request, handle):
 
     facebook = connect_facebook()
     authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
-    
+
     return redirect(authorization_url)
 
 
