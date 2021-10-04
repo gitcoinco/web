@@ -1024,7 +1024,7 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
+    _, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_explorer',
@@ -1208,7 +1208,7 @@ def grants_by_grant_clr(request, clr_round):
 
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
 
-    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
+    _, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_landing',

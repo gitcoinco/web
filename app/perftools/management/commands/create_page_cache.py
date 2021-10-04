@@ -109,7 +109,7 @@ def create_hack_event_cache():
 
 def create_top_grant_spenders_cache():
 
-    _, round_start_date, _, _ = get_clr_rounds_metadata()
+    _, round_start_date, _, _, _, _, _, _ = get_clr_rounds_metadata()
 
     grant_types = GrantType.objects.filter(is_visible=True, is_active=True)
     for grant_type in grant_types:
