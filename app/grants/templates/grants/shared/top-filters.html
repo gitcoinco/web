@@ -4,11 +4,11 @@
 
     <div class="row mt-2 mb-3 mt-xl-0 font-caption">
 
-      <span class="col-12 col-md-6 text-right text-md-left pt-2 my-auto">
+      <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto">
         [[numGrants.toLocaleString()]] [[ 'Grant' | pluralize(numGrants)]]
       </span>
 
-      <div class="col-12 col-md-6 text-right pt-2">
+      <div class="col-12 col-lg-6 text-right pt-2">
         <div class="d-inline-block ml-4 pr-2 sort_container" v-if="current_type !== 'collections'">
           <div class="d-flex align-items-baseline" >
             <label class="heading mr-2">{% trans "Sort by" %}</label>
@@ -42,7 +42,7 @@
           </div>
 
         </div>
-        <div class="d-inline-block position-relative" style="top: -3px;">
+        <div class="d-inline-block position-relative mt-2 mt-md-0" style="top: -3px;">
           <span class="mx-2">|</span>
           <a href="#" :class="`${view == 'grid' ? 'gc-text-blue bg-lightpurple' : 'text-black' }`" @click="setView('grid', $event)" class="btn btn-sm rounded-lg"><i class="fas fa-th-large"></i></a>
           <a href="#" :class="`${view == 'list' ?  'gc-text-blue bg-lightpurple' : 'text-black' }`" @click="setView('list', $event)" class="btn btn-sm rounded-lg"><i class="fas fa-list"></i></a>

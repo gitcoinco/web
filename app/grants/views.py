@@ -3728,7 +3728,8 @@ def upload_sybil_csv(request):
     bsciJSON = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN')
 
     now = datetime.now()
-    file_name = f'{now.strftime("%m-%d-%Y")}.csv'
+    # year-month-day-hour-minute (sortable)
+    file_name = f'{now.strftime("%Y-%m-%d-%H-%M")}.csv'
 
     try:
         # upload to S3
