@@ -204,7 +204,7 @@ WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
     'default': env.db()
-    }
+}
 if ENV in ['prod']:
     DATABASES = {
         'default': env.db(),
