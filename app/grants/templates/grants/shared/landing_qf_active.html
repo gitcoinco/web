@@ -77,30 +77,69 @@
           </div>
         </div>
         {% endcomment %}
-        {% if round_active %}
-          <div class="d-flex justify-content-between countdown-color h4">
-            {% if now < round_start_date or now < round_end_date and round_end_date|timeuntil <= "2 days"  %}
-            <countdown :startdate="{{round_start_date|date:'U' }}*1000" :enddate="{{round_end_date|date:'U' }}*1000" class="countdown gc-font-heading">
-              <template v-slot="slotProps">
-                <div v-if="slotProps.time.statusType === 'upcoming'">
-                  Round starts in
+
+        {% if show_round_banner %}
+
+          {% if round_status == 'active' %}
+            <!-- ACTIVE ROUND  -->
+            <div class="d-flex justify-content-between countdown-color h5">
+                <countdown :startdate="{{round_start_date|date:'U' }}*1000" :enddate="{{round_end_date|date:'U' }}*1000" class="countdown gc-font-heading">
+                  <template v-slot="slotProps">
+                    {{ banner_round_name }} - Active - Ends in
+                    <span>[[slotProps.time.days]]d</span>
+                    <span>[[slotProps.time.hours]]h</span>
+                    <span>[[slotProps.time.minutes]]m</span>
+                    <span>[[slotProps.time.seconds]]s</span>
+                  </template>
+                </countdown>
+                <div>
+                  {% timezone "US/Mountain" %}
+                    {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
+                  {% endtimezone %}
                 </div>
-                <div v-else-if="slotProps.time.statusType === 'running' && slotProps.time.days <= 2">
-                  Round ends in
-                </div>
-                <span>[[slotProps.time.days]]d</span>
-                <span>[[slotProps.time.hours]]h</span>
-                <span>[[slotProps.time.minutes]]m</span>
-                <span>[[slotProps.time.seconds]]s</span>
-              </template>
-            </countdown>
-            {% endif %}
-            <div>
-              {% timezone "US/Mountain" %}
-                {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
-              {% endtimezone %}
             </div>
-          </div>
+
+          {% elif round_status == 'claim' %}
+            <!-- CLAIM -->
+            <div class="d-flex justify-content-between countdown-color h5">
+              <countdown :startdate="{{claim_start_date|date:'U' }}*1000" :enddate="{{claim_end_date|date:'U' }}*1000" class="countdown gc-font-heading">
+                <template v-slot="slotProps">
+                  {{ banner_round_name }} - Claim - Active - Ends in
+
+                  <span>[[slotProps.time.days]]d</span>
+                  <span>[[slotProps.time.hours]]h</span>
+                  <span>[[slotProps.time.minutes]]m</span>
+                  <span>[[slotProps.time.seconds]]s</span>
+                </template>
+              </countdown>
+              <div>
+                {% timezone "US/Mountain" %}
+                  {{ claim_start_date|localtime|date:"F j (gA e)" }} -  {{ claim_end_date|localtime|date:"F j (gA e)" }}
+                {% endtimezone %}
+              </div>
+            </div>
+          {% elif round_status == 'upcoming' %}
+            <!-- UPCOMING -->
+            <div class="d-flex justify-content-between countdown-color h5">
+              {{ banner_round_name }} - Proposed Dates
+              <div>
+                {% timezone "US/Mountain" %}
+                  {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
+                {% endtimezone %}
+              </div>
+            </div>
+          {% elif round_status == 'done' %}
+            <!-- ROUND END -->
+            <div class="d-flex justify-content-between countdown-color h5">
+              {{ banner_round_name }} - Ended
+              <div>
+                {% timezone "US/Mountain" %}
+                  {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
+                {% endtimezone %}
+              </div>
+            </div>
+          {% endif %}
+
         {% endif %}
 
       </div>

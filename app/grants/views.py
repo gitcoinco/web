@@ -901,7 +901,7 @@ def grants_landing(request):
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
-    _, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+    round_name, round_start_date, round_end_date, show_round_banner, claim_start_date, claim_end_date, round_status, banner_round_name = get_clr_rounds_metadata()
 
 
     params = {
@@ -920,8 +920,13 @@ def grants_landing(request):
         'featured': True,
         'round_start_date': round_start_date,
         'round_end_date': round_end_date,
+        'claim_start_date': claim_start_date,
+        'claim_end_date': claim_end_date,
+        'round_name': round_name,
+        'show_round_banner': show_round_banner,
+        'banner_round_name': banner_round_name,
+        'round_status': round_status,
         'now': now,
-        'round_active': round_active,
         'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
@@ -1203,11 +1208,6 @@ def grants_by_grant_clr(request, clr_round):
 
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
 
-    # grant_label = None
-    # for _type in grant_types:
-    #     if _type.get("keyword") == grant_type:
-    #         grant_label = _type.get("label")
-
     _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
 
     params = {
@@ -1217,14 +1217,11 @@ def grants_by_grant_clr(request, clr_round):
         'network': network,
         'keyword': keyword,
         'type': grant_types,
-        # 'grant_label': grant_label if grant_types else grant_types,
         'round_end': round_end_date,
         'next_round_start': round_start_date,
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,
-        # 'current_partners_fund': current_partners_fund,
-        # 'current_partners': current_partners,
         'card_desc': f'{live_now}',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
