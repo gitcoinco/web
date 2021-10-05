@@ -164,23 +164,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
                 {% if SHOW_DRESSING %}
                   <div class="townsquare_left-sidebar feed_container">
-                    <div class="townsquare_block-header accordion collapsed" data-toggle="collapse" data-target="#search-area" >
-                      Search
-                    </div>
-                    <div class="search font-caption text-left py-3 collapse" id="search-area">
-                      <div class="search-area">
-                        <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
-                      </div>
-                      <div class="mt-2">
-
-                        <div class="checkbox_container">
-                          <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
-                          <label for=trending>{% trans "Trending Only" %}</label>
-                        </div>
-                      </div>
-                    </div>
                   <hr>
-                  {% include 'townsquare/shared/feednav.html' %}
                   </div>
                 {% endif %}
               </div>
