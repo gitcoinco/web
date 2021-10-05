@@ -2633,16 +2633,16 @@ def get_profile_tab(request, profile, tab, prev_context):
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
         activity_tabs = [
-            (_('All Activity'), all_activities),
-            (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
-            (_('Tips'), ['new_tip', 'receive_tip']),
-            (_('Kudos'), ['receive_kudos', 'new_kudos']),
-            (_('Grants'), ['new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution']),
+            ('All Activity', all_activities),
+            ('Bounties', ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+            ('Tips', ['new_tip', 'receive_tip']),
+            ('Kudos', ['receive_kudos', 'new_kudos']),
+            ('Grants', ['new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution']),
         ]
         if profile.is_org:
             activity_tabs = [
-                (_('All Activity'), all_activities),
-                (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+                ('All Activity', all_activities),
+                ('Bounties', ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
             ]
 
         page = request.GET.get('p', None)
