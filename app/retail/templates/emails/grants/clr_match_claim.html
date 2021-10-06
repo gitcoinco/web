@@ -1,0 +1,158 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load i18n static humanize grants_extra %}
+{% block content %}
+<style>
+  hr {
+    width: 100%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .center-img+hr {
+    height: 4px;
+    background: #15EBB7;
+    width: 15%;
+    min-width: 85px;
+    border: none;
+    margin-bottom: 1em;
+  }
+
+  .bounties-img {
+    margin-bottom: 2.5em;
+  }
+
+  .supporter {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .supporter a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+  }
+
+  .supporterName {
+    font-size: 18px;
+  }
+
+  .grant-logo {
+    width: 130px;
+    height: 85px;
+    display: inline-block;
+  }
+
+  .grant-title {
+    margin: auto;
+    display: inline-block;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .center-img+hr {
+      margin-top: -1.5em !important;
+    }
+
+    .grant-logo {
+      text-align: center;
+      width: 100% !important;
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+
+    .grant-title {
+      text-align: center;
+    }
+  }
+
+  @media only screen and (min-width: 600px) {
+    .center-img+hr {
+      margin-top: 0 !important;
+    }
+  }
+</style>
+<div id="content-body">
+  <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
+  <hr>
+  <h1 style="text-transform: none; font-weight: normal; font-size: 36px;">
+    Claim Your Gitcoin Grants Round {{ round_number }} Matching Fund
+  </h1>
+  <p style="font-size: 14px;">
+    Hi @{{ profile_handle }},<br><br>
+
+    Congratulations on a successful Gitcoin Grants Round {{ round_number }}!  Your grant has received a matching fund of
+  </p>
+  <p style="font-weight: bold; font-size: 24px; color: #11BC92; line-height: 1px;">
+    ${{ rounded_amount|floatformat:2|intcomma }}
+  </p>
+  <hr style="margin-left: 0; margin-top: 40px;">
+  <div style="display: inline-block; margin-top: 1.5em; margin-bottom: 2em; text-align: center;">
+    <div class="grant-logo">
+      <img class="avatar-bounty" style="max-width: 115px; height: auto;" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}">
+    </div>
+    <div class="grant-title">
+      <div style="color: #15003E;">
+        <p class="font-weight-bold mb-0">{{ grant.title }}</p>
+      </div>
+    </div>
+  </div>
+  <hr style="margin-left: 0; margin-bottom: 2.5em;">
+  <p style="font-size: 14px;">
+    Please claim your matching funds by {DATE} here:
+  </p>
+  <a href="{{grant.url}}?{{ utm_tracking }}" class="button large" style="display: inline-block;">
+    Claim Funds
+  </a>
+  <p style="color: #000000; line-height: 24px; margin-top: 40px;"><strong>What's Next?</strong></p>
+  <div style="font-size: 14px; margin-top: 24px;">
+    <a href="{{ grant_url }}">
+      <strong style="color: #6F3FF5; line-height: 21px;">
+        Post an update on your grant page
+      </strong><br>
+    </a>
+    <span style="line-height: 24.5px;">Update your contributors on how you’re going to use the funds.</span>
+  </div>
+  <div style="font-size: 14px; margin-top: 24px;">
+    <a href="https://kernel.community/">
+      <strong style="color: #6F3FF5; line-height: 21px;">
+        Grow your project on KERNEL 4
+      </strong><br>
+    </a>
+    <span style="line-height: 24.5px;">Join fellow buidlers in the ecosystem and grow together.</span>
+  </div>
+  <div style="font-size: 14px; margin-top: 24px;">
+    <a href="https://store.gitcoin.co">
+      <strong style="color: #6F3FF5; line-height: 21px;">
+        Grab some cool schwag
+      </strong><br>
+    </a>
+    <span style="line-height: 24.5px;">Get 45% off Gitcoin schwag with code GR11_GRANTEE</span>
+  </div>
+  <div style="font-size: 14px; margin-top: 24px;">
+    <a href="https://twitter.com/owocki/status/1410651364850495489">
+      <strong style="color: #6F3FF5; line-height: 21px;">
+        Let us know your thought
+      </strong><br>
+    </a>
+    <span style="line-height: 24.5px;">Comment on Twitter your thought on the grant round.</span>
+  </div>
+</div>
+
+{% endblock %}

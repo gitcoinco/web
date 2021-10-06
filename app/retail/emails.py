@@ -34,7 +34,6 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
-from app.grants.models.clr_match import CLRMatch
 from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
@@ -485,10 +484,11 @@ def render_grant_match_distribution_final_txn(match):
         'rounded_amount': round(match.amount, 2),
         'profile_handle': match.grant.admin_profile.handle,
         'grant_url': f'https://gitcoin.co{match.grant.get_absolute_url()}',
+        'grant': match.grant,
         'utm_tracking': build_utm_tracking('clr_match_claim'),
     }
-    response_html = premailer_transform(render_to_string("emails/clr_match_claim.html"))
-    response_txt = render_to_string("emails/clr_match_claim.txt", params)
+    response_html = premailer_transform(render_to_string("emails/grants/clr_match_claim.html", params))
+    response_txt = render_to_string("emails/grants/clr_match_claim.txt", params)
     return response_html, response_txt
 
 
