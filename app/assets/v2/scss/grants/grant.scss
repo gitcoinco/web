@@ -690,6 +690,34 @@
   border: none;
 }
 
+.rounded-toggle .vs__dropdown-toggle {
+  border-radius: 5rem;
+  max-width: 6rem;
+  font-weight: 600;
+  padding: 2px ​0 7px 0px;
+
+  .vs__actions {
+    padding: 0.45rem 0.5rem 0 0;
+  }
+
+  .v-select, .v-select * {
+    height: 2rem;
+  }
+
+}
+
+.rounded-toggle  {
+  .vs__dropdown-toggle .vs__selected {
+    margin: 0;
+    padding-left: 10px;
+  }
+
+  svg {
+    transform: scale(0.7);
+    fill: black;
+  }
+}
+
 .vselect-clean .vs__clear,
 .vselect-clean .vs__open-indicator {
   transform: scale(0.8);

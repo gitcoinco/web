@@ -45,6 +45,7 @@ Vue.component('grants-cart', {
         { text: 'Wallet address', value: 'address' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
+      ethSelectedToken: 'DAI',
       standardCheckoutInitiated: false,
       chainId: '',
       networkId: '',
@@ -58,7 +59,6 @@ Vue.component('grants-cart', {
       gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
       grantHeaders,
       grantData,
-      comments: undefined,
       hideWalletAddress: true,
       AnonymizeGrantsContribution: false,
       include_for_clr: false,
@@ -230,6 +230,42 @@ Vue.component('grants-cart', {
       return this.donationSummaryString('donationsTotal', 2);
     },
 
+    predictionTotal() {
+      let totalEstimatedMatch = 0;
+      let donationToken;
+
+      this.grantData.map(grant => {
+        const match = Number(grant['grant_donation_clr_match']);
+
+        if (!isNaN(match)) {
+          totalEstimatedMatch += match;
+        }
+        donationToken = grant['grant_donation_currency'];
+      });
+
+      return {
+        'token': donationToken,
+        'total': totalEstimatedMatch,
+        'total_str': totalEstimatedMatch.toString() + ' ' + donationToken
+      };
+    },
+
+    predictionTotalString() {
+      return this.predictionTotal['total_str'];
+    },
+
+    totalString() {
+      const token = Object.keys(this['donationsTotal'])[0];
+      const match = Number(this.predictionTotal['total']);
+
+      let total = Number(this['donationsTotal'][token]);
+
+      if (match) {
+        total += match;
+      }
+      return total.toString() + ' ' + token;
+    },
+
     // Array of objects containing all donations and associated data
     donationInputs() {
       let isPolygon = this.nativeCurrency == 'MATIC';
@@ -249,7 +285,6 @@ Vue.component('grants-cart', {
           dest: grant.grant_admin_address,
           name: grant.grant_donation_currency, // token abbreviation, e.g. DAI
           grant, // all grant data from localStorage
-          comment: this.comments[index], // comment left by donor to grant owner
           tokenApprovalTxHash: '' // tx hash of token approval required for this donation
         };
       });
@@ -287,7 +322,6 @@ Vue.component('grants-cart', {
             dest: gitcoinAddress,
             name: token, // token abbreviation, e.g. DAI
             grant: gitcoinGrantInfo, // equivalent to grant data from localStorage
-            comment: '', // comment left by donor to grant owner
             tokenApprovalTxHash: '' // tx hash of token approval required for this donation
           });
         }
@@ -545,7 +579,6 @@ Vue.component('grants-cart', {
         'tx_id': grant.payoutTxId,
         'token_symbol': grant.grant_donation_currency,
         'tenant': this.tabSelected,
-        'comment': grant.grant_comments,
         'amount_per_period': grant.grant_donation_amount
 
       }]};
@@ -642,9 +675,16 @@ Vue.component('grants-cart', {
       this.grantData = [];
       update_cart_title();
     },
+
     shareCart() {
       _alert('Cart URL copied to clipboard', 'success', 1000);
       copyToClipboard(CartData.share_url());
+    },
+
+    twitterShareLink() {
+      const url = `https://twitter.com/intent/tweet?text=${CartData.share_url()}`;
+
+      window.open(url, '_blank');
     },
 
     updateCartData(e) {
@@ -657,15 +697,6 @@ Vue.component('grants-cart', {
       this.grantData = CartData.loadCart();
       update_cart_title();
       this.tabChange(this.tabIndex);
-    },
-
-    addComment(id, text) {
-      // Set comment at this index to an empty string to show textarea
-      // this.grantData[id].grant_comments = text ? text : '';
-      CartData.setCart(this.grantData);
-      this.$forceUpdate();
-
-      // $('input[type=textarea]').focus();
     },
 
     updatePaymentStatus(grant_id, step = 'waiting', txnid, additionalAttributes) {
@@ -1081,7 +1112,6 @@ Vue.component('grants-cart', {
       const donationInputs = JSON.parse(JSON.stringify(this.donationInputs)).map(donation => {
         delete donation.name;
         delete donation.grant;
-        delete donation.comment;
         delete donation.tokenApprovalTxHash;
         return donation;
       });
@@ -1154,7 +1184,6 @@ Vue.component('grants-cart', {
           'gitcoin-grant-input-amount': [],
           admin_address: [],
           amount_per_period: [],
-          comment: [],
           confirmed: [],
           contract_address: [],
           contract_version: [],
@@ -1189,9 +1218,6 @@ Vue.component('grants-cart', {
               tokenAddress = tokenDetails.addr;
           }
 
-          // Replace undefined comments with empty strings
-          const comment = donation.grant.grant_comments === undefined ? '' : donation.grant.grant_comments;
-
           // For automatic contributions to Gitcoin, set 'gitcoin-grant-input-amount' to 100.
           // Why 100? Because likely no one will ever use 100% or a normal grant, so using
           // 100 makes it easier to search the DB to find which Gitcoin donations were automatic
@@ -1201,7 +1227,6 @@ Vue.component('grants-cart', {
           // Add the donation parameters
           saveSubscriptionPayload.admin_address.push(donation.grant.grant_admin_address);
           saveSubscriptionPayload.amount_per_period.push(Number(donation.grant.grant_donation_amount));
-          saveSubscriptionPayload.comment.push(comment);
           saveSubscriptionPayload.confirmed.push(false);
           saveSubscriptionPayload.contract_address.push(donation.grant.grant_contract_address);
           saveSubscriptionPayload.contract_version.push(donation.grant.grant_contract_version);
@@ -1213,9 +1238,6 @@ Vue.component('grants-cart', {
           saveSubscriptionPayload.token_address.push(tokenAddress);
           saveSubscriptionPayload.token_symbol.push(tokenName);
         } // end for each donation
-
-        // to allow , within comments
-        saveSubscriptionPayload.comment = saveSubscriptionPayload.comment.join('_,_');
 
         // Configure request parameters
         const url = '/grants/bulk-fund';
@@ -1578,9 +1600,6 @@ Vue.component('grants-cart', {
     } else {
       this.grantData = [];
     }
-
-    // Initialize array of empty comments
-    this.comments = this.grantData.map(grant => undefined);
 
     // Load needed scripts based on tenants
     this.setChainScripts();

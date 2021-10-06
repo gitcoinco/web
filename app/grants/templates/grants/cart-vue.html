@@ -64,11 +64,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <grants-cart ref="cart" inline-template>
           <div class="container">
 
-            {% comment %} Heading section {% endcomment %}
-            <h1 class="text-left text-black mt-5 mb-3">Grants Cart</h1>
-
-            {% comment %} Main container {% endcomment %}
-
             <div v-if="isLoading" class="text-center mb-5">
               <div role="presentation" class="nav nav-item ml-auto mt-2 float-right">
                 <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
@@ -117,13 +112,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <!-- Checkout for Algorand Grants -->
                   {% include 'grants/cart/extension/algorand.html' %}
 
+                  <!-- Show for non ETH tabs -->
                   <template #tabs-end>
                     <div role="presentation" class="nav nav-item ml-auto mt-2">
                     <!-- d-none d-sm-block hides on screens sm or less-->
-                      <li class="cursor-pointer align-self-center text-primary d-none d-md-block" @click="$refs.createCollection.fetchCollections()">
+                      <li  v-if="grantsCountByTenant.ETH == undefined" class="cursor-pointer align-self-center text-primary d-none d-md-block" @click="$refs.createCollection.fetchCollections()">
                         <i class="far fa-heart pr-1" aria-hidden="true"></i> Save as collection
                       </li>
-                      <li class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
+                      <li  v-if="grantsCountByTenant.ETH == undefined" class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
                         <i class="fa fa-share-alt pr-1" aria-hidden="true"></i> Share cart
                       </li>
                       <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
@@ -158,6 +154,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% bundle merge_js file qrcode %}
       <script src="qrcode.min.js" base-dir="/node_modules/qrcodejs/"></script>
     {% endbundle %}
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
     <script src="{% static "v2/js/cart.js" %}"></script>
     <script src="{% static "v2/js/cart-ethereum-zksync.js" %}"></script>

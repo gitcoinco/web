@@ -89,7 +89,7 @@
       <div>
         <b-collapse :id="`collapse-${grant.grant_id}`">
           <form action="" ref="form" @submit="confirmQRPayment($event, grant)">
-            {% include '../comment.html' %}
+
             <div class="d-flex">
               <div class="bg-white rounded col mr-2 py-3 d-flex flex-column mt-4">
                 <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner’s address below. Make sure you’re transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>

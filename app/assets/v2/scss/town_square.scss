@@ -1014,6 +1014,7 @@ body.green.offer_view .announce {
 .nav-link.nav-line.active {
   color: var(--default-text-color);
   border-color: var(--active-button-border-color);
+  border-bottom-width: 4px;
 }
 
 .nav-link.nav-line:not(.active):hover {
