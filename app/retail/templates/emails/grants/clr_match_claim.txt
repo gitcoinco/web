@@ -1,0 +1,25 @@
+{% load i18n humanize %}
+
+{% trans "Claim Your Gitcoin Grants Round"} {{ round_number }} {% trans "Matching Fund" %}
+
+{% trans "Hi" %} @{{ profile_handle }},
+
+{% trans "Congratulations on a successful Gitcoin Grants Round" %} {{ round_number }}{% trans "!  Your grant has received a matching fund of" %}
+
+${{ rounded_amount }}
+
+{{ grant.title }} - {{ grant.logo.url }}
+
+{% trans "Please claim your matching funds by" %} {{ claim_end_date }} here: {{ grant.url }}?{{ utm_tracking }}
+
+{% trans "Post an update on your grant page" %} - {{ grant_url }}
+{% trans "Update your contributors on how you’re going to use the funds." %}
+
+{% trans "Grow your project on KERNEL 4" %} - https://kernel.community/
+{% trans "Join fellow buidlers in the ecosystem and grow together." %}
+
+{% trans "Grab some cool schwag" %} - https://store.gitcoin.co
+{% trans "Get 45% off Gitcoin schwag with code GR" %}{{ round_number }}{% trans "_GRANTEE" %}
+
+{% trans "Let us know your thought" %} - https://twitter.com/owocki/status/1410651364850495489
+{% trans "Comment on Twitter your thought on the grant round." %}
