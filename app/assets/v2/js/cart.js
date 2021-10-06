@@ -45,7 +45,7 @@ Vue.component('grants-cart', {
         { text: 'Wallet address', value: 'address' },
         { text: 'Transaction Hash', value: 'txid' }
       ],
-      ethSelectedToken: 'DAI',
+      selectedETHCartToken: 'DAI',
       standardCheckoutInitiated: false,
       chainId: '',
       networkId: '',
@@ -245,8 +245,8 @@ Vue.component('grants-cart', {
 
       return {
         'token': donationToken,
-        'total': totalEstimatedMatch,
-        'total_str': totalEstimatedMatch.toString() + ' ' + donationToken
+        'total': totalEstimatedMatch.toFixed(2),
+        'total_str': totalEstimatedMatch.toFixed(2).toString() + ' ' + donationToken
       };
     },
 
@@ -277,7 +277,12 @@ Vue.component('grants-cart', {
       // Generate array of objects containing donation info from cart
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
-        const amount = parseUnits(String(grant.grant_donation_amount || 0), tokenDetails?.decimals);
+        let amount;
+        try {
+          amount = parseUnits(String(Number(grant.grant_donation_amount) || 0), tokenDetails?.decimals);
+        } catch {
+          amount = parseUnits(String(0), tokenDetails?.decimals);
+        }
 
         return {
           token: tokenDetails?.addr,
@@ -681,6 +686,16 @@ Vue.component('grants-cart', {
       copyToClipboard(CartData.share_url());
     },
 
+    udpateDonationCurrency(chain) {
+
+      if (chain == 'ETH') {
+        this.grantData.map(grant => {
+          grant.grant_donation_currency = this.selectedETHCartToken;
+        });
+      }
+      CartData.setCart(this.grantData);
+    },
+
     twitterShareLink() {
       const url = `https://twitter.com/intent/tweet?text=${CartData.share_url()}`;
 
@@ -743,9 +758,17 @@ Vue.component('grants-cart', {
 
       this.grantsByTenant.forEach(grant => {
         // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
-        const totalDonationAmount = parseEther(String(grant.grant_donation_amount || 0))
+
+        let totalDonationAmount;
+        try {
+          totalDonationAmount = parseEther(String(grant.grant_donation_amount) || 0)
+            .mul(String(Math.round(scaleFactor * 10000)))
+            .div('10000');
+        } catch {
+          totalDonationAmount = parseEther(String(0))
           .mul(String(Math.round(scaleFactor * 10000)))
           .div('10000');
+        }
 
         // Add the number to the totals object
         // First time seeing this token, set the field and initial value
@@ -1575,6 +1598,9 @@ Vue.component('grants-cart', {
 
     // Read array of grants in cart from localStorage
     let grantData = CartData.loadCart();
+
+    this.selectedETHCartToken = grantData[0].grant_donation_currency;
+
     const grantIds = grantData.map(grant => grant.grant_id);
 
     // Fetch updated Grants data for all cart grants
@@ -1588,10 +1614,10 @@ Vue.component('grants-cart', {
         return Number(item.grant_id) === Number(grant.grant_id);
       });
 
-      // Make sure none have empty currencies, and if they do default to 0.001 ETH. This is done
+      // Make sure none have empty currencies, and if they do default to 5 DAI. This is done
       // to prevent the cart from getting stuck loading if a currency is empty
-      updatedGrant[grantIndex]['grant_donation_currency'] = grant.grant_donation_currency ? grant.grant_donation_currency : 'ETH';
-      updatedGrant[grantIndex]['grant_donation_amount'] = grant.grant_donation_amount ? grant.grant_donation_amount : '0.001';
+      updatedGrant[grantIndex]['grant_donation_currency'] = grant.grant_donation_currency ? grant.grant_donation_currency : 'DAI';
+      updatedGrant[grantIndex]['grant_donation_amount'] = grant.grant_donation_amount ? grant.grant_donation_amount : '5';
     });
 
     if (updatedGrant) {

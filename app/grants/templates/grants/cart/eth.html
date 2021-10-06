@@ -14,7 +14,7 @@
           <!-- Donation Token -->
           <div class="col-12 col-md-4 mb-3 mb-md-0 d-flex">
             <div class="my-auto mr-3">Choose currency</div>
-            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="ethSelectedToken" class="rounded-toggle">
+            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="udpateDonationCurrency('ETH')" class="rounded-toggle">
               <template v-slot:option="option">
                 <span class="font-weight-semibold">[[ option.symbol ]]</span>
               </template>
@@ -81,9 +81,15 @@
 
                     <!-- ALL DEVICES: Contribution amount and currency-->
                     <div class="d-flex">
-                      <input v-model="grant.grant_donation_amount" class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount" style="max-width: 7rem"/>
-                      <span class="my-auto mx-3">[[ ethSelectedToken ]]</span>
-                      <span class="font-smaller-3 text-danger my-auto" v-if="grant.grant_donation_amount_usd < UsdMinimalContribution">Minimum [[ grant.grant_donation_amount/grant.grant_donation_amount_usd || '' | formatNumberWithDecimal]] [[grant.grant_donation_currency]] required</span>
+                      <input v-model="grant.grant_donation_amount"
+                        :class="grant.grant_donation_amount_usd && grant.grant_donation_amount_usd < UsdMinimalContribution ? 'border-danger' : ''"
+                        class="col-auto form-control" type="number" min="0" step="any"
+                        placeholder="Amount" style="max-width: 7rem"
+                      />
+                      <span class="my-auto mx-3">[[ selectedETHCartToken ]]</span>
+                      <span class="font-smaller-3 text-danger my-auto" v-if="grant.grant_donation_amount_usd && grant.grant_donation_amount_usd < UsdMinimalContribution">
+                        Minimum [[ grant.grant_donation_amount/grant.grant_donation_amount_usd || '' | formatNumberWithDecimal]] [[grant.grant_donation_currency]] required
+                      </span>
                     </div>
 
                     <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
@@ -105,7 +111,9 @@
                 <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div>
                 <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
                 <div v-else>
-                  <span class="text-success">+ [[grant.grant_donation_clr_match]] DAI</span>
+                  <span class="text-success" v-if="grant.grant_donation_clr_match">
+                    + [[grant.grant_donation_clr_match]] DAI
+                  </span>
                   <span class="text-muted">
                     <template v-if="grant.grant_donation_clr_match < 1000">estimated match</template>
                     <template v-else>estd. match</template>
@@ -145,7 +153,7 @@
           <p>
             Estimated Match
             <i
-              class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+              class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer my-auto"
               v-b-tooltip.hover.bottom="'Your estimated match towards the quadratic funding pool at this moment in time.'"
             ></i>
           </p>
