@@ -38,7 +38,7 @@ from django.contrib.humanize.templatetags.humanize import naturalday, naturaltim
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import connection, models
-from django.db.models import Count, F, Q, Subquery, Sum
+from django.db.models import Count, F, Q, Subquery, Sum, UniqueConstraint
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
@@ -57,7 +57,6 @@ from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
-from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
 from dashboard.idena_utils import get_idena_status
 from dashboard.tokens import addr_to_token, token_by_name
@@ -2934,7 +2933,6 @@ class Profile(SuperModel):
     tribe_description = models.TextField(default='', blank=True, help_text=_('HTML rich description describing tribe.'))
     automatic_backup = models.BooleanField(default=False, help_text=_('automatic backup profile to cloud storage such as 3Box if the flag is true'))
     as_representation = JSONField(default=dict, blank=True)
-    tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
 
     tribes_cover_image = models.ImageField(
         upload_to=get_upload_filename,
@@ -3070,10 +3068,6 @@ class Profile(SuperModel):
         if not self.is_org :
             return TribesSubscription.objects.filter(tribe__in=self.organizations_fk.all()).all()
         return TribesSubscription.objects.filter(tribe=self).all()
-
-    @property
-    def suggested_bounties(self):
-        suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
 
     @property
     def sybil_score_str(self):
@@ -4104,7 +4098,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url).cache()
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
@@ -5529,6 +5523,11 @@ class PortfolioItem(SuperModel):
     def __str__(self):
         return f"{self.title} by {self.profile.handle}"
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['profile', 'title', 'link'], name='unique_title_link_per_profile')
+        ]
+
 
 class ProfileStatHistory(SuperModel):
     """ProfileStatHistory - generalizable model for tracking history of a profiles info"""
@@ -5556,7 +5555,8 @@ class TribeMember(SuperModel):
     status = models.CharField(
         max_length=20,
         choices=MEMBER_STATUS,
-        blank=True
+        blank=True,
+        db_index=True
     )
     why = models.CharField(
         max_length=20,

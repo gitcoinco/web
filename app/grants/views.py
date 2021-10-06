@@ -620,6 +620,12 @@ def get_grants(request):
         'has_previous': has_previous,
         'count': paginator.count if paginator else 0,
         'num_pages': paginator.num_pages if paginator else 0,
+        'metadata': {
+            'claim_start_date': clr_round.claim_start_date if clr_round else None,
+            'claim_end_date': clr_round.claim_end_date if clr_round else None,
+            'start_date': clr_round.start_date if clr_round else None,
+            'end_date': clr_round.end_date if clr_round else None,
+        }
     })
 
 
@@ -895,7 +901,7 @@ def grants_landing(request):
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
-    _, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+    round_name, round_start_date, round_end_date, show_round_banner, claim_start_date, claim_end_date, round_status, banner_round_name = get_clr_rounds_metadata()
 
 
     params = {
@@ -914,8 +920,13 @@ def grants_landing(request):
         'featured': True,
         'round_start_date': round_start_date,
         'round_end_date': round_end_date,
+        'claim_start_date': claim_start_date,
+        'claim_end_date': claim_end_date,
+        'round_name': round_name,
+        'show_round_banner': show_round_banner,
+        'banner_round_name': banner_round_name,
+        'round_status': round_status,
         'now': now,
-        'round_active': round_active,
         'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
@@ -1013,7 +1024,7 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
+    _, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_explorer',
@@ -1197,12 +1208,7 @@ def grants_by_grant_clr(request, clr_round):
 
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
 
-    # grant_label = None
-    # for _type in grant_types:
-    #     if _type.get("keyword") == grant_type:
-    #         grant_label = _type.get("label")
-
-    _, round_start_date, round_end_date, _ = get_clr_rounds_metadata()
+    _, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
 
     params = {
         'active': 'grants_landing',
@@ -1211,14 +1217,11 @@ def grants_by_grant_clr(request, clr_round):
         'network': network,
         'keyword': keyword,
         'type': grant_types,
-        # 'grant_label': grant_label if grant_types else grant_types,
         'round_end': round_end_date,
         'next_round_start': round_start_date,
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,
-        # 'current_partners_fund': current_partners_fund,
-        # 'current_partners': current_partners,
         'card_desc': f'{live_now}',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
         'card_type': 'summary_large_image',
@@ -1326,15 +1329,14 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
 
-
     try:
         grant = None
         try:
-            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+            grant = Grant.objects.prefetch_related('team_members').get(
                 pk=grant_id, slug=grant_slug
             )
         except Grant.DoesNotExist:
-            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+            grant = Grant.objects.prefetch_related('team_members').get(
                 pk=grant_id
             )
 
@@ -1369,8 +1371,8 @@ def grant_details(request, grant_id, grant_slug):
         #     phantom_funds = grant.phantom_funding.all().cache(timeout=60)
         #     contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
         # activity_count = len(cancelled_subscriptions) + len(contributions)
-        user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
-        user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
+        user_subscription = None
+        user_non_errored_subscription = None
         add_cancel_params = user_subscription
     except Grant.DoesNotExist:
         raise Http404
@@ -3722,7 +3724,8 @@ def upload_sybil_csv(request):
     bsciJSON = StaticJsonEnv.objects.get(key='BSCI_SYBIL_TOKEN')
 
     now = datetime.now()
-    file_name = f'{now.strftime("%m-%d-%Y")}.csv'
+    # year-month-day-hour-minute (sortable)
+    file_name = f'{now.strftime("%Y-%m-%d-%H-%M")}.csv'
 
     try:
         # upload to S3

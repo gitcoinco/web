@@ -32,7 +32,7 @@ from marketing.utils import func_name, get_or_save_email_subscriber, should_supp
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
-    render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged, render_bounty_request,
+    render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_featured_funded_bounty,
     render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
     render_grant_cancellation_email, render_grant_match_distribution_final_txn, render_grant_recontribute,
@@ -1845,45 +1845,6 @@ def setup_lang(to_email):
     if user and hasattr(user, 'profile'):
         preferred_language = user.profile.get_profile_preferred_language()
         translation.activate(preferred_language)
-
-
-def new_bounty_request(model):
-    to_email = 'support@gitcoin.co'
-    from_email = model.requested_by.email or settings.SERVER_EMAIL
-    cur_language = translation.get_language()
-
-    try:
-        setup_lang(to_email)
-        subject = _("New Bounty Request")
-        body_str = _("New Bounty Request from")
-        body = f"{body_str} {model.requested_by}: " \
-            f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
-        html, text, subject = render_bounty_request(to_email, model, settings.BASE_URL)
-
-        send_mail(
-            from_email,
-            to_email,
-            subject,
-            text,
-            html,
-            from_name=_("No Reply from Gitcoin.co"),
-            categories=['admin', 'new_bounty_request'],
-        )
-
-        if model.github_org_email != '':
-            to_email = model.github_org_email
-            setup_lang(to_email)
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                text,
-                html,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', 'new_bounty_request'],
-            )
-    finally:
-        translation.activate(cur_language)
 
 
 def new_funding_limit_increase_request(profile, cleaned_data):

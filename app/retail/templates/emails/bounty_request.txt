@@ -1,9 +1,0 @@
-New Gitcoin bounty funding request from {{model.requested_by.github_url}}}:
-
-Link to the issue: {{model.github_url}}.
-
-The user proposes funding of {{model.amount}} (USD) and has attached the following comment along with the funding request:
-"{{model.comment}}"
-
-Should you wish to fund the aforementioned issue, you can follow this URL:
-{{base_url}}bounty/new?invite={{model.requested_by.pk}}&source={{model.github_url}}

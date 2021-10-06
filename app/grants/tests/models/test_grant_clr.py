@@ -236,3 +236,17 @@ class TestGrantCLR:
             clr_prediction_curve=grant.clr_prediction_curve,
             latest=True
         )
+
+    def test_grant_clr_has_claim_start_date_attribute(self):
+        """Test claim_start_date is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'claim_start_date')
+
+    def test_grant_clr_has_claim_end_date_attribute(self):
+        """Test claim_end_date is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'claim_end_date')

@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import logging
 import math
 import os
@@ -77,20 +78,42 @@ def get_clr_rounds_metadata():
         clr_round = CLR_ROUND_DATA['round_num']
         start_date = CLR_ROUND_DATA['round_start']
         end_date = CLR_ROUND_DATA['round_end']
-        round_active = CLR_ROUND_DATA['round_active']
+        show_round_banner = json.loads(CLR_ROUND_DATA['show_round_banner'])
+        claim_start_date = CLR_ROUND_DATA.get('claim_start_date')
+        claim_end_date = CLR_ROUND_DATA.get('claim_end_date')
+        banner_round_name = CLR_ROUND_DATA.get('banner_round_name')
 
         # timezones are in UTC (format example: 2021-06-16:15.00.00)
         round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
         round_end_date = datetime.strptime(end_date, '%Y-%m-%d:%H.%M.%S')
+
+        now = datetime.now()
+
+        if claim_start_date and claim_end_date:
+            claim_start_date = datetime.strptime(claim_start_date, '%Y-%m-%d:%H.%M.%S')
+            claim_end_date = datetime.strptime(claim_end_date, '%Y-%m-%d:%H.%M.%S')
+
+        if round_start_date > now:
+            round_status = 'upcoming'
+        elif round_start_date <= now <= round_end_date:
+            round_status = 'active'
+        elif claim_start_date and claim_end_date and claim_start_date <= now <= claim_end_date:
+            round_status = 'claim'
+        else:
+            round_status = 'done'
 
     except:
         # setting defaults
         clr_round=1
         round_start_date = timezone.now()
         round_end_date = timezone.now() + timezone.timedelta(days=14)
-        round_active = True
+        show_round_banner = False
+        claim_start_date = None
+        claim_end_date = None
+        round_status = 'done'
+        banner_round_name = ''
 
-    return clr_round, round_start_date, round_end_date, round_active
+    return clr_round, round_start_date, round_end_date, show_round_banner, claim_start_date, claim_end_date, round_status, banner_round_name
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)

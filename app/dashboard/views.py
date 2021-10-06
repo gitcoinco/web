@@ -42,6 +42,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count, Q, Sum
+from django.db.utils import IntegrityError
 from django.forms import URLField
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -73,7 +74,6 @@ from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
-from bounty_requests.models import BountyRequest
 from cacheops import invalidate_obj
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
@@ -2268,8 +2268,9 @@ def profile_activity(request, handle):
     except (ProfileNotFoundException, ProfileHiddenException):
         raise Http404
 
+    date = timezone.now() - timezone.timedelta(days=365)
     activities = list(profile.get_various_activities().values_list('created_on', flat=True))
-    activities += list(profile.actions.values_list('created_on', flat=True))
+    activities += list(profile.actions.filter(created_on__gt=date).values_list('created_on', flat=True))
     response = {}
     prev_date = timezone.now()
     for i in range(1, 12*30):
@@ -2759,18 +2760,19 @@ def get_profile_tab(request, profile, tab, prev_context):
         if title:
             if request.POST.get('URL')[0:4] != "http":
                 messages.error(request, 'Invalid link.')
-            elif not request.POST.get('URL')[0:4]:
-                messages.error(request, 'Please enter some tags.')
             elif not request.user.is_authenticated or request.user.profile.pk != profile.pk:
                 messages.error(request, 'Not Authorized')
             else:
-                PortfolioItem.objects.create(
-                    profile=request.user.profile,
-                    title=title,
-                    link=request.POST.get('URL'),
-                    tags=request.POST.get('tags').split(','),
-                    )
-                messages.info(request, 'Portfolio Item added.')
+                try:
+                    PortfolioItem.objects.create(
+                        profile=request.user.profile,
+                        title=title,
+                        link=request.POST.get('URL'),
+                        tags=request.POST.get('tags').split(','),
+                        )
+                    messages.info(request, 'Portfolio Item added.')
+                except IntegrityError:
+                    messages.error(request, 'Portfolio Already Exists.')
         if pk:
             # delete portfolio item
             if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
@@ -2851,11 +2853,11 @@ def get_profile_tab(request, profile, tab, prev_context):
             brightid['upcoming_calls'] = []
 
         # QF round info
-        clr_round, round_start_date, round_end_date, round_active = get_clr_rounds_metadata()
+        _, round_start_date, round_end_date, show_round_banner = get_clr_rounds_metadata()
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
         context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())
-        context['round_active'] = round_active
+        context['show_round_banner'] = show_round_banner
 
         # detail available services
         services = [
@@ -3722,7 +3724,7 @@ def request_verify_facebook(request, handle):
 
     facebook = connect_facebook()
     authorization_url, state = facebook.authorization_url(settings.FACEBOOK_AUTH_BASE_URL)
-    
+
     return redirect(authorization_url)
 
 
@@ -3955,13 +3957,6 @@ def profile(request, handle, tab=None):
         except Exception as e:
             raise e # raise so that sentry konws about it and we fix it
             logger.info(str(e))
-
-
-    if tab == 'tribe':
-        context['tribe_priority'] = profile.tribe_priority
-        suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
-        if suggested_bounties:
-            context['suggested_bounties'] = suggested_bounties
 
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
@@ -5948,34 +5943,6 @@ def save_tribe(request,handle):
             tribe = Profile.objects.filter(handle=handle.lower()).first()
             tribe.tribes_cover_image = cover_image
             tribe.save()
-
-        if request.POST.get('tribe_priority'):
-
-            tribe_priority = clean(
-                request.POST.get('tribe_priority'),
-                tags=['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'p', 'u', 'br', 'i', 'li', 'ol', 'strong', 'ul', 'img', 'h1', 'h2'],
-                attributes={'a': ['href', 'title'], 'abbr': ['title'], 'acronym': ['title'], 'img': ['src'], '*': ['class']},
-                styles=[],
-                protocols=['http', 'https', 'mailto'],
-                strip=True,
-                strip_comments=True
-            )
-            tribe = Profile.objects.filter(handle=handle.lower()).first()
-            tribe.tribe_priority = tribe_priority
-            tribe.save()
-
-            if request.POST.get('publish_to_ts'):
-                title = 'updated their priority to ' + request.POST.get('priority_html_text')
-                kwargs = {
-                    'profile': tribe,
-                    'activity_type': 'status_update',
-                    'metadata': {
-                        'title': title,
-                        'ask': '#announce'
-                    }
-                }
-                activity = Activity.objects.create(**kwargs)
-                wall_post_email(activity)
 
         return JsonResponse(
             {
