@@ -479,12 +479,20 @@ def render_funder_payout_reminder(**kwargs):
 
 
 def render_grant_match_distribution_final_txn(match):
+    from perftools.models import StaticJsonEnv
+
+    CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
+    claim_end_date = CLR_ROUND_DATA.get('claim_end_date')
+
+    # timezones are in UTC (format example: 2021-06-16:15.00.00)
+    claim_end_date = datetime.datetime.strptime(claim_end_date, '%Y-%m-%d:%H.%M.%S')
     params = {
         'round_number': match.round_number,
         'rounded_amount': round(match.amount, 2),
         'profile_handle': match.grant.admin_profile.handle,
         'grant_url': f'https://gitcoin.co{match.grant.get_absolute_url()}',
         'grant': match.grant,
+        'claim_end_date': claim_end_date,
         'utm_tracking': build_utm_tracking('clr_match_claim'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/clr_match_claim.html", params))

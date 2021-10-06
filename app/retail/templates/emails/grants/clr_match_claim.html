@@ -115,7 +115,7 @@ along with this program. If not, see
   </div>
   <hr style="margin-left: 0; margin-bottom: 2.5em;">
   <p style="font-size: 14px;">
-    Please claim your matching funds by {DATE} here:
+    Please claim your matching funds by <span style="color: #11BC92;">{{ claim_end_date }}</span> here:
   </p>
   <a href="{{grant.url}}?{{ utm_tracking }}" class="button large" style="display: inline-block;">
     Claim Funds
@@ -143,7 +143,7 @@ along with this program. If not, see
         Grab some cool schwag
       </strong><br>
     </a>
-    <span style="line-height: 24.5px;">Get 45% off Gitcoin schwag with code GR11_GRANTEE</span>
+    <span style="line-height: 24.5px;">Get 45% off Gitcoin schwag with code GR{{ round_number }}_GRANTEE</span>
   </div>
   <div style="font-size: 14px; margin-top: 24px;">
     <a href="https://twitter.com/owocki/status/1410651364850495489">
