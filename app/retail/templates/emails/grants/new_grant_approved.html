@@ -79,15 +79,19 @@ along with this program. If not, see
     margin-top: 2rem;
   }
 
-  .grant-action {
-    display: none;
+  @media only screen and (max-width: 935px) {
+    .grant-action {
+      display: none;
+    }
+    .grant-action-mobile {
+      display: block;
+    }
   }
 
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 936px) {
     .grant-action {
       display: block;
     }
-
     .grant-action-mobile {
       display: none;
     }
@@ -135,7 +139,7 @@ along with this program. If not, see
       {% trans "Learn How to Maximize your Matching" %}
     </a>
   </div>
-  <hr style="margin-left: 0;">
+  <hr style="margin-left: 0; margin-top: 2em;">
 
 </div>
 
