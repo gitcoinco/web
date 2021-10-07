@@ -443,7 +443,15 @@ Vue.mixin({
 
       },
       set(value) {
-        this.grant.grant_tags = value;
+        this.grant.grant_tags = value.map((tag) => {
+
+          return {
+            fields: {
+              name: tag.name
+            },
+            pk: tag.id
+          };
+        });
       }
     },
     editor() {
@@ -488,7 +496,7 @@ Vue.mixin({
       }
     }
   }
-  
+
 });
 
 
