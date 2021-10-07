@@ -51,7 +51,6 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-import requests
 from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar

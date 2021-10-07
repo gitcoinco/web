@@ -33,7 +33,7 @@ from .models import (
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
     Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
     ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
-    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
+    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel, ActivityIndex,
 )
 
 
@@ -117,6 +117,13 @@ class EarningAdmin(admin.ModelAdmin):
         url = instance.source.admin_url
         html = f"<a href={url}>{instance.source}</a>"
         return format_html(html)
+
+
+class ActivityIndexAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['key', 'activity']
+    search_fields=['key']
+    readonly_fields=['activity']
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -659,6 +666,7 @@ class MediaFileAdmin(admin.ModelAdmin):
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
+admin.site.register(ActivityIndex, ActivityIndexAdmin)
 admin.site.register(Earning, EarningAdmin)
 admin.site.register(BlockedIP, BlockedIPAdmin)
 admin.site.register(BlockedUser, BlockedUserAdmin)
