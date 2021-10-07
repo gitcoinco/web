@@ -100,6 +100,7 @@ Cypress.Commands.add('approveGrant', (grantSlug) => {
   cy.visit(changePath);
   cy.get('[name=active]').check();
   cy.get('[name=visible]').check();
+  cy.get('[name=hidden]').uncheck();
   cy.get('[name=_save]').click();
 
   cy.logout();
