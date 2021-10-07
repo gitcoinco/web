@@ -4662,7 +4662,7 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
     avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(
         static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
-    hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
+    hackathon_not_started = timezone.now() < hackathon_event.start_date and not sponsor_profile
     org = {
         'display_name': sponsor_profile.name,
         'avatar_url': sponsor_profile.avatar_url,
@@ -4738,7 +4738,7 @@ def hackathon(request, hackathon='', panel='prizes'):
     description = f"{title} | Gitcoin Virtual Hackathon"
     avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
-    hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
+    hackathon_not_started = timezone.now() < hackathon_event.start_date
     # if hackathon_not_started:
         # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
     is_sponsor = False
@@ -4755,6 +4755,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         is_member = profile.organizations_fk.filter(pk__in=sponsors.values_list('id', flat=True)).exists()
         is_founder = profile.bounties_funded.filter(event=hackathon_event).exists()
         is_sponsor = is_member or is_founder or request.user.is_staff
+
+        hackathon_not_started = hackathon_not_started and not is_sponsor
 
     orgs = hackathon_event.metadata.get('orgs', [])
     for _i in range(0, len(orgs)):
