@@ -103,6 +103,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_gas_history  >> /var/log/gitcoin/create_gas_history.log  2>&1
 0 19 * * 7 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash vacuum  >> /var/log/gitcoin/vacuum.log  2>&1
 2 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_page_cache  >> /var/log/gitcoin/create_page_cache.log  2>&1
+# every sunday
+0 0 * * 0 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash cleanup_activity_index  >> /var/log/gitcoin/cleanup_activity_index.log  2>&1
 
 # every day at 6PM
 0 18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_jtbd_cache  >> /var/log/gitcoin/create_jtbd_cache.log  2>&1
