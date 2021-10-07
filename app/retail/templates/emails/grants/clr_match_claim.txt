@@ -1,6 +1,6 @@
 {% load i18n humanize %}
 
-{% trans "Claim Your Gitcoin Grants Round"} {{ round_number }} {% trans "Matching Fund" %}
+{% trans "Claim Your Gitcoin Grants Round" %} {{ round_number }} {% trans "Matching Fund" %}
 
 {% trans "Hi" %} @{{ profile_handle }},
 
