@@ -24,7 +24,6 @@ import json
 import logging
 import uuid
 from datetime import datetime, timedelta
-from decimal import Decimal
 from functools import reduce
 from logging import error
 from urllib.parse import urlsplit
@@ -2305,6 +2304,29 @@ class ActivityManager(models.Manager):
             return super().get_queryset().filter(Q(bounty=None) | Q(bounty__network='mainnet'))
         else:
             return super().get_queryset()
+
+
+class ActivityIndex(SuperModel):
+    """All Activity Reads happen from this table"""
+
+    ACTIVITY_KEYS = [
+        ('grants', 'grants'),
+        ('hackathons', 'hackathons'),
+        ('tips', 'tips'),
+        ('kudos', 'kudos'),
+        ('quests', 'quests'),
+        ('profiles', 'profiles'),
+        ('platform', 'platform'),
+        ('others', 'others')
+    ]
+    key = models.CharField(max_length=255, choices=ACTIVITY_KEYS, db_index=True)
+    activity = models.ForeignKey(
+        'dashboard.Activity', 
+        null=True, 
+        on_delete=models.SET_NULL, 
+        related_name='activities_index', 
+        blank=True
+    )
 
 
 class Activity(SuperModel):
