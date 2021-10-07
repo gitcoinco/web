@@ -73,6 +73,7 @@ Vue.component('grants-cart', {
       polygonUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       polygonEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
+      isPolygonDown: false, // disable polygon when true
       isPolkadotExtInstalled: false,
       chainScripts: {
         'POLKADOT': [
@@ -278,6 +279,7 @@ Vue.component('grants-cart', {
       const donations = this.grantsByTenant.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
         let amount;
+
         try {
           amount = parseUnits(String(Number(grant.grant_donation_amount) || 0), tokenDetails?.decimals);
         } catch {
@@ -760,14 +762,15 @@ Vue.component('grants-cart', {
         // Scale up number by 1e18 to use BigNumber, multiply by scaleFactor
 
         let totalDonationAmount;
+
         try {
           totalDonationAmount = parseEther(String(grant.grant_donation_amount) || 0)
             .mul(String(Math.round(scaleFactor * 10000)))
             .div('10000');
         } catch {
           totalDonationAmount = parseEther(String(0))
-          .mul(String(Math.round(scaleFactor * 10000)))
-          .div('10000');
+            .mul(String(Math.round(scaleFactor * 10000)))
+            .div('10000');
         }
 
         // Add the number to the totals object
@@ -905,8 +908,10 @@ Vue.component('grants-cart', {
           });
         } catch (switchError) {
           if (switchError.code === 4001) {
+            _alert('Please connect MetaMask to Ethereum network.', 'danger');
             throw new Error('Please connect MetaMask to Ethereum network.');
           } else if (switchError.code === -32002) {
+            _alert('Please respond to a pending MetaMask request.', 'danger');
             throw new Error('Please respond to a pending MetaMask request.');
           } else {
             console.error(switchError);
@@ -970,6 +975,7 @@ Vue.component('grants-cart', {
 
           if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsNativeAmount, 10))) {
             // User ETH balance is too small compared to selected donation amounts
+            _alert(`Insufficient ${tokenDetails.name} balance to complete checkout`, 'danger');
             throw new Error(`Insufficient ${tokenDetails.name} balance to complete checkout`);
           }
           // ETH balance is sufficient, continue to next iteration since no approval check
@@ -1326,13 +1332,14 @@ Vue.component('grants-cart', {
         console.log('ingestion response: ', json);
         if (!json.success) {
           console.log('ingestion failed');
+          _alert(`Your transactions could not be processed. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`, 'danger');
           throw new Error(`Your transactions could not be processed. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`);
         }
       } catch (err) {
         console.error(err);
         const message = `Your contribution was successful, but was not recognized by our database. Please visit ${window.location.host}/grants/add-missing-contributions to ensure your contributions are counted`;
 
-        _alert(message, 'error');
+        _alert(message, 'danger');
         throw new Error(message);
       }
     },
@@ -1359,6 +1366,7 @@ Vue.component('grants-cart', {
 
       // Verify signature
       if (!isValidSignature(signature)) {
+        _alert('Invalid signature. Please try again', 'danger');
         throw new Error(`Invalid signature: ${signature}`);
       }
 

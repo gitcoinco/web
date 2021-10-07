@@ -277,7 +277,7 @@
             </b-dropdown-item-button>
 
             <!-- CHECKOUT WITH POLYGON -->
-            <b-dropdown-item-button>
+            <b-dropdown-item-button v-if="!isPolygonDown">
               <grants-cart-ethereum-polygon
                 inline-template
                 @polygon-data-updated="onPolygonUpdate"
@@ -385,7 +385,7 @@
             </b-dropdown-item-button>
 
             <!-- CHECKOUT WITH ZKSYNC -->
-            <b-dropdown-item-button>
+            <b-dropdown-item-button v-if="!isZkSyncDown">
               <grants-cart-ethereum-zksync
                 inline-template
                 @zksync-data-updated="onZkSyncUpdate"
@@ -396,7 +396,7 @@
                 :grants-under-minimal-contribution="grantsUnderMinimalContribution"
                 :network="network"
               >
-                <div>
+                <div id="zksync-tooltip">
                   <!-- Checkout with zkSync button -->
                   <button
                     @click="zksync.showModal = true"
@@ -489,11 +489,21 @@
                       </div>
                     </template>
                   </b-modal>
+                  </template>
                 </div>
               </grants-cart-ethereum-zksync>
             </b-dropdown-item-button>
 
           </b-dropdown>
+
+          <b-tooltip target="zksync-tooltip" triggers="hover">
+            <p v-if="grantsByTenant.length > maxCartItems">
+              Zksync checkout supports checkout for [[maxCartItems]] items.
+              Please remove [[ grantsByTenant.length - maxCartItems ]] grant
+              <span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
+              from your cart to use zkSync checkout.
+            </p>
+          </b-tooltip>
         </div>
 
         <!-- Checkout recommendation -->
@@ -533,17 +543,6 @@
     </div>
 
   </div>
-
-  <small class="row justify-content-end mt-2">
-    <div v-if="grantsByTenant.length > maxCartItems" class="text-right">
-      Zksync Checkout supports only [[maxCartItems]] items.<br>
-      Please remove [[ grantsByTenant.length - maxCartItems ]] item<span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
-      from your cart to use zksync checkout or use standard checkout instead.
-    </div>
-    <div v-else-if="isZkSyncDown">
-      zkSync is down at the moment, so if you'd like to checkout now you may need to use standard checkout
-    </div>
-  </small>
 
   <!-- Add some empty space before the footer -->
   <div class="m-5"></div>

@@ -233,14 +233,17 @@ Vue.component('grantsCartEthereumPolygon', {
             });
           } catch (addError) {
             if (addError.code === 4001) {
+              _alert('Please connect MetaMask to Polygon network.', 'danger');
               throw new Error('Please connect MetaMask to Polygon network.');
             } else {
               console.error(addError);
             }
           }
         } else if (switchError.code === 4001) {
+          _alert('Please connect MetaMask to Polygon network.', 'danger');
           throw new Error('Please connect MetaMask to Polygon network.');
         } else if (switchError.code === -32002) {
+          _alert('Please respond to a pending MetaMask request.', 'danger');
           throw new Error('Please respond to a pending MetaMask request.');
         } else {
           console.error(switchError);
@@ -260,18 +263,21 @@ Vue.component('grantsCartEthereumPolygon', {
 
         // Throw if invalid Gitcoin contribution percentage
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
-          throw new Error('Gitcoin contribution amount must be between 0% and 99%');
+          _alert('Please adjust the Gitcoin contribution match pool amount to be between 0% and 99%.', 'danger');
+          return;
         }
 
         // Throw if there's negative values in the cart
         this.donationInputs.forEach(donation => {
           if (Number(donation.amount) < 0) {
-            throw new Error('Cannot have negative donation amounts');
+            _alert('Please adjust the negative donation amount to a positive donoation amount.', 'danger');
+            return;
           }
         });
 
         if (!ethereum.selectedAddress) {
-          throw new Error('Please unlock MetaMask to proceed with Polygon checkout');
+          _alert('Please unlock MetaMask to proceed with Polygon checkout', 'danger');
+          return;
         }
 
         // If user has enough balance within Polygon, cost equals the minimum amount

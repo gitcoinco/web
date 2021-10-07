@@ -179,6 +179,8 @@ Vue.component('grantsCartEthereumZksync', {
     insufficientBalanceAlert() {
       this.zksync.showModal = false; // hide checkout modal if visible
       this.resetZkSyncModal(); // reset modal settings
+
+      _alert('There is an insufficient balance to complete checkout. Please load funds and try again.', 'danger');
       this.handleError(new Error('Insufficient balance to complete checkout')); // throw error and show to user
     },
 
@@ -212,6 +214,7 @@ Vue.component('grantsCartEthereumZksync', {
       try {
         // Ensure wallet is connected
         if (!web3) {
+          _alert('Please connect a wallet', 'danger');
           throw new Error('Please connect a wallet');
         }
 
@@ -246,17 +249,17 @@ Vue.component('grantsCartEthereumZksync', {
       } catch (e) {
         switch (e) {
           case 'User closed zkSync':
-            _alert('Checkout not complete: User closed the zkSync page. Please try again', 'danger');
+            _alert('Looks like the window has been closed. To complete zkSync checkout, please try again.', 'danger');
             this.resetZkSyncModal();
             throw e;
 
           case 'Failed to open zkSync page':
-            _alert('Checkout not complete: Unable to open the zkSync page. Please try again', 'danger');
+            _alert('Opening the window took longer than expected. Checkout is not complete: Unable to open the zkSync page. Please try again', 'danger');
             this.resetZkSyncModal();
             throw e;
 
           case 'Took too long for the zkSync page to open':
-            _alert('Checkout not complete: Took too long to open the zkSync page. Please try again', 'danger');
+            _alert('The browser failed to open zkSYnc. Checkout is not complete. Please try again', 'danger');
             this.resetZkSyncModal();
             throw e;
 
