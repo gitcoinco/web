@@ -66,13 +66,23 @@ along with this program. If not, see
     .grant-title {
       text-align: center;
     }
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  @media only screen and (min-width: 601px) {
+    h1 {
+      font-size: 36px;
+    }
   }
 </style>
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
   <hr>
   <img class="center-img bounties-img" style="width: 35%" src="{% static 'v2/images/emails/claim_img.png' %}">
-  <h1 style="text-transform: none; font-weight: normal; font-size: 36px; margin-top: 1.5em;">
+  <h1 style="text-transform: none; font-weight: normal; margin-top: 1.5em;">
     Claim Your Gitcoin Grants Round {{ round_number }} Matching Fund
   </h1>
   <p style="font-size: 14px;">
