@@ -38,6 +38,7 @@ from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
+from perftools.models import StaticJsonEnv
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
@@ -479,8 +480,6 @@ def render_funder_payout_reminder(**kwargs):
 
 
 def render_grant_match_distribution_final_txn(match):
-    from perftools.models import StaticJsonEnv
-
     CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
     claim_end_date = CLR_ROUND_DATA.get('claim_end_date')
 
@@ -1112,8 +1111,6 @@ def render_bounty_changed(to_email, bounty):
 
 
 def render_bounty_expire_warning(to_email, bounty):
-    from django.db.models.functions import Lower
-
     unit = 'days'
     num = int(round((bounty.expires_date - timezone.now()).days, 0))
     if num == 0:
