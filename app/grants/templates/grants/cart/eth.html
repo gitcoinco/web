@@ -114,6 +114,9 @@
                   <span class="text-success" v-if="grant.grant_donation_clr_match">
                     + [[grant.grant_donation_clr_match]] DAI
                   </span>
+                  <span class="text-success" v-else>
+                    + 0 DAI
+                  </span>
                   <span class="text-muted">
                     <template v-if="grant.grant_donation_clr_match < 1000">estimated match</template>
                     <template v-else>estd. match</template>
