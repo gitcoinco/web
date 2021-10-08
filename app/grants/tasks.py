@@ -13,13 +13,13 @@ from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
-from grants.models import Grant, GrantCLR, GrantCollection, Subscription
+from grants.models import Grant, GrantCollection, Subscription
 from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
 from perftools.models import StaticJsonEnv
-from townsquare.models import Comment, SquelchProfile
+from townsquare.models import Comment
 from unidecode import unidecode
 
 logger = get_task_logger(__name__)
@@ -50,7 +50,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
 
-    _, round_start_date, _, _ = get_clr_rounds_metadata()
+    round_start_date = get_clr_rounds_metadata()['round_start_date']
 
     if instance.in_active_clrs.exists():
         gclr = instance.in_active_clrs.order_by('start_date').first()

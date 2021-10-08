@@ -2853,11 +2853,11 @@ def get_profile_tab(request, profile, tab, prev_context):
             brightid['upcoming_calls'] = []
 
         # QF round info
-        _, round_start_date, round_end_date, show_round_banner = get_clr_rounds_metadata()
+        clr_rounds_metadata = get_clr_rounds_metadata()
         # place clr dates (as unix ts)
-        context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
-        context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())
-        context['show_round_banner'] = show_round_banner
+        context['round_start_date'] = calendar.timegm(clr_rounds_metadata['round_start_date'].utctimetuple())
+        context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())
+        context['show_round_banner'] = clr_rounds_metadata['show_round_banner']
 
         # detail available services
         services = [
