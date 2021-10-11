@@ -520,7 +520,7 @@ Vue.component('grants-cart', {
       this.polygonEstimatedGasCost = data.polygonEstimatedGasCost;
     },
 
-    tabChange: async function(input) {
+    tabChange: async function(input, promptModal = true) {
       let vm = this;
 
       vm.tabSelected = vm.$refs.tabs.tabs[input].id;
@@ -533,11 +533,12 @@ Vue.component('grants-cart', {
         default:
         case 'ETH':
           vm.chainId = '1';
-
-          if (!web3Modal) {
-            needWalletConnection();
-          } else if (!provider) {
-            await onConnect();
+          if (promptModal) {
+            if (!web3Modal) {
+              needWalletConnection();
+            } else if (!provider) {
+              await onConnect();
+            }
           }
           break;
         case 'ZCASH':
@@ -713,7 +714,7 @@ Vue.component('grants-cart', {
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
       update_cart_title();
-      this.tabChange(this.tabIndex);
+      this.tabChange(this.tabIndex, promptModal = false);
     },
 
     updatePaymentStatus(grant_id, step = 'waiting', txnid, additionalAttributes) {
@@ -1607,7 +1608,7 @@ Vue.component('grants-cart', {
     // Read array of grants in cart from localStorage
     let grantData = CartData.loadCart();
 
-    this.selectedETHCartToken = grantData[0].grant_donation_currency;
+    this.selectedETHCartToken = grantData.length > 0 && grantData[0].grant_donation_currency;
 
     const grantIds = grantData.map(grant => grant.grant_id);
 

@@ -58,7 +58,6 @@
 .grant-name a {
   font-weight: bold;
   color: black;
-  /* margin-left: 0.5rem; */
 }
 
 .nav-link {
@@ -173,6 +172,23 @@
 
 .dropdown-checkout {
 
+  .text-primary::after {
+    content: '\f107';
+    font-family: "Font Awesome 5 Pro", sans-serif;
+    color: white;
+    position: absolute;
+    right: 1rem;
+  }
+
+  .text-primary::before {
+    content: '\f86c';
+    font-family: "Font Awesome 5 Pro", sans-serif;
+    color: white;
+    position: absolute;
+    right: 2rem;
+    transform: rotate(90deg) scale(1.5);
+  }
+
   .btn-primary {
     padding-top: 0.65rem;
     padding-bottom: 0.65rem;
@@ -216,10 +232,31 @@
   }
 }
 
+.donation-amount-container {
+  &::after {
+    content: "%";
+    position: absolute;
+    top: 1rem;
+    right: 0.5rem;
+  }
+}
+
+.suggested-donation-container {
+  div:hover {
+    background-color: $gc-violet-100;
+    color: black;
+  }
+
+  div.text-white:hover {
+    background-color: $gc-violet-400;
+    color: white;
+  }
+}
+
 .tooltip-inner {
   text-align: left;
   max-width: 290px !important;
-  padding: 1rem;
+  padding: 0.25rem 1rem;
 }
 
 .inputs-height {

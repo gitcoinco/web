@@ -6,7 +6,7 @@
   <div class="row">
 
     <!-- Left Section -->
-    <div class="col-12 col-lg-9">
+    <div class="col-12 col-lg-8">
       <div class="row">
         <!-- TOP BAR -->
         <div class="row col-12 pr-md-0">
@@ -52,8 +52,8 @@
             </div>
 
             <!-- Clear Cart -->
-            <div class="clear-cart cursor-pointer align-self-right text-muted my-auto" @click="confirmClearCart">
-              <i class="far fa-times pr-lg-4" aria-hidden="true"  v-b-tooltip.hover.bottom="'Clear Cart'">
+            <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4" @click="confirmClearCart">
+              <i class="far fa-times" aria-hidden="true"  v-b-tooltip.hover.bottom="'Clear Cart'">
               </i>
             </div>
           </div>
@@ -101,10 +101,9 @@
               </div>
 
               <!-- MOBILE: Delete icon -->
-              <div class="col-1 d-none d-block d-md-none">
-                <i @click="removeGrantFromCart(grant.grant_id)" class="fas fa-trash-alt cursor-pointer text-muted"></i>
+              <div class="col-1 d-none d-block d-md-none px-1">
+                <i @click="removeGrantFromCart(grant.grant_id)" class="far fa-times cursor-pointer text-muted"></i>
               </div>
-
 
               <!-- ALL DEVICES: CLR match amount-->
               <div class="col col-md-3 d-block mt-3 mt-md-0 text-md-right">
@@ -141,8 +140,8 @@
     </div>
 
     <!-- Right Section -->
-    <div class="col-12 col-lg-3">
-      <div class="sticky-top">
+    <div class="col-12 offset-lg-1 col-lg-3">
+      <div class="sticky-top" style="z-index: 0;">
         <!-- Summary -->
         <div>
           <h4 class="col gc-font-base text-dark px-0 pt-2 my-3">Summary</h4>
@@ -176,16 +175,16 @@
         </div>
 
         <!-- Gitcoin Matching Pool -->
-        <div class="d-flex justify-content-between align-items-center text-center">
-            <div class="d-flex">
-              <div style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;" class="cursor-pointer border border-right-0 px-2 py-2 my-2" :class="{ 'bg-violet-100': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
-              <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-100': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
-              <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-100': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
-              <div style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" class="cursor-pointer border border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-100': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
-            </div>
+        <div class="d-flex justify-content-between align-items-center text-center position-relative">
+          <div class="d-flex suggested-donation-container">
+            <div style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;" class="cursor-pointer border border-right-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
+            <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
+            <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
+            <div style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" class="cursor-pointer border border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
+          </div>
 
           <!-- Custom Tip -->
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end donation-amount-container">
             <input v-model="gitcoinFactorRaw"
             class="font-smaller-1 border cursor-pointer d-inline-block form-control mr-0 pr-0 rounded"
               placeholder="custom %"
@@ -226,37 +225,39 @@
           ></i>
 
           <b-tooltip target="tooltip-best-option" triggers="hover">
-            <p>Checkout Options</p>
-            <p class="mb-2">Standard Checkout</p>
-            <ul>
-              <li>direct transfer from wallet</li>
-              <li>easiest checkout option</li>
-              <li>gas cost may be higher</li>
-            </ul>
+            <div class="pt-4 pb-2">
+              <p>Checkout Options</p>
+              <p class="mb-2">Standard Checkout</p>
+              <ul>
+                <li>direct transfer from wallet</li>
+                <li>easiest checkout option</li>
+                <li>gas cost may be higher</li>
+              </ul>
 
-            <p class="mb-2">Advanced Checkout: zkSync or Polygon</p>
-            <ul>
-              <li>for larger cart sizes (up to 50 for zkSync, no min/max on Polygon) </li>
-              <li>lower gas cost than standard checkout</li>
-              <li>requires funds added to a Polygon or zkSync account.</li>
-            </ul>
+              <p class="mb-2">Advanced Checkout: zkSync or Polygon</p>
+              <ul>
+                <li>for larger cart sizes (up to 50 for zkSync, no min/max on Polygon) </li>
+                <li>lower gas cost than standard checkout</li>
+                <li>requires funds added to a Polygon or zkSync account.</li>
+              </ul>
 
-            <p class="mt-3">
-              The checkout flow will depend on the prefered payment method.
-              <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
-                Learn more
-              </a>
-            </p>
-
+              <p class="mt-3">
+                The checkout flow will depend on the prefered payment method.
+                <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
+                  Learn more
+                </a>
+              </p>
+            </div>
           </b-tooltip>
         </div>
 
         <!-- Checkout -->
         <div class="text-center mt-3 mb-4 mx-auto">
           <b-dropdown  variant="primary"
-            block split
+            block
+            no-caret
             toggle-class="text-decoration-none"
-            class="rounded dropdown-checkout btn btn-primary p-0"
+            class="rounded dropdown-checkout btn btn-primary p-0 w-100"
             text="I'm ready to checkout"
           >
             <template v-slot:button-content>
@@ -510,7 +511,11 @@
         </div>
 
         <!-- Checkout recommendation -->
-        <div class="text-center mt-2">
+        <div class="text-center mt-2" v-if="
+          (zkSyncUnsupportedTokens.length > 0 || polygonUnsupportedTokens.length > 0) ||
+          polygonUnsupportedTokens.length > 0 ||
+          !isNaN(checkoutRecommendation.savingsInPercent)
+        ">
           <div class="font-smaller-3 bg-lightpurple p-3 rounded w-100">
             <template v-if="zkSyncUnsupportedTokens.length > 0 || polygonUnsupportedTokens.length > 0">
               <template v-if="zkSyncUnsupportedTokens.length > 0">
@@ -523,9 +528,6 @@
             <template v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
               💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
               on gas fees with [[ checkoutRecommendation.name ]]!
-            </template>
-            <template v-else>
-              <i class="font-smaller-1 fas fa-spinner fa-spin"></i>
             </template>
           </div>
         </div>
