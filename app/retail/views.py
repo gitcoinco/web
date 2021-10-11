@@ -767,19 +767,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     elif what == 'my_favorites' and is_auth:
         favorites = user.favorites.all().values_list('activity_id')
         activities = Activity.objects.filter(id__in=Subquery(favorites)).order_by('-created')
-    elif 'keyword-' in what:
-        keyword = what.split('-')[1]
-        relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
-    elif 'search-' in what:
-        keyword = what.split('-')[1]
-        view_count_threshold = 5
-        base_filter = Q(metadata__icontains=keyword, activity_type__in=connect_types)
-        keyword_filter = Q(pk=0) #noop
-        if keyword == 'meme':
-            keyword_filter = Q(metadata__type='gif') | Q(metadata__type='png') | Q(metadata__type='jpg')
-        if keyword == 'meme':
-            keyword_filter = Q(metadata__icontains='spotify') | Q(metadata__type='soundcloud') | Q(metadata__type='pandora')
-        activities = activities.filter(keyword_filter | base_filter)
     elif 'hackathon:' in what:
         terms = what.split(':')
         pk = terms[1]
@@ -861,6 +848,8 @@ def activity(request):
     trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
+    activities = activities.cache()
+
     # store last seen
     if activities.exists():
         last_pk = activities.first().pk

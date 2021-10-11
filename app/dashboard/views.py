@@ -2633,16 +2633,16 @@ def get_profile_tab(request, profile, tab, prev_context):
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
         activity_tabs = [
-            (_('All Activity'), all_activities),
-            (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
-            (_('Tips'), ['new_tip', 'receive_tip']),
-            (_('Kudos'), ['receive_kudos', 'new_kudos']),
-            (_('Grants'), ['new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution']),
+            ('All Activity', all_activities),
+            ('Bounties', ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+            ('Tips', ['new_tip', 'receive_tip']),
+            ('Kudos', ['receive_kudos', 'new_kudos']),
+            ('Grants', ['new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution']),
         ]
         if profile.is_org:
             activity_tabs = [
-                (_('All Activity'), all_activities),
-                (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+                ('All Activity', all_activities),
+                ('Bounties', ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
             ]
 
         page = request.GET.get('p', None)
@@ -2853,7 +2853,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             brightid['upcoming_calls'] = []
 
         # QF round info
-        _, round_start_date, round_end_date, show_round_banner = get_clr_rounds_metadata()
+        _, round_start_date, round_end_date, show_round_banner, _, _, _, _ = get_clr_rounds_metadata()
         # place clr dates (as unix ts)
         context['round_start_date'] = calendar.timegm(round_start_date.utctimetuple())
         context['round_end_date'] = calendar.timegm(round_end_date.utctimetuple())

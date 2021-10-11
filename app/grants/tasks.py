@@ -50,7 +50,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     print(lineno(), round(time.time(), 2))
     instance = Grant.objects.get(pk=grant_id)
 
-    _, round_start_date, _, _ = get_clr_rounds_metadata()
+    _, round_start_date, _, _, _, _, _, _ = get_clr_rounds_metadata()
 
     if instance.in_active_clrs.exists():
         gclr = instance.in_active_clrs.order_by('start_date').first()
