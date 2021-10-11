@@ -270,7 +270,7 @@
               <b-button @click="quickView($event)" size="sm" variant="link" class="mr-1 font-body">
                 <i class="fas fa-fw fa-eye"></i> Quick View
               </b-button>
-              <b-button v-b-modal.save-to-collection size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal">
+              <b-button size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal('add-to-collection')">
                 <i class="far fa-fw fa-layer-plus"></i> Save to Collection
               </b-button>
             </div>
@@ -279,22 +279,20 @@
             </button>
           </div>
       </div>
-      <b-modal id="save-to-collection" modal-ok="Add to Collection" ref="save-to-collection">
-      <template #modal-title>
-        <header>
-          <h1>Add Grant to Collection</h1>
-          <p>Add <span>[[grant.title]]</span> to collection</p>
-        </header>
-      </template>
-      <div>
+      <b-modal id="add-to-collection" modal-ok="Add to Collection">
         <div>
-          Select Collection
+           <header>
+            <h1>Add Grant to Collection</h1>
+            <p>Add <span>[[grant.title]]</span> to collection</p>
+          </header>
+          <div>
+            Select Collection
+          </div>
+          <div>
+            Or Create New Collection
+          </div>
         </div>
-        <div>
-          Or Create New Collection
-        </div>
-      </div>
-    </b-modal>
+      </b-modal>
     </div>
   </template>
 </grant-card>
