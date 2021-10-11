@@ -98,6 +98,9 @@ Vue.component('grant-card', {
       });
 
       _alert('Grant added successfully', 'success', 1000);
+    },
+    showModal: function() {
+      this.$ref['save-to-collection'].show();
     }
   },
   computed: {
