@@ -488,6 +488,10 @@ if (document.getElementById('grants-showcase')) {
       grantsHasPrev() {
         let vm = this;
 
+        if (!isFinite(vm.lowestPage)) {
+          return false;
+        }
+
         return vm.lowestPage > 1;
       },
       currentCLR() {
