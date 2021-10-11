@@ -89,279 +89,343 @@ along with this program. If not, see
         </div>
       {% endif %}
       <div class="container mt-1">
+        <template v-if="!params.collection_id">
 
-        <b-tabs content-class="mt-3" @input="tabChange" v-model="tabIndex" ref="grantstabs" lazy>
-          <b-tab ref="grants" id="grants" title-link-class="nav-line font-weight-bold">
-            <template v-slot:title>Grants</template>
+          <b-tabs content-class="mt-3" @input="tabChange" v-model="tabIndex" ref="grantstabs" lazy>
+            <b-tab ref="grants" id="grants" title-link-class="nav-line font-weight-bold">
+              <template v-slot:title>Grants</template>
 
-            <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px; padding: 4px 0;">
-              <button class="btn rounded-pill flex-shrink-0" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
-                All Grants
-              </button>
-              <button class="btn rounded-pill flex-shrink-0" v-for="clr in clrData.results" @click="changeQuery({page: 1, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
-                [[clr.display_text]] ($[[clr.total_pot | moneyCompact]])
-              </button>
-            </div>
-            <div
-              ref="filterNav"
-              id="filterNav"
-              class="position-sticky top-0 bg-white py-2 mt-2 d-flex flex-column-reverse flex-md-row justify-content-between"
-              :style="`z-index: 1; top: -1px; margin-top: 1px; ${sticky_active ? 'box-shadow: 0px 8px 10px -14px rgba(0, 0, 0, 0.5);' : ''}`"
-            >
-              <div class="flex-lg-shrink-0 mt-n2">
-
-                <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;">
-                  [[currentCLR?.display_text]]
-                </span>
-
-                <!-- GRANT TYPE FILTERS -->
-                <b-dropdown @hide="fetchGrants(1)" ref="grantFlitersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip v-if="grant_types.length">
-                  <template #button-content>
-                    Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
-                  </template>
-                  <b-dropdown-form>
-                    <b-form-checkbox-group id="checkbox-group-types" v-model.lazy="params.grant_types" aria-describedby="ariaDescribedby" name="grant_types">
-                      <template v-for="grant_type in grant_types" v-if="grant_type.is_visible">
-                        <b-form-checkbox class="mb-3" :value="grant_type.keyword">[[grant_type.label]]</b-form-checkbox>
-                      </template>
-                    </b-form-checkbox-group>
-                    <b-dropdown-divider></b-dropdown-divider>
-                    <div>
-                      <b-button variant="link" size="sm" :class="{'disabled' : !params.grant_types.length}" @click="params.grant_types=[], closeDropdown('grantFlitersDropdown')">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="closeDropdown('grantFlitersDropdown')">Apply</b-button>
-                    </div>
-                  </b-dropdown-form>
-                </b-dropdown>
-
-                <!-- TAG FILTERS -->
-                <b-dropdown @hide="fetchGrants(1)" ref="tagFiltersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
-                  <template #button-content>
-                    Tags <span v-if="params.grant_tags?.length"> • [[params.grant_tags.length]]</span>
-                  </template>
-                  <b-dropdown-form>
-                    <b-form-checkbox-group id="checkbox-group-tags" v-model="params.grant_tags" aria-describedby="ariaDescribedby" name="grant_tags">
-                      <template v-for="tag in tagsOptions">
-                        <b-form-checkbox class="mb-3" :value="tag.name">[[tag.name]]</b-form-checkbox>
-                      </template>
-                    </b-form-checkbox-group>
-                    <b-dropdown-divider></b-dropdown-divider>
-                    <div>
-                      <b-button variant="link" size="sm" :class="{'disabled' : !params.grant_tags.length}" @click="params.grant_tags=[], closeDropdown('tagFiltersDropdown')">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="closeDropdown('tagFiltersDropdown')">Apply</b-button>
-                    </div>
-                  </b-dropdown-form>
-                </b-dropdown>
-
-                <!-- REGION FILTERS -->
-                <b-dropdown @hide="fetchGrants(1)" ref="regionFiltersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
-                  <template #button-content>
-                    Regions <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
-                  </template>
-                  <b-dropdown-form>
-                    <b-form-checkbox-group id="checkbox-group-regions" v-model="params.grant_regions" aria-describedby="ariaDescribedby" name="grant_regions" stacked>
-                      <template v-for="region in grantRegions">
-                        <b-form-checkbox class="mb-3" :value="region.name">[[region.label]]</b-form-checkbox>
-                      </template>
-                    </b-form-checkbox-group>
-                    <b-dropdown-divider></b-dropdown-divider>
-                    <div>
-                      <b-button variant="link" size="sm" :class="{'disabled' : !params.grant_regions.length}" @click="params.grant_regions=[], closeDropdown('regionFiltersDropdown')">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="closeDropdown('regionFiltersDropdown')">Apply</b-button>
-                    </div>
-                  </b-dropdown-form>
-                </b-dropdown>
-
-                <!-- TENANT FILTERS -->
-                <b-dropdown @hide="fetchGrants(1)" ref="tenantFiltersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
-                  <template #button-content>
-                    Blockchains <span v-if="params.tenants?.length"> • [[params.tenants.length]]</span>
-                  </template>
-                  <b-dropdown-form>
-                    <b-form-checkbox-group id="checkbox-group-tenants" v-model="params.tenants" aria-describedby="ariaDescribedby" name="tenants" stacked>
-                      <template v-for="tenant in grantTenants">
-                        <b-form-checkbox class="mb-3" :value="tenant.name">[[tenant.label]]</b-form-checkbox>
-                      </template>
-                    </b-form-checkbox-group>
-                    <b-dropdown-divider></b-dropdown-divider>
-                    <div>
-                      <b-button variant="link" size="sm" :class="{'disabled' : !params.tenants.length}" @click="params.tenants=[], closeDropdown('tenantFiltersDropdown')">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="closeDropdown('tenantFiltersDropdown')">Apply</b-button>
-                    </div>
-                  </b-dropdown-form>
-                </b-dropdown>
-
-                <!-- MORE FILTERS -->
-                <b-dropdown @hide="fetchGrants(1)" ref="moreFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
-                  <template #button-content>
-                    More Filters
-                    <span v-if="params.idle || params.only_contributions || params.me || params.following">
-                    • [[ [params.idle, params.only_contributions, params.me, params.following].filter((v)=>v).length ]]</span>
-                  </template>
-                  <b-dropdown-form>
-                    <div class="pt-2">
-                      <b-form-checkbox id="idle" v-model="params.idle" name="idle"> Show Idle Grants</b-form-checkbox>
-                      <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants not updated in 3 months</b-dropdown-text>
-                    </div>
-                    <b-dropdown-divider></b-dropdown-divider>
-                    <div>
-                      <b-dropdown-header id="dropdown-header-shortcuts">
-                        My Shortcuts
-                      </b-dropdown-header>
-                      <b-form-checkbox id="only_contributions" v-model="params.only_contributions" name="only_contributions">My Contributions</b-form-checkbox>
-                      <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve contributed to</b-dropdown-text>
-                      <b-form-checkbox id="me" v-model="params.me" name="me"> My Grants</b-form-checkbox>
-                      <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve created</b-dropdown-text>
-                      <b-form-checkbox id="following" v-model="params.following" name="following"> Following</b-form-checkbox>
-                      <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve followed</b-dropdown-text>
-                    </div>
-                    <b-dropdown-divider></b-dropdown-divider>
-                    <div>
-                      <b-button variant="link" size="sm" @click="params.idle=false,params.only_contributions=false, params.me=false, params.following=false, closeDropdown('moreFiltersDropdown')">Clear</b-button>
-                      <b-button variant="primary" size="sm" @click="closeDropdown('moreFiltersDropdown')">Apply</b-button>
-                    </div>
-                  </b-dropdown-form>
-                </b-dropdown>
-
-                <button class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
+              <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px; padding: 4px 0;">
+                <button class="btn rounded-pill flex-shrink-0" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
+                  All Grants
+                </button>
+                <button class="btn rounded-pill flex-shrink-0" v-for="clr in clrData.results" @click="changeQuery({page: 1, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
+                  [[clr.display_text]] ($[[clr.total_pot | moneyCompact]])
+                </button>
               </div>
+              <div
+                ref="filterNav"
+                id="filterNav"
+                class="position-sticky top-0 bg-white py-2 mt-2 d-flex flex-column-reverse flex-md-row justify-content-between"
+                :style="`z-index: 1; top: -1px; margin-top: 1px; ${sticky_active ? 'box-shadow: 0px 8px 10px -14px rgba(0, 0, 0, 0.5);' : ''}`"
+              >
+                <div class="flex-lg-shrink-0 mt-n2">
 
-              <!-- SEARCH BAR AND CART -->
-              <div class="flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-md-absolute w-100': searchVisible}">
-                <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
-                <i
-                  class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
-                  :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
-                ></i>
-                <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})" @keyup.enter="changeQuery({page: 1})">
-                <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
-                  <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
-                    <i class="far fa-shopping-cart fa-fw fa-lg"></i>
-                    <span class="cart-notification-dot notification__dot ml-2 mt-n1" :class="{'notification__dot_active': cart_data_count}">[[ cart_data_count ]]</span>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right gc-cart-box p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="margin-top: 6px; min-width: 352px;">
-                    <gc-cart-content ref="navCart"/>
+                  <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;">
+                    [[currentCLR?.display_text]]
+                  </span>
+
+                  <!-- GRANT TYPE FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="grantFlitersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip v-if="grant_types.length">
+                    <template #button-content>
+                      Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox-group id="checkbox-group-types" v-model.lazy="params.grant_types" aria-describedby="ariaDescribedby" name="grant_types">
+                        <template v-for="grant_type in grant_types" v-if="grant_type.is_visible">
+                          <b-form-checkbox class="mb-3" :value="grant_type.keyword">[[grant_type.label]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <div>
+                        <b-button variant="link" size="sm" :class="{'disabled' : !params.grant_types.length}" @click="params.grant_types=[], closeDropdown('grantFlitersDropdown')">Clear</b-button>
+                        <b-button variant="primary" size="sm" @click="closeDropdown('grantFlitersDropdown')">Apply</b-button>
+                      </div>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- TAG FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="tagFiltersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      Tags <span v-if="params.grant_tags?.length"> • [[params.grant_tags.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox-group id="checkbox-group-tags" v-model="params.grant_tags" aria-describedby="ariaDescribedby" name="grant_tags">
+                        <template v-for="tag in tagsOptions">
+                          <b-form-checkbox class="mb-3" :value="tag.name">[[tag.name]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <div>
+                        <b-button variant="link" size="sm" :class="{'disabled' : !params.grant_tags.length}" @click="params.grant_tags=[], closeDropdown('tagFiltersDropdown')">Clear</b-button>
+                        <b-button variant="primary" size="sm" @click="closeDropdown('tagFiltersDropdown')">Apply</b-button>
+                      </div>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- REGION FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="regionFiltersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      Regions <span v-if="params.grant_regions?.length"> • [[params.grant_regions.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox-group id="checkbox-group-regions" v-model="params.grant_regions" aria-describedby="ariaDescribedby" name="grant_regions" stacked>
+                        <template v-for="region in grantRegions">
+                          <b-form-checkbox class="mb-3" :value="region.name">[[region.label]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <div>
+                        <b-button variant="link" size="sm" :class="{'disabled' : !params.grant_regions.length}" @click="params.grant_regions=[], closeDropdown('regionFiltersDropdown')">Clear</b-button>
+                        <b-button variant="primary" size="sm" @click="closeDropdown('regionFiltersDropdown')">Apply</b-button>
+                      </div>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- TENANT FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="tenantFiltersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      Blockchains <span v-if="params.tenants?.length"> • [[params.tenants.length]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <b-form-checkbox-group id="checkbox-group-tenants" v-model="params.tenants" aria-describedby="ariaDescribedby" name="tenants" stacked>
+                        <template v-for="tenant in grantTenants">
+                          <b-form-checkbox class="mb-3" :value="tenant.name">[[tenant.label]]</b-form-checkbox>
+                        </template>
+                      </b-form-checkbox-group>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <div>
+                        <b-button variant="link" size="sm" :class="{'disabled' : !params.tenants.length}" @click="params.tenants=[], closeDropdown('tenantFiltersDropdown')">Clear</b-button>
+                        <b-button variant="primary" size="sm" @click="closeDropdown('tenantFiltersDropdown')">Apply</b-button>
+                      </div>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <!-- MORE FILTERS -->
+                  <b-dropdown @hide="fetchGrants(1)" ref="moreFiltersDropdown" size="sm" menu-class="mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip>
+                    <template #button-content>
+                      More Filters
+                      <span v-if="params.idle || params.only_contributions || params.me || params.following">
+                      • [[ [params.idle, params.only_contributions, params.me, params.following].filter((v)=>v).length ]]</span>
+                    </template>
+                    <b-dropdown-form>
+                      <div class="pt-2">
+                        <b-form-checkbox id="idle" v-model="params.idle" name="idle"> Show Idle Grants</b-form-checkbox>
+                        <b-dropdown-text class="font-smaller-4"style="width: 230px;">Grants not updated in 3 months</b-dropdown-text>
+                      </div>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <div>
+                        <b-dropdown-header id="dropdown-header-shortcuts">
+                          My Shortcuts
+                        </b-dropdown-header>
+                        <b-form-checkbox id="only_contributions" v-model="params.only_contributions" name="only_contributions">My Contributions</b-form-checkbox>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve contributed to</b-dropdown-text>
+                        <b-form-checkbox id="me" v-model="params.me" name="me"> My Grants</b-form-checkbox>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve created</b-dropdown-text>
+                        <b-form-checkbox id="following" v-model="params.following" name="following"> Following</b-form-checkbox>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve followed</b-dropdown-text>
+                      </div>
+                      <b-dropdown-divider></b-dropdown-divider>
+                      <div>
+                        <b-button variant="link" size="sm" @click="params.idle=false,params.only_contributions=false, params.me=false, params.following=false, closeDropdown('moreFiltersDropdown')">Clear</b-button>
+                        <b-button variant="primary" size="sm" @click="closeDropdown('moreFiltersDropdown')">Apply</b-button>
+                      </div>
+                    </b-dropdown-form>
+                  </b-dropdown>
+
+                  <button class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
+                </div>
+
+                <!-- SEARCH BAR AND CART -->
+                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-md-absolute w-100': searchVisible}">
+                  <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
+                  <i
+                    class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
+                    :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
+                  ></i>
+                  <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})" @keyup.enter="changeQuery({page: 1})">
+                  <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
+                    <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
+                      <i class="far fa-shopping-cart fa-fw fa-lg"></i>
+                      <span class="cart-notification-dot notification__dot ml-2 mt-n1" :class="{'notification__dot_active': cart_data_count}">[[ cart_data_count ]]</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right gc-cart-box p-0 px-3 overflow-hidden" aria-labelledby="cartDropdown" style="margin-top: 6px; min-width: 352px;">
+                      <gc-cart-content ref="navCart"/>
+                    </div>
                   </div>
                 </div>
+
               </div>
 
-            </div>
+              <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
 
-            <div class="container-fluid header dash grants_hero_img" id="grant-hero-img" style="background-image: url({{grant_bg.banner_image}});" :style="[ regex_style?.banner_image ? {backgroundImage: `url(${regex_style?.banner_image})`} : '']">
-
-            </div>
-
-            <div v-if="currentCLR?.formatted_dates" class="d-flex justify-content-between countdown-color font-smaller-1 my-3">
-              <!-- Proposed -->
-              <template v-if="currentCLR?.formatted_dates?.status == 'proposed'">
-                <div>[[ currentCLR?.display_text ]] Proposed Dates</div>
-                <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
-              </template>
-
-              <!-- Live -->
-              <template v-if="currentCLR?.formatted_dates?.status == 'live'">
-                <div>
-                  [[ currentCLR?.display_text ]]
-                  - Active - Ends in
-                  <countdown :startdate="currentCLR.start_date" :enddate="currentCLR.end_date" class="countdown gc-font-heading d-inline-block">
-                    <template v-slot="slotProps">
-                      <span>[[slotProps.time.days]]d</span>
-                      <span>[[slotProps.time.hours]]h</span>
-                      <span>[[slotProps.time.minutes]]m</span>
-                      <span>[[slotProps.time.seconds]]s</span>
-                    </template>
-                  </countdown>
-                </div>
-
-                <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
-              </template>
-
-              <!-- Ended -->
-              <template v-if="currentCLR?.formatted_dates?.status == 'ended'">
-                <div>[[ currentCLR?.display_text ]] Round Ended</div>
-                <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
-              </template>
-
-              <!-- Claim -->
-              <template v-if="currentCLR?.formatted_dates?.status == 'claim'">
-                <div>
-                  [[ currentCLR?.display_text ]] Claim - Active - Ends in
-
-                  <countdown :startdate="currentCLR.claim_start_date" :enddate="currentCLR.claim_end_date" class="countdown gc-font-heading d-inline-block">
-                    <template v-slot="slotProps">
-                      <span>[[slotProps.time.days]]d</span>
-                      <span>[[slotProps.time.hours]]h</span>
-                      <span>[[slotProps.time.minutes]]m</span>
-                      <span>[[slotProps.time.seconds]]s</span>
-                    </template>
-                  </countdown>
-                
-                </div>
-                <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
-
-              </template>
-            </div>
-
-            <template v-if="'activity' == current_type">
-              {% include 'grants/shared/landing_activity.html' %}
-            </template>
-            <template v-else-if="'stats' == current_type">
-              <div id="insert_iframe">
-                <div style="background-color: #eee; font-size: 14px; text-align: center;">
-                  <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
-                </div>
-                <br>
-                <iframe :src="`https://metabase.gitcoin.co/public/dashboard/f57f8c61-e2f2-4129-89fc-d851f4d721ac`" style="width: 100%; height: 100%; min-height: 1000px;">
-                </iframe>
               </div>
-            </template>
-            <template v-else>
 
-              {% include 'grants/shared/top-filters.html' %}
+              <div v-if="currentCLR?.formatted_dates" class="d-flex justify-content-between countdown-color font-smaller-1 my-3">
+                <!-- Proposed -->
+                <template v-if="currentCLR?.formatted_dates?.status == 'proposed'">
+                  <div>[[ currentCLR?.display_text ]] Proposed Dates</div>
+                  <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
+                </template>
 
-              <div class="d-flex">
-                <button class="btn btn-outline-gc-grey btn-sm mb-2" v-if="grantsHasPrev" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
-                <template v-if="params.collection_id">
-                  <button @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-sm btn-primary mb-2 ml-auto">
-                    <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add Collection to Cart
-                  </button>
+                <!-- Live -->
+                <template v-if="currentCLR?.formatted_dates?.status == 'live'">
+                  <div>
+                    [[ currentCLR?.display_text ]]
+                    - Active - Ends in
+                    <countdown :startdate="currentCLR.start_date" :enddate="currentCLR.end_date" class="countdown gc-font-heading d-inline-block">
+                      <template v-slot="slotProps">
+                        <span>[[slotProps.time.days]]d</span>
+                        <span>[[slotProps.time.hours]]h</span>
+                        <span>[[slotProps.time.minutes]]m</span>
+                        <span>[[slotProps.time.seconds]]s</span>
+                      </template>
+                    </countdown>
+                  </div>
+
+                  <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
+                </template>
+
+                <!-- Ended -->
+                <template v-if="currentCLR?.formatted_dates?.status == 'ended'">
+                  <div>[[ currentCLR?.display_text ]] Round Ended</div>
+                  <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
+                </template>
+
+                <!-- Claim -->
+                <template v-if="currentCLR?.formatted_dates?.status == 'claim'">
+                  <div>
+                    [[ currentCLR?.display_text ]] Claim - Active - Ends in
+
+                    <countdown :startdate="currentCLR.claim_start_date" :enddate="currentCLR.claim_end_date" class="countdown gc-font-heading d-inline-block">
+                      <template v-slot="slotProps">
+                        <span>[[slotProps.time.days]]d</span>
+                        <span>[[slotProps.time.hours]]h</span>
+                        <span>[[slotProps.time.minutes]]m</span>
+                        <span>[[slotProps.time.seconds]]s</span>
+                      </template>
+                    </countdown>
+
+                  </div>
+                  <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
+
                 </template>
               </div>
 
-              <div class="infinite-container row"  v-if="grants">
-                <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-                  <a class="text-decoration-none" :href="grant.details_url">
-                    {% include 'grants/components/card.html' %}
-                  </a>
+              <template v-if="'activity' == current_type">
+                {% include 'grants/shared/landing_activity.html' %}
+              </template>
+              <template v-else-if="'stats' == current_type">
+                <div id="insert_iframe">
+                  <div style="background-color: #eee; font-size: 14px; text-align: center;">
+                    <strong>Did you know?  During active matching rounds, @gitcoinbot will post updated stats on a daily basis.  <a href="/gitcoinbot">Check out @gitcoinbot's profile.</a> You can also find grants stats on <a href="{% url 'grants:leaderboard' %}">the Grants Leaderboard</a>.
+                  </div>
+                  <br>
+                  <iframe :src="`https://metabase.gitcoin.co/public/dashboard/f57f8c61-e2f2-4129-89fc-d851f4d721ac`" style="width: 100%; height: 100%; min-height: 1000px;">
+                  </iframe>
                 </div>
-              </div>
+              </template>
+              <template v-else>
 
-              <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
-                <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-                <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
-                <p class="font-subheader text">
-                  {% trans "We couldn't match with any grants on Gitcoin." %}</br>
-                  {% trans "Please try another search term or browse for a grant." %}
-                </p>
-                <div class="col-12 pt-4 pb-2 mx-auto text-center">
-                  <a class="btn-lg btn-primary py-3 px-5" href="{% url 'grants:grants' %}">
-                    {% trans "Browse Grants" %}
-                  </a>
+                {% include 'grants/shared/top-filters.html' %}
+
+                <div class="d-flex">
+                  <button class="btn btn-outline-gc-grey btn-sm mb-2" v-if="grantsHasPrev" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+                  <template v-if="params.collection_id">
+                    <button @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-sm btn-primary mb-2 ml-auto">
+                      <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add Collection to Cart
+                    </button>
+                  </template>
                 </div>
-              </div>
+
+                <div class="infinite-container row"  v-if="grants && grants.length">
+                  <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                    <a class="text-decoration-none" :href="grant.details_url">
+                      {% include 'grants/components/card.html' %}
+                    </a>
+                  </div>
+                </div>
+
+                <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
+                  <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+                  <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+                  <p class="font-subheader text">
+                    {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+                    {% trans "Please try another search term or browse for a grant." %}
+                  </p>
+                  <div class="col-12 pt-4 pb-2 mx-auto text-center">
+                    <button class="btn btn-primary py-3 px-5" @click="searchVisible=false,resetFilters()">
+                      {% trans "Browse Grants" %}
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </b-tab>
+            <b-tab ref="collections" id="collections" title-link-class="nav-line font-weight-bold">
+              <template v-slot:title>Collections</template>
+
+              {% include 'grants/shared/landing_grants.html' with container_class='container p-0' %}
+            </b-tab>
+            <template v-slot:tabs-end>
+              <li role="presentation" class="flex-fill nav-item text-right">
+                <a href="{% url 'grants:new' %}" class="btn btn-primary">{% trans 'Create a Grant' %}</a>
+              </li>
             </template>
-          </b-tab>
-          <b-tab ref="collections" id="collections" title-link-class="nav-line font-weight-bold">
-            <template v-slot:title>Collections</template>
-            {% include 'grants/shared/landing_grants.html' %}
-          </b-tab>
-          <template v-slot:tabs-end>
-            <li role="presentation" class="flex-fill nav-item text-right">
-              <a href="{% url 'grants:new' %}" class="btn btn-primary">{% trans 'Create a Grant' %}</a>
-            </li>
-          </template>
 
-        </b-tabs>
+          </b-tabs>
+        </template>
+        <template v-else-if="params.collection_id">
+
+
+          <div class="my-5">
+            <a href="{% url 'grants:grants_explorer' %}?tab=collections"><i class="fas fa-chevron-left mr-2"></i> back to Collections</a>
+          </div>
+
+          <div class="row">
+            <div class="col-12 col-md-8">
+              <div class="row">
+                <div class="col-auto">
+                  <a :href="collection_owner_url" class="d-block rounded-circle bg-lightblue" :style="`width: 100px; height: 100px; background-size: contain; background-image: url('/dynamic/avatar/${collection_owner}')`"></a>
+                </div>
+                <div class="col-8">
+                  <h3> [[ collection_title ]] </h3>
+                  <p class="text-grey-400"> [[ collection_description ]] </p>
+                  <p> <a :href="collection_owner_url"> by [[ collection_owner ]] </a></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4 m-auto text-right">
+              <button @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-primary mb-2 ml-auto">
+                <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add Collection to Cart
+              </button>
+              <button class="btn btn-outline-primary  mb-2 ml-auto" @click="shareCollection()">
+                Share
+                <i class="fas fa-share-alt font-caption mr-2"></i>
+              </button>
+            </div>
+          </div>
+
+
+          {% include 'grants/shared/top-filters.html' %}
+
+          <div class="d-flex" v-if="grantsHasPrev">
+            <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+          </div>
+
+          <div class="infinite-container row"  v-if="grants && grants.length">
+            <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+              <a class="text-decoration-none" :href="grant.details_url">
+                {% include 'grants/components/card.html' %}
+              </a>
+            </div>
+          </div>
+
+          <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
+            <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+            <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+            <p class="font-subheader text">
+              {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+              {% trans "Please try another search term or browse for a grant." %}
+            </p>
+            <div class="col-12 pt-4 pb-2 mx-auto text-center">
+              <button class="btn btn-primary py-3 px-5" @click="searchVisible=false,resetFilters()">
+                {% trans "Browse Grants" %}
+              </button>
+            </div>
+          </div>
+
+        </template>
       </div>
 
         {% include 'shared/grant_thanks_modal.html' %}
@@ -424,7 +488,12 @@ along with this program. If not, see
     document.idle_grants = {{ idle_grants|yesno:'true,false' }};
     document.show_contributions = {{ only_contributions|yesno:'true,false' }};
     document.featured = {{ featured|yesno:'true,false' }};
-    document.collection_id = {{ collection_id|default:'null' }};
+    document.collection_id = {{ collection_id|default:'false' }};
+    document.collection_title = "{{ meta_title|default:'null' }}";
+    document.collection_description = "{{ meta_description|default:'' }}";
+    document.collection_owner = "{{ meta_owner|default:'' }}";
+    document.collection_owner_url = "{{ meta_owner_url|default:'' }}";
+    document.collection_owner_avatar = "{{ meta_owner_avatar|default:'' }}";
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
     document.activePage = "{{ active }}";
 

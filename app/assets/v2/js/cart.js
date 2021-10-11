@@ -642,6 +642,7 @@ Vue.component('grants-cart', {
       this.grantData = [];
       update_cart_title();
     },
+
     shareCart() {
       _alert('Cart URL copied to clipboard', 'success', 1000);
       copyToClipboard(CartData.share_url());

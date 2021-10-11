@@ -30,6 +30,7 @@ if (document.getElementById('grants-showcase')) {
     limit: 6,
     me: false,
     sort_option: 'weighted_shuffle',
+    collection_id: false,
     network: 'mainnet',
     state: 'active',
     profile: false,
@@ -102,6 +103,11 @@ if (document.getElementById('grants-showcase')) {
       sub_round_slug: false,
       cart_lock: false,
       collection_id: document.collection_id,
+      collection_title: document.collection_title,
+      collection_description: document.collection_description,
+      collection_owner: document.collection_owner,
+      collection_owner_url: document.collection_owner_url,
+      collection_owner_avatar: document.collection_owner_avatar,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
@@ -175,16 +181,34 @@ if (document.getElementById('grants-showcase')) {
           vm.fetchGrants();
         } else {
           vm.updateUrlParams();
-
         }
       },
-      filterCollection: function(collectionId) {
+      filterCollection: async function(collection_id) {
         let vm = this;
 
+        // clear the pages we've fetched to reset state
+        vm.fetchedPages = [];
         vm.params = Object.assign({}, baseParams);
+        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collection_id }});
 
-        vm.changeQuery({collection_id: collectionId});
+        const collectionDetailsURL = `/grants/v1/api/collections/${collection_id}`;
+        const collection = await fetchData(collectionDetailsURL, 'GET');
+
+        // update the stored state
+        vm.$set(vm, 'collection_id', collection_id);
+        vm.$set(vm, 'collection_title', collection.title);
+        vm.$set(vm, 'collection_description', collection.description);
+        vm.$set(vm, 'collection_owner', collection.owner.handle);
+        vm.$set(vm, 'collection_owner_url', collection.owner.url);
+        vm.$set(vm, 'collection_owner_avatar', collection.owner.avatar_url);
+
         vm.tabIndex = 0;
+
+        // update the grants
+        vm.fetchGrants();
+
+        // move to the top
+        window.scrollTo(0, 0);
       },
       getUrlParams: function() {
         let vm = this;
@@ -305,7 +329,9 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
-        vm.changeQuery({tab: vm.tabSelected});
+        vm.fetchedPages = [];
+        vm.$set(vm, 'params', {...vm.params, ...{tab: vm.tabSelected}});
+
         vm.unobserveFilter();
         vm.params.profile = false;
 
@@ -316,33 +342,39 @@ if (document.getElementById('grants-showcase')) {
           setTimeout(() => vm.observeFilter());
         }
       },
-      loadTab: function() {
+      loadTab: function(replaceHistory) {
         let vm = this;
         let loadParams = new URLSearchParams(document.location.search);
         const tabStrings = [
           {'index': 0, 'string': 'grants'},
           {'index': 1, 'string': 'collections'}
         ];
+        // tabs are 0 key indexed by b-tabs
 
         if (loadParams.has('tab')) {
           vm.tabSelected = loadParams.get('tab');
           vm.tabIndex = tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index;
         }
-
+        // *NOTE: collections are paginated by using the returned .next url (stored as collectionsPage)
         if (vm.tabSelected === 'collections') {
-          this.fetchCollections();
+          vm.params.page = 1;
+          vm.collections = [];
+          // move to the top on tabChange
+          vm.collectionsPage = false;
+          this.fetchCollections(false, replaceHistory);
         } else {
-          this.fetchGrants(undefined, undefined, true);
+          this.fetchGrants(undefined, undefined, replaceHistory);
         }
       },
-      fetchCollections: async function(append_mode) {
+      fetchCollections: async function(append_mode, replaceHistory) {
         let vm = this;
 
         if (vm.loadingCollections)
           return;
 
         vm.loadingCollections = true;
-        await vm.updateUrlParams();
+
+        await vm.updateUrlParams(replaceHistory);
 
         let url = `/api/v0.1/grants_collections/?${(vm.params.profile ? 'profile=' + vm.params.profile : '')}`;
 
@@ -357,7 +389,6 @@ if (document.getElementById('grants-showcase')) {
         } else {
           vm.collections = collectionsJson.results;
         }
-
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
       },
@@ -470,13 +501,23 @@ if (document.getElementById('grants-showcase')) {
       },
       watchHistory(event) {
         this.getUrlParams();
-        this.fetchGrants(1, undefined, true);
+        // set tab selected
+        this.$set(this, 'tabSelected', this.params.tab);
+        // load the correct tab
+        this.loadTab(true);
       },
       pageIsFetched(page) {
         let vm = this;
 
         return vm.fetchedPages.includes(page);
 
+      },
+      shareCollection() {
+        let vm = this;
+
+        vm.searchParams = new URLSearchParams(vm.params);
+        _alert('Collections URL copied to clipboard', 'success', 1000);
+        copyToClipboard(`${location.host}${location.pathname}?${vm.searchParams}`);
       }
     },
     computed: {
@@ -531,7 +572,7 @@ if (document.getElementById('grants-showcase')) {
           }
           // round has ended
           return 'ended';
-          
+
         }
 
         if (currentCLR) {

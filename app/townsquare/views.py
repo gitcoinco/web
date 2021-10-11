@@ -15,9 +15,7 @@ from django.views.decorators.http import require_http_methods
 import metadata_parser
 from app.services import RedisService
 from dashboard.helpers import load_files_in_directory
-from dashboard.models import (
-    Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_count, get_my_grants,
-)
+from dashboard.models import Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_count, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from perftools.models import JSONStore
