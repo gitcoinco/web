@@ -100,13 +100,13 @@
                   </span>
                 </div>
                 <div class=" mt-2 font-body" v-if="grant.clr_round_num">
-                  <!-- grant is/was on a round  -->
+                  <!-- grant is/was in a round  -->
                   <template v-if="grant.is_clr_eligible">
-                    <!-- grant on onboing round -->
+                    <!-- grant is in an ongoing round -->
                       Est. Matching <span class="text-success">$[[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]]</span>
                   </template>
                   <template v-else>
-                    <!-- round was on a round but is not longer elegible removed or end of round -->
+                    <!-- grant was in a round but is no longer eligible or the round has ended -->
                     <p class="">
                       $[[ grant.amount_received || 0 | round | formatNumber ]]
 
