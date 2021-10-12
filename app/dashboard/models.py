@@ -2042,6 +2042,7 @@ def psave_bounty(sender, instance, **kwargs):
         'Months': 5,
     }
 
+    instance.github_url = instance.github_url.lower()
     instance.idx_status = instance.status
     instance.fulfillment_accepted_on = instance.get_fulfillment_accepted_on
     instance.fulfillment_submitted_on = instance.get_fulfillment_submitted_on
@@ -4098,7 +4099,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__istartswith=url).cache()
+        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url).cache()
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
@@ -5488,6 +5489,15 @@ def post_save_earning(sender, instance, created, **kwargs):
         from economy.utils import watch_txn
         if instance.txid and instance.network == 'mainnet':
                 watch_txn(instance.txid)
+
+def get_my_earnings_count(profile_pk):
+    # returns num transactions that a user has done business with
+    from_profile_earnings = Earning.objects.filter(from_profile=profile_pk)
+    to_profile_earnings = Earning.objects.filter(to_profile=profile_pk)
+    org_profile_earnings = Earning.objects.filter(org_profile=profile_pk)
+
+    return org_profile_earnings.count() + from_profile_earnings.count() + to_profile_earnings.count()
+
 
 def get_my_earnings_counter_profiles(profile_pk):
     # returns profiles that a user has done business with
