@@ -17,6 +17,7 @@
 {% load i18n static humanize grants_extra %}
 <grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
             :contributions='contributions' :show_contributions="show_contributions" :collection="activeCollection"
+            :editing_collection.sync='editingCollection' :collection_grant_ids.sync="collection_grant_ids"
             v-on:collection:remove='removeCollection'>
   <template>
     <div v-if="view == 'list'">
@@ -270,31 +271,43 @@
           </div>
           {% endcomment %}
 
-          <div class="d-flex mx-3 justify-content-between" v-if="isUserLogged && has_collections">
-            <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="mr-2" menu-class="shadow-sm" v-if="has_collections">
-              <template v-slot:button-content>
-                <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
-              </template>
-              <b-dropdown-item @click.prevent="addToCollection(userCollection, grant)" v-for="userCollection in collections" :key="userCollection.id" v-if="!collection || collection?.id != userCollection.id">[[userCollection.title]]</b-dropdown-item>
-            </b-dropdown>
-          </div>
-
-          <div class="mx-3 mt-1 pb-4">
-            <div class="d-flex justify-content-between pb-1">
-              <b-button @click="quickView($event)" size="sm" variant="outline-primary" class="mr-1 font-body">
-                <i class="fas fa-fw fa-eye"></i>
-              </b-button>
-              <button @click.prevent="removeFromCart(grant)" class="btn btn-outline-danger ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
-                - Remove from Cart
+          <template v-if="editing_collection">
+            <div class="d-flex">
+              <button v-if="isInCollection" @click.prevent="removeFromThisCollection(grant)" class="btn btn-outline-danger flex-basis-100 font-body m-3">
+                Remove from Collection
               </button>
-              <button @click.prevent="addToCart(grant)" class="btn btn-primary ml-1 font-body" style="flex: 1 1 0px;" v-else>
-                + Add to Cart
+              <button v-else @click.prevent="addToThisCollection(grant)" class="btn btn-outline-primary flex-basis-100 font-body m-3">
+                Add to this Collection
               </button>
             </div>
-            <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})" class="btn btn-block btn-outline-danger font-body mt-1 mr-1" v-if="collection && isCurator">
-            - Remove from collection
-            </button>
-          </div>
+          </template>
+          <template v-else>
+            <div class="d-flex mx-3 justify-content-between" v-if="isUserLogged && has_collections">
+              <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="mr-2" menu-class="shadow-sm" v-if="has_collections">
+                <template v-slot:button-content>
+                  <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
+                </template>
+                <b-dropdown-item @click.prevent="addToCollection(userCollection, grant)" v-for="userCollection in collections" :key="userCollection.id" v-if="!collection || collection?.id != userCollection.id">[[userCollection.title]]</b-dropdown-item>
+              </b-dropdown>
+            </div>
+
+            <div class="mx-3 mt-1 pb-4">
+              <div class="d-flex justify-content-between pb-1">
+                <b-button @click="quickView($event)" size="sm" variant="outline-primary" class="mr-1 font-body">
+                  <i class="fas fa-fw fa-eye"></i>
+                </b-button>
+                <button @click.prevent="removeFromCart(grant)" class="btn btn-outline-danger ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
+                  - Remove from Cart
+                </button>
+                <button @click.prevent="addToCart(grant)" class="btn btn-primary ml-1 font-body" style="flex: 1 1 0px;" v-else>
+                  + Add to Cart
+                </button>
+              </div>
+              <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})" class="btn btn-block btn-outline-danger font-body mt-1 mr-1" v-if="collection && isCurator">
+              - Remove from collection
+              </button>
+            </div>
+          </template>
 
       </div>
     </div>

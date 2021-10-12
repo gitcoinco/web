@@ -108,6 +108,7 @@ if (document.getElementById('grants-showcase')) {
       collection_owner: document.collection_owner,
       collection_owner_url: document.collection_owner_url,
       collection_owner_avatar: document.collection_owner_avatar,
+      collection_grant_ids: document.collection_grant_ids,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
@@ -123,7 +124,9 @@ if (document.getElementById('grants-showcase')) {
       observer: null,
       observed: null,
       sticky_active: false,
-      fetchedPages: []
+      fetchedPages: [],
+      handle: document.contxt.github_handle,
+      editingCollection: false
     },
     methods: {
       toggleStyle: function(style) {
@@ -201,6 +204,7 @@ if (document.getElementById('grants-showcase')) {
         vm.$set(vm, 'collection_owner', collection.owner.handle);
         vm.$set(vm, 'collection_owner_url', collection.owner.url);
         vm.$set(vm, 'collection_owner_avatar', collection.owner.avatar_url);
+        vm.$set(vm, 'collection_grant_ids', JSON.parse(collection.grant_ids));
 
         vm.tabIndex = 0;
 
@@ -513,11 +517,48 @@ if (document.getElementById('grants-showcase')) {
 
       },
       shareCollection() {
-        let vm = this;
+        _alert('Collections URL copied to clipboard', 'success', 3000);
+        const share_url = `${location.host}/grants/explorer?collection_id=${this.params.collection_id}`;
 
-        vm.searchParams = new URLSearchParams(vm.params);
-        _alert('Collections URL copied to clipboard', 'success', 1000);
-        copyToClipboard(`${location.host}${location.pathname}?${vm.searchParams}`);
+        copyToClipboard(share_url);
+      },
+      tweetCollection: function() {
+        const share_url = `${location.host}/grants/explorer?collection_id=${this.params.collection_id}`;
+        const tweetUrl = `https://twitter.com/intent/tweet?text=Check out this Grant Collection on @gitcoin ${share_url}`;
+
+        window.open(tweetUrl, '_blank');
+      },
+      editCollection: function() {
+        this.$set(this, 'editingCollection', true);
+      },
+      saveEditCollection: async function() {
+        const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        let response;
+
+        const body = {
+          collection: this.params.collection_id,
+          collectionTitle: this.collection_title,
+          collectionDescription: this.collection_description,
+          grants: this.collection_grant_ids,
+          grantsComplete: true
+        };
+
+        try {
+
+          response = await fetchData('/grants/v1/api/collections/edit', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
+
+          _alert('Congratulations, your collection was updated successfully!', 'success');
+
+        } finally {
+          this.$set(this, 'editingCollection', false);
+          this.fetchedPages = [];
+          this.fetchGrants();
+        }
+      },
+      deleteCollection: function() {
+        // deleteCollection exists as a component with selected_collection passed in as a prop
+        this.$refs.deleteCollection.show();
       }
     },
     computed: {

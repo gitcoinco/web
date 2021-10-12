@@ -367,35 +367,79 @@ along with this program. If not, see
         </template>
         <template v-else-if="params.collection_id">
 
+          {% include 'shared/delete_collection_modal.html' %}
 
           <div class="my-5">
             <a href="{% url 'grants:grants_explorer' %}?tab=collections"><i class="fas fa-chevron-left mr-2"></i> back to Collections</a>
           </div>
 
           <div class="row">
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md">
               <div class="row">
                 <div class="col-auto">
                   <a :href="collection_owner_url" class="d-block rounded-circle bg-lightblue" :style="`width: 100px; height: 100px; background-size: contain; background-image: url('/dynamic/avatar/${collection_owner}')`"></a>
                 </div>
-                <div class="col-8">
+                <div v-if="!editingCollection" class="col-8">
                   <h3> [[ collection_title ]] </h3>
                   <p class="text-grey-400"> [[ collection_description ]] </p>
                   <p> <a :href="collection_owner_url"> by [[ collection_owner ]] </a></p>
                 </div>
+                <div v-else class="col-8">
+                  <div class="mb-3">
+                    <b-form-input v-model="collection_title" placeholder="What would your collection be called?"></b-form-input>
+                  </div>
+                  <div class="mb-2">
+                    <b-form-textarea rows="3" max-rows="6" :state=" collection_description.length == 0 ? null : collection_description.length < 140" v-model="collection_description" placeholder="Short description about your collection"></b-form-textarea>
+                  </div>
+                  <p> <a :href="collection_owner_url"> by [[ collection_owner ]] </a></p>
+                </div>
               </div>
             </div>
-            <div class="col-12 col-md-4 m-auto text-right">
-              <button @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-primary mb-2 ml-auto">
-                <i class="fas fa-fw fa-cart-plus" aria-hidden="true"></i> Add Collection to Cart
-              </button>
-              <button class="btn btn-outline-primary  mb-2 ml-auto" @click="shareCollection()">
-                Share
-                <i class="fas fa-share-alt font-caption mr-2"></i>
-              </button>
+            <div class="col-12 col-md-auto m-auto text-right">
+              <template v-if="!editingCollection">
+                <button @click.stop="addCollectionToCart(params.collection_id)" class="btn btn-primary mb-2 ml-auto">
+                  Add all to Cart
+                </button>
+                <button class="btn btn-outline-primary  mb-2 ml-auto" @click="shareCollection()">
+                  Share
+                  <i class="fas fa-share-alt font-caption mr-2"></i>
+                </button>
+                <b-dropdown ref="collectionMoreOptionsDropdown" menu-class="shadow-sm p-0 mt-1" variant="outline-primary" toggle-class="mb-2" no-caret no-flip>
+                  <template #button-content>
+                    ...
+                  </template>
+                  <b-dropdown-form>
+                    <template v-if="collection_owner == handle">
+                      <div class="submenu-option p-2 cursor-pointer" @click.stop="editCollection()">
+                        <i class="fa fa-pencil-alt px-2"></i>
+                        Edit Collection
+                      </div>
+                      <div class="submenu-option p-2 cursor-pointer text-danger" @click.stop="deleteCollection()">
+                        <i class="fas fa-trash px-2"></i>
+                        Delete Collection
+                      </div>
+                      <div class="submenu-option d-none"></div>
+                    </template>
+                    <template v-else>
+                      <div class="submenu-option p-2 cursor-pointer" @click.stop="tweetCollection()">
+                        <i class="fab fa-twitter px-2"></i>
+                        Tweet
+                      </div>
+                      <div class="submenu-option p-2 cursor-pointer" @click.stop="shareCollection()">
+                        <i class="fas fa-external-link-alt px-2"></i>
+                        Copy link
+                      </div>
+                      <div class="submenu-option d-none"></div>
+                    </template>
+                  </b-dropdown-form>
+                </b-dropdown>
+
+              </template>
+              <template v-else>
+                <button class="btn btn-primary" @click.stop="saveEditCollection()">Save Changes</button>
+              </template>
             </div>
           </div>
-
 
           {% include 'grants/shared/top-filters.html' %}
 
@@ -494,6 +538,7 @@ along with this program. If not, see
     document.collection_owner = "{{ meta_owner|default:'' }}";
     document.collection_owner_url = "{{ meta_owner_url|default:'' }}";
     document.collection_owner_avatar = "{{ meta_owner_avatar|default:'' }}";
+    document.collection_grant_ids = JSON.parse("{{ meta_grant_ids|default:'[]' }}");
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
     document.activePage = "{{ active }}";
 
@@ -541,6 +586,7 @@ along with this program. If not, see
   <script src="{% static "v2/js/grants/_detail-component.js" %}"></script>
   <!-- <script src="{% static "v2/js/grants/funding.js" %}"></script> -->
   <script src="{% static "v2/js/grants/create-collection-modal.js" %}"></script>
+  <script src="{% static "v2/js/grants/delete-collection-modal.js" %}"></script>
   <script src="{% static "v2/js/grants/grant-thanks-modal.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
 </body>
