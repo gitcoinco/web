@@ -36,7 +36,20 @@ class Command(BaseCommand):
         )
 
         # Extensions
-        ext_payout_types= ['web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext']
+        ext_payout_types = [
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext',
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext'
+        ]
         for ext_payout_type in ext_payout_types:
             ext_pending_fulfillments = pending_fulfillments.filter(payout_type=ext_payout_type)
             for fulfillment in ext_pending_fulfillments.all():

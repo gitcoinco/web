@@ -6291,7 +6291,24 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext'] and not fulfiller_address:
+    elif (
+        payout_type
+        in [
+            "qr",
+            "polkadot_ext",
+            "harmony_ext",
+            "binance_ext",
+            "rsk_ext",
+            "xinfin_ext",
+            "nervos_ext",
+            "algorand_ext",
+            "sia_ext",
+            "tezos_ext",
+            "casper_ext",
+            "cosmos_ext",
+        ]
+        and not fulfiller_address
+    ):
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6408,8 +6425,33 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / manual'
+
+    if (
+        payout_type
+        not in [
+            'fiat',
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext' ,
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext',
+            'manual'
+        ]
+    ):
+        response['message'] = (
+            'error: parameter payout_type must be fiat / qr / web_modal / '
+            'polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / '
+            'nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / '
+            'cosmos_ext / manual'
+        )
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6475,7 +6517,24 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext']:
+    elif (
+        payout_type
+        in [
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext',
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext'
+        ]
+    ):
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)

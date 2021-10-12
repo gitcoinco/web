@@ -296,6 +296,7 @@ class Bounty(SuperModel):
         ('sia_ext', 'Sia Ext'),
         ('tezos_ext', 'Tezos Ext'),
         ('casper_ext', 'Casper Ext'),
+        ('cosmos_ext', 'Cosmos Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1411,6 +1412,7 @@ class BountyFulfillment(SuperModel):
         ('sia_ext', 'sia_ext'),
         ('tezos_ext', 'tezos_ext'),
         ('casper_ext', 'casper_ext'),
+        ('cosmos_ext', 'cosmos_ext'),
         ('manual', 'manual')
     ]
 
@@ -1432,6 +1434,7 @@ class BountyFulfillment(SuperModel):
         ('SIA', 'SIA'),
         ('TEZOS', 'TEZOS'),
         ('CASPER', 'CASPER'),
+        ('COSMOS', 'COSMOS'),
         ('OTHERS', 'OTHERS')
     ]
 

@@ -147,7 +147,7 @@ class Contribution(SuperModel):
                     "comment":comment,
                     "is_edited":True,
                 }
-                );
+            )
         except Exception as e:
             print(e)
 
