@@ -30,28 +30,27 @@
         </div>
 
         <div class="mb-3">
-          <p class="font-subheader">Your collection will be permanently removed.</p>
+          <p class="font-subheader text-grey-400">Your collection will be permanently removed.</p>
         </div>
 
 
         <div class="d-flex justify-content-between pt-5">
           <b-button
-            @click="close()"
-            variant="primary"
-            class="col-md-4 col-sm-12"
-          >
-            Cancel
-          </b-button>
-
-          <b-button
             @click="deleteCollection()"
             variant="danger"
-            class="col-md-4 col-sm-12"
+            class="btn btn-danger col-md-4 col-12 mb-2 order-md-last"
           >
             Delete Collection
           </b-button>
-        </div>
 
+          <b-button
+            @click="close()"
+            variant="primary"
+            class="btn btn-outline-primary col-12 col-md-4 mb-2 order-md-first"
+          >
+            Cancel
+          </b-button>
+        </div>
         <br>
       </div>
     </template>
