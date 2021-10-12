@@ -533,8 +533,8 @@ along with this program. If not, see
     document.show_contributions = {{ only_contributions|yesno:'true,false' }};
     document.featured = {{ featured|yesno:'true,false' }};
     document.collection_id = {{ collection_id|default:'false' }};
-    document.collection_title = "{{ meta_title|default:'null' }}";
-    document.collection_description = "{{ meta_description|default:'' }}";
+    document.collection_title = htmlDecode("{{ meta_title|default:'null' }}");
+    document.collection_description = htmlDecode("{{ meta_description|default:'' }}");
     document.collection_owner = "{{ meta_owner|default:'' }}";
     document.collection_owner_url = "{{ meta_owner_url|default:'' }}";
     document.collection_owner_avatar = "{{ meta_owner_avatar|default:'' }}";
