@@ -572,7 +572,7 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [],
             'skin_tones': [],
             'tone_maps': [],
-            'path': 'assets/v2/images/avatar3d/ETHBot.svg',
+            'path': 'assets/v2/images/avatar3d/ETHbot.svg',
         },
         'starbot': {
             'preview_viewbox': {
