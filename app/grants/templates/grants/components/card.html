@@ -279,18 +279,26 @@
             </button>
           </div>
       </div>
-      <b-modal id="add-to-collection" modal-ok="Add to Collection" size="lg">
+      <b-modal id="add-to-collection" modal-ok="Add to Collection" size="lg" hide-footer>
         <div>
            <header>
             <h1 class="font-weight-normal h2">Add Grant to Collection</h1>
-            <p class="text-grey-400">Add <span class="text-black">[[grant.title]] by [[grant.admin_profile.handle]]</span> to Collection</p>
+            <p class="text-grey-400">Add <span class="text-black">[[grant.title]]</span> to Collection</p>
           </header>
           <div>
-            Select Collection
+            <div>
+              <label for="grant-collection-select">Select Collection</label>
+              <b-form-select id="grant-collection-select" text-field="title" value-field="id" :options="collections" size="md" class="mt-3" v-model="selectedCollection">
+              </b-form-select>
+            </div>
+            <div class="mt-4">
+              Or <a href="#">Create New Collection</a>
+            </div>
           </div>
-          <div>
-            Or Create New Collection
-          </div>
+          <footer class="d-flex justify-content-between flex-md-row flex-column-sm flex-column-reverse align-content-center mt-5 mb-5">
+            <b-button variant="outline-primary" class="px-5" @click.prevent="closeModal('add-to-collection')">Cancel</b-button>
+            <b-button variant="primary" class="mb-2 mb-md-0" @click.prevent="addGrantToSelectedCollection">Add to Collection</b-button>
+          </footer>
         </div>
       </b-modal>
     </div>

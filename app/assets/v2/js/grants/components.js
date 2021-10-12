@@ -7,7 +7,8 @@ Vue.component('grant-card', {
     return {
       collections: document.collections,
       currentUser: document.contxt.github_handle,
-      isCurator: false
+      isCurator: false,
+      selectedCollection: null
     };
   },
   methods: {
@@ -100,7 +101,17 @@ Vue.component('grant-card', {
       _alert('Grant added successfully', 'success', 1000);
     },
     showModal: function(modalId) {
+      this.selectedCollection = this.collections[0] && this.collections[0].id;
       this.$bvModal.show(modalId);
+    },
+    closeModal: function(modalId) {
+      this.$bvModal.hide(modalId);
+    },
+    addGrantToSelectedCollection: async function() {
+      const collection = this.collections.find(collection => collection.id == this.selectedCollection);
+      await this.addToCollection(collection, this.grant);
+
+      this.closeModal('add-to-collection');
     }
   },
   computed: {
