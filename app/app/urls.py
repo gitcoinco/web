@@ -784,10 +784,10 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    path('sitemap.xml', cache_page(86400)(sitemap_index), {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
+    path('sitemap.xml', cache_page(604800)(sitemap_index), {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
     path(
         'sitemap-<section>.xml',
-        cache_page(86400)(sitemap), {'sitemaps': sitemaps},
+        cache_page(604800)(sitemap), {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'
     ),
     # Interests

@@ -183,8 +183,7 @@ class ActivitySitemap(Sitemap):
     limit = 5000
 
     def items(self):
-        return Activity.objects.filter(hidden=False).exclude(activity_type__in=['wall_post', 'status_update']
-                                                             ).order_by('-pk').cache()
+        return Activity.objects.order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
