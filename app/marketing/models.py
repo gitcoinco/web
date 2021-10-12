@@ -220,6 +220,9 @@ class LeaderboardRank(SuperModel):
 
         index_together = [
             ["leaderboard", "active"],
+            ["leaderboard", "active", "product"],
+            ["leaderboard", "active", "product", "amount"],
+            ["leaderboard", "active", "product", "amount", 'github_username'],
         ]
 
 
