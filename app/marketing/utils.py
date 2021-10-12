@@ -143,7 +143,7 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
     try:
         es = EmailSubscriber.objects.filter(email=email).first()
         if not es:
-            es = EmailSubscriber.objects.filter(email_index=email).first()
+            es = EmailSubscriber.objects.filter(email_index=email.lower()).first()
         if not es:
             es = EmailSubscriber.objects.filter(email__iexact=email).first()
         if not es:
