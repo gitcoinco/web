@@ -39,7 +39,8 @@ if (document.getElementById('grants-showcase')) {
     grant_types: [],
     grant_tags: [],
     tenants: [],
-    idle: true
+    idle: true,
+    featured: true
   };
 
   const grantRegions = [
@@ -87,7 +88,6 @@ if (document.getElementById('grants-showcase')) {
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
-      featured: document.featured,
       state: 'active',
       category: document.selected_category,
       credentials: false,
@@ -344,11 +344,15 @@ if (document.getElementById('grants-showcase')) {
         vm.loadingCollections = true;
         await vm.updateUrlParams();
 
-        let url = `/api/v0.1/grants_collections/?${(vm.params.profile ? 'profile=' + vm.params.profile : '')}`;
+        const profile = (vm.params.profile ? 'profile=' + vm.params.profile : '');
+        const featured = (vm.params.featured ? 'featured=' + vm.params.featured : '');
 
-        if (vm.collectionsPage) {
+        let url = `/api/v0.1/grants_collections/?${profile}&${featured}`;
+
+        if (vm.collectionsPage && append_mode) {
           url = vm.collectionsPage;
         }
+
         let getCollections = await fetch(url);
         let collectionsJson = await getCollections.json();
 

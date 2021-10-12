@@ -295,7 +295,7 @@ along with this program. If not, see
                       <span>[[slotProps.time.seconds]]s</span>
                     </template>
                   </countdown>
-                
+
                 </div>
                 <div>[[ currentCLR?.formatted_dates?.start_date ]] - [[ currentCLR?.formatted_dates?.end_date ]]</div>
 
@@ -353,7 +353,17 @@ along with this program. If not, see
           </b-tab>
           <b-tab ref="collections" id="collections" title-link-class="nav-line font-weight-bold">
             <template v-slot:title>Collections</template>
-            {% include 'grants/shared/landing_grants.html' %}
+
+            <div class="text-right">
+              <a v-if="params.featured" class="cursor-pointer text-primary text-primary-hover" @click.stop="changeQuery({featured: false}), fetchCollections()">
+                View All Collections
+              </a>
+              <a v-else class="cursor-pointer text-primary text-primary-hover" @click.stop="changeQuery({featured: true}), fetchCollections()">
+                View Featured Collections
+              </a>
+            </div>
+
+            {% include 'grants/shared/landing_grants.html' with container_class='container p-0' %}
           </b-tab>
           <template v-slot:tabs-end>
             <li role="presentation" class="flex-fill nav-item text-right">

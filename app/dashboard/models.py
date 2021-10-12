@@ -4291,6 +4291,7 @@ class Profile(SuperModel):
         return {
             'id': instance.id,
             'handle': instance.handle,
+            'name': instance.name,
             'github_url': instance.github_url,
             'avatar_url': instance.avatar_url,
             'keywords': instance.keywords,
@@ -4698,7 +4699,7 @@ class ProfileSerializer(serializers.BaseSerializer):
         """Define the profile serializer metadata."""
 
         model = Profile
-        fields = ('handle', 'github_access_token')
+        fields = ('handle', 'github_access_token', 'name')
         extra_kwargs = {'github_access_token': {'write_only': True}}
 
     def to_representation(self, instance):
@@ -4712,9 +4713,11 @@ class ProfileSerializer(serializers.BaseSerializer):
 
         """
         has_representation = instance.as_representation.get('id')
-        if not has_representation:
+        if not has_representation or not instance.as_representation.get('name'):
             instance.calculate_all()
             instance.save()
+
+
         return instance.as_representation
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
