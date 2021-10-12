@@ -120,28 +120,42 @@
             </div>
           </div>
         </div>
-        <div class="col-md-2 col-sm-12 grant-action my-2">
-          <b-button @click="quickView($event)" variant="outline-primary" class="font-body btn-block mt-2">
-            <i class="far fa-fw fa-eye"></i>
-          </b-button>
-          <button @click.prevent="removeFromCart(grant)" :class="`btn btn-outline-danger btn-block font-body ${collection && isCurator ? '' : 'mb-md-5'}`" v-if="grant.isInCart">
-            - <span class="btn-cart-action">Remove from Cart</span>
-          </button>
-          <button @click.prevent="addToCart(grant)" :class="`btn btn-primary btn-block font-body ${collection && isCurator ? '' : 'mb-md-5'}`" v-else>
-            + <span class="btn-cart-action">Add to Cart</span>
-          </button>
-          <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})" class="btn btn-block btn-outline-danger font-body mb-md-5" v-if="collection && isCurator">
-            - Remove from collection
-          </button>
-          <div class="add-to-collection d-flex float-right mt-2 mr-3" v-if="isUserLogged && has_collections">
-            <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" menu-class="shadow-sm" v-if="has_collections">
-              <template v-slot:button-content>
-                <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
-              </template>
-              <b-dropdown-item @click.prevent="addToCollection(userCollection, grant)" v-for="userCollection in collections" :key="userCollection.id" v-if="!collection || collection?.id != userCollection.id">[[userCollection.title]]</b-dropdown-item>
-            </b-dropdown>
+        <template v-if="editing_collection">
+          <div class="col-md-2 col-sm-12 grant-action mt-auto mb-3">
+            <div class="d-flex">
+              <button v-if="isInCollection" @click.prevent="removeFromThisCollection(grant)" class="btn btn-outline-danger flex-basis-100 font-body">
+                Remove from Collection
+              </button>
+              <button v-else @click.prevent="addToThisCollection(grant)" class="btn btn-outline-primary flex-basis-100 font-body">
+                Add to Collection
+              </button>
+            </div>
           </div>
-        </div>
+        </template>
+        <template v-else>
+          <div class="col-md-2 col-sm-12 grant-action my-2">
+            <b-button @click="quickView($event)" variant="outline-primary" class="font-body btn-block mt-2">
+              <i class="far fa-fw fa-eye"></i>
+            </b-button>
+            <button @click.prevent="removeFromCart(grant)" :class="`btn btn-outline-danger btn-block font-body ${collection && isCurator ? '' : 'mb-md-5'}`" v-if="grant.isInCart">
+              - <span class="btn-cart-action">Remove from Cart</span>
+            </button>
+            <button @click.prevent="addToCart(grant)" :class="`btn btn-primary btn-block font-body ${collection && isCurator ? '' : 'mb-md-5'}`" v-else>
+              + <span class="btn-cart-action">Add to Cart</span>
+            </button>
+            <button @click.prevent="$emit('collection:remove', {collection: collection, grant: grant})" class="btn btn-block btn-outline-danger font-body mb-md-5" v-if="collection && isCurator">
+              - Remove from collection
+            </button>
+            <div class="add-to-collection d-flex float-right mt-2 mr-3" v-if="isUserLogged && has_collections">
+              <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" menu-class="shadow-sm" v-if="has_collections">
+                <template v-slot:button-content>
+                  <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
+                </template>
+                <b-dropdown-item @click.prevent="addToCollection(userCollection, grant)" v-for="userCollection in collections" :key="userCollection.id" v-if="!collection || collection?.id != userCollection.id">[[userCollection.title]]</b-dropdown-item>
+              </b-dropdown>
+            </div>
+          </div>
+        </template>
       </div>
 
     </div>
