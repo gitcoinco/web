@@ -64,6 +64,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </div>
 
+        <b-modal
+          id="clear-cart-modal"
+          class="modal-dialog modal-lg" header-border-variant="transparent"
+          center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+        >
+          <div class="mx-5">
+            <h1 class="font-bigger-4">
+              Are you sure you want to clear your cart?
+            </h1>
+            <p class="font-smaller-1 text-muted mt-4 mb-4">
+              This action can’t be undone.
+            </p>
+  
+            <div class="d-flex justify-content-between mb-3">
+              <b-button class="px-4 px-md-5" variant="outline-primary"
+                @click="$bvModal.hide('clear-cart-modal')"
+              >Cancel</b-button>
+              <b-button class="px-4 px-md-5" variant="danger" @click="confirmClearCart">Clear Cart</b-button>
+            </div>
+          </div>
+        </b-modal>
+
         <grants-cart ref="cart" inline-template>
           <div class="container">
 
@@ -98,16 +120,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               <div class="container my-5">
                 <div class="row justify-content-between align-items-end mb-4">
-                  <div class="col-auto">
+                  <div>
                     <div class="row justify-content-start align-items-center">
                       <div class="col-auto">
                         <h4 class="font-weight-bold py-0 my-0 pl-0">Discover Grants</h4>
                       </div>
                     </div>
                   </div>
-                  <div class="col-auto">
-                    <a href="/grants/explorer">{% trans "View all grants" %}</a>
-                    <i class="ml-2 text-primary fas fa-long-arrow-alt-right"></i>
+                  <div>
+                    <a href="/grants/explorer">{% trans "View grants" %}</a>
                   </div>
                 </div>
                 <div class="row">
@@ -177,7 +198,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <li  v-if="grantsCountByTenant.ETH == undefined" class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
                         <i class="fa fa-share-alt pr-1" aria-hidden="true"></i> Share cart
                       </li>
-                      <li class="cursor-pointer align-self-center text-danger ml-4" @click="confirmClearCart">
+                      <li class="cursor-pointer align-self-center text-danger ml-4" v-b-modal.clear-cart-modal>
                         <i class="fa fa-times pr-1" aria-hidden="true"></i> Clear all cart
                       </li>
                     </div>

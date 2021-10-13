@@ -28,7 +28,7 @@
               Save Collection
             </div>
 
-            <!-- Clear Cart -->
+            <!-- Share Cart -->
             <div class="text-primary my-auto cursor-pointer">
 
               <b-dropdown no-caret variant="link" toggle-class="text-decoration-none" class="dropdown-share" text="Share" menu-class="shadow-sm">
@@ -52,7 +52,7 @@
             </div>
 
             <!-- Clear Cart -->
-            <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4" @click="confirmClearCart">
+            <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4" v-b-modal.clear-cart-modal>
               <i class="far fa-times" aria-hidden="true"  v-b-tooltip.hover.bottom="'Clear Cart'">
               </i>
             </div>

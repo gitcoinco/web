@@ -672,12 +672,9 @@ Vue.component('grants-cart', {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
     },
     confirmClearCart() {
-      if (confirm('Are you sure you want to clear your cart?')) {
-        this.clearCart();
-        this.isLoading = false;
-      }
+      this.clearCart();
+      this.isLoading = false;
     },
-
     clearCart() {
       CartData.clearCart();
       this.grantData = [];
@@ -1365,7 +1362,7 @@ Vue.component('grants-cart', {
       // Verify signature
       if (!isValidSignature(signature)) {
         console.error('Invalid signature', signature);
-        throw new Error(`Invalid signature. Please try again.`);
+        throw new Error('Invalid signature. Please try again.');
       }
 
       return { signature, message };

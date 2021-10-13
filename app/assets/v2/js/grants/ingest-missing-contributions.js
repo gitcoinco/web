@@ -100,7 +100,7 @@ Vue.component('grants-ingest-contributions', {
       // Verify signature
       if (!isValidSignature(signature)) {
         console.error('Invalid signature', signature);
-        throw new Error(`Invalid signature. Please try again`);
+        throw new Error('Invalid signature. Please try again');
       }
 
       return { signature, message };
