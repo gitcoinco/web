@@ -42,7 +42,7 @@
               </option>
             </select2> -->
           </div>
-          <!-- <div class="">
+          <!-- <div>
             <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
               Apply to all
             </div>
@@ -99,7 +99,7 @@
                   <div class="flex-fill font-smaller-1 ml-4">
                     <div class="d-flex align-items-center">
                       <span class="mr-2">To:</span>
-                      <div class="">
+                      <div>
                         <span class="font-weight-bold">[[grant.zil_payout_address]]</span>
                         <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zil_payout_address"><i class="far fa-copy"></i></copy-clipboard>
                       </div>
@@ -122,14 +122,14 @@
 
                 <div class="form-row align-items-center mt-3">
                   <div class="col" v-show="selectedQRPayment === 'txid'">
-                    <div class="">
+                    <div>
                       <label :for="`zil_payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
                       <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`zil_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
                       <small class="form-text text-muted">Paste the transaction id</small>
                     </div>
                   </div>
                   <div class="col" v-show="selectedQRPayment === 'address'">
-                    <div class="">
+                    <div>
                       <label :for="`zil_contributor_address_${grant.grant_id}`" class="font-smaller-1">Your address:</label>
                       <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`zil_contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" :disabled="grant.success">
                     </div>

@@ -7,12 +7,12 @@
 
     <!-- Left Section -->
     <div class="col-12 col-lg-8">
-      <div class="row">
+      <div class="row left-section">
         <!-- TOP BAR -->
-        <div class="row col-12 pr-md-0">
+        <div class="row col-12 pr-0">
 
           <!-- Donation Token -->
-          <div class="col-12 col-md-4 mb-3 mb-md-0 d-flex">
+          <div class="col-12 col-md-4 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
             <div class="my-auto mr-3">Choose currency</div>
             <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
               <template v-slot:option="option">
@@ -87,7 +87,7 @@
                         placeholder="Amount" style="max-width: 7rem"
                       />
                       <span class="my-auto mx-3">[[ selectedETHCartToken ]]</span>
-                      <span class="font-smaller-3 text-danger my-auto" v-if="grant.grant_donation_amount_usd && grant.grant_donation_amount_usd < UsdMinimalContribution">
+                      <span class="font-smaller-3 text-danger my-auto" v-if="grant.grant_donation_amount_usd < UsdMinimalContribution">
                         Minimum [[ grant.grant_donation_amount/grant.grant_donation_amount_usd || '' | formatNumberWithDecimal]] [[grant.grant_donation_currency]] required
                       </span>
                     </div>
@@ -225,7 +225,7 @@
           ></i>
 
           <b-tooltip target="tooltip-best-option" triggers="hover">
-            <div class="pt-4 pb-2">
+            <div>
               <p>Checkout Options</p>
               <p class="mb-2">Standard Checkout</p>
               <ul>

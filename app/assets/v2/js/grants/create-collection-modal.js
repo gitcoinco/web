@@ -75,10 +75,7 @@ Vue.component('create-collection-modal', {
         this.$bvModal.hide(this.modalId);
         this.$bvModal.hide('contribution-thanks'); // triggers cart clear
 
-        // allow the user to read the alert message before redirecting
-        setTimeout(() => {
-          window.location = redirect;
-        }, 2000);
+        window.open(redirect, '_blank');
       } catch (e) {
         _alert(e.msg, 'danger');
       }

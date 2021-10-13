@@ -99,7 +99,7 @@
   </head>
 
   <body>
-    <div class="">
+    <div>
       {% include 'shared/tag_manager_2.html' %}
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       <div class="header">
@@ -204,16 +204,16 @@
               <div class="d-flex flex-column flex-shrink-0 shadow-sm rounded p-4 m-3 line-height-3" style="width: 286px;">
                 <img class="rounded-circle mb-2" src="{% static 'v2/images/about/kernel-photos/' %}{{user.img}}" width="120" height="120" alt="{{user.name}}">
                 <div class="font-weight-bold font-bigger-1 text-truncate">{{user.name}}</div>
-                <div class="">{{user.position}}</div>
-                <div class="">{{user.company}}</div>
+                <div>{{user.position}}</div>
+                <div>{{user.company}}</div>
               </div>
               {% endfor %}
               {% for user in kernel %}
               <div class="d-flex flex-column flex-shrink-0 shadow-sm rounded p-4 m-3 line-height-3" style="width: 286px;">
                 <img class="rounded-circle mb-2" src="{% static 'v2/images/about/kernel-photos/' %}{{user.img}}" width="120" height="120" alt="{{user.name}}">
                 <div class="font-weight-bold font-bigger-1 text-truncate">{{user.name}}</div>
-                <div class="">{{user.position}}</div>
-                <div class="">{{user.company}}</div>
+                <div>{{user.position}}</div>
+                <div>{{user.company}}</div>
               </div>
               {% endfor %}
             </div>
@@ -226,7 +226,7 @@
                 <img class="rounded-circle mb-2" src="{% url 'org_avatar' user.profile__handle %}" width="120" height="120" alt="{{user.profile__handle}}">
 
                 <div class="font-weight-bold font-bigger-1 text-truncate">{% if user.profile__data.name %}{{user.profile__data.name}}{% else %}{{user.profile__handle}}{% endif %}</div>
-                <div class="">Top Contributor</div>
+                <div>Top Contributor</div>
                 {% if user.profile__organizations %}
                   <div class="text-truncate">{{user.profile__organizations|join:", "}}</div>
                 {% endif %}
@@ -237,7 +237,7 @@
                 <img class="rounded-circle mb-2" src="{% url 'org_avatar' user.profile__handle %}" width="120" height="120" alt="{{user.profile__handle}}">
 
                 <div class="font-weight-bold font-bigger-1 text-truncate">{% if user.profile__data.name %}{{user.profile__data.name}}{% else %}{{user.profile__handle}}{% endif %}</div>
-                <div class="">Top Contributor</div>
+                <div>Top Contributor</div>
                 {% if user.profile__organizations %}
                   <div class="text-truncate">{{user.profile__organizations|join:", "}}</div>
                 {% endif %}
