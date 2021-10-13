@@ -150,6 +150,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/zksync-checkout@0.0.13/dist/main.js"></script>
     {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
 
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script>
       document.authenticated = {{ authenticated | yesno:"true,false" }};
       document.isFullyVerified = '{{is_fully_verified}}' === 'True';
