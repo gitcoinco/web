@@ -49,6 +49,7 @@ class EmailSubscriber(SuperModel):
 
     email = models.EmailField(max_length=255, unique=True)
     source = models.CharField(max_length=50)
+    email_index = models.CharField(max_length=255, default='', db_index=True)
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
     preferences = JSONField(default=dict)
@@ -141,6 +142,7 @@ class EmailSubscriber(SuperModel):
 @receiver(pre_save, sender=EmailSubscriber, dispatch_uid="psave_es")
 def psave_es(sender, instance, **kwargs):
     instance.build_email_preferences()
+    instance.email_index = instance.email.lower()
 
 
 class ManualStat(SuperModel):
