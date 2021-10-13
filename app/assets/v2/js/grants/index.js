@@ -488,7 +488,7 @@ if (document.getElementById('grants-showcase')) {
       grantsHasPrev() {
         let vm = this;
 
-        return vm.lowestPage > 1;
+        return isFinite(vm.lowestPage) && vm.lowestPage > 1;
       },
       currentCLR() {
         let vm = this;
