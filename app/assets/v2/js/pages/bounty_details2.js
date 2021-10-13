@@ -170,6 +170,10 @@ Vue.mixin({
           url = `https://casperstats.io/tx/${txn}`;
           break;
 
+        case 'ATOM':
+          url = `https://www.mintscan.io/cosmos/txs/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -250,6 +254,10 @@ Vue.mixin({
 
         case 'CSPR':
           url = `https://casperstats.io/address/${address}`;
+          break;
+
+        case 'ATOM':
+          url = `https://mintscan.io/cosmos/account/${address}`;
           break;
 
         default:
@@ -504,6 +512,10 @@ Vue.mixin({
           tenant = 'CASPER';
           break;
 
+        case 'ATOM':
+          tenant = 'COSMOS';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -604,6 +616,10 @@ Vue.mixin({
 
         case 'casper_ext':
           payWithCasperExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'cosmos_ext':
+          payWithCosmosExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -826,6 +842,7 @@ Vue.mixin({
         case 'algorand_ext':
         case 'tezos_ext':
         case 'casper_ext':
+        case 'cosmos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }
