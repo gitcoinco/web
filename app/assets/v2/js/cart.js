@@ -689,7 +689,7 @@ Vue.component('grants-cart', {
       copyToClipboard(CartData.share_url());
     },
 
-    udpateDonationCurrency(chain) {
+    updateDonationCurrency(chain) {
 
       if (chain == 'ETH') {
         this.grantData.map(grant => {

@@ -259,7 +259,7 @@ Vue.component('grantsCartEthereumZksync', {
             throw e;
 
           case 'Took too long for the zkSync page to open':
-            _alert('The browser failed to open zkSYnc. Checkout is not complete. Please try again', 'danger');
+            _alert('The browser failed to open zkSync. Checkout is not complete. Please try again', 'danger');
             this.resetZkSyncModal();
             throw e;
 
