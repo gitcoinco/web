@@ -10,16 +10,16 @@ ${{ rounded_amount }}
 
 {{ grant.title }} - {{ grant.logo.url }}
 
-{% trans "Please claim your matching funds by" %} {{ claim_end_date }} here: {{ grant.url }}?{{ utm_tracking }}
+{% trans "We have introduced a new clawback period (https://gitcoin.co/blog/gitcoin-grants-round-11-governance-brief/) where the matching funds will be returned to the matching pool at the start of the next Grants Round. Please claim your matching funds by" %} {{ claim_end_date }} here: {{ grant.url }}?{{ utm_tracking }}
 
-{% trans "Post an update on your grant page" %} - {{ grant_url }}
+{% trans "Post an update on your grant page." %} - {{ grant_url }}
 {% trans "Update your contributors on how you’re going to use the funds." %}
 
-{% trans "Grow your project on KERNEL 4" %} - https://kernel.community/
+{% trans "Grow your project with KERNEL." %} - https://kernel.community/
 {% trans "Join fellow buidlers in the ecosystem and grow together." %}
 
-{% trans "Grab some cool schwag" %} - https://store.gitcoin.co
-{% trans "Get 45% off Gitcoin schwag with code GR" %}{{ round_number }}{% trans "_GRANTEE" %}
+{% trans "Grab some cool swag." %} - https://store.gitcoin.co
+{% trans "Get 45% off Gitcoin schwag with code GR" %}{{ round_number }}{% trans "_GRANTEE - Expires the end of October." %}
 
-{% trans "Let us know your thought" %} - https://twitter.com/owocki/status/1410651364850495489
-{% trans "Comment on Twitter your thought on the grant round." %}
+{% trans "Let us know your thoughts." %} - https://github.com/gitcoinco/web/issues/9574
+{% trans "Comment on Github with your thoughts on the Grants round." %}
