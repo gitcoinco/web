@@ -38,7 +38,7 @@ describe('Creating a new bounty', () => {
     cy.contains('MetaMask').click();
     cy.acceptMetamaskAccess();
 
-    cy.get('#issueURL').type('<https://github.com/gitcoinco/web/issues/1>');
+    cy.get('#issueURL').type('https://github.com/gitcoinco/web/issues/1');
 
     cy.contains('Front End').click();
     cy.contains('Traditional').click();
