@@ -64,30 +64,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </div>
         </div>
 
-        <b-modal
-          id="clear-cart-modal"
-          class="modal-dialog modal-lg" header-border-variant="transparent"
-          center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
-        >
-          <div class="mx-5">
-            <h1 class="font-bigger-4">
-              Are you sure you want to clear your cart?
-            </h1>
-            <p class="font-smaller-1 text-muted mt-4 mb-4">
-              This action can’t be undone.
-            </p>
-  
-            <div class="d-flex justify-content-between mb-3">
-              <b-button class="px-4 px-md-5" variant="outline-primary"
-                @click="$bvModal.hide('clear-cart-modal')"
-              >Cancel</b-button>
-              <b-button class="px-4 px-md-5" variant="danger" @click="confirmClearCart">Clear Cart</b-button>
-            </div>
-          </div>
-        </b-modal>
-
         <grants-cart ref="cart" inline-template>
           <div class="container">
+
+            <b-modal
+            id="clear-cart-modal"
+            class="modal-dialog modal-lg" header-border-variant="transparent"
+            center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+          >
+            <div class="mx-5">
+              <h1 class="font-bigger-4">
+                Are you sure you want to clear your cart?
+              </h1>
+              <p class="font-smaller-1 text-muted mt-4 mb-4">
+                This action can’t be undone.
+              </p>
+
+              <div class="d-flex justify-content-between mb-3">
+                <b-button class="px-4 px-md-5" variant="outline-primary"
+                  @click="$bvModal.hide('clear-cart-modal')"
+                >Cancel</b-button>
+                <b-button class="px-4 px-md-5" variant="danger" @click="confirmClearCart(), $bvModal.hide('clear-cart-modal')">Clear Cart</b-button>
+              </div>
+            </div>
+          </b-modal>
+
 
             <div v-if="isLoading" class="text-center mb-5">
               <div role="presentation" class="nav nav-item ml-auto mt-2 float-right">
@@ -112,7 +113,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               <div class="col-12 col-md-6">
                 <div class="text-center">
-                  <object type="image/svg+xml" 
+                  <object type="image/svg+xml"
                   style="width: 300px;" data="{% static "v2/images/grants/empty-cart.svg" %}"></object>
                 </div>
               </div>
