@@ -233,17 +233,14 @@ Vue.component('grantsCartEthereumPolygon', {
             });
           } catch (addError) {
             if (addError.code === 4001) {
-              _alert('Please connect MetaMask to Polygon network.', 'danger');
               throw new Error('Please connect MetaMask to Polygon network.');
             } else {
               console.error(addError);
             }
           }
         } else if (switchError.code === 4001) {
-          _alert('Please connect MetaMask to Polygon network.', 'danger');
           throw new Error('Please connect MetaMask to Polygon network.');
         } else if (switchError.code === -32002) {
-          _alert('Please respond to a pending MetaMask request.', 'danger');
           throw new Error('Please respond to a pending MetaMask request.');
         } else {
           console.error(switchError);

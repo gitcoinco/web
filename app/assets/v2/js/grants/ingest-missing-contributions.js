@@ -99,8 +99,8 @@ Vue.component('grants-ingest-contributions', {
 
       // Verify signature
       if (!isValidSignature(signature)) {
-        _alert('Invalid signature. Please try again', 'danger');
-        throw new Error(`Invalid signature: ${signature}`);
+        console.error('Invalid signature', signature);
+        throw new Error(`Invalid signature. Please try again`);
       }
 
       return { signature, message };
@@ -128,7 +128,6 @@ Vue.component('grants-ingest-contributions', {
         }
 
         if (!walletAddress) {
-          _alert('Please connect a wallet', 'danger');
           throw new Error('Please connect a wallet');
         }
 

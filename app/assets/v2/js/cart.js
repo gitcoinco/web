@@ -909,10 +909,8 @@ Vue.component('grants-cart', {
           });
         } catch (switchError) {
           if (switchError.code === 4001) {
-            _alert('Please connect MetaMask to Ethereum network.', 'danger');
             throw new Error('Please connect MetaMask to Ethereum network.');
           } else if (switchError.code === -32002) {
-            _alert('Please respond to a pending MetaMask request.', 'danger');
             throw new Error('Please respond to a pending MetaMask request.');
           } else {
             console.error(switchError);
@@ -976,7 +974,6 @@ Vue.component('grants-cart', {
 
           if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsNativeAmount, 10))) {
             // User ETH balance is too small compared to selected donation amounts
-            _alert(`Insufficient ${tokenDetails.name} balance to complete checkout`, 'danger');
             throw new Error(`Insufficient ${tokenDetails.name} balance to complete checkout`);
           }
           // ETH balance is sufficient, continue to next iteration since no approval check
@@ -1367,8 +1364,8 @@ Vue.component('grants-cart', {
 
       // Verify signature
       if (!isValidSignature(signature)) {
-        _alert('Invalid signature. Please try again', 'danger');
-        throw new Error(`Invalid signature: ${signature}`);
+        console.error('Invalid signature', signature);
+        throw new Error(`Invalid signature. Please try again.`);
       }
 
       return { signature, message };

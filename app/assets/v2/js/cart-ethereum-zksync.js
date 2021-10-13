@@ -214,7 +214,6 @@ Vue.component('grantsCartEthereumZksync', {
       try {
         // Ensure wallet is connected
         if (!web3) {
-          _alert('Please connect a wallet', 'danger');
           throw new Error('Please connect a wallet');
         }
 
