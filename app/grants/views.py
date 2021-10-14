@@ -775,7 +775,7 @@ def get_grants_by_filters(
 
 def get_grant_type_cache(network):
     try:
-        return [JSONStore.objects.get(view=f'get_grant_types_{network}').data]
+        return JSONStore.objects.get(view=f'get_grant_types_{network}').data
     except:
         return []
 
