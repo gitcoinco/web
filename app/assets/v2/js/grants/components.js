@@ -109,6 +109,7 @@ Vue.component('grant-card', {
     },
     addGrantToSelectedCollection: async function() {
       const collection = this.collections.find(collection => collection.id == this.selectedCollection);
+
       await this.addToCollection(collection, this.grant);
 
       this.closeModal('add-to-collection');
