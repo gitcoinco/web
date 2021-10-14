@@ -287,7 +287,7 @@
               <b-button @click="quickView($event)" size="sm" variant="link" class="mr-1 font-body">
                 <i class="fas fa-fw fa-eye"></i> Quick View
               </b-button>
-              <b-button size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal('add-to-collection')" v-if="isUserLogged && has_collections">
+              <b-button size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal('add-to-collection-' + grant.id)" v-if="isUserLogged && has_collections">
                 <i class="far fa-fw fa-layer-plus"></i> Save to Collection
               </b-button>
             </div>
@@ -297,7 +297,7 @@
           </div>
         </template>
       </div>
-      <b-modal id="add-to-collection" modal-ok="Add to Collection" size="lg" hide-footer>
+      <b-modal :id="`add-to-collection-${grant.id}`" :ref="`add-to-collection-${grant.id}`" modal-ok="Add to Collection" size="lg" hide-footer>
         <div class="px-5">
            <header>
             <h1 class="font-weight-normal h2">Add Grant to Collection</h1>
@@ -314,7 +314,7 @@
             </div>
           </div>
           <footer class="d-flex justify-content-between flex-md-row flex-column-sm flex-column-reverse align-content-center mt-5 mb-5">
-            <b-button variant="outline-primary" class="px-5" @click.prevent="closeModal('add-to-collection')">Cancel</b-button>
+            <b-button variant="outline-primary" class="px-5" @click.prevent="closeModal('add-to-collection-' + grant.id)">Cancel</b-button>
             <b-button variant="primary" class="mb-2 mb-md-0" @click.prevent="addGrantToSelectedCollection">Add to Collection</b-button>
           </footer>
         </div>
