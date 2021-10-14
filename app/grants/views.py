@@ -517,7 +517,7 @@ def get_grants(request):
     }
     _grants = get_grants_by_filters(**filters)
 
-    if collection_id:
+    if collection_id and collection_id.isnumeric():
         # 4.1 Fetch grants by collection
         _collections = get_collections(
             request.user,
@@ -1096,6 +1096,9 @@ def grants_by_grant_type(request, grant_type):
             params['title'] = collection.title
             params['meta_title'] = collection.title
             params['meta_description'] = collection.description
+            params['meta_owner'] = collection.profile.handle
+            params['meta_owner_url'] = collection.profile.url
+            params['meta_owner_avatar'] = collection.profile.avatar_url
             params['card_desc'] = collection.description
             params['avatar_url'] = request.build_absolute_uri(collection.cover.url) if collection.cover else ''
 
@@ -2948,6 +2951,7 @@ def get_collection(request, collection_id):
     return JsonResponse({
         'id': collection.id,
         'title': collection.title,
+        'description': collection.description,
         'cover': collection.cover.url if collection.cover else '',
         'grants': grants,
         'owner': owner,
