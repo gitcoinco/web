@@ -468,7 +468,7 @@ def get_grants(request):
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     network = request.GET.get('network', 'mainnet')
-    keyword = request.GET.get('keyword', '')
+    keyword = request.GET.get('keyword', '').strip()
     state = request.GET.get('state', 'active')
     grant_tags = request.GET.get('grant_tags', '')
     idle_grants = request.GET.get('idle', '') == 'true'
