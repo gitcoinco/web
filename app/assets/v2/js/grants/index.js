@@ -39,7 +39,7 @@ if (document.getElementById('grants-showcase')) {
     grant_types: [],
     grant_tags: [],
     tenants: [],
-    idle: true
+    idle: false
   };
 
   const grantRegions = [
