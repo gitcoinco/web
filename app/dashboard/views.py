@@ -3972,12 +3972,13 @@ def profile(request, handle, tab=None):
 
     follow_page_size = 10
     page_number = request.GET.get('page', 1)
-    context['all_followers'] = TribeMember.objects.filter(org=profile).order_by('pk')
-    context['all_following'] = TribeMember.objects.filter(profile=profile).order_by('pk')
-    context['following'] = Paginator(context['all_following'], follow_page_size).get_page(page_number)
-    context['followers'] = Paginator(context['all_followers'], follow_page_size).get_page(page_number)
-    context['foltab'] = request.GET.get('sub', 'followers')
-    context['page_obj'] = context['followers'] if context['foltab'] == 'followers' else context['following']
+    if tab == 'people':
+        context['all_followers'] = TribeMember.objects.filter(org=profile).order_by('pk')
+        context['all_following'] = TribeMember.objects.filter(profile=profile).order_by('pk')
+        context['following'] = Paginator(context['all_following'], follow_page_size).get_page(page_number)
+        context['followers'] = Paginator(context['all_followers'], follow_page_size).get_page(page_number)
+        context['foltab'] = request.GET.get('sub', 'followers')
+        context['page_obj'] = context['followers'] if context['foltab'] == 'followers' else context['following']
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
