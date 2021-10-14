@@ -22,18 +22,14 @@ describe('contributing to grant', () => {
 
       cy.visit(grantUrl);
 
-      cy.get('#navbarDropdownWallet').click();
-      cy.contains('Connect Wallet').click();
-      cy.contains('MetaMask').click();
-
-      cy.changeMetamaskNetwork('localhost');
-      cy.acceptMetamaskAccess();
-
       cy.get('.grant-checkout').contains('Add to Cart').click();
       cy.wait(1000); // slow the test down to allow cart data to load
 
       cy.get('#gc-cart').click();
       cy.contains('Checkout').click();
+
+      cy.contains('MetaMask').click();
+      cy.acceptMetamaskAccess();
 
       cy.get('#vs3__combobox').click().type('ETH{enter}');
       cy.get('#gitcoin-grant-input-amount').type('{backspace}');
@@ -78,8 +74,6 @@ describe('contributing to grant', () => {
 
 
     cy.contains('MetaMask').click();
-
-    cy.changeMetamaskNetwork('localhost');
     cy.acceptMetamaskAccess();
 
     cy.get('#vs3__combobox').click().type('ETH{enter}');
