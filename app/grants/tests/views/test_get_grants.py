@@ -1,13 +1,10 @@
 from datetime import datetime
 
-import pytest
-
 from django.test import Client
 
+import pytest
 from dashboard.tests.factories.profile_factory import ProfileFactory
 from grants.tests.models.factories.grant_factory import GrantFactory
-
-
 
 
 @pytest.fixture()
