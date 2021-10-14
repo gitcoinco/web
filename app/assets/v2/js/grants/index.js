@@ -477,6 +477,11 @@ if (document.getElementById('grants-showcase')) {
 
         return vm.fetchedPages.includes(page);
 
+      },
+      showFilter() {
+        let vm = this;
+
+        return JSON.stringify(vm.params) != JSON.stringify(baseParams);
       }
     },
     computed: {

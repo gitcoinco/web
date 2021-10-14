@@ -222,7 +222,7 @@ along with this program. If not, see
                   </b-dropdown-form>
                 </b-dropdown>
 
-                <button class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
+                <button v-if="showFilter()" class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
               </div>
 
               <!-- SEARCH BAR AND CART -->
