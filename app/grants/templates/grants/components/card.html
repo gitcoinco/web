@@ -248,15 +248,6 @@
           </div>
           {% endcomment %}
 
-          <div class="d-flex mx-3 justify-content-between" v-if="isUserLogged && has_collections">
-            <b-dropdown size="sm" variant="link" toggle-class="text-decoration-none text-muted" id="dropdown-1" text="Add to Collection" class="mr-2" menu-class="shadow-sm" v-if="has_collections">
-              <template v-slot:button-content>
-                <span class="text-muted"><i class="fas fa-th-large mr-1"></i> Add to Collection</span>
-              </template>
-              <b-dropdown-item @click.prevent="addToCollection(userCollection, grant)" v-for="userCollection in collections" :key="userCollection.id" v-if="!collection || collection?.id != userCollection.id">[[userCollection.title]]</b-dropdown-item>
-            </b-dropdown>
-          </div>
-
           <div class="mx-3 mt-1 pb-4">
             <div class="d-flex justify-content-between pb-1">
               <button @click.prevent="removeFromCart(grant)" class="btn btn-outline-danger ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
@@ -270,7 +261,7 @@
               <b-button @click="quickView($event)" size="sm" variant="link" class="mr-1 font-body">
                 <i class="fas fa-fw fa-eye"></i> Quick View
               </b-button>
-              <b-button size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal('add-to-collection')">
+              <b-button size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal('add-to-collection')" v-if="isUserLogged && has_collections">
                 <i class="far fa-fw fa-layer-plus"></i> Save to Collection
               </b-button>
             </div>
