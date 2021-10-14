@@ -911,7 +911,7 @@ def grants_landing(request):
         'title': 'Grants',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1040,7 +1040,7 @@ def grants_by_grant_type(request, grant_type):
         # 'mid_back': mid_back,
         # 'bottom_back': bottom_back,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -1223,7 +1223,7 @@ def grants_by_grant_clr(request, clr_round):
         'now': timezone.now(),
         'grant_types': grant_types,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
@@ -2481,7 +2481,7 @@ def quickstart(request):
     params = {
         'active': 'grants_quickstart',
         'title': _('Quickstart'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
