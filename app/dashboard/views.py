@@ -1942,13 +1942,13 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     try:
         if ghissue:
             issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue
-            bounties = Bounty.objects.current().filter(github_url=issue_url)
+            bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
             if not bounties.exists():
                 issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue
-                bounties = Bounty.objects.current().filter(github_url=issue_url)
+                bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
         else:
             issue_url = request_url
-            bounties = Bounty.objects.current().filter(github_url=issue_url)
+            bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
 
     except Exception:
         pass
@@ -1971,7 +1971,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if issue_url:
         try:
             if stdbounties_id is not None and stdbounties_id == "0":
-                new_id = Bounty.objects.current().filter(github_url=issue_url).first().standard_bounties_id
+                new_id = Bounty.objects.current().filter(github_url__iexact=issue_url).first().standard_bounties_id
                 return redirect('issue_details_new3', ghuser=ghuser, ghrepo=ghrepo, ghissue=ghissue, stdbounties_id=new_id)
             if stdbounties_id and stdbounties_id.isdigit():
                 stdbounties_id = clean_str(stdbounties_id)

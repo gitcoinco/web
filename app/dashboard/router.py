@@ -601,7 +601,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         if 'github_url' in param_keys:
             url = self.request.query_params.get('github_url')
-            queryset = queryset.filter(github_url=url)
+            queryset = queryset.filter(github_url__iexact=url)
 
         queryset = queryset.order_by('-web3_created')
         queryset = queryset.distinct()
