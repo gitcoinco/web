@@ -18,6 +18,7 @@
 <grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
             :contributions='contributions' :show_contributions="show_contributions" :collection="activeCollection"
             :editing_collection.sync='editingCollection' :collection_grant_ids.sync="collection_grant_ids"
+            v-on:collection:create='$refs.createNewCollection.show'
             v-on:collection:remove='removeCollection'>
   <template>
     <div v-if="view == 'list'">
@@ -310,7 +311,7 @@
               </b-form-select>
             </div>
             <div class="mt-4">
-              Or <a href="#">Create New Collection</a>
+              Or <a class="link cursor-pointer" @click.prevent="closeModal('add-to-collection-' + grant.id), $emit('collection:create')">Create New Collection</a>
             </div>
           </div>
           <footer class="d-flex justify-content-between flex-md-row flex-column-sm flex-column-reverse align-content-center mt-5 mb-5">
