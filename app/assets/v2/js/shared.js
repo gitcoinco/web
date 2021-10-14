@@ -1393,6 +1393,17 @@ this.getVideoMetadata = (videoURL) => {
 };
 
 /**
+ * decode html encoded string
+ */
+const textArea = document.createElement('textarea');
+
+this.htmlDecode = (value) => {
+  textArea.innerHTML = value || '';
+
+  return textArea.textContent;
+};
+
+/**
  * bootstrap breakpoints
  */
 this.computedRootStyles = getComputedStyle(document.documentElement);

@@ -1,0 +1,58 @@
+{% comment %}
+    Copyright (C) 2021 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+<delete-collection-modal :selected_collection="params.collection_id" ref="deleteCollection" inline-template>
+  <b-modal id="delete-collection" @hide="showDeleteCollection = false" :visible="showDeleteCollection" size="lg" center hide-header hide-footer>
+    <template>
+      <div class="mt-2 mb-3 mx-4">
+        <div class="mb-4 mx-n2 row justify-content-end">
+          <b-button @click="close()" type="button" variant="white" class="close" data-dismiss="modal" aria-label="Close"></button>
+            <span aria-hidden="true">&times;</span>
+          </b-button>
+        </div>
+        <div class="mb-3 text-center">
+          <h1 class="mb-5 font-bigger-4 font-weight-bold">Are you sure you want to delete your collection?</h1>
+        </div>
+
+        <div class="mb-3">
+          <p class="font-subheader text-grey-400">Your collection will be permanently removed.</p>
+        </div>
+
+
+        <div class="d-block d-md-flex justify-content-between pt-5">
+          <b-button
+            @click="deleteCollection()"
+            variant="danger"
+            class="btn col-md-4 col-12 mb-2 order-md-last"
+          >
+            Delete Collection
+          </b-button>
+
+          <b-button
+            @click="close()"
+            variant="outline-primary"
+            class="btn col-12 col-md-4 mb-2 order-md-first"
+          >
+            Cancel
+          </b-button>
+        </div>
+        <br>
+      </div>
+    </template>
+  </b-modal>
+</delete-collection-modal>

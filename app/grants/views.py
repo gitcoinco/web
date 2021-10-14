@@ -1090,7 +1090,7 @@ def grants_by_grant_type(request, grant_type):
             pass
 
     if collection_id and collection_id.isdigit():
-        collections = GrantCollection.objects.filter(pk=collection_id)
+        collections = GrantCollection.objects.prefetch_related('profile').filter(pk=collection_id)
         if collections.exists():
             collection = collections.first()
             params['title'] = collection.title
@@ -1099,6 +1099,7 @@ def grants_by_grant_type(request, grant_type):
             params['meta_owner'] = collection.profile.handle
             params['meta_owner_url'] = collection.profile.url
             params['meta_owner_avatar'] = collection.profile.avatar_url
+            params['meta_grant_ids'] = json.dumps([ grant.id for grant in collection.grants.all() ])
             params['card_desc'] = collection.description
             params['avatar_url'] = request.build_absolute_uri(collection.cover.url) if collection.cover else ''
 
@@ -2896,6 +2897,7 @@ def save_collection(request):
     description = request.POST.get('collectionDescription')
     grant_ids = request.POST.getlist('grants[]')
     collection_id = request.POST.get('collection')
+    grants_complete = request.POST.get('grantsComplete')
     profile = request.user.profile
     grant_ids = [int(grant_id) for grant_id in grant_ids]
 
@@ -2904,7 +2906,12 @@ def save_collection(request):
             Q(profile=request.user.profile) | Q(curators=request.user.profile)
         ).get(pk=collection_id)
 
-        grant_ids = grant_ids + list(collection.grants.all().values_list('id', flat=True))
+        if collection:
+            collection.title = title
+            collection.description = description
+
+            if not grants_complete:
+                grant_ids = grant_ids + list(collection.grants.all().values_list('id', flat=True))
     else:
         kwargs = {
             'title': title,
@@ -2913,17 +2920,50 @@ def save_collection(request):
         }
         collection = GrantCollection.objects.create(**kwargs)
 
-    if len(grant_ids) > 0:
+    if request.user.profile.id == collection.profile.id or request.user.profile.id in collection.curators.all().values_list('id', flat=True):
         collection.grants.set(grant_ids)
         collection.generate_cache()
+        collection.save()
+
+        return JsonResponse({
+            'ok': True,
+            'collection': {
+                'id': collection.id,
+                'title': title,
+                'description': description,
+                'grant_ids': json.dumps(grant_ids)
+            }
+        })
+
 
     return JsonResponse({
-        'ok': True,
-        'collection': {
-            'id': collection.id,
-            'title': title,
-        }
-    })
+        'ok': False,
+        'msg': 'Auth error'
+    }, status=500)
+
+
+@login_required
+@require_POST
+def delete_collection(request):
+    collection_id = request.POST.get('collection')
+    profile = request.user.profile
+
+    if collection_id:
+        collection = GrantCollection.objects.filter(
+            Q(profile=request.user.profile) | Q(curators=request.user.profile)
+        ).get(pk=int(collection_id))
+
+        if collection:
+            collection.delete()
+
+            return JsonResponse({
+                'ok': True
+            })
+
+    return JsonResponse({
+        'ok': False,
+        'msg': 'Auth error'
+    }, status=500)
 
 
 def get_collection(request, collection_id):
@@ -2949,7 +2989,8 @@ def get_collection(request, collection_id):
         'cover': collection.cover.url if collection.cover else '',
         'grants': grants,
         'owner': owner,
-        'curators': curators + [owner]
+        'curators': curators + [owner],
+        'grant_ids': json.dumps([ grant.id for grant in collection.grants.all() ])
     })
 
 

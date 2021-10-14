@@ -1,7 +1,7 @@
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
   props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions',
-    'contributions', 'toggle_following', 'collection'
+    'contributions', 'toggle_following', 'collection', 'editing_collection'
   ],
   data: function() {
     return {
@@ -91,6 +91,16 @@ Vue.component('grant-card', {
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
     },
+    addToThisCollection: function() {
+      const collection_grant_ids = [ ...this.$attrs.collection_grant_ids, this.grant.id ];
+
+      this.$emit('update:collection_grant_ids', collection_grant_ids);
+    },
+    removeFromThisCollection: function() {
+      const collection_grant_ids = this.$attrs.collection_grant_ids.filter((grantId) => grantId != this.grant.id);
+
+      this.$emit('update:collection_grant_ids', collection_grant_ids);
+    },
     addToCollection: async function(collection, grant) {
       const collectionAddGrantURL = `/grants/v1/api/collections/${collection.id}/grants/add`;
       const response = await fetchData(collectionAddGrantURL, 'POST', {
@@ -110,6 +120,13 @@ Vue.component('grant-card', {
       if (document.contxt.github_handle) {
         return true;
       }
+    },
+    isInCollection() {
+      if (this.$attrs.collection_grant_ids && this.$attrs.collection_grant_ids.indexOf(this.grant.id) !== -1) {
+        return true;
+      }
+
+      return false;
     }
   },
   mounted() {
