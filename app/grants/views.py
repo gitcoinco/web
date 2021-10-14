@@ -2899,13 +2899,6 @@ def save_collection(request):
     profile = request.user.profile
     grant_ids = [int(grant_id) for grant_id in grant_ids]
 
-    if len(grant_ids) == 0:
-        return JsonResponse({
-            'ok': False,
-            'msg': 'We can\'t create empty collections'
-
-        }, status=422)
-
     if collection_id:
         collection = GrantCollection.objects.filter(
             Q(profile=request.user.profile) | Q(curators=request.user.profile)
@@ -2920,8 +2913,9 @@ def save_collection(request):
         }
         collection = GrantCollection.objects.create(**kwargs)
 
-    collection.grants.set(grant_ids)
-    collection.generate_cache()
+    if len(grant_ids) > 0:
+        collection.grants.set(grant_ids)
+        collection.generate_cache()
 
     return JsonResponse({
         'ok': True,
