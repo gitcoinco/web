@@ -3817,6 +3817,7 @@ def profile_filter_activities(activities, activity_name, activity_tabs):
 def profile(request, handle, tab=None):
     """Display profile details.
 
+
     Args:
         handle (str): The profile handle.
 
@@ -3837,7 +3838,6 @@ def profile(request, handle, tab=None):
     handle = handle.replace("@", "")
     # perf
     disable_cache = False
-
     # make sure tab param is correct
     all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'trust']
     tab = default_tab if tab not in all_tabs else tab
@@ -3912,7 +3912,7 @@ def profile(request, handle, tab=None):
     )
 
     if request.user.is_authenticated and hasattr(request.user, 'profile'):
-        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower()).exists()
+        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org=profile).exists()
     else:
         context['is_on_tribe'] = False
 
