@@ -5530,8 +5530,7 @@ def get_my_grants(profile):
     # returns grants that a profile has done business with
     relevant_grants = list(profile.grant_contributor.all().values_list('grant', flat=True)) \
         + list(profile.grant_teams.all().values_list('pk', flat=True)) \
-        + list(profile.grant_admin.all().values_list('pk', flat=True)) \
-        + list(profile.grant_phantom_funding.values_list('grant__pk', flat=True))
+        + list(profile.grant_admin.all().values_list('pk', flat=True))
     return relevant_grants
 
 

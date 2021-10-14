@@ -35,7 +35,9 @@ from django.views.decorators.http import require_http_methods
 
 from app.utils import get_profiles_from_text
 from cacheops import cached_view
-from dashboard.models import Activity, HackathonEvent, Profile, Tip, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import (
+    Activity, ActivityIndex, HackathonEvent, Profile, Tip, get_my_earnings_counter_profiles, get_my_grants,
+)
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
@@ -740,18 +742,40 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 def get_specific_activities(what, trending_only, user, after_pk, request=None):
-    # create diff filters
-    activities = Activity.objects.filter(hidden=False).order_by('-created_on')
 
+    # 1. Init
+    view_count_threshold = 10
+    is_auth = user and user.is_authenticated
+
+    activity_index_key = None
+    activities = Activity.objects.none()
+
+    # 2. Choose which filter to index
+    if what in ['grants', 'all_grants']:
+        activity_index_key = 'grants'
+    elif (
+        what in ['tribes', 'my_threads', 'my_favorites', 'connect'] or
+        'tribe:' in what or
+        'project:' in what
+    ):
+        activity_index_key = 'profiles'
+    elif (
+        'hackathon:' in what
+    ):
+        activity_index_key = 'hackathons'
+    elif what == 'kudos':
+        activity_index_key = 'kudos'
+
+    # 3. Filter activities by index
+    activity_pks = ActivityIndex.objects.filter(key=activity_index_key).values_list('id', flat=True)
+    activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
+
+    # 4. Filter out activites based on on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'
-
     if 'grant:' in what:
         activities = activities.exclude(subscription__network=filter_network)
 
-    view_count_threshold = 10
-
-    is_auth = user and user.is_authenticated
 
     ## filtering
     relevant_profiles = []
@@ -759,15 +783,19 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     if what == 'tribes':
         relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
     elif what == 'all_grants':
+        # TODO: add prefetch ?
         activities = activities.filter(grant__isnull=False)
-    elif what == 'grants':
-        relevant_grants = get_my_grants(user.profile) if is_auth else []
-    elif what == 'my_threads' and is_auth:
-        activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
-    elif what == 'my_favorites' and is_auth:
-        favorites = user.favorites.all().values_list('activity_id')
-        activities = Activity.objects.filter(id__in=Subquery(favorites)).order_by('-created')
+    elif is_auth:
+        # filter user specific activity
+        if what == 'grants':
+            relevant_grants = get_my_grants(user.profile) if is_auth else []
+        elif what == 'my_threads':
+            activities = user.profile.subscribed_threads.all().order_by('-created')
+        elif what == 'my_favorites':
+            favorites = user.favorites.all().values_list('activity_id')
+            activities = Activity.objects.filter(id__in=Subquery(favorites)).order_by('-created')
     elif 'hackathon:' in what:
+        # filter hackathon specific activity
         terms = what.split(':')
         pk = terms[1]
 
