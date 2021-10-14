@@ -245,6 +245,12 @@ if (document.getElementById('grants-showcase')) {
       updateUrlParams: function(replaceHistory) {
         let vm = this;
 
+        // ignore idle/featured if collection_id is set - always show everything
+        if (vm.params.collection_id) {
+          vm.params.idle = true;
+          vm.params.featured = false;
+        }
+
         vm.searchParams = new URLSearchParams(vm.params);
 
         if (replaceHistory) {
