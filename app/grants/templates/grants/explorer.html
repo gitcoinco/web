@@ -234,7 +234,15 @@ along with this program. If not, see
                     :class="{'pt-2 pt-md-0': searchVisible}"
                     :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
                   ></i>
-                  <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})" @keyup.enter="changeQuery({page: 1})">
+                  <input
+                    class="form-control form-control-sm rounded-pill pl-4"
+                    placeholder="Search..."
+                    type="search"
+                    v-model="params.keyword"
+                    @focus="searchVisible=true"
+                    @blur="searchVisible=false"
+                    @input="changeQuery({page: 1})"
+                    @keyup.enter="changeQuery({page: 1})"/>
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
                     <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
