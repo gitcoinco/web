@@ -581,9 +581,9 @@ along with this program. If not, see
                   <a :href="collection_owner_url" class="d-block rounded-circle bg-lightblue" :style="`width: 100px; height: 100px; background-size: contain; background-image: url('/dynamic/avatar/${collection_owner}')`"></a>
                 </div>
                 <div v-if="!editingCollection" class="col-8">
-                  <h3> [[ collection_title ]] </h3>
+                  <h3> [[ collection_title || '...' ]] </h3>
                   <p class="text-grey-400"> [[ collection_description ]] </p>
-                  <p> <a :href="collection_owner_url"> by [[ collection_owner ]] </a></p>
+                  <p> <a :href="collection_owner_url" v-if="collection_owner"> by [[ collection_owner ]] </a></p>
                 </div>
                 <div v-else class="col-8">
                   <div class="mb-3">
@@ -755,7 +755,7 @@ along with this program. If not, see
     document.show_contributions = {{ only_contributions|yesno:'true,false' }};
     document.featured = {{ featured|yesno:'true,false' }};
     document.collection_id = {{ collection_id|default:'false' }};
-    document.collection_title = htmlDecode("{{ meta_title|default:'null' }}");
+    document.collection_title = htmlDecode("{{ meta_title|default:'' }}");
     document.collection_description = htmlDecode("{{ meta_description|default:'' }}");
     document.collection_owner = "{{ meta_owner|default:'' }}";
     document.collection_owner_url = "{{ meta_owner_url|default:'' }}";
