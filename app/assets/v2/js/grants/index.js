@@ -190,13 +190,20 @@ if (document.getElementById('grants-showcase')) {
       filterCollection: async function(collection_id) {
         let vm = this;
 
-        // clear grants to avoid showing items which don't match
+        // clear previous state
         vm.grants = [];
-        // clear the pages we've fetched to reset state
         vm.fetchedPages = [];
+        vm.collection_id = '';
+        vm.collection_title = '';
+        vm.collection_description = '';
+        vm.collection_owner = '';
+        vm.collection_owner_avatar = '';
+
+        // reset the params and set collection_id
         vm.params = Object.assign({}, baseParams);
         vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collection_id }});
 
+        // fetch the collections details
         const collectionDetailsURL = `/grants/v1/api/collections/${collection_id}`;
         const collection = await fetchData(collectionDetailsURL, 'GET');
 
@@ -209,6 +216,7 @@ if (document.getElementById('grants-showcase')) {
         vm.$set(vm, 'collection_owner_avatar', collection.owner.avatar_url);
         vm.$set(vm, 'collection_grant_ids', JSON.parse(collection.grant_ids));
 
+        // move to the grants tab
         vm.tabIndex = 0;
 
         // update the grants
