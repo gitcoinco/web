@@ -190,6 +190,8 @@ if (document.getElementById('grants-showcase')) {
       filterCollection: async function(collection_id) {
         let vm = this;
 
+        // clear grants to avoid showing items which don't match
+        vm.grants = [];
         // clear the pages we've fetched to reset state
         vm.fetchedPages = [];
         vm.params = Object.assign({}, baseParams);
