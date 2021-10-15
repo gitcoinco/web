@@ -154,7 +154,7 @@ class DashboardModelsTest(TestCase):
             github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
             raw_data={}
         )
-        expected_url = '/funding/details?url=https://github.com/gitcoinco/web/issues/0xDEADBEEF'
+        expected_url = '/funding/details?url=https://github.com/gitcoinco/web/issues/0xdeadbeef'
         assert bounty.get_relative_url() == expected_url
 
     @staticmethod

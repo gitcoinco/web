@@ -39,7 +39,7 @@ if (document.getElementById('grants-showcase')) {
     grant_types: [],
     grant_tags: [],
     tenants: [],
-    idle: true
+    idle: false
   };
 
   const grantRegions = [
@@ -477,6 +477,11 @@ if (document.getElementById('grants-showcase')) {
 
         return vm.fetchedPages.includes(page);
 
+      },
+      showFilter() {
+        let vm = this;
+
+        return JSON.stringify(vm.params) != JSON.stringify(baseParams);
       }
     },
     computed: {
@@ -488,7 +493,7 @@ if (document.getElementById('grants-showcase')) {
       grantsHasPrev() {
         let vm = this;
 
-        return vm.lowestPage > 1;
+        return isFinite(vm.lowestPage) && vm.lowestPage > 1;
       },
       currentCLR() {
         let vm = this;

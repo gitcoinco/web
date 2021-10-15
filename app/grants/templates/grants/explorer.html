@@ -222,7 +222,7 @@ along with this program. If not, see
                   </b-dropdown-form>
                 </b-dropdown>
 
-                <button class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
+                <button v-if="showFilter()" class="btn btn-sm mt-2" @click="resetFilters()"> <i class="fal fa-times mr-1"></i> Clear</button>
               </div>
 
               <!-- SEARCH BAR AND CART -->
@@ -232,7 +232,7 @@ along with this program. If not, see
                   class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
                   :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
                 ></i>
-                <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})" @keyup.enter="changeQuery({page: 1})">
+                <input @focusout="searchVisible=false" class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible ? searchVisible=searchVisible : searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})" @keyup.enter="changeQuery({page: 1})">
                 <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
                   <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">

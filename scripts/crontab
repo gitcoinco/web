@@ -47,7 +47,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_tx_status 9999999  >> /var/log/gitcoin/update_tx_status_all.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_tx_status 24  >> /var/log/gitcoin/update_tx_status_daily.log  2>&1
 10,25,45 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_tx_status 1  >> /var/log/gitcoin/update_tx_status_15_min.log  2>&1
-15 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_tx_status  >> /var/log/gitcoin/pull_tx_status.log  2>&1
+5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_tx_status  >> /var/log/gitcoin/pull_tx_status.log  2>&1
 */10 * * * * cd gitcoin/coin; sleep 10; bash scripts/run_management_command_if_not_already_running.bash recalculate_profiles  >> /var/log/gitcoin/recalculate_profiles.log  2>&1
 1 3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_compliance_list  >> /var/log/gitcoin/pull_compliance_list.log  2>&1
 25 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_search_index update  >> /var/log/gitcoin/update_search_index.log  2>&1
@@ -117,8 +117,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 1 * * * rm -f /var/log/gitcoin/running_procs.log
 11 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_tip  >> /var/log/gitcoin/expiration_tip.log  2>&1
 1 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1
-10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_stats  >> /var/log/gitcoin/pull_stats.log  2>&1
-10 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash investigate_sybil  >> /var/log/gitcoin/investigate_sybil.log  2>&1
+50 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_stats  >> /var/log/gitcoin/pull_stats.log  2>&1
+40 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash investigate_sybil  >> /var/log/gitcoin/investigate_sybil.log  2>&1
 10 3 * * 0 cd gitcoin/coin; bash scripts/run_management_command.bash pull_github  >> /var/log/gitcoin/pull_github.log  2>&1
 10 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash process_email_events  >> /var/log/gitcoin/process_email_events.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_to_craigslist 1  >> /var/log/gitcoin/post_to_craigslist.log  2>&1

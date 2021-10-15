@@ -324,6 +324,9 @@ class Bounty(SuperModel):
     bounty_reserved_for_user = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
     )
+    org = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='orgs_bounties', blank=True
+    )
     reserved_for_user_from = models.DateTimeField(blank=True, null=True)
     reserved_for_user_expiration = models.DateTimeField(blank=True, null=True)
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
@@ -2043,6 +2046,12 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     instance.github_url = instance.github_url.lower()
+    try:
+        handle = instance.github_url.split('/')[3]
+        if not instance.org:
+            instance.org = Profile.objects.get(handle=handle)
+    except:
+        pass
     instance.idx_status = instance.status
     instance.fulfillment_accepted_on = instance.get_fulfillment_accepted_on
     instance.fulfillment_submitted_on = instance.get_fulfillment_submitted_on
@@ -4098,8 +4107,7 @@ class Profile(SuperModel):
 
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
-        url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url).cache()
+        bounties = Bounty.objects.current().filter(network=network, org=self).cache()
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):

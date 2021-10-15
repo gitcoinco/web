@@ -737,6 +737,7 @@ urlpatterns = [
         name='no_applicant_reminder'
     ),
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
+    re_path(r'^_administration/email/clr_match_claim$', retail.emails.grant_match_distribution_final_txn, name='clr_match_claim'),
 
     # docs
     re_path(r'^_administration/docs/', include('django.contrib.admindocs.urls')),
@@ -784,10 +785,10 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
+    path('sitemap.xml', cache_page(604800)(sitemap_index), {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
     path(
         'sitemap-<section>.xml',
-        cache_page(86400)(sitemap), {'sitemaps': sitemaps},
+        cache_page(604800)(sitemap), {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'
     ),
     # Interests

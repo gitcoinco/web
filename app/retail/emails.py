@@ -38,6 +38,7 @@ from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
+from perftools.models import StaticJsonEnv
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
@@ -475,6 +476,26 @@ def render_funder_payout_reminder(**kwargs):
     kwargs['utm_tracking'] = build_utm_tracking('funder_payout_reminder')
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
+    return response_html, response_txt
+
+
+def render_grant_match_distribution_final_txn(match):
+    CLR_ROUND_DATA = StaticJsonEnv.objects.get(key='CLR_ROUND').data
+    claim_end_date = CLR_ROUND_DATA.get('claim_end_date')
+
+    # timezones are in UTC (format example: 2021-06-16:15.00.00)
+    claim_end_date = datetime.datetime.strptime(claim_end_date, '%Y-%m-%d:%H.%M.%S')
+    params = {
+        'round_number': match.round_number,
+        'rounded_amount': round(match.amount, 2),
+        'profile_handle': match.grant.admin_profile.handle,
+        'grant_url': f'https://gitcoin.co{match.grant.get_absolute_url()}',
+        'grant': match.grant,
+        'claim_end_date': claim_end_date,
+        'utm_tracking': build_utm_tracking('clr_match_claim'),
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/clr_match_claim.html", params))
+    response_txt = render_to_string("emails/grants/clr_match_claim.txt", params)
     return response_html, response_txt
 
 
@@ -1090,8 +1111,6 @@ def render_bounty_changed(to_email, bounty):
 
 
 def render_bounty_expire_warning(to_email, bounty):
-    from django.db.models.functions import Lower
-
     unit = 'days'
     num = int(round((bounty.expires_date - timezone.now()).days, 0))
     if num == 0:
@@ -1237,6 +1256,7 @@ def render_start_work_new_applicant(interest, bounty):
 		'email_type': 'bounty',
         'utm_tracking': build_utm_tracking('start_work_new_applicant'),
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+        'reject_worker_url': bounty.reject_worker_url(interest.profile.handle),
     }
 
     subject = "A new request to work on your bounty"
@@ -1255,6 +1275,7 @@ def render_start_work_applicant_about_to_expire(interest, bounty):
 		'email_type': 'bounty',
         'utm_tracking': build_utm_tracking('start_work_applicant_about_to_expire'),
         'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+        'reject_worker_url': bounty.reject_worker_url(interest.profile.handle),
     }
 
     subject = "24 Hrs to Approve"
@@ -1602,6 +1623,14 @@ def no_applicant_reminder(request):
         idx_status='open', current_bounty=True, interested__isnull=True
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def grant_match_distribution_final_txn(request):
+    from grants.models import CLRMatch
+    match = CLRMatch.objects.first()
+    response_html, _ = render_grant_match_distribution_final_txn(match)
     return HttpResponse(response_html)
 
 
