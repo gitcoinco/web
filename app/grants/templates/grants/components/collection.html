@@ -21,7 +21,7 @@
           <div class="collection-item__header px-3 border-bottom-1 border-grey" style="background-color:rgba(226, 224, 231, 0.05);">
             <div class="row py-2">
               <div class="col-auto rounded-circle" >
-                <img :src="`/dynamic/avatar/${collection.profile.handle}`" class="rounded-circle" style="width: 64px;height: 64px;" />
+                <img :src="`${collection.profile.avatar_url || '/dynamic/avatar/' + collection.profile.handle}`" class="rounded-circle" style="width: 64px;height: 64px;" />
               </div>
               <div class="col-8 my-auto px-0" >
                 <h5>[[ collection.profile.name || 'anonymous' ]]</h5>

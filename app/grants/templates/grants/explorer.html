@@ -578,7 +578,7 @@ along with this program. If not, see
             <div class="col-12 col-md">
               <div class="row">
                 <div class="col-auto">
-                  <a :href="collection_owner_url" class="d-block rounded-circle bg-lightblue" :style="`width: 100px; height: 100px; background-size: contain; background-image: url('/dynamic/avatar/${collection_owner}')`"></a>
+                  <a :href="collection_owner_url" class="d-block rounded-circle bg-lightblue" :style="`width: 100px; height: 100px; background-size: contain; background-image: url('${collection_owner_avatar || '/dynamic/avatar/' + collection_owner}')`"></a>
                 </div>
                 <div v-if="!editingCollection" class="col-8">
                   <h3> [[ collection_title || '...' ]] </h3>
