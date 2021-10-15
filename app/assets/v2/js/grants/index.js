@@ -481,6 +481,9 @@ if (document.getElementById('grants-showcase')) {
       showFilter() {
         let vm = this;
 
+        console.log(JSON.stringify(vm.params))
+        console.log(JSON.stringify(baseParams))
+
         return JSON.stringify(vm.params) != JSON.stringify(baseParams);
       }
     },
