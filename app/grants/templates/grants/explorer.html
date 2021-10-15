@@ -227,10 +227,11 @@ along with this program. If not, see
                 </div>
 
                 <!-- SEARCH BAR AND CART -->
-                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white" :class="{'position-md-absolute w-100': searchVisible}">
+                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white mb-2 mb-md-0" :class="{'position-md-absolute w-100': searchVisible}">
                   <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"><i class="fas fa-chevron-left"></i></button>
                   <i
                     class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
+                    :class="{'pt-2 pt-md-0': searchVisible}"
                     :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
                   ></i>
                   <input class="form-control form-control-sm rounded-pill pl-4" placeholder="Search..." type="search" @click="searchVisible=!searchVisible" v-model="params.keyword" @input="changeQuery({page: 1})" @keyup.enter="changeQuery({page: 1})">
@@ -361,7 +362,7 @@ along with this program. If not, see
                   <b-button
                     class="mt-4 mt-lg-0 w-100 w-md-auto"
                     variant="outline-primary"
-                    @click="$refs.createNewCollection.show()"
+                    @click="() => openCreateCollectionModal(true)"
                   >
                     Create a Collection
                   </b-button>
@@ -633,34 +634,52 @@ along with this program. If not, see
             </div>
           </div>
 
-          {% include 'grants/shared/top-filters.html' %}
+          <template v-if="grants && grants.length">
 
-          <div class="d-flex" v-if="grantsHasPrev">
-            <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
-          </div>
+            {% include 'grants/shared/top-filters.html' %}
 
-          <div class="infinite-container row"  v-if="grants && grants.length">
-            <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-              <a class="text-decoration-none" :href="grant.details_url">
-                {% include 'grants/components/card.html' %}
-              </a>
+            <div class="d-flex" v-if="grantsHasPrev">
+              <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
             </div>
-          </div>
 
-          <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-else>
-            <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-            <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
-            <p class="font-subheader text">
-              {% trans "We couldn't match with any grants on Gitcoin." %}</br>
-              {% trans "Please try another search term or browse for a grant." %}
-            </p>
+            <div class="infinite-container row">
+              <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                <a class="text-decoration-none" :href="grant.details_url">
+                  {% include 'grants/components/card.html' %}
+                </a>
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="collection_owner == handle">
+            <div class="text-center">
+              <img src="{% static "v2/images/grants/empty-collection.svg" %}">
+              <p class="font-subheader text text-grey-400 pt-5">
+                {% trans "Your collection is empty. Let’s add grants to your collection! " %}
+              </p>
+            </div>
             <div class="col-12 pt-4 pb-2 mx-auto text-center">
               <button class="btn btn-primary py-3 px-5" @click="searchVisible=false,resetFilters()">
-                {% trans "Browse Grants" %}
+                {% trans "Explore Grants" %}
               </button>
             </div>
-          </div>
+          </template>
 
+          <template v-else>
+            <div class="col-12 mb-3 mx-auto col-md-6 text-center">
+              <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
+              <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+              <p class="font-subheader text">
+                {% trans "We couldn't match with any grants on Gitcoin." %}</br>
+                {% trans "Please try another search term or browse for a grant." %}
+              </p>
+              <div class="col-12 pt-4 pb-2 mx-auto text-center">
+                <button class="btn btn-primary py-3 px-5" @click="searchVisible=false,resetFilters()">
+                  {% trans "Browse Grants" %}
+                </button>
+              </div>
+            </div>
+          </template>
         </template>
       </div>
 

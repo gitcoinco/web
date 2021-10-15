@@ -18,7 +18,7 @@
 <grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
             :contributions='contributions' :show_contributions="show_contributions" :collection="activeCollection"
             :editing_collection.sync='editingCollection' :collection_grant_ids.sync="collection_grant_ids"
-            v-on:collection:create='$refs.createNewCollection.show'
+            v-on:collection:create='openCreateCollectionModal'
             v-on:collection:remove='removeCollection'>
   <template>
     <div v-if="view == 'list'">
@@ -275,7 +275,7 @@
           </div>
         </template>
         <template v-else>
-          <div class="mx-3 mt-1 pb-4">
+          <div class="mx-3 mt-1 pb-2">
             <div class="d-flex justify-content-between pb-1">
               <button @click.prevent="removeFromCart(grant)" class="btn btn-outline-danger ml-1 font-body" style="flex: 1 1 0px;" v-if="grant.isInCart">
                 - Remove from Cart
@@ -288,7 +288,7 @@
               <b-button @click="quickView($event)" size="sm" variant="link" class="mr-1 font-body">
                 <i class="fas fa-fw fa-eye"></i> Quick View
               </b-button>
-              <b-button size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal('add-to-collection-' + grant.id)" v-if="isUserLogged && has_collections">
+              <b-button size="sm" variant="link" class="mr-1 font-body" @click.prevent="showModal('add-to-collection-' + grant.id)" v-if="isUserLogged">
                 <i class="far fa-fw fa-layer-plus"></i> Save to Collection
               </b-button>
             </div>
@@ -298,20 +298,27 @@
           </div>
         </template>
       </div>
-      <b-modal :id="`add-to-collection-${grant.id}`" :ref="`add-to-collection-${grant.id}`" modal-ok="Add to Collection" size="lg" hide-footer>
+      <b-modal :id="`add-to-collection-${grant.id}`" :ref="`add-to-collection-${grant.id}`" modal-ok="Add to Collection" size="lg" hide-header hide-footer>
+        <div class="mt-2 mb-3 mx-4">
+          <div class="mb-4 mx-n2 row justify-content-end">
+            <b-button @click="closeModal('add-to-collection-' + grant.id)" type="button" variant="white" class="close" data-dismiss="modal" aria-label="Close"></button>
+              <span aria-hidden="true">&times;</span>
+            </b-button>
+          </div>
+        </div>
         <div class="px-5">
            <header>
-            <h1 class="font-weight-normal h2">Add Grant to Collection</h1>
-            <p class="text-grey-400">Add <span class="text-black">[[grant.title]]</span> to Collection</p>
+            <h1 class="mb-3 font-bigger-4 font-weight-normal">Add Grant to Collection</h1>
           </header>
+          <p class="text-grey-400 mb-5 font-smaller-1">Add <span class="text-black">[[grant.title]]</span> to Collection</p>
           <div>
             <div>
-              <label for="grant-collection-select">Select Collection</label>
+              <label for="grant-collection-select" class="font-subheader">Select Collection</label>
               <b-form-select id="grant-collection-select" text-field="title" value-field="id" :options="collections" size="md" class="mt-3" v-model="selectedCollection">
               </b-form-select>
             </div>
             <div class="mt-4">
-              Or <a class="link cursor-pointer" @click.prevent="closeModal('add-to-collection-' + grant.id), $emit('collection:create')">Create New Collection</a>
+              Or <a class="link cursor-pointer" @click.prevent="$emit('collection:create')">Create New Collection</a>
             </div>
           </div>
           <footer class="d-flex justify-content-between flex-md-row flex-column-sm flex-column-reverse align-content-center mt-5 mb-5">

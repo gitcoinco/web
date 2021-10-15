@@ -126,7 +126,8 @@ if (document.getElementById('grants-showcase')) {
       sticky_active: false,
       fetchedPages: [],
       handle: document.contxt.github_handle,
-      editingCollection: false
+      editingCollection: false,
+      createCollectionRedirect: false
     },
     methods: {
       toggleStyle: function(style) {
@@ -141,7 +142,7 @@ if (document.getElementById('grants-showcase')) {
           $('.page-styles').last().text('');
         }
       },
-      toggleActiveCLRs() {
+      toggleActiveCLRs: function() {
         this.show_active_clrs = !this.show_active_clrs;
         window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
       },
@@ -431,7 +432,7 @@ if (document.getElementById('grants-showcase')) {
 
         this.grants = getGrants.grants;
       },
-      tagSearch(search, loading) {
+      tagSearch: function(search, loading) {
         const vm = this;
 
         // if (search.length < 3) {
@@ -489,11 +490,11 @@ if (document.getElementById('grants-showcase')) {
       scrollBottom: function() {
         this.bottom = this.scrollEnd();
       },
-      closeDropdown(ref) {
+      closeDropdown: function(ref) {
         // Close the menu and (by passing true) return focus to the toggle button
         this.$refs[ref].hide(true);
       },
-      observeFilter() {
+      observeFilter: function() {
         // ensure the ref is in the dom before observing
         if (this.$refs.filterNav) {
           this.observed = this.$refs.filterNav;
@@ -508,30 +509,36 @@ if (document.getElementById('grants-showcase')) {
           this.observer.observe(this.observed);
         }
       },
-      unobserveFilter() {
+      unobserveFilter: function() {
         if (this.observed) {
           this.observer.unobserve(this.observed);
         }
       },
-      watchHistory(event) {
+      watchHistory: function(event) {
         this.getUrlParams();
         // set tab selected
         this.$set(this, 'tabSelected', this.params.tab);
         // load the correct tab
         this.loadTab(true);
       },
-      pageIsFetched(page) {
+      pageIsFetched: function(page) {
         let vm = this;
 
         return vm.fetchedPages.includes(page);
 
       },
-      showFilter() {
+      showFilter: function() {
         let vm = this;
 
         return JSON.stringify(vm.params) != JSON.stringify(baseParams);
       },
-      shareCollection() {
+      openCreateCollectionModal: function(doRedirect = false) {
+        // set the redirect ref on <create-collection-modal>
+        this.createCollectionRedirect = doRedirect;
+        // show the createCollection modal
+        this.$refs.createNewCollection.show();
+      },
+      shareCollection: function() {
         _alert('Collections URL copied to clipboard', 'success', 3000);
         const share_url = `${location.host}/grants/explorer?collection_id=${this.params.collection_id}`;
 
@@ -547,10 +554,9 @@ if (document.getElementById('grants-showcase')) {
         this.$set(this, 'editingCollection', true);
       },
       saveEditCollection: async function() {
+        // pick up csrf token from dom
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-        let response;
-
+        // wrap the changes to pass to the endpoint
         const body = {
           collection: this.params.collection_id,
           collectionTitle: this.collection_title,
@@ -559,14 +565,23 @@ if (document.getElementById('grants-showcase')) {
           grantsComplete: true
         };
 
+        // attempt to post the update to the collections api
         try {
-
-          response = await fetchData('/grants/v1/api/collections/edit', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
-
+          // attempt to fetch the data
+          await fetchData('/grants/v1/api/collections/edit', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
+          // toast the success
           _alert('Congratulations, your collection was updated successfully!', 'success');
-
         } finally {
+          // find the collection in the document.collections obj
+          const collection = document.collections.find((collection) => this.params.collection_id == collection.id);
+
+          // update the title against the collection
+          if (collection) {
+            collection.title = body.collectionTitle;
+          }
+          // finish editing
           this.$set(this, 'editingCollection', false);
+          // update the grant list by fetching again
           this.fetchedPages = [];
           this.fetchGrants();
         }

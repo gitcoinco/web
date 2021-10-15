@@ -108,7 +108,7 @@ Vue.component('grant-card', {
         'grant': grant.id
       });
 
-      _alert('Grant added successfully', 'success', 1000);
+      _alert('Grant successfully added to your collection!', 'success', 3000);
     },
     showModal: function(modalId) {
       this.selectedCollection = this.collections[0] && this.collections[0].id;
@@ -122,7 +122,7 @@ Vue.component('grant-card', {
 
       await this.addToCollection(collection, this.grant);
 
-      this.closeModal('add-to-collection');
+      this.closeModal('add-to-collection-' + this.grant.id);
     }
   },
   computed: {
@@ -142,6 +142,12 @@ Vue.component('grant-card', {
       }
 
       return false;
+    }
+  },
+  watch: {
+    collections: function() {
+      // if collections list changes pick the most recent addition
+      this.selectedCollection = this.collections[this.collections.length - 1].id;
     }
   },
   mounted() {

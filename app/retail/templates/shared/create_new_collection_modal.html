@@ -14,7 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-<create-new-collection-modal ref="createNewCollection" inline-template>
+<create-new-collection-modal ref="createNewCollection" :redirect="createCollectionRedirect" inline-template>
   <b-modal id="create-new-collection" @hide="showCreateCollection = false" :visible="showCreateCollection" size="lg" center hide-header hide-footer>
     <template>
       <div class="mt-2 mb-3 mx-4">
@@ -23,9 +23,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             aria-label="Close"></button>
             <span aria-hidden="true">&times;</span>
           </b-button>
-        </div>
-        <div class="mb-3 text-center">
-          <h1 class="mb-5 font-bigger-4 font-weight-bold">Create a Collection</h1>
         </div>
         <div class="col-12 mb-5 text-center">
           <svg width="256" height="135" viewBox="0 0 256 135" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -196,7 +193,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <path d="M149.056 83.8096C149.056 83.5106 149.033 83.2116 148.987 82.9125L147.216 82.2915L148.021 80.5893C147.676 80.1062 147.239 79.6692 146.756 79.3242L145.054 80.1292L144.433 78.3581C143.835 78.2661 143.237 78.2661 142.639 78.3581L142.018 80.1292L140.315 79.3242C139.832 79.6692 139.395 80.1062 139.05 80.5893L139.855 82.2915L138.084 82.9125C137.992 83.5106 137.992 84.1087 138.084 84.7067L139.855 85.3278L139.05 87.03C139.395 87.513 139.832 87.95 140.315 88.2951L142.018 87.49L142.639 89.2612C143.237 89.3532 143.835 89.3532 144.433 89.2612L145.054 87.49L146.756 88.2951C147.239 87.95 147.676 87.513 148.021 87.03L147.216 85.3278L148.987 84.7067C149.033 84.4077 149.056 84.1087 149.056 83.8096Z" fill="#DAD1FF" stroke="#8C65F7" stroke-width="0.5" stroke-miterlimit="10"/>
             <path d="M143.536 84.7279C144.045 84.7279 144.457 84.3159 144.457 83.8078C144.457 83.2996 144.045 82.8877 143.536 82.8877C143.028 82.8877 142.616 83.2996 142.616 83.8078C142.616 84.3159 143.028 84.7279 143.536 84.7279Z" fill="#DAD1FF" stroke="#8C65F7" stroke-width="0.5" stroke-miterlimit="10"/>
             </svg>
-
+        </div>
+        <div class="mb-3">
+          <h1 class="mb-5 font-bigger-4 font-weight-normal">Create a Collection</h1>
         </div>
         <div class="mb-3">
           <p class="font-subheader">Title</p>
