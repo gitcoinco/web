@@ -35,7 +35,7 @@ def get_cosmos_txn_status(fulfillment):
                 token['amount'] for token in tx_response['amount'] if token['denom'] == 'uatom'
             ][0]) == float(amount) * 10 ** 6
         ):
-            if confirmations > 0:
+            if response['tx_response']['code'] == 0 and confirmations > 0:
                 return 'success'
             return 'expired'
 
