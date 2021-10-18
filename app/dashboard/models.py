@@ -4025,7 +4025,7 @@ class Profile(SuperModel):
     def url(self):
         return self.get_absolute_url()
 
-    def get_access_token(self, save=True):
+    def get_access_token(self, save=False):
         """Get the Github access token from User.
 
         Args:

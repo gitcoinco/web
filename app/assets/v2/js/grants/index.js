@@ -481,7 +481,31 @@ if (document.getElementById('grants-showcase')) {
       showFilter() {
         let vm = this;
 
-        return JSON.stringify(vm.params) != JSON.stringify(baseParams);
+        let show_filter = false;
+
+        const keys = [
+          'limit',
+          'me',
+          'sort_option',
+          'network',
+          'state',
+          'profile',
+          'sub_round_slug',
+          'collections_page',
+          'grant_regions',
+          'grant_types',
+          'grant_tags',
+          'tenants',
+          'idle',
+        ]
+
+        keys.forEach(key => {
+          if (vm.params[key].toString() != baseParams[key].toString()) {
+            show_filter = true;
+          }
+        })
+
+        return show_filter;
       }
     },
     computed: {
@@ -536,7 +560,7 @@ if (document.getElementById('grants-showcase')) {
           }
           // round has ended
           return 'ended';
-          
+
         }
 
         if (currentCLR) {
