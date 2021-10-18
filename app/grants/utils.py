@@ -113,7 +113,16 @@ def get_clr_rounds_metadata():
         round_status = 'done'
         banner_round_name = ''
 
-    return clr_round, round_start_date, round_end_date, show_round_banner, claim_start_date, claim_end_date, round_status, banner_round_name
+    return {
+        'clr_round': clr_round,
+        'round_start_date': round_start_date,
+        'round_end_date': round_end_date,
+        'show_round_banner': show_round_banner,
+        'claim_start_date': claim_start_date,
+        'claim_end_date': claim_end_date,
+        'round_status': round_status,
+        'banner_round_name': banner_round_name
+    }
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)

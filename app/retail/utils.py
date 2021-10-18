@@ -637,7 +637,7 @@ def build_stat_results(keyword=None):
     context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
     context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
     from grants.utils import get_clr_rounds_metadata
-    clr_round, _, _, _, _, _, _, _ = get_clr_rounds_metadata()
+    clr_round = get_clr_rounds_metadata()['clr_round']
     context['num_matching_rounds'] = clr_round
     context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"
     context['privacy_violations'] = ManualStat.objects.filter(key='privacy_violations').order_by('-pk').first().val

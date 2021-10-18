@@ -51,10 +51,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        _, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
+        clr_rounds_metadata = get_clr_rounds_metadata()
+        round_start_date = clr_rounds_metadata['round_start_date']
+        round_end_date = clr_rounds_metadata['round_end_date']
 
         last_activity_by_user = CartActivity.objects.filter(latest=True, created_on__gt=round_start_date).exclude(metadata=[])
         count = 0
+
         if options.get('hours'):
             hours = options.get('hours')
         else:
