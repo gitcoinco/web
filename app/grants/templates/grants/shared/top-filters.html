@@ -5,7 +5,9 @@
     <div class="row mt-2 mb-3 mt-xl-0 font-caption">
 
       <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto">
-        [[numGrants.toLocaleString()]] [[ 'Grant' | pluralize(numGrants)]]
+        <span class="font-weight-semibold">[[numGrants.toLocaleString()]]</span>
+        [[ 'Grant' | pluralize(numGrants)]]
+        <span v-if="params.keyword">- '[[params.keyword]]'</span>
       </span>
 
       <div class="col-12 col-lg-6 text-right pt-2">
