@@ -12,12 +12,13 @@ document.result = bounty;
 
 Vue.mixin({
   methods: {
-    fetchBounty: function(newData) {
+    fetchBounty: function (newData) {
       let vm = this;
       let apiUrlBounty = `/actions/api/v0.1/bounty?github_url=${document.issueURL}`;
       const getBounty = fetchData(apiUrlBounty, 'GET');
 
-      $.when(getBounty).then(function(response) {
+      $.when(getBounty).then(function (response) {
+        debugger
         if (!response.length) {
           vm.loadingState = 'empty';
           return vm.syncBounty();
@@ -41,12 +42,12 @@ Vue.mixin({
         vm.fetchIfPendingFulfillments();
         vm.initChain();
         vm.eventParams();
-      }).catch(function(error) {
+      }).catch(function (error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'danger');
       });
     },
-    eventParams: function() {
+    eventParams: function () {
       const searchParams = new URLSearchParams(window.location.search);
 
       if (searchParams.has('mutate_worker_action')) {
@@ -83,7 +84,7 @@ Vue.mixin({
             ]
           };
 
-          bountyEvent = [ bountyEvent, stopHackathonEvent ];
+          bountyEvent = [bountyEvent, stopHackathonEvent];
 
         }
 
@@ -94,7 +95,7 @@ Vue.mixin({
 
 
     },
-    getTransactionURL: function(token_name, txn) {
+    getTransactionURL: function (token_name, txn) {
       let url;
 
       switch (token_name) {
@@ -176,7 +177,7 @@ Vue.mixin({
       }
       return url;
     },
-    getAddressURL: function(token_name, address) {
+    getAddressURL: function (token_name, address) {
       let url;
 
       switch (token_name) {
@@ -257,7 +258,7 @@ Vue.mixin({
       }
       return url;
     },
-    getQRString: function(token_name, address, value) {
+    getQRString: function (token_name, address, value) {
       value = value || 0;
 
       let qr_string;
@@ -297,7 +298,7 @@ Vue.mixin({
 
       return qr_string;
     },
-    syncBounty: function() {
+    syncBounty: function () {
       let vm = this;
 
       if (!localStorage[document.issueURL]) {
@@ -321,11 +322,11 @@ Vue.mixin({
           };
           let syncDb = fetchData('/sync/web3/', 'POST', data);
 
-          $.when(syncDb).then(function(response) {
+          $.when(syncDb).then(function (response) {
             console.log(response);
 
             vm.fetchBounty(true);
-          }).catch(function(error) {
+          }).catch(function (error) {
             setTimeout(vm.syncBounty(), 10000);
           });
         } catch (error) {
@@ -335,7 +336,7 @@ Vue.mixin({
       waitBlock(bountyMetadata.txid);
 
     },
-    checkOwner: function(handle) {
+    checkOwner: function (handle) {
       let vm = this;
 
       if (vm.contxt.github_handle) {
@@ -344,7 +345,7 @@ Vue.mixin({
       return false;
 
     },
-    checkOwnerAddress: function(bountyOwnerAddress) {
+    checkOwnerAddress: function (bountyOwnerAddress) {
       let vm = this;
 
       if (cb_address) {
@@ -353,7 +354,7 @@ Vue.mixin({
       return false;
 
     },
-    checkInterest: function() {
+    checkInterest: function () {
       let vm = this;
 
       if (!vm.contxt.github_handle) {
@@ -365,7 +366,7 @@ Vue.mixin({
       return isInterested;
 
     },
-    checkApproved: function() {
+    checkApproved: function () {
       let vm = this;
 
       if (!vm.contxt.github_handle) {
@@ -377,7 +378,7 @@ Vue.mixin({
       return result ? !result.pending : false;
 
     },
-    checkFulfilled: function() {
+    checkFulfilled: function () {
       let vm = this;
 
       if (!vm.contxt.github_handle) {
@@ -385,16 +386,16 @@ Vue.mixin({
       }
       return !!(vm.bounty.fulfillments || []).find(fulfiller => caseInsensitiveCompare(fulfiller.fulfiller_github_username, vm.contxt.github_handle));
     },
-    syncGhIssue: function() {
+    syncGhIssue: function () {
       let vm = this;
       let apiUrlIssueSync = `/sync/get_issue_details?url=${encodeURIComponent(vm.bounty.github_url)}&token=${currentProfile.githubToken}`;
       const getIssueSync = fetchData(apiUrlIssueSync, 'GET');
 
-      $.when(getIssueSync).then(function(response) {
+      $.when(getIssueSync).then(function (response) {
         vm.updateGhIssue(response);
       });
     },
-    updateGhIssue: function(response) {
+    updateGhIssue: function (response) {
       let vm = this;
       const payload = JSON.stringify({
         issue_description: response.description,
@@ -403,26 +404,26 @@ Vue.mixin({
       let apiUrlUpdateIssue = `/bounty/change/${vm.bounty.pk}`;
       const postUpdateIssue = fetchData(apiUrlUpdateIssue, 'POST', payload);
 
-      $.when(postUpdateIssue).then(function(response) {
+      $.when(postUpdateIssue).then(function (response) {
         vm.bounty.issue_description = response.description;
         vm.bounty.title = response.title;
         _alert({ message: response.msg }, 'success');
-      }).catch(function(response) {
+      }).catch(function (response) {
         _alert({ message: response.responseJSON.error }, 'danger');
       });
     },
-    copyTextToClipboard: function(text) {
+    copyTextToClipboard: function (text) {
       if (!navigator.clipboard) {
         _alert('Could not copy text to clipboard', 'danger', 5000);
       } else {
-        navigator.clipboard.writeText(text).then(function() {
+        navigator.clipboard.writeText(text).then(function () {
           _alert('Text copied to clipboard', 'success', 5000);
-        }, function(err) {
+        }, function (err) {
           _alert('Could not copy text to clipboard', 'danger', 5000);
         });
       }
     },
-    getTenant: function(token_name, web3_type) {
+    getTenant: function (token_name, web3_type) {
       let tenant;
       let vm = this;
 
@@ -510,7 +511,7 @@ Vue.mixin({
 
       return tenant;
     },
-    fulfillmentComplete: function(payout_type, fulfillment_id, event) {
+    fulfillmentComplete: function (payout_type, fulfillment_id, event) {
       let vm = this;
 
       const token_name = vm.bounty.token_name;
@@ -548,12 +549,12 @@ Vue.mixin({
           _alert('Unable to make payout bounty. Please try again later', 'danger');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
-      }).catch(function(error) {
+      }).catch(function (error) {
         event.target.disabled = false;
         _alert('Unable to make payout bounty. Please try again later', 'danger');
       });
     },
-    nextStepAndLoadPYPLButton: function(fulfillment_id, fulfiller_identifier) {
+    nextStepAndLoadPYPLButton: function (fulfillment_id, fulfiller_identifier) {
       let vm = this;
 
       Promise.resolve(vm.goToStep('submit_transaction', 'payout_amount')).then(() => {
@@ -565,7 +566,7 @@ Vue.mixin({
         payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
     },
-    payWithExtension: function(fulfillment_id, fulfiller_address, payout_type) {
+    payWithExtension: function (fulfillment_id, fulfiller_address, payout_type) {
       let vm = this;
       const modal = this.$refs['payout-modal' + fulfillment_id][0];
 
@@ -607,7 +608,7 @@ Vue.mixin({
           break;
       }
     },
-    closeBounty: function() {
+    closeBounty: function () {
 
       let vm = this;
       const bounty_id = vm.bounty.pk;
@@ -623,13 +624,13 @@ Vue.mixin({
         }
       });
     },
-    show_extend_deadline_modal: function() {
+    show_extend_deadline_modal: function () {
       show_extend_deadline_modal();
     },
-    show_interest_modal: function() {
+    show_interest_modal: function () {
       show_interest_modal();
     },
-    staffOptions: function() {
+    staffOptions: function () {
       let vm = this;
 
       if (!vm.bounty.pk) {
@@ -664,7 +665,7 @@ Vue.mixin({
         }
       }
     },
-    contactFunder: function() {
+    contactFunder: function () {
       let vm = this;
       let text = window.prompt('What would you like to say to the funder?', '');
 
@@ -673,7 +674,7 @@ Vue.mixin({
       }
       document.location.href = `${vm.bounty.url}?admin_contact_funder=${text}`;
     },
-    snoozeeGitbot: function() {
+    snoozeeGitbot: function () {
       let vm = this;
       let text = window.prompt('How many days do you want to snooze?', '');
 
@@ -682,7 +683,7 @@ Vue.mixin({
       }
       document.location.href = `${vm.bounty.url}?snooze=${text}`;
     },
-    hasAcceptedFulfillments: function() {
+    hasAcceptedFulfillments: function () {
       let vm = this;
 
       if (!vm.bounty) {
@@ -695,7 +696,7 @@ Vue.mixin({
       );
 
     },
-    fetchIfPendingFulfillments: function() {
+    fetchIfPendingFulfillments: function () {
       let vm = this;
 
       const pendingFulfillments = vm.bounty.fulfillments.filter(fulfillment =>
@@ -712,7 +713,7 @@ Vue.mixin({
       }
       return;
     },
-    stopWork: function(isOwner, handle) {
+    stopWork: function (isOwner, handle) {
       let text = isOwner ?
         'Are you sure you would like to stop this user from working on this bounty ?' :
         'Are you sure you would like to stop working on this bounty ?';
@@ -769,7 +770,7 @@ Vue.mixin({
               ]
             };
 
-            stopEvent = [ stopEvent, stopHackathonEvent ];
+            stopEvent = [stopEvent, stopHackathonEvent];
 
           }
 
@@ -782,7 +783,7 @@ Vue.mixin({
         }
       });
     },
-    canStopWork: function(handle) {
+    canStopWork: function (handle) {
       let vm = this;
 
       if (!handle) {
@@ -797,7 +798,7 @@ Vue.mixin({
 
       return false;
     },
-    goToStep: function(nextStep, currentStep, flow) {
+    goToStep: function (nextStep, currentStep, flow) {
       let vm = this;
 
       if (flow) {
@@ -806,7 +807,7 @@ Vue.mixin({
       vm.fulfillment_context.referrer = currentStep;
       vm.fulfillment_context.active_step = nextStep;
     },
-    initFulfillmentContext: function(fulfillment) {
+    initFulfillmentContext: function (fulfillment) {
       let vm = this;
 
       switch (fulfillment.payout_type) {
@@ -830,7 +831,7 @@ Vue.mixin({
           break;
       }
     },
-    initChain: function() {
+    initChain: function () {
 
       let vm = this;
       const token = vm.bounty.token_name;
@@ -867,7 +868,7 @@ Vue.mixin({
           break;
       }
     },
-    validateFunderAddress: function(token_name) {
+    validateFunderAddress: function (token_name) {
       let vm = this;
       let hasError = false;
 
@@ -877,7 +878,7 @@ Vue.mixin({
         case 'CKB': {
           const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
           const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
-    
+
           if (!isNervosValid && !vm.bounty.bounty_owner_address.toLowerCase().startsWith('0x')) {
             hasError = true;
           }
@@ -892,7 +893,7 @@ Vue.mixin({
     }
   },
   computed: {
-    sortedActivity: function() {
+    sortedActivity: function () {
       const token_details = tokenAddressToDetailsByNetwork(
         this.bounty.token_address, this.bounty.network
       );
@@ -915,10 +916,10 @@ Vue.mixin({
       }
       return activities;
     },
-    isExpired: function() {
+    isExpired: function () {
       return moment(document.result['expires_date']).isBefore();
     },
-    expiresAfterAYear: function() {
+    expiresAfterAYear: function () {
       return moment().diff(document.result['expires_date'], 'years') < -1;
     }
   }
@@ -926,7 +927,7 @@ Vue.mixin({
 
 if (document.getElementById('gc-bounty-detail')) {
   appBounty = new Vue({
-    delimiters: [ '[[', ']]' ],
+    delimiters: ['[[', ']]'],
     el: '#gc-bounty-detail',
     data() {
       return {
@@ -951,19 +952,20 @@ if (document.getElementById('gc-bounty-detail')) {
       };
     },
     mounted() {
+
       this.fetchBounty();
     }
   });
 }
 
 
-var show_extend_deadline_modal = function() {
+var show_extend_deadline_modal = function () {
   let modals = $('#modalExtend');
   let modalBody = $('#modalExtend .modal-content');
   const url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
 
   moment.locale('en');
-  modals.on('show.bs.modal', function() {
+  modals.on('show.bs.modal', function () {
     modalBody.load(url, () => {
       const currentExpires = moment.utc(document.result['expires_date']);
 
@@ -973,16 +975,16 @@ var show_extend_deadline_modal = function() {
         startDate: moment(currentExpires).add(1, 'month'),
         minDate: moment().add(1, 'day'),
         ranges: {
-          '1 week': [ moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days') ],
-          '2 weeks': [ moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days') ],
-          '1 month': [ moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month') ],
-          '3 months': [ moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month') ],
-          '1 year': [ moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year') ]
+          '1 week': [moment(currentExpires).add(7, 'days'), moment(currentExpires).add(7, 'days')],
+          '2 weeks': [moment(currentExpires).add(14, 'days'), moment(currentExpires).add(14, 'days')],
+          '1 month': [moment(currentExpires).add(1, 'month'), moment(currentExpires).add(1, 'month')],
+          '3 months': [moment(currentExpires).add(3, 'month'), moment(currentExpires).add(3, 'month')],
+          '1 year': [moment(currentExpires).add(1, 'year'), moment(currentExpires).add(1, 'year')]
         },
         'locale': {
           'customRangeLabel': 'Custom'
         }
-      }, function(start, end, label) {
+      }, function (start, end, label) {
         set_extended_time_html(end);
       });
 
@@ -999,7 +1001,7 @@ var show_extend_deadline_modal = function() {
         }
       });
 
-      modals.on('submit', function(event) {
+      modals.on('submit', function (event) {
         event.preventDefault();
 
         var extended_time = $('input[name=updatedExpires]').val();
@@ -1011,23 +1013,23 @@ var show_extend_deadline_modal = function() {
     });
   });
   modals.bootstrapModal('show');
-  $(document, modals).on('hidden.bs.modal', function(e) {
+  $(document, modals).on('hidden.bs.modal', function (e) {
     $('#extend_deadline').remove();
     $('.daterangepicker').remove();
   });
 };
 
-var set_extended_time_html = function(extendedDuration) {
+var set_extended_time_html = function (extendedDuration) {
   extendedDuration = extendedDuration.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
   $('input[name=updatedExpires]').val(extendedDuration.utc().unix());
   $('#extended-expiration-date #extended-date').html(extendedDuration.format('MM-DD-YYYY hh:mm A'));
   $('#extended-expiration-date #extended-days').html(moment.utc(extendedDuration).fromNow());
 };
 
-var extend_expiration = function(bounty_pk, data) {
+var extend_expiration = function (bounty_pk, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
 
-  $.post(request_url, data, function(result) {
+  $.post(request_url, data, function (result) {
 
     if (result.success) {
       _alert({ message: result.msg }, 'success');
@@ -1035,7 +1037,7 @@ var extend_expiration = function(bounty_pk, data) {
       return appBounty.bounty.expires_date;
     }
     return false;
-  }).fail(function(result) {
+  }).fail(function (result) {
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'danger');
   });
 };
@@ -1061,12 +1063,12 @@ const submitInterest = (bounty, msg, self, onSuccess) => {
   });
 };
 
-var show_interest_modal = function() {
+var show_interest_modal = function () {
   var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
-  modals.on('show.bs.modal', function() {
+  modals.on('show.bs.modal', function () {
     modalBody.load(modalUrl, () => {
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
@@ -1074,15 +1076,15 @@ var show_interest_modal = function() {
       let projectForm = $('#projectForm');
 
       userSearch('.team-users', false, '', data, true, false);
-      $('#looking-members').on('click', function() {
+      $('#looking-members').on('click', function () {
         $('.looking-members').toggle();
       });
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
       if (document.result.event) {
-        $(document).on('change', '#project_logo', function() {
+        $(document).on('change', '#project_logo', function () {
           previewFile($(this));
         });
-        projectForm.on('submit', function(e) {
+        projectForm.on('submit', function (e) {
           e.preventDefault();
           const elements = $(this)[0];
           const logo = elements['logo'].files[0];
@@ -1108,26 +1110,26 @@ var show_interest_modal = function() {
               }
             ]
           },
-          {
-            'alias': 'products',
-            'data': [
-              {
-                'name': 'product',
-                'attributes': {
-                  'product': 'hackathon',
-                  'persona': 'hackathon-hunter',
-                  'action': 'interest'
+            {
+              'alias': 'products',
+              'data': [
+                {
+                  'name': 'product',
+                  'attributes': {
+                    'product': 'hackathon',
+                    'persona': 'hackathon-hunter',
+                    'action': 'interest'
+                  }
                 }
-              }
-            ]
-          });
+              ]
+            });
 
         });
 
         return;
       }
 
-      actionPlanForm.on('submit', function(event) {
+      actionPlanForm.on('submit', function (event) {
         event.preventDefault();
 
         let msg = issueMessage.val().trim();
