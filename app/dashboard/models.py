@@ -2307,18 +2307,7 @@ class ActivityManager(models.Manager):
 
 class ActivityIndex(SuperModel):
     """All Activity Reads happen from this table"""
-
-    ACTIVITY_KEYS = [
-        ('grants', 'grants'),
-        ('hackathons', 'hackathons'),
-        ('tips', 'tips'),
-        ('kudos', 'kudos'),
-        ('quests', 'quests'),
-        ('profiles', 'profiles'),
-        ('platform', 'platform'),
-        ('others', 'others')
-    ]
-    key = models.CharField(max_length=255, choices=ACTIVITY_KEYS, db_index=True)
+    key = models.CharField(max_length=255, db_index=True)
     activity = models.ForeignKey(
         'dashboard.Activity', 
         null=True, 
