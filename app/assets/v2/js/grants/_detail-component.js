@@ -425,7 +425,16 @@ Vue.mixin({
 
       },
       set(value) {
-        this.grant.team_members = value;
+        this.grant.team_members = value.map((user) => {
+
+          return {
+            fields: {
+              handle: user.text
+            },
+            model: 'dashboard.profile',
+            pk: user.id
+          };
+        });
       }
     },
     grantTagsFormatted: {
