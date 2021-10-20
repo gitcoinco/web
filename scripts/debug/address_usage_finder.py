@@ -8,7 +8,10 @@ from grants.utils import get_clr_rounds_metadata
 
 # total stats
 
-_, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
+
+clr_rounds_metadata = get_clr_rounds_metadata()
+round_start_date = clr_rounds_metadata['round_start_date']
+round_end_date = clr_rounds_metadata['round_end_date']
 
 contributions = Contribution.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date, success=True)
 pfs = PhantomFunding.objects.filter(created_on__gt=round_start_date, created_on__lt=round_end_date)

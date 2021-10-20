@@ -24,7 +24,6 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
 from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
@@ -109,9 +108,10 @@ def create_hack_event_cache():
 
 def create_top_grant_spenders_cache():
 
-    _, round_start_date, _, _, _, _, _, _ = get_clr_rounds_metadata()
+    round_start_date = get_clr_rounds_metadata()['round_start_date']
 
     grant_types = GrantType.objects.filter(is_visible=True, is_active=True)
+
     for grant_type in grant_types:
         contributions = Contribution.objects.filter(
             success=True,

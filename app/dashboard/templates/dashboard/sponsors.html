@@ -278,7 +278,9 @@
                                       </b-td>
                                       <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                         <template v-if="project.winner">
-                                          <a class="btn btn-primary font-body" target="_blank" :href="`/issue/payout?pk=${prize.pk}`" v-if="!project.paid">Pay</a>
+                                          <template v-if="!project.paid">
+                                            <a class="btn btn-primary font-body" target="_blank" :href="`${prize.url}`" >Pay</a>
+                                          </template>
                                           <p class="font-body" v-else>Paid [[ project.payment_date ]]</p>
                                         </template>
                                       </b-td>

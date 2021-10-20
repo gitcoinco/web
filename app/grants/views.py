@@ -98,10 +98,12 @@ from web3 import HTTPProvider, Web3
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
-
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
 grant_tenants = ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND']
+
+clr_rounds_metadata = get_clr_rounds_metadata()
+
 
 def get_keywords():
     """Get all Keywords."""
@@ -901,34 +903,28 @@ def grants_landing(request):
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
-    round_name, round_start_date, round_end_date, show_round_banner, claim_start_date, claim_end_date, round_status, banner_round_name = get_clr_rounds_metadata()
 
+    params = dict(
+        {
+            'active': 'grants_landing',
+            'network': network,
+            'grant_bg': get_branding_info(request),
+            'title': 'Grants',
+            'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
+            'card_desc': f'{live_now}',
+            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
+            'card_type': 'summary_large_image',
+            'avatar_height': 675,
+            'avatar_width': 1200,
+            'active_rounds': active_rounds,
+            'sponsors': sponsors,
+            'featured': True,
+            'now': now,
+            'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
+        },
+        **clr_rounds_metadata
+    )
 
-    params = {
-        'active': 'grants_landing',
-        'network': network,
-        'grant_bg': get_branding_info(request),
-        'title': 'Grants',
-        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
-        'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
-        'card_type': 'summary_large_image',
-        'avatar_height': 675,
-        'avatar_width': 1200,
-        'active_rounds': active_rounds,
-        'sponsors': sponsors,
-        'featured': True,
-        'round_start_date': round_start_date,
-        'round_end_date': round_end_date,
-        'claim_start_date': claim_start_date,
-        'claim_end_date': claim_end_date,
-        'round_name': round_name,
-        'show_round_banner': show_round_banner,
-        'banner_round_name': banner_round_name,
-        'round_status': round_status,
-        'now': now,
-        'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
-    }
     response = TemplateResponse(request, 'grants/landingpage.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
@@ -1024,7 +1020,8 @@ def grants_by_grant_type(request, grant_type):
         if _type.get("keyword") == grant_type:
             grant_label = _type.get("label")
 
-    _, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
+    round_start_date = clr_rounds_metadata['round_start_date']
+    round_end_date = clr_rounds_metadata['round_end_date']
 
     params = {
         'active': 'grants_explorer',
@@ -1208,8 +1205,6 @@ def grants_by_grant_clr(request, clr_round):
 
     active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
 
-    _, round_start_date, round_end_date, _, _, _, _, _ = get_clr_rounds_metadata()
-
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -1217,8 +1212,8 @@ def grants_by_grant_clr(request, clr_round):
         'network': network,
         'keyword': keyword,
         'type': grant_types,
-        'round_end': round_end_date,
-        'next_round_start': round_start_date,
+        'round_end': clr_rounds_metadata['round_end_date'],
+        'next_round_start': clr_rounds_metadata['round_start_date'],
         'all_grants_count': _grants.count(),
         'now': timezone.now(),
         'grant_types': grant_types,

@@ -737,6 +737,7 @@ urlpatterns = [
         name='no_applicant_reminder'
     ),
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
+    re_path(r'^_administration/email/clr_match_claim$', retail.emails.grant_match_distribution_final_txn, name='clr_match_claim'),
 
     # docs
     re_path(r'^_administration/docs/', include('django.contrib.admindocs.urls')),

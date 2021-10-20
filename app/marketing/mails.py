@@ -35,16 +35,17 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_featured_funded_bounty,
     render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
-    render_grant_cancellation_email, render_grant_recontribute, render_grant_txn_failed, render_grant_update,
-    render_match_distribution, render_match_email, render_mention, render_new_bounty, render_new_bounty_acceptance,
-    render_new_bounty_rejection, render_new_bounty_roundup, render_new_contributions_email,
-    render_new_grant_approved_email, render_new_grant_email, render_new_work_submission, render_no_applicant_reminder,
-    render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
-    render_reserved_issue, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
-    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
-    render_tax_report, render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
-    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_grant_cancellation_email, render_grant_match_distribution_final_txn, render_grant_recontribute,
+    render_grant_txn_failed, render_grant_update, render_match_distribution, render_match_email, render_mention,
+    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
+    render_new_contributions_email, render_new_grant_approved_email, render_new_grant_email, render_new_work_submission,
+    render_no_applicant_reminder, render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart,
+    render_request_amount_email, render_reserved_issue, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
+    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
+    render_tribe_hackathon_prizes, render_unread_notification_email_weekly_roundup, render_wallpost,
+    render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -1156,6 +1157,7 @@ Kevin, Scott, Vivek & the Gitcoin Community
     finally:
         translation.activate(cur_language)
 
+
 def grant_match_distribution_final_txn(match, needs_claimed=False):
     to_email = match.grant.admin_profile.email
     cc_emails = [profile.email for profile in match.grant.team_members.all()]
@@ -1165,42 +1167,23 @@ def grant_match_distribution_final_txn(match, needs_claimed=False):
     try:
         setup_lang(to_email)
         subject = f"🎉 Your Match Distribution of {rounded_amount} DAI has been sent! 🎉"
-        action = f"We have sent your {rounded_amount} DAI to the address on file at {match.grant.admin_address}.  The txid of this transaction is {match.payout_tx}."
         if needs_claimed:
             subject = f"💰ACTION REQUIRED - Your Grants Round {match.round_number} Distribution of {rounded_amount} DAI"
-            action = f"Please claim your payout by logging into Gitcoin as a team member, enabling your web3 wallet, + clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ). From there click 'Claim Match' to receive your matching distribution."
-        body = f"""
-<pre>
-Hello @{match.grant.admin_profile.handle},
 
-This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
+        html, text = render_grant_match_distribution_final_txn(match)
 
-{action}
-
-Congratulations on a successful Gitcoin Grants Round {match.round_number}, Your grant raised {match.grant.amount_received_in_round} DAI-equivilent from {match.grant.positive_round_contributor_count} contributors.
-
-What next?
-1. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
-2. Celebrate 🎉 and consider joining us for KERNEL 4 ( https://kernel.community/ ) as you continue growing your project. 🛠🛠
-3. Feel free to grab some Gitcoin schwag at store.gitcoin.co - use code GRANTS_ROUND_10_GRANTEE for 45% off.
-4. Please take a moment to comment on this thread to let us know what you thought of this grants round [https://github.com/gitcoinco/web/discussions/9599]. We'd love to hear how the round went for you.
-
-Thanks,
-Team Gitcoin & The GitcoinDAO
-"Our mission is to build & fund the open web" https://gitcoin.co/mission
-</pre>
-
-        """
         send_mail(
             from_email,
             to_email,
             subject,
-            '',
-            body,
+            text,
+            html,
             from_name=_("Gitcoin Grants"),
             cc_emails=cc_emails,
             categories=['admin', func_name()],
         )
+    except Exception as e:
+        logger.warning(e)
     finally:
         translation.activate(cur_language)
 
