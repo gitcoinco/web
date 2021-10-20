@@ -122,110 +122,48 @@ def port_activity_to_index():
         # | Q(activity_type='consolidated_mini_clr_payout')
     )
 
+
     # helper function to populate grant activity index
     def populate_grants_activity_index(activities):
         for _activity in activities:
-            keys = []
+            _activity.populate_grant_activity_index()
 
-            keys.append(f'profile:{_activity.profile.pk}')
-            keys.append(f'grant:{_activity.grant.pk}')
-
-            for key in keys:
-                ActivityIndex.objects.create(
-                    key=key,
-                    activity=_activity,
-                    created_on=_activity.created_on
-                )
 
     # helper function to populate kudos activity index
     def populate_kudos_activity_index(activities):
         for _activity in activities:
-            keys = []
+            _activity.populate_kudo_activity_index()
 
-            keys.append(f'profile:{_activity.profile.pk}')
-            keys.append(f'kudo:{_activity.kudos.pk}')
-
-            for key in keys:
-                ActivityIndex.objects.create(
-                    key=key,
-                    activity=_activity,
-                    created_on=_activity.created_on
-                )
 
     # helper function to populate quests activity index
     def populate_quests_activity_index(activities):
         for _activity in activities:
-            keys = []
-            keys.append(f'profile:{_activity.profile.pk}')
-
-            for key in keys:
-                ActivityIndex.objects.create(
-                    key=key,
-                    activity=_activity,
-                    created_on=_activity.created_on
-                )
+            _activity.populate_quest_activity_index()
 
     
     # helper function to populate tips activity index
     def populate_tips_activity_index(activities):
         for _activity in activities:
-            keys = []
-            keys.append(f'profile:{_activity.profile.pk}')
-            keys.append(f'tip:{_activity.tip.pk}')
-
-            for key in keys:
-                ActivityIndex.objects.create(
-                    key=key,
-                    activity=_activity,
-                    created_on=_activity.created_on
-                )
+            _activity.populate_tip_activity_index()
 
     
     # helper function to populate profiles activity index
     def populate_profiles_activity_index(activities):
         for _activity in activities:
-            keys = []
-            keys.append(f'profile:{_activity.profile.pk}')
+            _activity.populate_profile_activity_index()
 
-            for key in keys:
-                ActivityIndex.objects.create(
-                    key=key,
-                    activity=_activity,
-                    created_on=_activity.created_on
-                )
 
     # helper function to populate platform activity index
-    def populate_platform_activity_index(activities):
+    def populate_platforms_activity_index(activities):
         for _activity in activities:
-            keys = []
-            keys.append(f'profile:{_activity.profile.pk}')
-            keys.append(f'platform:{_activity.profile.pk}')
-
-            for key in keys:
-                ActivityIndex.objects.create(
-                    key=key,
-                    activity=_activity,
-                    created_on=_activity.created_on
-                )    
+            _activity.populate_platform_activity_index()
 
 
     # helper function to populate platform activity index
     def populate_hackathons_activity_index(activities):
         for _activity in activities:
-            keys = []
+            _activity.populate_hackathon_activity_index()
 
-            keys.append(f'profile:{_activity.profile.pk}')
-            if _activity.hackathonevent:
-                keys.append(f'hackathon:{_activity.hackathonevent.pk}')
-            if _activity.bounty:
-                keys.append(f'bounty:{_activity.bounty.pk}')
-
-            for key in keys:
-                ActivityIndex.objects.create(
-                    key=key,
-                    activity=_activity,
-                    created_on=_activity.created_on
-                )   
 
     _activities = activities.filter(quests_activity_query)
     populate_quests_activity_index(_activities)
@@ -244,7 +182,7 @@ def port_activity_to_index():
     print('profiles activity indexed')
     
     _activities = activities.filter(platform_activity_query)
-    populate_platform_activity_index(_activities)
+    populate_platforms_activity_index(_activities)
     print('platform activity indexed')
 
     _activities = activities.filter(hackathon_activity_query)

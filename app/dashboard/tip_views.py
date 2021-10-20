@@ -137,7 +137,8 @@ def record_tip_activity(tip, github_handle, event_name, override_created=None, o
         pass
 
     try:
-        Activity.objects.create(**kwargs)
+        activity = Activity.objects.create(**kwargs)
+        activity.populate_tip_activity_index()
     except Exception as e:
         logger.debug('error in record_tip_activity: %s - %s - %s - %s', e, event_name, tip, github_handle)
 

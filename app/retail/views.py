@@ -58,8 +58,9 @@ connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'n
 
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
+    activity_indexes = ActivityIndex.objects.filter(key__startswith=f'bounty:').values_list('activity__pk', flat=True)
+    activities = Activity.objects.filter(pk__in=list(activity_indexes),hidden=False).order_by('-created_on')
 
-    activities = Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created')
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
@@ -1004,6 +1005,8 @@ def create_status_update(request):
 
         try:
             activity = Activity.objects.create(**kwargs)
+            activity.populate_hackathon_activity_index()
+
             response['status'] = 200
             response['message'] = 'Status updated!'
 

@@ -483,7 +483,8 @@ def postsave_token(sender, instance, created, **kwargs):
                 'metadata': {
                 }
             }
-            Activity.objects.create(**kwargs)
+            activity = Activity.objects.create(**kwargs)
+            activity.populate_kudo_activity_index()
 
 
 class KudosTransfer(SendCryptoAsset):

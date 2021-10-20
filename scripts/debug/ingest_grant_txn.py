@@ -1,6 +1,5 @@
 from django.utils import timezone
 
-import requests
 from dashboard.models import Activity, Profile
 from economy.tx import headers
 from economy.utils import convert_token_to_usdt
@@ -92,4 +91,5 @@ kwargs = {
     'metadata': metadata,
 }
 
-Activity.objects.create(**kwargs)
+activity = Activity.objects.create(**kwargs)
+activity.populate_grant_activity_index()

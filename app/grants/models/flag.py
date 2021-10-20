@@ -28,12 +28,16 @@ class Flag(SuperModel):
     def post_flag(self):
         from dashboard.models import Activity, Profile
         from townsquare.models import Comment
+
         profile = Profile.objects.filter(handle='gitcoinbot').first()
         activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=self.grant)
-        comment = Comment.objects.create(
+        activity.populate_grant_activity_index()
+        
+        Comment.objects.create(
             profile=profile,
             activity=activity,
-            comment=f"Comment from anonymous user: {self.comments}")
+            comment=f"Comment from anonymous user: {self.comments}"
+        )
 
 
 
