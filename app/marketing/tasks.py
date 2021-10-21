@@ -1,5 +1,6 @@
 from django.conf import settings
 
+import marketing.stats as stats
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
@@ -53,7 +54,7 @@ def weekly_roundup(self, to_email, retry: bool = True) -> None:
     if settings.FLUSH_QUEUE:
         redis.sadd('weekly_roundup_retry', to_email)
         return
-    
+
     # actually do the task
     weekly_roundup_email([to_email])
 
@@ -77,3 +78,12 @@ def send_all_weekly_roundup(self, retry: bool = True) -> None:
     for to_email in email_list:
         weekly_roundup.delay(to_email)
         #time.sleep(THROTTLE_S)
+
+
+@app.shared_task(bind=True, max_retries=1)
+def get_stats(self, fn):
+    f = getattr(stats, fn)
+    try:
+        f()
+    except Exception as e:
+        logger.error(str(e))
