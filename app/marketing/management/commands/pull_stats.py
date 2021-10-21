@@ -20,7 +20,7 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
-import marketing.stats as stats
+from marketing.tasks import get_stats
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -33,41 +33,38 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        fs = [
-            stats.get_bounty_keyword_counts,
-            stats.get_skills_keyword_counts,
-            stats.github_issues,
-            stats.gitter,
-            stats.medium_subscribers,
-            stats.google_analytics,
-            stats.github_stars,
-            stats.profiles_ingested,
-            stats.chrome_ext_users,
-            stats.firefox_ext_users,
-            stats.slack_users,
-            stats.slack_users_active,
-            stats.twitter_followers,
-            stats.bounties,
-            stats.grants,
-            stats.subs,
-            stats.whitepaper_access,
-            stats.whitepaper_access_request,
-            stats.sendcryptoassets,
-            stats.tips_received,
-            stats.bounties_fulfilled,
-            stats.bounties_open,
-            stats.bounties_by_status_and_keyword,
-            stats.subs_active,
-            stats.joe_dominance_index,
-            stats.avg_time_bounty_turnaround,
-            stats.user_actions,
-            stats.email_events,
-            stats.bounties_hourly_rate
+        fns = [
+            'get_bounty_keyword_counts',
+            'get_skills_keyword_counts',
+            'github_issues',
+            'gitter',
+            'medium_subscribers',
+            'google_analytics',
+            'github_stars',
+            'profiles_ingested',
+            'chrome_ext_users',
+            'firefox_ext_users',
+            'slack_users',
+            'slack_users_active',
+            'twitter_followers',
+            'bounties',
+            'grants',
+            'subs',
+            'whitepaper_access',
+            'whitepaper_access_request',
+            'sendcryptoassets',
+            'tips_received',
+            'bounties_fulfilled',
+            'bounties_open',
+            'bounties_by_status_and_keyword',
+            'subs_active',
+            'joe_dominance_index',
+            'avg_time_bounty_turnaround',
+            'user_actions',
+            'email_events',
+            'bounties_hourly_rate'
         ]
 
-        for f in fs:
-            try:
-                print("*"+str(f.__name__)+"*")
-                f()
-            except Exception as e:
-                print(e)
+        for fn in fns:
+            print("*"+fn+"*")
+            get_stats(fn)

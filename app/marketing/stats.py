@@ -18,6 +18,7 @@
 '''
 
 from django.conf import settings
+from django.db.models import Sum
 from django.utils import timezone
 
 from marketing.models import Stat
@@ -251,11 +252,11 @@ def bounties():
 def grants():
     """Creates a stats entry for 'grants', which stores the total value of all grant contributions in the system to date"""
     from grants.models import Contribution
-    val = 0
-    for contrib in Contribution.objects.filter(subscription__grant__network='mainnet'):
-        value_in_usdt = contrib.subscription.amount_per_period_usdt
-        if value_in_usdt:
-            val += value_in_usdt
+    # get a sum of all contributions by summing the associated subscriptions amount_per_period_usdt value
+    val = (Contribution.objects.prefetch_related('subscription')
+        .filter(subscription__grant__network='mainnet')
+        .aggregate(Sum('subscription__amount_per_period_usdt'))
+        .get('subscription__amount_per_period_usdt__sum'))
 
     Stat.objects.create(
         key='grants',
@@ -440,7 +441,7 @@ def sendcryptoassets():
 
     for key, SendCryptoAsset in iterate_me.items():
         objs = SendCryptoAsset.objects.filter(network__in=['mainnet', 'xdai']).send_success()
-        val = sum(obj.value_in_usdt for obj in objs if obj.value_in_usdt)
+        val = objs.aggregate(Sum('value_in_usdt')).get('value_in_usdt__sum')
 
         stats_to_create = [
             (key, objs.count()),

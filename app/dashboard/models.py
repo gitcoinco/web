@@ -1677,6 +1677,7 @@ class SendCryptoAsset(SuperModel):
     receive_tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     tx_time = models.DateTimeField(null=True, blank=True)
     receive_tx_time = models.DateTimeField(null=True, blank=True)
+    value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
 
     # QuerySet Manager
     objects = SendCryptoAssetQuerySet.as_manager()
@@ -1755,10 +1756,6 @@ class SendCryptoAsset(SuperModel):
     @property
     def value_in_usdt_now(self):
         return self.value_in_usdt_at_time(None)
-
-    @property
-    def value_in_usdt(self):
-        return self.value_in_usdt_then
 
     @property
     def value_in_usdt_then(self):
@@ -1859,6 +1856,12 @@ class SendCryptoAsset(SuperModel):
                 network=self.network).order_by('-web3_created').first()
         except Bounty.DoesNotExist:
             return None
+
+    @receiver(pre_save)
+    def pre_save(sender, instance, **kwargs):
+        # set the usdt amount at time of transfer to the instance
+        if not instance.value_in_usdt:
+            instance.value_in_usdt = instance.value_in_usdt_then
 
 
 class Tip(SendCryptoAsset):
@@ -1983,8 +1986,8 @@ def psave_fund_request(sender, instance, created, **kwargs):
         fund_request_email(instance, [instance.profile.email])
 
 
-@receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
-def psave_tip(sender, instance, **kwargs):
+@receiver(pre_save, sender=Tip, dispatch_uid="pre_save_tip")
+def pre_save_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
     instance.username = instance.username.replace(' ', '')
     # set missing attributes
@@ -1999,7 +2002,7 @@ def psave_tip(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Tip, dispatch_uid="post_save_tip")
-def postsave_tip(sender, instance, created, **kwargs):
+def post_save_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
         value_true = 0
