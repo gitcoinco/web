@@ -496,14 +496,14 @@ if (document.getElementById('grants-showcase')) {
           'grant_types',
           'grant_tags',
           'tenants',
-          'idle',
-        ]
+          'idle'
+        ];
 
         keys.forEach(key => {
           if (vm.params[key].toString() != baseParams[key].toString()) {
             show_filter = true;
           }
-        })
+        });
 
         return show_filter;
       }
