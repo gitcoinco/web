@@ -1859,10 +1859,12 @@ class SendCryptoAsset(SuperModel):
 
     @receiver(pre_save)
     def pre_save(sender, instance, **kwargs):
-        # set the usdt amount at time of transfer to the instance
-        if not instance.value_in_usdt:
-            instance.value_in_usdt = instance.value_in_usdt_then
-
+        try:
+            # set the usdt amount at time of transfer to the instance
+            if not instance.value_in_usdt:
+                instance.value_in_usdt = instance.value_in_usdt_then
+        except:
+            pass
 
 class Tip(SendCryptoAsset):
     """ Inherit from SendCryptoAsset base class, and extra fields that are needed for Tips. """
