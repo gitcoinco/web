@@ -72,7 +72,7 @@ django-redis==4.10.0
 collectfast==0.6.2
 django-health-check==3.7.0
 elastic-apm==3.0.1
-mkdocs==1.0.4
+mkdocs==1.2.3
 pymdown-extensions==5.0
 mkdocs-material==3.0.4
 pydoc-markdown==2.0.4
