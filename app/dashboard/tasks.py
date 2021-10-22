@@ -444,7 +444,7 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
     if profile:
         try:
             activity = Activity.objects.create(profile=profile, activity_type='joined')
-            activity.populate_profile_activity_index()
+            activity.populate_activity_index()
         except Exception as e:
             logger.exception(e)
 

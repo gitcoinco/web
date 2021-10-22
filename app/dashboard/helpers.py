@@ -831,7 +831,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 'fulfillment': get_fulfillment_data_for_activity(fulfillment) if fulfillment else None,
             })
 
-        activity.populate_hackathon_activity_index()
+        activity.populate_activity_index()
 
         return activity
     return None

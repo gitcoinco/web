@@ -1358,7 +1358,7 @@ def post_save_bounty(sender, instance, created, **kwargs):
                 profile=profile, activity_type='hypercharge_bounty',
                 metadata=metadata, bounty=instance
             )
-            activity.populate_hackathon_activity_index()
+            activity.populate_activity_index()
 
             PinnedPost.objects.filter(what='everywhere').delete()
             PinnedPost.objects.create(
@@ -2613,67 +2613,26 @@ class Activity(SuperModel):
             return self.metadata['token_name']
         return None
 
-    
-    # helper function to populate grant activity index
-    def populate_grant_activity_index(_activity):
-        keys = []
-
-        keys.append(f'profile:{_activity.profile.pk}')
-        keys.append(f'grant:{_activity.grant.pk}')
-
-        for key in keys:
-            ActivityIndex.objects.create(
-                key=key,
-                activity=_activity,
-                created_on=_activity.created_on
-            )
-
-
-    # helper function to populate kudos activity index
-    def populate_kudo_activity_index(_activity):
-        keys = []
-
-        keys.append(f'profile:{_activity.profile.pk}')
-        keys.append(f'kudo:{_activity.kudos.pk}')
-
-        for key in keys:
-            ActivityIndex.objects.create(
-                key=key,
-                activity=_activity,
-                created_on=_activity.created_on
-            )
-
-    # helper function to populate quests activity index
-    def populate_quest_activity_index(_activity):
-        keys = []
-        keys.append(f'profile:{_activity.profile.pk}')
-
-        for key in keys:
-            ActivityIndex.objects.create(
-                key=key,
-                activity=_activity,
-                created_on=_activity.created_on
-            )
-
-
-    # helper function to populate tips activity index
-    def populate_tip_activity_index(_activity):
-        keys = []
-        keys.append(f'profile:{_activity.profile.pk}')
-        keys.append(f'tip:{_activity.tip.pk}')
-
-        for key in keys:
-            ActivityIndex.objects.create(
-                key=key,
-                activity=_activity,
-                created_on=_activity.created_on
-            )
-
 
     # helper function to populate profiles activity index
-    def populate_profile_activity_index(_activity):
+    def populate_activity_index(_activity):
         keys = []
         keys.append(f'profile:{_activity.profile.pk}')
+
+        if _activity.other_profile:
+            keys.append(f'profile:{_activity.other_profile.pk}')
+        if _activity.grant:
+            keys.append(f'grant:{_activity.grant.pk}')
+        if _activity.tip:
+            keys.append(f'tip:{_activity.tip.pk}')
+        if _activity.hackathonevent:
+            keys.append(f'hackathon:{_activity.hackathonevent.pk}')
+        if _activity.bounty:
+            keys.append(f'bounty:{_activity.bounty.pk}')
+        if _activity.kudos:
+            keys.append(f'kudo:{_activity.kudos.pk}')
+        if _activity.project:
+            keys.append(f'project:{_activity.project.pk}')
 
         for key in keys:
             ActivityIndex.objects.create(
@@ -2695,23 +2654,6 @@ class Activity(SuperModel):
                 activity=_activity,
                 created_on=_activity.created_on
             )    
-
-
-    def populate_hackathon_activity_index(_activity):
-        keys = []
-
-        keys.append(f'profile:{_activity.profile.pk}')
-        if _activity.hackathonevent:
-            keys.append(f'hackathon:{_activity.hackathonevent.pk}')
-        if _activity.bounty:
-            keys.append(f'bounty:{_activity.bounty.pk}')
-
-        for key in keys:
-            ActivityIndex.objects.create(
-                key=key,
-                activity=_activity,
-                created_on=_activity.created_on
-            )   
 
 
     def to_dict(self, fields=None, exclude=None):
@@ -2921,7 +2863,7 @@ def post_add_HackathonRegistration(sender, instance, created, **kwargs):
             hackathonevent=instance.hackathon,
             activity_type='hackathon_registration',
         )
-        activity.populate_hackathon_activity_index()
+        activity.populate_activity_index()
 
 
 def default_tribes_expiration():
@@ -5778,7 +5720,7 @@ def psave_answer(sender, instance, created, **kwargs):
                     'hackathon_registration': registration.id if registration else 0
                 }
             )
-            activity.populate_hackathon_activity_index()
+            activity.populate_activity_index()
             
         elif instance.question.hook == 'LOOKING_TEAM_PROJECT':
             registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,

@@ -37,7 +37,7 @@ def record_quest_activity(quest, associated_profile, event_name, override_create
 
     try:
         activity = Activity.objects.create(**kwargs)
-        activity.populate_quest_activity_index()
+        activity.populate_activity_index()
     except Exception as e:
         logger.exception(e)
 

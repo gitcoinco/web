@@ -746,120 +746,78 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
 
     # 1. Init
     view_count_threshold = 10
-    is_auth = user and user.is_authenticated
+    activity_pks = []
 
-    activity_index_key = None
     activities = Activity.objects.none()
 
     # 2. Choose which filter to index
-    if what in ['grants', 'all_grants']:
-        activity_index_key = 'grants'
-    elif (
-        what in ['tribes', 'my_threads', 'my_favorites', 'connect'] or
-        'tribe:' in what or
-        'project:' in what
-    ):
-        activity_index_key = 'profiles'
-    elif (
-        'hackathon:' in what
-    ):
-        activity_index_key = 'hackathons'
-    elif what == 'kudos':
-        activity_index_key = 'kudos'
 
-    # 3. Filter activities by index
-    if activity_index_key:
-        activity_pks = ActivityIndex.objects.filter(key=activity_index_key).values_list('id', flat=True)
-    else:
+    # grants
+    if (
+        what in ['grants', 'all_grants']
+    ):
+        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:').values_list('activity__pk', flat=True)
+    elif 'grant:' in what: 
+        activity_pks = ActivityIndex.objects.filter(key=what).values_list('activity__pk', flat=True)
+
+    # all Grants
+    if what == 'all_grants':
+        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:').values_list('activity__pk', flat=True)
+
+
+    # kudos
+    if (
+        what in ['kudos']
+    ):
+        activity_pks = ActivityIndex.objects.filter(key__startswith='kudo:').values_list('activity__pk', flat=True)
+    elif 'kudos:' in what: 
+        activity_pks = ActivityIndex.objects.filter(key=what.replace('kudos', 'kudo')).values_list('activity__pk', flat=True)
+
+
+    # hackathon project
+    if 'project:' in what: 
+        activity_pks = ActivityIndex.objects.filter(key=what).values_list('activity__pk', flat=True)
+
+    # tribes
+    if 'tribe:' in what:
+        handle = what[6:]
+        print(handle)
+        profile = Profile.objects.filter(handle=handle).first()
+        if profile:
+            activity_pks = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
+
+
+    # hackathon activity
+    if 'hackathon:' in what:
+        activity_pks = ActivityIndex.objects.filter(key=what).values_list('activity__pk', flat=True)
+
+    # single activity
+    if 'activity:' in what:
+        activity_pks = [what.replace('activity:', '')]    
+
+    
+    # townsquare
+    if what == 'connect':
+        activity_pks = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
+
+
+    # Defaults
+    if not activity_pks:
         activity_pks = ActivityIndex.objects.all().values_list('id', flat=True)
 
     activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
+
+
+    # townsquare connect
+    if what == 'connect':
+        activities = activities.filter(activity_type__in=connect_types)
+
 
     # 4. Filter out activites based on on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'
     if 'grant:' in what:
         activities = activities.exclude(subscription__network=filter_network)
-
-
-    ## filtering
-    relevant_profiles = []
-    relevant_grants = []
-    if what == 'tribes':
-        relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
-    elif what == 'all_grants':
-        # TODO: add prefetch ?
-        activities = activities.filter(grant__isnull=False)
-    elif is_auth:
-        # filter user specific activity
-        if what == 'grants':
-            relevant_grants = get_my_grants(user.profile) if is_auth else []
-        elif what == 'my_threads':
-            activities = user.profile.subscribed_threads.all().order_by('-created')
-        elif what == 'my_favorites':
-            favorites = user.favorites.all().values_list('activity_id')
-            activities = Activity.objects.filter(id__in=Subquery(favorites)).order_by('-created')
-    elif 'hackathon:' in what:
-        # filter hackathon specific activity
-        terms = what.split(':')
-        pk = terms[1]
-
-        if len(terms) > 2:
-            if terms[2] == 'tribe':
-                key = terms[3]
-                profile_filter = Q(profile__handle=key.lower())
-                other_profile_filter = Q(other_profile__handle=key.lower())
-                keyword_filter = Q(metadata__icontains=key)
-                activities = activities.filter(keyword_filter | profile_filter | other_profile_filter)
-                activities = activities.filter(activity_type__in=connect_types).filter(
-                    Q(hackathonevent=pk) | Q(bounty__event=pk))
-            else:
-                activities = activities.filter(activity_type__in=connect_types, metadata__icontains=terms[2]).filter(
-                    Q(hackathonevent=pk) | Q(bounty__event=pk))
-        else:
-            activities = activities.filter(activity_type__in=connect_types).filter(
-                Q(hackathonevent=pk) | Q(bounty__event=pk))
-    elif 'tribe:' in what:
-        key = what.split(':')[1]
-        profile_filter = Q(profile__handle=key.lower())
-        other_profile_filter = Q(other_profile__handle=key.lower())
-        keyword_filter = Q(metadata__icontains=key)
-        activities = activities.filter(keyword_filter | profile_filter | other_profile_filter)
-    elif 'activity:' in what:
-        view_count_threshold = 0
-        pk = what.split(':')[1]
-        activities = Activity.objects.filter(pk=pk) if pk and pk.isdigit() else Activity.objects.none()
-        if request:
-            page = int(request.GET.get('page', 1))
-            if page > 1:
-                activities = Activity.objects.none()
-    elif 'project:' in what:
-        terms = what.split(':')
-        pk = terms[1]
-
-        if len(terms) > 2:
-            activities = activities.filter(activity_type__in=connect_types, metadata__icontains=terms[2]).filter(project_id=pk)
-        else:
-            activities = activities.filter(activity_type__in=connect_types).filter(project_id=pk)
-    elif ':' in what:
-        pk = what.split(':')[1]
-        key = what.split(':')[0] + "_id"
-        if key == 'activity_id':
-            key = 'pk'
-        kwargs = {}
-        kwargs[key] = pk
-        activities = activities.filter(**kwargs)
-
-
-    # filters
-    if len(relevant_profiles):
-        activities = activities.filter(profile__in=relevant_profiles)
-    if len(relevant_grants):
-        activities = activities.filter(grant__in=relevant_grants)
-    if what == 'connect':
-        activities = activities.filter(activity_type__in=connect_types)
-    if what == 'kudos':
-        activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
     # after-pk filters
     if after_pk:
@@ -869,7 +827,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
 
-    activities = activities
     return activities
 
 
@@ -1009,7 +966,7 @@ def create_status_update(request):
 
         try:
             activity = Activity.objects.create(**kwargs)
-            activity.populate_hackathon_activity_index()
+            activity.populate_activity_index()
 
             response['status'] = 200
             response['message'] = 'Status updated!'

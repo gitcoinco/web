@@ -121,7 +121,7 @@ class EarningAdmin(admin.ModelAdmin):
 
 class ActivityIndexAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    list_display = ['key', 'activity']
+    list_display = ['id', 'key', 'activity']
     search_fields=['key']
     readonly_fields=['activity']
 

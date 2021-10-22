@@ -811,7 +811,7 @@ def record_funder_inaction_on_fulfillment(bounty_fulfillment):
         }
     }
     activity = Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
-    activity.populate_hackathon_activity_index()
+    activity.populate_activity_index()
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
     """Record User actions and activity for the associated Interest."""
@@ -829,7 +829,7 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
         payload['needs_review'] = True
 
     activity = Activity.objects.create(activity_type=event_name, bounty=interest.bounty_set.last(), **payload)
-    activity.populate_hackathon_activity_index()
+    activity.populate_activity_index()
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,

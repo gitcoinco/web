@@ -245,7 +245,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
                 created_by=kwargs['profile'])
             bounty.handle_event(event)
         activity = Activity.objects.create(**kwargs)
-        activity.populate_hackathon_activity_index()
+        activity.populate_activity_index()
 
         # leave a comment on townsquare IFF someone left a start work plan
         if event_name in ['start_work', 'worker_applied'] and interest and interest.issue_message:

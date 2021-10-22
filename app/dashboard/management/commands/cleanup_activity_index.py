@@ -126,31 +126,31 @@ def port_activity_to_index():
     # helper function to populate grant activity index
     def populate_grants_activity_index(activities):
         for _activity in activities:
-            _activity.populate_grant_activity_index()
+            _activity.populate_activity_index()
 
 
     # helper function to populate kudos activity index
     def populate_kudos_activity_index(activities):
         for _activity in activities:
-            _activity.populate_kudo_activity_index()
+            _activity.populate_activity_index()
 
 
     # helper function to populate quests activity index
     def populate_quests_activity_index(activities):
         for _activity in activities:
-            _activity.populate_quest_activity_index()
+            _activity.populate_activity_index()
 
     
     # helper function to populate tips activity index
     def populate_tips_activity_index(activities):
         for _activity in activities:
-            _activity.populate_tip_activity_index()
+            _activity.populate_activity_index()
 
     
     # helper function to populate profiles activity index
     def populate_profiles_activity_index(activities):
         for _activity in activities:
-            _activity.populate_profile_activity_index()
+            _activity.populate_activity_index()
 
 
     # helper function to populate platform activity index
@@ -162,7 +162,7 @@ def port_activity_to_index():
     # helper function to populate platform activity index
     def populate_hackathons_activity_index(activities):
         for _activity in activities:
-            _activity.populate_hackathon_activity_index()
+            _activity.populate_activity_index()
 
 
     _activities = activities.filter(quests_activity_query)

@@ -31,7 +31,7 @@ class Flag(SuperModel):
 
         profile = Profile.objects.filter(handle='gitcoinbot').first()
         activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=self.grant)
-        activity.populate_grant_activity_index()
+        activity.populate_activity_index()
         
         Comment.objects.create(
             profile=profile,

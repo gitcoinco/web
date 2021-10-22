@@ -94,7 +94,7 @@ class Command(BaseCommand):
                     }
 
                     activity = Activity.objects.create(**kwargs)
-                    activity.populate_grant_activity_index()
+                    activity.populate_activity_index()
 
                 except Exception as e:
                     print(e)

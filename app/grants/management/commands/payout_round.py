@@ -298,7 +298,7 @@ class Command(BaseCommand):
                 }
 
                 activity = Activity.objects.create(**kwargs)
-                activity.populate_grant_activity_index()
+                activity.populate_activity_index()
 
                 if is_real_payout:
                     comment = f"CLR Round {clr_round} Payout"
