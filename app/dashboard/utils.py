@@ -335,7 +335,7 @@ def get_graphql_client(uri):
     """Get a graphQL client attached to the given uri
 
     Returns:
-        GraphQLClient: an established GraphQLClient assoicated with the given uri
+        GraphQLClient: an established GraphQLClient associated with the given uri
     """
 
     # memoize

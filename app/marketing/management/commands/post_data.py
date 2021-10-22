@@ -280,7 +280,7 @@ def earners(days, cadence):
 
 def grants():
 
-    clr_round, _, _, _, _, _, _, _ = get_clr_rounds_metadata()
+    clr_round = get_clr_rounds_metadata()['clr_round']
     active_clr_rounds = GrantCLR.objects.filter(is_active=True, customer_name='ethereum', start_date__lt=timezone.now(), end_date__gt=timezone.now())
     if not active_clr_rounds.exists():
         return

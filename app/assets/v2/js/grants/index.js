@@ -539,8 +539,31 @@ if (document.getElementById('grants-showcase')) {
       },
       showFilter: function() {
         let vm = this;
+        let show_filter = false;
 
-        return JSON.stringify(vm.params) != JSON.stringify(baseParams);
+        const keys = [
+          'limit',
+          'me',
+          'sort_option',
+          'network',
+          'state',
+          'profile',
+          'sub_round_slug',
+          'collections_page',
+          'grant_regions',
+          'grant_types',
+          'grant_tags',
+          'tenants',
+          'idle'
+        ];
+
+        keys.forEach(key => {
+          if (vm.params[key].toString() != baseParams[key].toString()) {
+            show_filter = true;
+          }
+        });
+
+        return show_filter;
       },
       openCreateCollectionModal: function(doRedirect = false) {
         // set the redirect ref on <create-collection-modal>
