@@ -32,6 +32,7 @@ describe('Creating a new bounty', () => {
     // by a container. It is not a best practice and should be used sparingly.
     // Anyone considering basing future tests off of this code is encouraged to
     // seek out better ways to interact with the UI.
+    
     cy.contains("Ok, I'm ready").click({ force: true });
 
     cy.contains('ETH').click();
