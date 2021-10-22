@@ -2701,7 +2701,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                 return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
 
             else:
-                profile_activity_indexes = ActivityIndex.objects.filter(key__endswith=f':{profile.pk}').values_list('activity__pk', flat=True)
+                profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
                 all_activities = Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on')
                 paginator = Paginator(
                     profile_filter_activities(all_activities, activity_type, activity_tabs), 10
