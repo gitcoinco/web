@@ -5725,7 +5725,6 @@ def psave_answer(sender, instance, created, **kwargs):
         elif instance.question.hook == 'LOOKING_TEAM_PROJECT':
             registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
                                                                 registrant=instance.user.profile).first()
-            print(instance)
             if registration:
                 if instance.choice.text.lower().find('team') != -1:
                     registration.looking_team_members = True
@@ -5735,10 +5734,13 @@ def psave_answer(sender, instance, created, **kwargs):
 
                 registration.save()
 
-                activity = Activity.objects.filter(
-                    profile=instance.user.profile,
-                    hackathonevent=instance.hackathon,
-                    activity_type='hackathon_new_hacker').last()
+                activityIndex = ActivityIndex.objects.filter(
+                    key=f'profile:{instance.user.profile.id}',
+                    activity__hackathonevent=instance.hackathon,
+                    activity__activity_type='hackathon_new_hacker'
+                ).last()
+
+                activity = activityIndex.activity
 
                 if activity:
                     activity.metadata['looking_team_members'] = registration.looking_team_members
