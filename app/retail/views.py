@@ -768,7 +768,11 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         activity_index_key = 'kudos'
 
     # 3. Filter activities by index
-    activity_pks = ActivityIndex.objects.filter(key=activity_index_key).values_list('id', flat=True)
+    if activity_index_key:
+        activity_pks = ActivityIndex.objects.filter(key=activity_index_key).values_list('id', flat=True)
+    else:
+        activity_pks = ActivityIndex.objects.all().values_list('id', flat=True)
+
     activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
 
     # 4. Filter out activites based on on network
