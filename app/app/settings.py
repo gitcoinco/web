@@ -379,7 +379,7 @@ if ENV not in ['local', 'test', 'staging', 'preview', 'travis']:
     }
     LOGGING['handlers']['watchtower'] = {
         'level': AWS_LOG_LEVEL,
-        'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+        'class': 'watchtower.CloudWatchLogHandler',
         'boto3_session': boto3_session,
         'log_group': AWS_LOG_GROUP,
         'stream_name': AWS_LOG_STREAM,
