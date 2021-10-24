@@ -128,6 +128,7 @@ if (document.getElementById('grants-showcase')) {
       handle: document.contxt.github_handle,
       editingCollection: false,
       createCollectionRedirect: false
+      activeTimeout: null,
     },
     methods: {
       toggleStyle: function(style) {
@@ -159,7 +160,6 @@ if (document.getElementById('grants-showcase')) {
 
         vm.clrData = clrJson;
       },
-
       changeBanner: function() {
         this.regex_style = document.all_routing_policies &&
           document.all_routing_policies.find(policy => {
@@ -187,7 +187,16 @@ if (document.getElementById('grants-showcase')) {
           vm.updateUrlParams();
         }
       },
-      filterCollection: async function(collection_id) {
+      delayedChangeQuery: function() {
+        if (this.activeTimeout) {
+          window.clearTimeout(this.activeTimeout);
+        }
+        this.activeTimeout = setTimeout(() => {
+          this.changeQuery({page: 1});
+          this.activeTimeout = null;
+        }, 500);
+      },
+      filterCollection: function(collectionId) {
         let vm = this;
 
         // clear previous state
