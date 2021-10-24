@@ -14,7 +14,6 @@ describe('contributing to grant', () => {
 
   it('contributes eth to a single grant', () => {
     cy.createGrantSubmission().then((response) => {
-      console.log('response: ', response);
       const grantUrl = response.body.url;
 
       cy.approveGrant(grantUrl);
@@ -33,7 +32,8 @@ describe('contributing to grant', () => {
 
       cy.get('#vs3__combobox').click().type('ETH{enter}');
       cy.get('#gitcoin-grant-input-amount').type('{backspace}');
-      cy.get('#js-fundGrants-button').scrollIntoView().click();
+      cy.contains("I'm Ready to Checkout").scrollIntoView().click();
+      cy.get('#js-fundGrants-button').click();
 
       cy.confirmMetamaskTransaction();
 
@@ -77,9 +77,9 @@ describe('contributing to grant', () => {
     cy.acceptMetamaskAccess();
 
     cy.get('#vs3__combobox').click().type('ETH{enter}');
-    cy.get('#vs4__combobox').click().type('ETH{enter}');
     cy.get('#gitcoin-grant-input-amount').type('{backspace}');
-    cy.get('#js-fundGrants-button').scrollIntoView().click();
+    cy.contains("I'm Ready to Checkout").scrollIntoView().click();
+    cy.get('#js-fundGrants-button').click();
 
     cy.confirmMetamaskTransaction();
 

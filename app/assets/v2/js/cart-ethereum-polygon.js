@@ -267,7 +267,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // Throw if there's negative values in the cart
         this.donationInputs.forEach(donation => {
           if (Number(donation.amount) < 0) {
-            _alert('Please adjust the negative donation amount to a positive donoation amount.', 'danger');
+            _alert('Please adjust the negative donation amount to a positive donation amount.', 'danger');
             return;
           }
         });
@@ -329,7 +329,7 @@ Vue.component('grantsCartEthereumPolygon', {
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
-      
+
       // Replace MATIC with 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE to enable
       // the BulkCheckout contract handle it as a native transfer and not token
       donationInputsFiltered.forEach(donation => {
@@ -364,7 +364,7 @@ Vue.component('grantsCartEthereumPolygon', {
        */
 
       let networkId = appCart.$refs.cart.networkId;
-      
+
       if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.standardCheckoutInitiated == true) {
         return;
       }
@@ -376,7 +376,7 @@ Vue.component('grantsCartEthereumPolygon', {
       if (!ethereum.selectedAddress) {
         return;
       }
-      
+
       let gasLimit = 0;
 
       // If user has enough balance within Polygon, cost equals the minimum amount

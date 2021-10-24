@@ -28,6 +28,3 @@ class TestGetGrantsNotAuthenticated():
         assert response.status_code == 200
         assert len(response.json()['grants']) == 5
 
-
-class TestGetGrantsAuthenticated():
-    pass
