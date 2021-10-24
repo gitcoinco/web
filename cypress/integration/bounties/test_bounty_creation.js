@@ -27,12 +27,8 @@ describe('Creating a new bounty', () => {
 
     cy.contains('I agree').click();
 
-    // {force: true} is being used here as a last resort
-    // because access to the element it needs to click is blocked
-    // by a container. It is not a best practice and should be used sparingly.
-    // Anyone considering basing future tests off of this code is encouraged to
-    // seek out better ways to interact with the UI.
-    cy.contains("Ok, I'm ready").click({ force: true });
+    cy.wait(1000);
+    cy.get('button.btn-primary[data-dismiss]').scrollIntoView().click();
 
     cy.contains('ETH').click();
     cy.contains('MetaMask').click();
