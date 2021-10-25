@@ -2321,6 +2321,10 @@ class ActivityIndex(SuperModel):
         blank=True
     )
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['id', 'key']),
+        ]
 
 class Activity(SuperModel):
     """Represent Start work/Stop work event.
