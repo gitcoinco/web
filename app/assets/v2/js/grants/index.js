@@ -127,7 +127,7 @@ if (document.getElementById('grants-showcase')) {
       fetchedPages: [],
       handle: document.contxt.github_handle,
       editingCollection: false,
-      createCollectionRedirect: false
+      createCollectionRedirect: false,
       activeTimeout: null,
     },
     methods: {
@@ -196,7 +196,7 @@ if (document.getElementById('grants-showcase')) {
           this.activeTimeout = null;
         }, 500);
       },
-      filterCollection: function(collectionId) {
+      filterCollection: async function(collectionId) {
         let vm = this;
 
         // clear previous state
@@ -350,7 +350,6 @@ if (document.getElementById('grants-showcase')) {
             list: CartData.loadCart()
           }
         });
-
         vm.lock = false;
 
         return vm.grants;
