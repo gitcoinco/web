@@ -73,8 +73,6 @@
         </div>
       </div>
 
-      {% include '../comment.html' %}
-
       <modal :id="'payoutModal' + grant.grant_id" ref="payout-modal">
         <div slot="body" class="text-center px-5">
           <div v-if="grant.payment_status == 'waiting'">

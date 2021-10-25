@@ -15,106 +15,72 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
   {% endcomment %}
   <script type="text/x-template" id="grant-collection">
-    <div v-if="collection" >
+    <div v-if="collection">
       <template>
-        <div class="collection-item" v-if="small">
-          <div class="collection-item__img position-relative">
-            <div class="collection-item__img--small-grid">
-              <div class="collection-item__img__cover--small">
-                <!-- <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1"> -->
+        <div class="collection-item">
+          <div class="collection-item__header px-3 border-bottom-1 border-grey" style="background-color:rgba(226, 224, 231, 0.05);">
+            <div class="row py-2">
+              <div class="col-auto rounded-circle" >
+                <img :src="`${collection.profile.avatar_url || '/dynamic/avatar/' + collection.profile.handle}`" class="rounded-circle" style="width: 64px;height: 64px;" />
               </div>
-              <div class="collection-item__img__cover--small">
-                <!-- <img :src="getGrantLogo(1)" alt="" v-if="collection.grants.length >= 2"> -->
-              </div>
-              <div class="collection-item__img__cover--small">
-                <!-- <img :src="getGrantLogo(2)" alt="" v-if="collection.grants.length >= 3"> -->
+              <div class="col-8 my-auto px-0" >
+                <h5>[[ collection.profile.name || 'anonymous' ]]</h5>
+                <a :href="collection.profile.url || ''" class="mr-2" target="_blank" rel="noopener noreferrer">@[[ collection.profile.handle || 'anon' ]]</a>
               </div>
             </div>
-          </div>
-          <div class="collection-item__content px-3">
-            <div class="d-flex mb-1">
-              <div class="d-flex w-100">
-                <div class="collection-item__owner-image--large position-relative mr-2" style="top: 5px; ">
-                  <a :href="collection.profile.url" target="_blank" rel="noopener noreferrer">
-                    <img :src="collection.profile.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
-                  </a>
-                </div>
-                <div class="w-100">
-                  <h2 class="mb-1 h5 gc-font-base">
-                    [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
-                  </h2>
-                  <div class="d-flex justify-content-between mb-2">
-                    <div class="d-flex font-body font-weight-semibold mt-1">
-                      <a :href="collection.profile.url" class="collection-item__owner-handle mr-2 text-capitalize" target="_blank" rel="noopener noreferrer">[[ collection.profile.handle || 'anonymous' ]]</a>
-                      <p class="text-muted mb-0">[[ collection.count ]] Grant[[collection.count > 1 ? 's' : '']]</p>
-                    </div>
-                    <button class="btn btn-primary mt-1" @click="$emit('collection:show', collection.id)"  v-if="collection">
-                      VIEW <i class="fas fa-arrow-right"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="collection-item" v-else>
-          <div class="collection-item__img position-relative" :style="collection.cover ? 'padding: 0' : ''">
-            <div class="collection-item__img--grid" v-if="!collection.cover">
-              <div class="collection-item__img__cover">
-                <img :src="getGrantLogo(0)" alt="" v-if="collection.grants.length >= 1">
-              </div>
-              <div class="collection-item__img__cover">
-                <img :src="getGrantLogo(1)" alt="" v-if="collection.grants.length >= 2">
-              </div>
-              <div class="collection-item__img__cover">
-                <img :src="getGrantLogo(2)" alt="" v-if="collection.grants.length >= 3">
-              </div>
-              <div class="collection-item__img__cover">
-                <img :src="getGrantLogo(3)" alt="" v-if="collection.grants.length >= 4">
-              </div>
-            </div>
-            <div class="collection-item__owner-image--cover" v-if="!collection.cover">
-              <img :src="collection.profile.avatar_url">
-            </div>
-            <img  :src="collection.cover" alt=""  v-if="collection.cover">
+
           </div>
           <div class="collection-item__content px-3">
             <h2 class="h5 gc-font-base">
               [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
             </h2>
 
-            <div :class="`d-flex ${!collection.hideButtons ? 'mb-2' : 'mb-4'}`" >
-              <a :href="collection.profile.url" class="mr-2" target="_blank" rel="noopener noreferrer">
-                <div class="d-flex">
-                  <div class="collection-item__owner-image position-relative" style="top: -4px;">
-                    <img :src="collection.profile.avatar_url">
-                  </div>
-                  <div class="collection-item__owner-handle font-smaller-3">
-                    <span class="ml-2">
-                      [[ collection.profile.handle || 'anonymous' ]]
-                    </span>
-                  </div>
-                </div>
-              </a>
-              <p class="font-weight-bold mr-2 mb-0">&middot;</p>
-              <p class="text-muted font-smaller-3 mb-0">[[ collection.count ]] grant[[collection.count > 1 ? 's' : '']]</p>
-            </div>
             <p v-if="!collection.hideButtons" class="collection-item__pitch font-smaller-3 text-muted mb-2">[[ collection.description.slice(0, 140) ]][[ collection.description.length > 145 ? '...' : '']]</p>
+
+            <div class="d-flex my-4">
+              <template v-for="index in [0,1,2,3]">
+                <div
+                  class="d-flex align-items-center justify-content-center overflow-hidden rounded"
+                  style="height:84px; width:110px; border:1px solid rgba(226, 224, 231, 0.4); margin:2px;"
+                  :style="`background-size: cover; background-position: center; background-image:url(${ getGrantLogo(index) });`"
+                  v-if="collection.grants.length >= index+1"
+                  :title="getGrantTitle(index)"
+                ></div>
+              </template>
+              <div class="d-inline-flex overflow-hidden" style="height:84px; width:50px;" v-if="collection.grants.length > 4">
+                <div :class="`d-flex m-auto p-1`">
+                  <p class="text-muted font-smaller-3 mb-0">+[[ (collection.count - 4) ]]</p>
+                </div>
+              </div>
+            </div>
           </div>
           <div v-if="!collection.hideButtons" class="collection-item__footer">
             <div class="col pb-4 d-flex justify-content-between">
-              <button @click.stop="shareCollection()" class="btn btn-outline-primary mr-1">
-                <i class="fa fa-fw fa-share" aria-hidden="true"></i>
-                <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/?collection_id=${collection.id}`">
-              </button>
 
+              <b-dropdown ref="collectionShareDropdown" menu-class="shadow-sm p-0 mt-1" variant="outline-white" toggle-class="text-primary text-primary-hover mt-2" no-caret no-flip>
+                <template #button-content>
+                  Share <i class="fa fa-fw fa-share-alt" aria-hidden="true"></i>
+                </template>
+                <b-dropdown-form>
+                  <div class="submenu-option p-2 cursor-pointer" @click.stop="tweetCollection()">
+                    <i class="fab fa-twitter px-2"></i>
+                    Tweet
+                  </div>
+                  <div class="submenu-option p-2 cursor-pointer" @click.stop="shareCollection()">
+                    <i class="fas fa-external-link-alt px-2"></i>
+                    Copy link
+                  </div>
+                  <div class="submenu-option d-none"></div>
+                  <input type="hidden" :id="`collection-${collection.id}`" :value="`https://gitcoin.co/grants/explorer/?collection_id=${collection.id}`">
+                </b-dropdown-form>
+              </b-dropdown>
 
               <template>
-                <a class="btn btn-primary ml-1" :href="`/grants/explorer/?collection_id=${collection.id}`" style="flex: 1 1 0px;" v-if="$parent.isLandingPage">
-                  <i class="fas fa-fw fa-arrow-right"></i> View
+                <a class="align-self-center btn btn-primary py-2" :href="`/grants/explorer/?collection_id=${collection.id}`" v-if="$parent.isLandingPage">
+                  View Collection
                 </a>
-                <button class="btn btn-primary ml-1" @click="$emit('collection:show', collection.id)" style="flex: 1 1 0px;" v-else>
-                  <i class="fas fa-fw fa-arrow-right"></i> View
+                <button class="btn btn-primary ml-1" @click="$emit('collection:show', collection.id)" v-else>
+                  View Collection
                 </button>
               </template>
             </div>

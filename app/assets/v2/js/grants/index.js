@@ -30,6 +30,7 @@ if (document.getElementById('grants-showcase')) {
     limit: 6,
     me: false,
     sort_option: 'weighted_shuffle',
+    collection_id: false,
     network: 'mainnet',
     state: 'active',
     profile: false,
@@ -39,7 +40,8 @@ if (document.getElementById('grants-showcase')) {
     grant_types: [],
     grant_tags: [],
     tenants: [],
-    idle: false
+    idle: false,
+    featured: true
   };
 
   const grantRegions = [
@@ -87,7 +89,6 @@ if (document.getElementById('grants-showcase')) {
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
-      featured: document.featured,
       state: 'active',
       category: document.selected_category,
       credentials: false,
@@ -102,6 +103,12 @@ if (document.getElementById('grants-showcase')) {
       sub_round_slug: false,
       cart_lock: false,
       collection_id: document.collection_id,
+      collection_title: document.collection_title,
+      collection_description: document.collection_description,
+      collection_owner: document.collection_owner,
+      collection_owner_url: document.collection_owner_url,
+      collection_owner_avatar: document.collection_owner_avatar,
+      collection_grant_ids: document.collection_grant_ids,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
@@ -117,7 +124,10 @@ if (document.getElementById('grants-showcase')) {
       observer: null,
       observed: null,
       sticky_active: false,
-      fetchedPages: []
+      fetchedPages: [],
+      handle: document.contxt.github_handle,
+      editingCollection: false,
+      createCollectionRedirect: false
     },
     methods: {
       toggleStyle: function(style) {
@@ -132,7 +142,7 @@ if (document.getElementById('grants-showcase')) {
           $('.page-styles').last().text('');
         }
       },
-      toggleActiveCLRs() {
+      toggleActiveCLRs: function() {
         this.show_active_clrs = !this.show_active_clrs;
         window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
       },
@@ -175,16 +185,45 @@ if (document.getElementById('grants-showcase')) {
           vm.fetchGrants();
         } else {
           vm.updateUrlParams();
-
         }
       },
-      filterCollection: function(collectionId) {
+      filterCollection: async function(collection_id) {
         let vm = this;
 
-        vm.params = Object.assign({}, baseParams);
+        // clear previous state
+        vm.grants = [];
+        vm.fetchedPages = [];
+        vm.collection_id = '';
+        vm.collection_title = '';
+        vm.collection_description = '';
+        vm.collection_owner = '';
+        vm.collection_owner_avatar = '';
 
-        vm.changeQuery({collection_id: collectionId});
+        // reset the params and set collection_id
+        vm.params = Object.assign({}, baseParams);
+        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collection_id }});
+
+        // fetch the collections details
+        const collectionDetailsURL = `/grants/v1/api/collections/${collection_id}`;
+        const collection = await fetchData(collectionDetailsURL, 'GET');
+
+        // update the stored state
+        vm.$set(vm, 'collection_id', collection_id);
+        vm.$set(vm, 'collection_title', collection.title);
+        vm.$set(vm, 'collection_description', collection.description);
+        vm.$set(vm, 'collection_owner', collection.owner.handle);
+        vm.$set(vm, 'collection_owner_url', collection.owner.url);
+        vm.$set(vm, 'collection_owner_avatar', collection.owner.avatar_url);
+        vm.$set(vm, 'collection_grant_ids', JSON.parse(collection.grant_ids));
+
+        // move to the grants tab
         vm.tabIndex = 0;
+
+        // update the grants
+        vm.fetchGrants();
+
+        // move to the top
+        window.scrollTo(0, 0);
       },
       getUrlParams: function() {
         let vm = this;
@@ -216,6 +255,12 @@ if (document.getElementById('grants-showcase')) {
       },
       updateUrlParams: function(replaceHistory) {
         let vm = this;
+
+        // ignore idle/featured if collection_id is set - always show everything
+        if (vm.params.collection_id) {
+          vm.params.idle = true;
+          vm.params.featured = false;
+        }
 
         vm.searchParams = new URLSearchParams(vm.params);
 
@@ -305,7 +350,9 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
-        vm.changeQuery({tab: vm.tabSelected});
+        vm.fetchedPages = [];
+        vm.$set(vm, 'params', {...vm.params, ...{tab: vm.tabSelected}});
+
         vm.unobserveFilter();
         vm.params.profile = false;
 
@@ -316,39 +363,49 @@ if (document.getElementById('grants-showcase')) {
           setTimeout(() => vm.observeFilter());
         }
       },
-      loadTab: function() {
+      loadTab: function(replaceHistory) {
         let vm = this;
         let loadParams = new URLSearchParams(document.location.search);
         const tabStrings = [
           {'index': 0, 'string': 'grants'},
           {'index': 1, 'string': 'collections'}
         ];
+        // tabs are 0 key indexed by b-tabs
 
         if (loadParams.has('tab')) {
           vm.tabSelected = loadParams.get('tab');
           vm.tabIndex = tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index;
         }
-
+        // *NOTE: collections are paginated by using the returned .next url (stored as collectionsPage)
         if (vm.tabSelected === 'collections') {
-          this.fetchCollections();
+          vm.params.page = 1;
+          vm.collections = [];
+          // move to the top on tabChange
+          vm.collectionsPage = false;
+          this.fetchCollections(false, replaceHistory);
         } else {
-          this.fetchGrants(undefined, undefined, true);
+          this.fetchGrants(undefined, undefined, replaceHistory);
         }
       },
-      fetchCollections: async function(append_mode) {
+      fetchCollections: async function(append_mode, replaceHistory) {
         let vm = this;
 
         if (vm.loadingCollections)
           return;
 
         vm.loadingCollections = true;
-        await vm.updateUrlParams();
 
-        let url = `/api/v0.1/grants_collections/?${(vm.params.profile ? 'profile=' + vm.params.profile : '')}`;
+        await vm.updateUrlParams(replaceHistory);
 
-        if (vm.collectionsPage) {
+        const profile = (vm.params.profile ? 'profile=' + vm.params.profile : '');
+        const featured = (vm.params.featured ? 'featured=' + vm.params.featured : '');
+
+        let url = `/api/v0.1/grants_collections/?${profile}&${featured}`;
+
+        if (vm.collectionsPage && append_mode) {
           url = vm.collectionsPage;
         }
+
         let getCollections = await fetch(url);
         let collectionsJson = await getCollections.json();
 
@@ -357,7 +414,6 @@ if (document.getElementById('grants-showcase')) {
         } else {
           vm.collections = collectionsJson.results;
         }
-
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
       },
@@ -386,7 +442,7 @@ if (document.getElementById('grants-showcase')) {
 
         this.grants = getGrants.grants;
       },
-      tagSearch(search, loading) {
+      tagSearch: function(search, loading) {
         const vm = this;
 
         // if (search.length < 3) {
@@ -444,11 +500,11 @@ if (document.getElementById('grants-showcase')) {
       scrollBottom: function() {
         this.bottom = this.scrollEnd();
       },
-      closeDropdown(ref) {
+      closeDropdown: function(ref) {
         // Close the menu and (by passing true) return focus to the toggle button
         this.$refs[ref].hide(true);
       },
-      observeFilter() {
+      observeFilter: function() {
         // ensure the ref is in the dom before observing
         if (this.$refs.filterNav) {
           this.observed = this.$refs.filterNav;
@@ -463,24 +519,26 @@ if (document.getElementById('grants-showcase')) {
           this.observer.observe(this.observed);
         }
       },
-      unobserveFilter() {
+      unobserveFilter: function() {
         if (this.observed) {
           this.observer.unobserve(this.observed);
         }
       },
-      watchHistory(event) {
+      watchHistory: function(event) {
         this.getUrlParams();
-        this.fetchGrants(1, undefined, true);
+        // set tab selected
+        this.$set(this, 'tabSelected', this.params.tab);
+        // load the correct tab
+        this.loadTab(true);
       },
-      pageIsFetched(page) {
+      pageIsFetched: function(page) {
         let vm = this;
 
         return vm.fetchedPages.includes(page);
 
       },
-      showFilter() {
+      showFilter: function() {
         let vm = this;
-
         let show_filter = false;
 
         const keys = [
@@ -506,6 +564,64 @@ if (document.getElementById('grants-showcase')) {
         });
 
         return show_filter;
+      },
+      openCreateCollectionModal: function(doRedirect = false) {
+        // set the redirect ref on <create-collection-modal>
+        this.createCollectionRedirect = doRedirect;
+        // show the createCollection modal
+        this.$refs.createNewCollection.show();
+      },
+      shareCollection: function() {
+        _alert('Collections URL copied to clipboard', 'success', 3000);
+        const share_url = `${location.host}/grants/explorer?collection_id=${this.params.collection_id}`;
+
+        copyToClipboard(share_url);
+      },
+      tweetCollection: function() {
+        const share_url = `${location.host}/grants/explorer?collection_id=${this.params.collection_id}`;
+        const tweetUrl = `https://twitter.com/intent/tweet?text=Check out this Grant Collection on @gitcoin ${share_url}`;
+
+        window.open(tweetUrl, '_blank');
+      },
+      editCollection: function() {
+        this.$set(this, 'editingCollection', true);
+      },
+      saveEditCollection: async function() {
+        // pick up csrf token from dom
+        const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        // wrap the changes to pass to the endpoint
+        const body = {
+          collection: this.params.collection_id,
+          collectionTitle: this.collection_title,
+          collectionDescription: this.collection_description,
+          grants: this.collection_grant_ids,
+          grantsComplete: true
+        };
+
+        // attempt to post the update to the collections api
+        try {
+          // attempt to fetch the data
+          await fetchData('/grants/v1/api/collections/edit', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
+          // toast the success
+          _alert('Congratulations, your collection was updated successfully!', 'success');
+        } finally {
+          // find the collection in the document.collections obj
+          const collection = document.collections.find((collection) => this.params.collection_id == collection.id);
+
+          // update the title against the collection
+          if (collection) {
+            collection.title = body.collectionTitle;
+          }
+          // finish editing
+          this.$set(this, 'editingCollection', false);
+          // update the grant list by fetching again
+          this.fetchedPages = [];
+          this.fetchGrants();
+        }
+      },
+      deleteCollection: function() {
+        // deleteCollection exists as a component with selected_collection passed in as a prop
+        this.$refs.deleteCollection.show();
       }
     },
     computed: {

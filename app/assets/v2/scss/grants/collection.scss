@@ -123,9 +123,13 @@
   text-decoration: underline;
 }
 
-
 .vertical-scroll {
   flex-direction: row;
   overflow-x: auto;
   flex-wrap: nowrap;
+}
+
+.submenu-option:hover {
+  color: #5932C4;
+  background-color: rgba(140, 101, 247, 0.1);
 }

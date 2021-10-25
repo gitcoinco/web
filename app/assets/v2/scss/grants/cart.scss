@@ -55,10 +55,13 @@
   padding: 0rem 1rem;
 }
 
-.grant-name a{
+.grant-name a {
   font-weight: bold;
   color: black;
-  /* margin-left: 0.5rem; */
+}
+
+.nav-link {
+  padding: 0.25rem;
 }
 
 .clr-match-box {
@@ -66,6 +69,14 @@
   border: 1px rgba(15, 206, 124, 0.1) solid;
   border-radius: 5px;
   padding: 0.5rem 1rem;
+}
+
+.clear-cart i {
+  transform: scale(1.3);
+
+  &:hover {
+    color: #D44D6E;
+  }
 }
 
 .disabled-btn-address {
@@ -146,7 +157,106 @@
 }
 
 .logo-container {
-  max-width: 65px;
+  max-width: 80px;
+}
+
+.dropdown-share {
+  .dropdown-menu {
+    min-width: 2rem;
+  }
+
+  .dropdown-item {
+    padding: 0.25rem 1rem
+  }
+}
+
+.dropdown-checkout {
+
+  .text-primary::after {
+    content: '\f107';
+    font-family: "Font Awesome 5 Pro", sans-serif;
+    color: white;
+    position: absolute;
+    right: 1rem;
+  }
+
+  .text-primary::before {
+    content: '\f86c';
+    font-family: "Font Awesome 5 Pro", sans-serif;
+    color: white;
+    position: absolute;
+    right: 2rem;
+    transform: rotate(90deg) scale(1.5);
+  }
+
+  .btn-primary {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .text-primary {
+    color: $white !important;
+  }
+
+  .dropdown-toggle-split {
+    border-left-color: white;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    &:hover {
+      border-left-color: white;
+    }
+  }
+
+  .dropdown-menu {
+    padding: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .dropdown-item {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+
+  .dropdown-item:hover {
+    background-color: var(--gc-blue);
+    color: $white;
+
+    .checkout-logo {
+      color: $white;
+      svg path {
+        fill: $white;
+      }
+    }
+  }
+}
+
+.donation-amount-container {
+  &::after {
+    content: "%";
+    position: absolute;
+    top: 1rem;
+    right: 0.5rem;
+  }
+}
+
+.suggested-donation-container {
+  div:hover {
+    background-color: $gc-violet-100;
+    color: black;
+  }
+
+  div.text-white:hover {
+    background-color: $gc-violet-400;
+    color: white;
+  }
+}
+
+.tooltip-inner {
+  text-align: left;
+  max-width: 290px !important;
+  padding: 1rem;
 }
 
 .inputs-height {
@@ -160,12 +270,12 @@
 #gc-grants-cart {
 
   .vs__dropdown-toggle {
-    padding: 6px 0 7px 0px;
+    padding: 1px 0 6px 0px;
     min-width: 110px;
-    max-height: 38px;
+    max-height: 30px;
   }
 
-  .v-select__selections input { 
+  .v-select__selections input {
     display: none;
   }
 
@@ -176,5 +286,13 @@
   input:checked + label.rounded-circle {
     color: #6F3FF5 !important;
     border-color: #6F3FF5 !important;
+  }
+}
+
+
+@media (max-width: 767.98px) {
+  .left-section {
+    margin-left: 0;
+    margin-right: 0;
   }
 }

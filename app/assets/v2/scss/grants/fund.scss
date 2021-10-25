@@ -86,6 +86,11 @@
   background-image: none;
 }
 
+#gitcoin-grant-input-amount {
+  width: 6rem;
+  max-width: 100%;
+}
+
 #gitcoin-grant-input-amount-error {
   position: absolute;
   top: 4rem

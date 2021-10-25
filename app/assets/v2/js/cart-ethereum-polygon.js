@@ -260,18 +260,21 @@ Vue.component('grantsCartEthereumPolygon', {
 
         // Throw if invalid Gitcoin contribution percentage
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
-          throw new Error('Gitcoin contribution amount must be between 0% and 99%');
+          _alert('Please adjust the Gitcoin contribution match pool amount to be between 0% and 99%.', 'danger');
+          return;
         }
 
         // Throw if there's negative values in the cart
         this.donationInputs.forEach(donation => {
           if (Number(donation.amount) < 0) {
-            throw new Error('Cannot have negative donation amounts');
+            _alert('Please adjust the negative donation amount to a positive donation amount.', 'danger');
+            return;
           }
         });
 
         if (!ethereum.selectedAddress) {
-          throw new Error('Please unlock MetaMask to proceed with Polygon checkout');
+          _alert('Please unlock MetaMask to proceed with Polygon checkout', 'danger');
+          return;
         }
 
         // If user has enough balance within Polygon, cost equals the minimum amount
@@ -326,7 +329,7 @@ Vue.component('grantsCartEthereumPolygon', {
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddressPolygon);
       const donationInputsFiltered = this.getDonationInputs();
-      
+
       // Replace MATIC with 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE to enable
       // the BulkCheckout contract handle it as a native transfer and not token
       donationInputsFiltered.forEach(donation => {
@@ -361,7 +364,7 @@ Vue.component('grantsCartEthereumPolygon', {
        */
 
       let networkId = appCart.$refs.cart.networkId;
-      
+
       if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.standardCheckoutInitiated == true) {
         return;
       }
@@ -373,7 +376,7 @@ Vue.component('grantsCartEthereumPolygon', {
       if (!ethereum.selectedAddress) {
         return;
       }
-      
+
       let gasLimit = 0;
 
       // If user has enough balance within Polygon, cost equals the minimum amount

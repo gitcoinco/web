@@ -42,7 +42,7 @@
               </option>
             </select2> -->
           </div>
-          <!-- <div class="">
+          <!-- <div>
             <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
               Apply to all
             </div>
@@ -90,7 +90,7 @@
       <div>
         <b-collapse :id="`collapse-${grant.grant_id}`">
           <form action="" ref="form" @submit="confirmQRPayment($event, grant)">
-            {% include '../comment.html' %}
+
             <div class="d-flex">
               <div class="bg-white rounded col mr-2 py-3 d-flex flex-column mt-4">
                 <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner’s address below. Make sure you’re transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>
@@ -100,7 +100,7 @@
                   <div class="flex-fill font-smaller-1 ml-4">
                     <div class="d-flex align-items-center">
                       <span class="mr-2">To:</span>
-                      <div class="">
+                      <div>
                         <span class="font-weight-bold">[[grant.celo_payout_address]]</span>
                         <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.celo_payout_address"><i class="far fa-copy"></i></copy-clipboard>
                       </div>
@@ -123,14 +123,14 @@
 
                 <div class="form-row align-items-center mt-3">
                   <div class="col" v-show="selectedQRPayment === 'txid'">
-                    <div class="">
+                    <div>
                       <label :for="`celo_payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
                       <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`celo_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
                       <small class="form-text text-muted">Paste the transaction id</small>
                     </div>
                   </div>
                   <div class="col" v-show="selectedQRPayment === 'address'">
-                    <div class="">
+                    <div>
                       <label :for="`celo_contributor_address_${grant.grant_id}`" class="font-smaller-1">Your address:</label>
                       <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`celo_contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" :disabled="grant.success">
                     </div>

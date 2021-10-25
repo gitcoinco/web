@@ -115,6 +115,7 @@ async function fetchAccountData(provider) {
   document.querySelector('.network-name').textContent = networkName;
   document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
   document.querySelector('.wallet-network').classList.add(networkName.split(' ').join('-'));
+
   document.querySelector('#wallet-btn').innerText = 'Change Wallet';
 
   // Get list of accounts of the connected wallet

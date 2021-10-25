@@ -80,6 +80,8 @@
       .tooltip-inner {
         color: $tip-text-color;
         background-color: $tip-bg-color;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
       }
     }
   }

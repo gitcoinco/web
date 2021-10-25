@@ -1,13 +1,14 @@
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
   props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions',
-    'contributions', 'toggle_following', 'collection'
+    'contributions', 'toggle_following', 'collection', 'editing_collection'
   ],
   data: function() {
     return {
       collections: document.collections,
       currentUser: document.contxt.github_handle,
-      isCurator: false
+      isCurator: false,
+      selectedCollection: null
     };
   },
   methods: {
@@ -91,13 +92,37 @@ Vue.component('grant-card', {
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
     },
+    addToThisCollection: function() {
+      const collection_grant_ids = [ ...this.$attrs.collection_grant_ids, this.grant.id ];
+
+      this.$emit('update:collection_grant_ids', collection_grant_ids);
+    },
+    removeFromThisCollection: function() {
+      const collection_grant_ids = this.$attrs.collection_grant_ids.filter((grantId) => grantId != this.grant.id);
+
+      this.$emit('update:collection_grant_ids', collection_grant_ids);
+    },
     addToCollection: async function(collection, grant) {
       const collectionAddGrantURL = `/grants/v1/api/collections/${collection.id}/grants/add`;
       const response = await fetchData(collectionAddGrantURL, 'POST', {
         'grant': grant.id
       });
 
-      _alert('Grant added successfully', 'success', 1000);
+      _alert('Grant successfully added to your collection!', 'success', 3000);
+    },
+    showModal: function(modalId) {
+      this.selectedCollection = this.collections[0] && this.collections[0].id;
+      this.$bvModal.show(modalId);
+    },
+    closeModal: function(modalId) {
+      this.$bvModal.hide(modalId);
+    },
+    addGrantToSelectedCollection: async function() {
+      const collection = this.collections.find(collection => collection.id == this.selectedCollection);
+
+      await this.addToCollection(collection, this.grant);
+
+      this.closeModal('add-to-collection-' + this.grant.id);
     }
   },
   computed: {
@@ -110,6 +135,19 @@ Vue.component('grant-card', {
       if (document.contxt.github_handle) {
         return true;
       }
+    },
+    isInCollection() {
+      if (this.$attrs.collection_grant_ids && this.$attrs.collection_grant_ids.indexOf(this.grant.id) !== -1) {
+        return true;
+      }
+
+      return false;
+    }
+  },
+  watch: {
+    collections: function() {
+      // if collections list changes pick the most recent addition
+      this.selectedCollection = this.collections[this.collections.length - 1].id;
     }
   },
   mounted() {
@@ -121,26 +159,32 @@ Vue.component('grant-card', {
 Vue.component('grant-collection', {
   template: '#grant-collection',
   delimiters: [ '[[', ']]' ],
-  props: [ 'collection', 'small', 'activeCollection' ],
+  props: [ 'collection', 'activeCollection' ],
   methods: {
     shareCollection: function() {
-      let testingCodeToCopy = document.querySelector(`#collection-${this.collection.id}`);
+      let share_url = document.querySelector(`#collection-${this.collection.id}`);
 
-      testingCodeToCopy.setAttribute('type', 'text');
-      testingCodeToCopy.select();
+      share_url.setAttribute('type', 'text');
+      share_url.select();
 
       try {
         const successful = document.execCommand('copy');
-        const msg = successful ? 'successful' : 'unsuccessful';
+        const msg = successful ? 'successfully' : 'unsuccessfully';
 
-        alert(`Grant collection was copied ${msg}: ${testingCodeToCopy.value}`);
+        _alert(`Grant collection was copied ${msg}: ${share_url.value}`, 'success', 3000);
       } catch (err) {
-        alert('Oops, unable to copy');
+        _alert('Oops, unable to copy', 'danger');
       }
 
       /* unselect the range */
-      testingCodeToCopy.setAttribute('type', 'hidden');
+      share_url.setAttribute('type', 'hidden');
       window.getSelection().removeAllRanges();
+    },
+    tweetCollection: function() {
+      let share_url = document.querySelector(`#collection-${this.collection.id}`);
+      let tweetUrl = `https://twitter.com/intent/tweet?text=Check out this Grant Collection on @gitcoin ${share_url.value}`;
+
+      window.open(tweetUrl, '_blank');
     },
     addToCart: async function() {
       const collectionDetailsURL = `/grants/v1/api/collections/${this.collection.id}`;
@@ -152,6 +196,9 @@ Vue.component('grant-collection', {
     },
     getGrantLogo(index) {
       return `${this.collection.cache?.grants[index]?.logo}`;
+    },
+    getGrantTitle(index) {
+      return `${this.collection.cache?.grants[index]?.title}`;
     }
   }
 });
