@@ -73,7 +73,7 @@ def preprocess(request):
     if request.path == '/lbcheck':
         return {}
 
-    user_is_authenticated = request.user.is_authenticated if request.user else False
+    user_is_authenticated = request.user.is_authenticated if hasattr(request, 'user') else None
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     if user_is_authenticated and profile and profile.pk:
         # what actions to take?
