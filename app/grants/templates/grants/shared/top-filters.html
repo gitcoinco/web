@@ -5,7 +5,9 @@
     <div class="row mt-2 mb-3 mt-xl-0 font-caption">
 
       <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto">
-        [[numGrants.toLocaleString()]] [[ 'Grant' | pluralize(numGrants)]]
+        <template v-if="grants && grants.length">
+          [[numGrants.toLocaleString()]] [[ 'Grant' | pluralize(numGrants)]]
+        </template>
       </span>
 
       <div class="col-12 col-lg-6 text-right pt-2">
