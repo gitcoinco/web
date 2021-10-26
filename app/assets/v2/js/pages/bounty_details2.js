@@ -18,7 +18,6 @@ Vue.mixin({
       const getBounty = fetchData(apiUrlBounty, 'GET');
 
       $.when(getBounty).then(function (response) {
-        debugger
         if (!response.length) {
           vm.loadingState = 'empty';
           return vm.syncBounty();

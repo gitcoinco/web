@@ -12,4 +12,5 @@ class BountyFactory(factory.django.DjangoModelFactory):
     is_open = True
     expires_date = datetime.now() + timedelta(days=365)
     raw_data = {}
+    bounty_owner_github_username = 'gitcoin'
     

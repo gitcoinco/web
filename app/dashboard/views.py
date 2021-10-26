@@ -211,6 +211,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
     Returns:
         None
     """
+
     kwargs = {
         'activity_type': event_name,
         'bounty': bounty,
@@ -6397,7 +6398,6 @@ def payout_bounty_v1(request, fulfillment_id):
     if bounty.bounty_state in ['cancelled', 'done']:
         response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be paid out'
         return JsonResponse(response)
-
     is_funder = bounty.is_funder(user.username.lower()) if user else False
 
     if not is_funder:
@@ -6446,7 +6446,6 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.payout_status = payout_status
 
     else:
-
         funder_address = request.POST.get('funder_address')
         if not funder_address :
             response['message'] = f'error: missing parameter funder_address for payout_type ${payout_type}'
