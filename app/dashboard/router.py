@@ -590,9 +590,6 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         """
 
-        import pdb
-        pdb.set_trace()
-
         param_keys = self.request.query_params.keys()
 
         queryset = Bounty.objects.prefetch_related(
