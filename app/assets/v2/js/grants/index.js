@@ -128,7 +128,7 @@ if (document.getElementById('grants-showcase')) {
       handle: document.contxt.github_handle,
       editingCollection: false,
       createCollectionRedirect: false,
-      activeTimeout: null,
+      activeTimeout: null
     },
     methods: {
       toggleStyle: function(style) {
