@@ -12,7 +12,7 @@
         <div class="row col-12 pr-0">
 
           <!-- Donation Token -->
-          <div class="col-12 col-md-4 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
+          <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
             <div class="my-auto mr-3">Choose currency</div>
             <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
               <template v-slot:option="option">
@@ -21,7 +21,7 @@
             </v-select>
           </div>
 
-          <div class="col-12 col-md-8 d-flex justify-content-between px-0">
+          <div class="col-12 col-md-7 d-flex justify-content-between px-0">
             <!-- Save Collection -->
             <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
               <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
