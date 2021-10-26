@@ -1101,20 +1101,28 @@ Vue.component('grants-cart', {
 
       // Send transaction
       indicateMetamaskPopup();
-      bulkTransaction.methods
-        .donate(donationInputsFiltered)
-        .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsNativeAmount })
-        .on('transactionHash', async(txHash) => {
-          console.log('Donation transaction hash: ', txHash);
-          indicateMetamaskPopup(true);
-          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
-          await this.postToDatabase([txHash], bulkCheckoutAddress, userAddress); // Save contributions to database
-          await this.finalizeCheckout(); // Update UI and redirect
-        })
-        .on('error', (error, receipt) => {
-          // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
-          this.handleError(error);
-        });
+
+      await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            to: bulkCheckoutAddress,
+            from: userAddress,
+            data: bulkTransaction.methods.donate(donationInputsFiltered).encodeABI(),
+            value: `${web3.utils.toHex(this.donationInputsNativeAmount)}`,
+            gas: `${web3.utils.toHex(this.donationInputsGasLimitL1)}`
+          }
+        ]
+      }).then(async (result) => {
+        console.log('Donation transaction hash: ', result);
+        indicateMetamaskPopup(true);
+        _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
+        await this.postToDatabase([result], bulkCheckoutAddress, userAddress); // Save contributions to database
+        await this.finalizeCheckout(); // Update UI and redirect
+      }).catch(err => {
+        this.handleError(err);
+      });
+
     },
 
     // POSTs donation data to database. Wrapped in a try/catch, and if it fails, we fallback to the manual ingestion script

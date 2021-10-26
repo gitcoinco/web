@@ -326,13 +326,21 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
 
         indicateMetamaskPopup();
         if (isSendingETH) {
-          web3.eth.sendTransaction({
-            from: fromAccount,
-            to: destinationAccount,
-            value: amountInDenom
-          }).once('transactionHash', (txnHash, errors) => {
+          window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [
+              {
+                to: destinationAccount,
+                from: fromAccount,
+                value: `${web3.utils.toHex(amountInDenom)}`,
+                gas: `${web3.utils.toHex(318730)}`
+              }
+            ]
+          }).then(result => {
             console.log(txnHash);
-            post_send_callback(errors, txnHash);
+            post_send_callback(null, result);
+          }).catch(err => {
+            post_send_callback(err);
           });
         } else {
           var send_erc20 = function() {

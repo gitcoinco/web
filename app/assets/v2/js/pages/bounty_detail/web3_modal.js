@@ -11,17 +11,21 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
   }
 
   if (token_name == 'ETH') {
-    web3.eth.sendTransaction(
-      {
-        to: fulfiller_address,
-        from: selectedAccount,
-        value: web3.utils.toWei(String(amount)),
-        gasPrice: web3.utils.toHex(5 * Math.pow(10, 9)),
-        gas: web3.utils.toHex(318730),
-        gasLimit: web3.utils.toHex(318730)
-      },
-      (error, result) => callback(error, result)
-    );
+    window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [
+        {
+          to: fulfiller_address,
+          from: selectedAccount,
+          value: `${web3.utils.toHex(web3.utils.toWei(amount))}`,
+          gas: `${web3.utils.toHex(318730)}`
+        }
+      ]
+    }).then(result => {
+      callback(null, result);
+    }).catch(err => {
+      callback(err);
+    });
   } else {
 
     const amountInWei = amount * 1.0 * Math.pow(10, vm.decimals);
