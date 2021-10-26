@@ -82,8 +82,8 @@
 
           {% if round_status == 'active' %}
             <!-- ACTIVE ROUND  -->
-            <div class="d-flex justify-content-between countdown-color h5">
-                <countdown :startdate="{{round_start_date|date:'U' }}*1000" :enddate="{{round_end_date|date:'U' }}*1000" class="countdown gc-font-heading">
+            <div class="d-flex justify-content-between flex-wrap countdown-color h5">
+                <countdown :startdate="{{round_start_date|date:'U' }}*1000" :enddate="{{round_end_date|date:'U' }}*1000" class="countdown gc-font-heading mb-2">
                   <template v-slot="slotProps">
                     {{ banner_round_name }} - Active - Ends in
                     <span>[[slotProps.time.days]]d</span>
@@ -101,8 +101,8 @@
 
           {% elif round_status == 'claim' %}
             <!-- CLAIM -->
-            <div class="d-flex justify-content-between countdown-color h5">
-              <countdown :startdate="{{claim_start_date|date:'U' }}*1000" :enddate="{{claim_end_date|date:'U' }}*1000" class="countdown gc-font-heading">
+            <div class="d-flex justify-content-between  flex-wrap countdown-color h5">
+              <countdown :startdate="{{claim_start_date|date:'U' }}*1000" :enddate="{{claim_end_date|date:'U' }}*1000" class="countdown gc-font-heading mb-2">
                 <template v-slot="slotProps">
                   {{ banner_round_name }} - Claim - Active - Ends in
 
@@ -120,7 +120,7 @@
             </div>
           {% elif round_status == 'upcoming' %}
             <!-- UPCOMING -->
-            <div class="d-flex justify-content-between countdown-color h5">
+            <div class="d-flex justify-content-between  flex-wrap countdown-color h5">
               {{ banner_round_name }} - Proposed Dates
               <div>
                 {% timezone "US/Mountain" %}
@@ -130,7 +130,7 @@
             </div>
           {% elif round_status == 'done' %}
             <!-- ROUND END -->
-            <div class="d-flex justify-content-between countdown-color h5">
+            <div class="d-flex justify-content-between flex-wrap countdown-color h5">
               {{ banner_round_name }} - Ended
               <div>
                 {% timezone "US/Mountain" %}
