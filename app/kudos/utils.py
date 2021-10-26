@@ -261,7 +261,7 @@ class KudosContract:
                 logger.info(f'Skipped sync-ing "{kudos_token.name}" kudos to the database because suppress_sync.')
                 return
             kudos['txid'] = kudos_token.txid
-            Token.objects.create(token_id=kudos_id, **kudos)
+            kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, contract=contract, defaults=kudos)
         except Token.DoesNotExist:
             kudos_token = Token(token_id=kudos_id, **kudos)
             kudos_token.save()
@@ -310,7 +310,7 @@ class KudosContract:
         try:
             kudos_transfer = KudosTransfer.objects.get(receive_txid=txid)
         except KudosTransfer.DoesNotExist:
-            # Only warn for a Kudos that is cloned/transfered, not a Gen0 Kudos.
+            # Only warn for a Kudos that is cloned/transferred, not a Gen0 Kudos.
             if kudos_token.num_clones_allowed == 0:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
         except KudosTransfer.MultipleObjectsReturned:

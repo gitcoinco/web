@@ -1488,7 +1488,10 @@ def resend_new_tip(request):
             return redirect('/_administration')
 
         tip = Tip.objects.get(pk=pk)
-        tip.emails = tip.emails + [email]
+        try:
+            tip.emails = tip.emails + [email]
+        except:
+            pass
         tip_email(tip, [email], True)
         tip.save()
 
