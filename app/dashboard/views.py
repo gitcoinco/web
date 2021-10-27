@@ -211,7 +211,6 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
     Returns:
         None
     """
-
     kwargs = {
         'activity_type': event_name,
         'bounty': bounty,
