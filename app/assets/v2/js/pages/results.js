@@ -148,6 +148,9 @@ $(document).ready(function() {
       });
     }
   });
+  setTimeout(function(){
+    $("#grants_results").html('  <iframe    src="https://metabase.gitcoin.co/public/question/437a0ed4-bcb7-41eb-af63-e67c0965d200"    frameborder="0"    width="100%"    height="600"    allowtransparency></iframe>');
+  }, 2000)
   setTimeout(function() {
     $('#leaderboard_nav .nav-link:first-child').click();
 
