@@ -184,7 +184,7 @@ if (document.getElementById('grants-showcase')) {
         vm.fetchGrants();
 
       },
-      changeQuery: function(query) {
+      changeQuery: debounce(function(query) {
         let vm = this;
 
         vm.fetchedPages = [];
@@ -195,7 +195,7 @@ if (document.getElementById('grants-showcase')) {
         } else {
           vm.updateUrlParams();
         }
-      },
+      }, 500),
       filterCollection: async function(collection_id) {
         let vm = this;
 
