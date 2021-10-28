@@ -30,7 +30,7 @@ describe('Grant cart', () => {
       cy.contains('MetaMask').click();
       cy.acceptMetamaskAccess();
 
-      cy.get('[placeholder="Amount"]').should('have.value', '25') // assert donation input field has default value of 25
+      cy.get('[placeholder="Amount"]').should('have.value', '25') // assert donation input field has default value of 25 DAI
     });
   });
 });
