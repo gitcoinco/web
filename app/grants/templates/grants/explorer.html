@@ -358,9 +358,10 @@ along with this program. If not, see
                       {% trans "Browse Grants" %}
                     </button>
                   </div>
-                  <div class="col-12 mb-3 mx-auto col-md-6 text-center" v-if="lock">
-                    <img class="obiwan w-100" src="{% static "v2/images/loading_v2.gif" %}">
-                   </div>
+                </div>
+
+                <div class="col-12 mb-3 mx-auto col-md-6 text-center text-center" v-show="lock">
+                  <img class="w-100" src="https://s.gitcoin.co/static/v2/images/loading_v2.f27849139c28.gif">
                 </div>
               </template>
             </b-tab>
@@ -691,9 +692,7 @@ along with this program. If not, see
               </div>
             </div>
           </template>
-          <div class="text-center" v-show="lock">
-            <img src="https://s.gitcoin.co/static/v2/images/loading_v2.f27849139c28.gif">
-          </div>
+
         </template>
       </div>
 
