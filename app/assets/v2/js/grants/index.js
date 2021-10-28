@@ -23,6 +23,16 @@ $(document).ready(() => {
 
 });
 
+function debounce(func, timeout = 300) {
+  let timer;
+
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
 
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
@@ -68,7 +78,6 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'RSK', 'label': 'Rsk'},
     {'name': 'ALGORAND', 'label': 'Algorand'}
   ];
-
 
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
@@ -314,6 +323,12 @@ if (document.getElementById('grants-showcase')) {
         getGrants.grants.forEach(function(item) {
           vm.grants.push(item);
         });
+
+        if (vm.params.keyword) {
+          vm.params.sort_option = '';
+        } else if (vm.params.keyword == '' && vm.params.sort_option == '') {
+          vm.params.sort_option = 'weighted_shuffle';
+        }
 
         vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
 
