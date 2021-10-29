@@ -1541,8 +1541,8 @@ def grant_details_contributors(request, grant_id):
 def grant_details_contributions(request, grant_id):
     page = int(request.GET.get('page', 1))
     network = request.GET.get('network', 'mainnet')
-    limit = int(request.GET.get('limit', 10))
-    max_page_size = 50
+    limit = int(request.GET.get('limit', 100))
+    max_page_size = 300
     if limit > max_page_size:
         limit = max_page_size
 
