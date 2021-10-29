@@ -83,7 +83,6 @@ if (document.getElementById('grants-showcase')) {
       grant: {},
       collectionsPage: null,
       cart_data_count: CartData.length(),
-      show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
       network: document.network,
       keyword: document.keyword,
       current_type: document.current_type,
@@ -141,10 +140,6 @@ if (document.getElementById('grants-showcase')) {
         } else {
           $('.page-styles').last().text('');
         }
-      },
-      toggleActiveCLRs: function() {
-        this.show_active_clrs = !this.show_active_clrs;
-        window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
       },
       setView: function(mode, event) {
         event.preventDefault();

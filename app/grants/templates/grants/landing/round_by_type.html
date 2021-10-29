@@ -1,0 +1,34 @@
+{% load humanize i18n grants_extra %}
+{% for active_round in active_rounds %}
+<div class="col-12 col-lg-6">
+  <a
+    href="/grants/explorer/?sub_round_slug={{ active_round.sub_round_slug }}&round_num={{ active_round.round_num }}&customer_name={{ active_round.customer_name }}"
+    class="active-clr-banner d-block text-decoration-none position-relative mt-3"
+  >
+    <div class="position-absolute w-100 h-100" style="
+        top: 0;
+        right: 0;
+        {% if active_round.logo %}
+          background:  url('{{ active_round.logo.url }}') no-repeat center;
+        {% endif %}
+      "
+    >
+    </div>
+    <div style="color: {{ active_round.logo_text_hex}}" class="round-details d-flex p-3 justify-content-between position-relative">
+      <p class="pr-5 font-bigger-1">{{ active_round.display_text|upper }}</p>
+      
+      <div class="text-right">
+        <p class="mb-0 font-bigger-2 font-weight-light">${{ active_round.total_pot|humanize_short }}</span>
+        <p class="mt-0 text-muted font-smaller-1">available</span>
+      </div>
+    </div>
+  </a>
+  
+  <div class="font-body d-flex" style="background-color: {{ active_round.banner_bg_hex }}; height: 45px;">
+    <p class="px-3 my-auto" style="color: {{active_round.banner_text_hex}} ">
+      {{ active_round.banner_text }}
+    </p>
+  </div>
+
+</div>
+{% endfor %}

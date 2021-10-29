@@ -75,3 +75,17 @@ def is_favorite(grant, profile):
         return grant.favorite(profile)
 
     return False
+
+
+@register.filter
+def humanize_short(number):
+    try:
+        number = float(number)
+        if number > 1000000:
+            number = str(round(number / 100000)) + 'M'
+        elif number > 1000:
+            number = str(round(number / 1000)) + 'K'
+    except:
+        pass
+
+    return number
