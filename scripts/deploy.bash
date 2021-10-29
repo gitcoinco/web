@@ -96,7 +96,11 @@ if ! [ "$JOBS_NODE" ]; then
         sleep 1.5
         done
 
-        if [ $(pgrep -fl "gunicorn: worke" | wc -l) -eq "0"  ]; then
+        # restart gunicorn
+        if [ $(pgrep -fl "supervisor" | wc -l) -eq "0" ] && [ $(pgrep -fl "gunicorn: worke" | wc -l) -eq "0"  ]; then
+            echo "- RESTART gitcoin-gunicorn"
+            sudo supervisorctl restart gitcoin_gunicorn
+        elif [ $(pgrep -fl "gunicorn: worke" | wc -l) -eq "0"  ]; then
             echo "- RESTART gunicorn"
             sudo systemctl restart gunicorn
         fi
