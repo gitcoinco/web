@@ -7,7 +7,7 @@ from dashboard.models import Bounty
 
 @pytest.mark.django_db
 class BountyFactory(factory.django.DjangoModelFactory):
-    """Create mock Bounty for testing."""
+    """Create instance of Bounty for testing."""
 
     class Meta:
         model = Bounty
