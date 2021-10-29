@@ -1542,8 +1542,12 @@ def grant_details_contributions(request, grant_id):
     page = int(request.GET.get('page', 1))
     network = request.GET.get('network', 'mainnet')
     limit = int(request.GET.get('limit', 10))
+    max_page_size = 50
+    if limit > max_page_size:
+        limit = max_page_size
+
     try:
-        grant = Grant.objects.prefetch_related('subscriptions').get(
+        grant = Grant.objects.get(
             pk=grant_id
         )
     except Grant.DoesNotExist:
@@ -1554,19 +1558,24 @@ def grant_details_contributions(request, grant_id):
 
     _contributions = Contribution.objects.filter(
         subscription__grant=grant,
-        subscription__network=network,
-        subscription__is_postive_vote=True
-    ).prefetch_related('subscription', 'subscription__contributor_profile')
-    contributions = list(_contributions.order_by('-created_on'))
+    )
+
+    contributions = _contributions.order_by('-created_on')
     # print(contributions)
-    all_pages = Paginator(contributions, limit)
-    this_page = all_pages.page(page)
+    start_index = (page - 1) * limit
+    end_index = (page) * limit
+    this_page = contributions[start_index:end_index]
     response = dict()
 
     all_contributions = []
     for contribution in this_page:
         # print(contribution.subscription)
         # print(contribution.subscription.tx_id)
+        subscription = contribution.subscription
+        if not subscription.is_postive_vote:
+            continue
+        if subscription.network != network:
+            continue
 
         contribution_json = {
             k: getattr(contribution, k) for k in
@@ -1586,10 +1595,7 @@ def grant_details_contributions(request, grant_id):
         all_contributions.append(contribution_json)
 
     response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
-    response['has_next'] = all_pages.page(page).has_next()
-    response['count'] = all_pages.count
-    response['num_pages'] = all_pages.num_pages
-    response['next_page_number'] = all_pages.page(page).next_page_number() if all_pages.page(page).has_next() else None
+    response['next_page_number'] = page + 1 
 
     return JsonResponse(response)
 
