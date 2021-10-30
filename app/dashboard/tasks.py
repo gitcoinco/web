@@ -414,7 +414,7 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
 
 
 @app.shared_task(bind=True, max_retries=1)
-def save_tx_status_and_details(self, earning_pk, txid, network, created_on, chain='std'):
+def save_tx_status_and_details(self, earning_pk, chain='std'):
     """
     :param self: Self
     :param txid: transaction id
