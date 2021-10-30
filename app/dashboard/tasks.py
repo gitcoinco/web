@@ -14,7 +14,9 @@ from app.services import RedisService
 from app.utils import get_location_from_ip
 from celery import app, group
 from celery.utils.log import get_task_logger
-from dashboard.models import Activity, Bounty, ObjectView, Profile, UserAction
+from dashboard.models import Activity, Bounty, Earning, ObjectView, Profile, TransactionHistory, UserAction
+from dashboard.utils import get_tx_status_and_details
+from economy.models import EncodeAnything
 from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
@@ -409,3 +411,30 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
             Activity.objects.create(profile=profile, activity_type='joined')
         except Exception as e:
             logger.exception(e)
+
+
+@app.shared_task(bind=True, max_retries=1)
+def save_tx_status_and_details(self, earning_pk, txid, network, created_on, chain='std'):
+    """
+    :param self: Self
+    :param txid: transaction id
+    :param network: the network to pass to web3
+    :param created_on: time used to detect if the tx was dropped
+    :param chain: chain to pass to web3
+    :return: None
+    """
+    earning = Earning.objects.filter(pk=earning_pk).first()
+    txid = earning.txid
+    network = earning.network
+    created_on = earning.created_on
+    status, timestamp, tx = get_tx_status_and_details(txid, network, created_on, chain)
+    if status not in ['unknown', 'pending']:
+        tx = tx if tx else {}
+        TransactionHistory.objects.create(
+            earning=earning,
+            status=status,
+            payload=json.loads(json.dumps(dict(tx), cls=EncodeAnything)),
+            network=network,
+            txid=txid,
+            captured_at=timezone.now(),
+        )
