@@ -34,4 +34,7 @@ class Command(BaseCommand):
         earnings = Earning.objects.filter(history=None).order_by('-pk')
         for earning in earnings:
             # defer the op to celery
-            save_tx_status_and_details.delay(earning.pk)
+            try:
+               save_tx_status_and_details.delay(earning.pk)
+            except:
+               print(f'failed to enqueue: {earning.pk}')

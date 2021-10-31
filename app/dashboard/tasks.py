@@ -413,7 +413,7 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
             logger.exception(e)
 
 
-@app.shared_task(bind=True, max_retries=1)
+@app.shared_task(bind=True, max_retries=3)
 def save_tx_status_and_details(self, earning_pk, chain='std'):
     """
     :param self: Self
