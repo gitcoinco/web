@@ -75,7 +75,8 @@ def preprocess(request):
 
     user_is_authenticated = request.user.is_authenticated if hasattr(request, 'user') else None
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
-    if user_is_authenticated and profile and profile.pk:
+    user_is_authenticated_and_valid = user_is_authenticated and profile and profile.pk
+    if user_is_authenticated_and_valid:
         # what actions to take?
         should_record_join = not profile.last_visit
         should_record_visit = not profile.last_visit or profile.last_visit < (
@@ -114,8 +115,7 @@ def preprocess(request):
 
     # town square wall post max length
     max_length_offset = abs(((
-        request.user.profile.created_on
-        if hasattr(request.user, 'profile') and request.user.is_authenticated else timezone.now()
+        request.user.profile.created_on if user_is_authenticated_and_valid else timezone.now()
     ) - timezone.now()).days)
     max_length = 600 + max_length_offset
 
