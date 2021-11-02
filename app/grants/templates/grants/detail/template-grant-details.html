@@ -418,48 +418,44 @@
           </template>
         </div>
 
-        <div class="col-12 mt-2">
-          <div class="row text-grey-400 font-smaller-1">
+        <div class="d-flex justify-content-between mt-2 text-grey-400 font-smaller-1">
 
-            <!-- Grants Fav-->
-            <div class="col-md-4">
-              <template v-if="isUserLogged">
-                <button @click="toggleFollowingGrant(grant.id, $event)"
-                  v-b-tooltip.hover.bottom="!grant.favorite ? 'follow' : 'unfollow'"
-                  :class="`pl-0 btn btn-link mx-0 my-auto ${!grant.favorite ? 'text-grey-300' : 'text-primary'}`"
-                  :data-grant="grant.id"
-                >
-                  <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
-                  Follow
-                </button>
-              </template>
-            </div>
-
-            <!-- Grants Rules-->
-            <div class="col-md-8 text-right">
-              <div class="d-inline font-smaller-2 cursor-pointer" id="popover-target-1" style="width: 65px;">
-                <i class="fas fa-info-circle mr-2"></i>
-                Rules
-              </div>
-              <b-popover target="popover-target-1" triggers="hover" placement="left">
-                <template #title>Rules</template>
-                <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
-                <ul class="pl-3">
-                  <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
-                  <li><b>DO NOT</b> make up a new identity to contribute.</li>
-                  <li><b>DO NOT</b> try to falsify a contribution.</li>
-                </ul>
-                If you see someone breaking the rules, please use 'Flag Grant' to report them.
-              </b-popover>
-
-              <!-- Grants Flag-->
-              <button @click="flag" class="btn ml-1 px-1"  style="width: 65px;">
-                <i class="text-grey-400 fas fa-flag mr-2"></i>
-                Flag
-              </button>
-            </div>
-
+          <!-- Grants Fav-->
+          <div v-if="isUserLogged">
+            <button @click="toggleFollowingGrant(grant.id, $event)"
+              v-b-tooltip.hover.bottom="!grant.favorite ? 'follow' : 'unfollow'"
+              :class="`pl-0 btn btn-link mx-0 my-auto ${!grant.favorite ? 'text-grey-300' : 'text-primary'}`"
+              :data-grant="grant.id"
+            >
+              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+              Follow
+            </button>
           </div>
+
+          <!-- Grants Rules-->
+          <div>
+            <div class="d-inline font-smaller-2 cursor-pointer" id="popover-target-1" style="width: 65px;">
+              <i class="fas fa-info-circle mr-2"></i>
+              Rules
+            </div>
+            <b-popover target="popover-target-1" triggers="hover" placement="left">
+              <template #title>Rules</template>
+              <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
+              <ul class="pl-3">
+                <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
+                <li><b>DO NOT</b> make up a new identity to contribute.</li>
+                <li><b>DO NOT</b> try to falsify a contribution.</li>
+              </ul>
+              If you see someone breaking the rules, please use 'Flag Grant' to report them.
+            </b-popover>
+
+            <!-- Grants Flag-->
+            <button v-if="!grant.is_on_team" @click="flag">
+              <i class="text-grey-400 fas fa-flag mr-2"></i>
+              Flag
+            </button>
+          </div>
+
         </div>
 
       </div>
