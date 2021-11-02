@@ -23,14 +23,34 @@ $(document).ready(() => {
 
 });
 
-function debounce(func, timeout = 300) {
-  let timer;
+function debounce(func, wait) {
+  let timeout;
+  let immediate;
 
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func.apply(this, args);
-    }, timeout);
+  return function() {
+    // reference the context and args for the setTimeout function
+    let context = this; let
+        args = arguments;
+    
+    // allow user-triggered debounce from the func's supplied argument
+    if (args[0].debounce !== undefined && args[0].debounce === true)
+      immediate = false;
+    else if (args[0].debounce === undefined || args[0].debounce === false)
+      immediate = true;
+
+    const callNow = immediate && !timeout;
+
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+      timeout = null;
+      if (!immediate) {
+        // call the original function with apply
+        func.apply(context, args);
+      }
+    }, wait);
+
+    if (callNow)
+      func.apply(context, args);
   };
 }
 
@@ -184,7 +204,7 @@ if (document.getElementById('grants-showcase')) {
         vm.fetchGrants();
 
       },
-      changeQuery: function(query) {
+      changeQuery: debounce(function(query) {
         let vm = this;
 
         vm.fetchedPages = [];
@@ -200,7 +220,7 @@ if (document.getElementById('grants-showcase')) {
         } else {
           vm.updateUrlParams();
         }
-      },
+      }, 500),
       filterCollection: async function(collection_id) {
         let vm = this;
 

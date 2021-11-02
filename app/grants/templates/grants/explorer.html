@@ -241,7 +241,7 @@ along with this program. If not, see
                     v-model="params.keyword"
                     @focus="searchVisible=true"
                     @blur="searchVisible=false"
-                    @input="changeQuery({page: 1})"
+                    @input="changeQuery({page: 1, debounce: true})"
                     @keyup.enter="changeQuery({page: 1})"/>
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
                     <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
