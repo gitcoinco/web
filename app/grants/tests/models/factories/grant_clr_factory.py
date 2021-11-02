@@ -18,3 +18,5 @@ class GrantCLRFactory(factory.django.DjangoModelFactory):
     start_date = datetime.now()
     end_date = start_date + timedelta(weeks=2)
     owner = factory.SubFactory(ProfileFactory)
+    type='main'
+    banner_text='text which appears below banner'
