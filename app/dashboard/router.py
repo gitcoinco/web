@@ -308,7 +308,7 @@ class BountySerializerSlim(BountySerializer):
         fields = (
             'pk', 'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on', 'event',
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
-            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
+            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested_count', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
             'bounty_categories'
         )
@@ -326,9 +326,8 @@ class BountySerializerCheckIn(BountySerializer):
 
 class BountiesViewSet(viewsets.ModelViewSet):
     """Handle Bounties view behavior."""
-    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'event') \
-        .all().order_by('-web3_created')
-    serializer_class = BountySerializer
+    queryset = Bounty.objects.order_by('-web3_created')
+    serializer_class = BountySerializerSlim
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
@@ -601,7 +600,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         if 'github_url' in param_keys:
             url = self.request.query_params.get('github_url')
-            queryset = queryset.filter(github_url__iexact=url)
+            queryset = queryset.filter(github_url=url.lower())
 
         queryset = queryset.order_by('-web3_created')
         queryset = queryset.distinct()

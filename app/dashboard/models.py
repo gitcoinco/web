@@ -469,6 +469,10 @@ class Bounty(SuperModel):
             self.save()
 
     @property
+    def interested_count(self):
+        return self.interested.count()
+
+    @property
     def is_bounties_network(self):
         if self.web3_type == 'bounties_network':
             return True
