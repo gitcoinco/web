@@ -430,6 +430,7 @@ class DashboardModelsTest(TestCase):
             tokenAddress='0x0000000000000000000000000000000000000000',
             web3_type='yge',
         )
+        tip.save()
         assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7
         assert tip.value_in_eth == 7

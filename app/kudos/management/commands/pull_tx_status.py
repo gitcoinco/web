@@ -22,9 +22,8 @@ import json
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Earning, TransactionHistory
-from dashboard.utils import get_tx_status_and_details
-from economy.models import EncodeAnything
+from dashboard.models import Earning
+from dashboard.tasks import save_tx_status_and_details
 
 
 class Command(BaseCommand):
@@ -32,22 +31,10 @@ class Command(BaseCommand):
     help = 'pulls tx statuses and stores them in the DB to be queried later'
 
     def handle(self, *args, **options):
-        earnings = Earning.objects.all().order_by('-pk')
+        earnings = Earning.objects.filter(history=None).order_by('-pk')
         for earning in earnings:
-            if earning.history.count():
-                continue
-            txid = earning.txid
-            network = earning.network
-            created_on = earning.created_on
-            status, timestamp, tx = get_tx_status_and_details(txid, network, created_on)
-            print(earning.pk, status)
-            if status not in ['unknown', 'pending']:
-                tx = tx if tx else {}
-                TransactionHistory.objects.create(
-                    earning=earning,
-                    status=status,
-                    payload=json.loads(json.dumps(dict(tx), cls=EncodeAnything)),
-                    network=network,
-                    txid=txid,
-                    captured_at=timezone.now(),
-                    )
+            # defer the op to celery
+            try:
+               save_tx_status_and_details.delay(earning.pk)
+            except:
+               print(f'failed to enqueue: {earning.pk}')

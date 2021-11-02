@@ -4963,8 +4963,17 @@ class SearchHistory(SuperModel):
 
     search_type = models.CharField(max_length=50, db_index=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    data = JSONField(default=dict)
-    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    data = JSONField(default=dict, db_index=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True, db_index=True)
+
+    class Meta:
+        """Define metadata associated with Bounty."""
+
+        verbose_name_plural = 'Bounties'
+        index_together = [
+            ["data", "search_type", "ip_address"],
+            ["data", "search_type", "ip_address", "user"],
+        ]
 
 
 class BlockedUser(SuperModel):

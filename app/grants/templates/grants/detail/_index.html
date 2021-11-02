@@ -112,7 +112,7 @@
                     {% trans "Latest Contributions" %}
                   </h3>
                   <h5 class="mb-5 text-muted" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h5>
-                  <div class="px-0" v-if="transactions.grantTransactions?.length && !loadingTx">
+                  <div class="px-0" v-if="transactions.grantTransactions?.length">
                     <div class="mb-5 pb-2 px-0 mx-sm-0">
                       <div class="col-12 px-0">
                         <div id="contributions">

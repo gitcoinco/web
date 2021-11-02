@@ -143,7 +143,7 @@ this.CartData = class CartData {
       }
     } else {
       if (!grantData.grant_donation_amount) {
-        grantData.grant_donation_amount = 5;
+        grantData.grant_donation_amount = 25;
       }
       grantData.grant_donation_currency = 'DAI';
     }
