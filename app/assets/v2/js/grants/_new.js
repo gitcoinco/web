@@ -330,6 +330,20 @@ if (document.getElementById('gc-new-grant')) {
     components: {
       'vue-select': 'vue-select'
     },
+    methods:{
+      onPaste: function (event) {
+        event.preventDefault()
+
+        let paste = (event.clipboardData).getData('text');
+        paste = paste.slice(20); // return only text after https://twitter.com/
+
+        const selection = window.getSelection();
+        let selectionId = selection.focusNode.attributes.id.value;
+        
+        const input_field = document.getElementById(selectionId);
+        input_field.value = paste;
+      },
+    },
     data() {
       return {
         chainId: '',
@@ -379,7 +393,7 @@ if (document.getElementById('gc-new-grant')) {
           },
           theme: 'snow',
           placeholder: 'Give a detailed desciription about your Grant'
-        }
+        },
       };
     },
     computed: {
