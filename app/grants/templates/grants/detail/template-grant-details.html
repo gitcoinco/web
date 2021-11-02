@@ -345,45 +345,117 @@
 
       <!-- Grant Management -->
       <div class="grant-managment mt-4 mt-md-0">
-        <div class="my-0 mx-0" v-if="grant.admin_message">
-          <div class="bs-alert alert alert-warning p-2 d-flex">
-            <div class="text-center w-100">
-              <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
-              <div class="d-inline-block uppercase font-weight-semibold w-100">
-                [[grant.admin_message]]
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="my-0 mx-0" v-if="grant.active && !grant.verified">
-          <div class="bs-alert alert alert-warning p-2 d-flex">
-            <div class="text-center">
-              <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
-              <div class="d-inline-block uppercase">
-                <span class="font-weight-semibold">Warning:</span> This grant has not verified their ownership of the twitter account listed.
-              </div>
-              <template v-if="grant.is_on_team && user_code">
-                <div class="my-2 d-inline-block text-center w-100">
-                  <b-button v-b-modal.modal-start-twitter-verification variant="primary">
-                    <i class="fab fa-twitter mr-2"></i>
-                    Verify Grant
-                  </b-button>
-                  <br/>
-                  <span class="small px-2">OR</span>
-                  <a class="d-inline-block font-caption pt-2" target="_blank" href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md&title=Verify%20Grant%20Issue">SUBMIT SUPPORT REQUEST</a>.
-                </div>
+        <b-card>
+
+          <!-- Admin Message -->
+          <template v-if="grant.admin_message">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1 text-danger"></i>
+                Message from gitcoin
+              </p>
+              [[grant.admin_message]]
+            </b-card-text>
+            <hr class="my-4">
+          </template>
+
+          <!-- Inactive Grant -->
+          <template v-if="!grant.active && !grant.verified">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1"></i>
+                Your grant is inactive
+              </p>
+              Our team reviews each grant before it goes live on the website.
+              This process usually takes 1-2 days.
+            </b-card-text>
+
+            <a class="btn btn-block btn-primary" href="https://support.gitcoin.co/kb/article/79-why-isn-t-my-grant-active/" rel="noopener noreferrer">
+              Read Grant Approval Process
+            </a>
+
+            <hr class="my-4">
+
+          </template>
+
+          <!-- Verify Grant -->
+          <template v-if="grant.active && !grant.verified">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1 text-danger"></i>
+                Unverified on twitter
+              </p>
+              This grant has not verified their ownership of the twitter account listed.
+            </b-card-text>
+
+            <div v-if="grant.is_on_team" class="text-center">
+
+              <template v-if="user_code">
+                <b-button v-b-modal.modal-start-twitter-verification variant="primary" class="btn btn-block btn-primary">
+                  <i class="fab fa-twitter mr-2"></i>
+                  Verify Grant
+                </b-button>
               </template>
-              <template v-else-if="grant.is_on_team && !user_code">
-                <div class="my-2 font-weight-semibold text-center">
-                  <p class="mb-1">Visit grant details page to verify the grant.</p>
-                  <a :href="grant.details_url">Go to grant details page</a>
-                </div>
+
+              <template v-else>
+                <p class="mb-1">Visit grant details page to verify the grant.</p>
+                <a :href="grant.details_url">Go to grant details page</a>
               </template>
+
             </div>
-          </div>
-        </div>
-        <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview && (grant.active && grant.is_on_team) || fullview && (grant.active && isStaff)">Edit Grant</button>
-        <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else-if="!fullview && (grant.active && grant.is_on_team)">Edit Grant</a>
+
+            <hr class="my-4">
+          </template>
+
+          <!-- Idle Grant -->
+          <template v-if="grant.active && grant.is_on_team && grant.is_idle">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1 text-danger"></i>
+                Update and make your grant visible
+              </p>
+              Your grant is hidden from the explorer because it hasn’t been updated for more than 3 months.
+              Update your grant to make it visible.
+            </b-card-text>
+            <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview">Update Grant</button>
+            <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else>Update Grant</a>
+            <hr class="my-4">
+          </template>
+
+
+          <!-- L2 contributions -->
+          <template v-if="grant.is_on_team && grant.tenants.includes('ETH')">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-wallet mr-1"></i>
+                You’ve received L2 contributions
+              </p>
+              Some of your grant funds may be in L2 (zkSync or Polygon).
+              Read more on how to withdraw from L2 wallets.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://gitcoin.happyfox.com/staff/kb/articles/75" target="_blank">
+              Read L2 Withdrawal guide
+            </a>
+          </template>
+
+
+          <!-- Edit Grant Button -->
+          <template v-if="grant.active && !grant.is_idle && (grant.is_on_team || isStaff)">
+            <hr class="my-4">
+
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-edit mr-1"></i>
+                Keep your grant up to date
+              </p>
+              Let your grant contributors know about your project and progress.
+            </b-card-text>
+            <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview">Edit Grant</button>
+            <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else>Edit Grant</a>
+          </template>
+
+        </b-card>
+
       </div>
 
       <!-- CLR details and Add-to/remove-from cart -->
