@@ -277,7 +277,24 @@ Vue.mixin({
           _alert(err.message, 'danger');
         }
       });
-    }
+    },
+    onPaste(event) {
+      let vm = this;
+      
+      event.preventDefault();
+
+      let paste = (event.clipboardData).getData('text');
+      paste = paste.slice(20); // return only text after https://twitter.com/
+
+      const selection = window.getSelection();
+      let selectionId = selection.focusNode.attributes.id.value;
+
+      const input_field = document.getElementById(selectionId);
+      input_field.value = paste;
+      input_field.innerHTML = input_field.value;
+
+      vm.$set(vm.form, selectionId, paste)
+    },
   },
   watch: {
     deep: true,
@@ -329,20 +346,6 @@ if (document.getElementById('gc-new-grant')) {
     el: '#gc-new-grant',
     components: {
       'vue-select': 'vue-select'
-    },
-    methods:{
-      onPaste: function (event) {
-        event.preventDefault()
-
-        let paste = (event.clipboardData).getData('text');
-        paste = paste.slice(20); // return only text after https://twitter.com/
-
-        const selection = window.getSelection();
-        let selectionId = selection.focusNode.attributes.id.value;
-        
-        const input_field = document.getElementById(selectionId);
-        input_field.value = paste;
-      },
     },
     data() {
       return {
