@@ -856,6 +856,10 @@ class Grant(SuperModel):
 
         grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
 
+        active_round_names= []
+        for active_round in self.in_active_clrs.all():
+            active_round_names.append(active_round.display_text)
+
         return {
                 'id': self.id,
                 'active': self.active,
@@ -916,7 +920,8 @@ class Grant(SuperModel):
                 'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
-                'has_external_funding': self.has_external_funding
+                'has_external_funding': self.has_external_funding,
+                'active_round_names': active_round_names
             }
 
     def favorite(self, user):

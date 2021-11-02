@@ -317,6 +317,23 @@
             <div v-if="grant?.clr_prediction_curve?.[0]?.[1] > 0" class="col col-4">
               <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>
               <span>estimated QF matching</span>
+              <i
+                class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                id="tooltip-active-rounds"
+              ></i>
+              <b-tooltip target="tooltip-active-rounds" triggers="hover">
+                <div class="text-left p-2" style="min-width: 150px;">
+                  <p>The estimated match from the active matching rounds at this moment in time.
+                    <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" rel="noopener noreferrer" target="_blank">Learn more</a>
+                  </p>
+                  <p>
+                    This grant is currently part of [[ grant?.active_round_names.length ]] active matching rounds:
+                    <dl class="mt-0">
+                      <li v-for="round_name in grant.active_round_names">[[round_name]]</li>
+                    </dl>
+                  </p>
+                </div>
+              </b-tooltip>
             </div>
           </div>
         </div>
