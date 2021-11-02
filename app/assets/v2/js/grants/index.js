@@ -184,18 +184,23 @@ if (document.getElementById('grants-showcase')) {
         vm.fetchGrants();
 
       },
-      changeQuery: debounce(function(query) {
+      changeQuery: function(query) {
         let vm = this;
 
         vm.fetchedPages = [];
         vm.$set(vm, 'params', {...vm.params, ...query});
 
         if (vm.tabSelected === 'grants') {
+          if (vm.params.keyword && vm.params.sort_option == 'weighted_shuffle') {
+            vm.params.sort_option = '';
+          } else if (vm.params.keyword == '' && vm.params.sort_option != 'weighted_shuffle') {
+            vm.params.sort_option = 'weighted_shuffle';
+          }
           vm.fetchGrants();
         } else {
           vm.updateUrlParams();
         }
-      }, 500),
+      },
       filterCollection: async function(collection_id) {
         let vm = this;
 
@@ -323,12 +328,6 @@ if (document.getElementById('grants-showcase')) {
         getGrants.grants.forEach(function(item) {
           vm.grants.push(item);
         });
-
-        if (vm.params.keyword) {
-          vm.params.sort_option = '';
-        } else if (vm.params.keyword == '' && vm.params.sort_option == '') {
-          vm.params.sort_option = 'weighted_shuffle';
-        }
 
         vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
 

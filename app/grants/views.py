@@ -519,7 +519,7 @@ def get_grants(request):
     }
     _grants = get_grants_by_filters(**filters)
 
-    if sort == 'most_relevant' and keyword:
+    if sort == '' and keyword:
         # return grants result starting with exact title matches
         exact_matches = [grant for grant in _grants if grant.title == keyword]
         non_exact_matches = [grant for grant in _grants if grant.title != keyword]
@@ -737,18 +737,17 @@ def get_grants_by_filters(
             region_query |= Q(region=region)
         _grants = _grants.filter(region_query)
 
-    # 13. Sort filtered grants
+    if keyword:
+        # 13. Grant search by title & description
+        _grants = _grants.annotate(search=SearchVector('description'))
+        keyword_query = Q(title__icontains=keyword)
+        keyword_query |= Q(search=keyword)
+
+        _grants = _grants.filter(keyword_query)
+
     if sort:
-        if sort == 'most_relevant' and keyword:
-            # Grant search by title & description
-            _grants = _grants.annotate(search=SearchVector('description'))
-            keyword_query = Q(title__icontains=keyword)
-            keyword_query |= Q(search=keyword)
-
-            print(f"Sort is {sort}")
-            _grants = _grants.filter(keyword_query)
-
-        elif 'match_pledge_amount_' in sort:
+        # 14. Sort filtered grants
+        if 'match_pledge_amount_' in sort:
             order = '-' if sort[0] is '-' else ''
             sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
             clr_prediction_curve_schema_map = {10**x: x+1 for x in range(0, 5)}
