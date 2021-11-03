@@ -278,11 +278,7 @@ Vue.mixin({
         }
       });
     },
-    onBlur(event) {
-      let vm = this;
-      
-      event.preventDefault();
-
+    handleTwitterUsername(event) {
       const inputField = event.target;
       const fullTwitterURL = /https:\/\/twitter.com\/\w{1,15}/
       const twitterUsername = /(\w{1,15})$/
@@ -295,7 +291,7 @@ Vue.mixin({
         extracted = inputField.value
       }
 
-      vm.$set(vm.form, inputField.id, extracted)
+      this.$set(this.form, inputField.id, extracted)
     },
   },
   watch: {
