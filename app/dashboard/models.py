@@ -2293,16 +2293,6 @@ class ActivityQuerySet(models.QuerySet):
         return posts
 
 
-class ActivityManager(models.Manager):
-    """Enables changing the default queryset function for Activities."""
-
-    def get_queryset(self):
-        if settings.ENV == 'prod':
-            return super().get_queryset().filter(Q(bounty=None) | Q(bounty__network='mainnet'))
-        else:
-            return super().get_queryset()
-
-
 class Activity(SuperModel):
     """Represent Start work/Stop work event.
 
@@ -2431,7 +2421,7 @@ class Activity(SuperModel):
     cached_view_props = JSONField(default=dict, blank=True)
 
     # Activity QuerySet Manager
-    objects = ActivityManager.from_queryset(ActivityQuerySet)()
+    objects = ActivityQuerySet.as_manager()
 
     def __str__(self):
         """Define the string representation of an interested profile."""
@@ -4289,7 +4279,7 @@ class Profile(SuperModel):
             # orgs
             url = self.github_url
             all_activities = Activity.objects.filter(
-                Q(bounty__github_url__istartswith=url) |
+                Q(bounty__github_url__startswith=url.lower()) |
                 Q(tip__github_url__istartswith=url)
             )
 
