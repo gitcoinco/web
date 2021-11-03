@@ -5695,16 +5695,11 @@ def contributor_dashboard(request, bounty_type):
 
 
     if bounty_type == 'work_submitted':
-        bounty_pks = BountyFulfillment.objects.filter(
-            accepted=False,
-            profile=profile
-        ).values_list('bounty__pk')
-
         bounties = Bounty.objects.current().filter(
-            pk__in=[bounty_pks],
-            network=network,
-            current_bounty=True
-        ).order_by('-interested__created')
+            fulfillments__accepted=False,
+            fulfillments__profile=profile,
+            network=network
+         ).prefetch_related('fulfillments').order_by('-interested__created')
 
     elif status:
         bounties = Bounty.objects.current().filter(
