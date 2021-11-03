@@ -366,7 +366,6 @@ urlpatterns = [
         name='hackathon_project_page'
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
-
     url(r'^hackathon/<str:hackathon>/?$/?', dashboard.views.hackathon, name='hackathon'),
     url(r'^hackathon/<str:hackathon>/<str:panel>/?$/?', dashboard.views.hackathon, name='hackathon'),
 
@@ -374,7 +373,6 @@ urlpatterns = [
     re_path(r'^hackathon-list/?$', dashboard.views.get_hackathons, name='get_hackathons'),
     re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons'),
     re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons'),
-
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
@@ -737,7 +735,11 @@ urlpatterns = [
         name='no_applicant_reminder'
     ),
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
-    re_path(r'^_administration/email/clr_match_claim$', retail.emails.grant_match_distribution_final_txn, name='clr_match_claim'),
+    re_path(
+        r'^_administration/email/clr_match_claim$',
+        retail.emails.grant_match_distribution_final_txn,
+        name='clr_match_claim'
+    ),
 
     # docs
     re_path(r'^_administration/docs/', include('django.contrib.admindocs.urls')),
@@ -785,7 +787,11 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    path('sitemap.xml', cache_page(604800)(sitemap_index), {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
+    path(
+        'sitemap.xml',
+        cache_page(604800)(sitemap_index), {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.index'
+    ),
     path(
         'sitemap-<section>.xml',
         cache_page(604800)(sitemap), {'sitemaps': sitemaps},

@@ -226,7 +226,7 @@ along with this program. If not, see
                     v-model="params.keyword"
                     @focus="searchVisible=true"
                     @blur="searchVisible=false"
-                    @input="changeQuery({page: 1})"
+                    @input="delayedChangeQuery()"
                     @keyup.enter="changeQuery({page: 1})"/>
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
                     <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
@@ -323,7 +323,13 @@ along with this program. If not, see
                   </template>
                 </div>
 
-                <div class="infinite-container row"  v-if="grants && grants.length">
+                <!-- Loading State -->
+                <div v-if="lock" class="d-flex flex-column justify-content-center">
+                  <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
+                </div>
+
+                <!-- Grant Cards -->
+                <div v-else-if="grants && grants.length" class="infinite-container row" >
                   <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
                     <a class="text-decoration-none" :href="grant.details_url">
                       {% include 'grants/components/card.html' %}
@@ -332,7 +338,7 @@ along with this program. If not, see
                 </div>
 
                 <!-- No grants state -->
-                <div class="col-12 mb-3 text-muted font-subheader" v-else>
+                <div v-else class="col-12 mb-3 text-muted font-subheader">
                   <p>
                     <span class="font-weight-bold">0</span> grants
                     <template v-if="params.keyword">- ‘[[params.keyword]]’</template>
