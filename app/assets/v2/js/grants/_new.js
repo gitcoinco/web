@@ -280,16 +280,10 @@ Vue.mixin({
     },
     handleTwitterUsername(event) {
       const inputField = event.target;
-      const fullTwitterURL = /https:\/\/twitter.com\/\w{1,15}/
-      const twitterUsername = /(\w{1,15})$/
-
+      const  matchResult = inputField.value.match(/https:\/\/twitter.com\/(\w{4,15})/)
       let extracted
 
-      if (inputField.value.match(fullTwitterURL)) {
-        extracted = '@' + inputField.value.match(twitterUsername)[0]
-      } else {
-        extracted = inputField.value
-      }
+      if (matchResult) { extracted = `@${matchResult[1]}` }
 
       this.$set(this.form, inputField.id, extracted)
     },
