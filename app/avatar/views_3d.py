@@ -771,7 +771,7 @@ def get_avatar_attrs(theme, key):
             'path': 'assets/v2/images/avatar3d/joker.svg',
         },
     }
-    new_avatars = ['SSShiine','avrilapril','eknobl','lkh','nanshulot','wahyu243','zak102','artipedia','azizyano','hasssan04','maystro4','riyasoganii','writeprovidence']
+    new_avatars = ['SSShiine','avrilapril','eknobl','lkh','nanshulot','wahyu243','zak102','artipedia','azizyano','hasssan04','maystro4','riyasoganii','writeprovidence', 'petushka1', 'merit-tech', 'hamzaghz']
     for _key in new_avatars:
         avatar_attrs[_key] = {
             'preview_viewbox': {
