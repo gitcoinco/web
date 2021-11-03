@@ -186,10 +186,10 @@ if (document.getElementById('grants-showcase')) {
         }
       },
       delayedChangeQuery: function() {
-        if (vm.params.keyword) {
-          vm.params.sort_option = '';
-        } else if (vm.params.keyword == '' && vm.params.sort_option != 'weighted_shuffle') {
-          vm.params.sort_option = 'weighted_shuffle';
+        if (this.params.keyword) {
+          this.params.sort_option = '';
+        } else if (this.params.keyword == '' && this.params.sort_option != 'weighted_shuffle') {
+          this.params.sort_option = 'weighted_shuffle';
         }
 
         if (this.activeTimeout) {
