@@ -5708,7 +5708,6 @@ def contributor_dashboard(request, bounty_type):
             interested__pending=pending,
             idx_status__in=status,
             network=network,
-            current_bounty=True
         ).order_by('-interested__created')
 
         if bounty_type == 'work_in_progress':
