@@ -325,7 +325,8 @@
                     <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" rel="noopener noreferrer" target="_blank">Learn more</a>
                   </p>
                   <p>
-                    This grant is currently part of [[ grant?.active_round_names.length ]] active matching rounds:
+                    This grant is currently part of [[ grant?.active_round_names.length ]] active matching round
+                    <template v-if="grant?.active_round_names.length > 1">s</template>:
                     <dl class="mt-0">
                       <li v-for="round_name in grant.active_round_names">[[round_name]]</li>
                     </dl>
