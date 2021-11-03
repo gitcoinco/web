@@ -24,6 +24,20 @@ describe('Creating a new grant', () => {
   });
 
   describe('creation:success - required fields only', () => {
+    it('only pastes the user\'s Twitter handle when the full Twitter URL is copy/pasted into the form', () => {
+      const twitterURL = 'https://twitter.com/gitcoin'
+
+      cy.visit('grants/new');
+
+      cy.get('form').within(() => {
+        cy.get('#twitter_handle_1').paste({pastePayload: 'https://twitter.com/gitcoin', simple: false})
+      })
+
+      cy.get('#twitter_handle_1').should('contain', 'gitcoin')
+      
+      
+    });
+
     it('submits a grant for review', () => {
       cy.visit('grants/new');
 

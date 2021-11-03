@@ -278,22 +278,27 @@ Vue.mixin({
         }
       });
     },
-    onPaste(event) {
+    onBlur(event) {
       let vm = this;
       
       event.preventDefault();
 
-      let paste = (event.clipboardData).getData('text');
-      paste = paste.slice(20); // return only text after https://twitter.com/
+      let fullTwitterURL = /https:\/\/twitter.com\/\w{1,15}/
+      let twitterUsername = /(\w{1,15})$/
 
       const selection = window.getSelection();
       let selectionId = selection.focusNode.attributes.id.value;
+      let extracted
 
-      const input_field = document.getElementById(selectionId);
-      input_field.value = paste;
-      input_field.innerHTML = input_field.value;
+      const inputField = document.getElementById(selectionId);
 
-      vm.$set(vm.form, selectionId, paste)
+      if (inputField.value.match(fullTwitterURL)) {
+        extracted = inputField.value.match(twitterUsername)[0]
+      } else {
+        extracted = inputField.value
+      }
+
+      vm.$set(vm.form, selectionId, extracted)
     },
   },
   watch: {
