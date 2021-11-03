@@ -4960,10 +4960,6 @@ class TokenApproval(SuperModel):
 class SearchHistory(SuperModel):
     """Define the structure of a Search History object."""
 
-    class Meta:
-        """Define metadata associated with SearchHistory."""
-
-        verbose_name_plural = 'Search History'
 
     search_type = models.CharField(max_length=50, db_index=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -4971,9 +4967,9 @@ class SearchHistory(SuperModel):
     ip_address = models.GenericIPAddressField(blank=True, null=True, db_index=True)
 
     class Meta:
-        """Define metadata associated with Bounty."""
+        """Define metadata associated with SearchHistory."""
 
-        verbose_name_plural = 'Bounties'
+        verbose_name_plural = 'Search History'
         index_together = [
             ["data", "search_type", "ip_address"],
             ["data", "search_type", "ip_address", "user"],
