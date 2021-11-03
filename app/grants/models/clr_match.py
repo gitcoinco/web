@@ -6,7 +6,14 @@ from economy.models import SuperModel
 
 class CLRMatch(SuperModel):
     """Define the structure of a CLR Match amount."""
-
+    payout_contract = models.ForeignKey(
+        'grants.GrantPayout',
+        related_name='payout_contract',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        help_text=_('Fk to Payout Contract')
+    )
     round_number = models.PositiveIntegerField(blank=True, null=True)
     amount = models.FloatField()
     grant = models.ForeignKey(
