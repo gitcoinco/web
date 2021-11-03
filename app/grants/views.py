@@ -349,7 +349,7 @@ def get_collections(
 
     _collections = GrantCollection.objects.filter(hidden=False)
 
-    if collection_id:
+    if collection_id and collection_id.isdigit():
         _collections = _collections.filter(pk=int(collection_id))
 
     if not idle_grants:

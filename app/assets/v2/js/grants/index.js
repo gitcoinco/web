@@ -23,37 +23,6 @@ $(document).ready(() => {
 
 });
 
-function debounce(func, wait) {
-  let timeout;
-  let immediate;
-
-  return function() {
-    // reference the context and args for the setTimeout function
-    let context = this; let
-        args = arguments;
-    
-    // allow user-triggered debounce from the func's supplied argument
-    if (args[0].debounce !== undefined && args[0].debounce === true)
-      immediate = false;
-    else if (args[0].debounce === undefined || args[0].debounce === false)
-      immediate = true;
-
-    const callNow = immediate && !timeout;
-
-    clearTimeout(timeout);
-    timeout = setTimeout(function() {
-      timeout = null;
-      if (!immediate) {
-        // call the original function with apply
-        func.apply(context, args);
-      }
-    }, wait);
-
-    if (callNow)
-      func.apply(context, args);
-  };
-}
-
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
     page: 1,
@@ -156,7 +125,8 @@ if (document.getElementById('grants-showcase')) {
       fetchedPages: [],
       handle: document.contxt.github_handle,
       editingCollection: false,
-      createCollectionRedirect: false
+      createCollectionRedirect: false,
+      activeTimeout: null
     },
     methods: {
       toggleStyle: function(style) {
@@ -188,7 +158,6 @@ if (document.getElementById('grants-showcase')) {
 
         vm.clrData = clrJson;
       },
-
       changeBanner: function() {
         this.regex_style = document.all_routing_policies &&
           document.all_routing_policies.find(policy => {
@@ -204,7 +173,7 @@ if (document.getElementById('grants-showcase')) {
         vm.fetchGrants();
 
       },
-      changeQuery: debounce(function(query) {
+      changeQuery: function(query) {
         let vm = this;
 
         vm.fetchedPages = [];
@@ -220,8 +189,17 @@ if (document.getElementById('grants-showcase')) {
         } else {
           vm.updateUrlParams();
         }
-      }, 500),
-      filterCollection: async function(collection_id) {
+      },
+      delayedChangeQuery: function() {
+        if (this.activeTimeout) {
+          window.clearTimeout(this.activeTimeout);
+        }
+        this.activeTimeout = setTimeout(() => {
+          this.changeQuery({page: 1});
+          this.activeTimeout = null;
+        }, 500);
+      },
+      filterCollection: async function(collectionId) {
         let vm = this;
 
         // clear previous state
@@ -375,7 +353,6 @@ if (document.getElementById('grants-showcase')) {
             list: CartData.loadCart()
           }
         });
-
         vm.lock = false;
 
         return vm.grants;
