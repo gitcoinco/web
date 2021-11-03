@@ -24,18 +24,19 @@ describe('Creating a new grant', () => {
   });
 
   describe('creation:success - required fields only', () => {
-    it('only pastes the user\'s Twitter handle when the full Twitter URL is copy/pasted into the form', () => {
-      const twitterURL = 'https://twitter.com/gitcoin'
+    it('extracts the user\'s Twitter handle when the full Twitter URL is entered into the form', () => {
+      const orgTwitterURL = 'https://twitter.com/gitcoin'
+      const userTwitterURL = 'https://twitter.com/gitcoinbot'
 
       cy.visit('grants/new');
 
       cy.get('form').within(() => {
-        cy.get('#twitter_handle_1').paste({pastePayload: 'https://twitter.com/gitcoin', simple: false})
-      })
+        cy.get('input[name=twitter_handle_1]').focus().invoke('val', orgTwitterURL).trigger('blur');
+        cy.get('input[name=twitter_handle_2]').focus().invoke('val', userTwitterURL).trigger('blur');
+      });
 
-      cy.get('#twitter_handle_1').should('contain', 'gitcoin')
-      
-      
+      cy.get('input[name=twitter_handle_1]').should('have.value', '@gitcoin')
+      cy.get('input[name=twitter_handle_2]').should('have.value', '@gitcoinbot')
     });
 
     it('submits a grant for review', () => {

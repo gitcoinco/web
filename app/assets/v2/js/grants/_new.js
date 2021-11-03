@@ -283,22 +283,19 @@ Vue.mixin({
       
       event.preventDefault();
 
-      let fullTwitterURL = /https:\/\/twitter.com\/\w{1,15}/
-      let twitterUsername = /(\w{1,15})$/
+      const inputField = event.target;
+      const fullTwitterURL = /https:\/\/twitter.com\/\w{1,15}/
+      const twitterUsername = /(\w{1,15})$/
 
-      const selection = window.getSelection();
-      let selectionId = selection.focusNode.attributes.id.value;
       let extracted
 
-      const inputField = document.getElementById(selectionId);
-
       if (inputField.value.match(fullTwitterURL)) {
-        extracted = inputField.value.match(twitterUsername)[0]
+        extracted = '@' + inputField.value.match(twitterUsername)[0]
       } else {
         extracted = inputField.value
       }
 
-      vm.$set(vm.form, selectionId, extracted)
+      vm.$set(vm.form, inputField.id, extracted)
     },
   },
   watch: {
