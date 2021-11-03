@@ -110,7 +110,7 @@ class GrantCLR(SuperModel):
     )
 
     def __str__(self):
-        return f"{self.round_num}"
+        return f"pk:{self.pk}, round_num: {self.round_num}"
 
     @property
     def happening_now(self):

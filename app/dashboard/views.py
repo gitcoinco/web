@@ -5693,33 +5693,45 @@ def contributor_dashboard(request, bounty_type):
         status = ['open']
         pending = True
 
-    elif bounty_type == 'work_submitted':
-        status = ['submitted']
-        pending = False
 
-    if status:
+    if bounty_type == 'work_submitted':
+        bounties = Bounty.objects.current().filter(
+            fulfillments__accepted=False,
+            fulfillments__profile=profile,
+            network=network
+         ).prefetch_related('fulfillments').order_by('-interested__created')
+
+    elif status:
         bounties = Bounty.objects.current().filter(
             interested__profile=profile,
             interested__status='okay',
             interested__pending=pending,
             idx_status__in=status,
             network=network,
-            current_bounty=True).order_by('-interested__created')
+        ).order_by('-interested__created')
 
-        return JsonResponse([{'title': b.title,
-                                'id': b.id,
-                                'token_name': b.token_name,
-                                'value_in_token': b.value_in_token,
-                                'value_true': b.value_true,
-                                'value_in_usd': b.get_value_in_usdt,
-                                'github_url': b.github_url,
-                                'absolute_url': b.absolute_url,
-                                'avatar_url': b.avatar_url,
-                                'project_type': b.project_type,
-                                'expires_date': b.expires_date,
-                                'interested_comment': b.interested_comment,
-                                'submissions_comment': b.submissions_comment}
-                                for b in bounties], safe=False)
+        if bounty_type == 'work_in_progress':
+            for bounty in bounties:
+                has_fulfillments = bounty.fulfillments.filter(profile=profile)
+
+                if has_fulfillments:
+                    bounties = bounties.exclude(pk=bounty.pk)
+
+
+    return JsonResponse([{'title': b.title,
+                            'id': b.id,
+                            'token_name': b.token_name,
+                            'value_in_token': b.value_in_token,
+                            'value_true': b.value_true,
+                            'value_in_usd': b.get_value_in_usdt,
+                            'github_url': b.github_url,
+                            'absolute_url': b.absolute_url,
+                            'avatar_url': b.avatar_url,
+                            'project_type': b.project_type,
+                            'expires_date': b.expires_date,
+                            'interested_comment': b.interested_comment,
+                            'submissions_comment': b.submissions_comment}
+                            for b in bounties], safe=False)
 
 
 @require_POST
