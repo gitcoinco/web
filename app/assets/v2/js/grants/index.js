@@ -180,17 +180,18 @@ if (document.getElementById('grants-showcase')) {
         vm.$set(vm, 'params', {...vm.params, ...query});
 
         if (vm.tabSelected === 'grants') {
-          if (vm.params.keyword && vm.params.sort_option == 'weighted_shuffle') {
-            vm.params.sort_option = '';
-          } else if (vm.params.keyword == '' && vm.params.sort_option != 'weighted_shuffle') {
-            vm.params.sort_option = 'weighted_shuffle';
-          }
           vm.fetchGrants();
         } else {
           vm.updateUrlParams();
         }
       },
       delayedChangeQuery: function() {
+        if (vm.params.keyword) {
+          vm.params.sort_option = '';
+        } else if (vm.params.keyword == '' && vm.params.sort_option != 'weighted_shuffle') {
+          vm.params.sort_option = 'weighted_shuffle';
+        }
+
         if (this.activeTimeout) {
           window.clearTimeout(this.activeTimeout);
         }
