@@ -7,10 +7,6 @@ describe('Products menu', () => {
     cy.impersonateUser();
   });
 
-  afterEach(() => {
-    cy.logout();
-  });
-
   after(() => {
     cy.clearWindows();
   });
