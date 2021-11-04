@@ -3,6 +3,7 @@ import logging
 
 from dashboard.helpers import bounty_activity_event_adapter, get_bounty_data_for_activity
 from dashboard.models import Activity, BountyEvent, BountyFulfillment
+from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ def record_payout_activity(fulfillment):
     kwargs['profile'] = fulfillment.funder_profile
     kwargs['metadata']['from'] = fulfillment.funder_profile.handle
     kwargs['metadata']['to'] = fulfillment.profile.handle
-    kwargs['metadata']['payout_amount'] = str(fulfillment.payout_amount)
+    kwargs['metadata']['payout_amount'] = str(Decimal(fulfillment.payout_amount).normalize())
     kwargs['metadata']['token_name'] = fulfillment.token_name
 
     try:
