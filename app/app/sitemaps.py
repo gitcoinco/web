@@ -1,4 +1,3 @@
-from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
@@ -8,7 +7,7 @@ from kudos.models import Token
 from quests.models import Quest
 
 
-class StaticViewSitemap(sitemaps.Sitemap):
+class StaticViewSitemap(Sitemap):
     priority = 0.5
     changefreq = 'weekly'
 
@@ -173,10 +172,7 @@ class PostSitemap(Sitemap):
     limit = 5000
 
     def items(self):
-        queryset = Activity.objects.get_queryset()
-        queryset = queryset.original if queryset.original else queryset
-
-        return queryset.filter(
+        return Activity.objects.filter(
             hidden=False, activity_type__in=['wall_post', 'status_update']
         ).order_by('-pk').cache()
 
@@ -193,10 +189,7 @@ class ActivitySitemap(Sitemap):
     limit = 5000
 
     def items(self):
-        queryset = Activity.objects.get_queryset()
-        queryset = queryset.original if queryset.original else queryset
-
-        return queryset.order_by('-pk').cache()
+        return Activity.objects.order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -209,12 +202,12 @@ sitemaps = {
     'grants': GrantsSitemap,
     'hackathons': HackathonEventSiteMap,
     'projects': HackathonProjectSiteMap,
-    'profiles': ProfileSitemap,
-    'posts': PostSitemap,
+    # 'profiles': ProfileSitemap,
+    # 'posts': PostSitemap,
     'quests': QuestsSitemap,
     'issues': IssueSitemap,
     'kudos': KudosSitemap,
-    'activity': ActivitySitemap,
+    # 'activity': ActivitySitemap,
     'landers': ContributorLandingPageSitemap,
     'results': ResultsSitemap,
     'static': StaticViewSitemap,
