@@ -390,7 +390,7 @@ if (document.getElementById('gc-new-grant')) {
           },
           theme: 'snow',
           placeholder: 'Give a detailed description about your Grant'
-        },
+        }
       };
     },
     computed: {
