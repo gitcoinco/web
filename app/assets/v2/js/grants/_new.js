@@ -281,14 +281,11 @@ Vue.mixin({
     handleTwitterUsername(event) {
       const inputField = event.target;
       const matchResult = inputField.value.match(/https:\/\/twitter.com\/(\w{4,15})/);
-      let extracted;
 
-      if (matchResult) {
-        extracted = `@${matchResult[1]}`;
-      }
+      const extracted = matchResult ? `@${matchResult[1]}` : inputField.value;
 
       this.$set(this.form, inputField.id, extracted);
-    }
+    },
   },
   watch: {
     deep: true,
