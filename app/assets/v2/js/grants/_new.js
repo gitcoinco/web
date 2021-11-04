@@ -280,13 +280,15 @@ Vue.mixin({
     },
     handleTwitterUsername(event) {
       const inputField = event.target;
-      const matchResult = inputField.value.match(/https:\/\/twitter.com\/(\w{4,15})/)
-      let extracted
+      const matchResult = inputField.value.match(/https:\/\/twitter.com\/(\w{4,15})/);
+      let extracted;
 
-      if (matchResult) { extracted = `@${matchResult[1]}` }
+      if (matchResult) {
+        extracted = `@${matchResult[1]}`;
+      }
 
-      this.$set(this.form, inputField.id, extracted)
-    },
+      this.$set(this.form, inputField.id, extracted);
+    }
   },
   watch: {
     deep: true,
@@ -388,7 +390,7 @@ if (document.getElementById('gc-new-grant')) {
           },
           theme: 'snow',
           placeholder: 'Give a detailed desciription about your Grant'
-        },
+        }
       };
     },
     computed: {
