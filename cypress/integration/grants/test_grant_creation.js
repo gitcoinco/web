@@ -33,8 +33,8 @@ describe('Creating a new grant', () => {
       cy.get('input[name=twitter_handle_1]').type(orgTwitterURL).blur();
       cy.get('input[name=twitter_handle_2]').type(userTwitterURL).blur();
 
-      cy.get('input[name=twitter_handle_1]').should('have.value', '@gitcoin')
-      cy.get('input[name=twitter_handle_2]').should('have.value', '@gitcoinbot')
+      cy.get('input[name=twitter_handle_1]').should('have.value', '@gitcoin');
+      cy.get('input[name=twitter_handle_2]').should('have.value', '@gitcoinbot');
     });
 
     it('submits a grant for review', () => {
