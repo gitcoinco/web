@@ -227,7 +227,7 @@ along with this program. If not, see
                     @focus="searchVisible=true"
                     @blur="searchVisible=false"
                     @input="delayedChangeQuery()"
-                    @keyup.enter="changeQuery({page: 1})"/>
+                    @keyup.enter="params.sort_option = '', changeQuery({page: 1})"/>
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
                     <a href="" class="gc-cart__icon d-block" role="button" @click="$refs.navCart.init()"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 0.3rem 1rem;">
