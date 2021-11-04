@@ -521,8 +521,12 @@ def get_grants(request):
 
     if sort == '' and keyword:
         # return grants result starting with exact title matches
-        exact_matches = [grant for grant in _grants if grant.title == keyword]
-        non_exact_matches = [grant for grant in _grants if grant.title != keyword]
+        exact_matches = [
+            grant for grant in _grants if grant.title.lower() == keyword.lower()
+        ]
+        non_exact_matches = [
+            grant for grant in _grants if grant.title.lower() != keyword.lower()
+        ]
         _grants = exact_matches + non_exact_matches
 
     if collection_id and collection_id.isnumeric():
