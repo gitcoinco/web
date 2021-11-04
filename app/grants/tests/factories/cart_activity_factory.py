@@ -1,6 +1,6 @@
 import factory
 import pytest
-from dashboard.tests.factories.profile_factory import ProfileFactory
+from dashboard.tests.factories import ProfileFactory
 from grants.models.cart_activity import CartActivity
 
 from .grant_factory import GrantFactory

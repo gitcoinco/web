@@ -8,9 +8,7 @@ from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
 from grants.models.grant_collection import GrantCollection
 
-from .factories.grant_clr_factory import GrantCLRFactory
-from .factories.grant_collection_factory import GrantCollectionFactory
-from .factories.grant_factory import GrantFactory
+from grants.tests.factories import GrantFactory, GrantCLRFactory, GrantCollectionFactory
 
 
 @pytest.mark.django_db
@@ -38,7 +36,7 @@ class TestGrantCLR:
         grant_clr = GrantCLRFactory()
 
         assert hasattr(grant_clr, 'round_num')
-    
+
     def test_grant_clr_has_sub_round_slug_attribute(self):
         """Test sub_round_slug attribute is present and defaults to empty string."""
 
@@ -260,20 +258,20 @@ class TestGrantCLR:
                 grant_clr.grants
 
         filter.assert_not_called
-        values_list.assert_not_called 
+        values_list.assert_not_called
 
     def test_record_clr_prediction_curve_calls_collaborator_with_expected_parameters(self):
         """Test record_clr_prediction_curve calls create on GrantCLRCalculation.objects with expected params."""
 
         grant = GrantFactory()
         grant_clr = GrantCLRFactory()
-        
+
         with patch.object(GrantCLRCalculation.objects, 'create') as create:
             grant_clr.record_clr_prediction_curve(grant, grant.clr_prediction_curve)
 
         create.assert_called_with(
-            grantclr=grant_clr, 
-            grant=grant, 
+            grantclr=grant_clr,
+            grant=grant,
             clr_prediction_curve=grant.clr_prediction_curve,
             latest=True
         )

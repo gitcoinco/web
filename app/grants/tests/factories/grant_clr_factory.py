@@ -4,6 +4,8 @@ import factory
 import pytest
 from grants.models.grant import GrantCLR
 
+from dashboard.tests.factories import ProfileFactory
+
 
 @pytest.mark.django_db
 class GrantCLRFactory(factory.django.DjangoModelFactory):
@@ -18,3 +20,4 @@ class GrantCLRFactory(factory.django.DjangoModelFactory):
     is_active = True
     type='main'
     banner_text='text which appears below banner'
+    owner = factory.SubFactory(ProfileFactory)

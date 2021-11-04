@@ -2,7 +2,7 @@ import factory
 from grants.models.subscription import Subscription
 
 from .grant_factory import GrantFactory
-from .profile_factory import ProfileFactory
+from dashboard.tests.factories import ProfileFactory
 
 
 class SubscriptionFactory(factory.django.DjangoModelFactory):
@@ -12,4 +12,4 @@ class SubscriptionFactory(factory.django.DjangoModelFactory):
         model = Subscription
 
     grant = factory.SubFactory(GrantFactory)
-    contributor_profile = factory.SubFactory(ProfileFactory) 
+    contributor_profile = factory.SubFactory(ProfileFactory)

@@ -3,7 +3,7 @@ from grants.models.clr_match import CLRMatch
 from grants.models.contribution import Contribution
 from grants.models.grant import Grant
 
-from .factories.clr_match_factory import CLRMatchFactory
+from grants.tests.factories import CLRMatchFactory
 
 
 @pytest.mark.django_db

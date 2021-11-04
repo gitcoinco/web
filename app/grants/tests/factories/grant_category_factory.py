@@ -7,5 +7,3 @@ class GrantCategoryFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = GrantCategory
-
-    category = factory.Sequence(lambda n: "Category #%s" % n)

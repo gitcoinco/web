@@ -4,7 +4,7 @@ import factory
 from grants.models.match_pledge import MatchPledge
 
 from .grant_clr_factory import GrantCLRFactory
-from .profile_factory import ProfileFactory
+from dashboard.tests.factories import ProfileFactory
 
 
 class MatchPledgeFactory(factory.django.DjangoModelFactory):

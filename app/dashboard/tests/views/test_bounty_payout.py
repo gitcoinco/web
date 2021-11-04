@@ -1,7 +1,5 @@
 import pytest
-from dashboard.tests.factories.profile_factory import ProfileFactory
-from dashboard.tests.factories.bounty_factory import BountyFactory
-from dashboard.tests.factories.fulfillment_factory import FulfillmentFactory
+from dashboard.tests.factories import ProfileFactory, BountyFactory, FulfillmentFactory
 from rest_framework.test import APIClient
 
 

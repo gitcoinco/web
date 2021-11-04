@@ -1,7 +1,7 @@
 import factory
 from grants.models.grant_collection import GrantCollection
 
-from .profile_factory import ProfileFactory
+from dashboard.tests.factories import ProfileFactory
 
 
 class GrantCollectionFactory(factory.django.DjangoModelFactory):

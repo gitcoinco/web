@@ -2,7 +2,7 @@ import pytest
 from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
 
-from .factories.grant_clr_calculation_factory import GrantCLRCalculationFactory
+from grants.tests.factories import GrantCLRCalculationFactory
 
 
 @pytest.mark.django_db

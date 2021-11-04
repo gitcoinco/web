@@ -1,7 +1,7 @@
 import factory
 from grants.models.grant_api_key import GrantAPIKey
 
-from .profile_factory import ProfileFactory
+from dashboard.tests.factories import ProfileFactory
 
 
 class GrantAPIKeyFactory(factory.django.DjangoModelFactory):

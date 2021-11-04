@@ -3,9 +3,8 @@ from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.grant_collection import GrantCollection
 
-from .factories.grant_collection_factory import GrantCollectionFactory
-from .factories.grant_factory import GrantFactory
-from .factories.profile_factory import ProfileFactory
+from grants.tests.factories import GrantFactory, GrantCollectionFactory
+from dashboard.tests.factories import ProfileFactory
 
 
 @pytest.mark.django_db
@@ -100,4 +99,4 @@ class TestGrantCollection:
 
         assert hasattr(grant_collection, 'curators')
         assert isinstance(grant_collection.curators.first(), Profile)
-        assert len(grant_collection.curators.all()) == len(curators) 
+        assert len(grant_collection.curators.all()) == len(curators)
