@@ -2,47 +2,48 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Titouan Bénard <itotutona@evta.fr>, 2021.
 #
 #: dashboard/gas_views.py:88 retail/templates/wiki/accounts/login.html:2
 #: retail/templates/wiki/accounts/signup.html:2
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1.O.O \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-05 14:04+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2021-11-05 14:33+0100\n"
+"Last-Translator: Titouan Bénard <itotutona@evta.fr>\n"
+"Language-Team: French <gnomefr@traduc.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 40.0\n"
 
 #: app/settings.py:272
 msgid "English"
-msgstr ""
+msgstr "Anglais"
 
 #: app/settings.py:273
 msgid "Spanish"
-msgstr ""
+msgstr "Espagnol"
 
 #: app/settings.py:274
 msgid "German"
-msgstr ""
+msgstr "Allemand"
 
 #: app/settings.py:275
 msgid "Hindi"
-msgstr ""
+msgstr "Hindou"
 
 #: app/settings.py:276
 msgid "Italian"
-msgstr ""
+msgstr "Italien"
 
 #: app/settings.py:277
 msgid "Korean"
-msgstr ""
+msgstr "Coréen"
 
 #: app/settings.py:278
 msgid "Polish"
@@ -50,15 +51,15 @@ msgstr ""
 
 #: app/settings.py:279
 msgid "Japanese"
-msgstr ""
+msgstr "Japonais"
 
 #: app/settings.py:280
 msgid "Simplified Chinese"
-msgstr ""
+msgstr "Chinois simplifié"
 
 #: app/settings.py:281
 msgid "Traditional Chinese"
-msgstr ""
+msgstr "Chinois traditionel"
 
 #: avatar/models.py:57
 msgid "The avatar SVG."
@@ -191,7 +192,7 @@ msgstr ""
 
 #: dashboard/gas_views.py:111
 msgid "New Bounty"
-msgstr ""
+msgstr "Nouvelle prime"
 
 #: dashboard/gas_views.py:116
 msgid "Fulfill Bounty"
@@ -311,7 +312,7 @@ msgstr ""
 
 #: dashboard/models.py:2168
 msgid "Date Created"
-msgstr ""
+msgstr "Date de création"
 
 #: dashboard/models.py:2169
 msgid "Issue Comment"
@@ -426,7 +427,7 @@ msgstr ""
 
 #: dashboard/models.py:5219
 msgid "Project Logo"
-msgstr ""
+msgstr "Logo du projet"
 
 #: dashboard/models.py:5261
 msgid "Link to grant if project is converted to grant"
@@ -482,6 +483,8 @@ msgid ""
 "⚡️ {from_name} Sent You a {kudos_transfer.kudos_token_cloned_from."
 "humanized_name} Kudos {on_network}"
 msgstr ""
+"⚡️ {from_name} vous à envoyé {kudos_transfer.kudos_token_cloned_from."
+"humanized_name} Kudos {on_network}"
 
 #: dashboard/templates/addinterest.html:24
 msgid "Submit a Plan"
@@ -533,17 +536,17 @@ msgstr ""
 #: dashboard/templates/addinterest.html:96
 #: dashboard/templates/ftux/onboard.html:55
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
 #: dashboard/templates/addinterest.html:191
 #: dashboard/templates/extend_issue_deadline.html:62
 msgid "Please login with Github to get started."
-msgstr ""
+msgstr "Connectez vous à Github pour commencer"
 
 #: dashboard/templates/addinterest.html:194
 #: dashboard/templates/extend_issue_deadline.html:65
 msgid "Login With Github"
-msgstr ""
+msgstr "Connexion via Github"
 
 #: dashboard/templates/bounty/cancel.html:72
 msgid "Cancel Bounty and Reclaim Funds"
@@ -564,18 +567,18 @@ msgstr ""
 #: dashboard/templates/bulk_payout_bounty.html:54
 #: dashboard/templates/shared/success_container.html:25
 msgid "Back to Bounty"
-msgstr ""
+msgstr "Revenir à la prime"
 
 #: dashboard/templates/bounty/cancel.html:85
 #: dashboard/templates/bounty/fulfill.html:69
 #: dashboard/templates/bulk_payout_bounty.html:80
 #: dashboard/templates/process_bounty.html:83
 msgid "Issue URL"
-msgstr ""
+msgstr "URL du ticket"
 
 #: dashboard/templates/bounty/cancel.html:92
 msgid "Reason"
-msgstr ""
+msgstr "Raison"
 
 #: dashboard/templates/bounty/cancel.html:94
 msgid "Please let us know why you cancelled the bounty"
@@ -623,10 +626,15 @@ msgid ""
 "\"noopener noreferrer\">Terms of Service</a>.\n"
 "                        "
 msgstr ""
+"\n"
+"                          J'ai lu, compris, et accepté les\n"
+"                          <a href=\"%(termsurl)s\" target=\"_blank\" rel="
+"\"noopener noreferrer\">Conditions d'utilisation</a>.\n"
+"                        "
 
 #: dashboard/templates/bounty/cancel.html:157 dashboard/views.py:1707
 msgid "Cancel Bounty"
-msgstr ""
+msgstr "Annuler la prime"
 
 #: dashboard/templates/bounty/change.html:41 dashboard/views.py:4480
 msgid "Change Bounty Details"
@@ -634,7 +642,7 @@ msgstr ""
 
 #: dashboard/templates/bounty/change.html:71
 msgid "Pricing"
-msgstr ""
+msgstr "Prix"
 
 #: dashboard/templates/bounty/change.html:74
 msgid "Denomination"
@@ -650,7 +658,7 @@ msgstr ""
 #: retail/templates/emails/grants/subscription_terminated.html:120
 #: retail/templates/emails/grants/support_cancellation.html:111
 msgid "USD"
-msgstr ""
+msgstr "USD"
 
 #: dashboard/templates/bounty/change.html:86
 msgid "Est. Hours of Work"
@@ -658,17 +666,17 @@ msgstr ""
 
 #: dashboard/templates/bounty/change.html:97
 msgid "Update Issue Details"
-msgstr ""
+msgstr "Mettre à jour les détails du ticket"
 
 #: dashboard/templates/bounty/details.html:36
 #: dashboard/templates/bounty/details2.html:48
 msgid "Back to Hackathon Explorer"
-msgstr ""
+msgstr "Revenir à l'explorateur d'Hackaton"
 
 #: dashboard/templates/bounty/details.html:38
 #: dashboard/templates/bounty/details2.html:52
 msgid "Back to Issue Explorer"
-msgstr ""
+msgstr "Revenir à l'explorateur de ticket"
 
 #: dashboard/templates/bounty/details.html:48
 #: dashboard/templates/bounty/details2.html:1039
@@ -708,7 +716,7 @@ msgstr ""
 #: dashboard/templates/bounty/details.html:101
 #: dashboard/templates/bounty/details2.html:117
 msgid "Issue Type"
-msgstr ""
+msgstr "Type du ticket"
 
 #: dashboard/templates/bounty/details.html:106
 #: dashboard/templates/bounty/details2.html:122
@@ -720,7 +728,7 @@ msgstr ""
 #: dashboard/templates/dashboard/sidebar_search.html:130
 #: dashboard/templates/shared/issue_details.html:18
 msgid "Project Type"
-msgstr ""
+msgstr "Type de projet"
 
 #: dashboard/templates/bounty/details.html:119
 #: dashboard/templates/bounty/details2.html:134
@@ -742,19 +750,19 @@ msgstr ""
 #: dashboard/templates/shared/bounty_details.html:21
 #: dashboard/templates/shared/bounty_details.html:24
 msgid "Experience Level"
-msgstr ""
+msgstr "Niveau d'expérience"
 
 #: dashboard/templates/bounty/details.html:127
 #: dashboard/templates/bounty/details2.html:142
 #: dashboard/templates/dashboard/sidebar_search.html:250
 #: dashboard/templates/shared/issue_details.html:82
 msgid "Permissions"
-msgstr ""
+msgstr "Permissions"
 
 #: dashboard/templates/bounty/details.html:132
 #: dashboard/templates/bounty/details2.html:146
 msgid "Accepted"
-msgstr ""
+msgstr "Accepté"
 
 #: dashboard/templates/bounty/details.html:136
 #: dashboard/templates/bounty/details2.html:152
@@ -770,13 +778,13 @@ msgstr ""
 #: retail/templates/newkudos.html:89
 #: townsquare/templates/townsquare/new.html:77
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: dashboard/templates/bounty/details.html:178
 #: dashboard/templates/profiles/organization.html:45
 #: dashboard/templates/profiles/tribes-vue.html:1231
 msgid "Contributors"
-msgstr ""
+msgstr "Contributeurs"
 
 #: dashboard/templates/bounty/details.html:182
 #: dashboard/templates/dashboard/sidebar_search.html:58
@@ -785,7 +793,7 @@ msgstr ""
 #: dashboard/templates/shared/status_tooltip.html:22
 #: retail/templates/shared/result.html:34
 msgid "Work Started"
-msgstr ""
+msgstr "Démarrer le travail"
 
 #: dashboard/templates/bounty/details.html:187
 #: dashboard/templates/dashboard/sidebar_search.html:63
@@ -795,15 +803,15 @@ msgstr ""
 #: dashboard/templates/shared/status_tooltip.html:23
 #: retail/templates/shared/result.html:36
 msgid "Work Submitted"
-msgstr ""
+msgstr "Travail envoyé"
 
 #: dashboard/templates/bounty/details.html:192
 msgid "Work Paid"
-msgstr ""
+msgstr "Travail payé"
 
 #: dashboard/templates/bounty/details.html:198
 msgid "All Activity"
-msgstr ""
+msgstr "Toutes les activités"
 
 #: dashboard/templates/bounty/details.html:203
 #: dashboard/templates/dashboard/index-vue.html:254
@@ -811,7 +819,7 @@ msgstr ""
 #: dashboard/templates/shared/nav_auth.html:115
 #: dashboard/templates/shared/nav_auth.html:137
 msgid "Projects"
-msgstr ""
+msgstr "Projets"
 
 #: dashboard/templates/bounty/details.html:247
 #: dashboard/templates/bounty/details.html:256
@@ -821,11 +829,11 @@ msgstr ""
 
 #: dashboard/templates/bounty/details.html:261 marketing/views.py:61
 msgid "Email"
-msgstr ""
+msgstr "Adresse mail"
 
 #: dashboard/templates/bounty/details.html:326
 msgid "ETH Address"
-msgstr ""
+msgstr "Adresse ETH"
 
 #: dashboard/templates/bounty/details.html:334
 msgid "Submission Id"
@@ -833,16 +841,16 @@ msgstr ""
 
 #: dashboard/templates/bounty/details.html:354
 msgid "Reject worker"
-msgstr ""
+msgstr "Rejeter un travailleur"
 
 #: dashboard/templates/bounty/details.html:361
 msgid "Approve worker"
-msgstr ""
+msgstr "Valider un travailleur"
 
 #: dashboard/templates/bounty/details.html:371
 #: dashboard/templates/bounty/details.html:409
 msgid "Stop work"
-msgstr ""
+msgstr "Stopper le travail"
 
 #: dashboard/templates/bounty/details.html:379
 #: dashboard/templates/bounty/details.html:416
@@ -851,15 +859,15 @@ msgstr ""
 
 #: dashboard/templates/bounty/details.html:401
 msgid "View Work"
-msgstr ""
+msgstr "Voir le travail"
 
 #: dashboard/templates/bounty/details2.html:163
 msgid "Close Bounty"
-msgstr ""
+msgstr "Fermer la prime"
 
 #: dashboard/templates/bounty/details2.html:186
 msgid "View On Github"
-msgstr ""
+msgstr "Voir sur Github"
 
 #: dashboard/templates/bounty/details2.html:196
 msgid "Bounty Options"
@@ -874,12 +882,12 @@ msgstr ""
 #: dashboard/templates/shared/no_issue_error.html:82 dashboard/views.py:1637
 #: retail/templates/how_it_works/contributor.html:155
 msgid "Submit Work"
-msgstr ""
+msgstr "Envoyer le travail"
 
 #: dashboard/templates/bounty/fulfill.html:76
 #: retail/templates/shared/bulk_payout_form.html:23
 msgid "Github Username"
-msgstr ""
+msgstr "Nom d'utilisateur Github"
 
 #: dashboard/templates/bounty/fulfill.html:83
 msgid "Project Link"
@@ -895,11 +903,11 @@ msgstr ""
 
 #: dashboard/templates/bounty/fulfill.html:108
 msgid "Please create your project:"
-msgstr ""
+msgstr "Merci de créer votre projet:"
 
 #: dashboard/templates/bounty/fulfill.html:115
 msgid "Paypal Account"
-msgstr ""
+msgstr "Compte paypal"
 
 #: dashboard/templates/bounty/fulfill.html:124
 msgid "Payout Address"
@@ -919,6 +927,11 @@ msgid ""
 "\"noopener noreferrer\">Terms of Service</a>.\n"
 "                          "
 msgstr ""
+"\n"
+"                          J'ai lu, compris, et accepté les\n"
+"                          <a href=\"%(termsurl)s\" target=\"_blank\" rel="
+"\"noopener noreferrer\">Conditions d'utilisation</a>.\n"
+"                        "
 
 #: dashboard/templates/bounty/fulfill.html:176
 msgid ""
@@ -957,7 +970,7 @@ msgstr ""
 
 #: dashboard/templates/bounty/increase.html:127
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: dashboard/templates/bounty/increase.html:130
 msgid "Payment Due"
@@ -979,7 +992,7 @@ msgstr ""
 #: dashboard/templates/bounty/invoice.html:125
 #: grants/templates/grants/invoice.html:125
 msgid "Created"
-msgstr ""
+msgstr "Crée"
 
 #: dashboard/templates/bounty/invoice.html:126
 #: dashboard/templates/dashboard/sidebar_search.html:46
@@ -988,16 +1001,16 @@ msgstr ""
 #: retail/templates/emails/bounty.html:101
 #: retail/templates/emails/grants/subscription_terminated.txt:11
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 #: dashboard/templates/bounty/invoice.html:127
 #: grants/templates/grants/invoice.html:127
 msgid "For"
-msgstr ""
+msgstr "Pour"
 
 #: dashboard/templates/bounty/invoice.html:127
 msgid "Gitcoin Bounty"
-msgstr ""
+msgstr "Prime Gitcoin"
 
 #: dashboard/templates/bounty/invoice.html:128
 msgid "Related Issue:"
@@ -1016,7 +1029,7 @@ msgstr ""
 #: dashboard/templates/bounty/invoice.html:161
 #: grants/templates/grants/invoice.html:159
 msgid "Payment Method"
-msgstr ""
+msgstr "Méthode de paiement"
 
 #: dashboard/templates/bounty/invoice.html:168
 msgid "Directly to counterparties via Blockchain"
@@ -1042,39 +1055,39 @@ msgstr ""
 #: grants/templates/grants/invoice.html:203
 #: grants/templates/grants/invoice.html:205
 msgid "Total:"
-msgstr ""
+msgstr "Total:"
 
 #: dashboard/templates/bounty/new_bounty.html:182
 #: dashboard/templates/dashboard/hackathon/new_bounty.html:247
 #: dashboard/templates/shared/bounty_keywords.html:18
 msgid "Keywords"
-msgstr ""
+msgstr "Mots clés"
 
 #: dashboard/templates/bounty/new_bounty.html:351
 #: dashboard/templates/dashboard/hackathon/new_bounty.html:383
 #: dashboard/templates/shared/bounty_details.html:18
 msgid "Details"
-msgstr ""
+msgstr "Détails"
 
 #: dashboard/templates/bounty/new_bounty.html:380
 #: dashboard/templates/dashboard/hackathon/new_bounty.html:412
 #: dashboard/templates/shared/bounty_details.html:44
 #: dashboard/templates/shared/bounty_details.html:47
 msgid "Bounty Type"
-msgstr ""
+msgstr "Type de prime"
 
 #: dashboard/templates/bounty/new_bounty.html:492
 msgid "Expires in"
-msgstr ""
+msgstr "Expire dans"
 
 #: dashboard/templates/bounty/new_bounty.html:496
 #: dashboard/templates/extend_issue_deadline.html:40
 msgid "Never expire"
-msgstr ""
+msgstr "N'expirer jamais"
 
 #: dashboard/templates/bounty/new_bounty.html:503
 msgid "Reserved for"
-msgstr ""
+msgstr "Réservé pour"
 
 #: dashboard/templates/bounty/new_bounty.html:530
 #: dashboard/templates/shared/reserved.html:25
@@ -1106,7 +1119,7 @@ msgstr ""
 
 #: dashboard/templates/bulk_payout_bounty.html:66 dashboard/views.py:1604
 msgid "Advanced Payout"
-msgstr ""
+msgstr "Paiement avancé"
 
 #: dashboard/templates/bulk_payout_bounty.html:72
 msgid "Switch to Basic Payout"
@@ -1115,7 +1128,7 @@ msgstr ""
 #: dashboard/templates/bulk_payout_bounty.html:76
 #: dashboard/templates/process_bounty.html:79
 msgid "Issue Title"
-msgstr ""
+msgstr "Titre du ticket"
 
 #: dashboard/templates/bulk_payout_bounty.html:93
 msgid "Crowdfunded Amount"
@@ -1151,7 +1164,7 @@ msgstr ""
 
 #: dashboard/templates/bulk_payout_bounty.html:226
 msgid "Note"
-msgstr ""
+msgstr "Note"
 
 #: dashboard/templates/bulk_payout_bounty.html:226
 #, python-format
@@ -1194,7 +1207,7 @@ msgstr ""
 
 #: dashboard/templates/dashboard/ftux.html:25
 msgid "HOW IT WORKS"
-msgstr ""
+msgstr "COMMENT CA MARCHE"
 
 #: dashboard/templates/dashboard/ftux.html:26
 msgid ""
@@ -1215,7 +1228,7 @@ msgstr ""
 
 #: dashboard/templates/dashboard/ftux.html:30
 msgid "Developer Guide"
-msgstr ""
+msgstr "Guide des développeurs"
 
 #: dashboard/templates/dashboard/ftux.html:33
 msgid "Got It!"
@@ -1282,7 +1295,7 @@ msgstr ""
 
 #: dashboard/templates/dashboard/hackathon/onboard.html:294
 msgid "Start Work via Gitcoin"
-msgstr ""
+msgstr "Commencer le travail sur Gitcoin"
 
 #: dashboard/templates/dashboard/hackathon/onboard.html:295
 msgid ""
@@ -1311,7 +1324,7 @@ msgstr ""
 
 #: dashboard/templates/dashboard/hackathon/onboard.html:320
 msgid "Submit Work via Gitcoin"
-msgstr ""
+msgstr "Envoyer le travail via Gitcoin"
 
 #: dashboard/templates/dashboard/hackathon/onboard.html:321
 msgid ""
@@ -1326,16 +1339,16 @@ msgstr ""
 #: dashboard/templates/dashboard/hackathon/project_page.html:165
 #: grants/templates/grants/detail/_index.html:49
 msgid "View Admin"
-msgstr ""
+msgstr "Voir l'Admin"
 
 #: dashboard/templates/dashboard/hackathon/projects.html:117
 msgid "Search Projects"
-msgstr ""
+msgstr "Rechercher des projets"
 
 #: dashboard/templates/dashboard/hackathon/projects.html:120
 #: kudos/templates/shared/kudos_searchbar.html:42
 msgid "Search"
-msgstr ""
+msgstr "Rechercher"
 
 #: dashboard/templates/dashboard/index-vue.html:112
 #: dashboard/templates/dashboard/index.html:80
@@ -1356,11 +1369,11 @@ msgstr ""
 
 #: dashboard/templates/dashboard/index-vue.html:211
 msgid "all"
-msgstr ""
+msgstr "tout"
 
 #: dashboard/templates/dashboard/index-vue.html:214
 msgid "#intros"
-msgstr ""
+msgstr "#intros"
 
 #: dashboard/templates/dashboard/index-vue.html:217
 #: dashboard/templates/dashboard/sidebar_search_hackathon.html:35
@@ -1369,11 +1382,11 @@ msgstr ""
 
 #: dashboard/templates/dashboard/index-vue.html:348
 msgid "Participants"
-msgstr ""
+msgstr "Participants"
 
 #: dashboard/templates/dashboard/index-vue.html:533
 msgid "Events"
-msgstr ""
+msgstr "Événements"
 
 #: dashboard/templates/dashboard/index-vue.html:587
 msgid "Showcase"
@@ -1394,7 +1407,7 @@ msgstr ""
 #: dashboard/templates/dashboard/sponsors.html:352
 #: dashboard/templates/profiles/tribes-vue.html:1288
 msgid "Get Started!"
-msgstr ""
+msgstr "Commencer!"
 
 #: dashboard/templates/dashboard/index.html:165
 msgid "Request an organisation to fund an issue"
@@ -1421,7 +1434,7 @@ msgstr ""
 #: dashboard/templates/dashboard/sidebar_search.html:53
 #: dashboard/templates/shared/status_tooltip.html:21
 msgid "Open"
-msgstr ""
+msgstr "Ouvrir"
 
 #: dashboard/templates/dashboard/sidebar_search.html:68
 #: dashboard/templates/profiles/tribes-vue.html:768
@@ -1429,7 +1442,7 @@ msgstr ""
 #: dashboard/templates/shared/status_tooltip.html:24
 #: retail/templates/shared/result.html:38
 msgid "Work Done"
-msgstr ""
+msgstr "Travail terminé"
 
 #: dashboard/templates/dashboard/sidebar_search.html:73
 #: dashboard/templates/profiles/tribes-vue.html:816
@@ -1437,7 +1450,7 @@ msgstr ""
 #: dashboard/templates/shared/status_tooltip.html:30
 #: retail/templates/shared/result.html:42
 msgid "Expired"
-msgstr ""
+msgstr "Expiré"
 
 #: dashboard/templates/dashboard/sidebar_search.html:78
 #: dashboard/templates/profiles/tribes-vue.html:771
@@ -1445,7 +1458,7 @@ msgstr ""
 #: dashboard/templates/shared/bounty-popover.html:32
 #: retail/templates/shared/result.html:40
 msgid "Cancelled"
-msgstr ""
+msgstr "Annulé"
 
 #: dashboard/templates/dashboard/sidebar_search.html:83
 #: dashboard/templates/ftux/skills.html:45
@@ -1459,25 +1472,25 @@ msgstr ""
 #: dashboard/templates/dashboard/sidebar_search.html:108
 #: dashboard/templates/shared/bounty_details.html:25
 msgid "Beginner"
-msgstr ""
+msgstr "Débutant"
 
 #: dashboard/templates/dashboard/sidebar_search.html:115
 #: dashboard/templates/shared/bounty_details.html:26
 msgid "Intermediate"
-msgstr ""
+msgstr "Intermédiaire"
 
 #: dashboard/templates/dashboard/sidebar_search.html:122
 #: dashboard/templates/onepager/send2.html:224
 #: dashboard/templates/shared/bounty_details.html:27
 #: kudos/templates/transaction/send.html:146
 msgid "Advanced"
-msgstr ""
+msgstr "Avancé"
 
 #: dashboard/templates/dashboard/sidebar_search.html:139
 #: dashboard/templates/shared/issue_details.html:24
 #: dashboard/templates/shared/project_type_tooltip.html:21
 msgid "Traditional"
-msgstr ""
+msgstr "Traditionnel"
 
 #: dashboard/templates/dashboard/sidebar_search.html:146
 #: dashboard/templates/shared/issue_details.html:44
@@ -1489,7 +1502,7 @@ msgstr ""
 #: dashboard/templates/shared/issue_details.html:64
 #: dashboard/templates/shared/project_type_tooltip.html:23
 msgid "Cooperative"
-msgstr ""
+msgstr "Coopératif"
 
 #: dashboard/templates/dashboard/sidebar_search.html:161
 #: retail/templates/shared/result.html:51
@@ -1499,7 +1512,7 @@ msgstr ""
 
 #: dashboard/templates/dashboard/sidebar_search.html:165
 msgid "ALL"
-msgstr ""
+msgstr "TOUS"
 
 #: dashboard/templates/dashboard/sidebar_search.html:174
 msgid "Advanced Filters"
@@ -1509,15 +1522,15 @@ msgstr ""
 #: dashboard/templates/shared/nav_auth.html:84
 #: dashboard/templates/shared/nav_auth.html:225
 msgid "My Bounties"
-msgstr ""
+msgstr "Mes primes"
 
 #: dashboard/templates/dashboard/sidebar_search.html:183
 msgid "Created By Me"
-msgstr ""
+msgstr "Crée par moi"
 
 #: dashboard/templates/dashboard/sidebar_search.html:187
 msgid "Started By Me"
-msgstr ""
+msgstr "Commencé par moi"
 
 #: dashboard/templates/dashboard/sidebar_search.html:191
 msgid "Fulfilled By Me"
@@ -1525,7 +1538,7 @@ msgstr ""
 
 #: dashboard/templates/dashboard/sidebar_search.html:196
 msgid "Reserved For Me"
-msgstr ""
+msgstr "Réservé pour moi"
 
 #: dashboard/templates/dashboard/sidebar_search.html:200
 #: dashboard/templates/dashboard/sidebar_search.html:228
@@ -1535,11 +1548,11 @@ msgstr ""
 #: dashboard/templates/dashboard/sidebar_search.html:204
 #: dataviz/templates/stats.html:37
 msgid "All"
-msgstr ""
+msgstr "Tous"
 
 #: dashboard/templates/dashboard/sidebar_search.html:212
 msgid "Moderation"
-msgstr ""
+msgstr "Modération"
 
 #: dashboard/templates/dashboard/sidebar_search.html:216
 msgid "Escalated"
@@ -1551,15 +1564,15 @@ msgstr ""
 
 #: dashboard/templates/dashboard/sidebar_search.html:224
 msgid "Hidden"
-msgstr ""
+msgstr "Caché"
 
 #: dashboard/templates/dashboard/sidebar_search.html:233
 msgid "Closed On Github"
-msgstr ""
+msgstr "Fermé sur Github"
 
 #: dashboard/templates/dashboard/sidebar_search.html:242
 msgid "No Moderation"
-msgstr ""
+msgstr "Aucune modération"
 
 #: dashboard/templates/dashboard/sidebar_search.html:260
 #: dashboard/templates/shared/issue_details.html:97
@@ -1577,42 +1590,42 @@ msgstr ""
 #: dashboard/templates/shared/bounty_details.html:36
 #: retail/templates/results.html:130
 msgid "Hours"
-msgstr ""
+msgstr "Heures"
 
 #: dashboard/templates/dashboard/sidebar_search.html:287
 #: dashboard/templates/shared/bounty_details.html:37
 msgid "Days"
-msgstr ""
+msgstr "Jours"
 
 #: dashboard/templates/dashboard/sidebar_search.html:294
 #: dashboard/templates/shared/bounty_details.html:38
 msgid "Weeks"
-msgstr ""
+msgstr "Semaines"
 
 #: dashboard/templates/dashboard/sidebar_search.html:301
 #: dashboard/templates/shared/bounty_details.html:39
 msgid "Months"
-msgstr ""
+msgstr "Mois"
 
 #: dashboard/templates/dashboard/sidebar_search.html:308
 #: quests/templates/quests/new.html:81
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: dashboard/templates/dashboard/sidebar_search.html:314
 #: dashboard/templates/shared/bounty_details.html:48
 msgid "Bug"
-msgstr ""
+msgstr "Bogue"
 
 #: dashboard/templates/dashboard/sidebar_search.html:321
 #: dashboard/templates/shared/bounty_details.html:49
 msgid "Feature"
-msgstr ""
+msgstr "Fonctionnalité"
 
 #: dashboard/templates/dashboard/sidebar_search.html:328
 #: dashboard/templates/shared/bounty_details.html:51
 msgid "Security"
-msgstr ""
+msgstr "Securité"
 
 #: dashboard/templates/dashboard/sidebar_search.html:335
 #: dashboard/templates/dashboard/sidebar_search_hackathon.html:60
@@ -1620,17 +1633,17 @@ msgstr ""
 #: dashboard/templates/request_payment.html:93
 #: kudos/templates/transaction/send.html:138
 msgid "Network"
-msgstr ""
+msgstr "Réseau"
 
 #: dashboard/templates/dashboard/sidebar_search.html:341
 #: dashboard/templates/dashboard/sidebar_search_hackathon.html:66
 msgid "Rinkeby"
-msgstr ""
+msgstr "Rinkeby"
 
 #: dashboard/templates/dashboard/sidebar_search.html:348
 #: dashboard/templates/dashboard/sidebar_search_hackathon.html:73
 msgid "Mainnet"
-msgstr ""
+msgstr "Réseau principale"
 
 #: dashboard/templates/dashboard/sidebar_search.html:355
 msgid "Misc"
@@ -1678,11 +1691,11 @@ msgstr ""
 
 #: dashboard/templates/extend_issue_deadline.html:54
 msgid "Submit"
-msgstr ""
+msgstr "Envoyer"
 
 #: dashboard/templates/extend_issue_deadline.html:55
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: dashboard/templates/ftux/avatar.html:47
 msgid ""
@@ -1725,7 +1738,7 @@ msgstr ""
 
 #: dashboard/templates/ftux/github.html:27
 msgid "Build"
-msgstr ""
+msgstr "Construire"
 
 #: dashboard/templates/ftux/github.html:31
 #: retail/templates/how_it_works/contributor.html:202
@@ -1761,11 +1774,11 @@ msgstr ""
 
 #: dashboard/templates/ftux/github.html:66
 msgid "Logout"
-msgstr ""
+msgstr "Déconnexion"
 
 #: dashboard/templates/ftux/github.html:77
 msgid "Login with github"
-msgstr ""
+msgstr "Connexion avec Github"
 
 #: dashboard/templates/ftux/job.html:21
 msgid "Job Opportunities"
