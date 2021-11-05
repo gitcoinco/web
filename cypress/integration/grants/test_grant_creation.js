@@ -24,6 +24,19 @@ describe('Creating a new grant', () => {
   });
 
   describe('creation:success - required fields only', () => {
+    it('extracts the user\'s Twitter handle when the full Twitter URL is entered into the form', () => {
+      const orgTwitterURL = 'https://twitter.com/gitcoin'
+      const userTwitterURL = 'https://twitter.com/gitcoinbot'
+
+      cy.visit('grants/new');
+
+      cy.get('input[name=twitter_handle_1]').type(orgTwitterURL).blur();
+      cy.get('input[name=twitter_handle_2]').type(userTwitterURL).blur();
+
+      cy.get('input[name=twitter_handle_1]').should('have.value', '@gitcoin');
+      cy.get('input[name=twitter_handle_2]').should('have.value', '@gitcoinbot');
+    });
+
     it('submits a grant for review', () => {
       cy.visit('grants/new');
 

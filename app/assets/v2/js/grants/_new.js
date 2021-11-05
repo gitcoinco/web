@@ -92,10 +92,10 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
-      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_1)) {
+      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_1)) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
       }
-      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_2)) {
+      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
       }
 
@@ -277,7 +277,15 @@ Vue.mixin({
           _alert(err.message, 'danger');
         }
       });
-    }
+    },
+    handleTwitterUsername(event) {
+      const inputField = event.target;
+      const matchResult = inputField.value.match(/https:\/\/twitter.com\/(\w{4,15})/);
+
+      const extracted = matchResult ? `@${matchResult[1]}` : inputField.value;
+
+      this.$set(this.form, inputField.id, extracted);
+    },
   },
   watch: {
     deep: true,
@@ -378,7 +386,7 @@ if (document.getElementById('gc-new-grant')) {
             ]
           },
           theme: 'snow',
-          placeholder: 'Give a detailed desciription about your Grant'
+          placeholder: 'Give a detailed description about your Grant'
         }
       };
     },
