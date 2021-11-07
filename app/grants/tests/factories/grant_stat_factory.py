@@ -5,8 +5,6 @@ from .grant_factory import GrantFactory
 
 
 class GrantStatFactory(factory.django.DjangoModelFactory):
-    """Create mock GrantStat for testing."""
-
     class Meta:
         model = GrantStat
 

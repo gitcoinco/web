@@ -6,8 +6,6 @@ from dashboard.tests.factories import ProfileFactory
 
 
 class SubscriptionFactory(factory.django.DjangoModelFactory):
-    """Create mock Subscription for testing."""
-
     class Meta:
         model = Subscription
 

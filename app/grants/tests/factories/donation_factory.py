@@ -9,8 +9,6 @@ from .subscription_factory import SubscriptionFactory
 
 @pytest.mark.django_db
 class DonationFactory(factory.django.DjangoModelFactory):
-    """Create a mock Donation for testing."""
-
     class Meta:
         model = Donation
 

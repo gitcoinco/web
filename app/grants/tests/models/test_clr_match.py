@@ -30,7 +30,6 @@ class TestCLRMatch:
         clr_match = CLRMatchFactory()
 
         assert hasattr(clr_match, 'amount')
-        assert clr_match.amount == 0.0
 
     def test_clr_match_has_an_associated_grant(self):
         """Test 'grant' attribute is present and is an instance of Grant."""

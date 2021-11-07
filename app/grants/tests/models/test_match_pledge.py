@@ -92,4 +92,4 @@ class TestMatchPledge:
         match_pledge = MatchPledgeFactory()
 
         assert hasattr(match_pledge, 'data_json')
-        assert match_pledge.data_json == 'test string'
+        assert match_pledge.data_json == {}

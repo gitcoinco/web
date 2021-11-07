@@ -5,8 +5,6 @@ from dashboard.tests.factories import ProfileFactory
 
 
 class GrantAPIKeyFactory(factory.django.DjangoModelFactory):
-    """Create mock GrantAPIKey for testing."""
-
     class Meta:
         model = GrantAPIKey
 

@@ -8,11 +8,9 @@ from dashboard.tests.factories import ProfileFactory
 
 
 class MatchPledgeFactory(factory.django.DjangoModelFactory):
-    """Create mock MatchPledge for testing."""
-
     class Meta:
         model = MatchPledge
 
     profile = factory.SubFactory(ProfileFactory)
-    data = json.dumps('test string')
+    data = factory.LazyFunction(lambda: json.dumps(dict()))
     clr_round_num = factory.SubFactory(GrantCLRFactory)
