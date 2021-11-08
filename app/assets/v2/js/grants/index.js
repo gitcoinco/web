@@ -23,7 +23,6 @@ $(document).ready(() => {
 
 });
 
-
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
     page: 1,
@@ -68,7 +67,6 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'RSK', 'label': 'Rsk'},
     {'name': 'ALGORAND', 'label': 'Algorand'}
   ];
-
 
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
@@ -188,6 +186,10 @@ if (document.getElementById('grants-showcase')) {
         }
       },
       delayedChangeQuery: function() {
+        if (this.params.keyword === '' && this.params.sort_option !== 'weighted_shuffle') {
+          this.params.sort_option = 'weighted_shuffle';
+        }
+
         if (this.activeTimeout) {
           window.clearTimeout(this.activeTimeout);
         }

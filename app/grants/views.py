@@ -519,6 +519,16 @@ def get_grants(request):
     }
     _grants = get_grants_by_filters(**filters)
 
+    if sort == '' and keyword:
+        # return grants result starting with exact title matches
+        exact_matches = [
+            grant for grant in _grants if grant.title.lower() == keyword.lower()
+        ]
+        non_exact_matches = [
+            grant for grant in _grants if grant.title.lower() != keyword.lower()
+        ]
+        _grants = exact_matches + non_exact_matches
+
     if collection_id and collection_id.isnumeric():
         # 4.1 Fetch grants by collection
         _collections = get_collections(
@@ -680,24 +690,16 @@ def get_grants_by_filters(
             contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
             _grants = _grants.filter(id__in=Subquery(contributions))
 
-    if keyword:
-        # 6. Filter grants having matching title & description
-        _grants = _grants.annotate(search=SearchVector('description'))
-        keyword_query = Q(title__icontains=keyword)
-        keyword_query |= Q(search=keyword)
-
-        _grants = _grants.filter(keyword_query)
-
     if not idle_grants:
-        # 7. Filter grants which are stale (last update was > 3 months )
+        # 6. Filter grants which are stale (last update was > 3 months )
         _grants = _grants.filter(last_update__gt=three_months_ago)
 
     if state == 'active':
-        # 8. Filter grants which are active
+        # 7. Filter grants which are active
         _grants = _grants.active()
 
     if grant_types and grant_types not in ['all', 'collections']:
-        # 9. Fetch grants which have mentioned grant_types
+        # 8. Fetch grants which have mentioned grant_types
         types= grant_types.split(',')
         type_query= Q()
         for grant_type in types:
@@ -706,13 +708,13 @@ def get_grants_by_filters(
         _grants = _grants.filter(type_query)
 
     if following and request.user.is_authenticated:
-        # 10. Filter grants having matching title & description
+        # 9. Filter grants having matching title & description
         favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
         _grants = _grants.filter(id__in=Subquery(favorite_grants))
 
     if grant_tags:
         tags = grant_tags.split(',')
-        # 11. Fetch grants which have mentioned grant_tags
+        # 10. Fetch grants which have mentioned grant_tags
         tag_query= Q()
         for tag in tags:
             tag_query |= Q(tags__name=tag)
@@ -720,7 +722,7 @@ def get_grants_by_filters(
         _grants = _grants.filter(tag_query)
 
     if tenants:
-        # 12. Fetch grants which have mentioned tenants
+        # 11. Fetch grants which have mentioned tenants
         tenant_query = Q()
         for tenant in tenants.split(','):
             if tenant in tenants:
@@ -733,15 +735,22 @@ def get_grants_by_filters(
 
     if grant_regions:
         regions = grant_regions.split(',')
-        # 13. Fetch grants which have mentnioned regions
+        # 12. Fetch grants which have mentioned regions
         region_query= Q()
         for region in regions:
             region_query |= Q(region=region)
         _grants = _grants.filter(region_query)
 
+    if keyword:
+        # 13. Grant search by title & description
+        _grants = _grants.annotate(search=SearchVector('description'))
+        keyword_query = Q(title__icontains=keyword)
+        keyword_query |= Q(search=keyword)
 
-    # 13. Sort filtered grants
+        _grants = _grants.filter(keyword_query)
+
     if sort:
+        # 14. Sort filtered grants
         if 'match_pledge_amount_' in sort:
             order = '-' if sort[0] is '-' else ''
             sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
