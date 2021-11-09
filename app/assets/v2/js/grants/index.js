@@ -432,14 +432,13 @@ if (document.getElementById('grants-showcase')) {
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
 
+
         if (bottomOfPage || pageHeight < visible) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
-            vm.fetchCollections(true);
+            await vm.fetchCollections(true);
           } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
-            vm.scrollTriggered = true;
             await vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
-            vm.scrollTriggered = false;
           }
         }
       },
@@ -505,8 +504,10 @@ if (document.getElementById('grants-showcase')) {
           this.$set(grant, 'isInCart', (grant_ids_in_cart.indexOf(String(grant.id)) !== -1));
         });
       },
-      scrollBottom: function() {
-        this.bottom = this.scrollEnd();
+      scrollBottom: async function() {
+        this.scrollTriggered = true
+        this.bottom = await this.scrollEnd();
+        this.scrollTriggered = false;
       },
       closeDropdown: function(ref) {
         // Close the menu and (by passing true) return focus to the toggle button
@@ -719,6 +720,9 @@ if (document.getElementById('grants-showcase')) {
         if (document.contxt.github_handle) {
           return true;
         }
+      },
+      showLoading() {
+        return this.lock && !this.scrollTriggered;
       }
     },
     beforeMount() {
