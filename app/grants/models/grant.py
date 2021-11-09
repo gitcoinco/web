@@ -856,9 +856,7 @@ class Grant(SuperModel):
 
         grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
 
-        active_round_names= []
-        for active_round in self.in_active_clrs.all():
-            active_round_names.append(active_round.display_text)
+        active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
         return {
                 'id': self.id,
