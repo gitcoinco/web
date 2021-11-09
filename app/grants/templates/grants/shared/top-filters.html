@@ -6,7 +6,9 @@
 
       <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto">
         <template v-if="grants && grants.length">
-          [[numGrants.toLocaleString()]] [[ 'Grant' | pluralize(numGrants)]]
+          <span class="font-weight-semibold">[[numGrants.toLocaleString()]]</span>
+          [[ 'Grant' | pluralize(numGrants)]]
+          <span v-if="params.keyword">- '[[params.keyword]]'</span>
         </template>
       </span>
 

@@ -125,7 +125,8 @@ if (document.getElementById('grants-showcase')) {
       handle: document.contxt.github_handle,
       editingCollection: false,
       createCollectionRedirect: false,
-      activeTimeout: null
+      activeTimeout: null,
+      scrollTriggered: false
     },
     methods: {
       toggleStyle: function(style) {
@@ -435,8 +436,10 @@ if (document.getElementById('grants-showcase')) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             vm.fetchCollections(true);
           } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
-            vm.fetchGrants(vm.params.page, true, true);
+            vm.scrollTriggered = true;
+            await vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
+            vm.scrollTriggered = false;
           }
         }
       },
