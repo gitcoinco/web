@@ -425,7 +425,7 @@
 
 
           <!-- L2 contributions -->
-          <template v-if="grant.is_on_team && grant.tenants.includes('ETH')">
+          <template v-if="grant.active && grant.is_on_team && grant.tenants.includes('ETH')">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-wallet mr-1"></i>
