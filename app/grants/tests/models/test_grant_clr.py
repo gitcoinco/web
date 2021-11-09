@@ -150,6 +150,47 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'logo')
 
+
+    def test_grant_clr_has_type_attribute(self):
+        """Test type attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'type')
+
+
+    def test_grant_clr_has_logo_text_hex_attribute(self):
+        """Test logo_text_hex attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'logo_text_hex')
+
+    
+    def test_grant_clr_has_banner_bg_hex_attribute(self):
+        """Test banner_bg_hex attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'banner_bg_hex')
+
+
+    def test_grant_clr_has_banner_text_hex_attribute(self):
+        """Test banner_text_hex attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'banner_text_hex')
+
+
+    def test_grant_clr_has_banner_text_attribute(self):
+        """Test banner_text attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'banner_text')
+
+
     def test_happening_now_returns_true_if_round_is_currently_happening(self):
         """Test happening_now method returns true if we are within the time range for this round."""
 

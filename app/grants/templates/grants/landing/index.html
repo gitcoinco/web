@@ -45,6 +45,17 @@ along with this program. If not, see
       align-items: center;
     }
 
+    .active-clr-banner {
+      height: 111px !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .active-clr-banner .round-details p {
+        font-size: 20px;
+      }
+    }
+
+
   </style>
   <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
@@ -65,10 +76,10 @@ along with this program. If not, see
       {% endif %}
 
         <div id="grants-showcase">
-          {% include 'grants/shared/landing_qf_active.html' %}
+          {% include 'grants/landing/landing_qf_active.html' %}
           <div class="">
             <div v-if="isLandingPage" class="my-5">
-              {% include 'grants/shared/active_clr_round.html'%}
+              {% include 'grants/landing/active_clr_round.html'%}
             </div>
             <div class="mb-5">
               <div class="container">

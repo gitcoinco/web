@@ -26,6 +26,11 @@ from .subscription import Subscription
 
 class GrantCLR(SuperModel):
 
+    CLR_TYPES = (
+        ('main', 'Main Round'),
+        ('sponsor', 'Sponsor Round'),
+        ('cause', 'Cause Round'),
+    )
     class Meta:
         unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
 
@@ -33,7 +38,7 @@ class GrantCLR(SuperModel):
         max_length=15,
         default='',
         blank=True,
-        help_text="used to genrate customer_name/round_num/sub_round_slug"
+        help_text="used to generate customer_name/round_num/sub_round_slug"
     )
     round_num = models.PositiveIntegerField(
         help_text="CLR Round Number. used to generate customer_name/round_num/sub_round_slug"
@@ -108,6 +113,40 @@ class GrantCLR(SuperModel):
         max_length=500,
         help_text=_('sets the background in CLR banner on the landing page'),
     )
+    type = models.CharField(
+        max_length=25,
+        choices=CLR_TYPES,
+        default='main',
+        help_text="Grant CLR Type"
+    )
+    logo_text_hex= models.CharField(
+        blank=True,
+        null=True,
+        default='#000000',
+        max_length=15,
+        help_text=_("sets the text color of the logo")
+    )
+    banner_bg_hex = models.CharField(
+        blank=True,
+        null=True,
+        default='#11BC92',
+        max_length=15,
+        help_text=_("sets the bg color on the banner below the logo")
+    )
+    banner_text_hex = models.CharField(
+        blank=True,
+        null=True,
+        default='#FFF',
+        max_length=15,
+        help_text=_("sets the text color on the banner below the logo")
+    )
+    banner_text = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text=_("text which appears below banner")
+    )
+
 
     def __str__(self):
         return f"pk:{self.pk}, round_num: {self.round_num}"
@@ -817,6 +856,8 @@ class Grant(SuperModel):
 
         grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
 
+        active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
+
         return {
                 'id': self.id,
                 'active': self.active,
@@ -877,7 +918,8 @@ class Grant(SuperModel):
                 'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
-                'has_external_funding': self.has_external_funding
+                'has_external_funding': self.has_external_funding,
+                'active_round_names': active_round_names
             }
 
     def favorite(self, user):

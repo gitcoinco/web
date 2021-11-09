@@ -908,7 +908,13 @@ def get_all_routing_policies(request):
 
 def grants_landing(request):
     network = request.GET.get('network', 'mainnet')
-    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
+    active_rounds = GrantCLR.objects.filter(start_date__lt=timezone.now(), end_date__gt=timezone.now())
+
+    active_main_rounds= active_rounds.filter(type='main').order_by('-total_pot')
+    active_cause_rounds= active_rounds.filter(type='cause').order_by('-total_pot')
+    active_sponsor_rounds= active_rounds.filter(type='sponsor').order_by('-total_pot')
+
+
     now = datetime.now()
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
@@ -925,7 +931,10 @@ def grants_landing(request):
             'card_type': 'summary_large_image',
             'avatar_height': 675,
             'avatar_width': 1200,
-            'active_rounds': active_rounds,
+            'has_active_rounds': True if active_rounds else False,
+            'active_main_rounds': active_main_rounds,
+            'active_cause_rounds': active_cause_rounds,
+            'active_sponsor_rounds': active_sponsor_rounds,
             'sponsors': sponsors,
             'featured': True,
             'now': now,
@@ -934,7 +943,7 @@ def grants_landing(request):
         **clr_rounds_metadata
     )
 
-    response = TemplateResponse(request, 'grants/landingpage.html', params)
+    response = TemplateResponse(request, 'grants/landing/index.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
