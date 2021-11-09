@@ -305,11 +305,13 @@ if (document.getElementById('grants-showcase')) {
         if (vm.lock)
           return;
 
+        vm.scrollTriggered = append_mode;
         vm.lock = true;
         const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!requestGrants.ok) {
           vm.lock = false;
+          vm.scrollTriggered = false;
           vm.grantsHasNext = true;
           return;
         }
@@ -349,6 +351,7 @@ if (document.getElementById('grants-showcase')) {
           }
         });
         vm.lock = false;
+        vm.scrollTriggered = false;
 
         return vm.grants;
       },
@@ -505,9 +508,7 @@ if (document.getElementById('grants-showcase')) {
         });
       },
       scrollBottom: async function() {
-        this.scrollTriggered = true
         this.bottom = await this.scrollEnd();
-        this.scrollTriggered = false;
       },
       closeDropdown: function(ref) {
         // Close the menu and (by passing true) return focus to the toggle button
