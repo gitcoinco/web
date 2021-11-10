@@ -285,7 +285,7 @@ Vue.mixin({
       const extracted = matchResult ? `@${matchResult[1]}` : inputField.value;
 
       this.$set(this.form, inputField.id, extracted);
-    },
+    }
   },
   watch: {
     deep: true,

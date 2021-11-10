@@ -341,6 +341,19 @@ def grants(request):
     return grants_by_grant_type(request, grant_types)
 
 
+@login_required
+def matching_funds(request):
+    """Handle grant matching funds page explorer."""
+
+    context = {
+        "greeting": "i love this"
+    }
+
+    response = TemplateResponse(request, 'grants/matching_funds.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
+
 def get_collections(
     user, keyword, sort='-shuffle_rank', collection_id=None, following=None,
     idle_grants=None, featured=False, only_contributions=None, my_collections=None
@@ -2417,8 +2430,6 @@ def get_category_size(grant_type, category):
         return int(redis.get(key))
     except:
         return 0
-
-
 
 
 def grants_bulk_add(request, grant_str):
