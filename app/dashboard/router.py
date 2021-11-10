@@ -327,7 +327,7 @@ class BountySerializerCheckIn(BountySerializer):
 class BountiesViewSet(viewsets.ModelViewSet):
     """Handle Bounties view behavior."""
     queryset = Bounty.objects.order_by('-web3_created')
-    serializer_class = BountySerializerSlim
+    serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
