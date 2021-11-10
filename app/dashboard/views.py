@@ -3981,7 +3981,7 @@ def profile(request, handle, tab=None):
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
-            context['sum_usd_on_repos'] = profile.get_eth_usd_sum(bounties=orgs_bounties, in_usd=True)
+            context['sum_usd_on_repos'] = profile.get_sum(bounties=orgs_bounties, currency='usd')
             context['works_with_org'] = profile.as_dict.get('works_with_org', [])
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
             what = f'tribe:{profile.handle}'
