@@ -4151,8 +4151,8 @@ class Profile(SuperModel):
     def get_org_leaderboard_index(self):
         return self.get_leaderboard_index('weekly_orgs')
 
-    def get_eth_usd_sum(self, sum_type='collected', network='mainnet', bounties=None, in_usd=False):
-        """Get the sum of collected or funded ETH based on the provided type.
+    def get_sum(self, sum_type='collected', network='mainnet', bounties=None, currency='usd'):
+        """Get the sum of collected or funded ETH or USD based on the provided type.
 
         Args:
             sum_type (str): The sum to lookup.  Defaults to: collected.
@@ -4160,9 +4160,10 @@ class Profile(SuperModel):
                 Defaults to: mainnet.
             bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
                 Defaults to: None.
+            currency (str): The currency to get sum in. Either ETH or USD
 
         Returns:
-            float: The total sum of all ETH of the provided type.
+            float: The total sum of all ETH or USD of the provided type.
 
         """
         sum = 0
@@ -4181,16 +4182,13 @@ class Profile(SuperModel):
         if bounties.exists():
             try:
                 for bounty in bounties:
-                    val = bounty._val_usd_db if in_usd else bounty.get_value_in_eth
+                    val = bounty._val_usd_db if currency.lower() == 'usd' else bounty.get_value_in_eth
                     if not val:
                         continue
                     sum += float(val)
             except Exception as e:
                 logger.exception(e)
                 pass
-
-        # if sum_type == 'collected' and self.tips:
-        #     sum = sum + sum([ float(amount.value_in_eth) for amount in self.tips ])
 
         return sum
 
@@ -4333,7 +4331,7 @@ class Profile(SuperModel):
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
             'organizations': instance.get_who_works_with(network=None),
-            'total_earned': instance.get_eth_usd_sum(network=None)
+            'total_earned': instance.get_sum(network=None, currency='eth')
         }
 
 
@@ -4370,8 +4368,8 @@ class Profile(SuperModel):
 
         if self.is_org:
             orgs_bounties = self.get_orgs_bounties(network=network)
-        sum_eth_funded = self.get_eth_usd_sum(sum_type='funded', bounties=funded_bounties)
-        sum_eth_collected = self.get_eth_usd_sum(bounties=fulfilled_bounties)
+        sum_eth_funded = self.get_sum(sum_type='funded', bounties=funded_bounties, currency='eth')
+        sum_eth_collected = self.get_sum(bounties=fulfilled_bounties, currency='eth')
         works_with_funded = self.get_who_works_with(work_type='funded', bounties=funded_bounties)
         works_with_collected = self.get_who_works_with(work_type='collected', bounties=fulfilled_bounties)
 
@@ -4385,7 +4383,7 @@ class Profile(SuperModel):
         works_with_org = []
         if orgs_bounties:
             count_bounties_on_repo = orgs_bounties.count()
-            sum_usd_on_repos = self.get_eth_usd_sum(bounties=orgs_bounties, in_usd=True)
+            sum_usd_on_repos = self.get_sum(bounties=orgs_bounties, currency='usd')
             works_with_org = self.get_who_works_with(work_type='org', bounties=orgs_bounties)
 
         total_funded = funded_bounties.count()
