@@ -38,6 +38,10 @@
               {label: 'Most Contributors (Alltime)', value: '-contributor_count'},
               {label: 'Updated Recently', value: '-last_update'},
               {% if is_staff %}
+              {label: 'Discover', disable: true},
+              {label: 'Current Round', disable: true},
+              {label: 'All Time', disable: true},
+              {label: 'Misc', disable: true},
               {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
               {label: 'ADMIN: Sybil Score', value: '-sybil_score'},
               {% endif %}
