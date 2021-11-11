@@ -688,6 +688,18 @@
 .vselect-clean .vs__dropdown-toggle,
 .vselect-clean .vs__dropdown-menu {
   border: none;
+  border-radius: 10px;
+}
+
+.vselect-clean .vs__dropdown-menu li {
+  padding: 8px;
+  padding-right: 16px;
+  padding-left: 16px;
+}
+
+.vselect-clean .vs__dropdown-menu .vs__dropdown-option--highlight {
+  background: #EFEBFD;
+  color: black;
 }
 
 .rounded-toggle .vs__dropdown-toggle {

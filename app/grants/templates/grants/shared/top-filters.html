@@ -16,7 +16,7 @@
         <div class="d-inline-block ml-4 pr-2 sort_container" v-if="current_type !== 'collections'">
           <div class="d-flex align-items-baseline" >
             <label class="heading mr-2">{% trans "Sort by" %}</label>
-            <v-select class="vselect-clean rounded-pill" style="min-width:230px;border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="[
+            <v-select class="vselect-clean rounded-pill" style="min-width:165px;border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="[
               {label: 'Discover', disable: true},
               {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
               {label: 'Trending', value: '-metadata__upcoming'},
@@ -25,13 +25,13 @@
               {label: 'Oldest', value: 'created_on'},
               {label: 'A to Z'},
               {label: 'Z to A'},
-              {label: '________________________', disable: true},
+              {label: '------------------------', disable: true},
               {label: 'Current Round', disable: true},
               {label: 'Most Relevant', value: ''},
               {label: 'Match Estimate (This round)', value: '-clr_prediction_curve__0__1'},
               {label: 'Amount Raised (This round)', value: '-amount_received_in_round'},
               {label: 'Contributors (This round)', value: '-positive_round_contributor_count'},
-              {label: '________________________', disable: true}, 
+              {label: '------------------------', disable: true}, 
               {label: 'All Time', disable: true},
               {label: 'Amount Raised (Alltime)', value: '-amount_received'},
               {label: 'Most Contributions (Alltime)', value: '-contribution_count'},
