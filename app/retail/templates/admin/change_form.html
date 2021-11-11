@@ -70,6 +70,7 @@
     {% elif 'grantcollection/' in request.build_absolute_uri %}
       <input type="submit" value="Generate Cache" name="_generate_cache" value="1">
     {% elif 'grantclr/' in request.build_absolute_uri %}
+      <input type="hidden" value="{{ original.id }}" name="_selected_clr">
       <input type="submit" value="Recalculate CLR" name="_recalculate_clr" value="1">
       <input type="submit" value="Reset CLR calculations for this round" name="_set_current_grant_clr_calculations_to_false" value="1">
       <input type="submit" value="Reset all CLR calculations for all rounds" name="_set_all_grant_clr_calculations_to_false" value="1">
