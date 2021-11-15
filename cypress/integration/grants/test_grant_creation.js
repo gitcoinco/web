@@ -25,8 +25,8 @@ describe('Creating a new grant', () => {
 
   describe('creation:success - required fields only', () => {
     it('extracts the user\'s Twitter handle when the full Twitter URL is entered into the form', () => {
-      const orgTwitterURL = 'https://twitter.com/gitcoin'
-      const userTwitterURL = 'https://twitter.com/gitcoinbot'
+      const orgTwitterURL = 'https://twitter.com/gitcoin';
+      const userTwitterURL = 'https://twitter.com/gitcoinbot';
 
       cy.visit('grants/new');
 
