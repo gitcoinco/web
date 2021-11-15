@@ -125,7 +125,8 @@ if (document.getElementById('grants-showcase')) {
       handle: document.contxt.github_handle,
       editingCollection: false,
       createCollectionRedirect: false,
-      activeTimeout: null
+      activeTimeout: null,
+      scrollTriggered: false
     },
     methods: {
       toggleStyle: function(style) {
@@ -304,11 +305,13 @@ if (document.getElementById('grants-showcase')) {
         if (vm.lock)
           return;
 
+        vm.scrollTriggered = append_mode;
         vm.lock = true;
         const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!requestGrants.ok) {
           vm.lock = false;
+          vm.scrollTriggered = false;
           vm.grantsHasNext = true;
           return;
         }
@@ -348,6 +351,7 @@ if (document.getElementById('grants-showcase')) {
           }
         });
         vm.lock = false;
+        vm.scrollTriggered = false;
 
         return vm.grants;
       },
@@ -431,11 +435,12 @@ if (document.getElementById('grants-showcase')) {
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
 
+
         if (bottomOfPage || pageHeight < visible) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
-            vm.fetchCollections(true);
+            await vm.fetchCollections(true);
           } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
-            vm.fetchGrants(vm.params.page, true, true);
+            await vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
           }
         }
@@ -502,8 +507,8 @@ if (document.getElementById('grants-showcase')) {
           this.$set(grant, 'isInCart', (grant_ids_in_cart.indexOf(String(grant.id)) !== -1));
         });
       },
-      scrollBottom: function() {
-        this.bottom = this.scrollEnd();
+      scrollBottom: async function() {
+        this.bottom = await this.scrollEnd();
       },
       closeDropdown: function(ref) {
         // Close the menu and (by passing true) return focus to the toggle button
@@ -716,6 +721,9 @@ if (document.getElementById('grants-showcase')) {
         if (document.contxt.github_handle) {
           return true;
         }
+      },
+      showLoading() {
+        return this.lock && !this.scrollTriggered;
       }
     },
     beforeMount() {

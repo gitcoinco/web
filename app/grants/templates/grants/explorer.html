@@ -322,52 +322,53 @@ along with this program. If not, see
                     </button>
                   </template>
                 </div>
-
-                <!-- Loading State -->
-                <div v-if="lock" class="d-flex flex-column justify-content-center">
-                  <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
-                </div>
-
-                <!-- Grant Cards -->
-                <div v-else-if="grants && grants.length" class="infinite-container row" >
-                  <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-                    <a class="text-decoration-none" :href="grant.details_url">
-                      {% include 'grants/components/card.html' %}
-                    </a>
+                <template v-if="showLoading">
+                  <div class="d-flex flex-column justify-content-center">
+                    <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
                   </div>
-                </div>
-
-                <!-- No grants state -->
-                <div v-else class="col-12 mb-3 text-muted font-subheader">
-                  <p>
-                    <span class="font-weight-bold">0</span> grants
-                    <template v-if="params.keyword">- ‘[[params.keyword]]’</template>
-                  </p>
-
-                  <p class="mb-5">
-                    <template v-if="showFilter() && params.keyword">No grants found that match your selected filters and search keyword.</template>
-                    <template v-else-if="params.keyword">No grants found that match your search keyword.</template>
-                    <template v-else>No grants found that match your selected filters.</template>
-                  </p>
-
-                  <p>Suggestions:</p>
-                  <ul>
-                    <template v-if="params.keyword">
-                      <li>Make sure all words are spelled correctly</li>
-                      <li>Try a different keyword</li>
-                    </template>
-                    <li v-if="showFilter()">Try different filters or filter combinations</li>
-                    <li>
-                      <a class="link" @click="searchVisible=false,resetFilters()">
-                        View All Grants
+                </template>
+                <template v-else>
+                  <!-- Grant Cards -->
+                  <div v-if="grants && grants.length" class="infinite-container row" >
+                    <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                      <a class="text-decoration-none" :href="grant.details_url">
+                        {% include 'grants/components/card.html' %}
                       </a>
-                    </li>
-                  </ul>
-
-                  <div class="text-center">
-                    <img src="{% static "v2/images/grants/empty-grants.svg" %}">
+                    </div>
                   </div>
-                </div>
+
+                  <!-- No grants state -->
+                  <div v-else class="col-12 mb-3 text-muted font-subheader">
+                    <p>
+                      <span class="font-weight-bold">0</span> grants
+                      <template v-if="params.keyword">- ‘[[params.keyword]]’</template>
+                    </p>
+
+                    <p class="mb-5">
+                      <template v-if="showFilter() && params.keyword">No grants found that match your selected filters and search keyword.</template>
+                      <template v-else-if="params.keyword">No grants found that match your search keyword.</template>
+                      <template v-else>No grants found that match your selected filters.</template>
+                    </p>
+
+                    <p>Suggestions:</p>
+                    <ul>
+                      <template v-if="params.keyword">
+                        <li>Make sure all words are spelled correctly</li>
+                        <li>Try a different keyword</li>
+                      </template>
+                      <li v-if="showFilter()">Try different filters or filter combinations</li>
+                      <li>
+                        <a class="link" @click="searchVisible=false,resetFilters()">
+                          View All Grants
+                        </a>
+                      </li>
+                    </ul>
+
+                    <div class="text-center">
+                      <img src="{% static "v2/images/grants/empty-grants.svg" %}">
+                    </div>
+                  </div>
+                </template>
               </template>
             </b-tab>
             <b-tab ref="collections" id="collections" title-link-class="nav-line font-weight-bold">
