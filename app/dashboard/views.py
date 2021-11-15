@@ -1942,13 +1942,13 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     try:
         if ghissue:
             issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue
-            bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
+            bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
             if not bounties.exists():
                 issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue
-                bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
+                bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
         else:
             issue_url = request_url
-            bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
+            bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
 
     except Exception:
         pass
