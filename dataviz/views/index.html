@@ -1855,66 +1855,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     * Reduce complexity of this method to pass McCabe complexity check.</p>
 <p>Returns:
     dict: The JSON representation of the requested visual type data.</p>
-<h2 id="dataviz.d3_views.viz_spiral">viz_spiral</h2>
-
-<pre><code class="python">viz_spiral(request, key='email_open')
-</code></pre>
-
-<p>Render a spiral graph visualization.</p>
-<p>Args:
-    key (str): The key type to visualize.</p>
-<p>Returns:
-    TemplateResponse: The populated spiral data visualization template.</p>
-<h2 id="dataviz.d3_views.viz_chord">viz_chord</h2>
-
-<pre><code class="python">viz_chord(request, key='bounties_paid')
-</code></pre>
-
-<p>Render a chord graph visualization.</p>
-<p>Args:
-    key (str): The key type to visualize.</p>
-<p>Returns:
-    TemplateResponse: The populated chord data visualization template.</p>
-<h2 id="dataviz.d3_views.viz_steamgraph">viz_steamgraph</h2>
-
-<pre><code class="python">viz_steamgraph(request, key='open')
-</code></pre>
-
-<p>Render a steamgraph graph visualization.</p>
-<p>Args:
-    key (str): The key type to visualize.</p>
-<p>Returns:
-    TemplateResponse: The populated steamgraph data visualization template.</p>
-<h2 id="dataviz.d3_views.viz_heatmap">viz_heatmap</h2>
-
-<pre><code class="python">viz_heatmap(request, key='email_open', template='heatmap')
-</code></pre>
-
-<p>Render a heatmap graph visualization.</p>
-<p>Args:
-    key (str): The key type to visualize.</p>
-<p>Returns:
-    JsonResponse: If data param provided, return a JSON representation of data to be graphed.
-    TemplateResponse: If data param not provided, return the populated data visualization template.</p>
-<h2 id="dataviz.d3_views.viz_index">viz_index</h2>
-
-<pre><code class="python">viz_index(request)
-</code></pre>
-
-<p>Render the visualization index.</p>
-<p>Returns:
-    TemplateResponse: The visualization index template response.</p>
-<h2 id="dataviz.d3_views.viz_circles">viz_circles</h2>
-
-<pre><code class="python">viz_circles(request, visual_type)
-</code></pre>
-
-<p>Render a circle graph visualization.</p>
-<p>Args:
-    visual_type (str): The visualization type.</p>
-<p>Returns:
-    JsonResponse: If data param provided, return a JSON representation of data to be graphed.
-    TemplateResponse: If data param not provided, return the populated data visualization template.</p>
 <h2 id="dataviz.d3_views.data_viz_helper_merge_json_trees">data_viz_helper_merge_json_trees</h2>
 
 <pre><code class="python">data_viz_helper_merge_json_trees(output)
@@ -1937,20 +1877,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     depth (int): The depth of keys to parse. Defaults to: 0.</p>
 <p>Returns:
     dict: The JSON representation of the provided data.</p>
-<h2 id="dataviz.d3_views.viz_sunburst">viz_sunburst</h2>
-
-<pre><code class="python">viz_sunburst(request, visual_type, template='sunburst')
-</code></pre>
-
-<p>Render a sunburst graph visualization.</p>
-<p>Args:
-    visual_type (str): The visualization type.
-    template (str): The template type to be used. Defaults to: sunburst.</p>
-<p>TODO:
-    * Reduce the number of local variables in this method from 18 to 15.</p>
-<p>Returns:
-    JsonResponse: If data param provided, return a JSON representation of data to be graphed.
-    TemplateResponse: If data param not provided, return the populated data visualization template.</p>
 <h2 id="dataviz.d3_views.viz_graph">viz_graph</h2>
 
 <pre><code class="python">viz_graph(request, _type, template='graph')
@@ -1962,16 +1888,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 <p>Returns:
     JsonResponse: If data param provided, return a JSON representation of data to be graphed.
     TemplateResponse: If data param not provided, return the populated data visualization template.</p>
-<h2 id="dataviz.d3_views.viz_draggable">viz_draggable</h2>
-
-<pre><code class="python">viz_draggable(request, key='email_open')
-</code></pre>
-
-<p>Render a draggable graph visualization.</p>
-<p>Args:
-    key (str): The key type to visualize.</p>
-<p>Returns:
-    TemplateResponse: The populated draggable data visualization template.</p>
 <h2 id="dataviz.d3_views.mesh_network_viz">mesh_network_viz</h2>
 
 <pre><code class="python">mesh_network_viz(request)
