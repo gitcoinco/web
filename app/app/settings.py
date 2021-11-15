@@ -200,6 +200,9 @@ TEMPLATES = [{
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
 
+# Explicity use watchdog for inotify
+RUNSERVERPLUS_POLLER_RELOADER_TYPE = 'watchdog'
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
