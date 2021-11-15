@@ -769,7 +769,7 @@ def get_grants_by_filters(
             _grants = _grants.filter(is_clr_active=True).order_by(f"{sort}")
 
         elif sort.replace('-', '') in [
-            'weighted_shuffle', 'metadata__upcoming', 'metadata__gem', 'created_on', 'amount_received', 'contribution_count', 'contributor_count', 'last_update'
+            'weighted_shuffle', 'metadata__upcoming', 'metadata__gem', 'created_on', 'amount_received', 'contribution_count', 'contributor_count', 'last_update', 'title'
         ]:
             print(f"Sort is {sort}")
             _grants = _grants.order_by(f"{sort}")
