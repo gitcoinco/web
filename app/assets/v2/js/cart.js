@@ -194,11 +194,10 @@ Vue.component('grants-cart', {
     fetchTokens() {
       // removes duplicates from the tokens array of objects
       let vm = this;
+      let uniq = {};
 
-      return vm.filterByChainId.filter((token, index, self) =>
-        index === self.findIndex((t) => (
-          t.symbol === token.symbol
-        ))
+      return vm.filterByChainId.filter(
+        obj => !uniq[obj['name']] && (uniq[obj['name']] = true)
       );
     },
     // Returns true if user is logged in with GitHub, false otherwise
