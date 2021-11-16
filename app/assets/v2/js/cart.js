@@ -191,6 +191,16 @@ Vue.component('grants-cart', {
       }
       return result;
     },
+    fetchTokens() {
+      // removes duplicates from the tokens array of objects
+      let vm = this;
+
+      return vm.filterByChainId.filter((token, index, self) =>
+        index === self.findIndex((t) => (
+          t.symbol === token.symbol
+        ))
+      );
+    },
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
       return document.contxt.github_handle;
