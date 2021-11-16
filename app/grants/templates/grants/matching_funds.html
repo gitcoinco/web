@@ -52,12 +52,12 @@
             <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
           </grant-details>
         </div>
-        <div class="container mt-lg-5">
+        <div class="container mt-4 mt-lg-5">
           <a :href="backLink.url" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
         </div>
 
         <div class="container">
-        <h2 class="mt-5 mb-4">Matching Funds</h2>
+        <h2 class="mt-4 mb-3 mt-lg-5 mb-lg-4">Matching Funds</h2>
         <b-tabs content-class="mt-3" class="gc-tabs-left" v-model="tabSelected">
           <b-tab :title-link-class="'nav-line'">
             <template v-slot:title>
@@ -70,9 +70,9 @@
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Claim History</span>
             </template>
-            <div class="container py-5 px-0">
+            <div class="container py-lg-5 px-0" style="padding-bottom: 96px;">
               <b-row>
-                <div class="d-inline-block mb-4">
+                <div class="d-inline-block mb-lg-4 mb-0">
                   <div class="d-inline-block">
                     <img src="https://c.gitcoin.co/grants/db5cf23b3a0d12a00f5f9bbb5805dc7c/ChasyrLogo_2021_.png" style="max-width: 160px; height: 92px;">
                   </div>
@@ -85,18 +85,25 @@
                 <b-col lg="4" sm="12">
                   <span class="font-bigger-1 text-grey-500">Community, Latin America +2 more</span>
                 </b-col>
-                <b-col lg="2" sm="12">
-                  <h4 class="font-weight-bold font-bigger-1 gc-font-base d-inline d-lg-block">7.756 DAI</h4>
+                <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">7.756 DAI</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">7.756 DAI</span>
                   <span class="font-body text-grey-500 ml-2 ml-lg-0">$7.756</span>
                 </b-col>
-                <b-col lg="4" sm="12">
-                  <h4 class="font-weight-bold font-bigger-1 text-highlight-green gc-font-base">
+                <b-col lg="4" sm="12" class="mt-2 mt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-highlight-green gc-font-base">
                     <i class="far fa-check mr-1"></i>Claimed
                   </h4>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader text-highlight-green">
+                    <i class="far fa-check mr-1"></i>Claimed
+                  </span>
                   <span class="font-body text-grey-500">Oct 20, 2021</span>
                 </b-col>
-                <b-col class="text-right-lg">
-                  <a href="#" class="font-body">
+                <b-col class="text-right-lg mt-2 mt-lg-0">
+                  <a href="#" class="d-lg-block d-none font-body">
+                    View Transaction<i class="far fa-external-link ml-2"></i>
+                  </a>
+                  <a href="#" class="d-lg-none d-block font-subheader">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
                 </b-col>
@@ -105,26 +112,33 @@
                 <b-col lg="4" sm="12">
                   <span class="font-bigger-1 text-grey-500">Community, Latin America +2 more</span>
                 </b-col>
-                <b-col lg="2" sm="12">
-                  <h4 class="font-weight-bold font-bigger-1 gc-font-base d-inline d-lg-block">7.756 DAI</h4>
+                <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">7.756 DAI</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">7.756 DAI</span>
                   <span class="font-body text-grey-500 ml-2 ml-lg-0">$7.756</span>
                 </b-col>
-                <b-col lg="4" sm="12">
-                  <h4 class="font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
+                <b-col lg="4" sm="12" class="pt-2 pt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
                     Returned to matching pool
                   </h4>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
+                    Returned to matching pool
+                  </span>
                   <span class="font-body text-grey-500">Oct 20, 2021</span>
                 </b-col>
-                <b-col class="text-right-lg">
-                  <a href="#" class="font-body">
+                <b-col class="text-right-lg mt-2 mt-lg-0">
+                  <a href="#" class="d-lg-block d-none font-body">
+                    View Transaction<i class="far fa-external-link ml-2"></i>
+                  </a>
+                  <a href="#" class="d-lg-none d-block font-subheader">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
                 </b-col>
               </b-row>
             </div>
-            <div class="container py-5 px-0">
+            <div class="container py-lg-5 px-0" style="padding-bottom: 96px;">
               <b-row>
-                <div class="d-inline-block mb-4">
+                <div class="d-inline-block mb-lg-4 mb-3">
                   <div class="d-inline-block">
                     <img src="https://c.gitcoin.co/avatars/d8250e3f9e065b6f7e66c6a0ec0b6f9d/lakki1.png" style="max-width: 160px; height: auto;">
                   </div>
@@ -138,17 +152,24 @@
                   <span class="font-bigger-1 text-grey-500">Community, Latin America +2 more</span>
                 </b-col>
                 <b-col lg="2" sm="12">
-                  <h4 class="font-weight-bold font-bigger-1 gc-font-base d-inline d-lg-block">100,756 DAI</h4>
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">100,756 DAI</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">100,756 DAI</span>
                   <span class="font-body text-grey-500 ml-2 ml-lg-0">$7.756</span>
                 </b-col>
                 <b-col lg="4" sm="12">
-                  <h4 class="font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
                     Returned to matching pool
                   </h4>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
+                    Returned to matching pool
+                  </span>
                   <span class="font-body text-grey-500">Oct 20, 2021</span>
                 </b-col>
-                <b-col class="text-right-lg">
-                  <a href="#" class="font-body">
+                <b-col class="text-right-lg mt-2 mt-lg-0">
+                  <a href="#" class="d-lg-block d-none font-body">
+                    View Transaction<i class="far fa-external-link ml-2"></i>
+                  </a>
+                  <a href="#" class="d-lg-none d-block font-subheader">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
                 </b-col>
