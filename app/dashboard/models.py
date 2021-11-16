@@ -3014,6 +3014,9 @@ class Profile(SuperModel):
     idena_address = models.CharField(max_length=128, null=True, unique=True, blank=True)
     idena_status = models.CharField(max_length=32, null=True, blank=True)
 
+    # store the trust bonus on the model itself
+    trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on verified services')
+
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
 
@@ -3025,41 +3028,6 @@ class Profile(SuperModel):
     @property
     def shadowbanned(self):
         return self.squelches.filter(active=True).exists()
-
-    @property
-    def trust_bonus(self):
-        # returns a percentage trust bonus, for this curent user.
-        # trust bonus starts at 50% and compounds for every new verification added
-        # to a max of 150%
-        tb = 0.5
-        if self.is_poh_verified:
-            tb += 0.50
-        if self.is_brightid_verified:
-            tb += 0.50
-        if self.is_idena_verified:
-            tb += 0.50
-        if self.is_poap_verified:
-            tb += 0.25
-        if self.is_ens_verified:
-            tb += 0.25
-        if self.sms_verification:
-            tb += 0.15
-        if self.is_google_verified:
-            tb += 0.15
-        if self.is_twitter_verified:
-            tb += 0.15
-        if self.is_facebook_verified:
-            tb += 0.15
-        # if self.is_duniter_verified:
-        #     tb *= 1.001
-        qd_tb = 0
-        for player in self.players.all():
-            new_score = 0
-            if player.tokens_in:
-                new_score = min(player.tokens_in / 100, 0.20)
-            qd_tb = max(qd_tb, new_score)
-        return min(1.5, tb)
-
 
     @property
     def is_blocked(self):
@@ -4389,7 +4357,6 @@ class Profile(SuperModel):
             'card_title': f'@{self.handle} | Gitcoin',
             'org_works_with': org_works_with,
             'card_desc': desc,
-            'trust_bonus': self.trust_bonus,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'count_bounties_completed': total_fulfilled,
             'works_with_collected': works_with_collected,

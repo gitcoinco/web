@@ -255,11 +255,46 @@ def update_trust_bonus(self, pk):
     :param pk:
     :return:
     """
+    # returns a percentage trust bonus, for this current user.
+    # trust bonus starts at 50% and compounds for every new verification added
+    # to a max of 150%
+    tb = 0.5
     profile = Profile.objects.get(pk=pk)
-    params = profile.as_dict
-    if profile.trust_bonus != params.get('trust_bonus', None):
-        params['trust_bonus'] = profile.trust_bonus
-        print("Saving - %s - %s" % (profile.handle, params['trust_bonus']))
+    if profile.is_poh_verified:
+        tb += 0.50
+    if profile.is_brightid_verified:
+        tb += 0.50
+    if profile.is_idena_verified:
+        tb += 0.50
+    if profile.is_poap_verified:
+        tb += 0.25
+    if profile.is_ens_verified:
+        tb += 0.25
+    if profile.sms_verification:
+        tb += 0.15
+    if profile.is_google_verified:
+        tb += 0.15
+    if profile.is_twitter_verified:
+        tb += 0.15
+    if profile.is_facebook_verified:
+        tb += 0.15
+    # if profile.is_duniter_verified:
+    #     tb *= 1.001
+    qd_tb = 0
+    for player in profile.players.all():
+        new_score = 0
+        if player.tokens_in:
+            new_score = min(player.tokens_in / 100, 0.20)
+        qd_tb = max(qd_tb, new_score)
+
+    # cap the trust_bonus score at 1.5
+    tb = min(1.5, tb)
+
+    print("Saving - %s - %s - %s" % (profile.handle, profile.trust_bonus, tb))
+
+    # save the new score
+    if profile.trust_bonus != tb:
+        profile.trust_bonus = tb
         profile.save()
 
 
