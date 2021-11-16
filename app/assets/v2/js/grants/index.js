@@ -342,8 +342,13 @@ if (document.getElementById('grants-showcase')) {
         if (!append_mode) {
           vm.grants = [];
         }
+
+        const previouslyLoadedIds = vm.grants.map(grant => grant.id);
+        
         getGrants.grants.forEach(function(item) {
-          vm.grants.push(item);
+          if (!previouslyLoadedIds.includes(item.id)) {
+            vm.grants.push(item);
+          }
         });
 
         vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
