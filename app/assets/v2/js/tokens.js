@@ -38,6 +38,7 @@ var load_tokens_from_network = function(network) {
   var _tokens = tokens(network);
 
   _tokens = removeDuplicates(_tokens, 'addr');
+  _tokens = removeDuplicates(_tokens, 'name');
   // remove previus
   $('select[name=denomination]').find('option').remove();
   for (var i = 0; i < _tokens.length; i++) {
