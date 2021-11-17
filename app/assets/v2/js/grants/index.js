@@ -144,6 +144,11 @@ if (document.getElementById('grants-showcase')) {
         {label: 'Highest Amount Raised', value: '-amount_received'},
         {label: 'Highest Contributor Count', value: '-contributor_count'},
       ],
+      adminOptions: [
+        {group: 'Misc', label: null},
+        {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
+        {label: 'ADMIN: Sybil Score', value: '-sybil_score'}, 
+      ],
     },
     methods: {
       toggleStyle: function(style) {
