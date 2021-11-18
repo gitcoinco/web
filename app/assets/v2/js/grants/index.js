@@ -126,7 +126,29 @@ if (document.getElementById('grants-showcase')) {
       editingCollection: false,
       createCollectionRedirect: false,
       activeTimeout: null,
-      scrollTriggered: false
+      selectOptions: [
+        {group: 'Discover', label: null},
+        {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
+        {label: 'Trending', value: '-metadata__upcoming'},
+        {label: 'Undiscovered Gems', value: '-metadata__gem'},
+        {label: 'Recently Updated', value: '-last_update'},
+        {label: 'Newest', value: '-created_on'},
+        {label: 'Oldest', value: 'created_on'},
+        {label: 'A to Z', value: 'title'},
+        {label: 'Z to A', value: '-title'},
+        {group: 'Current Round', label: null},
+        {label: 'Most Relevant', value: ''},
+        {label: 'Highest Amount Raised', value: '-amount_received_in_round'},
+        {label: 'Highest Contributor Count', value: '-positive_round_contributor_count'},
+        {group: 'All-Time', label: null},
+        {label: 'Highest Amount Raised', value: '-amount_received'},
+        {label: 'Highest Contributor Count', value: '-contributor_count'}
+      ],
+      adminOptions: [
+        {group: 'Misc', label: null},
+        {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
+        {label: 'ADMIN: Sybil Score', value: '-sybil_score'}
+      ]
     },
     methods: {
       toggleStyle: function(style) {
