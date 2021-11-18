@@ -52,7 +52,7 @@ Cypress.Commands.add('impersonateUser', () => {
 
 Cypress.Commands.add('impersonateStaffUser', () => {
   cy.loginRootUser();
-  cy.visit('impersonate/1/')
+  cy.visit('impersonate/1/');
 });
 
 Cypress.Commands.add('logout', () => {
