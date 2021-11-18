@@ -50,6 +50,11 @@ Cypress.Commands.add('impersonateUser', () => {
   cy.visit('impersonate/4/');
 });
 
+Cypress.Commands.add('impersonateStaffUser', () => {
+  cy.loginRootUser();
+  cy.visit('impersonate/1/')
+});
+
 Cypress.Commands.add('logout', () => {
   cy.request('logout/?next=/');
 });
