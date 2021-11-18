@@ -31,9 +31,11 @@ describe('Grants Explorer page', () => {
         .should('contain', 'Z to A')
         .should('contain', 'Current Round')
         .should('contain', 'Most Relevant')
-        .should('contain', 'All-Time')
         .should('contain', 'Highest Amount Raised')
-        .should('contain', 'Highest Contributor Count');
+        .should('contain', 'Highest Contributor Count')
+        .should('contain', 'All-Time');
+      cy.get('.vs__dropdown-menu').find('#vs3__option-14').should('contain', 'Highest Amount Raised'); // need to be more specific to test two elements with same name
+      cy.get('.vs__dropdown-menu').find('#vs3__option-15').should('contain', 'Highest Contributor Count');
     });
 
     it('divides the sort options into category names with disabled labels', () => {
@@ -147,7 +149,7 @@ describe('Grants Explorer page', () => {
       cy.get('.vs__dropdown-menu').find('#vs3__option-15').contains('Highest Contributor Count').click();
       cy.url().should('contain', 'sort_option=-contributor_count');
 
-      //Admin options
+      // Admin options
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu').contains('ADMIN: Risk Score').click();
