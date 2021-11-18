@@ -16,7 +16,11 @@
         <div class="d-inline-block ml-4 pr-2 sort_container" v-if="current_type !== 'collections'">
           <div class="d-flex align-items-baseline" >
             <label class="heading mr-2">{% trans "Sort by" %}</label>
-            <v-select class="vselect-clean rounded-pill" style="min-width:165px;border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="!is_admin ? selectOptions.concat(adminOptions) : selectOptions" :selectable="(option) => !option.hasOwnProperty('group')" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)" >
+            {% if is_staff %}
+              <v-select class="vselect-clean rounded-pill" style="min-width:165px;border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="selectOptions.concat(adminOptions)" :selectable="(option) => !option.hasOwnProperty('group')" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)" >
+            {% else %}
+              <v-select class="vselect-clean rounded-pill" style="min-width:165px;border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="selectOptions" :selectable="(option) => !option.hasOwnProperty('group')" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)" >
+            {% endif %}
               <template #option="{ group, label }">
                 <div v-if="group">
                   <hr v-if="group !== 'Discover'">
