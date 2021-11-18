@@ -164,7 +164,7 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'logo_text_hex')
 
-    
+
     def test_grant_clr_has_banner_bg_hex_attribute(self):
         """Test banner_bg_hex attribute is present."""
 
