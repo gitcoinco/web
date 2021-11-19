@@ -62,5 +62,5 @@ _build/
 cypress/videos
 cypress/screenshots
 
-#asdf vm
+# asdf-vm (https://asdf-vm.com/)
 .tool-versions
