@@ -1338,6 +1338,13 @@ def accept_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
@@ -1570,6 +1577,12 @@ def payout_bounty(request):
     """
     bounty = handle_bounty_views(request)
 
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
@@ -1595,6 +1608,12 @@ def bulk_payout_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
 
     params = get_context(
         ref_object=bounty,
@@ -1660,7 +1679,12 @@ def increase_bounty(request):
     """
     bounty = handle_bounty_views(request)
     user = request.user if request.user.is_authenticated else None
+
     is_funder = bounty.is_funder(user.username.lower()) if user else False
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
 
     params = get_context(
         ref_object=bounty,
@@ -1699,6 +1723,13 @@ def cancel_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
