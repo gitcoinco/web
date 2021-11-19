@@ -1,6 +1,6 @@
 import factory
-
 from dashboard.models import BountyFulfillment
+
 from .bounty_factory import BountyFactory
 from .profile_factory import ProfileFactory
 

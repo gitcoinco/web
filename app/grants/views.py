@@ -1780,12 +1780,6 @@ def grant_edit(request, grant_id):
         if region:
             grant.region = region
 
-        grant_tags = request.POST.get('grant_tags[]', None)
-        if grant_tags:
-            tags = [d['id'] for d in json.loads(grant_tags)]
-            grant.tags.set(tags)
-
-
         team_members = request.POST.getlist('team_members[]', None)
         if team_members:
             save_team_members = []
