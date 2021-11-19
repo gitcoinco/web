@@ -501,12 +501,18 @@ input[type=text].loading {
   margin-bottom: 0px;
 }
 
+#top_nav_notification {
+  font-size: 28px;
+}
+
 .bottom_notification {
-  padding: 10px 30px;
+  padding: 8px 30px;
   background: #6F3FF5;
   color: white;
   width: 100%;
   margin-left: 0px;
+  font-size: 16px;
+  padding-right: 50px;
 }
 
 .bottom_notification-beyond {
@@ -518,6 +524,7 @@ input[type=text].loading {
   background-position: center, 100% center;
   animation: bg-move 17s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
 }
+
 @keyframes bg-move {
   0% {
     background-position: center, 0 center;
