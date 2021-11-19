@@ -38,6 +38,7 @@ from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
+from django.db.models.functions import Lower
 from django.http import Http404, HttpResponse, JsonResponse
 from django.http.response import HttpResponseBadRequest, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
@@ -760,6 +761,12 @@ def get_grants_by_filters(
                 field_name = f'clr_prediction_curve__{sort_by_index}__2'
                 _grants = _grants.order_by(f"{order}{field_name}")
 
+        elif 'title' in sort:
+            if sort[0] == '-':
+                _grants = _grants.order_by(Lower('title').desc())
+            else:
+               _grants = _grants.order_by(Lower('title'))
+
         # elif 'random_shuffle' in sort:
         #     _grants = _grants.order_by('?')
 
@@ -769,7 +776,7 @@ def get_grants_by_filters(
             _grants = _grants.filter(is_clr_active=True).order_by(f"{sort}")
 
         elif sort.replace('-', '') in [
-            'weighted_shuffle', 'metadata__upcoming', 'metadata__gem', 'created_on', 'amount_received', 'contribution_count', 'contributor_count', 'last_update', 'title'
+            'weighted_shuffle', 'metadata__upcoming', 'metadata__gem', 'created_on', 'amount_received', 'contribution_count', 'contributor_count', 'last_update'
         ]:
             print(f"Sort is {sort}")
             _grants = _grants.order_by(f"{sort}")
