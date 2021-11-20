@@ -32,7 +32,6 @@ from urllib.parse import urlencode
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
 from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.core.paginator import EmptyPage, Paginator
@@ -90,6 +89,7 @@ from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
+from retail.auth import login_required
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
