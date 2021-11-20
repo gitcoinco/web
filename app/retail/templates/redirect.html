@@ -1,0 +1,66 @@
+{% comment %}
+  Copyright (C) 2021 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static bundle %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{ active }} g-font-muli">
+    <div class="content__main min-vh-100 d-md-flex flex-column">
+      {% include 'shared/tag_manager_2.html' %}
+      <div class="container-fluid header dash">
+        {% include 'shared/top_nav.html' with class='d-md-flex' %}
+        <div class="header">
+            {% include 'home/nav.html' %}
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center spacer-mt-5">
+            <h3>This page is for authenticated users only</h3>
+            <h5>You will be redirected to github to authenticate in:</h5>
+            <div class="spacer-mt-6">
+              <h1 class="counter">5</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% include 'shared/footer_scripts.html' %}
+      {% include 'shared/footer.html' %}
+    </div>
+
+  
+    <script>
+        let timePassed = 0;
+        const counter = document.querySelector('.counter');
+        const countFor = 5;
+        const countDown = setInterval(() => {
+            counter.innerText = countFor - timePassed;
+            if (timePassed+1 === countFor) {
+                clearInterval(countDown);
+                window.location = '{{ login_url }}';
+            } else {
+                timePassed++;
+            }
+        }, 1000);
+    </script>
+  </body>
+
+</html>
