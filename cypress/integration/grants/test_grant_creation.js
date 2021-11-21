@@ -46,7 +46,9 @@ describe('Creating a new grant', () => {
         cy.get('input[name=reference_url]').type('https://gitcoin.co');
         cy.get('input[name=twitter_handle_1]').type('@gitcoin');
 
-        cy.contains('ETH').click();
+        cy.get('input[placeholder="Select a blockchain to receive funding"]').type('eth').click();
+        cy.contains('Ethereum').click();
+
         cy.get('input[name=eth_payout_address]').type('0xd08Fe0c97c80491C6ee696Ee8151bc6E57d1Bf1d');
         cy.get('input[placeholder="Yes/No"]').click();
         cy.contains('No, this project has not raised external funding.').click();
