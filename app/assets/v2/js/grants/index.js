@@ -126,6 +126,8 @@ if (document.getElementById('grants-showcase')) {
       editingCollection: false,
       createCollectionRedirect: false,
       activeTimeout: null,
+      scrollTriggered: false,
+      previouslyLoadedGrants: {},
       selectOptions: [
         {group: 'Discover', label: null},
         {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
@@ -341,13 +343,13 @@ if (document.getElementById('grants-showcase')) {
 
         if (!append_mode) {
           vm.grants = [];
+          vm.prevouslyLoadedGrants = {};
         }
 
-        const previouslyLoadedIds = vm.grants.map(grant => grant.id);
-        
         getGrants.grants.forEach(function(item) {
-          if (!previouslyLoadedIds.includes(item.id)) {
+          if (!vm.prevouslyLoadedGrants[item.id]) {
             vm.grants.push(item);
+            vm.previouslyLoadedGrants[item.id] = item;
           }
         });
 
