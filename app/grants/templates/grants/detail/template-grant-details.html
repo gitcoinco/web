@@ -553,7 +553,7 @@
           </div>
         </div>
         <div class="col-12 mb-3 d-flex align-items-center">
-          <label class="mt-3 font-subheader letter-spacing text-grey-500 mb-0 mr-3" for="title">Logo background color</label>
+          <label class="font-subheader letter-spacing text-grey-500 mb-0 mr-3" for="title">Logo background color</label>
           <input type="color" v-model="logoBackground" @input="changeColor">
         </div>
         
@@ -622,9 +622,14 @@
           </v-select>
         </div>
 
+        <div class="mx-3 mt-5">
+          <hr class="mb-5">
+          <h4 class="font-bigger-1 text-black">Help contributors discover your grant</h4>
+        </div>
+
         <!-- Project Stage -->
         <div class="col-12 mb-3">
-          <label class="mt-3 font-subheader letter-spacing text-grey-500">External Funding (VC Funding / Token Sale)</label>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500">Project Stage</label>
           <v-select :options="externalFundingOptions" label="value" v-model="grant.has_external_funding" :reduce="state => state.key">
             <template v-slot:option="option">
               <span class="font-weight-semibold">[[ option.value ]]</span>
@@ -635,8 +640,6 @@
             [[errors.has_external_funding]]
           </div>
         </div>
-
-        <hr>
 
         <!-- Region -->
         <div class="col-12 mb-3">
@@ -649,27 +652,27 @@
         </div>
 
         <!-- Is CLR Eligible -->
-        <div class="col-12 mb-3">
+        <div class="col-12 my-3">
           <b-form-checkbox v-model="grant.is_clr_eligible" name="is_clr_eligible">
             <label class="font-caption letter-spacing text-grey-500">OPT IN FOR CLR</label>
             <span class="font-smaller-6 text-grey-500 text-capitalize ml-2">
-              (If unchecked, your grant will not be able part of the CLR rounds on Gitcoin)
+              (If unchecked, your grant will not be a part of the CLR rounds on Gitcoin)
             </span>
           </b-form-checkbox>
         </div>
 
         <!-- Save/Cancel -->
         <div class="col-12 mb-3 text-right">
-          <button @click="saveGrant($event)" class="btn btn-primary">SAVE CHANGES</button>
+          <button @click="saveGrant($event)" class="btn btn-primary py-2 w-100 w-lg-25">Save Changes</button>
         </div>
         <div class="col-12 mb-3 mt-5">
           <div class="alert bs-alert alert-danger py-4" role="alert">
-            <h4 class="alert-heading pt-2 mb-2">Cancel Your Grant</h4>
-            <p class="mb-0">Once the grant is canceled will not longer receive contributions or participate on CLR matching.</p>
-            <p>If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a>
+            <h4 class="alert-heading font-bigger-1 pt-2 mb-2">Cancel your grant</h4>
+            <p class="mb-0 font-body">Once the grant is canceled will not longer receive contributions or participate on CLR matching.</p>
+            <p class="font-body">If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a>
               and don't forget to include your username and grant link.
             </p>
-            <button @click="cancelGrant($event)" class="btn btn-sm btn-danger font-weight-semibold">CANCEL GRANT</button>
+            <button @click="cancelGrant($event)" class="btn btn-sm btn-danger font-body px-4 py-2">Cancel Grant</button>
           </div>
         </div>
       </form>
@@ -686,7 +689,7 @@
   }
 
   #sidebar-grant-edit {
-    padding: 40px 50px 40px 50px;
+    padding: 40px 50px;
   }
 
   .blur-img {
@@ -798,6 +801,13 @@
   .grid-template-sidebar-row {
     gap: 1.2em;
     grid-template-areas: "grant-data";
+  }
+
+  @media only screen and (max-width: 600px) {
+    #sidebar-grant-edit {
+      padding: 10px 0px;
+      width: 100% !important;
+    }
   }
 
   @media (min-width: 960px) {
