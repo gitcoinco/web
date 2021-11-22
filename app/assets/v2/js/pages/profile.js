@@ -56,7 +56,7 @@ $(document).ready(function() {
 
   // update activity views when scroll happens
   function updateView(ignoreScrollOffset) {
-    window.setTimeout(updateView, 300);
+    // window.setTimeout(updateView, 300);
 
     if (fetchInProgress) {
       return;
