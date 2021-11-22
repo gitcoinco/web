@@ -40,6 +40,7 @@ from quadraticlands.helpers import (
 )
 from ratelimit.decorators import ratelimit
 from web3 import Web3
+import bleach
 
 from .models import Game, GameFeed, GamePlayer, create_game_helper
 
@@ -131,7 +132,11 @@ def mission_postcard_svg(request):
 </svg>
 '''
 
-    package = request.GET.dict()
+    package = {
+        k: bleach.clean(v) for k, v in
+        request.GET.dict().items()
+    }
+
     file = 'assets/v2/images/quadraticlands/postcard.svg'
     with open(file) as file:
         elements = []
