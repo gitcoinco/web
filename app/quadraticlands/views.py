@@ -122,8 +122,6 @@ def mission_postcard_svg(request):
 
     width = 100
     height = 100
-    viewBox = request.GET.get('viewbox', '')
-    tags = ['{http://www.w3.org/2000/svg}style']
     ET.register_namespace('', "http://www.w3.org/2000/svg")
     prepend = f'''<?xml version="1.0" encoding="utf-8"?>
 <svg width="{width}%" height="{height}%" viewBox="0 0 1400 500" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
