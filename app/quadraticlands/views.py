@@ -150,7 +150,7 @@ def mission_postcard_svg(request):
                 replace_text = package.get('text')
 
                 # chop up the text by word length to create line breaks.
-                line_words_length = int(request.GET.get('line_words_length', 8))
+                line_words_length = int(package.get('line_words_length', 8))
                 include_item = True
                 end_wrap = '</tspan>'
                 words = replace_text.split(' ')
@@ -183,7 +183,7 @@ def mission_postcard_svg(request):
                 # actually insert the text
                 replace_text = " ".join(new_words)
                 output = output.replace('POSTCARD_TEXT_GOES_HERE', replace_text)
-                replace_color = '#1a103d' if request.GET.get('color','') == 'light' else '#FFFFFF'
+                replace_color = '#1a103d' if package.get('color','') == 'light' else '#FFFFFF'
                 output = output.replace('POSTCARD_COLOR_GOES_HERE', replace_color)
             if _id:
                 val = _id.split(":")[-1]
