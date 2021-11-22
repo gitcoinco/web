@@ -742,7 +742,7 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-def get_specific_activities(what, trending_only, user, after_pk, request=None):
+def get_specific_activities(what, trending_only, user, after_pk, request=None, page=None):
 
     # 1. Init
     view_count_threshold = 10
@@ -750,33 +750,38 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
 
     activities = Activity.objects.none()
 
+
+    page_size = 10
+    start_index = (page-1) * page_size
+    end_index = page * page_size
+
     # 2. Choose which filter to index
 
     # grants
     if (
         what in ['grants', 'all_grants']
     ):
-        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:').values_list('activity__pk', flat=True)
-    elif 'grant:' in what: 
-        activity_pks = ActivityIndex.objects.filter(key=what).values_list('activity__pk', flat=True)
+        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
+    elif 'grant:' in what:
+        activity_pks = ActivityIndex.objects.filter(key=what)
 
     # all Grants
     if what == 'all_grants':
-        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:').values_list('activity__pk', flat=True)
+        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
 
 
     # kudos
     if (
         what in ['kudos']
     ):
-        activity_pks = ActivityIndex.objects.filter(key__startswith='kudo:').values_list('activity__pk', flat=True)
-    elif 'kudos:' in what: 
-        activity_pks = ActivityIndex.objects.filter(key=what.replace('kudos', 'kudo')).values_list('activity__pk', flat=True)
+        activity_pks = ActivityIndex.objects.filter(key__startswith='kudo:')
+    elif 'kudos:' in what:
+        activity_pks = ActivityIndex.objects.filter(key=what.replace('kudos', 'kudo'))
 
 
     # hackathon project
-    if 'project:' in what: 
-        activity_pks = ActivityIndex.objects.filter(key=what).values_list('activity__pk', flat=True)
+    if 'project:' in what:
+        activity_pks = ActivityIndex.objects.filter(key=what)
 
     # tribes
     if 'tribe:' in what:
@@ -784,34 +789,28 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         print(handle)
         profile = Profile.objects.filter(handle=handle).first()
         if profile:
-            activity_pks = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
+            activity_pks = ActivityIndex.objects.filter(key=f'profile:{profile.pk}')
 
 
     # hackathon activity
     if 'hackathon:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what).values_list('activity__pk', flat=True)
+        activity_pks = ActivityIndex.objects.filter(key=what)
 
     # single activity
     if 'activity:' in what:
-        activity_pks = [what.replace('activity:', '')]    
-
-    
-    # townsquare
-    if what == 'connect':
-        activity_pks = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
-
+        activity_pks = [what.replace('activity:', '')]
 
     # Defaults
     if not activity_pks:
-        activity_pks = ActivityIndex.objects.all().values_list('id', flat=True)
+        activity_pks = ActivityIndex.objects.all()
+
+    if page:
+        # Pagination is done here
+        activity_pks = activity_pks[start_index:end_index].values_list('id', flat=True)
+    else:
+        activity_pks = activity_pks.values_list('id', flat=True)
 
     activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
-
-
-    # townsquare connect
-    if what == 'connect':
-        activities = activities.filter(activity_type__in=connect_types)
-
 
     # 4. Filter out activites based on on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
@@ -826,7 +825,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-
     return activities
 
 
@@ -836,7 +834,7 @@ def activity(request):
     page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
-    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request, page)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     activities = activities.cache()
 
@@ -848,12 +846,10 @@ def activity(request):
         request.session[what] = next_pk
     # pagination
     next_page = page + 1
-    start_index = (page-1) * page_size
-    end_index = page * page_size
-
     #p = Paginator(activities, page_size)
     #page = p.get_page(page)
-    page = activities[start_index:end_index]
+
+    page = activities
     suppress_more_link = not len(page)
 
     # increment view counts
