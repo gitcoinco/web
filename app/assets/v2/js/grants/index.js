@@ -441,7 +441,6 @@ if (document.getElementById('grants-showcase')) {
             await vm.fetchCollections(true);
           } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
             await vm.fetchGrants(vm.params.page, true, true);
-            vm.grantsHasNext = false;
           }
         }
       },
