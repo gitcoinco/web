@@ -33,6 +33,13 @@ class GrantBrandingRoutingPolicy(SuperModel):
         null=True
     )
     inline_css = models.TextField(default='', blank=True, help_text=_('Inline css to customize the banner fit'))
+    main_round_banner = models.ImageField(
+        upload_to=get_upload_filename,
+        help_text=_('The main round banner for the grant page'),
+        null=True,
+        blank=True
+    )
+
 
     def __str__(self):
         return f'{self.url_pattern} >> {self.priority}'

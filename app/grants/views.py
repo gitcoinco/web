@@ -890,7 +890,8 @@ def get_policy_state(policy, request):
         "url_pattern": policy.url_pattern,
         "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else '',
         "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else '',
-        "inline_css": policy.inline_css
+        "inline_css": policy.inline_css,
+        "main_round_banner": request.build_absolute_uri(policy.main_round_banner.url) if policy.main_round_banner else ''
     }
 
 
@@ -1610,7 +1611,7 @@ def grant_details_contributions(request, grant_id):
         all_contributions.append(contribution_json)
 
     response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
-    response['next_page_number'] = page + 1 
+    response['next_page_number'] = page + 1
 
     return JsonResponse(response)
 
