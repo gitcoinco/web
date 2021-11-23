@@ -30,7 +30,6 @@ describe('Grants Explorer page', () => {
         .should('contain', 'A to Z')
         .should('contain', 'Z to A')
         .should('contain', 'Current Round')
-        .should('contain', 'Most Relevant')
         .should('contain', 'Highest Amount Raised')
         .should('contain', 'Highest Contributor Count')
         .should('contain', 'All-Time');
@@ -123,11 +122,6 @@ describe('Grants Explorer page', () => {
       cy.url().should('contain', 'sort_option=-title');
 
       // Options in Current Round category
-      cy.get('.vselect-clean').click();
-
-      cy.get('.vs__dropdown-menu').contains('Most Relevant').click();
-      cy.url().should('contain', 'sort_option='); // The value of this option is purposely set to empty string (see app/assets/v2/js/grants/index.js)
-
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu').contains('Highest Amount Raised').click();
