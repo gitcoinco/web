@@ -26,7 +26,7 @@ $(document).ready(() => {
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
     page: 1,
-    limit: 6,
+    limit: 12,
     me: false,
     sort_option: 'weighted_shuffle',
     collection_id: false,
@@ -460,7 +460,7 @@ if (document.getElementById('grants-showcase')) {
 
         const scrollY = window.scrollY;
         const visible = document.documentElement.clientHeight;
-        const pageHeight = document.documentElement.scrollHeight - 500;
+        const pageHeight = document.documentElement.scrollHeight - 1600;
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
 
