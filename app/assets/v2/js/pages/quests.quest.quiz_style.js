@@ -337,7 +337,7 @@ var winner = async function(prize_url) {
 };
 
 var start_quest = function() {
-  $('#gameboard #header').html(document.quest['title']);
+  $('#gameboard #header').text(document.quest['title']);
   document.quest_state = 0;
 };
 
