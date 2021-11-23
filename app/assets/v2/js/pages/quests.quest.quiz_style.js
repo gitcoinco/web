@@ -56,21 +56,22 @@ var start_quiz = async function() {
     var prefix = '(' + question_number + '/' + question_count + ') - ';
     var question = prefix + response['question']['question'];
     var possible_answers = response['question']['responses'];
-    var html = '';
+    var $safe_html = $("<ul />");
 
     for (var i = 0; i < possible_answers.length; i += 1) {
       var ele = possible_answers[i]['answer'];
-
-      html += '<li class=answer>(' + (i + 1) + ') <a href=#>' + ele + '</a></li>';
+      var $a = $("<a />").attr("href", "#").text(ele);
+      var $li = $("<li />").attr("class", "answer").append($a);
+      $safe_html.append($li);
     }
     $('#enemy .attack').removeClass('hidden');
-    setTimeout(function() {
+    setTimeout(function () {
       $('#enemy .attack').addClass('hidden');
     }, 2000);
     $('#enemy').effect('bounce');
-    await $('#cta_button a').html('Submit Response 📨');
-    await $('#header').html(question);
-    await $('#desc').html(html);
+    await $('#cta_button a').text('Submit Response 📨');
+    await $('#header').text(question);
+    await $('#desc').html($safe_html.html());
     await $('#header').removeClass('hidden').fadeIn();
     await $('#desc').removeClass('hidden').fadeIn();
     await $('#cta_button').removeClass('hidden').fadeIn();
