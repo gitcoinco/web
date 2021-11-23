@@ -8,8 +8,6 @@ from .grant_factory import GrantFactory
 
 @pytest.mark.django_db
 class GrantCLRCalculationFactory(factory.django.DjangoModelFactory):
-    """Create mock GrantCLRCalculation for testing."""
-
     class Meta:
         model = GrantCLRCalculation
 

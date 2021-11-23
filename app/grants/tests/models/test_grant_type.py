@@ -1,15 +1,10 @@
 from unittest.mock import patch
 
-from django.db.models import QuerySet
-
 import pytest
 from grants.models.grant import GrantCLR
-from grants.models.grant_category import GrantCategory
 from grants.models.grant_type import GrantType
 
-from .factories.grant_category_factory import GrantCategoryFactory
-from .factories.grant_clr_factory import GrantCLRFactory
-from .factories.grant_type_factory import GrantTypeFactory
+from grants.tests.factories import GrantTypeFactory
 
 
 @pytest.mark.django_db
@@ -51,7 +46,7 @@ class TestGrantType:
         grant_type = GrantTypeFactory()
 
         assert hasattr(grant_type, 'is_visible')
-        assert grant_type.is_visible == True 
+        assert grant_type.is_visible == True
 
     def test_grant_type_has_a_logo(self):
         """Test 'logo' attribute is present."""

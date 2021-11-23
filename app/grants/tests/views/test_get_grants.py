@@ -3,8 +3,8 @@ from datetime import datetime
 from django.test import Client
 
 import pytest
-from dashboard.tests.factories.profile_factory import ProfileFactory
-from grants.tests.models.factories.grant_factory import GrantFactory
+from dashboard.tests.factories import ProfileFactory
+from grants.tests.factories import GrantFactory
 
 
 @pytest.fixture()
