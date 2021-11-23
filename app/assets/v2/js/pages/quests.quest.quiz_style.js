@@ -56,16 +56,17 @@ var start_quiz = async function() {
     var prefix = '(' + question_number + '/' + question_count + ') - ';
     var question = prefix + response['question']['question'];
     var possible_answers = response['question']['responses'];
-    var $safe_html = $("<ul />");
+    var $safe_html = $('<ul />');
 
     for (var i = 0; i < possible_answers.length; i += 1) {
       var ele = possible_answers[i]['answer'];
-      var $a = $("<a />").attr("href", "#").text(ele);
-      var $li = $("<li />").attr("class", "answer").append($a);
+      var $a = $('<a />').attr('href', '#').text(ele);
+      var $li = $('<li />').attr('class', 'answer').append($a);
+
       $safe_html.append($li);
     }
     $('#enemy .attack').removeClass('hidden');
-    setTimeout(function () {
+    setTimeout(function() {
       $('#enemy .attack').addClass('hidden');
     }, 2000);
     $('#enemy').effect('bounce');
@@ -180,16 +181,17 @@ var advance_to_state = async function(new_state) {
     typeWriter();
     await wait_for_typewriter();
 
-    var $safe_reward = $("<div />");
+    var $safe_reward = $('<div />');
+
     safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn this limited edition ");
 
-    safe_reward.append($("<strong>").text(document.kudos_reward['name']));
-    safe_reward.append(" Kudos: <BR> <BR> ");
-    safe_reward.append($("<img>").attr("style", "height: 250px;width: 220px;").attr("src", document.kudos_reward['img']));
+    safe_reward.append($('<strong>').text(document.kudos_reward['name']));
+    safe_reward.append(' Kudos: <BR> <BR> ');
+    safe_reward.append($('<img>").attr("style", "height: 250px;width: 220px;').attr('src', document.kudos_reward['img']));
     
     if (document.reward_tip['token']) {
       safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn ");
-      safe_reward.append($("<strong />").text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
+      safe_reward.append($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
     }
 
     $('#desc').html($('#desc').html() + safe_reward.html());
@@ -228,17 +230,19 @@ var advance_to_state = async function(new_state) {
     await sleep(1000);
     await $('#desc').html('');
     var text = 'You will be given the following links to prepare for your journey (est read time: ' + document.quest.game_schema.est_read_time_mins + ' mins ).*';
-    var $safe_html = $("<ul />")
+    var $safe_html = $('<ul />');
     var iterate_me = document.quest.game_schema.prep_materials;
 
     for (var i = 0; i < iterate_me.length; i += 1) {
       var ele = iterate_me[i];
-      var $a = $("<a></a>").text(ele.title).attr("href", ele.url);
-      var $li = $("<li></li>").append($a);
-      $safe_html.append($li)
+      var $a = $('<a></a>').text(ele.title).attr('href', ele.url);
+      var $li = $('<li></li>').append($a);
+
+      $safe_html.append($li);
     }
 
     var safe_html = $safe_html.html();
+
     safe_html += '<BR> Take a moment and read through them. You will have limited time to look things up when the quest starts.';
 
     document.typewriter_id = 'desc';
@@ -311,9 +315,9 @@ var winner = async function(prize_url) {
   if (document.reward_tip['token_amount']) {
     $('#desc').html($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
   } else {
-    $('#desc').append($span)
+    $('#desc').append($span);
     $('#desc').append(
-      $("<img>").attr("style", 'height: 250px;width: 220px;').attr("src", document.kudos_reward['img'])
+      $('<img>').attr('style', 'height: 250px;width: 220px;').attr('src', document.kudos_reward['img'])
     );
   }
 
