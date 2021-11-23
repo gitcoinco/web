@@ -896,7 +896,6 @@ def get_policy_state(policy, request):
 
 
 def get_branding_info(request):
-
     all_policies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
     for policy in all_policies:
         if re.search(policy.url_pattern, request.get_full_path()):
