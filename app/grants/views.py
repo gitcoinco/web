@@ -1052,8 +1052,6 @@ def grants_by_grant_type(request, grant_type):
         'round_end': round_end_date,
         'next_round_start': round_start_date,
         'now': timezone.now(),
-        # 'mid_back': mid_back,
-        # 'bottom_back': bottom_back,
         'card_desc': f'{live_now}',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
         'card_type': 'summary_large_image',
@@ -1065,11 +1063,6 @@ def grants_by_grant_type(request, grant_type):
         'can_pin': can_pin(request, what),
         'pinned': pinned,
         'target': f'/activity?what=all_grants',
-        # 'styles': {
-        #     'bg': bg,
-        #     'bg_size': bg_size,
-        #     'bg_color': bg_color
-        # },
         'grant_bg': get_branding_info(request),
         'announcement': Announcement.objects.filter(key='grants', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('-rank').first(),
         'keywords': get_keywords(),
@@ -2237,9 +2230,6 @@ def bulk_fund(request):
             })
             continue
 
-        active_subscription = Subscription.objects.select_related('grant').filter(
-            grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
-        )
 
         try:
             payload = {
