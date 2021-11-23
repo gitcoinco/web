@@ -461,7 +461,7 @@ if (document.getElementById('grants-showcase')) {
         if (bottomOfPage || pageHeight < visible) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             await vm.fetchCollections(true);
-          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
+          } else if (vm.grantsHasNext) {
             await vm.fetchGrants(vm.params.page, true, true);
             vm.grantsHasNext = false;
           }
@@ -562,12 +562,6 @@ if (document.getElementById('grants-showcase')) {
         this.$set(this, 'tabSelected', this.params.tab);
         // load the correct tab
         this.loadTab(true);
-      },
-      pageIsFetched: function(page) {
-        let vm = this;
-
-        return vm.fetchedPages.includes(page);
-
       },
       showFilter: function() {
         let vm = this;
