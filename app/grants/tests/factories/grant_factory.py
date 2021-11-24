@@ -15,6 +15,7 @@ class GrantFactory(factory.django.DjangoModelFactory):
         model = Grant
 
     title = factory.Sequence(lambda n: f"Test grant {n}")
+    description = "This is a grant description"
     grant_type = factory.SubFactory(GrantTypeFactory)
     # team_members = [factory.SubFactory(ProfileFactory)]
     github_project_url = "https://github.com/gitcoinco"

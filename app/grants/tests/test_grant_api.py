@@ -7,25 +7,24 @@ from rest_framework.test import APIClient
 @pytest.mark.django_db
 class TestGrantAPI:
     def test_grant_edit(self, django_user_model):
-        user = django_user_model.objects.create(username="gitcoinco", password="password123")
+        user = django_user_model.objects.create(username="gitcoin", password="password123")
         client = APIClient()
         client.force_login(user)
 
         grant = GrantFactory()
-        profile = ProfileFactory()
-        profile.handle = user.username
-        user.profile = profile
+        ProfileFactory(user=user)
         user.is_staff = True
         user.save()
-        # grant.team_members.set([profile.id])
-        grant.save()
 
         response = client.post(
             f"/grants/v1/api/grant/edit/{grant.id}/",
-            {"title": "This is a new title"},
-            format="json",
+            {
+                "title": "This is a new title",
+                "description": grant.description,
+                "has_external_funding": "yes",
+                "eth_payout_address": grant.admin_address,
+            },
         )
-        print(response.json())
 
         grant.refresh_from_db()
 
