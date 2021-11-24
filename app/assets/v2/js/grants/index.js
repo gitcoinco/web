@@ -41,7 +41,7 @@ if (document.getElementById('grants-showcase')) {
     tenants: [],
     idle: false,
     featured: true,
-    round_type: false,
+    round_type: false
   };
 
   const grantRegions = [
