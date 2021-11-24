@@ -514,7 +514,7 @@
       shadow
       width="70%"
       >
-      <template v-slot:title><h2 class="pb-5">Edit Grant</h2></template>
+      <template v-slot:title><h2 class="d-inline">Edit Grant</h2></template>
       <form action="" @submit="checkForm($event)" ref="formEditGrant" v-if="grant" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
         <div class="col-12 mb-3">
           <label class="font-subheader letter-spacing text-grey-500" for="title">Title</label>
@@ -690,6 +690,10 @@
 
   #sidebar-grant-edit {
     padding: 40px 50px;
+  }
+
+  .b-sidebar-header {
+    padding-bottom: 48px !important;
   }
 
   .blur-img {
