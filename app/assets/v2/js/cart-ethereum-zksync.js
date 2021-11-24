@@ -138,6 +138,10 @@ Vue.component('grantsCartEthereumZksync', {
         (token) => !this.supportedTokens.includes(token)
       );
 
+      if (this.cart.unsupportedTokens.length > 0) {
+        _alert(`zkSync checkout not supported due to the use of the token ${this.cart.unsupportedTokens[0]}`, 'danger');
+      }
+
       // If currently selected fee token is still in the cart, don't change it. Otherwise, set
       // fee token to the token used for the first item in the cart
       if (!this.cart.tokenList.includes(this.zksync.feeTokenSymbol)) {
@@ -170,7 +174,6 @@ Vue.component('grantsCartEthereumZksync', {
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('zksync-data-updated', {
-        zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
         zkSyncEstimatedGasCost: estimatedGasCost
       });
     },

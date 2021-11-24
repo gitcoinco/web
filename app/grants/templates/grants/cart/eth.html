@@ -502,7 +502,7 @@
 
           <b-tooltip target="zksync-tooltip" triggers="hover">
             <p v-if="grantsByTenant.length > maxCartItems">
-              Zksync checkout supports checkout for [[maxCartItems]] items.
+              zkSync checkout supports checkout for [[maxCartItems]] items.
               Please remove [[ grantsByTenant.length - maxCartItems ]] grant
               <span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
               from your cart to use zkSync checkout.
@@ -511,21 +511,9 @@
         </div>
 
         <!-- Checkout recommendation -->
-        <div class="text-center mt-2" v-if="
-          (zkSyncUnsupportedTokens.length > 0 || polygonUnsupportedTokens.length > 0) ||
-          polygonUnsupportedTokens.length > 0 ||
-          !isNaN(checkoutRecommendation.savingsInPercent)
-        ">
+        <div class="text-center mt-2" v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
           <div class="font-smaller-3 bg-lightpurple p-3 rounded w-100">
-            <template v-if="zkSyncUnsupportedTokens.length > 0 || polygonUnsupportedTokens.length > 0">
-              <template v-if="zkSyncUnsupportedTokens.length > 0">
-                zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
-              </template>
-              <template v-if="polygonUnsupportedTokens.length > 0">
-                Polygon checkout not supported due to [[ polygonUnsupportedTokens.join(', ') ]]
-              </template>
-            </template>
-            <template v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
+            <template v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
               💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
               on gas fees with [[ checkoutRecommendation.name ]]!
             </template>

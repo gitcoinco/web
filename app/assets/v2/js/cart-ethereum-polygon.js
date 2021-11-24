@@ -182,13 +182,15 @@ Vue.component('grantsCartEthereumPolygon', {
       this.cart.unsupportedTokens = this.cart.tokenList.filter(
         (token) => !this.supportedTokens.includes(token)
       );
+      if (this.cart.unsupportedTokens.length > 0) {
+        _alert(`Polygon checkout not supported due to the use of the token ${this.cart.unsupportedTokens[0]}`, 'danger');
+      }
 
       // Update the fee estimate and gas cost based on changes
       this.polygon.estimatedGasCost = await this.estimateGasCost();
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('polygon-data-updated', {
-        polygonUnsupportedTokens: this.cart.unsupportedTokens,
         polygonEstimatedGasCost: this.polygon.estimatedGasCost
       });
     },
