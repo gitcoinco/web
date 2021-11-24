@@ -899,6 +899,11 @@ input[type="search"]::-webkit-search-cancel-button {
   padding: 0rem 1.5rem 0rem 1.5rem;
 }
 
+.scroll-menu {
+  overflow: auto;
+  max-height: unquote("min( calc(100vh - 100px), 500px)");
+}
+
 .scroll-menu > li {
   padding-bottom: 0.5rem;
 }
