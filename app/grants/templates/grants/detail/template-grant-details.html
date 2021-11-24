@@ -523,10 +523,10 @@
             </b-popover>
 
             <!-- Grants Flag-->
-            <button v-if="!grant.is_on_team" @click="flag">
+            <div class="ml-3 d-inline font-smaller-2 cursor-pointer" v-if="!grant.is_on_team" @click="flag">
               <i class="text-grey-400 fas fa-flag mr-2"></i>
               Flag
-            </button>
+            </div>
           </div>
 
         </div>
