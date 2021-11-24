@@ -95,6 +95,8 @@ from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
+from PIL import Image
+
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -1912,6 +1914,15 @@ def grant_new(request):
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
+        
+        try:
+            im = Image.open(logo)
+            im.verify()
+        except IOError as e:
+            # logo is not an image file
+            response['message'] = 'error: invalid logo file'
+            return JsonResponse(response)
+
         metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
         reference_url = request.POST.get('reference_url', '')
