@@ -1,6 +1,6 @@
 import pytest
-from dashboard.tests.factories.profile_factory import ProfileFactory
-from grants.tests.factories.grant_factory import GrantFactory
+from dashboard.tests.factories import ProfileFactory
+from grants.tests.factories import GrantFactory
 from rest_framework.test import APIClient
 
 

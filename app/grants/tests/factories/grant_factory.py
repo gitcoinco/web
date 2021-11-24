@@ -1,7 +1,8 @@
 import factory
 import pytest
 from grants.models.grant import Grant
-from grants.tests.factories import GrantTypeFactory
+
+from .grant_type_factory import GrantTypeFactory
 
 
 @pytest.mark.django_db
