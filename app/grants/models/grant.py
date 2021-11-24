@@ -28,7 +28,7 @@ class GrantCLR(SuperModel):
 
     CLR_TYPES = (
         ('main', 'Main Round'),
-        ('sponsor', 'Sponsor Round'),
+        ('ecosystem', 'Ecosystem Round'),
         ('cause', 'Cause Round'),
     )
     class Meta:

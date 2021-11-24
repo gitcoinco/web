@@ -1020,17 +1020,19 @@ def grants_by_grant_type(request, grant_type):
             } for collection in allowed_collections.distinct()
         ]
 
-    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
+    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('display_text')
 
     # populate active round info
     rounds = {}
     total_clr_pot = None
-    round_types = set()
+    round_types = []
+    round_types_set = set()
+    round_types_order = ['main', 'cause', 'ecosystem']
     if active_rounds:
         for active_round in active_rounds:
             clr_round_amount = active_round.total_pot
             total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
-            round_types.add(active_round.type)
+            round_types_set.add(active_round.type)
             rounds[active_round.type] = rounds[active_round.type] if rounds.get(active_round.type) else []
             rounds[active_round.type].append({
                 'display_text': active_round.display_text,
@@ -1039,6 +1041,11 @@ def grants_by_grant_type(request, grant_type):
                 'round_num': active_round.round_num,
                 'total_pot': active_round.total_pot
             })
+
+        # order the roundTypes in fixed order
+        for round_type in round_types_order:
+            if round_type in round_types_set:
+                round_types.append(round_type)
 
     if total_clr_pot:
         if total_clr_pot > 1000 * 1000:
@@ -1100,7 +1107,7 @@ def grants_by_grant_type(request, grant_type):
         'collection_id': collection_id,
         'collections': collections,
         'featured': featured,
-        'round_types': list(round_types),
+        'round_types': round_types,
         'active_rounds': rounds,
         'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
