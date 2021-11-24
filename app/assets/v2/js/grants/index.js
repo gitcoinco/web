@@ -231,14 +231,14 @@ if (document.getElementById('grants-showcase')) {
 
         // reset the params and set collection_id
         vm.params = Object.assign({}, baseParams);
-        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collection_id }});
+        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collectionId }});
 
         // fetch the collections details
-        const collectionDetailsURL = `/grants/v1/api/collections/${collection_id}`;
+        const collectionDetailsURL = `/grants/v1/api/collections/${collectionId}`;
         const collection = await fetchData(collectionDetailsURL, 'GET');
 
         // update the stored state
-        vm.$set(vm, 'collection_id', collection_id);
+        vm.$set(vm, 'collection_id', collectionId);
         vm.$set(vm, 'collection_title', collection.title);
         vm.$set(vm, 'collection_description', collection.description);
         vm.$set(vm, 'collection_owner', collection.owner.handle);
@@ -469,7 +469,6 @@ if (document.getElementById('grants-showcase')) {
             await vm.fetchCollections(true);
           } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
             await vm.fetchGrants(vm.params.page, true, true);
-            vm.grantsHasNext = false;
           }
         }
       },

@@ -1504,7 +1504,7 @@ def grant_details(request, grant_id, grant_slug):
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
         'should_show_claim_match_button': should_show_claim_match_button,
-        'amount_to_claim': amount_available,
+        'amount_available': amount_available / 10 ** 18,
         'grant_tags': grant_tags
     }
     # Stats
