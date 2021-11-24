@@ -664,7 +664,7 @@ if (document.getElementById('grants-showcase')) {
         this.params.round_type = roundType;
         // clear selected round
         this.params.sub_round_slug = false;
-        this.params.round_num = false;
+        this.params.round_num = 0;
         this.params.customer_name = false;
         // save params to url
         this.updateUrlParams(false);
