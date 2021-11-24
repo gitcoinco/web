@@ -200,7 +200,7 @@ def get_totals_by_pair(contrib_dict):
     return pair_totals
 
 
-def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
+def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, grant_clr_percentage_cap):
     '''
         calculates the clr amount at the given threshold and total pot
         args:
@@ -226,6 +226,7 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
     '''
     bigtot = 0
     totals = {}
+    match_cap_per_grant = total_pot * (grant_clr_percentage_cap / 100)
 
     for proj, contribz in curr_agg.items():
         tot = 0
@@ -244,6 +245,10 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
 
         if type(tot) == complex:
             tot = float(tot.real)
+
+        # ensure CLR match for a grant in CLR round does not exceed 2.5 of the total pot
+        if grant_clr_percentage_cap and tot > match_cap_per_grant:
+            tot = match_cap_per_grant
 
         bigtot += tot
         totals[proj] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
@@ -393,7 +398,9 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     print(f"- starting current distributions calc at {round(time.time(),1)}")
     # aggregate pairs and run calculation to get current distribution
     pair_totals = get_totals_by_pair(curr_agg)
-    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot)
+    
+    grant_clr_percentage_cap = clr_round.grant_clr_percentage_cap
+    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, grant_clr_percentage_cap)
 
     # normalise against a deepcopy of the totals to avoid mutations
     curr_grants_clr = normalise(bigtot, copy.deepcopy(totals), total_pot)
