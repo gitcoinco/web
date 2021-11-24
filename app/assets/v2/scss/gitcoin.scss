@@ -920,3 +920,11 @@ input[type="search"]::-webkit-search-cancel-button {
   justify-content: space-between;
   padding: 0rem 1.5rem 0.5rem 1.5rem;
 }
+
+.b-dropdown:not(.show) .b-dropdown-direction.fa-chevron-up {
+  display: none
+}
+
+.b-dropdown.show .b-dropdown-direction.fa-chevron-down {
+  display: none
+}
