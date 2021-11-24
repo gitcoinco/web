@@ -7,8 +7,7 @@ import pytest
 from dashboard.models import Profile
 from grants.models.grant import GrantCLR
 from grants.models.match_pledge import MatchPledge
-
-from .factories.match_pledge_factory import MatchPledgeFactory
+from grants.tests.factories import MatchPledgeFactory
 
 
 @pytest.mark.django_db
@@ -92,4 +91,4 @@ class TestMatchPledge:
         match_pledge = MatchPledgeFactory()
 
         assert hasattr(match_pledge, 'data_json')
-        assert match_pledge.data_json == 'test string'
+        assert match_pledge.data_json == {}

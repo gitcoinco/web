@@ -1,7 +1,6 @@
 import pytest
 from grants.models.grant_category import GrantCategory
-
-from .factories.grant_category_factory import GrantCategoryFactory
+from grants.tests.factories import GrantCategoryFactory
 
 
 @pytest.mark.django_db

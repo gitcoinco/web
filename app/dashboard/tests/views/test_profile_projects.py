@@ -2,7 +2,7 @@ from django.test import Client
 
 import pytest
 from dashboard.models import PortfolioItem
-from dashboard.tests.factories.profile_factory import ProfileFactory
+from dashboard.tests.factories import ProfileFactory
 
 
 class TestProfileTabProjectCreation:

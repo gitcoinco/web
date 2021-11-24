@@ -808,6 +808,14 @@ class Grant(SuperModel):
     def get_absolute_url(self):
         return self.url
 
+
+    @property
+    def is_idle(self):
+        """Return if grants is idle."""
+        three_months_ago = timezone.now() - timezone.timedelta(days=90)
+        return (self.last_update <= three_months_ago)
+
+
     @property
     def contract(self):
         """Return grants contract."""
@@ -919,7 +927,8 @@ class Grant(SuperModel):
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
                 'has_external_funding': self.has_external_funding,
-                'active_round_names': active_round_names
+                'active_round_names': active_round_names,
+                'is_idle': self.is_idle
             }
 
     def favorite(self, user):
