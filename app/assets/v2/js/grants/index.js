@@ -139,7 +139,6 @@ if (document.getElementById('grants-showcase')) {
         {label: 'A to Z', value: 'title'},
         {label: 'Z to A', value: '-title'},
         {group: 'Current Round', label: null},
-        {label: 'Most Relevant', value: ''},
         {label: 'Highest Amount Raised', value: '-amount_received_in_round'},
         {label: 'Highest Contributor Count', value: '-positive_round_contributor_count'},
         {group: 'All-Time', label: null},
