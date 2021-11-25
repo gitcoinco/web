@@ -1909,13 +1909,15 @@ def grant_new(request):
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
         
-        try:
-            im = Image.open(logo)
-            im.verify()
-        except IOError as e:
-            # logo is not an image file
-            response['message'] = 'error: invalid logo file'
-            return JsonResponse(response)
+        if logo:
+            # If logo is present, validate that it is an image
+            try:
+                im = Image.open(logo)
+                im.verify()
+            except IOError as e:
+                # logo is not an image file
+                response['message'] = 'error: invalid logo file'
+                return JsonResponse(response)
 
         metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
