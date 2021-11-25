@@ -4012,8 +4012,8 @@ class Profile(SuperModel):
             return self.admin_override_name
 
         # TODO: investigate how jsonfield blank keys get set.
-        if self.data and self.data["name"] and self.data["name"] != 'null':
-            return self.data["name"]
+        if self.data and self.data.get('name', False) and self.data['name'] != 'null':
+            return self.data['name']
         return self.username
 
     def __str__(self):
