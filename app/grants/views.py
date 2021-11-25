@@ -76,9 +76,8 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
-    GrantTag, GrantType, MatchPledge, Subscription, GrantHallOfFameGrantee,
-    GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription,
-)
+    GrantTag, GrantType, MatchPledge, Subscription, GrantHallOfFame) 
+
 from grants.tasks import (
     process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write,
     update_grant_metadata,
