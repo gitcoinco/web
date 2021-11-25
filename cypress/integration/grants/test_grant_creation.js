@@ -50,11 +50,13 @@ describe('Creating a new grant', () => {
         cy.contains('Ethereum').click();
 
         cy.get('input[name=eth_payout_address]').type('0xd08Fe0c97c80491C6ee696Ee8151bc6E57d1Bf1d');
-        cy.get('input[placeholder="Yes/No"]').click();
+
+        cy.get('input[placeholder="Has this project received external funding?"]').click();
         cy.contains('No, this project has not raised external funding.').click();
 
-        cy.get('input[placeholder="Pick a category"]').click();
-        cy.contains('Community').click();
+        // cy.get('input[placeholder="Pick a category"]').click();
+        // cy.contains('Community').click();
+        
         cy.get('input[placeholder="Add tags to help others discover your grant"]').click();
         cy.contains('education').click();
 
