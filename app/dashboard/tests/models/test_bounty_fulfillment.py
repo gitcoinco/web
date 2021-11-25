@@ -1,9 +1,9 @@
-from attr import has
 import pytest
-
+from attr import has
 from dashboard.models import BountyFulfillment
-from dashboard.tests.factories.fulfillment_factory import FulfillmentFactory
 from dashboard.tests.factories.bounty_factory import BountyFactory
+from dashboard.tests.factories.fulfillment_factory import FulfillmentFactory
+
 
 @pytest.mark.django_db
 class TestBountyFulfillmentProperties:

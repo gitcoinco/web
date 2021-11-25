@@ -4,9 +4,8 @@ import pytest
 from dashboard.models import Activity, Profile
 from grants.models.flag import Flag
 from grants.models.grant import Grant
-from townsquare.models import Comment
-
 from grants.tests.factories import FlagFactory
+from townsquare.models import Comment
 
 
 @pytest.mark.django_db

@@ -7,7 +7,6 @@ import pytest
 from dashboard.models import Profile
 from grants.models.grant import GrantCLR
 from grants.models.match_pledge import MatchPledge
-
 from grants.tests.factories import MatchPledgeFactory
 
 

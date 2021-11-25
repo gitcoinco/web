@@ -1,6 +1,5 @@
 import pytest
 from grants.models.grant_category import GrantCategory
-
 from grants.tests.factories import GrantCategoryFactory
 
 
