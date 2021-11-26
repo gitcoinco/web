@@ -23,7 +23,7 @@ import time
 from django.utils import timezone
 
 import numpy as np
-from grants.clr_data_src import fetch_contributions, fetch_grants
+from grants.clr_data_src import fetch_contributions, fetch_grants, fetch_summed_contributions
 
 
 def populate_data_for_clr(grants, contributions, clr_round):
@@ -58,7 +58,7 @@ def populate_data_for_clr(grants, contributions, clr_round):
     _contributions = list(contributions.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date).prefetch_related('profile_for_clr', 'subscription'))
     _contributions_by_id = {}
     for ele in _contributions:
-        key = ele.normalized_data.get('id')
+        key = ele.grant_id
         if key not in _contributions_by_id.keys():
             _contributions_by_id[key] = []
         _contributions_by_id[key].append(ele)
@@ -89,7 +89,7 @@ def populate_data_for_clr(grants, contributions, clr_round):
         # contributions
         if len(contributing_profile_ids) > 0:
             for profile_id, trust_bonus in contributing_profile_ids:
-                sum_of_each_profiles_contributions = sum(ele.normalized_data.get('amount_per_period_usdt') for ele in contributions_by_id[profile_id]) * float(clr_round.contribution_multiplier)
+                sum_of_each_profiles_contributions = sum(ele.amount_per_period_usdt for ele in contributions_by_id[profile_id]) * clr_round.contribution_multiplier
 
                 summed_contributions.append({
                     'id': str(profile_id),
@@ -113,7 +113,7 @@ def translate_data(grants_data):
             django grant data structure
                 {
                     'id': (string) ,
-                    'contibutions' : [
+                    'contributions' : [
                         {
                             contributor_profile (str) : summed_contributions
                         }
@@ -195,7 +195,7 @@ def get_totals_by_pair(contrib_dict):
             for k2, v2 in contribz.items():
                 if k2 not in pair_totals[k1]:
                     pair_totals[k1][k2] = 0
-                pair_totals[k1][k2] += (v1 * v2) ** 0.5
+                pair_totals[k1][k2] += float(v1 * v2) ** 0.5
 
     return pair_totals
 
@@ -240,7 +240,7 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
             # pairwise matches to current round
             for k2, v2 in contribz.items():
                 if int(k2) > int(k1):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * max(trust_dict[k2], trust_dict[k1])) + 1)
+                    tot += (float(v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * float(max(trust_dict[k2], trust_dict[k1]))) + 1)
 
         if type(tot) == complex:
             tot = float(tot.real)
@@ -309,8 +309,8 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
             # which will only be paired with other contributions for this grant - because of this we can skip rebuilding the pair_total
             # and only have to consider the curr grants contributions and the prediction amount - this saves a huge amount of compute O(n)
             for k2, v2 in contribz.items():
-                pt = ((amount * v2) ** 0.5)
-                tot +=  pt / (pt / (v_threshold * max(trust_dict[k2], 1)) + 1)
+                pt = (float(amount * v2) ** 0.5)
+                tot +=  pt / (pt / (v_threshold * float(max(trust_dict[k2], 1))) + 1)
 
             if type(tot) == complex:
                 tot = float(tot.real)
@@ -362,7 +362,7 @@ def normalise(bigtot, totals, total_pot):
     return totals
 
 
-def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None, what='full'):
+def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None, what='full', use_sql=False):
     # setup
     counter = 0
     debug_output = []
@@ -375,15 +375,20 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     print(f"- starting fetch_grants at {round(time.time(),1)}")
     grants = fetch_grants(clr_round, network)
 
-    print(f"- starting fetch_contributions at {round(time.time(),1)}")
-    contributions = fetch_contributions(clr_round, network)
+    # collect data using sql or django (to group+sum)
+    if use_sql:
+        print(f"- starting get data and sum at {round(time.time(),1)}")
+        curr_agg, trust_dict = fetch_summed_contributions(grants, clr_round, network)
+    else:
+        print(f"- starting fetch_contributions at {round(time.time(),1)}")
+        contributions = fetch_contributions(clr_round, network)
 
-    print(f"- starting sum (of {contributions.count()} contributions) at {round(time.time(),1)}")
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
-    curr_round, trust_dict = translate_data(grant_contributions_curr)
+        print(f"- starting sum (of {contributions.count()} contributions) at {round(time.time(),1)}")
+        grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
+        curr_round, trust_dict = translate_data(grant_contributions_curr)
 
-    # this aggregates the data into the expected format
-    curr_agg = aggregate_contributions(curr_round)
+        # this aggregates the data into the expected format
+        curr_agg = aggregate_contributions(curr_round)
 
     if len(curr_agg) == 0:
         print(f'- done - no Contributions for CLR {clr_round.round_num}. Exiting')
@@ -464,7 +469,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                             bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant.id, amount
                         )
 
-                # record each point of the predicition
+                # record each point of the prediction
                 potential_clr.append(predicted_clr)
 
         # save the result of the prediction
