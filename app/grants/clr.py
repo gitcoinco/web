@@ -403,8 +403,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     print(f"- starting current distributions calc at {round(time.time(),1)}")
     # aggregate pairs and run calculation to get current distribution
     pair_totals = get_totals_by_pair(curr_agg)
-    
-    grant_clr_percentage_cap = clr_round.grant_clr_percentage_cap
+
+    grant_clr_percentage_cap = clr_round.grant_clr_percentage_cap if clr_round.grant_clr_percentage_cap else 100
     bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, grant_clr_percentage_cap)
 
     # normalise against a deepcopy of the totals to avoid mutations
