@@ -25,4 +25,14 @@ class Migration(migrations.Migration):
             name='success',
             field=models.BooleanField(db_index=True, default=True, help_text='Whether or not success.'),
         ),
+        migrations.AlterField(
+            model_name='subscription',
+            name='network',
+            field=models.CharField(db_index=True, default='mainnet', help_text='The network in which the Subscription resides.', max_length=8),
+        ),
+        migrations.AddField(
+            model_name='grantclrcalculation',
+            name='active',
+            field=models.BooleanField(db_index=True, default=False, help_text='Is this calc active?'),
+        ),
     ]
