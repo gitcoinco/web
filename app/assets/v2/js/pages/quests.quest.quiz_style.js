@@ -56,21 +56,23 @@ var start_quiz = async function() {
     var prefix = '(' + question_number + '/' + question_count + ') - ';
     var question = prefix + response['question']['question'];
     var possible_answers = response['question']['responses'];
-    var html = '';
+    var $safe_html = $('<ul />');
 
     for (var i = 0; i < possible_answers.length; i += 1) {
       var ele = possible_answers[i]['answer'];
+      var $a = $('<a />').attr('href', '#').text(ele);
+      var $li = $('<li />').attr('class', 'answer').append($a);
 
-      html += '<li class=answer>(' + (i + 1) + ') <a href=#>' + ele + '</a></li>';
+      $safe_html.append($li);
     }
     $('#enemy .attack').removeClass('hidden');
     setTimeout(function() {
       $('#enemy .attack').addClass('hidden');
     }, 2000);
     $('#enemy').effect('bounce');
-    await $('#cta_button a').html('Submit Response 📨');
-    await $('#header').html(question);
-    await $('#desc').html(html);
+    await $('#cta_button a').text('Submit Response 📨');
+    await $('#header').text(question);
+    await $('#desc').html($safe_html.html());
     await $('#header').removeClass('hidden').fadeIn();
     await $('#desc').removeClass('hidden').fadeIn();
     await $('#cta_button').removeClass('hidden').fadeIn();
@@ -179,13 +181,20 @@ var advance_to_state = async function(new_state) {
     typeWriter();
     await wait_for_typewriter();
 
-    var reward_html = " <BR><BR> If you're successful in this quest, you'll earn this limited edition <strong>" + document.kudos_reward['name'] + "</strong> Kudos: <BR> <BR> <img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>';
+    var $safe_reward = $('<div />');
 
+    safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn this limited edition ");
+
+    safe_reward.append($('<strong>').text(document.kudos_reward['name']));
+    safe_reward.append(' Kudos: <BR> <BR> ');
+    safe_reward.append($('<img>").attr("style", "height: 250px;width: 220px;').attr('src', document.kudos_reward['img']));
+    
     if (document.reward_tip['token']) {
-      reward_html = " <BR><BR> If you're successful in this quest, you'll earn <strong>" + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>';
+      safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn ");
+      safe_reward.append($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
     }
 
-    $('#desc').html($('#desc').html() + reward_html);
+    $('#desc').html($('#desc').html() + safe_reward.html());
 
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(1000);
@@ -221,15 +230,20 @@ var advance_to_state = async function(new_state) {
     await sleep(1000);
     await $('#desc').html('');
     var text = 'You will be given the following links to prepare for your journey (est read time: ' + document.quest.game_schema.est_read_time_mins + ' mins ).*';
-    var html = '';
+    var $safe_html = $('<ul />');
     var iterate_me = document.quest.game_schema.prep_materials;
 
     for (var i = 0; i < iterate_me.length; i += 1) {
       var ele = iterate_me[i];
+      var $a = $('<a></a>').text(ele.title).attr('href', ele.url);
+      var $li = $('<li></li>').append($a);
 
-      html += '<li><a href=' + ele.url + ' target=new>' + ele.title + '</a></li>';
+      $safe_html.append($li);
     }
-    html += '<BR> Take a moment and read through them. You will have limited time to look things up when the quest starts.';
+
+    var safe_html = $safe_html.html();
+
+    safe_html += '<BR> Take a moment and read through them. You will have limited time to look things up when the quest starts.';
 
     document.typewriter_id = 'desc';
     document.typewriter_i = 0;
@@ -238,7 +252,7 @@ var advance_to_state = async function(new_state) {
     typeWriter();
     await $('#desc').removeClass('hidden').fadeIn();
     await wait_for_typewriter();
-    $('#desc').html($('#desc').html() + html);
+    $('#desc').html($('#desc').html() + safe_html);
     await sleep(100);
     await $('#cta_button a').html('Got It 🤙');
     await $('#cta_button').removeClass('hidden').fadeIn();
@@ -299,9 +313,12 @@ var winner = async function(prize_url) {
 
   start_music_midi('secret-discovery');
   if (document.reward_tip['token_amount']) {
-    $('#desc').html('<strong>' + document.reward_tip['token_amount'] + ' ' + document.reward_tip['token'] + '</strong>');
+    $('#desc').html($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
   } else {
-    $('#desc').html(span + "<img style='height: 250px;width: 220px;' src=" + document.kudos_reward['img'] + '>');
+    $('#desc').append($span);
+    $('#desc').append(
+      $('<img>').attr('style', 'height: 250px;width: 220px;').attr('src', document.kudos_reward['img'])
+    );
   }
 
   $('.prize').fadeOut();
@@ -337,7 +354,7 @@ var winner = async function(prize_url) {
 };
 
 var start_quest = function() {
-  $('#gameboard #header').html(document.quest['title']);
+  $('#gameboard #header').text(document.quest['title']);
   document.quest_state = 0;
 };
 
