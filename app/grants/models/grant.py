@@ -182,6 +182,7 @@ class GrantCLR(SuperModel):
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
         for obj in self.clr_calculations.filter(grant=grant, latest=True):
+            obj.active = False
             obj.latest = False
             obj.save()
 
@@ -189,6 +190,7 @@ class GrantCLR(SuperModel):
             grantclr=self,
             grant=grant,
             clr_prediction_curve=clr_prediction_curve,
+            active=True,
             latest=True,
         )
 
@@ -629,7 +631,7 @@ class Grant(SuperModel):
         # [amount_donated, match amount, bonus_from_match_amount ], etc..
         # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
         _clr_prediction_curve = []
-        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True).order_by('-created_on'):
+        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True, active=True).order_by('-created_on'):
             insert_clr_calc = insert_clr_calc.clr_prediction_curve
             if not _clr_prediction_curve:
                 _clr_prediction_curve = insert_clr_calc

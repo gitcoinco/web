@@ -100,7 +100,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                     subscription.amount_per_period_usdt = value_usdt
                     subscription.save()
 
-            # calcualte usdt value in aggregate
+            # calculate usdt value in aggregate
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)

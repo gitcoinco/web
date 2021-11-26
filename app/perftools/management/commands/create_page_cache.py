@@ -89,9 +89,9 @@ def create_grant_active_clr_mapping():
     # waits 14 days from removing them tho
     from grants.models import GrantCLRCalculation
     from_date = timezone.now() - timezone.timedelta(days=14)
-    gclrs = GrantCLRCalculation.objects.filter(latest=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
+    gclrs = GrantCLRCalculation.objects.filter(active=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
     for gclr in gclrs:
-        gclr.latest = False
+        gclr.active = False
         gclr.save()
         grant = gclr.grant
         grant.calc_clr_round()
