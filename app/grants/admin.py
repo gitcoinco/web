@@ -489,9 +489,13 @@ class GrantCLRAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         if "_recalculate_clr" in request.POST:
             from grants.tasks import recalc_clr
-            for grant in obj.grants:
-                recalc_clr.delay(grant.pk)
-            self.message_user(request, "submitted recaclulation to queue")
+            selected_clr = request.POST.get('_selected_clr', False)
+            if selected_clr:
+                recalc_clr.delay(False, int(selected_clr))
+                self.message_user(request, f"submitted recaclulation of GrantCLR:{ selected_clr } to queue")
+            else:
+                recalc_clr.delay(False)
+                self.message_user(request, "submitted recaclulation to queue")
 
         if "_set_current_grant_clr_calculations_to_false" in request.POST:
             active_calculations = GrantCLRCalculation.objects.filter(grantclr=obj, active=True)

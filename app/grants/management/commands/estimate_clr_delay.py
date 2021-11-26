@@ -46,8 +46,7 @@ class Command(BaseCommand):
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
                 print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num} {clr_round.sub_round_slug}")
-                for grant in clr_round.grants:
-                    recalc_clr.delay(grant.pk)
+                recalc_clr.delay(False, clr_round)
 
         else:
             print("No active CLRs found")
