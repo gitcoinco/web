@@ -190,8 +190,8 @@ class GrantCLR(SuperModel):
             grantclr=self,
             grant=grant,
             clr_prediction_curve=clr_prediction_curve,
-            active=True,
-            latest=True if self.is_active else False,
+            active=True if self.is_active else False,
+            latest=True,
         )
 
 
