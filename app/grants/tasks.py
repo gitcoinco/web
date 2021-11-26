@@ -13,7 +13,7 @@ from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
-from grants.models import Grant, GrantCollection, Subscription
+from grants.models import Grant, GrantCLR, GrantCollection, Subscription
 from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
@@ -100,7 +100,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                     subscription.amount_per_period_usdt = value_usdt
                     subscription.save()
 
-            # calcualte usdt value in aggregate
+            # calculate usdt value in aggregate
             for contrib in subscription.subscription_contribution.filter(success=True):
                 if value_usdt:
                     instance.amount_received += Decimal(value_usdt)
@@ -315,25 +315,38 @@ def recalc_clr_if_x_minutes_old(self, grant_id, minutes, retry: bool = True) -> 
 
 
 @app.shared_task(bind=True, max_retries=1)
-def recalc_clr(self, grant_id, retry: bool = True) -> None:
+def recalc_clr(self, grant_id, grant_clr, retry: bool = True) -> None:
 
     if settings.FLUSH_QUEUE:
         return
 
-    obj = Grant.objects.get(pk=grant_id)
     from django.utils import timezone
-
     from grants.clr import predict_clr
-    for clr_round in obj.in_active_clrs.all():
+
+    if grant_clr:
+        clr_round = GrantCLR.objects.get(pk=grant_clr)
         network = 'mainnet'
         predict_clr(
             save_to_db=True,
             from_date=timezone.now(),
             clr_round=clr_round,
             network=network,
-            only_grant_pk=obj.pk,
+            only_grant_pk=grant_id,
             what='slim'
         )
+    elif grant_id:
+        obj = Grant.objects.get(pk=grant_id)
+
+        for clr_round in obj.in_active_clrs.all():
+            network = 'mainnet'
+            predict_clr(
+                save_to_db=True,
+                from_date=timezone.now(),
+                clr_round=clr_round,
+                network=network,
+                only_grant_pk=obj.pk,
+                what='slim'
+            )
 
 
 @app.shared_task(bind=True, max_retries=1)

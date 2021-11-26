@@ -62,6 +62,7 @@ class GrantCLR(SuperModel):
         on_delete=models.SET_NULL,
         help_text='sets the owners profile photo in CLR banner on the landing page'
     )
+    grant_clr_percentage_cap = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, help_text="Percentage of total pot at which Grant CLR should be capped")
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
     end_date = models.DateTimeField(help_text="CLR Round End Date")
@@ -182,6 +183,7 @@ class GrantCLR(SuperModel):
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
         for obj in self.clr_calculations.filter(grant=grant, latest=True):
+            obj.active = False
             obj.latest = False
             obj.save()
 
@@ -189,6 +191,7 @@ class GrantCLR(SuperModel):
             grantclr=self,
             grant=grant,
             clr_prediction_curve=clr_prediction_curve,
+            active=True if self.is_active else False,
             latest=True,
         )
 
@@ -629,7 +632,7 @@ class Grant(SuperModel):
         # [amount_donated, match amount, bonus_from_match_amount ], etc..
         # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
         _clr_prediction_curve = []
-        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True).order_by('-created_on'):
+        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True, active=True).order_by('-created_on'):
             insert_clr_calc = insert_clr_calc.clr_prediction_curve
             if not _clr_prediction_curve:
                 _clr_prediction_curve = insert_clr_calc

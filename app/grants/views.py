@@ -1619,7 +1619,7 @@ def grant_details_contributions(request, grant_id):
         all_contributions.append(contribution_json)
 
     response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
-    response['next_page_number'] = page + 1 
+    response['next_page_number'] = page + 1
 
     return JsonResponse(response)
 

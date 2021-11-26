@@ -23,6 +23,14 @@ class TestGrantCLRCalculation:
         assert hasattr(grant_clr_calulation, 'latest')
         assert grant_clr_calulation.latest == False
 
+    def test_grant_clr_calculation_has_active_attribute(self):
+        """Test 'active' attribute is present and defaults to False."""
+
+        grant_clr_calulation = GrantCLRCalculationFactory()
+
+        assert hasattr(grant_clr_calulation, 'active')
+        assert grant_clr_calulation.active == False
+
     def test_grant_clr_calculation_has_associated_grant(self):
         """Test 'grant' attribute is present and is an instance of Grant."""
 
