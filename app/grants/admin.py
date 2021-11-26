@@ -202,7 +202,7 @@ class GrantAdmin(GeneralAdmin):
         if "_calc_clr" in request.POST:
             from grants.tasks import recalc_clr
             recalc_clr.delay(obj.pk)
-            self.message_user(request, "recaclulation of clr queued")
+            self.message_user(request, "recalculation of clr queued")
         if "_request_more_info" in request.POST:
             more_info = request.POST.get('more_info')
             grant_more_info_required(obj, more_info)
@@ -492,10 +492,10 @@ class GrantCLRAdmin(admin.ModelAdmin):
             selected_clr = request.POST.get('_selected_clr', False)
             if selected_clr:
                 recalc_clr.delay(False, int(selected_clr))
-                self.message_user(request, f"submitted recaclulation of GrantCLR:{ selected_clr } to queue")
+                self.message_user(request, f"submitted recalculation of GrantCLR:{ selected_clr } to queue")
             else:
                 recalc_clr.delay(False)
-                self.message_user(request, "submitted recaclulation to queue")
+                self.message_user(request, "submitted recalculation to queue")
 
         if "_set_current_grant_clr_calculations_to_false" in request.POST:
             active_calculations = GrantCLRCalculation.objects.filter(grantclr=obj, active=True)
