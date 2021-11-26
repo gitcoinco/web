@@ -62,6 +62,7 @@ class GrantCLR(SuperModel):
         on_delete=models.SET_NULL,
         help_text='sets the owners profile photo in CLR banner on the landing page'
     )
+    grant_clr_percentage_cap = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, help_text="Percentage of total pot at which Grant CLR should be capped")
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
     end_date = models.DateTimeField(help_text="CLR Round End Date")
