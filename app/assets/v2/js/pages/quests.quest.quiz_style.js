@@ -315,8 +315,7 @@ var winner = async function(prize_url) {
   if (document.reward_tip['token_amount']) {
     $('#desc').html($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
   } else {
-    $('#desc').append($span);
-    $('#desc').append(
+    $('#desc').html($span).append(
       $('<img>').attr('style', 'height: 250px;width: 220px;').attr('src', document.kudos_reward['img'])
     );
   }
