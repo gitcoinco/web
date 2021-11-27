@@ -272,6 +272,7 @@ class TestGrantCLR:
             grantclr=grant_clr,
             grant=grant,
             clr_prediction_curve=grant.clr_prediction_curve,
+            active=False, # new factory obj defaults to inactive
             latest=True
         )
 
