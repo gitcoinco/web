@@ -183,18 +183,18 @@ var advance_to_state = async function(new_state) {
 
     var $safe_reward = $('<div />');
 
-    safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn this limited edition ");
+    $safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn this limited edition ");
 
-    safe_reward.append($('<strong>').text(document.kudos_reward['name']));
-    safe_reward.append(' Kudos: <BR> <BR> ');
-    safe_reward.append($('<img>").attr("style", "height: 250px;width: 220px;').attr('src', document.kudos_reward['img']));
+    $safe_reward.append($('<strong>').text(document.kudos_reward['name']));
+    $safe_reward.append(' Kudos: <BR> <BR> ');
+    $safe_reward.append($('<img>").attr("style", "height: 250px;width: 220px;').attr('src', document.kudos_reward['img']));
     
     if (document.reward_tip['token']) {
-      safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn ");
-      safe_reward.append($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
+      $safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn ");
+      $safe_reward.append($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
     }
 
-    $('#desc').html($('#desc').html() + safe_reward.html());
+    $('#desc').html($('#desc').html() + $safe_reward.html());
 
     await $('#desc').removeClass('hidden').fadeIn();
     await sleep(1000);
