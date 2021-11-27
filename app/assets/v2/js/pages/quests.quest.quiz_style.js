@@ -309,7 +309,7 @@ var winner = async function(prize_url) {
   await toggle_character_class($('#protagonist'), [ 'heal', '' ]);
   await sleep(500);
   await $('#header').addClass('success').fadeIn().html('You Win');
-  var span = '<span style="display:block; font-weight: bold; font-size: 24px;">🏆Quest Prize🏅</span>';
+  var $span = '<span style="display:block; font-weight: bold; font-size: 24px;">🏆Quest Prize🏅</span>';
 
   start_music_midi('secret-discovery');
   if (document.reward_tip['token_amount']) {
