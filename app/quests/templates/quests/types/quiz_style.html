@@ -109,9 +109,6 @@
     </div>
 
   </div>
-  
-  {{quest_json|json_script:"quest_json"}}
-
   <script>
     document.kudos_reward = {
       'name': '{{quest.kudos_reward.ui_name}}',
@@ -125,7 +122,7 @@
       'token': '{{quest.reward_tip.tokenName}}',
       'token_amount': '{{quest.reward_tip.value_true}}'
     };
-    document.quest = JSON.parse(document.getElementById('quest_json').textContent);
+    document.quest = {{quest_json|safe}};
     document.quest_url = '{{quest.url}}';
     document.quest_feedback_url = '{{quest.feedback_url}}';
     document.attempts = {
