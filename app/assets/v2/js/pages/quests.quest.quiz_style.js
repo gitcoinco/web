@@ -181,7 +181,7 @@ var advance_to_state = async function(new_state) {
     typeWriter();
     await wait_for_typewriter();
 
-    var $safe_reward = $('<div />');
+    var safe_reward = $('<div />');
 
     safe_reward.append(" <BR><BR> If you're successful in this quest, you'll earn this limited edition ");
 
@@ -315,7 +315,7 @@ var winner = async function(prize_url) {
   if (document.reward_tip['token_amount']) {
     $('#desc').html($('<strong />').text(document.reward_tip['token_amount'] + ' ' + document.reward_tip['token']));
   } else {
-    $('#desc').append($span);
+    $('#desc').append(span);
     $('#desc').append(
       $('<img>').attr('style', 'height: 250px;width: 220px;').attr('src', document.kudos_reward['img'])
     );
