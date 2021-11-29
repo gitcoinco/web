@@ -90,6 +90,7 @@ from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
+from PIL import Image
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
@@ -1617,7 +1618,7 @@ def grant_details_contributions(request, grant_id):
         all_contributions.append(contribution_json)
 
     response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
-    response['next_page_number'] = page + 1 
+    response['next_page_number'] = page + 1
 
     return JsonResponse(response)
 
@@ -1780,12 +1781,6 @@ def grant_edit(request, grant_id):
         if region:
             grant.region = region
 
-        grant_tags = request.POST.get('grant_tags[]', None)
-        if grant_tags:
-            tags = [d['id'] for d in json.loads(grant_tags)]
-            grant.tags.set(tags)
-
-
         team_members = request.POST.getlist('team_members[]', None)
         if team_members:
             save_team_members = []
@@ -1912,6 +1907,17 @@ def grant_new(request):
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
+        
+        if logo:
+            # If logo is present, validate that it is an image
+            try:
+                im = Image.open(logo)
+                im.verify()
+            except IOError as e:
+                # logo is not an image file
+                response['message'] = 'error: invalid logo file'
+                return JsonResponse(response)
+
         metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
         reference_url = request.POST.get('reference_url', '')
@@ -2532,7 +2538,9 @@ def record_subscription_activity_helper(activity_type, subscription, profile, an
         'activity_type': activity_type,
         'metadata': metadata,
     }
-    return Activity.objects.create(**kwargs)
+    activity = Activity.objects.create(**kwargs)
+    activity.populate_activity_index()
+    return activity
 
 
 def record_grant_activity_helper(activity_type, grant, profile, amount=None, token=None):
@@ -2563,7 +2571,8 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
         'activity_type': activity_type,
         'metadata': metadata,
     }
-    Activity.objects.create(**kwargs)
+    activity = Activity.objects.create(**kwargs)
+    activity.populate_activity_index()
 
 
 @login_required
@@ -3468,7 +3477,8 @@ def ingest_contributions(request):
                 "metadata": metadata,
             }
 
-            Activity.objects.create(**kwargs)
+            activity = Activity.objects.create(**kwargs)
+            activity.populate_activity_index()
             logger.info("Saved!\n")
 
         except Exception as e:

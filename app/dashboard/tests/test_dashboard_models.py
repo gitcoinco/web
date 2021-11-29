@@ -493,8 +493,8 @@ class DashboardModelsTest(TestCase):
         CustomAvatar.objects.create(profile=profile, config="{}")
         social_avatar = SocialAvatar.objects.create(profile=profile)
         profile.activate_avatar(social_avatar.pk)
-        assert profile.avatar_baseavatar_related.get(pk=1).active is False
-        assert profile.avatar_baseavatar_related.get(pk=2).active is True
+        assert profile.avatar_baseavatar_related.all().first().active is False
+        assert profile.avatar_baseavatar_related.all().last().active is True
 
     @staticmethod
     def test_bounty_snooze_url():

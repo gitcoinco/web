@@ -7,7 +7,6 @@ import pytest
 from dashboard.models import Profile
 from grants.models.grant import GrantCLR
 from grants.models.match_pledge import MatchPledge
-
 from grants.tests.factories import MatchPledgeFactory
 
 
@@ -69,7 +68,7 @@ class TestMatchPledge:
 
         assert hasattr(match_pledge, 'end_date')
         assert isinstance(match_pledge.end_date, datetime)
-        assert match_pledge.end_date.replace(microsecond=0) == next_month.replace(microsecond=0)
+        assert match_pledge.end_date.replace(microsecond=0, second=0) == next_month.replace(microsecond=0, second=0)
 
     def test_match_pledge_has_data_attribute(self):
         """Test 'data' attribute."""

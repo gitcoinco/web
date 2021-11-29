@@ -1,8 +1,8 @@
 import factory
+from dashboard.tests.factories import ProfileFactory
 from grants.models.subscription import Subscription
 
 from .grant_factory import GrantFactory
-from dashboard.tests.factories import ProfileFactory
 
 
 class SubscriptionFactory(factory.django.DjangoModelFactory):

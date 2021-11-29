@@ -141,6 +141,7 @@ class Subscription(SuperModel):
     network = models.CharField(
         max_length=8,
         default='mainnet',
+        db_index=True,
         help_text=_('The network in which the Subscription resides.'),
     )
     grant = models.ForeignKey(
