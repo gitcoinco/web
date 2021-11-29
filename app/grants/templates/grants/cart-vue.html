@@ -190,7 +190,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <li  v-if="grantsCountByTenant.ETH == undefined" class="cursor-pointer align-self-center text-primary ml-4" @click="shareCart">
                         <i class="fa fa-share-alt pr-1" aria-hidden="true"></i> Share cart
                       </li>
-                      <li class="cursor-pointer align-self-center text-danger ml-4" v-b-modal.clear-cart-modal>
+                      <li v-if="Object.keys(grantsCountByTenant).length > 1" class="cursor-pointer align-self-center text-danger ml-4" v-b-modal.clear-cart-modal>
                         <i class="fa fa-times pr-1" aria-hidden="true"></i> Clear all carts
                       </li>
                     </div>
