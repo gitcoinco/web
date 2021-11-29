@@ -809,9 +809,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
     if page:
         # Pagination is done here
-        activity_pks = activity_pks[start_index:end_index].values_list('id', flat=True)
+        activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True)
     else:
-        activity_pks = activity_pks.values_list('id', flat=True)
+        activity_pks = activity_pks.values_list('activity_id', flat=True)
 
     activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
 
