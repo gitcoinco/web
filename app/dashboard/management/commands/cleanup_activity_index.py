@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
 
 
-def port_activity_to_index(from_date, to_date):
+def port_activity_to_index():
     '''
         USEAGE: To be run to port data from activity from activity index
         NOTE: REMEMBER THIS COMMAND ALSO CLEARS ACTIVITY INDEX
@@ -49,7 +49,7 @@ def port_activity_to_index(from_date, to_date):
     # clear ActivityIndex
     # ActivityIndex.objects.all().delete()
 
-    saved_activity_indexs = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
+    activities_ported_list = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
 
     print('Cleaned ActivityIndex')
 
@@ -214,7 +214,7 @@ def port_activity_to_index(from_date, to_date):
         day_number += BATCH_DAYS
 
         activities= Activity.objects.filter(created_on__lt=end_date, created_on__gte=start_date).order_by('created_on')
-        activities = activities.exclude(pk__in=saved_activity_indexs)
+        activities = activities.exclude(pk__in=activities_ported_list)
 
         if activities.count() > 0:
             print(f'BATCH NUMBER: {day_number}')
