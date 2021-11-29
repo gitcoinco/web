@@ -19,8 +19,7 @@ Vue.component('grantsCartEthereumPolygon', {
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
-        estimatedGasCost: 65000,
-        gasPrices: null
+        estimatedGasCost: 65000
       },
 
       cart: {
@@ -382,14 +381,6 @@ Vue.component('grantsCartEthereumPolygon', {
 
       let gasLimit = 0;
 
-      // fetch gas prices from polygon gas tracker
-      if (!this.polygon.gasPrices) {
-        const priceUrl = 'https://api.polygonscan.com/api?module=gastracker&action=gasoracle&apikey=I28K1DVQAWAISBSI146I71YQDBK6N1C9GJ';
-        const priceResponse = await fetch(priceUrl);
-
-        this.polygon.gasPrices = (await priceResponse.json()).result;
-      }
-
       // If user has enough balance within Polygon, cost equals the minimum amount
       let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
 
@@ -494,7 +485,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // Check if user has enough MATIC to cover gas costs
         if (this.polygon.estimatedGasCost) {
           const gasFeeInWei = web3.utils.toWei(
-            (this.polygon.estimatedGasCost * Number(this.polygon.gasPrices.SafeGasPrice)).toString(), 'gwei' // using safe gas price
+            (this.polygon.estimatedGasCost * Number(document.polygonGasPrice)).toString(), 'gwei' // using safe gas price
           );
 
           if (userMaticBalance.lt(gasFeeInWei)) {

@@ -90,13 +90,12 @@ from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
+from PIL import Image
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
-from PIL import Image
-
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -2419,6 +2418,9 @@ def grants_cart_view(request):
         context['is_fully_verified'] = (is_brightid_verified and profile.sms_verification and \
                                             profile.is_poap_verified and profile.is_twitter_verified and \
                                             profile.is_google_verified and profile.is_poh_verified)
+        context['gas_prices'] = {
+            'polygon': JSONStore.objects.get(view='gas_prices', key='polygon').data['SafeGasPrice']
+        }
     else:
         return redirect('/login/github/?next=' + request.get_full_path())
 

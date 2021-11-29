@@ -13,12 +13,12 @@ repos:
     language: system
     entry: sh -c 'npm run stylelint:fix'
     files: .css$
-# - repo: git://github.com/pre-commit/mirrors-isort
-#   sha: 'v4.3.4'
-#   hooks:
-#   - id: isort
-#     args:
-#       - --recursive
-#       - --settings-path
-#       - ./setup.cfg
-#       - .
+- repo: git://github.com/pre-commit/mirrors-isort
+  sha: 'v4.3.4'
+  hooks:
+  - id: isort
+    args:
+      - --recursive
+      - --settings-path
+      - ./setup.cfg
+      - .
