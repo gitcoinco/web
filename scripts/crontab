@@ -69,7 +69,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash process_pending_kudos_distributions 20 20 2 0  >> /var/log/gitcoin/process_pending_kudos_distributions.log  2>&1
 0 0 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_offer_if_none_exists  >> /var/log/gitcoin/create_offer_if_none_exists.log  2>&1
 45 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration  >> /var/log/gitcoin/expiration_bounty.log  2>&1
-15 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_start_work  >> /var/log/gitcoin/expiration_start_work.log  2>&1
+15 10 * * * #cd gitcoin/coin; bash scripts/run_management_command.bash expiration_start_work  >> /var/log/gitcoin/expiration_start_work.log  2>&1
 15 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_keywords  >> /var/log/gitcoin/sync_keywords.log  2>&1
 # 40 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_slack  >> /var/log/gitcoin/sync_slack.log  2>&1
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_github  >> /var/log/gitcoin/sync_github.log  2>&1
@@ -136,6 +136,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 0 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash set_user_personas  >> /var/log/gitcoin/set_user_personas.log  2>&1
 50 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_brightid_status  >> /var/log/gitcoin/update_brightid_status.log  2>&1
 * 4 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_idena_status  >> /var/log/gitcoin/update_idena_status.log  2>&1
+*/30 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash fix_broken_avatars  >> /var/log/gitcoin/fix_broken_avatars.log  2>&1
 
 ## FEE ADDRESS CONVERSION
 ## 0 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash feeSwapper
