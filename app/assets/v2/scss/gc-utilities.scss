@@ -108,6 +108,14 @@
   background-color: $gc-pink-300;
 }
 
+.bg-violet-nav, .bg-violet-nav-item:hover {
+  background-color: rgba(225, 215, 255, 0.5);
+}
+
+.bg-violet-nav-item:active {
+  background-color: rgba(225, 215, 255, 0.7);
+}
+
 .text-lighter {
   color: $gc-grey-100;
 }
@@ -172,8 +180,14 @@
 .flex-basis-33 {
   flex-basis: 33%;
 }
+.flex-basis-40 {
+  flex-basis: 40%;
+}
 .flex-basis-50 {
   flex-basis: 50%;
+}
+.flex-basis-60 {
+  flex-basis: 60%;
 }
 .flex-basis-100 {
   flex-basis: 100%;
@@ -189,8 +203,14 @@
   .flex-basis-md-33 {
     flex-basis: 33%;
   }
+  .flex-basis-md-40 {
+    flex-basis: 40%;
+  }
   .flex-basis-md-50 {
     flex-basis: 50%;
+  }
+  .flex-basis-md-60 {
+    flex-basis: 60%;
   }
   .flex-basis-md-100 {
     flex-basis: 100%;
@@ -207,8 +227,14 @@
   .flex-basis-lg-33 {
     flex-basis: 33%;
   }
+  .flex-basis-lg-40 {
+    flex-basis: 40%;
+  }
   .flex-basis-lg-50 {
     flex-basis: 50%;
+  }
+  .flex-basis-lg-60 {
+    flex-basis: 60%;
   }
   .flex-basis-lg-100 {
     flex-basis: 100%;

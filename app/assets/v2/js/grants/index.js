@@ -40,7 +40,8 @@ if (document.getElementById('grants-showcase')) {
     grant_tags: [],
     tenants: [],
     idle: false,
-    featured: true
+    featured: true,
+    round_type: false
   };
 
   const grantRegions = [
@@ -83,6 +84,8 @@ if (document.getElementById('grants-showcase')) {
       cart_data_count: CartData.length(),
       network: document.network,
       keyword: document.keyword,
+      active_rounds: document.active_rounds,
+      round_types: document.round_types,
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
@@ -330,6 +333,7 @@ if (document.getElementById('grants-showcase')) {
 
         vm.scrollTriggered = append_mode;
         vm.lock = true;
+        console.log(vm.searchParams.toString());
         const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!requestGrants.ok) {
@@ -579,6 +583,7 @@ if (document.getElementById('grants-showcase')) {
           'network',
           'state',
           'profile',
+          'round_type',
           'sub_round_slug',
           'collections_page',
           'grant_regions',
@@ -653,6 +658,16 @@ if (document.getElementById('grants-showcase')) {
       deleteCollection: function() {
         // deleteCollection exists as a component with selected_collection passed in as a prop
         this.$refs.deleteCollection.show();
+      },
+      selectRoundType: function(roundType) {
+        // round_type_selected
+        this.params.round_type = roundType;
+        // clear selected round
+        this.params.sub_round_slug = false;
+        this.params.round_num = 0;
+        this.params.customer_name = false;
+        // save params to url
+        this.updateUrlParams(false);
       }
     },
     computed: {
