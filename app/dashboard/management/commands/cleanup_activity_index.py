@@ -48,7 +48,7 @@ def port_activity_to_index():
     print('Cleaned ActivityIndex')
 
     # fetch last n days activity to be ingested to ActivityIndex
-    _400days= timezone.now() - timedelta(days=400)
+    _400days= timezone.now() - timedelta(days=300)
 
     activities= Activity.objects.filter(created_on__gt=_400days).order_by('created_on')
 
