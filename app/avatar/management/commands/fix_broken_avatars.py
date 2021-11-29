@@ -16,6 +16,7 @@
 
 '''
 
+from avatar.models import *
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
@@ -24,10 +25,12 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        from avatar.models import CustomAvatar
-        avatars = CustomAvatar.objects.filter(png='')
+        avatars = CustomAvatar.objects.filter(png='').order_by('-pk')
         for avatar in avatars:
-            avatar.png = avatar.convert_field(avatar.svg, 'svg', 'png')
-            avatar.hash = BaseAvatar.calculate_hash(Image.open(BytesIO(avatar.png.read())))
-            avatar.save()
-            print(avatar.png, avatar.png.url)
+                try:
+                avatar.png = avatar.convert_field(avatar.svg, 'svg', 'png')
+                avatar.hash = BaseAvatar.calculate_hash(Image.open(BytesIO(avatar.png.read())))
+                avatar.save()
+                print(avatar.png, avatar.png.url)
+            except Exception as e:
+                print(avatar.pk, e)
