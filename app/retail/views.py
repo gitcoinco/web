@@ -804,6 +804,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     if not activity_pks:
         activity_pks = ActivityIndex.objects.all()
 
+    # Order the activity index data
+    activity_pks = activity_pks.order_by('-pk')
+
     if page:
         # Pagination is done here
         activity_pks = activity_pks[start_index:end_index].values_list('id', flat=True)
