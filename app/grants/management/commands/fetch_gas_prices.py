@@ -28,7 +28,7 @@ from perftools.models import JSONStore
 
 def polygon():
     res = requests.get(
-        f"https://api.polygonscan.com/api?module=gastracker&action=gasoracle&apikey={settings.POLYGON_API_KEY}"
+        f"https://api.polygonscan.com/api?module=gastracker&action=gasoracle&apikey={settings.POLYGONSCAN_API_KEY}"
     )
     data = res.json()['result']
     print(data)
