@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards_pic.html' %}
     {% bundle css file cart_vue %}
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gc-utilities.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/detail.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/fund.scss" %} />
