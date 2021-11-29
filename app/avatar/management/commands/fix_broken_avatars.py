@@ -27,7 +27,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         avatars = CustomAvatar.objects.filter(png='').order_by('-pk')
         for avatar in avatars:
-                try:
+            try:
                 avatar.png = avatar.convert_field(avatar.svg, 'svg', 'png')
                 avatar.hash = BaseAvatar.calculate_hash(Image.open(BytesIO(avatar.png.read())))
                 avatar.save()
