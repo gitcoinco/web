@@ -247,7 +247,7 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, gra
             tot = float(tot.real)
 
         # ensure CLR match for a grant in CLR round does not exceed 2.5 of the total pot
-        if grant_clr_percentage_cap and tot > match_cap_per_grant:
+        if grant_clr_percentage_cap != 100 and tot > match_cap_per_grant:
             tot = match_cap_per_grant
 
         bigtot += tot
