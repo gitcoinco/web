@@ -205,6 +205,9 @@ def port_activity_to_index(clean=False):
         populate_grants_activity_index(_activities)
         print('grants activity indexed')
 
+    final_date =  timezone.now() - timedelta(days=NUM_OF_DAYS_TO_PORT + 5)
+    activities = Activity.objects.filter(created_on__gte=final_date)
+    activities = activities.exclude(pk__in=activities_ported_list)
 
     # fetch last n days activity to be ingested to ActivityIndex
     day_number = 0
@@ -215,8 +218,7 @@ def port_activity_to_index(clean=False):
 
         day_number += BATCH_DAYS
 
-        activities= Activity.objects.filter(created_on__lt=end_date, created_on__gte=start_date).order_by('created_on')
-        activities = activities.exclude(pk__in=activities_ported_list)
+        activities= activities.filter(created_on__lt=end_date, created_on__gte=start_date).order_by('created_on')
 
         if activities.count() > 0:
             print(f'BATCH NUMBER: {day_number}')
