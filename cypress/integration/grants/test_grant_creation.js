@@ -55,7 +55,7 @@ describe('Creating a new grant', () => {
         cy.contains('No, this project has not raised external funding.').click();
 
         // cy.get('input[placeholder="Pick a category"]').click();
-        // cy.contains('Community').click();
+       
         
         cy.get('input[placeholder="Add tags to help others discover your grant"]').click();
         cy.contains('education').click();
