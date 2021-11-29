@@ -539,7 +539,8 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         logger.info('No bounty is associated with this kudos transfer.')
 
     try:
-        Activity.objects.create(**kwargs)
+        activity = Activity.objects.create(**kwargs)
+        activity.populate_activity_index()
     except Exception as e:
         logger.debug(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
@@ -579,7 +580,8 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
         pass
 
     try:
-        Activity.objects.create(**kwargs)
+        activity = Activity.objects.create(**kwargs)
+        activity.populate_activity_index()
     except Exception as e:
         logging.error(f"error in record_kudos_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 

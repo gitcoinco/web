@@ -443,7 +443,8 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
     profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
     if profile:
         try:
-            Activity.objects.create(profile=profile, activity_type='joined')
+            activity = Activity.objects.create(profile=profile, activity_type='joined')
+            activity.populate_activity_index()
         except Exception as e:
             logger.exception(e)
 

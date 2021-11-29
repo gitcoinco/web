@@ -19,7 +19,7 @@
 from django.core.management.base import BaseCommand
 
 from dashboard.helpers import record_bounty_activity
-from dashboard.models import Activity, Bounty, Interest
+from dashboard.models import Activity, ActivityIndex, Bounty, Interest
 from dashboard.views import record_bounty_activity as record_bounty_activity_interest
 
 
@@ -72,7 +72,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         force_refresh = options['force_refresh']
         if force_refresh:
-            Activity.objects.all().delete()
+            activities = Activity.objects.all()
+            for activity in activities:
+                activityIndex = ActivityIndex.objects.filter(activity=activity)
+                if activityIndex:
+                    activityIndex.delete()
+            activities.delete()
         bounties = Bounty.objects.current()
         for bounty in bounties:
             if force_refresh or not bounty.activities.count():
