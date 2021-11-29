@@ -36,23 +36,20 @@ class Command(BaseCommand):
 
 
 
-def port_activity_to_index():
+def port_activity_to_index(from_date, to_date):
     '''
         USEAGE: To be run to port data from activity from activity index
         NOTE: REMEMBER THIS COMMAND ALSO CLEARS ACTIVITY INDEX
     '''
 
+
+    NUM_OF_DAYS_TO_PORT = 350
+    BATCH_DAYS = 5
+
     # clear ActivityIndex
     ActivityIndex.objects.all().delete()
 
     print('Cleaned ActivityIndex')
-
-    # fetch last n days activity to be ingested to ActivityIndex
-    _400days= timezone.now() - timedelta(days=300)
-
-    activities= Activity.objects.filter(created_on__gt=_400days).order_by('created_on')
-
-    print('Init...')
 
     # Grants Activities
     grants_activity_query = (
@@ -146,14 +143,14 @@ def port_activity_to_index():
             print(f'quests -> {_activity.pk}')
             _activity.populate_activity_index()
 
-    
+
     # helper function to populate tips activity index
     def populate_tips_activity_index(activities):
         for _activity in activities:
             print(f'tips -> {_activity.pk}')
             _activity.populate_activity_index()
 
-    
+
     # helper function to populate profiles activity index
     def populate_profiles_activity_index(activities):
         for _activity in activities:
@@ -175,30 +172,45 @@ def port_activity_to_index():
             _activity.populate_activity_index()
 
 
-    _activities = activities.filter(quests_activity_query)
-    populate_quests_activity_index(_activities)
-    print('quests activity indexed')
+    def run(activities):
+        _activities = activities.filter(quests_activity_query)
+        populate_quests_activity_index(_activities)
+        print('quests activity indexed')
 
-    _activities = activities.filter(kudos_activity_query)
-    populate_kudos_activity_index(_activities)
-    print('kudos activity indexed')
+        _activities = activities.filter(kudos_activity_query)
+        populate_kudos_activity_index(_activities)
+        print('kudos activity indexed')
 
-    _activities = activities.filter(tip_activity_query)
-    populate_tips_activity_index(_activities)
-    print('tips activity indexed')
+        _activities = activities.filter(tip_activity_query)
+        populate_tips_activity_index(_activities)
+        print('tips activity indexed')
 
-    _activities = activities.filter(profile_activity_query)
-    populate_profiles_activity_index(_activities)
-    print('profiles activity indexed')
-    
-    _activities = activities.filter(platform_activity_query)
-    populate_platforms_activity_index(_activities)
-    print('platform activity indexed')
+        _activities = activities.filter(profile_activity_query)
+        populate_profiles_activity_index(_activities)
+        print('profiles activity indexed')
 
-    _activities = activities.filter(hackathon_activity_query)
-    populate_hackathons_activity_index(_activities)
-    print('hackathons activity indexed')
+        _activities = activities.filter(platform_activity_query)
+        populate_platforms_activity_index(_activities)
+        print('platform activity indexed')
 
-    _activities = activities.filter(grants_activity_query)
-    populate_grants_activity_index(_activities)
-    print('grants activity indexed')
+        _activities = activities.filter(hackathon_activity_query)
+        populate_hackathons_activity_index(_activities)
+        print('hackathons activity indexed')
+
+        _activities = activities.filter(grants_activity_query)
+        populate_grants_activity_index(_activities)
+        print('grants activity indexed')
+
+
+    # fetch last n days activity to be ingested to ActivityIndex
+    day_number = 0
+    while day_number != NUM_OF_DAYS_TO_PORT:
+        # ensure we query only 10 days worth of data at given time
+        end_date= timezone.now() - timedelta(days=day_number)
+        start_date= timezone.now() - timedelta(days=day_number + BATCH_DAYS)
+
+        day_number += BATCH_DAYS
+
+        activities= Activity.objects.filter(created_on__lt=end_date, created_on__gte=start_date).order_by('created_on')
+        print(f'BATCH NUMBER: {day_number}')
+        run(activities)
