@@ -816,7 +816,7 @@ class Grant(SuperModel):
     def is_idle(self):
         """Return if grants is idle."""
         three_months_ago = timezone.now() - timezone.timedelta(days=90)
-        return (self.last_update <= three_months_ago)
+        return (self.last_update and self.last_update <= three_months_ago)
 
 
     @property
