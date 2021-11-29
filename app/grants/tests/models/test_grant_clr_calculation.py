@@ -1,7 +1,6 @@
 import pytest
 from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
-
 from grants.tests.factories import GrantCLRCalculationFactory
 
 

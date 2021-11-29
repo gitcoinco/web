@@ -2,7 +2,6 @@ import pytest
 from dashboard.models import Profile
 from grants.models.cart_activity import CartActivity
 from grants.models.grant import Grant
-
 from grants.tests.factories import CartActivityFactory
 
 

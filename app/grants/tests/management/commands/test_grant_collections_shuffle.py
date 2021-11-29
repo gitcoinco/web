@@ -5,7 +5,6 @@ from django.core.management import call_command
 
 import pytest
 from grants.management.commands.grant_collections_shuffle import grant_collection_age_score, grant_meta_data_score
-
 from grants.tests.factories import GrantFactory
 
 

@@ -1,7 +1,6 @@
 import pytest
 from grants.models.grant import Grant
 from grants.models.grant_stat import GrantStat
-
 from grants.tests.factories import GrantStatFactory
 
 

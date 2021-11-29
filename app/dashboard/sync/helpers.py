@@ -1,9 +1,9 @@
 
 import logging
+from decimal import Decimal
 
 from dashboard.helpers import bounty_activity_event_adapter, get_bounty_data_for_activity
 from dashboard.models import Activity, BountyEvent, BountyFulfillment
-from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 

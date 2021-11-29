@@ -3,9 +3,8 @@ from random import choice
 
 import factory
 import pytest
-from grants.models.grant import GrantCLR
-
 from dashboard.tests.factories import ProfileFactory
+from grants.models.grant import GrantCLR
 
 
 @pytest.mark.django_db
