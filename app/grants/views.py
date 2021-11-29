@@ -90,13 +90,12 @@ from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
+from PIL import Image
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
-from PIL import Image
-
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -2032,18 +2031,6 @@ def grant_new(request):
 
     profile = get_profile(request)
 
-    grant_types = []
-    for g_type in GrantType.objects.filter(is_active=True):
-        grant_type_temp = {
-            'id': g_type.pk,
-            'name': g_type.name,
-            'label': g_type.label,
-        }
-        if g_type.logo:
-            grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
-
-        grant_types.append(grant_type_temp)
-
     grant_tags = []
     for g_tag in GrantTag.objects.all():
         _grant_tag = {
@@ -2058,7 +2045,6 @@ def grant_new(request):
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'profile': profile,
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
-        'grant_types': grant_types,
         'grant_tags': grant_tags
     }
     return TemplateResponse(request, 'grants/_new.html', params)

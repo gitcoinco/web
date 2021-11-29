@@ -5,8 +5,6 @@ from decimal import Decimal
 from dashboard.helpers import bounty_activity_event_adapter, get_bounty_data_for_activity
 from dashboard.models import Activity, BountyEvent, BountyFulfillment
 
-# from dashboard.utils import populate_hackathon_activity_index
-
 logger = logging.getLogger(__name__)
 
 

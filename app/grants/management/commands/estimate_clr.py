@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+import argparse
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -25,7 +27,6 @@ from grants.clr import predict_clr
 from grants.models import GrantCLR
 from grants.tasks import process_predict_clr
 
-import argparse
 
 class Command(BaseCommand):
 
