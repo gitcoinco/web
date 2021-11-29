@@ -28,7 +28,7 @@ if (document.getElementById('grants-showcase')) {
     page: 1,
     limit: 12,
     me: false,
-    sort_option: 'weighted_shuffle',
+    sort_option: '',
     collection_id: false,
     network: 'mainnet',
     state: 'active',
@@ -130,6 +130,7 @@ if (document.getElementById('grants-showcase')) {
       previouslyLoadedGrants: {},
       selectOptions: [
         {group: 'Discover', label: null},
+        {label: 'Most Relevant', value: ''},
         {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
         {label: 'Trending', value: '-metadata__upcoming'},
         {label: 'Undiscovered Gems', value: '-metadata__gem'},
