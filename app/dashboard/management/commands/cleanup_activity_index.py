@@ -126,42 +126,49 @@ def port_activity_to_index():
     # helper function to populate grant activity index
     def populate_grants_activity_index(activities):
         for _activity in activities:
+            print(f'grants -> {_activity.pk}')
             _activity.populate_activity_index()
 
 
     # helper function to populate kudos activity index
     def populate_kudos_activity_index(activities):
         for _activity in activities:
+            print(f'kudos -> {_activity.pk}')
             _activity.populate_activity_index()
 
 
     # helper function to populate quests activity index
     def populate_quests_activity_index(activities):
         for _activity in activities:
+            print(f'quests -> {_activity.pk}')
             _activity.populate_activity_index()
 
     
     # helper function to populate tips activity index
     def populate_tips_activity_index(activities):
         for _activity in activities:
+            print(f'tips -> {_activity.pk}')
             _activity.populate_activity_index()
 
     
     # helper function to populate profiles activity index
     def populate_profiles_activity_index(activities):
         for _activity in activities:
+            print(f'profile -> {_activity.pk}')
             _activity.populate_activity_index()
 
 
     # helper function to populate platform activity index
     def populate_platforms_activity_index(activities):
         for _activity in activities:
+            print(f'platform -> {_activity.pk}')
             _activity.populate_platform_activity_index()
 
 
     # helper function to populate platform activity index
     def populate_hackathons_activity_index(activities):
         for _activity in activities:
+            print(f'hackathon -> {_activity.pk}')
             _activity.populate_activity_index()
 
 
