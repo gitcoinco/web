@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
 
 
-def port_activity_to_index():
+def port_activity_to_index(clean=False):
     '''
         USEAGE: To be run to port data from activity from activity index
         NOTE: REMEMBER THIS COMMAND ALSO CLEARS ACTIVITY INDEX
@@ -46,12 +46,14 @@ def port_activity_to_index():
     NUM_OF_DAYS_TO_PORT = 350
     BATCH_DAYS = 5
 
-    # clear ActivityIndex
-    # ActivityIndex.objects.all().delete()
+    if clean == 'True':
+        # clear ActivityIndex
+        ActivityIndex.objects.all().delete()
+        print('Cleaned ActivityIndex')
 
     activities_ported_list = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
+    print('Activities Already Ported: ', len(activities_ported_list))
 
-    print('Cleaned ActivityIndex')
 
     # Grants Activities
     grants_activity_query = (
