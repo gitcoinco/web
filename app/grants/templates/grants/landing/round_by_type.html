@@ -34,13 +34,35 @@
 {% endfor %}
 
 {# Hard-coding the Gitcoin Building Gitcoin mini banner ... #}
-<div class="col-12 col-lg-6" style="height: 164px;">
+
+<div class="col-12 col-lg-6">
   <a
     href="https://grants.gtcdao.net/"
     class="active-clr-banner d-block text-decoration-none position-relative mt-3"
-    style="height: 164px !important;"
   >
-    <img alt="Gitcoin Building Gitcoin"  src="{% static 'landingpage/gr12_small_banner.png' %}" class="w-100">
-  </a>  
+    <div class="position-absolute w-100 h-100" style="
+        top: 0;
+        right: 0;        
+        background: url('{% static 'landingpage/Gitcoin_Building_Gitcoin.jpg' %}') no-repeat center;
+      "
+    >
+    </div>
+    <div style="color: #0E0333" class="round-details d-flex p-3 justify-content-between position-relative">
+      <div>
+        <p class="pr-5 font-bigger-1" style="white-space: nowrap;">GR12 - GITCOIN BUILDING GITCOIN</p>
+        <button class="btn btn-primary" type="submit" style="border:none;  background-color: #0E0333 ">Launch App &nbsp;<i class="fa fa-external-link"></i></button>
+      </div>
+      <div class="text-right">
+        <p class="mb-0 font-bigger-2 font-weight-light">$25K</span>
+        <p class="mt-0 font-smaller-1">available</span>
+      </div>
+    </div>
+  </a>
+  
+  <div class="font-body d-flex" style="background-color: #fff;">
+    <p class="px-3 py-2 my-auto" style="color: #0E0333 ">
+      Main: Decentralized projects building for Gitcoin
+    </p>
+  </div>
 </div>
 
