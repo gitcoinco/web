@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        from avatar.models import *
+        from avatar.models import CustomAvatar
         avatars = CustomAvatar.objects.filter(png='')
         for avatar in avatars:
             avatar.png = avatar.convert_field(avatar.svg, 'svg', 'png')
