@@ -16,8 +16,10 @@
 
 '''
 
-from avatar.models import *
 from django.core.management.base import BaseCommand
+
+from avatar.models import *
+
 
 class Command(BaseCommand):
 

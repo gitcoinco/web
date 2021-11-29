@@ -32,6 +32,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
+import bleach
 from dashboard.abi import erc20_abi
 from dashboard.utils import get_web3
 from eth_account.messages import defunct_hash_message
@@ -40,7 +41,6 @@ from quadraticlands.helpers import (
 )
 from ratelimit.decorators import ratelimit
 from web3 import Web3
-import bleach
 
 from .models import Game, GameFeed, GamePlayer, create_game_helper
 

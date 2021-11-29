@@ -47,7 +47,9 @@ def port_activity_to_index(from_date, to_date):
     BATCH_DAYS = 5
 
     # clear ActivityIndex
-    ActivityIndex.objects.all().delete()
+    # ActivityIndex.objects.all().delete()
+
+    saved_activity_indexs = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
 
     print('Cleaned ActivityIndex')
 
@@ -212,5 +214,10 @@ def port_activity_to_index(from_date, to_date):
         day_number += BATCH_DAYS
 
         activities= Activity.objects.filter(created_on__lt=end_date, created_on__gte=start_date).order_by('created_on')
-        print(f'BATCH NUMBER: {day_number}')
-        run(activities)
+        activities = activities.exclude(pk__in=saved_activity_indexs)
+
+        if activities.count() > 0:
+            print(f'BATCH NUMBER: {day_number}')
+            run(activities)
+        else:
+            print('Skipping BATCH NUMBER: {day_number}')
