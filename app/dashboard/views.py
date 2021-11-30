@@ -2303,7 +2303,7 @@ def profile_activity(request, handle):
 
     date = timezone.now() - timezone.timedelta(days=365)
     profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
-    activities = list(Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on')).values_list('created_on', flat=True)
+    activities = list(Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on').values_list('created_on', flat=True))
     activities += list(profile.actions.filter(created_on__gt=date).values_list('created_on', flat=True))
     response = {}
     prev_date = timezone.now()

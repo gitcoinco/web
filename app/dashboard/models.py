@@ -4319,7 +4319,7 @@ class Profile(SuperModel):
             activity_indexes = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
             url = self.github_url
             all_activities = Activity.objects.filter(
-                pk__in=list(activity_indexes)|
+                Q(pk__in=list(activity_indexes)) |
                 Q(bounty__github_url__istartswith=url) |
                 Q(tip__github_url__istartswith=url)
             )

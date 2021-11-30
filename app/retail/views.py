@@ -750,7 +750,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
     activities = Activity.objects.none()
 
-
     page_size = 10
     start_index = (page-1) * page_size
     end_index = page * page_size
@@ -769,7 +768,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     if what == 'all_grants':
         activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
 
-
     # kudos
     if (
         what in ['kudos']
@@ -777,7 +775,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         activity_pks = ActivityIndex.objects.filter(key__startswith='kudo:')
     elif 'kudos:' in what:
         activity_pks = ActivityIndex.objects.filter(key=what.replace('kudos', 'kudo'))
-
 
     # hackathon project
     if 'project:' in what:
@@ -791,7 +788,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         if profile:
             activity_pks = ActivityIndex.objects.filter(key=f'profile:{profile.pk}')
 
-
     # hackathon activity
     if 'hackathon:' in what:
         activity_pks = ActivityIndex.objects.filter(key=what)
@@ -804,12 +800,17 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     if not activity_pks:
         activity_pks = ActivityIndex.objects.all()
 
-    if page:
+    # Are the pks already in a list?
+    if not isinstance(activity_pks, list):
+        # Order the activity index data
+        activity_pks = activity_pks.order_by('-id')
         # Pagination is done here
-        activity_pks = activity_pks[start_index:end_index].values_list('id', flat=True)
-    else:
-        activity_pks = activity_pks.values_list('id', flat=True)
+        if page:
+            activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True)
+        else:
+            activity_pks = activity_pks.values_list('activity_id', flat=True)
 
+    # Cross-ref the activity_pks->activity_id with the Activity objects
     activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
 
     # 4. Filter out activites based on on network
