@@ -167,7 +167,8 @@ class Command(BaseCommand):
                 "metadata": metadata,
             }
 
-            Activity.objects.create(**kwargs)
+            activity = Activity.objects.create(**kwargs)
+            activity.populate_activity_index()
             print("Saved!\n")
 
         except Exception as e:

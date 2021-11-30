@@ -170,7 +170,7 @@ Vue.component('grantsCartEthereumZksync', {
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('zksync-data-updated', {
-        zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
+        zkSyncSupportedTokens: this.supportedTokens,
         zkSyncEstimatedGasCost: estimatedGasCost
       });
     },

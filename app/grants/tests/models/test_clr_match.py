@@ -2,7 +2,6 @@ import pytest
 from grants.models.clr_match import CLRMatch
 from grants.models.contribution import Contribution
 from grants.models.grant import Grant
-
 from grants.tests.factories import CLRMatchFactory
 
 

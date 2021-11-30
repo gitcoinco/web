@@ -1,9 +1,9 @@
 import factory
 import pytest
+from dashboard.tests.factories import ProfileFactory
 from grants.models.flag import Flag
 
 from .grant_factory import GrantFactory
-from dashboard.tests.factories import ProfileFactory
 
 
 @pytest.mark.django_db

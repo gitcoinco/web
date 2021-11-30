@@ -5,8 +5,7 @@ import random
 
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Count, Sum
-from django.shortcuts import redirect, render
+from django.db.models import Sum
 from django.utils import timezone
 
 from dashboard.models import Activity
@@ -37,7 +36,8 @@ def record_quest_activity(quest, associated_profile, event_name, override_create
     }
 
     try:
-        Activity.objects.create(**kwargs)
+        activity = Activity.objects.create(**kwargs)
+        activity.populate_activity_index()
     except Exception as e:
         logger.exception(e)
 

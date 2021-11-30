@@ -1,5 +1,6 @@
-{% load humanize i18n grants_extra %}
+{% load humanize i18n grants_extra static %}
 {% for active_round in active_rounds %}
+
 <div class="col-12 col-lg-6">
   <a
     href="/grants/explorer/?sub_round_slug={{ active_round.sub_round_slug }}&round_num={{ active_round.round_num }}&customer_name={{ active_round.customer_name }}"
@@ -29,6 +30,5 @@
       {{ active_round.banner_text }}
     </p>
   </div>
-
 </div>
 {% endfor %}

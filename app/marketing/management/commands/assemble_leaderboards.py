@@ -86,7 +86,8 @@ def do_leaderboard_feed(cadence, cadence_ui):
                 'link': f'/leaderboard/{_type}'
                 }
             if lr.profile:
-                Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
+                activity = Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
+                activity.populate_platform_activity_index()
 
     profile = Profile.objects.filter(handle='gitcoinbot').first()
     for _type in [PAYERS, EARNERS, ORGS, TOKENS]:
@@ -103,8 +104,8 @@ def do_leaderboard_feed(cadence, cadence_ui):
             'copy': copy,
         }
         key = f'{cadence}_{_type}'
-        Activity.objects.create(profile=profile, activity_type='consolidated_leaderboard_rank', metadata=metadata)
-
+        activity = Activity.objects.create(profile=profile, activity_type='consolidated_leaderboard_rank', metadata=metadata)
+        activity.populate_platform_activity_index()
 
 def query_to_results(query):
     with connection.cursor() as cursor:

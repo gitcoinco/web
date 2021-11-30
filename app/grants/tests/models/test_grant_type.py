@@ -3,7 +3,6 @@ from unittest.mock import patch
 import pytest
 from grants.models.grant import GrantCLR
 from grants.models.grant_type import GrantType
-
 from grants.tests.factories import GrantTypeFactory
 
 

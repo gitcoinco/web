@@ -68,9 +68,9 @@ Vue.component('grants-cart', {
       maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,
       // Checkout, zkSync
-      zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      zkSyncSupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      polygonUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      polygonSupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
       polygonEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
       isPolygonDown: false, // disable polygon when true
@@ -520,12 +520,12 @@ Vue.component('grants-cart', {
     // and suggestions about their checkout (gas cost estimates and why zkSync may not be
     // supported for their current cart)
     onZkSyncUpdate: function(data) {
-      this.zkSyncUnsupportedTokens = data.zkSyncUnsupportedTokens;
+      this.zkSyncSupportedTokens = data.zkSyncSupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
     },
 
     onPolygonUpdate: function(data) {
-      this.polygonUnsupportedTokens = data.polygonUnsupportedTokens;
+      this.polygonSupportedTokens = data.polygonSupportedTokens;
       this.polygonEstimatedGasCost = data.polygonEstimatedGasCost;
     },
 
@@ -1525,8 +1525,23 @@ Vue.component('grants-cart', {
       // if (!provider && val === '1') {
       //   await onConnect();
       // }
+    },
+    selectedETHCartToken: function(val) {
+      const zkSyncFlag = !this.zkSyncSupportedTokens.includes(val);
+      const polygonFlag = !this.polygonSupportedTokens.includes(val);
+      let checkoutOptions;
 
+      if (zkSyncFlag && polygonFlag) {
+        checkoutOptions = 'zkSync and Polygon';
+      } else if (zkSyncFlag) {
+        checkoutOptions = 'zkSync';
+      } else if (polygonFlag) {
+        checkoutOptions = 'Polygon';
+      }
 
+      if (checkoutOptions) {
+        _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
+      }
     },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {

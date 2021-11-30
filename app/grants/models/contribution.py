@@ -30,7 +30,7 @@ class Contribution(SuperModel):
         ('algorand_std', 'algorand_std')
     ]
 
-    success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
+    success = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
 
@@ -54,13 +54,29 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='contributions',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Grant.'),
+    )
+
+    amount_per_period_usdt = models.DecimalField(
+        default=0,
+        decimal_places=18,
+        max_digits=64,
+        db_index=True,
+        help_text=_('The amount per contribution period in USDT'),
+    )
+
     normalized_data = JSONField(
         default=dict,
         blank=True,
         help_text=_('the normalized grant data; for easy consumption on read'),
     )
-    match = models.BooleanField(default=True, help_text=_('Whether or not this contribution should be matched.'))
-
+    match = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not this contribution should be matched.'))
 
     originated_address = models.CharField(
         max_length=255,
@@ -192,7 +208,7 @@ class Contribution(SuperModel):
 
                 # get active chain std/polygon
                 chain =  self.checkout_type.split('_')[-1]
-                
+
                 # Prepare web3 provider
                 w3 = get_web3(network, chain=chain)
 
@@ -294,6 +310,12 @@ def presave_contrib(sender, instance, **kwargs):
     ele = instance
     sub = ele.subscription
     grant = sub.grant
+
+    # save hotpath data to the contribution itself
+    instance.grant = grant
+    instance.amount_per_period_usdt = float(sub.amount_per_period_usdt)
+
+    # everything else is stored in a JSONField
     instance.normalized_data = {
         'id': grant.id,
         'logo': grant.logo.url if grant.logo else None,

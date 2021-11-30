@@ -32,7 +32,7 @@ from django.utils import timezone
 from app.utils import get_semaphore, sync_profile
 from dashboard.models import (
     Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
-    HackathonEvent, UserAction,
+    HackathonEvent, Profile, UserAction,
 )
 from dashboard.notifications import maybe_market_to_email, maybe_market_to_github, notify_of_lowball_bounty
 from dashboard.tokens import addr_to_token
@@ -43,8 +43,6 @@ from marketing.mails import new_reserved_issue
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
-
-from .models import Profile
 
 logger = logging.getLogger(__name__)
 
@@ -821,7 +819,8 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 event_type=bounty_activity_event_adapter[event_name],
                 created_by=user_profile)
             new_bounty.handle_event(event)
-        return Activity.objects.create(
+        
+        activity = Activity.objects.create(
             created_on=timezone.now() if not override_created else override_created,
             profile=user_profile,
             activity_type=event_name,
@@ -831,6 +830,10 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 'old_bounty': get_bounty_data_for_activity(old_bounty) if old_bounty else None,
                 'fulfillment': get_fulfillment_data_for_activity(fulfillment) if fulfillment else None,
             })
+
+        activity.populate_activity_index()
+
+        return activity
     return None
 
 

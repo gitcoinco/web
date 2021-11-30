@@ -26,7 +26,7 @@ $(document).ready(() => {
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
     page: 1,
-    limit: 6,
+    limit: 12,
     me: false,
     sort_option: 'weighted_shuffle',
     collection_id: false,
@@ -40,7 +40,8 @@ if (document.getElementById('grants-showcase')) {
     grant_tags: [],
     tenants: [],
     idle: false,
-    featured: true
+    featured: true,
+    round_type: false
   };
 
   const grantRegions = [
@@ -83,6 +84,8 @@ if (document.getElementById('grants-showcase')) {
       cart_data_count: CartData.length(),
       network: document.network,
       keyword: document.keyword,
+      active_rounds: document.active_rounds,
+      round_types: document.round_types,
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
@@ -139,7 +142,6 @@ if (document.getElementById('grants-showcase')) {
         {label: 'A to Z', value: 'title'},
         {label: 'Z to A', value: '-title'},
         {group: 'Current Round', label: null},
-        {label: 'Most Relevant', value: ''},
         {label: 'Highest Amount Raised', value: '-amount_received_in_round'},
         {label: 'Highest Contributor Count', value: '-positive_round_contributor_count'},
         {group: 'All-Time', label: null},
@@ -232,14 +234,14 @@ if (document.getElementById('grants-showcase')) {
 
         // reset the params and set collection_id
         vm.params = Object.assign({}, baseParams);
-        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collection_id }});
+        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collectionId }});
 
         // fetch the collections details
-        const collectionDetailsURL = `/grants/v1/api/collections/${collection_id}`;
+        const collectionDetailsURL = `/grants/v1/api/collections/${collectionId}`;
         const collection = await fetchData(collectionDetailsURL, 'GET');
 
         // update the stored state
-        vm.$set(vm, 'collection_id', collection_id);
+        vm.$set(vm, 'collection_id', collectionId);
         vm.$set(vm, 'collection_title', collection.title);
         vm.$set(vm, 'collection_description', collection.description);
         vm.$set(vm, 'collection_owner', collection.owner.handle);
@@ -331,6 +333,7 @@ if (document.getElementById('grants-showcase')) {
 
         vm.scrollTriggered = append_mode;
         vm.lock = true;
+        console.log(vm.searchParams.toString());
         const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!requestGrants.ok) {
@@ -460,7 +463,7 @@ if (document.getElementById('grants-showcase')) {
 
         const scrollY = window.scrollY;
         const visible = document.documentElement.clientHeight;
-        const pageHeight = document.documentElement.scrollHeight - 500;
+        const pageHeight = document.documentElement.scrollHeight - 1600;
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
 
@@ -468,9 +471,8 @@ if (document.getElementById('grants-showcase')) {
         if (bottomOfPage || pageHeight < visible) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
             await vm.fetchCollections(true);
-          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
+          } else if (vm.grantsHasNext) {
             await vm.fetchGrants(vm.params.page, true, true);
-            vm.grantsHasNext = false;
           }
         }
       },
@@ -570,12 +572,6 @@ if (document.getElementById('grants-showcase')) {
         // load the correct tab
         this.loadTab(true);
       },
-      pageIsFetched: function(page) {
-        let vm = this;
-
-        return vm.fetchedPages.includes(page);
-
-      },
       showFilter: function() {
         let vm = this;
         let show_filter = false;
@@ -587,6 +583,7 @@ if (document.getElementById('grants-showcase')) {
           'network',
           'state',
           'profile',
+          'round_type',
           'sub_round_slug',
           'collections_page',
           'grant_regions',
@@ -661,6 +658,18 @@ if (document.getElementById('grants-showcase')) {
       deleteCollection: function() {
         // deleteCollection exists as a component with selected_collection passed in as a prop
         this.$refs.deleteCollection.show();
+      },
+      selectRoundType: function(roundType) {
+        // round_type_selected
+        this.params.round_type = roundType;
+        // clear selected round
+        this.params.sub_round_slug = false;
+        this.params.round_num = 0;
+        this.params.customer_name = false;
+        // save params to url
+        this.updateUrlParams(false);
+        // reset results
+        this.changeQuery({page: 1});
       }
     },
     computed: {

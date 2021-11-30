@@ -17,9 +17,29 @@
           <div class="d-flex align-items-baseline" >
             <label class="heading mr-2">{% trans "Sort by" %}</label>
             {% if is_staff %}
-              <v-select class="vselect-clean rounded-pill" style="min-width:230px; border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="selectOptions.concat(adminOptions)" :selectable="(option) => !option.hasOwnProperty('group')" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)" >
+              <v-select class="vselect-clean rounded-pill" 
+                        style="min-width:230px; border: 1px solid #ced4da;" 
+                        id="experience_level" 
+                        :options="selectOptions.concat(adminOptions)" 
+                        :searchable="false" 
+                        :clearable="false" 
+                        :selectable="(option) => !option.hasOwnProperty('group')" 
+                        placeholder="Sort by" 
+                        v-model="params.sort_option" 
+                        :reduce="obj => obj.value" 
+                        @input="fetchGrants(1)" >
             {% else %}
-              <v-select class="vselect-clean rounded-pill" style="min-width:230px; border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="selectOptions" :selectable="(option) => !option.hasOwnProperty('group')" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)" >
+              <v-select class="vselect-clean rounded-pill" 
+                        style="min-width:230px; border: 1px solid #ced4da;" 
+                        id="experience_level" 
+                        :options="selectOptions" 
+                        :searchable="false" 
+                        :clearable="false" 
+                        :selectable="(option) => !option.hasOwnProperty('group')" 
+                        placeholder="Sort by" 
+                        v-model="params.sort_option" 
+                        :reduce="obj => obj.value" 
+                        @input="fetchGrants(1)" >
             {% endif %}
               <template #option="{ group, label }">
                 <div v-if="group">
@@ -27,14 +47,6 @@
                   [[group]] 
                 </div>
                 [[label]]
-              </template>
-              <template #search="{attributes, events}">
-                <input
-                  class="vs__search"
-                  v-bind="attributes"
-                  v-on="events"
-                  disabled=""
-                />
               </template>
             </v-select>
           </div>

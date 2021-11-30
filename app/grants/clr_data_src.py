@@ -102,8 +102,8 @@ def fetch_summed_contributions(grants, clr_round, network='mainnet'):
         SELECT
             grants.use_grant_id as grant_id,
             grants_contribution.profile_for_clr_id as user_id,
-            SUM((grants_contribution.normalized_data ->> 'amount_per_period_usdt')::FLOAT * {float(multiplier)}),
-            MAX(dashboard_profile.as_dict ->> 'trust_bonus')::FLOAT as trust_bonus
+            SUM(grants_contribution.amount_per_period_usdt * {float(multiplier)}),
+            MAX(dashboard_profile.trust_bonus)::FLOAT as trust_bonus
         FROM grants_contribution
         INNER JOIN dashboard_profile ON (grants_contribution.profile_for_clr_id = dashboard_profile.id)
         INNER JOIN grants_subscription ON (grants_contribution.subscription_id = grants_subscription.id)
@@ -117,15 +117,15 @@ def fetch_summed_contributions(grants, clr_round, network='mainnet'):
                     END
                 ) as use_grant_id
             FROM grants_grant
-        ) grants ON ((grants_contribution.normalized_data ->> 'id')::FLOAT = grants.grant_id)
+        ) grants ON (grants_contribution.grant_id = grants.grant_id)
         WHERE (
-            grants_contribution.normalized_data ->> 'id' IN ({grantIds}) AND
+            grants_contribution.grant_id IN ({grantIds}) AND
             grants_contribution.created_on >= '{clr_start_date}' AND
             grants_contribution.created_on <= '{clr_end_date}' AND
             grants_contribution.match = True AND
             grants_subscription.network = '{network}' AND
             grants_contribution.success = True AND
-            (grants_contribution.normalized_data ->> 'amount_per_period_usdt')::FLOAT >= 0 AND
+            grants_contribution.amount_per_period_usdt >= 0 AND
             NOT (
                 grants_contribution.profile_for_clr_id IN (
                     SELECT squelched.profile_id FROM townsquare_squelchprofile squelched WHERE squelched.active = True
