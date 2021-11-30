@@ -750,10 +750,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
     activities = Activity.objects.none()
 
-    page_size = 10
-    start_index = (page-1) * page_size
-    end_index = page * page_size
-
     # 2. Choose which filter to index
 
     # grants
@@ -806,6 +802,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         activity_pks = activity_pks.order_by('-id')
         # Pagination is done here
         if page:
+            page_size = 10
+            start_index = (page-1) * page_size
+            end_index = page * page_size
             activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True)
         else:
             activity_pks = activity_pks.values_list('activity_id', flat=True)
@@ -831,7 +830,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
 def activity(request):
     """Render the Activity response."""
-    page_size = 7
+
     page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
