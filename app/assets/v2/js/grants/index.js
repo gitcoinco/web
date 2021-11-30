@@ -668,6 +668,8 @@ if (document.getElementById('grants-showcase')) {
         this.params.customer_name = false;
         // save params to url
         this.updateUrlParams(false);
+        // reset results
+        this.changeQuery({page: 1});
       }
     },
     computed: {
