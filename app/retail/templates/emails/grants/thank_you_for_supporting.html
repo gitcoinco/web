@@ -63,57 +63,69 @@ along with this program. If not, see
     max-width: 25rem;
     width: 100%;
   }
+  .robot-img {
+    max-width: 10em;
+    width: 10em;
+  }
+  .contribution_table{
+    margin: 0px auto;
+  }
+  .contribution_table td{
+    padding: 5px;
+    border-top: 1px solid black;
+  }
 </style>
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
+    <img class="center-img robot-img" src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
+    <h1 style="text-align:center; margin-top: 10px;">🤖❤️{% trans "Thank you for supporting these grants on Gitcoin!" %}</h1>
+  <table class="contribution_table">
+    <tr>
+      <td>
+        Grant
+      </td>
+      <td>
+        Amount
+      </td>
+      <td>
+        Transaction
+      </td>
+    </tr>
   {% for grant_with_subscription in grants_with_subscription %}
   {% with subscription=grant_with_subscription.subscription grant=grant_with_subscription.grant %}
-  <div class="grant-header">
-    <img src="{% static "v2/images/heart-robot.png" %}" alt="{% trans "Gitcoin Heart Robot" %}" title="{% trans "Gitcoin Heart Robot" %}">
-    <div style="margin-top: 4em;">
-      <h1 style="text-transform: none;">{% trans "Thank you for supporting" %} {{ grant.title }}!
-      </h1>
-      <h2 style="text-transform: none;">{% trans "The world of open source is a better place because of you." %}
-      </h2>
-    </div>
-  </div>
+    <tr>
+      <td>
+        <a href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
+          {{ grant.title }}
+        </a>
+      </td>
+      <td>
+      {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
+      </td>
+      <td>
+        <a href="{{subscription.subscription_contribution.first.blockexplorer_url_split_txid}}">view &gt;&gt;</a>
+      </td>
+    </tr>
 
-  <hr style="margin-left: 0;">
-  <br>
-  <div class="grant-info">
-    <a href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
-      <img id="grant-logo"
-        src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" />
-    </a>
-    <br>
-    <a class="grant-info-name" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">
-      {{ grant.title }}
-    </a>
-    <p class="grant-description">
-      {{ grant.description|truncatechars:300 }}
-    </p>
-    <p>
-      {% trans "You have contributed" %}
-    </p>
-    <p>
-      <strong>{{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }} </strong>
-    </p>
-    <p>{% trans "You can see all the grants you support and your transaction history " %}
-      <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
-    </p>
-  </div>
-
-  <br>
-  <a class="btn" href="{% url 'grants:details' grant.id grant.slug %}?{{ utm_tracking }}">{% trans "View Updates" %}</a>
-  <hr style="margin-left: 0;">
   {% endwith %}
   {% endfor %}
 
-  <div>
-    <h3>How did we do?</h3>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdSVQ2OHbmqqEDEfE0vlRE5exLZso7TM_Eo4nZg7vnu2GE1Cw/viewform">Take this quick survey and receive an NFT</a>
-    <p>Share your honest feedback so that we can improve the product.</p>
-    <img src="{% static 'v2/images/survey-nft.png' %}" alt="Kudos preview">
-  </div>
+    <tr>
+      <td>
+        <strong>Total</strong>
+      </td>
+      <td>
+      {%for key, val in totals.items%}
+        {{val|floatformat:4}} {{key}}
+      {%endfor%}
+      </td>
+      <td>
+      </td>
+    </tr>
+  </table>
+
+    <p>{% trans "You can see all the grants you support and your transaction history " %}
+      <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
+    </p>
 </div>
 {% endblock %}
