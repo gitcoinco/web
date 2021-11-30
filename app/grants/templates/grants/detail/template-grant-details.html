@@ -389,7 +389,7 @@
               This grant has not verified their ownership of the twitter account listed.
             </b-card-text>
 
-            <div v-if="grant.is_on_team" class="text-center">
+            <div v-if="(grant.is_on_team || isStaff)" class="text-center">
 
               <template v-if="user_code">
                 <b-button v-b-modal.modal-start-twitter-verification variant="primary" class="btn btn-block btn-primary">
@@ -409,7 +409,7 @@
           </template>
 
           <!-- Idle Grant -->
-          <template v-if="grant.active && grant.is_on_team && grant.is_idle">
+          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.is_idle">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-exclamation-circle mr-1 text-danger"></i>
@@ -425,7 +425,7 @@
 
 
           <!-- L2 contributions -->
-          <template v-if="grant.active && grant.is_on_team && grant.tenants.includes('ETH')">
+          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-wallet mr-1"></i>
@@ -441,7 +441,7 @@
 
 
           <!-- Edit Grant Button -->
-          <template v-if="grant.active && !grant.is_idle && (grant.is_on_team || isStaff)">
+          <template v-if="!grant.is_idle && (grant.is_on_team || isStaff)">
             <hr class="my-4">
 
             <b-card-text>
