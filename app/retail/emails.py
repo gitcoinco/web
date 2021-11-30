@@ -149,11 +149,12 @@ def render_new_contributions_email(grant):
         'show_polygon_amount': False if amount_raised_polygon < 1 else True,
         'num_of_contributors': num_of_contributors,
         'media_url': settings.MEDIA_URL,
+        'contributions': contributions,
         'utm_tracking': build_utm_tracking('new_contributions'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/new_contributions.html", params))
     response_txt = render_to_string("emails/grants/new_contributions.txt", params)
-    subject = _("You have new Grant contributions!")
+    subject = f"You have {contributions.count()} new Grant contributions worth ${round(amount_raised, 2)}!"
 
     if amount_raised < 1:
         # trigger to prevent email sending for negligible amounts
