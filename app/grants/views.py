@@ -933,7 +933,7 @@ def grants_landing(request):
 
     active_main_rounds= active_rounds.filter(type='main').order_by('-total_pot')
     active_cause_rounds= active_rounds.filter(type='cause').order_by('-total_pot')
-    active_sponsor_rounds= active_rounds.filter(type='sponsor').order_by('-total_pot')
+    active_ecosystem_rounds= active_rounds.filter(type='ecosystem').order_by('-total_pot')
 
 
     now = datetime.now()
@@ -955,7 +955,7 @@ def grants_landing(request):
             'has_active_rounds': True if active_rounds else False,
             'active_main_rounds': active_main_rounds,
             'active_cause_rounds': active_cause_rounds,
-            'active_sponsor_rounds': active_sponsor_rounds,
+            'active_ecosystem_rounds': active_ecosystem_rounds,
             'sponsors': sponsors,
             'featured': True,
             'now': now,
