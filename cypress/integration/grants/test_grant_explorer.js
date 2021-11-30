@@ -43,7 +43,6 @@ describe('Grants Explorer page', () => {
       cy.visit('grants/explorer');
   
       cy.get('.vselect-clean').click();
-
       cy.get('.vs__dropdown-menu').should('not.contain', 'Most Relevant');
     });
 
