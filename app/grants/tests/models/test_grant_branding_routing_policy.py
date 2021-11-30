@@ -59,12 +59,3 @@ class TestGrantBrandingRoutingPolicy:
 
         assert hasattr(grant_branding_routing_policy, 'inline_css')
         assert grant_branding_routing_policy.inline_css == ''
-
-    def test_grant_branding_routing_policy_has_main_round_banner(self):
-        """Test main_round_banner attribute"""
-
-        grant_branding_routing_policy = GrantBrandingRoutingPolicyFactory()
-
-        assert hasattr(grant_branding_routing_policy, 'main_round_banner')
-        assert not grant_branding_routing_policy.main_round_banner
-
