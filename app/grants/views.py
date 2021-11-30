@@ -891,7 +891,6 @@ def get_policy_state(policy, request):
         "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else '',
         "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else '',
         "inline_css": policy.inline_css,
-        "main_round_banner": request.build_absolute_uri(policy.main_round_banner.url) if policy.main_round_banner else ''
     }
 
 
