@@ -1273,7 +1273,7 @@ def grants_by_grant_clr(request, clr_round):
         'now': timezone.now(),
         'grant_types': grant_types,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.jpg')),
         'card_type': 'summary_large_image',
         'avatar_height': 675,
         'avatar_width': 1200,
