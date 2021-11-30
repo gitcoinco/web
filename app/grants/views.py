@@ -415,7 +415,7 @@ def bulk_grants_for_cart(request):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
-        'clr_round': clr_round,
+        'clr_rounds': [clr_round],
         'omit_my_grants': True
     }
     _grants = get_grants_by_filters(**filters)
@@ -480,6 +480,7 @@ def get_grants(request):
     only_contributions = request.GET.get('only_contributions', '') == 'true'
     featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
+    round_type = request.GET.get('round_type', None)
     round_num = request.GET.get('round_num', None)
     sub_round_slug = request.GET.get('sub_round_slug', '')
     customer_name = request.GET.get('customer_name', '')
@@ -489,18 +490,22 @@ def get_grants(request):
     my_grants = request.GET.get('me', None) == 'true'
     my_collections = request.GET.get('my_collections', None) == 'true'
 
-    # 2. Fetch GrantCLR if round_num is present
-    clr_round = None
-    try:
-        if round_num:
-            params = {
-                'round_num': round_num,
-                'sub_round_slug': sub_round_slug,
-                'customer_name': customer_name
-            }
-            clr_round = GrantCLR.objects.get(**params)
-    except GrantCLR.DoesNotExist:
-        pass
+
+    # 2. Fetch GrantCLR(s) if present
+    clr_rounds = []
+    if round_type and round_type != 'false' and (not sub_round_slug or sub_round_slug == 'false'):
+        clr_rounds = GrantCLR.objects.filter(type=round_type)
+    else:
+        try:
+            if round_num:
+                params = {
+                    'round_num': round_num,
+                    'sub_round_slug': sub_round_slug,
+                    'customer_name': customer_name
+                }
+                clr_rounds.append(GrantCLR.objects.get(**params))
+        except GrantCLR.DoesNotExist:
+            pass
 
     # 3. Populate filters to fetch grants
     filters = {
@@ -514,7 +519,7 @@ def get_grants(request):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
-        'clr_round': clr_round,
+        'clr_rounds': clr_rounds,
         'tenants': tenants,
         'grant_regions': grant_regions,
         'my_grants': my_grants
@@ -621,7 +626,7 @@ def get_grants(request):
             'customer_name': customer_name,
             'collection_id': collection_id
         },
-        'grant_types': get_grant_clr_types(clr_round, _grants, network) if clr_round and _grants else get_grant_type_cache(network),
+        'grant_types': get_grant_clr_types(clr_rounds[0], _grants, network) if len(clr_rounds) and _grants else get_grant_type_cache(network),
         'grants': grants_array,
         'collections': [collection.to_json_dict(request.build_absolute_uri) for collection in collections],
         'credentials': {
@@ -635,10 +640,10 @@ def get_grants(request):
         'count': paginator.count if paginator else 0,
         'num_pages': paginator.num_pages if paginator else 0,
         'metadata': {
-            'claim_start_date': clr_round.claim_start_date if clr_round else None,
-            'claim_end_date': clr_round.claim_end_date if clr_round else None,
-            'start_date': clr_round.start_date if clr_round else None,
-            'end_date': clr_round.end_date if clr_round else None,
+            'claim_start_date': clr_rounds[0].claim_start_date if len(clr_rounds) else None,
+            'claim_end_date': clr_rounds[0].claim_end_date if len(clr_rounds) else None,
+            'start_date': clr_rounds[0].start_date if len(clr_rounds) else None,
+            'end_date': clr_rounds[0].end_date if len(clr_rounds) else None,
         }
     })
 
@@ -655,7 +660,7 @@ def get_grants_by_filters(
     idle_grants=False,
     only_contributions=False,
     omit_my_grants=False,
-    clr_round=None,
+    clr_rounds=None,
     tenants='',
     grant_regions='',
     my_grants=False
@@ -669,12 +674,20 @@ def get_grants_by_filters(
     _grants = Grant.objects.filter(network=network, hidden=False)
 
     # 2. Filter grants belonging to a CLR round
-    if clr_round:
-        if clr_round.collection_filters:
-            grant_ids = GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True)
+    if clr_rounds and len(clr_rounds):
+        grant_ids = []
+        grant_filters = Q()
+        # for each round collect all applicable filters
+        for clr_round in clr_rounds:
+            if clr_round.collection_filters:
+                grant_ids = grant_ids + GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True)
+            # construct query by ORing each of the given clr_rounds grant_filters
+            grant_filters |= Q(**clr_round.grant_filters)
+        # apply grant_ids from the collection_filters 
+        if len(grant_ids):
             _grants = _grants.filter(pk__in=grant_ids)
-
-        _grants = _grants.filter(**clr_round.grant_filters)
+        # apply the grant_filters
+        _grants = _grants.filter(grant_filters)
 
     if profile:
         if my_grants:
@@ -1190,7 +1203,7 @@ def grants_by_grant_clr(request, clr_round):
             'grant_tags': grant_tags,
             'idle_grants': True,
             'only_contributions': only_contributions,
-            'clr_round': clr_round
+            'clr_rounds': [clr_round]
         }
 
         _grants = get_grants_by_filters(**filters)
