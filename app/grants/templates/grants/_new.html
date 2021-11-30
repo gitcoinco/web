@@ -105,7 +105,7 @@
                   <span class="text-center">
                     Drag and Drop or Browse File
                     </br>
-                    formats that are acceptable are image/*
+                    Recommended: 348x200 px in jpg or png
                   </span>
                   <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
                   <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
@@ -192,7 +192,7 @@
 
                   <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching rounds.</p>
                   <p class="mt-0 mb-2">
-                    <a target="_blank" href="TODO" rel="noopener noreferrer">Learn more about matching rounds.</a>
+                    <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" rel="noopener noreferrer">Learn more about matching rounds.</a>
                   </p>
 
                   <v-select placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
