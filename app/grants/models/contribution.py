@@ -120,9 +120,11 @@ class Contribution(SuperModel):
             return self.blockexplorer_url_helper(self.tx_id)
 
     def blockexplorer_url_helper(self, tx_id):
-        if self.checkout_type == 'eth_zksync':
+        if self.checkout_type == 'eth_polygon':
+            return f'https://polygonscan.com/tx/{tx_id}'
+        elif self.checkout_type == 'eth_zksync':
             return f'https://zkscan.io/explorer/transactions/{tx_id.replace("sync-tx:", "")}'
-        if self.checkout_type == 'eth_std':
+        elif self.checkout_type == 'eth_std':
             network_sub = f"{self.subscription.network}." if self.subscription and self.subscription.network != 'mainnet' else ''
             return f'https://{network_sub}etherscan.io/tx/{tx_id}'
         # TODO: support all block explorers for diff chains
