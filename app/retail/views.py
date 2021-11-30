@@ -801,16 +801,14 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         activity_pks = ActivityIndex.objects.all()
 
     # Are the pks already in a list?
-    pksInList = isinstance(activity_pks, list)
-
-    # Order the activity index data
-    activity_pks = activity_pks.order_by('-id') if not pksInList else activity_pks
-
-    if page:
+    if not isinstance(activity_pks, list):
+        # Order the activity index data
+        activity_pks = activity_pks.order_by('-id')
         # Pagination is done here
-        activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True) if not pksInList else activity_pks
-    else:
-        activity_pks = activity_pks.values_list('activity_id', flat=True) if not pksInList else activity_pks
+        if page:
+            activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True)
+        else:
+            activity_pks = activity_pks.values_list('activity_id', flat=True)
 
     # Cross-ref the activity_pks->activity_id with the Activity objects
     activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
