@@ -46,28 +46,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
       <div id="gc-grants-cart" class="container-lg" v-cloak>
-
-        <div class="container">
-
-          <h1 class="text-left text-black my-5">Grants Cart</h1>
-
-          <div v-if="{{trust_bonus}} < 150 && grantData.length != 0 " v-cloak class="alert alert-primary spacer-mt-4 border-1 border-primary">
-            <div class="row">
-              <div class="col-12 col-lg-auto text-left pb-1 pb-lg-0" style="max-width: 50px;">
-                <object type="image/svg+xml" data="{% static 'v2/images/trust/64x64-green.svg' %}" height="35"></object>
-              </div>
-              <div class="col-12 col-lg-11 mt-2">
-                <h6 class="gc-font-base mt-1 d-block d-md-inline">Maximize Your Impact! Your current match is {{ trust_bonus }}%</h6>
-                <span class="font-smaller-1 line-height-2">Verify your identity after you checkout to increase your impact.</span>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
         <grants-cart ref="cart" inline-template>
           <div class="container">
+          <div class="container">
+            <h1 v-if="grantData.length > 0" class="text-left text-black my-5">Grants Cart</h1>
+            <div v-if="{{trust_bonus}} < 150 && grantData.length != 0 " v-cloak class="alert alert-primary spacer-mt-4 border-1 border-primary">
+              <div class="row">
+                <div class="col-12 col-lg-auto text-left pb-1 pb-lg-0" style="max-width: 50px;">
+                  <object type="image/svg+xml" data="{% static 'v2/images/trust/64x64-green.svg' %}" height="35"></object>
+                </div>
+                <div class="col-12 col-lg-11 mt-2">
+                  <h6 class="gc-font-base mt-1 d-block d-md-inline">Maximize Your Impact! Your current match is {{ trust_bonus }}%</h6>
+                  <span class="font-smaller-1 line-height-2">Verify your identity after you checkout to increase your impact.</span>
+                </div>
 
+              </div>
+            </div>
+          </div>
+
+          <div class="container">
             <b-modal
             id="clear-cart-modal"
             class="modal-dialog modal-lg" header-border-variant="transparent"
@@ -201,9 +198,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
             {% include 'shared/create_collection_modal.html' %}
           </div>
-        </grants-cart>
+        </div>
       </div>
-      {% include 'shared/footer.html' %}
+    </grants-cart>
+    {% include 'shared/footer.html' %}
     </div>
 
     {% include 'shared/current_profile.html' %}

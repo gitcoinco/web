@@ -28,7 +28,6 @@ const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
 const gnosisSafeAbi = [{'constant': true, 'inputs': [], 'name': 'VERSION', 'outputs': [{'internalType': 'string', 'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}];
 
 // Grant data
-let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
 let grantData = []; // data for grants in cart, initialized in mounted hook
 
 Vue.component('grants-cart', {
@@ -59,7 +58,6 @@ Vue.component('grants-cart', {
       tokenList: undefined, // array of all tokens for selected network
       isLoading: undefined,
       gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
-      grantHeaders,
       grantData,
       hideWalletAddress: true,
       AnonymizeGrantsContribution: false,
@@ -1765,8 +1763,6 @@ if (document.getElementById('gc-grants-cart')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-grants-cart',
     data: {
-      grantHeaders,
-      grantData
     }
   });
 }
