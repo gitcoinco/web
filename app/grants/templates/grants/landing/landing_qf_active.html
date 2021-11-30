@@ -48,9 +48,9 @@
       </div>
       <p>or <a href="{% url 'grants:new_matching_partner' %}">{% trans "become a member of the funder's league" %}</a></p>
     </div>
-    <div class="col-auto d-none d-md-block">
-      {% if grant_bg.main_round_banner %}
-        <img src="{{ grant_bg.main_round_banner }}" height="320" width="634" />
+    <div class="col-auto d-none d-md-block w-50">
+      {% if show_main_round_banner %}
+        <img src="{% static 'v2/images/grants/grants-round-12-tree.png' %}" class="d-block w-100"/>
       {% else %}
         <img src="{% static 'v2/images/grants/rocket.svg' %}" height="241" width="311" />
       {% endif %}

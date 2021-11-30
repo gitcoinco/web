@@ -923,6 +923,7 @@ def grants_landing(request):
             'active': 'grants_landing',
             'network': network,
             'grant_bg': get_branding_info(request),
+            'show_main_round_banner': True,
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
