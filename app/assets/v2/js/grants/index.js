@@ -133,6 +133,7 @@ if (document.getElementById('grants-showcase')) {
       previouslyLoadedGrants: {},
       selectOptions: [
         {group: 'Discover', label: null},
+        {label: 'Most Relevant', value: ''},
         {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
         {label: 'Trending', value: '-metadata__upcoming'},
         {label: 'Undiscovered Gems', value: '-metadata__gem'},

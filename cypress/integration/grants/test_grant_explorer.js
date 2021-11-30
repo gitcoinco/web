@@ -37,6 +37,26 @@ describe('Grants Explorer page', () => {
       cy.get('.vs__dropdown-menu').find('#vs3__option-14').should('contain', 'Highest Contributor Count');
     });
 
+    it('does not contain Most Relevant option by default', () => {
+      cy.impersonateUser();
+
+      cy.visit('grants/explorer');
+  
+      cy.get('.vselect-clean').click();
+      cy.get('.vs__dropdown-menu').should('not.contain', 'Most Relevant');
+    });
+
+    it('contains Most Relevant option when user performs keyword search', () => {
+      cy.impersonateUser();
+
+      cy.visit('grants/explorer');
+
+      cy.get('[placeholder="Search..."]').click().type('Test');
+
+      cy.get('.vselect-clean').click();
+      cy.get('.vs__dropdown-menu').should('contain', 'Most Relevant');
+    });
+
     it('divides the sort options into category names with disabled labels', () => {
       cy.impersonateUser();
 

@@ -20,7 +20,9 @@
               <v-select class="vselect-clean rounded-pill" 
                         style="min-width:230px; border: 1px solid #ced4da;" 
                         id="experience_level" 
-                        :options="selectOptions.concat(adminOptions)" 
+                        :options="params.keyword && params.keyword !== '' 
+                                  ? selectOptions.concat(adminOptions) 
+                                  : selectOptions.concat(adminOptions).filter(option => option.value !== '')"
                         :searchable="false" 
                         :clearable="false" 
                         :selectable="(option) => !option.hasOwnProperty('group')" 
@@ -32,7 +34,9 @@
               <v-select class="vselect-clean rounded-pill" 
                         style="min-width:230px; border: 1px solid #ced4da;" 
                         id="experience_level" 
-                        :options="selectOptions" 
+                        :options="params.keyword && params.keyword !== '' 
+                                  ? selectOptions 
+                                  : selectOptions.filter(option => option.value !== '')" 
                         :searchable="false" 
                         :clearable="false" 
                         :selectable="(option) => !option.hasOwnProperty('group')" 
