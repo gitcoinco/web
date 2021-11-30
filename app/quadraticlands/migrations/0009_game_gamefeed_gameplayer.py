@@ -11,6 +11,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('dashboard', '0181_auto_20210613_1449'),
         ('quadraticlands', '0008_schwagcoupon'),
     ]
 
