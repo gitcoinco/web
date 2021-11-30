@@ -28,7 +28,7 @@ if (document.getElementById('grants-showcase')) {
     page: 1,
     limit: 12,
     me: false,
-    sort_option: '',
+    sort_option: 'weighted_shuffle',
     collection_id: false,
     network: 'mainnet',
     state: 'active',
