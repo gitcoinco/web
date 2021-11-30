@@ -163,8 +163,17 @@ def render_new_contributions_email(grant):
 
 
 def render_thank_you_for_supporting_email(grants_with_subscription):
+    totals = {}
+    for gws in grants_with_subscription:
+        key = gws['subscription'].token_symbol
+        val = gws['subscription'].amount_per_period
+        if key not in totals.keys():
+            totals[key] = 0
+        totals[key] += val
+
     params = {
         'grants_with_subscription': grants_with_subscription,
+        "totals": totals,
         'utm_tracking': build_utm_tracking('thank_you_for_supporting_email'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
@@ -272,12 +281,15 @@ def support_cancellation(request):
 
 @staff_member_required
 def thank_you_for_supporting(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    grant_with_subscription = [{
-        'grant': grant,
-        'subscription': subscription
-    }]
+    grant_with_subscription = []
+    for i in range(0, 10):
+        grant = Grant.objects.order_by('?').first()
+        subscription = Subscription.objects.filter(grant__pk=grant.pk).last()
+        if subscription:
+            grant_with_subscription.append({
+                'grant': grant,
+                'subscription': subscription
+            })
     response_html, __, __ = render_thank_you_for_supporting_email(grant_with_subscription)
     return HttpResponse(response_html)
 
