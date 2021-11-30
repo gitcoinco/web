@@ -752,48 +752,58 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
     # 2. Choose which filter to index
 
+    filter_applied = False
+
     # grants
     if (
         what in ['grants', 'all_grants']
     ):
         activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
+        filter_applied = True
     elif 'grant:' in what:
         activity_pks = ActivityIndex.objects.filter(key=what)
+        filter_applied = True
 
     # all Grants
     if what == 'all_grants':
         activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
+        filter_applied = True
 
     # kudos
     if (
         what in ['kudos']
     ):
         activity_pks = ActivityIndex.objects.filter(key__startswith='kudo:')
+        filter_applied = True
     elif 'kudos:' in what:
         activity_pks = ActivityIndex.objects.filter(key=what.replace('kudos', 'kudo'))
+        filter_applied = True
 
     # hackathon project
     if 'project:' in what:
         activity_pks = ActivityIndex.objects.filter(key=what)
+        filter_applied = True
 
     # tribes
     if 'tribe:' in what:
         handle = what[6:]
-        print(handle)
         profile = Profile.objects.filter(handle=handle).first()
+        filter_applied = True
         if profile:
             activity_pks = ActivityIndex.objects.filter(key=f'profile:{profile.pk}')
 
     # hackathon activity
     if 'hackathon:' in what:
         activity_pks = ActivityIndex.objects.filter(key=what)
+        filter_applied = True
 
     # single activity
     if 'activity:' in what:
         activity_pks = [what.replace('activity:', '')]
+        filter_applied = True
 
     # Defaults
-    if not activity_pks:
+    if not activity_pks and not filter_applied:
         activity_pks = ActivityIndex.objects.all()
 
     # Are the pks already in a list?
