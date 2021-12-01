@@ -226,7 +226,7 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, gra
     '''
     bigtot = 0
     totals = {}
-    match_cap_per_grant = total_pot * (grant_clr_percentage_cap / 100)
+    match_cap_per_grant = total_pot * (float(grant_clr_percentage_cap) / 100)
 
     for proj, contribz in curr_agg.items():
         tot = 0
