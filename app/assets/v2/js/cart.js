@@ -488,7 +488,7 @@ Vue.component('grants-cart', {
   },
 
   methods: {
-    checkForGnosisWallets: async function () {
+    checkForGnosisWallets: async function() {
       // collate grants which represent contracts which cannot be interacted with
       const withCode = [];
       const unsafeGrants = [];
@@ -497,26 +497,28 @@ Vue.component('grants-cart', {
       const grants = this.grantsByTenant.filter(grant => !!grant.grant_admin_address && grant.grant_admin_address.length === 42 && grant.grant_admin_address.startsWith('0x'));
 
       // check each of the grants in the cart to see if it points to a contract
-      const codes = await Promise.all(grants.map((grant) => new Promise(async (resolve) => {
+      const codes = await Promise.all(grants.map((grant) => new Promise((resolve) => {
         // check for contract on Polygon
-        const code = await web3.eth.getCode(grant.grant_admin_address);
-        if (code !== '0x') {
-          withCode.push(grant);
-        }
-        // resolve the discovered code
-        resolve(code);
+        web3.eth.getCode(grant.grant_admin_address).then((code) => {
+          if (code !== '0x') {
+            withCode.push(grant);
+          }
+          // resolve the discovered code
+          resolve(code);
+        });
       })));
 
       // if codes are detected then we need to check that they have an appropriate version on Polygon
       if (withCode.length) {
         const abi = ['function VERSION() external view returns(string)'];
-        await withCode.map(async (grant) => {
+
+        await withCode.map(async(grant) => {
           try {
             const version = await (new web3.eth.Contract(grant.grant_admin_address, abi, provider)).VERSION();
           } catch (e) {
             unsafeGrants.push(grant);
           }
-        })
+        });
       }
 
       // return any grants which cannot be contributed to
