@@ -680,7 +680,7 @@ def get_grants_by_filters(
         # for each round collect all applicable filters
         for clr_round in clr_rounds:
             if clr_round.collection_filters:
-                grant_ids = grant_ids + GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True)
+                grant_ids = grant_ids + list(GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True))
             # construct query by ORing each of the given clr_rounds grant_filters
             grant_filters |= Q(**clr_round.grant_filters)
         # apply grant_ids from the collection_filters 
