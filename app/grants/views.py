@@ -859,14 +859,12 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
         return grant_types
 
     for _grant_type in _grant_types:
-        count = active_grants.filter(grant_type=_grant_type,network=network).count() if active_grants else 0
 
         grant_types.append({
             'label': _grant_type.label,
             'keyword': _grant_type.name,
             'is_active': _grant_type.is_active,
             'is_visible': _grant_type.is_visible,
-            'count': count,
             'funding': int(_grant_type.active_clrs_sum),
             'funding_ui': f"${round(int(_grant_type.active_clrs_sum)/1000)}k",
         })
