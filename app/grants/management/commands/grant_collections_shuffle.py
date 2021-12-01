@@ -60,7 +60,6 @@ class Command(BaseCommand):
         collections = GrantCollection.objects.filter(hidden=False)
         total = collections.count()
 
-        print(f'No. of collections: {total}')
 
         # create and update the shuffle rank
         for key, gc in enumerate(collections):
