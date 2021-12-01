@@ -32,7 +32,7 @@
 
   <!--  Header section -->
   <div class="row justify-content-between align-items-center my-5">
-    <div class="col">
+    <div class="col-md">
       <h1 class="mb-3">
         Discover and Fund <br>Extraordinary Public Goods
       </h1>
@@ -43,13 +43,17 @@
         </span>
       </h3>
       <div class="my-3">
-        <a class="btn btn-lg btn-primary" href="{% url 'grants:grants_explorer' %}">{% trans 'Explore Grants' %}</a>
-        <a class="btn btn-lg btn-outline-primary ml-3" href="/grants/new">{% trans 'Create a Grant' %}</a>
+        <a class="btn btn-lg btn-primary d-block d-sm-inline" href="{% url 'grants:grants_explorer' %}">{% trans 'Explore Grants' %}</a>
+        <a class="btn btn-lg btn-outline-primary ml-sm-3 d-block d-sm-inline mt-2 mt-sm-0" href="/grants/new">{% trans 'Create a Grant' %}</a>
       </div>
       <p>or <a href="{% url 'grants:new_matching_partner' %}">{% trans "become a member of the funder's league" %}</a></p>
     </div>
-    <div class="col-auto d-none d-md-block">
-      <img src="{% static 'v2/images/grants/rocket.svg' %}" height="241" width="311" />
+    <div class="col-md">
+      {% if show_main_round_banner %}
+        <img src="{% static 'v2/images/grants/grants-round-12-tree.png' %}" class="d-block w-100"/>
+      {% else %}
+        <img src="{% static 'v2/images/grants/rocket.svg' %}" height="241" width="311" />
+      {% endif %}
     </div>
   </div>
 

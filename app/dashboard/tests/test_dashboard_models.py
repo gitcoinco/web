@@ -490,11 +490,11 @@ class DashboardModelsTest(TestCase):
             handle='fred',
             email='fred@localhost'
         )
-        CustomAvatar.objects.create(profile=profile, config="{}")
+        custom_avatar = CustomAvatar.objects.create(profile=profile, config="{}")
         social_avatar = SocialAvatar.objects.create(profile=profile)
         profile.activate_avatar(social_avatar.pk)
-        assert profile.avatar_baseavatar_related.all().first().active is False
-        assert profile.avatar_baseavatar_related.all().last().active is True
+        assert profile.avatar_baseavatar_related.get(pk=custom_avatar.id).active is False
+        assert profile.avatar_baseavatar_related.get(pk=social_avatar.id).active is True
 
     @staticmethod
     def test_bounty_snooze_url():

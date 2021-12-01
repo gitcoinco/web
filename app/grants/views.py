@@ -911,12 +911,11 @@ def get_policy_state(policy, request):
         "url_pattern": policy.url_pattern,
         "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else '',
         "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else '',
-        "inline_css": policy.inline_css
+        "inline_css": policy.inline_css,
     }
 
 
 def get_branding_info(request):
-
     all_policies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
     for policy in all_policies:
         if re.search(policy.url_pattern, request.get_full_path()):
@@ -945,6 +944,7 @@ def grants_landing(request):
             'active': 'grants_landing',
             'network': network,
             'grant_bg': get_branding_info(request),
+            'show_main_round_banner': True,
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
