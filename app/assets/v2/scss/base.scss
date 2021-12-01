@@ -507,12 +507,11 @@ input[type=text].loading {
 
 .bottom_notification {
   padding: 8px 30px;
-  background: #6F3FF5;
-  color: white;
+  background: #F0EBFF;
+  color: black;
   width: 100%;
   margin-left: 0px;
   font-size: 16px;
-  padding-right: 50px;
 }
 
 .bottom_notification-beyond {
@@ -545,8 +544,8 @@ input[type=text].loading {
 }
 
 .bottom_notification a {
-  color: currentColor;
-  text-decoration: underline;
+  color: #6F3FF5;
+  text-decoration: none;
   margin-left: 5px;
 }
 
