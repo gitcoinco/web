@@ -72,7 +72,6 @@ class Command(BaseCommand):
             meta_data_score = grant_meta_data_score(gc.grants.all())
             shuffle_rank += meta_data_score
 
-            print(f'{key}/{total}: {gc.id} ---> from : to === {gc.shuffle_rank} : {shuffle_rank}')
 
             # save the new shuffle_rank
             gc.shuffle_rank = shuffle_rank
