@@ -2064,7 +2064,7 @@ def grant_new(request):
     profile = get_profile(request)
 
     grant_tags = []
-    for g_tag in GrantTag.objects.all().order_by("name"):
+    for g_tag in GrantTag.objects.all().cache().order_by(Lower("name")):
         _grant_tag = {
             'id': g_tag.pk,
             'name': g_tag.name
