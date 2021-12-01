@@ -24,6 +24,7 @@ const gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6'; // Gitcoin 
 // Contract parameters and constants
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
 const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
+const gnosisSafeAbi = ['function VERSION() external view returns(string)'];
 
 // Grant data
 let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
@@ -497,7 +498,7 @@ Vue.component('grants-cart', {
       const grants = this.grantsByTenant.filter(grant => !!grant.grant_admin_address && grant.grant_admin_address.length === 42 && grant.grant_admin_address.startsWith('0x'));
 
       // check each of the grants in the cart to see if it points to a contract
-      const codes = await Promise.all(grants.map((grant) => new Promise((resolve) => {
+      await Promise.all(grants.map((grant) => new Promise((resolve) => {
         // check for contract on Polygon
         web3.eth.getCode(grant.grant_admin_address).then((code) => {
           if (code !== '0x') {
@@ -510,15 +511,22 @@ Vue.component('grants-cart', {
 
       // if codes are detected then we need to check that they have an appropriate version on Polygon
       if (withCode.length) {
-        const abi = ['function VERSION() external view returns(string)'];
-
-        await withCode.map(async(grant) => {
+        // check that each of the discovered contracts can respond with a version
+        await Promise.all(withCode.map((grant) => new Promise((resolve) => {
+          // if contract creation throws then this address is not a gnosis safe
           try {
-            const version = await (new web3.eth.Contract(grant.grant_admin_address, abi, provider)).VERSION();
+            // test for a successful read of the contract.version()
+            new web3.eth.Contract(grant.grant_admin_address, gnosisSafeAbi, provider)
+              .then((contract) => contract.VERSION())
+              .catch(() => unsafeGrants.push(grant))
+              .finally(() => resolve());
           } catch (e) {
+            // this grant is not a gnosis wallet but it is a contract...
             unsafeGrants.push(grant);
+            // resolve the outer promise
+            resolve();
           }
-        });
+        })));
       }
 
       // return any grants which cannot be contributed to
