@@ -258,8 +258,8 @@ Vue.component('grantsCartEthereumPolygon', {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
         }
 
-        // Check for contracts/gnosis wallets - we cannot send funds if the contract isnt deployed on Polygon
-        const unsafeGrants = await appCart.$refs.cart.checkForGnosisWallets();
+        // Check for contracts/gnosis safes - we cannot send funds if the contract isnt deployed on Polygon
+        const unsafeGrants = await appCart.$refs.cart.checkForGnosisSafes();
 
         // Check if we can checkout using polygon
         if (unsafeGrants.length > 0) {

@@ -488,7 +488,7 @@ Vue.component('grants-cart', {
   },
 
   methods: {
-    checkForGnosisWallets: async function() {
+    checkForGnosisSafes: async function() {
       // collate grants which represent contracts which cannot be interacted with
       const withCode = [];
       const unsafeGrants = [];
