@@ -115,7 +115,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       if (appCart.$refs.cart.network === 'mainnet') {
         appCart.$refs.cart.networkId = '137';
-        url = 'https://rpc-mainnet.maticvigil.com';
+        url = 'https://polygon-rpc.com';
       } else {
         appCart.$refs.cart.networkId = '80001';
         appCart.$refs.cart.network = 'testnet';
@@ -256,6 +256,15 @@ Vue.component('grantsCartEthereumPolygon', {
 
         if (typeof ga !== 'undefined') {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
+        }
+
+        // Check for contracts/gnosis safes - we cannot send funds if the contract isnt deployed on Polygon
+        const unsafeGrants = await appCart.$refs.cart.checkForGnosisSafes();
+
+        // Check if we can checkout using polygon
+        if (unsafeGrants.length > 0) {
+          _alert(`Contributions cannot be sent to the following Grants on Polygon: <ul class="mt-3">${unsafeGrants.map((grant) => `<li>'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>. Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
+          return;
         }
 
         // Throw if invalid Gitcoin contribution percentage
@@ -445,15 +454,17 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Get total amount needed for eack token by summing over donation inputs
       this.donationInputs.forEach((donation) => {
-        const tokenSymbol = donation.name;
-        const amount = toBigNumber(donation.amount);
+        if (donation) {
+          const tokenSymbol = donation.name;
+          const amount = toBigNumber(donation.amount);
 
-        if (!requiredAmounts[tokenSymbol]) {
-          // First time seeing this token, set the field and initial value
-          requiredAmounts[tokenSymbol] = { amount };
-        } else {
-          // Increment total required amount of the token with new found value
-          requiredAmounts[tokenSymbol].amount = requiredAmounts[tokenSymbol].amount.add(amount);
+          if (!requiredAmounts[tokenSymbol]) {
+            // First time seeing this token, set the field and initial value
+            requiredAmounts[tokenSymbol] = { amount };
+          } else {
+            // Increment total required amount of the token with new found value
+            requiredAmounts[tokenSymbol].amount = requiredAmounts[tokenSymbol].amount.add(amount);
+          }
         }
       });
 
@@ -469,7 +480,7 @@ Vue.component('grantsCartEthereumPolygon', {
         const tokenDetails = this.getTokenByName(tokenSymbol);
 
         const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
-        const tokenIsMatic = tokenDetails.name === 'MATIC';
+        const tokenIsMatic = tokenDetails && tokenDetails.name === 'MATIC';
 
         // Check user matic balance against required amount
         if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
@@ -505,19 +516,20 @@ Vue.component('grantsCartEthereumPolygon', {
             }
           }
         }
+        if (tokenDetails) {
+          // Check user token balance against required amount
+          const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+          const userTokenBalance = toBigNumber(await tokenContract.methods
+            .balanceOf(userAddress)
+            .call({ from: userAddress }));
 
-        // Check user token balance against required amount
-        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-        const userTokenBalance = toBigNumber(await tokenContract.methods
-          .balanceOf(userAddress)
-          .call({ from: userAddress }));
-
-        if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
-          requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-          requiredAmounts[tokenSymbol].amount = parseFloat(((
-            requiredAmounts[tokenSymbol].amount - userTokenBalance
-          ) / 10 ** tokenDetails.decimals).toFixed(5));
-          isBalanceSufficient = false;
+          if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
+            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+            requiredAmounts[tokenSymbol].amount = parseFloat(((
+              requiredAmounts[tokenSymbol].amount - userTokenBalance
+            ) / 10 ** tokenDetails.decimals).toFixed(5));
+            isBalanceSufficient = false;
+          }
         }
       }
 
