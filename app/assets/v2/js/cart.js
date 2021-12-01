@@ -522,11 +522,11 @@ Vue.component('grants-cart', {
           // attempt to read the version from the contract
           contract.methods.VERSION().call().then((version) => {
             // check that the contract holds a valid version
-            if (version == '1.0.0') {
+            if (version == '1.0.0') { // if version is 1.0.0 the safe was deployed with create, and more recent versions are deployed with create2 and can be deployed on polygon
               unsafeGrants.push(grant);
             }
           }).catch((e) => {
-            // no version method available... this could be a proxy or a different type of contract eti
+            // no version method available... this could be a proxy or a different type of contract - to be safe we ensure no funds are sent here
             unsafeGrants.push(grant);
           }).finally(() => {
             // resolve the outer promise
