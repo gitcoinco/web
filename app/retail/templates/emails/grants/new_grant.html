@@ -113,7 +113,7 @@ along with this program. If not, see
     alt="grant logo">
   <h1 class="grant-email-name">{{ grant.title }}</h1>
   <p class="grant-description">{{ grant.description }}</p>
-  <div class="grant-action" style="margin-top: 2em;">
+  <!-- <div class="grant-action" style="margin-top: 2em;">
     <span>
       <a class="button" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
         {% trans "View Your Grant" %}
@@ -125,7 +125,7 @@ along with this program. If not, see
         {% trans "Learn How to Maximize your Matching" %}
       </a>
     </span>
-  </div>
+  </div> -->
   <div class="grant-action-mobile" style="margin-top: 2em;">
     <a class="button" style="display: block;" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
       {% trans "View Your Grant" %}
