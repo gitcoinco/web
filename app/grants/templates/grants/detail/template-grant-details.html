@@ -345,7 +345,7 @@
       </div>
 
       <!-- Grant Management -->
-      <div class="grant-managment mt-4 mt-md-0">
+      <div class="grant-managment mt-4 mt-md-0" v-if="(grant.is_on_team || isStaff)">
         <b-card>
 
           <!-- Admin Message -->
