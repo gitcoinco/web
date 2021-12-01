@@ -115,7 +115,7 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
 
 def should_suppress_notification_email(email, email_type):
     from marketing.models import EmailSubscriber
-    queryset = EmailSubscriber.objects.filter(email__iexact=email)
+    queryset = EmailSubscriber.objects.filter(email_index=email.lower())
     if queryset.exists():
         es = queryset.first()
         return not es.should_send_email_type_to(email_type)
@@ -145,16 +145,14 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
         if not es:
             es = EmailSubscriber.objects.filter(email_index=email.lower()).first()
         if not es:
-            es = EmailSubscriber.objects.filter(email__iexact=email).first()
-        if not es:
-            es, created = EmailSubscriber.objects.update_or_create(email__iexact=email, defaults=defaults)
+            es, created = EmailSubscriber.objects.update_or_create(email=email, defaults=defaults)
         # print("EmailSubscriber:", es, "- created" if created else "- updated")
     except EmailSubscriber.MultipleObjectsReturned:
-        email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
+        email_subscriber_ids = EmailSubscriber.objects.filter(email_index=email.lower()) \
             .values_list('id', flat=True) \
             .order_by('-created_on')[1:]
         EmailSubscriber.objects.filter(pk__in=list(email_subscriber_ids)).delete()
-        es = EmailSubscriber.objects.get(email__iexact=email)
+        es = EmailSubscriber.objects.get(email_index=email.lower())
         created = False
     except EmailSubscriber.DoesNotExist:
         es = EmailSubscriber.objects.create(**defaults)
