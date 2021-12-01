@@ -346,7 +346,7 @@ Vue.component('grantsCartEthereumZksync', {
         const userAmount = toBigNumber(zksyncBalances[tokenSymbol]);
         const requiredAmount = requiredAmounts[tokenSymbol];
 
-        if (requiredAmount.gt(userAmount))
+        if (typeof requiredAmount !== 'undefined' && requiredAmount.gt(userAmount))
           isBalanceSufficient = false;
       });
 
