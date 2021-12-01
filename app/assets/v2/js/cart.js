@@ -30,6 +30,18 @@ const gnosisSafeAbi = [{'constant': true, 'inputs': [], 'name': 'VERSION', 'outp
 // Grant data
 let grantData = []; // data for grants in cart, initialized in mounted hook
 
+Vue.component('eth-checkout-button', {
+  delimiters: [ '[[', ']]' ],
+  template: '#eth-checkout-template',
+  props: [ 'maxCartItems', 'network', 'isZkSyncDown', 'donationInputs', 'onPolygonUpdate', 'currentTokens', 'grantsByTenant',
+    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ],
+  data: function() {
+    return {
+    };
+  }
+});
+
+
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
 
