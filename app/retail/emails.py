@@ -149,11 +149,12 @@ def render_new_contributions_email(grant):
         'show_polygon_amount': False if amount_raised_polygon < 1 else True,
         'num_of_contributors': num_of_contributors,
         'media_url': settings.MEDIA_URL,
+        'contributions': contributions,
         'utm_tracking': build_utm_tracking('new_contributions'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/new_contributions.html", params))
     response_txt = render_to_string("emails/grants/new_contributions.txt", params)
-    subject = _("You have new Grant contributions!")
+    subject = f"You have {contributions.count()} new Grant contributions worth ${round(amount_raised, 2)}!"
 
     if amount_raised < 1:
         # trigger to prevent email sending for negligible amounts
@@ -163,8 +164,17 @@ def render_new_contributions_email(grant):
 
 
 def render_thank_you_for_supporting_email(grants_with_subscription):
+    totals = {}
+    for gws in grants_with_subscription:
+        key = gws['subscription'].token_symbol
+        val = gws['subscription'].amount_per_period
+        if key not in totals.keys():
+            totals[key] = 0
+        totals[key] += val
+
     params = {
         'grants_with_subscription': grants_with_subscription,
+        "totals": totals,
         'utm_tracking': build_utm_tracking('thank_you_for_supporting_email'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
@@ -272,12 +282,15 @@ def support_cancellation(request):
 
 @staff_member_required
 def thank_you_for_supporting(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    grant_with_subscription = [{
-        'grant': grant,
-        'subscription': subscription
-    }]
+    grant_with_subscription = []
+    for i in range(0, 10):
+        grant = Grant.objects.order_by('?').first()
+        subscription = Subscription.objects.filter(grant__pk=grant.pk).last()
+        if subscription:
+            grant_with_subscription.append({
+                'grant': grant,
+                'subscription': subscription
+            })
     response_html, __, __ = render_thank_you_for_supporting_email(grant_with_subscription)
     return HttpResponse(response_html)
 

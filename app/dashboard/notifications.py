@@ -409,21 +409,21 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
-        return False
-
-    # Define posting specific variables.
-    comment_id = None
-    url = bounty.github_url
-    uri = parse(url).path
-    uri_array = uri.split('/')
-
-    # Prepare the comment message string.
-    msg = build_github_notification(bounty, event_name, profile_pairs)
-    if not msg:
-        return False
-
     try:
+        if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
+            return False
+
+        # Define posting specific variables.
+        comment_id = None
+        url = bounty.github_url
+        uri = parse(url).path
+        uri_array = uri.split('/')
+
+        # Prepare the comment message string.
+        msg = build_github_notification(bounty, event_name, profile_pairs)
+        if not msg:
+            return False
+
         username = uri_array[1]
         repo = uri_array[2]
         issue_num = uri_array[4]
