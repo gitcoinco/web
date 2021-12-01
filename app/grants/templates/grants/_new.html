@@ -234,7 +234,7 @@
                 <div>
                   <label class="font-subheader font-weight-light letter-spacing" for="grant_region">Region</label>
 
-                  <v-select placeholder="Where is your team based in?" :options="grant_regions" label="label" v-model="form.region" :reduce="state => state.name">
+                  <v-select placeholder="Where is your team based?" :options="grant_regions" label="label" v-model="form.region" :reduce="state => state.name">
                     <template v-slot:option="option">
                       <span class="font-weight-semibold">[[ option.label ]]</span>
                     </template>
