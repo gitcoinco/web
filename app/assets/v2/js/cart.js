@@ -71,7 +71,7 @@ Vue.component('grants-cart', {
       // Checkout, zkSync
       zkSyncSupportedTokens: [], // Used to inform user which tokens in their cart are on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      polygonSupportedTokens: [], // Used to inform user which tokens in their cart are on zkSync
+      polygonSupportedTokens: [], // Used to inform user which tokens in their cart are on Polygon
       polygonEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
       isPolygonDown: false, // disable polygon when true
