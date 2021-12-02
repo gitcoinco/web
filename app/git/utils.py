@@ -533,9 +533,9 @@ def _get_user(gh_client, user=None):
             ret = gh_client.load(BytesIO(cached_user.data))
             ret.update()
         except GitCache.DoesNotExist:
-            logger.debug("User '%s' not found in cache", user)
+            logger.debug("User not found in cache")
         except Exception:
-            logger.error("Failed to load user '%s' from cache", user, exc_info=True)
+            logger.error("Failed to load user rom cache", exc_info=True)
 
     # If no user has been retreived (either no handle or not in cache yet) we get the user
     if not ret:
