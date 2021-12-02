@@ -175,7 +175,7 @@ if (document.getElementById('grants-showcase')) {
       },
       fetchClrGrants: async function() {
         let vm = this;
-        let url = '/api/v0.1/grants_clr/';
+        let url = '/api/v0.1/grants_clr/?page_size=25';
         let getClr = await fetch(url);
         let clrJson = await getClr.json();
 

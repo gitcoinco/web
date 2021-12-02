@@ -1329,7 +1329,7 @@ def new_bounty_daily(es):
             from_email = settings.CONTACT_EMAIL
 
             from django.contrib.auth.models import User
-            user = User.objects.filter(email__iexact=to_email).first()
+            user = User.objects.filter(email_index=to_email.lower()).first()
             activities = latest_activities(user)
 
             html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, hackathons=get_hackathons(), latest_activities=activities)

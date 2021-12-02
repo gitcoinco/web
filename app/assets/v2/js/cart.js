@@ -1604,9 +1604,9 @@ Vue.component('grants-cart', {
         checkoutOptions = 'Polygon';
       }
 
-      if (checkoutOptions) {
-        _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
-      }
+      // if (checkoutOptions) {
+      //   _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
+      // }
     },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
