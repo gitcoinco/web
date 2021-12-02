@@ -84,27 +84,28 @@ def transaction_status(transaction, txid):
         maybeprint(89, e)
 
 
-def get_token(token_symbol, network):
+def get_token(token_symbol, network, chain='std'):
     """
     For a given token symbol and amount, returns the token's details. For ETH, we change the 
     token address to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE since that's the address
     BulkCheckout uses to represent ETH (default here is the zero address)
     """
     token = Token.objects.filter(network=network, symbol=token_symbol, approved=True).first().to_dict
-    if token_symbol == 'ETH':
+    if token_symbol == 'ETH' and chain == 'std':
         token['addr'] = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-        print(f"Token is ETH and network is {network}")
     return token
 
-def parse_token_amount(token_symbol, amount, network):
+
+def parse_token_amount(token_symbol, amount, network, chain='std'):
     """
     For a given token symbol and amount, returns the integer version in "wei", i.e. the integer
     form based on the token's number of decimals
     """
-    token = get_token(token_symbol, network)
+    token = get_token(token_symbol, network, chain)
     decimals = token['decimals']
     parsed_amount = int(amount * 10 ** decimals)
     return parsed_amount
+
 
 def check_for_replaced_tx(tx_hash, network, datetime=None, chain='std'):
     """
@@ -207,7 +208,7 @@ def grants_transaction_validator(contribution, w3, chain='std'):
         # Parse out the transfer details we are looking to find in the event logs
         token_symbol = contribution.normalized_data['token_symbol']
         expected_recipient = contribution.normalized_data['admin_address'].lower()
-        expected_token = get_token(token_symbol, network)['addr'].lower() # we compare by token address
+        expected_token = get_token(token_symbol, network, chain)['addr'].lower() # we compare by token address
 
         # If amount_per_period_minus_gas_price is very close to zero, this is an automatic Gitcoin
         # contribution so we use a different field to get the expected value
@@ -216,11 +217,11 @@ def grants_transaction_validator(contribution, w3, chain='std'):
         else:
             amount_to_use = contribution.subscription.amount_per_period_minus_gas_price
 
-        print(f"Expected amount is being calculated with {amount_to_use}")
         expected_amount = parse_token_amount(
             token_symbol=token_symbol,
             amount=amount_to_use,
-            network=network
+            network=network,
+            chain=chain
         )
         transfer_tolerance = 0.05 # use a 5% tolerance when checking amounts to account for floating point error
         expected_amount_min = int(expected_amount * (1 - transfer_tolerance))
@@ -233,9 +234,6 @@ def grants_transaction_validator(contribution, w3, chain='std'):
 
             transfer_amount = event['args']['amount']
             is_correct_amount = transfer_amount >= expected_amount_min and transfer_amount <= expected_amount_max
-
-            print(f"Expected amount range: {expected_amount_min} - {expected_amount_max}")
-            print(f"Does amount match? {transfer_amount} == {expected_amount}")
 
             if is_correct_recipient and is_correct_token and is_correct_amount:
                 # We found the event log corresponding to the contribution parameters
