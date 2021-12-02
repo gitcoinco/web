@@ -494,7 +494,7 @@ def get_grants(request):
     # 2. Fetch GrantCLR(s) if present
     clr_rounds = []
     if round_type and round_type != 'false' and (not sub_round_slug or sub_round_slug == 'false'):
-        clr_rounds = GrantCLR.objects.filter(type=round_type)
+        clr_rounds = GrantCLR.objects.filter(type=round_type, start_date__lt=timezone.now(), end_date__gt=timezone.now())
     else:
         try:
             if round_num:
