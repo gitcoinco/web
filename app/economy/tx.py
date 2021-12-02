@@ -90,7 +90,17 @@ def get_token(token_symbol, network, chain='std'):
     token address to 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE since that's the address
     BulkCheckout uses to represent ETH (default here is the zero address)
     """
-    token = Token.objects.filter(network=network, symbol=token_symbol, approved=True).first().to_dict
+
+    network_id = 1
+
+    if chain == 'polygon':
+        if network == 'mainnet':
+            network_id = 137
+        else:
+            network_id = 80001
+
+    token = Token.objects.filter(
+        network=network, network_id=network_id, symbol=token_symbol, approved=True).first().to_dict
     if token_symbol == 'ETH' and chain == 'std':
         token['addr'] = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
     return token
