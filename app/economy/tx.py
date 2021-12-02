@@ -239,6 +239,10 @@ def grants_transaction_validator(contribution, w3, chain='std'):
             print(f"Expected amount range: {expected_amount_min} - {expected_amount_max}")
             print(f"transfer_amount : {transfer_amount}")
             print(f"is_correct_amount: {is_correct_amount}")
+
+            print(f"expected_token: {expected_token}")
+            print(f"is_correct_token: {is_correct_token}")
+            print(f"is_correct_recipient: {is_correct_recipient}")
             print('==========================')
 
             if is_correct_recipient and is_correct_token and is_correct_amount:
