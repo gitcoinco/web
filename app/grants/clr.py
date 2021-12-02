@@ -490,7 +490,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             # check that we have enough data to set the curve
             can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
             if can_estimate:
-                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in clr_prediction_curve ]
+                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base if ele[1] != 0 else 0.0] for ele in clr_prediction_curve ]
             else:
                 clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
