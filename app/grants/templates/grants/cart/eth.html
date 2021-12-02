@@ -14,7 +14,7 @@
           <!-- Donation Token -->
           <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
             <div class="my-auto mr-3">Choose currency</div>
-            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
+            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
               <template v-slot:option="option">
                 <span class="font-weight-semibold">[[ option.symbol ]]</span>
               </template>
@@ -243,7 +243,7 @@
 
               <p class="mt-3">
                 The checkout flow will depend on the prefered payment method.
-                <a href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md" target="_blank">
+                <a rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/133-how-does-one-decide-between-the-grant-contribution-checkout-options/" target="_blank">
                   Learn more
                 </a>
               </p>
@@ -253,7 +253,7 @@
 
         <!-- Checkout -->
         <div class="text-center mt-3 mb-4 mx-auto">
-          <b-dropdown  variant="primary"
+          <b-dropdown variant="primary"
             block
             no-caret
             toggle-class="text-decoration-none"
@@ -502,7 +502,7 @@
 
           <b-tooltip target="zksync-tooltip" triggers="hover">
             <p v-if="grantsByTenant.length > maxCartItems">
-              Zksync checkout supports checkout for [[maxCartItems]] items.
+              zkSync checkout supports checkout for [[maxCartItems]] items.
               Please remove [[ grantsByTenant.length - maxCartItems ]] grant
               <span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
               from your cart to use zkSync checkout.
@@ -511,21 +511,9 @@
         </div>
 
         <!-- Checkout recommendation -->
-        <div class="text-center mt-2" v-if="
-          (zkSyncUnsupportedTokens.length > 0 || polygonUnsupportedTokens.length > 0) ||
-          polygonUnsupportedTokens.length > 0 ||
-          !isNaN(checkoutRecommendation.savingsInPercent)
-        ">
+        <div class="text-center mt-2" v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
           <div class="font-smaller-3 bg-lightpurple p-3 rounded w-100">
-            <template v-if="zkSyncUnsupportedTokens.length > 0 || polygonUnsupportedTokens.length > 0">
-              <template v-if="zkSyncUnsupportedTokens.length > 0">
-                zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
-              </template>
-              <template v-if="polygonUnsupportedTokens.length > 0">
-                Polygon checkout not supported due to [[ polygonUnsupportedTokens.join(', ') ]]
-              </template>
-            </template>
-            <template v-else-if="!isNaN(checkoutRecommendation.savingsInPercent)">
+            <template v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
               💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
               on gas fees with [[ checkoutRecommendation.name ]]!
             </template>

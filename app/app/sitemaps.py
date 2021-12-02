@@ -1,7 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from dashboard.models import Activity, Bounty, HackathonEvent, HackathonProject, Profile
+from dashboard.models import Activity, ActivityIndex, Bounty, HackathonEvent, HackathonProject, Profile
 from grants.models import Grant
 from kudos.models import Token
 from quests.models import Quest
@@ -172,8 +172,10 @@ class PostSitemap(Sitemap):
     limit = 5000
 
     def items(self):
+
+        activity_indexes = ActivityIndex.objects.filter(key__startswith=f'profile:').values_list('activity__pk', flat=True)
         return Activity.objects.filter(
-            hidden=False, activity_type__in=['wall_post', 'status_update']
+            pk__in=list(activity_indexes), hidden=False, activity_type__in=['wall_post', 'status_update']
         ).order_by('-pk').cache()
 
     def lastmod(self, obj):
@@ -189,7 +191,10 @@ class ActivitySitemap(Sitemap):
     limit = 5000
 
     def items(self):
-        return Activity.objects.order_by('-pk').cache()
+        activity_indexes = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
+        return Activity.objects.filter(
+            pk__in=list(activity_indexes)
+        ).order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on

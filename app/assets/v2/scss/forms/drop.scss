@@ -1,6 +1,5 @@
 .form__drop {
   align-items: center;
-  background-color: #F2F6F9;
   border: 1px dashed #9B9B9B;
   border-radius: 3px;
   cursor: pointer;
@@ -9,6 +8,7 @@
   justify-content: center;
   padding: 24px;
   position: relative;
+  min-height: 8rem;
 }
 
 .form__drop.is-dragging {

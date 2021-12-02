@@ -92,10 +92,10 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
-      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_1)) {
+      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_1)) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
       }
-      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{1,15}$/).test(vm.form.twitter_handle_2)) {
+      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
       }
 
@@ -249,6 +249,21 @@ Vue.mixin({
         }
       });
     },
+    resetAddress() {
+      let vm = this;
+      let form = vm.form;
+
+      form.eth_payout_address = '';
+      form.celo_payout_address = '';
+      form.zcash_payout_address = '';
+      form.zil_payout_address = '';
+      form.harmony_payout_address = '';
+      form.binance_payout_address = '';
+      form.polkadot_payout_address = '';
+      form.kusama_payout_address = '';
+      form.rsk_payout_address = '';
+      form.algorand_payout_address = '';
+    },
     onFileChange(e) {
       let vm = this;
 
@@ -277,6 +292,14 @@ Vue.mixin({
           _alert(err.message, 'danger');
         }
       });
+    },
+    handleTwitterUsername(event) {
+      const inputField = event.target;
+      const matchResult = inputField.value.match(/https:\/\/twitter.com\/(\w{4,15})/);
+
+      const extracted = matchResult ? `@${matchResult[1]}` : inputField.value;
+
+      this.$set(this.form, inputField.id, extracted);
     }
   },
   watch: {
@@ -318,6 +341,26 @@ const grant_regions = [
   { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
 ];
 
+const grant_chains = [
+  { 'name': 'eth', 'label': 'Ethereum'},
+  { 'name': 'zcash', 'label': 'ZCash'},
+  { 'name': 'celo', 'label': 'Celo'},
+  { 'name': 'zilliqa', 'label': 'Zilliqa'},
+  { 'name': 'harmony', 'label': 'Harmony'},
+  { 'name': 'binance', 'label': 'Binance'},
+  { 'name': 'polkadot', 'label': 'Polkadot'},
+  { 'name': 'kusama', 'label': 'Kusama'},
+  { 'name': 'algorand', 'label': 'Algorand'}
+];
+
+if (document.contxt.is_staff) {
+  const staff_chains = [
+    { 'name': 'rsk', 'label': 'RSK'}
+  ];
+
+  grant_chains.push(...staff_chains);
+}
+
 const externalFundingOptions = [
   {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
   {'key': 'no', 'value': 'No, this project has not raised external funding.'}
@@ -333,9 +376,9 @@ if (document.getElementById('gc-new-grant')) {
     data() {
       return {
         chainId: '',
-        grant_types: document.grant_types,
         grant_tags: document.grant_tags,
         grant_regions: grant_regions,
+        grant_chains: grant_chains,
         externalFundingOptions: externalFundingOptions,
         usersOptions: [],
         network: 'mainnet',
@@ -363,7 +406,7 @@ if (document.getElementById('gc-new-grant')) {
           kusama_payout_address: '',
           rsk_payout_address: '',
           algorand_payout_address: '',
-          grant_type: '',
+          grant_type: 'gr12',
           grant_tags: [],
           network: 'mainnet'
         },
@@ -378,7 +421,7 @@ if (document.getElementById('gc-new-grant')) {
             ]
           },
           theme: 'snow',
-          placeholder: 'Give a detailed desciription about your Grant'
+          placeholder: 'Give a detailed description about your Grant'
         }
       };
     },
@@ -409,14 +452,6 @@ if (document.getElementById('gc-new-grant')) {
           }
           return value;
         };
-      },
-      grant_type_logo() {
-        const grant_type = this.grant_types.find(g_type => g_type.name === this.form.grant_type);
-
-        if (grant_type) {
-          return grant_type.image_url;
-        }
-        return undefined;
       }
     },
     mounted() {

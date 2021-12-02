@@ -257,30 +257,30 @@
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
       {% elif row.activity_type == 'hypercharge_bounty' %}
-        <a href="{{row.bounty.url}}">{{ row.metadata.title | safe }}</a>
+        <a href="{{row.bounty.url}}">{{ row.metadata.title }}</a>
       {% elif row.activity_type == 'new_bounty' %}
-        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title }}</a>
       {% elif row.activity_type == 'start_work' %}
         <span>{% trans "started work: " %}</span>
-        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title }}</a>
       {% elif row.activity_type == 'stop_work' %}
         <span>{% trans "stopped work: " %}</span>
-        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title }}</a>
       {% elif row.activity_type == 'killed_bounty' %}
         <span>{% trans "canceled bounty: " %}</span>
-        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title }}</a>
       {% elif row.activity_type == 'increased_bounty' %}
         <span>{% trans "increased funding: " %}</span>
-        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title }}</a>
       {% elif row.activity_type == 'updated_avatar' %}
         <span>{% trans "updated their avatar" %}</span>
       {% elif row.activity_type == 'unknown_event' %}
         <span>{% trans "made an update to: " %}</span>
-        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title }}</a>
       {% else %}
         {{row.humanized_activity_type }}
         {% if row.bounty %}
-          : <a href="{{ row.bounty.url }}">{{ row.bounty.title | safe }}</a>
+          : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
         {% endif %}
       {% endif %}
       </div>
@@ -537,7 +537,7 @@
       <div class="col-12 col-md-7 d-flex flex-column pl-5">
         <div class="bounty-detail">
           <div class="title font-subheader font-weight-bold">
-            {{ row.bounty.title | safe }}
+            {{ row.bounty.title }}
           </div>
 
           <div class="bounty-summary p-0 col-12">

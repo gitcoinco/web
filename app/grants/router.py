@@ -37,7 +37,7 @@ class GrantCollectionPagination(PageNumberPagination):
 
 
 class GrantCollectionViewSet(viewsets.ModelViewSet):
-    queryset = GrantCollection.objects.order_by('id')
+    queryset = GrantCollection.objects.order_by('-shuffle_rank')
     serializer_class = GrantCollectionSerializer
     pagination_class = GrantCollectionPagination
     filterset_fields = ['featured', 'profile']

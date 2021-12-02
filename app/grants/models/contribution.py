@@ -30,7 +30,7 @@ class Contribution(SuperModel):
         ('algorand_std', 'algorand_std')
     ]
 
-    success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
+    success = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
 
@@ -54,13 +54,29 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='contributions',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Grant.'),
+    )
+
+    amount_per_period_usdt = models.DecimalField(
+        default=0,
+        decimal_places=18,
+        max_digits=64,
+        db_index=True,
+        help_text=_('The amount per contribution period in USDT'),
+    )
+
     normalized_data = JSONField(
         default=dict,
         blank=True,
         help_text=_('the normalized grant data; for easy consumption on read'),
     )
-    match = models.BooleanField(default=True, help_text=_('Whether or not this contribution should be matched.'))
-
+    match = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not this contribution should be matched.'))
 
     originated_address = models.CharField(
         max_length=255,
@@ -104,9 +120,11 @@ class Contribution(SuperModel):
             return self.blockexplorer_url_helper(self.tx_id)
 
     def blockexplorer_url_helper(self, tx_id):
-        if self.checkout_type == 'eth_zksync':
+        if self.checkout_type == 'eth_polygon':
+            return f'https://polygonscan.com/tx/{tx_id}'
+        elif self.checkout_type == 'eth_zksync':
             return f'https://zkscan.io/explorer/transactions/{tx_id.replace("sync-tx:", "")}'
-        if self.checkout_type == 'eth_std':
+        elif self.checkout_type == 'eth_std':
             network_sub = f"{self.subscription.network}." if self.subscription and self.subscription.network != 'mainnet' else ''
             return f'https://{network_sub}etherscan.io/tx/{tx_id}'
         # TODO: support all block explorers for diff chains
@@ -140,14 +158,18 @@ class Contribution(SuperModel):
             comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
             profile = Profile.objects.get(handle='gitcoinbot')
             activity = self.subscription.activities.first()
-            Comment.objects.update_or_create(
+            # delete all before recreating
+            Comment.objects.filter(
                 profile=profile,
                 activity=activity,
-                defaults={
-                    "comment":comment,
-                    "is_edited":True,
-                }
-                );
+            ).delete()
+            # create new entry
+            Comment.objects.create(
+                profile=profile,
+                activity=activity,
+                comment=comment,
+                is_edited=True
+            )
         except Exception as e:
             print(e)
 
@@ -192,7 +214,7 @@ class Contribution(SuperModel):
 
                 # get active chain std/polygon
                 chain =  self.checkout_type.split('_')[-1]
-                
+
                 # Prepare web3 provider
                 w3 = get_web3(network, chain=chain)
 
@@ -294,6 +316,12 @@ def presave_contrib(sender, instance, **kwargs):
     ele = instance
     sub = ele.subscription
     grant = sub.grant
+
+    # save hotpath data to the contribution itself
+    instance.grant = grant
+    instance.amount_per_period_usdt = float(sub.amount_per_period_usdt)
+
+    # everything else is stored in a JSONField
     instance.normalized_data = {
         'id': grant.id,
         'logo': grant.logo.url if grant.logo else None,

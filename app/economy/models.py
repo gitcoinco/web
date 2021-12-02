@@ -261,7 +261,7 @@ class Token(SuperModel):
     network_id = models.IntegerField(default=1)
     metadata = JSONField(null=True, default=dict, blank=True)
     approved = models.BooleanField(default=True)
-    conversion_rate_id = models.CharField(max_length=25, blank=True, null=True, help_text="unique identifier used by conversion_rate_source")
+    conversion_rate_id = models.CharField(max_length=35, blank=True, null=True, help_text="unique identifier used by conversion_rate_source")
     conversion_rate_source = models.CharField(max_length=25, blank=True, null=True, help_text="API source", choices=CONVERSION_RATE_SOURCE)
 
 

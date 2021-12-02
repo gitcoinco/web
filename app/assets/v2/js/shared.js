@@ -82,6 +82,13 @@ this.unloading_button = function(button) {
   button.find('img').remove();
 };
 
+this.sanitizeHTML = function(str) {
+  const temp = document.createElement('div');
+
+  temp.textContent = str;
+  return temp.innerHTML;
+};
+
 this.sanitizeDict = function(d, keyToIgnore) {
   if (typeof d != 'object') {
     return d;

@@ -24,6 +24,7 @@ const gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6'; // Gitcoin 
 // Contract parameters and constants
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
 const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
+const gnosisSafeAbi = [{'constant': true, 'inputs': [], 'name': 'VERSION', 'outputs': [{'internalType': 'string', 'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}];
 
 // Grant data
 let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
@@ -68,9 +69,9 @@ Vue.component('grants-cart', {
       maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,
       // Checkout, zkSync
-      zkSyncUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      zkSyncSupportedTokens: [], // Used to inform user which tokens in their cart are on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      polygonUnsupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      polygonSupportedTokens: [], // Used to inform user which tokens in their cart are on Polygon
       polygonEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
       isPolygonDown: false, // disable polygon when true
@@ -190,6 +191,15 @@ Vue.component('grants-cart', {
         });
       }
       return result;
+    },
+    fetchTokens() {
+      // removes duplicates from the tokens array of objects
+      let vm = this;
+      let uniq = {};
+
+      return vm.filterByChainId.filter(
+        obj => !uniq[obj['name']] && (uniq[obj['name']] = true)
+      );
     },
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
@@ -479,6 +489,55 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    checkForGnosisSafes: async function() {
+      // collate grants which represent contracts which cannot be interacted with
+      const withCode = [];
+      const unsafeGrants = [];
+      
+      // make these checks on mainnet
+      const mainnetProvider = new Web3('https://mainnet.infura.io/v3/1e0a90928efe4bb78bb1eeceb8aacc27');
+
+      // check each of the grants for an address starting with 0x
+      const grants = this.grantsByTenant.filter(grant => !!grant.grant_admin_address && grant.grant_admin_address.length === 42 && grant.grant_admin_address.startsWith('0x'));
+
+      // check each of the grants in the cart to see if it points to a contract
+      await Promise.all(grants.map((grant) => new Promise((resolve) => {
+        // check for contract on Polygon
+        mainnetProvider.eth.getCode(grant.grant_admin_address).then((code) => {
+          if (code !== '0x') {
+            withCode.push(grant);
+          }
+          // resolve the discovered code
+          resolve(code);
+        });
+      })));
+
+      // if codes are detected then we need to check that each of the deployed contract holds a valid gnosis safe which could be deployed on polygon
+      if (withCode.length) {
+        // check that each of the discovered contracts can respond with a version (ie it is a gnosis safe)
+        await Promise.all(withCode.map((grant) => new Promise((resolve) => {
+          // test for a successful read of the contract.version()
+          const contract = new mainnetProvider.eth.Contract(gnosisSafeAbi, grant.grant_admin_address);
+
+          // attempt to read the version from the contract
+          contract.methods.VERSION().call().then((version) => {
+            // check that the contract holds a valid version
+            if (version == '1.0.0') { // if version is 1.0.0 the safe was deployed with create, and more recent versions are deployed with create2 and can be deployed on polygon
+              unsafeGrants.push(grant);
+            }
+          }).catch((e) => {
+            // no version method available... this could be a proxy or a different type of contract - to be safe we ensure no funds are sent here
+            unsafeGrants.push(grant);
+          }).finally(() => {
+            // resolve the outer promise
+            resolve();
+          });
+        })));
+      }
+
+      // return any grants which cannot be contributed to
+      return unsafeGrants;
+    },
     setChainScripts: function() {
       let vm = this;
 
@@ -490,6 +549,23 @@ Vue.component('grants-cart', {
           vm.loadDynamicScripts(cb, vm.chainScripts[tenant], `${tenant}-script`);
         }
       });
+    },
+    /* Set supported tokens for L2s */
+    loadSupportedTokens() {
+      // zkSync
+      // Mainnet list: https://api.zksync.io/api/v0.1/tokens
+      // Rinkeby list: https://rinkeby-api.zksync.io/api/v0.1/tokens
+      this.zkSyncSupportedTokens = this.network === 'rinkeby'
+        ? [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ]
+        : [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN' ];
+
+      // Polygon
+      // We hardcode the list from Gitcoin's historical data based on the top ten tokens
+      // on ethereum chain and also Polygon network used by users to checkout.
+      // Confirm the token exists on Polygon's list of supported tokens: https://mapper.matic.today/
+      this.polygonSupportedTokens = this.network === 'mainnet'
+        ? [ 'DAI', 'ETH', 'USDT', 'USDC', 'PAN', 'BNB', 'UNI', 'CELO', 'MASK', 'MATIC' ]
+        : [ 'DAI', 'ETH', 'USDT', 'USDC', 'UNI', 'MATIC' ];
     },
     async isPolkadotLoaded() {
       let vm = this;
@@ -511,12 +587,10 @@ Vue.component('grants-cart', {
     // and suggestions about their checkout (gas cost estimates and why zkSync may not be
     // supported for their current cart)
     onZkSyncUpdate: function(data) {
-      this.zkSyncUnsupportedTokens = data.zkSyncUnsupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
     },
 
     onPolygonUpdate: function(data) {
-      this.polygonUnsupportedTokens = data.polygonUnsupportedTokens;
       this.polygonEstimatedGasCost = data.polygonEstimatedGasCost;
     },
 
@@ -898,7 +972,7 @@ Vue.component('grants-cart', {
       let networkName = getDataChains(networkId, 'chainId')[0] && getDataChains(networkId, 'chainId')[0].network;
 
       if (networkName == 'mainnet' && networkId !== '1') {
-        // User MetaMask must be connected to Ethereum mainnet or a supported testnet
+        // User MetaMask must be connected to Ethereum mainnet
         try {
           await ethereum.request({
             method: 'wallet_switchEthereumChain',
@@ -1516,8 +1590,23 @@ Vue.component('grants-cart', {
       // if (!provider && val === '1') {
       //   await onConnect();
       // }
+    },
+    selectedETHCartToken: function(val) {
+      const zkSyncFlag = !this.zkSyncSupportedTokens.includes(val);
+      const polygonFlag = !this.polygonSupportedTokens.includes(val);
+      let checkoutOptions;
 
+      if (zkSyncFlag && polygonFlag) {
+        checkoutOptions = 'zkSync and Polygon';
+      } else if (zkSyncFlag) {
+        checkoutOptions = 'zkSync';
+      } else if (polygonFlag) {
+        checkoutOptions = 'Polygon';
+      }
 
+      if (checkoutOptions) {
+        _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
+      }
     },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
@@ -1599,6 +1688,9 @@ Vue.component('grants-cart', {
       token.name = token.symbol;
     });
 
+    // Set supported tokens for L2s
+    this.loadSupportedTokens();
+
     // Read array of grants in cart from localStorage
     let grantData = CartData.loadCart();
 
@@ -1673,3 +1765,4 @@ if (document.getElementById('gc-grants-cart')) {
     }
   });
 }
+

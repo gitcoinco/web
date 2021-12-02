@@ -47,8 +47,8 @@
           [[if github_comments]]
             <span class="separator-bull"></span> <i class="fas fa-comment-alt"></i> [[>github_comments]] {% trans 'Comments' %}
           [[/if]]
-          [[if interested.length]]
-            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[>interested.length]] {% trans 'Applicants' %}
+          [[if interested_count]]
+            <span class="separator-bull"></span> <i class="fas fa-user"></i> [[>interested_count]] {% trans 'Applicants' %}
           [[else]]
             <span class="separator-bull"></span> <i class="fas fa-user"></i> 0 {% trans 'Applicants' %}
           [[/if]]

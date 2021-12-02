@@ -113,20 +113,7 @@ along with this program. If not, see
     alt="grant logo">
   <h1 class="grant-email-name">{{ grant.title }}</h1>
   <p class="grant-description">{{ grant.description }}</p>
-  <div class="grant-action" style="margin-top: 2em;">
-    <span>
-      <a class="button" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
-        {% trans "View Your Grant" %}
-      </a>
-    </span>
-    <span>
-      <a class="button" style="background-color: #00D373; color: white; margin-left: 1em;"
-        href="https://gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/?{{ utm_tracking }}">
-        {% trans "Learn How to Maximize your Matching" %}
-      </a>
-    </span>
-  </div>
-  <div class="grant-action-mobile" style="margin-top: 2em;">
+  <div style="margin-top: 2em;">
     <a class="button" style="display: block;" href="{% url 'grants:details' grant.pk grant.slug %}?{{ utm_tracking }}">
       {% trans "View Your Grant" %}
     </a>
@@ -139,9 +126,10 @@ along with this program. If not, see
   <hr style="margin-left: 0; margin-top: 2em;">
   <div>
     <h3>How did we do?</h3>
-    <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLScPEB38-DClvS0OL6fHLwwnBNBB5agcKNLPtcBrBhOFwzqNnw/viewform?usp=send_form">Take this quick survey and receive an NFT</a>
-    <p>Share your honest feedback so that we can improve the product.</p>
-    <img src="{% static 'v2/images/survey-nft.png' %}" alt="Kudos preview">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSec0TFV6acg6wle-azcYtb0YvxQR2D20qbh-x8230Sgw-7wbg/viewform">
+      We’d love to hear how your experience went! Please share your honest feedback so that we can improve the product.
+    </a>
+    <img src="{% static 'v2/images/tree-gr12.png' %}" alt="GR12 Tree">
   </div>
 </div>
 

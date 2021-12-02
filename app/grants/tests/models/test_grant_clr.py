@@ -7,10 +7,7 @@ from dashboard.models import Profile
 from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
 from grants.models.grant_collection import GrantCollection
-
-from .factories.grant_clr_factory import GrantCLRFactory
-from .factories.grant_collection_factory import GrantCollectionFactory
-from .factories.grant_factory import GrantFactory
+from grants.tests.factories import GrantCLRFactory, GrantCollectionFactory, GrantFactory
 
 
 @pytest.mark.django_db
@@ -38,7 +35,7 @@ class TestGrantCLR:
         grant_clr = GrantCLRFactory()
 
         assert hasattr(grant_clr, 'round_num')
-    
+
     def test_grant_clr_has_sub_round_slug_attribute(self):
         """Test sub_round_slug attribute is present and defaults to empty string."""
 
@@ -150,6 +147,47 @@ class TestGrantCLR:
 
         assert hasattr(grant_clr, 'logo')
 
+
+    def test_grant_clr_has_type_attribute(self):
+        """Test type attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'type')
+
+
+    def test_grant_clr_has_logo_text_hex_attribute(self):
+        """Test logo_text_hex attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'logo_text_hex')
+
+
+    def test_grant_clr_has_banner_bg_hex_attribute(self):
+        """Test banner_bg_hex attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'banner_bg_hex')
+
+
+    def test_grant_clr_has_banner_text_hex_attribute(self):
+        """Test banner_text_hex attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'banner_text_hex')
+
+
+    def test_grant_clr_has_banner_text_attribute(self):
+        """Test banner_text attribute is present."""
+
+        grant_clr = GrantCLRFactory()
+
+        assert hasattr(grant_clr, 'banner_text')
+
+
     def test_happening_now_returns_true_if_round_is_currently_happening(self):
         """Test happening_now method returns true if we are within the time range for this round."""
 
@@ -219,21 +257,22 @@ class TestGrantCLR:
                 grant_clr.grants
 
         filter.assert_not_called
-        values_list.assert_not_called 
+        values_list.assert_not_called
 
     def test_record_clr_prediction_curve_calls_collaborator_with_expected_parameters(self):
         """Test record_clr_prediction_curve calls create on GrantCLRCalculation.objects with expected params."""
 
         grant = GrantFactory()
         grant_clr = GrantCLRFactory()
-        
+
         with patch.object(GrantCLRCalculation.objects, 'create') as create:
             grant_clr.record_clr_prediction_curve(grant, grant.clr_prediction_curve)
 
         create.assert_called_with(
-            grantclr=grant_clr, 
-            grant=grant, 
+            grantclr=grant_clr,
+            grant=grant,
             clr_prediction_curve=grant.clr_prediction_curve,
+            active=False, # new factory obj defaults to inactive
             latest=True
         )
 

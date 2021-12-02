@@ -41,7 +41,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Count, Q, Sum
+from django.db.models import Count, Q
 from django.db.utils import IntegrityError
 from django.forms import URLField
 from django.http import Http404, HttpResponse, JsonResponse
@@ -122,10 +122,10 @@ from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
 from .models import (
-    Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon, Earning,
-    FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch,
-    MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView, Question,
-    SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
+    Activity, ActivityIndex, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon,
+    Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
+    LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView,
+    Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
 from .poh_utils import is_registered_on_poh
@@ -245,6 +245,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=
                 created_by=kwargs['profile'])
             bounty.handle_event(event)
         activity = Activity.objects.create(**kwargs)
+        activity.populate_activity_index()
 
         # leave a comment on townsquare IFF someone left a start work plan
         if event_name in ['start_work', 'worker_applied'] and interest and interest.issue_message:
@@ -1142,8 +1143,9 @@ def users_fetch(request):
                 profile_json['looking_team_members'] = registration.looking_team_members
                 profile_json['looking_project'] = registration.looking_project
 
+                activity_indexes = ActivityIndex.objects.filter(key=f'profile:{user.pk}').values_list('activity__pk', flat=True)
                 activity = Activity.objects.filter(
-                    profile=user,
+                    pk__in=list(activity_indexes),
                     hackathonevent_id=hackathon_id,
                     activity_type='hackathon_new_hacker',
                 )
@@ -1338,6 +1340,13 @@ def accept_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
@@ -1570,6 +1579,12 @@ def payout_bounty(request):
     """
     bounty = handle_bounty_views(request)
 
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
@@ -1595,6 +1610,12 @@ def bulk_payout_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
 
     params = get_context(
         ref_object=bounty,
@@ -1660,7 +1681,12 @@ def increase_bounty(request):
     """
     bounty = handle_bounty_views(request)
     user = request.user if request.user.is_authenticated else None
+
     is_funder = bounty.is_funder(user.username.lower()) if user else False
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
 
     params = get_context(
         ref_object=bounty,
@@ -1699,6 +1725,13 @@ def cancel_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
@@ -1942,13 +1975,13 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     try:
         if ghissue:
             issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue
-            bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
+            bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
             if not bounties.exists():
                 issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue
-                bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
+                bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
         else:
             issue_url = request_url
-            bounties = Bounty.objects.current().filter(github_url__iexact=issue_url)
+            bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
 
     except Exception:
         pass
@@ -2269,7 +2302,8 @@ def profile_activity(request, handle):
         raise Http404
 
     date = timezone.now() - timezone.timedelta(days=365)
-    activities = list(profile.get_various_activities().values_list('created_on', flat=True))
+    profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
+    activities = list(Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on').values_list('created_on', flat=True))
     activities += list(profile.actions.filter(created_on__gt=date).values_list('created_on', flat=True))
     response = {}
     prev_date = timezone.now()
@@ -2629,6 +2663,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).cache().count()
     context['my_kudos'] = [] # Causing perf issues # profile.get_my_kudos.cache().distinct('kudos_token_cloned_from__name')[0:7]
     context['projects_count'] = HackathonProject.objects.filter(profiles__id=profile.id).cache().count()
+
     # specific tabs
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
@@ -2666,9 +2701,11 @@ def get_profile_tab(request, profile, tab, prev_context):
                 return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
 
             else:
-
-                all_activities = profile.get_various_activities()
-                paginator = Paginator(profile_filter_activities(all_activities, activity_type, activity_tabs), 10)
+                profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
+                all_activities = Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on')
+                paginator = Paginator(
+                    profile_filter_activities(all_activities, activity_type, activity_tabs), 10
+                )
 
                 if page > paginator.num_pages:
                     return HttpResponse(status=204)
@@ -5693,33 +5730,45 @@ def contributor_dashboard(request, bounty_type):
         status = ['open']
         pending = True
 
-    elif bounty_type == 'work_submitted':
-        status = ['submitted']
-        pending = False
 
-    if status:
+    if bounty_type == 'work_submitted':
+        bounties = Bounty.objects.current().filter(
+            fulfillments__accepted=False,
+            fulfillments__profile=profile,
+            network=network
+         ).prefetch_related('fulfillments').order_by('-interested__created')
+
+    elif status:
         bounties = Bounty.objects.current().filter(
             interested__profile=profile,
             interested__status='okay',
             interested__pending=pending,
             idx_status__in=status,
             network=network,
-            current_bounty=True).order_by('-interested__created')
+        ).order_by('-interested__created')
 
-        return JsonResponse([{'title': b.title,
-                                'id': b.id,
-                                'token_name': b.token_name,
-                                'value_in_token': b.value_in_token,
-                                'value_true': b.value_true,
-                                'value_in_usd': b.get_value_in_usdt,
-                                'github_url': b.github_url,
-                                'absolute_url': b.absolute_url,
-                                'avatar_url': b.avatar_url,
-                                'project_type': b.project_type,
-                                'expires_date': b.expires_date,
-                                'interested_comment': b.interested_comment,
-                                'submissions_comment': b.submissions_comment}
-                                for b in bounties], safe=False)
+        if bounty_type == 'work_in_progress':
+            for bounty in bounties:
+                has_fulfillments = bounty.fulfillments.filter(profile=profile)
+
+                if has_fulfillments:
+                    bounties = bounties.exclude(pk=bounty.pk)
+
+
+    return JsonResponse([{'title': b.title,
+                            'id': b.id,
+                            'token_name': b.token_name,
+                            'value_in_token': b.value_in_token,
+                            'value_true': b.value_true,
+                            'value_in_usd': b.get_value_in_usdt,
+                            'github_url': b.github_url,
+                            'absolute_url': b.absolute_url,
+                            'avatar_url': b.avatar_url,
+                            'project_type': b.project_type,
+                            'expires_date': b.expires_date,
+                            'interested_comment': b.interested_comment,
+                            'submissions_comment': b.submissions_comment}
+                            for b in bounties], safe=False)
 
 
 @require_POST
@@ -5737,7 +5786,7 @@ def change_user_profile_banner(request):
     try:
         profile = profile_helper(handle, True)
         is_valid = request.user.profile.id == profile.id
-        if filename[0:7] != '/static' or filename.split('/')[-1] not in load_files_in_directory('wallpapers'):
+        if filename[0:19] != '/static/wallpapers/' or filename[19:] not in load_files_in_directory('wallpapers'):
             is_valid = False
         if not is_valid:
             return JsonResponse(
