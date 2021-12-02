@@ -216,7 +216,6 @@ def grants_transaction_validator(contribution, w3, chain='std'):
         else:
             amount_to_use = contribution.subscription.amount_per_period_minus_gas_price
 
-        print(f"Expected amount is being calculated with {amount_to_use}")
         expected_amount = parse_token_amount(
             token_symbol=token_symbol,
             amount=amount_to_use,
@@ -234,8 +233,13 @@ def grants_transaction_validator(contribution, w3, chain='std'):
             transfer_amount = event['args']['amount']
             is_correct_amount = transfer_amount >= expected_amount_min and transfer_amount <= expected_amount_max
 
+            print(print('=========================='))
+            print(f"amount_to_use: {amount_to_use}")
+            print(f"expected_amount: {expected_amount}")
             print(f"Expected amount range: {expected_amount_min} - {expected_amount_max}")
-            print(f"Does amount match? {transfer_amount} == {expected_amount}")
+            print(f"transfer_amount : {transfer_amount}")
+            print(f"is_correct_amount: {is_correct_amount}")
+            print('==========================')
 
             if is_correct_recipient and is_correct_token and is_correct_amount:
                 # We found the event log corresponding to the contribution parameters
