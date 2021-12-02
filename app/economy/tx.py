@@ -250,7 +250,7 @@ def grants_transaction_validator(contribution, w3, chain='std'):
                 print(f"subscription {contribution.subscription.amount_per_period_minus_gas_price}")
                 print(f"contribution.subscription.amount_per_period  {contribution.subscription.amount_per_period }")
                 print(f"contribution.subscription.amount_per_period_minus_gas_price { contribution.subscription.amount_per_period_minus_gas_price}")
-                print(f"paid to gitcoin  {contribution.subscription.amount_per_period - contribution.subscription.amount_per_period_minus_gas_price } ")
+                print(f"paid to gitcoin  {float(contribution.subscription.amount_per_period) - float(contribution.subscription.amount_per_period_minus_gas_price) } ")
                 
                 print(f"tx_hash: {tx_hash}")
                 print(f"amount_to_use: {amount_to_use}")
