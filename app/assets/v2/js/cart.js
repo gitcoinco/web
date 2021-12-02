@@ -69,9 +69,9 @@ Vue.component('grants-cart', {
       maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,
       // Checkout, zkSync
-      zkSyncSupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      zkSyncSupportedTokens: [], // Used to inform user which tokens in their cart are on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
-      polygonSupportedTokens: [], // Used to inform user which tokens in their cart are not on zkSync
+      polygonSupportedTokens: [], // Used to inform user which tokens in their cart are on Polygon
       polygonEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
       isZkSyncDown: false, // disable zkSync when true
       isPolygonDown: false, // disable polygon when true
@@ -550,6 +550,23 @@ Vue.component('grants-cart', {
         }
       });
     },
+    /* Set supported tokens for L2s */
+    loadSupportedTokens() {
+      // zkSync
+      // Mainnet list: https://api.zksync.io/api/v0.1/tokens
+      // Rinkeby list: https://rinkeby-api.zksync.io/api/v0.1/tokens
+      this.zkSyncSupportedTokens = this.network === 'rinkeby'
+        ? [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ]
+        : [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN' ];
+
+      // Polygon
+      // We hardcode the list from Gitcoin's historical data based on the top ten tokens
+      // on ethereum chain and also Polygon network used by users to checkout.
+      // Confirm the token exists on Polygon's list of supported tokens: https://mapper.matic.today/
+      this.polygonSupportedTokens = this.network === 'mainnet'
+        ? [ 'DAI', 'ETH', 'USDT', 'USDC', 'PAN', 'BNB', 'UNI', 'CELO', 'MASK', 'MATIC' ]
+        : [ 'DAI', 'ETH', 'USDT', 'USDC', 'UNI', 'MATIC' ];
+    },
     async isPolkadotLoaded() {
       let vm = this;
 
@@ -570,12 +587,10 @@ Vue.component('grants-cart', {
     // and suggestions about their checkout (gas cost estimates and why zkSync may not be
     // supported for their current cart)
     onZkSyncUpdate: function(data) {
-      this.zkSyncSupportedTokens = data.zkSyncSupportedTokens;
       this.zkSyncEstimatedGasCost = data.zkSyncEstimatedGasCost;
     },
 
     onPolygonUpdate: function(data) {
-      this.polygonSupportedTokens = data.polygonSupportedTokens;
       this.polygonEstimatedGasCost = data.polygonEstimatedGasCost;
     },
 
@@ -1589,9 +1604,9 @@ Vue.component('grants-cart', {
         checkoutOptions = 'Polygon';
       }
 
-      // if (checkoutOptions) {
-      //   _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
-      // }
+      if (checkoutOptions) {
+        _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
+      }
     },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
@@ -1672,6 +1687,9 @@ Vue.component('grants-cart', {
       token.addr = token.address;
       token.name = token.symbol;
     });
+
+    // Set supported tokens for L2s
+    this.loadSupportedTokens();
 
     // Read array of grants in cart from localStorage
     let grantData = CartData.loadCart();

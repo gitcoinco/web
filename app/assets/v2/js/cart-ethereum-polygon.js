@@ -47,21 +47,6 @@ Vue.component('grantsCartEthereumPolygon', {
   },
 
   computed: {
-    /**
-     * @dev List of tokens supported by Polygon + Gitcoin. To add a token to this list:
-     *   1. Make sure the token is top 10 used tokens based on Gitcoin's historical data
-     *   2. Confirm the token exists on Polygon's list of supported tokens: https://mapper.matic.today/
-     *   2. Add the token symbol to the appropriate list below
-     * @dev We hardcode the list from Gitcoin's historical data based on the top ten tokens
-     *   on ethereum chain and also Polygon network used by users to checkout
-     */
-    supportedTokens() {
-      const mainnetTokens = [ 'DAI', 'ETH', 'USDT', 'USDC', 'PAN', 'BNB', 'UNI', 'CELO', 'MASK', 'MATIC' ];
-      const testnetTokens = [ 'DAI', 'ETH', 'USDT', 'USDC', 'UNI', 'MATIC' ];
-
-      return appCart.$refs.cart.network === 'mainnet' ? mainnetTokens : testnetTokens;
-    },
-
     donationInputsNativeAmount() {
       return appCart.$refs.cart.donationInputsNativeAmount;
     },
@@ -180,7 +165,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Get list of tokens in cart not supported by Polygon
       this.cart.unsupportedTokens = this.cart.tokenList.filter(
-        (token) => !this.supportedTokens.includes(token)
+        (token) => !appCart.$refs.cart.polygonSupportedTokens.includes(token)
       );
 
       // Update the fee estimate and gas cost based on changes
@@ -188,7 +173,6 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('polygon-data-updated', {
-        polygonSupportedTokens: this.supportedTokens,
         polygonEstimatedGasCost: this.polygon.estimatedGasCost
       });
     },
