@@ -247,6 +247,11 @@ def grants_transaction_validator(contribution, w3, chain='std'):
 
             if is_correct_recipient:
                 print('==========================')
+                print(f"subscription {contribution.subscription.amount_per_period_minus_gas_price}")
+                print(f"contribution.subscription.amount_per_period  {contribution.subscription.amount_per_period }")
+                print(f"contribution.subscription.amount_per_period_minus_gas_price { contribution.subscription.amount_per_period_minus_gas_price}")
+                print(f"paid to gitcoin  {contribution.amount_per_period - contribution.amount_per_period_minus_gas_price } ")
+                
                 print(f"tx_hash: {tx_hash}")
                 print(f"amount_to_use: {amount_to_use}")
                 print(f"expected_amount: {expected_amount}")
