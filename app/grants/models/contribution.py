@@ -195,19 +195,41 @@ class Contribution(SuperModel):
                     raise Exception('Unsupported zkSync transaction hash format')
                 tx_hash = self.split_tx_id.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
 
+                # First we get a list of zkSync tokens (TODO: this should be fetched with a management command and be cached)
+                tokens_url = 'https://rinkeby-api.zksync.io/api/v0.1/tokens' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1/tokens'
+                r = requests.get(tokens_url)
+                r.raise_for_status()
+                token_data = r.json() # zkSync token data
+                tokens = {}
+                for token in token_data:
+                    tokens[token.symbol] = token.id
+
                 # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
                 base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
                 r = requests.get(f"{base_url}/transactions_all/{tx_hash}")
                 r.raise_for_status()
                 tx_data = r.json() # zkSync transaction data
 
+                # Get the zksync token ID for the expected token_symbol
+                expected_token_id = tokens[self.subscription.token_symbol]
+
                 # Update contribution values based on transaction data
                 self.originated_address = tx_data['from'] # assumes sender is originator
-                self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
-                self.validator_passed = True
-                self.split_tx_confirmed = True
-                self.tx_cleared = True
-                self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
+                
+                # Ensure the onchain token data matches the expected contribution data
+                if tx_data['token'] == expected_token_id:
+                    self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
+                    self.validator_passed = True
+                    self.split_tx_confirmed = True
+                    self.tx_cleared = True
+                    self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
+                else:
+                    # this contribution data has been deliberately altered mid-flight: fail hard
+                    self.success = False
+                    self.validator_passed = False
+                    self.split_tx_confirmed = False
+                    self.tx_cleared = False
+                    self.validator_comment = f"zkSync Checkout. Failed: Token ids do not match"
 
             elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
                 # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
