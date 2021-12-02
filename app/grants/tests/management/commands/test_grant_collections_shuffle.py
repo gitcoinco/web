@@ -16,7 +16,7 @@ def test_grant_collections_shuffle_grant_meta_data_score():
 
     score = grant_meta_data_score(grants)
 
-    assert score == 12000
+    assert score == 400
 
 @pytest.mark.django_db
 def test_grant_collections_shuffle_calc_age_score():
@@ -26,4 +26,4 @@ def test_grant_collections_shuffle_calc_age_score():
 
     score = grant_collection_age_score(last_month, last_week)
 
-    assert score == 3750
+    assert score == 375
