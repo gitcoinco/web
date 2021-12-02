@@ -167,7 +167,7 @@ def render_thank_you_for_supporting_email(grants_with_subscription):
     totals = {}
     for gws in grants_with_subscription:
         key = gws['subscription'].token_symbol
-        val = gws['subscription'].amount_per_period
+        val = float(gws['subscription'].amount_per_period)
         if key not in totals.keys():
             totals[key] = 0
         totals[key] += val
