@@ -90,7 +90,7 @@ django-oauth-toolkit
 ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
-wiki==0.7.3
+wiki==0.7.9
 django-bulk-update
 pdfrw
 django-admin-sortable2==0.7.6
