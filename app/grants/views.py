@@ -149,7 +149,7 @@ def helper_grants_round_start_end_date(request, round_id):
     start = timezone.now()
     end = timezone.now()
     try:
-        gclr = GrantCLR.objects.filter(round_num=round_id, customer_name='ethereum').first()
+        gclr = GrantCLR.objects.filter(round_num=round_id).filter(Q(customer_name='ethereum') | Q(customer_name='GitcoinMain')).order_by('-total_pot').first()
         start = gclr.start_date
         end = gclr.end_date
     except Exception as e:
