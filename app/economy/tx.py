@@ -241,7 +241,11 @@ def grants_transaction_validator(contribution, w3, chain='std'):
             print(f"is_correct_amount: {is_correct_amount}")
 
             print(f"expected_token: {expected_token}")
+            print(f"token from event: {event['args']['token'].lower()}")
             print(f"is_correct_token: {is_correct_token}")
+
+            print(f"expected_recipient: {expected_recipient}")
+            print(f"recipient from event: {event['args']['dest'].lower()}")
             print(f"is_correct_recipient: {is_correct_recipient}")
             print('==========================')
 
