@@ -53,6 +53,8 @@ jobs:
         - (cd app; python3 ./manage.py collectstatic --noinput --disable-collectfast)
         # Run migrations
         - python3 app/manage.py migrate
+        # Fetch polygons gas price
+        - python3 app/manage.py fetch_gas_prices
         # Run the tests
         - pytest -p no:ethereum -p no:warnings
         # Run cypress tests
