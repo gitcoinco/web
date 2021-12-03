@@ -124,8 +124,17 @@ along with this program. If not, see
     </tr>
   </table>
 
-    <p>{% trans "You can see all the grants you support and your transaction history " %}
-      <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
-    </p>
+  <p>{% trans "You can see all the grants you support and your transaction history " %}
+    <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
+  </p>
+
+  <h4 style="font-weight: bold;">Help us improve Gitcoin Grants for you!</h4>
+  <p>
+    We’d love to hear how about your experience funding grants!
+    Your honest feedback helps us improve the product.
+    <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLScKg-hThHsrP9Pny_2cLCVfPnn4CHII9hzlQ7G8MAM7WUnqvw/viewform?usp=sf_link">
+      Take the 2 minute survey.
+    </a>
+  </p>
 </div>
 {% endblock %}
