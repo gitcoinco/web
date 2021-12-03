@@ -41,7 +41,7 @@ class Command(BaseCommand):
             print("not active in non prod environments")
             return
         hours_back = 24
-        eses = EmailSubscriber.objects.filter(active=True).distinct('email').order_by('-email')
+        eses = EmailSubscriber.objects.filter(active=True, email='kevin@gitcoin.co').distinct('email').order_by('-email')
         counter_eval_total = 0
         counter_total = 0
         counter_sent = 0
@@ -67,7 +67,7 @@ class Command(BaseCommand):
                     f"{counter_sent} sent/{counter_total} enabled/ {total_count} total, {round(speed, 2)}/s, ETA:{ETA}h, working on {to_email} ")
 
                 # send
-                did_send = new_bounty_daily.delay(es.pk)
+                did_send = new_bounty_daily(es.pk)
                 if did_send:
                     counter_sent += 1
 

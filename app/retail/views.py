@@ -821,7 +821,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
     # Cross-ref the activity_pks->activity_id with the Activity objects
     activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
-
+    print(activities.query)
     # 4. Filter out activites based on on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'

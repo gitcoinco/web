@@ -1270,13 +1270,14 @@ def new_bounty_daily(es):
         ).exclude(bounty_reserved_for_user__isnull=False).order_by('-_val_usd_db')[0:3]
 
     to_emails = [to_email]
+    import ipdb; ipdb.set_trace()
 
     from townsquare.utils import is_email_townsquare_enabled
     from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, latest_activities, upcoming_dates, upcoming_dates, email_announcements
     quest = quest_of_the_day()
     grant = upcoming_grant()
     hackathons = get_hackathons()
-    dates = hackathons[0] + hackathons[1] + list(upcoming_dates())
+    dates = list(upcoming_dates())
     announcements = email_announcements()
     town_square_enabled = is_email_townsquare_enabled(to_email)
     should_send = (len(bounties) > 0) or town_square_enabled
