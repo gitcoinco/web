@@ -1,11 +1,17 @@
 const payWithCasperExtension = async(fulfillment_id, to_address, vm, modal) => {
 
   const amount = vm.fulfillment_context.amount;
+
+  if (amount < 2.5) {
+    _alert({ message: gettext('Minimum transfer amount is 2.5 CSPR') }, 'danger');
+    return;
+  }
+
   const token_name = vm.bounty.token_name;
   const tenant = vm.getTenant(token_name, vm.bounty.web3_type);
 
-  const { CasperClient, DeployUtil, CLPublicKey, Signer } = window;
-  const casperClient = new CasperClient(`/api/v1/reverse-proxy/${tenant}`);
+  const { CasperServiceByJsonRPC, DeployUtil, CLPublicKey, Signer } = window;
+  const casperService = new CasperServiceByJsonRPC(`/api/v1/reverse-proxy/${tenant}`);
 
   const isConnected = await Signer.isConnected();
 
@@ -52,13 +58,22 @@ const payWithCasperExtension = async(fulfillment_id, to_address, vm, modal) => {
   const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
   const deployJson = DeployUtil.deployToJson(deploy);
 
-  const signedDeployJson = await Signer.sign(deployJson, selectedAddress, to_address);
-  const signedDeploy = DeployUtil.deployFromJson(signedDeployJson);
+  let signedDeployJson;
 
   try {
-    const deployHash = await casperClient.putDeploy(signedDeploy);
+    signedDeployJson = await Signer.sign(deployJson, selectedAddress, to_address);
+  } catch (e) {
+    modal.closeModal();
+    _alert({ message: gettext(e) }, 'danger');
+    return;
+  }
 
-    callback(null, selectedAddress, deployHash);
+  const signedDeploy = DeployUtil.deployFromJson(signedDeployJson).unwrap();
+
+  try {
+    const deployResponse = await casperService.deploy(signedDeploy);
+
+    callback(null, selectedAddress, deployResponse.deploy_hash);
   } catch (e) {
     modal.closeModal();
     callback(e);
