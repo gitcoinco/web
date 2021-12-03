@@ -694,7 +694,7 @@ def get_notification_count(profile, days_ago, from_date):
 def email_to_profile(to_email):
     from dashboard.models import Profile
     try:
-        profile = Profile.objects.filter(email__iexact=to_email).last()
+        profile = Profile.objects.filter(email_index=to_email.lower()).last()
     except Profile.DoesNotExist:
         pass
     return profile
