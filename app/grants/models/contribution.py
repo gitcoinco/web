@@ -294,7 +294,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "from_profile":instance.subscription.contributor_profile,
                     "org_profile":instance.subscription.grant.org_profile,
                     "to_profile":instance.subscription.grant.admin_profile,
-                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(False),
+                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(True),
                     "url":instance.subscription.grant.url,
                     "network":instance.subscription.network,
                     "txid":instance.subscription.split_tx_id,
