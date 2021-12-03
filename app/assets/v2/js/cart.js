@@ -257,7 +257,7 @@ Vue.component('grants-cart', {
       return {
         'token': donationToken,
         'total': totalEstimatedMatch.toFixed(2),
-        'total_str': totalEstimatedMatch.toFixed(2).toString() + ' ' + donationToken
+        'total_str': totalEstimatedMatch.toFixed(2).toString() + ' ' + 'DAI'
       };
     },
 
