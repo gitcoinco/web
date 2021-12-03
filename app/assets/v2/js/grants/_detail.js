@@ -23,6 +23,12 @@ Vue.mixin({
         }).then(function(json) {
           vm.grant = json.grants;
           vm.loading = false;
+
+          const clr_prediction_curve_2d = grant.clr_prediction_curve;
+          const has_reached_cap = clr_prediction_curve_2d[0][1] !== 0 && clr_prediction_curve_2d[1][2] == 0 && clr_prediction_curve_2d[2][2] == 0 && clr[3][2] == 0 && clr_prediction_curve_2d[4][2] == 0 && clr_prediction_curve_2d[5][2] == 0;
+          
+          vm.grant.__has_reached_cap = has_reached_cap;
+
           // if (vm.tab) {
           //   setTimeout(function() {
           //     vm.scrollToElement('grant-tabs');

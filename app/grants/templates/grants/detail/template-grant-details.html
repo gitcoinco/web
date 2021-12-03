@@ -424,7 +424,7 @@
           </template>
 
           <!-- Max matching reached -->
-          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
+          <template v-if="grant.__has_reached_cap && grant.active && (grant.is_on_team || isStaff)">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-wallet mr-1"></i>
@@ -485,11 +485,11 @@
               <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && (index == 1 || index == 3)" class="bg-white d-flex flex-column" style="flex: 1 1 50%;margin-top: 14px;">
                 <!-- 1, 100 $ matching (reversed to display against fake chart) -->
                 <span>$[[prediction[0] ]] contribution
-                  <i v-if="index === 1" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                  <i v-if="grant.__has_reached_cap && index === 1" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
                     id="tooltip-matching-cap"
                   ></i>
                 </span>
-                <b-tooltip v-if="index === 1" target="tooltip-matching-cap" triggers="hover">
+                <b-tooltip v-if="grant.__has_reached_cap && index === 1" target="tooltip-matching-cap" triggers="hover">
                   <div class="text-left p-2">
                     <p>
                       This grant can still receive contributions, but will not receive additional matching funds this round because it has reached the maximum matching cap. <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
