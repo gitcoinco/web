@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@highlightjs/cdn-assets": "^10.0.0",
-    "@joeattardi/emoji-button": "^4.6.2",
+    "@joeattardi/emoji-button": "^3.1.1",
     "@popperjs/core": "^2.10.2",
     "bootstrap": "4.6.0",
     "bootstrap-vue": "2.18.0",

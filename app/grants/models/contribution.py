@@ -158,14 +158,18 @@ class Contribution(SuperModel):
             comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
             profile = Profile.objects.get(handle='gitcoinbot')
             activity = self.subscription.activities.first()
-            Comment.objects.update_or_create(
+            # delete all before recreating
+            Comment.objects.filter(
                 profile=profile,
                 activity=activity,
-                defaults={
-                    "comment":comment,
-                    "is_edited":True,
-                }
-                );
+            ).delete()
+            # create new entry
+            Comment.objects.create(
+                profile=profile,
+                activity=activity,
+                comment=comment,
+                is_edited=True
+            )
         except Exception as e:
             print(e)
 

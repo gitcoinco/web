@@ -1,10 +1,9 @@
 import os
 
-import pytest
-
-from django.test.client import Client
 from django.core.files.images import ImageFile
+from django.test.client import Client
 
+import pytest
 from grants.tests.factories import GrantBrandingRoutingPolicyFactory
 
 
