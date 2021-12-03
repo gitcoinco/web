@@ -528,6 +528,15 @@ input[type=text].loading {
   padding: 104px;
 }
 
+#discover-grants-section-heading {
+  font-size: 28px;
+}
+
+.discover-grants-section-subheading {
+  margin-top: 16px;
+  font-size: 17px;
+}
+
 @keyframes bg-move {
   0% {
     background-position: center, 0 center;
