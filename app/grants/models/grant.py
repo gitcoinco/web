@@ -495,6 +495,7 @@ class Grant(SuperModel):
         help_text=_('The last grant admin update date'),
         null=True,
         blank=True,
+        db_index=True,
     )
     categories = models.ManyToManyField('GrantCategory', blank=True) # TODO: REMOVE
     tags = models.ManyToManyField('GrantTag', blank=True)
