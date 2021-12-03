@@ -19,16 +19,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import timedelta
 from urllib.parse import quote_plus, urlencode
+from unittest.mock import MagicMock, patch
+from github import NamedUser
 
 from django.conf import settings
 from django.test.utils import override_settings
 from django.utils import timezone
+from git.models import GitCache
+from git.tests.factories.git_cache_factory import GitCacheFactory
+from faker import Faker
 
 import responses
 from git.utils import (
     HEADERS, TOKEN_URL, build_auth_dict, delete_issue_comment, get_github_emails, get_github_primary_email,
-    get_issue_comments, get_issue_timeline_events, is_github_token_valid, org_name, patch_issue_comment,
-    post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token,
+    get_issue_comments, get_issue_timeline_events, github_connect, is_github_token_valid, org_name, patch_issue_comment,
+    post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token, _get_user
 )
 from test_plus.test import TestCase
 
@@ -230,3 +235,58 @@ class GitUtilitiesTest(TestCase):
     #     post_issue_comment_reaction(owner, repo, comment_id, 'A comment.')
 
     #     assert responses.calls[0].request.url == url
+
+    @responses.activate
+    @patch('git.utils.github_connect')
+    def test_get_user_caching(self, mock_github_connect):
+        """Test the github utility _get_user method."""
+        fake = Faker()
+
+        # Create a dummy handle and some binary data that is supposed to be the serialized user
+        user_handle = fake.user_name()
+        user_binary_data = fake.text().encode('utf-8')
+
+        def dump_mock(user_obj, file_obj):
+            file_obj.write(user_binary_data)
+
+        gh_user = MagicMock(spec=NamedUser)
+        gh_user.update = MagicMock()
+
+        # Mock the gh client
+        gh_client = mock_github_connect()
+        gh_client.load = MagicMock(return_value=gh_user)
+        gh_client.dump = dump_mock
+        gh_client.get_user = MagicMock(return_value=gh_user)
+
+        # Step 1: Make the call
+        _get_user(gh_client, user_handle)
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: get_user 
+        #   - not expected: loaded, update - because user is new
+        gh_client.get_user.assert_called_once_with(user_handle)
+        gh_client.load.assert_not_called()
+        gh_user.update.assert_not_called()
+
+        # Verify that user has been cached
+        saved_user = GitCache.get_user(user_handle)
+
+        assert saved_user.handle == user_handle
+        assert saved_user.data.tobytes() == user_binary_data
+
+        # Step 2: Repeat the call, user should be leaded from DB
+        gh_client.reset_mock()
+        gh_client.load.reset_mock()
+        gh_client.get_user.reset_mock()
+
+        loaded_user = _get_user(gh_client, user_handle)
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: load and update (for the user loaded from DB) 
+        #   - not expected: get_user (because user is already in DB)
+        gh_client.load.assert_called_once()
+        assert gh_client.load.call_args[0][0].getbuffer() == user_binary_data
+        gh_client.get_user.assert_not_called()
+        gh_user.update.assert_called_once()
+
+        assert loaded_user == gh_user
