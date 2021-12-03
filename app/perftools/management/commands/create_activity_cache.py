@@ -39,7 +39,8 @@ def create_activity_cache():
         all_tags.append([None, None, tab])
     for tag in all_tags:
         keyword = tag[2]
-        data = get_specific_activities(keyword, False, None, None, page=1, page_size=10)
+        # request more activityIndex items than we need to account for hidden/rinkeby/etc activity
+        data = get_specific_activities(keyword, False, None, None, page=1, page_size=20)
         JSONStore.objects.filter(view=view, key=keyword).all().delete()
         JSONStore.objects.create(
             view=view,

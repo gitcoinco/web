@@ -1027,11 +1027,13 @@ def get_hackathons():
 
         return current_hackathons, upcoming_hackathons
 
+
 def latest_activities(user):
     from retail.views import get_specific_activities
     from townsquare.tasks import increment_view_counts
     cutoff_date = timezone.now() - timezone.timedelta(days=1)
-    activities = get_specific_activities('connect', 0, user, 0, page=1, page_size=4)[:4]
+    # request more activityIndex items than we need to account for hidden/rinkeby/etc activity
+    activities = get_specific_activities('connect', 0, user, 0, page=1, page_size=10)[:4]
     activities_pks = list(activities.values_list('pk', flat=True))
     increment_view_counts.delay(activities_pks)
     return activities

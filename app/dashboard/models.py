@@ -478,8 +478,9 @@ class Bounty(SuperModel):
 
     @property
     def latest_activity(self):
-        activity_indexes = ActivityIndex.objects.filter(key=f'bounty:{self.pk}').values_list('activity__pk', flat=True)
-        activity = Activity.objects.filter(pk__in=list(activity_indexes.first())).order_by('-pk')
+        # request more activityIndex items than we need to account for hidden/rinkeby/etc activity
+        activity_indexes = ActivityIndex.objects.filter(key=f'bounty:{self.pk}').values_list('activity__pk', flat=True)[0:10]
+        activity = Activity.objects.filter(pk__in=list(activity_indexes)).order_by('-pk')
         if activity.exists():
             from dashboard.router import ActivitySerializer
             return ActivitySerializer(activity.first()).data
