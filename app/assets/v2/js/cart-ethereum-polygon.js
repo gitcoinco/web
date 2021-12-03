@@ -370,7 +370,7 @@ Vue.component('grantsCartEthereumPolygon', {
         return;
       }
 
-      let gasLimit = 10000;
+      let gasLimit = 50000;
 
       // If user has enough balance within Polygon, cost equals the minimum amount
       let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
