@@ -806,6 +806,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     if not activity_pks and not filter_applied:
         activity_pks = ActivityIndex.objects.all()
 
+    import ipdb; ipdb.set_trace()
     # Are the pks already in a list?
     if not isinstance(activity_pks, list):
         # Order the activity index data
