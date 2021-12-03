@@ -202,7 +202,7 @@ class Contribution(SuperModel):
                 token_data = r.json() # zkSync token data
                 tokens = {}
                 for token in token_data:
-                    tokens[token.symbol] = token.id
+                    tokens[token.symbol] = token["id"]
 
                 # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
                 base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
