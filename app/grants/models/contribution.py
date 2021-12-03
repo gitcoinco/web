@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from economy.models import SuperModel
+from economy.models import SuperModel, Token
 from economy.tx import check_for_replaced_tx
 from townsquare.models import Comment
 from web3 import Web3
@@ -210,26 +210,38 @@ class Contribution(SuperModel):
                 r.raise_for_status()
                 tx_data = r.json() # zkSync transaction data
 
+                # get decimals for the token used in this transaction
+                token = Token.objects.filter(
+                    network_id=1,
+                    network=self.subscription.network,
+                    symbol=self.subscription.token_symbol,
+                    approved=True
+                ).first().to_dict
+
+                # This amount should match what is stated in the API response
+                has_same_amount = tx_data['amount'] == self.subscription.amount_per_period * 10 ** token['decimals']
                 # Get the zksync token ID for the expected token_symbol
-                expected_token_id = tokens[self.subscription.token_symbol]
+                has_same_token = tx_data['token'] == tokens[self.subscription.token_symbol]
 
                 # Update contribution values based on transaction data
                 self.originated_address = tx_data['from'] # assumes sender is originator
-                
+
                 # Ensure the onchain token data matches the expected contribution data
-                if tx_data['token'] == expected_token_id:
+                if has_same_token and has_same_amount:
                     self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
                     self.validator_passed = True
                     self.split_tx_confirmed = True
                     self.tx_cleared = True
                     self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
                 else:
+                    # mark the failure as a validator comment
+                    fail_reason = "Token ids do not match" if has_same_token else "Amounts do not match"
                     # this contribution data has been deliberately altered mid-flight: fail hard
                     self.success = False
                     self.validator_passed = False
                     self.split_tx_confirmed = False
                     self.tx_cleared = False
-                    self.validator_comment = f"zkSync Checkout. Failed: Token ids do not match"
+                    self.validator_comment = f"zkSync Checkout. Failed: {fail_reason}"
 
             elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
                 # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
