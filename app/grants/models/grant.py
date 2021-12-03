@@ -234,6 +234,10 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
         indexes = (GinIndex(fields=["vector_column"]),)
+        index_together = [
+            ["last_update", "network", "active", "hidden"],
+            ["last_update", "network", "active", "hidden", "weighted_shuffle"],
+        ]
 
 
     REGIONS = [
