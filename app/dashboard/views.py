@@ -1143,9 +1143,8 @@ def users_fetch(request):
                 profile_json['looking_team_members'] = registration.looking_team_members
                 profile_json['looking_project'] = registration.looking_project
 
-                activity_indexes = ActivityIndex.objects.filter(key=f'profile:{user.pk}').values_list('activity__pk', flat=True)
                 activity = Activity.objects.filter(
-                    pk__in=list(activity_indexes),
+                    activities_index__key=f'profile:{user.pk}',
                     hackathonevent_id=hackathon_id,
                     activity_type='hackathon_new_hacker',
                 )
@@ -2302,8 +2301,12 @@ def profile_activity(request, handle):
         raise Http404
 
     date = timezone.now() - timezone.timedelta(days=365)
-    profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
-    activities = list(Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on').values_list('created_on', flat=True))
+    activities = list(
+        Activity.objects.filter(
+            activities_index__key=f'profile:{profile.pk}',
+            hidden=False
+        ).order_by('-created_on').values_list('created_on', flat=True)
+    )
     activities += list(profile.actions.filter(created_on__gt=date).values_list('created_on', flat=True))
     response = {}
     prev_date = timezone.now()
@@ -2701,8 +2704,11 @@ def get_profile_tab(request, profile, tab, prev_context):
                 return TemplateResponse(request, 'profiles/profile_bounties.html', context, status=status)
 
             else:
-                profile_activity_indexes = ActivityIndex.objects.filter(key=f'profile:{profile.pk}').values_list('activity__pk', flat=True)
-                all_activities = Activity.objects.filter(pk__in=list(profile_activity_indexes),hidden=False).order_by('-created_on')
+                all_activities = Activity.objects.filter(
+                    activities_index__key=f'profile:{profile.pk}',
+                    hidden=False
+                ).order_by('-created_on')
+ 
                 paginator = Paginator(
                     profile_filter_activities(all_activities, activity_type, activity_tabs), 10
                 )
