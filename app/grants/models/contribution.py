@@ -219,7 +219,7 @@ class Contribution(SuperModel):
                 ).first().to_dict
 
                 # This amount should match what is stated in the API response
-                has_same_amount = tx_data['amount'] == self.subscription.amount_per_period * 10 ** token['decimals']
+                has_same_amount = float(tx_data['amount']) == float(self.subscription.amount_per_period * 10 ** token['decimals'])
                 # Get the zksync token ID for the expected token_symbol
                 has_same_token = tx_data['token'] == tokens[self.subscription.token_symbol]
 
