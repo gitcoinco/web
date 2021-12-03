@@ -30,6 +30,7 @@ describe('Grants Explorer page', () => {
         .should('contain', 'A to Z')
         .should('contain', 'Z to A')
         .should('contain', 'Current Round')
+        .should('contain', 'Highest Match Amount')
         .should('contain', 'Highest Amount Raised')
         .should('contain', 'Highest Contributor Count')
         .should('contain', 'All-Time');
@@ -142,6 +143,11 @@ describe('Grants Explorer page', () => {
       cy.url().should('contain', 'sort_option=-title');
 
       // Options in Current Round category
+      cy.get('.vselect-clean').click();
+
+      cy.get('.vs__dropdown-menu').contains('Highest Match Amount').click();
+      cy.url().should('contain', 'sort_option=-clr_prediction_curve__0__1');
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu').contains('Highest Amount Raised').click();
