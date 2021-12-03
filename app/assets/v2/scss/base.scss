@@ -524,6 +524,10 @@ input[type=text].loading {
   animation: bg-move 17s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
 }
 
+#discover-grants-section {
+  padding: 104px;
+}
+
 @keyframes bg-move {
   0% {
     background-position: center, 0 center;
