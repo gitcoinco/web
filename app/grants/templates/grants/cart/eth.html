@@ -119,8 +119,15 @@
                   <span class="text-muted">
                     <template v-if="grant.grant_donation_clr_match < 1000">estimated match</template>
                     <template v-else>estd. match</template>
+                    <i class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer" id="grant-tooltip-matching-[[index]]"></i>
                   </span>
                 </div>
+                <b-tooltip target="grant-tooltip-matching-[[index]]" triggers="hover">
+                  <div class="text-left p-2" style="min-width: 150px;">
+                    This grant can still receive contributions, but will not receive additional matching funds this round because it has reached the maximum matching cap. 
+                    <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
+                  </div>
+                </b-tooltip>
               </div>
 
               <!-- DESKTOP: Delete icon -->
