@@ -4164,12 +4164,14 @@ def sync_web3(request):
                     if new_bounty:
                         url = new_bounty.url
                         try:
-                            fund_ables = Activity.objects.filter(activity_type='status_update',
-                                                                 bounty=None,
-                                                                 metadata__fund_able=True,
-                                                                 metadata__resource__contains={
-                                                                     'provider': issue_url
-                                                                 })
+                            fund_ables = Activity.objects.filter(
+                                activity_type='status_update',
+                                bounty=None,
+                                metadata__fund_able=True,
+                                metadata__resource__contains={
+                                    'provider': issue_url
+                                }
+                            )
                             if fund_ables.exists():
                                 comment = f'New Bounty created {new_bounty.get_absolute_url()}'
                                 activity = fund_ables.first()

@@ -742,7 +742,7 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-def get_specific_activities(what, trending_only, user, after_pk, request=None, page=None):
+def get_specific_activities(what, trending_only, user, after_pk, request=None, page=None, page_size=10):
 
     # 1. Init
     view_count_threshold = 10
@@ -812,7 +812,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         activity_pks = activity_pks.order_by('-id')
         # Pagination is done here
         if page:
-            page_size = 10
             start_index = (page-1) * page_size
             end_index = page * page_size
             activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True)
