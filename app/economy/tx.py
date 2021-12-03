@@ -239,6 +239,29 @@ def grants_transaction_validator(contribution, w3, chain='std'):
             transfer_amount = event['args']['amount']
             is_correct_amount = transfer_amount >= expected_amount_min and transfer_amount <= expected_amount_max
 
+            if is_correct_recipient:
+                print('==========================')
+                print(f"subscription {contribution.subscription.amount_per_period_minus_gas_price}")
+                print(f"contribution.subscription.amount_per_period  {contribution.subscription.amount_per_period }")
+                print(f"contribution.subscription.amount_per_period_minus_gas_price { contribution.subscription.amount_per_period_minus_gas_price}")
+                print(f"paid to gitcoin  {float(contribution.subscription.amount_per_period) - float(contribution.subscription.amount_per_period_minus_gas_price) } ")
+
+                print(f"tx_hash: {tx_hash}")
+                print(f"amount_to_use: {amount_to_use}")
+                print(f"expected_amount: {expected_amount}")
+                print(f"Expected amount range: {expected_amount_min} - {expected_amount_max}")
+                print(f"transfer_amount : {transfer_amount}")
+                print(f"is_correct_amount: {is_correct_amount}")
+
+                print(f"expected_token: {expected_token}")
+                print(f"token from event: {event['args']['token'].lower()}")
+                print(f"is_correct_token: {is_correct_token}")
+
+                print(f"expected_recipient: {expected_recipient}")
+                print(f"recipient from event: {event['args']['dest'].lower()}")
+                print(f"is_correct_recipient: {is_correct_recipient}")
+                print('==========================')
+
             if is_correct_recipient and is_correct_token and is_correct_amount:
                 # We found the event log corresponding to the contribution parameters
                 response['validation']['passed'] = True
