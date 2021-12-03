@@ -230,19 +230,19 @@ def create_activity_cache():
     print('activity.1')
     view = 'activity'
     keyword = '24hcount'
-    data = Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+    activity_count = Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
     JSONStore.objects.filter(view=view, key=keyword).all().delete()
     JSONStore.objects.create(
         view=view,
         key=keyword,
-        data=json.loads(json.dumps(data, cls=EncodeAnything)),
+        data=json.loads(json.dumps(activity_count, cls=EncodeAnything)),
         )
 
     print('activity.2')
 
     for tag in tags:
         keyword = tag[2]
-        data = get_specific_activities(keyword, False, None, None).filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+        data = get_specific_activities(keyword, False, None, None, page=1, page_size=activity_count).filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
         JSONStore.objects.filter(view=view, key=keyword).all().delete()
         JSONStore.objects.create(
             view=view,

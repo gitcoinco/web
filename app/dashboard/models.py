@@ -479,7 +479,7 @@ class Bounty(SuperModel):
     @property
     def latest_activity(self):
         activity_indexes = ActivityIndex.objects.filter(key=f'bounty:{self.pk}').values_list('activity__pk', flat=True)
-        activity = Activity.objects.filter(pk__in=list(activity_indexes)).order_by('-pk')
+        activity = Activity.objects.filter(pk__in=list(activity_indexes.first())).order_by('-pk')
         if activity.exists():
             from dashboard.router import ActivitySerializer
             return ActivitySerializer(activity.first()).data
@@ -2314,10 +2314,10 @@ class ActivityIndex(SuperModel):
     """All Activity Reads happen from this table"""
     key = models.CharField(max_length=255, db_index=True)
     activity = models.ForeignKey(
-        'dashboard.Activity', 
-        null=True, 
-        on_delete=models.SET_NULL, 
-        related_name='activities_index', 
+        'dashboard.Activity',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='activities_index',
         blank=True
     )
 
@@ -2657,7 +2657,7 @@ class Activity(SuperModel):
                 key=key,
                 activity=_activity,
                 created_on=_activity.created_on
-            )    
+            )
 
 
     def to_dict(self, fields=None, exclude=None):
@@ -4452,7 +4452,6 @@ class Profile(SuperModel):
             counts = {ele['activity_type']: ele['the_count'] for ele in counts}
         params['activities_counts'] = counts
 
-        params['activities'] = list(self.get_various_activities().values_list('pk', flat=True))
         params['tips'] = list(self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True))
         params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
         params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
@@ -5725,7 +5724,7 @@ def psave_answer(sender, instance, created, **kwargs):
                 }
             )
             activity.populate_activity_index()
-            
+
         elif instance.question.hook == 'LOOKING_TEAM_PROJECT':
             registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
                                                                 registrant=instance.user.profile).first()
