@@ -4444,7 +4444,8 @@ class Profile(SuperModel):
         params['active_bounties'] = list(active_bounties.values_list('pk', flat=True))
 
         all_activities = self.get_various_activities()
-        params['activities'] = list(all_activities.values_list('pk', flat=True))
+        # commenting this out because we believe its responsible for the long-running query we're seeing on RR1 & RR2
+        # params['activities'] = list(all_activities.values_list('pk', flat=True))
         counts = {}
         if not all_activities or all_activities.count() == 0:
             params['none'] = True
