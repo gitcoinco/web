@@ -166,10 +166,10 @@ class PostSitemap(Sitemap):
     limit = 5000
 
     def items(self):
-
-        activity_indexes = ActivityIndex.objects.filter(key__startswith=f'profile:').values_list('activity__pk', flat=True)
         return Activity.objects.filter(
-            pk__in=list(activity_indexes), hidden=False, activity_type__in=['wall_post', 'status_update']
+            hidden=False,
+            activities_index__key__startswith='profile:',
+            activity_type__in=['wall_post', 'status_update']
         ).order_by('-pk').cache()
 
     def lastmod(self, obj):
@@ -185,9 +185,8 @@ class ActivitySitemap(Sitemap):
     limit = 5000
 
     def items(self):
-        activity_indexes = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
-        return Activity.objects.filter(
-            pk__in=list(activity_indexes)
+        return Activity.objects.exclude(
+            activities_index__key__isnull=True
         ).order_by('-pk').cache()
 
     def lastmod(self, obj):
