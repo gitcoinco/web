@@ -423,6 +423,20 @@
             <hr class="my-4">
           </template>
 
+          <!-- Max matching reached -->
+          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-wallet mr-1"></i>
+                Maximum matching reached
+              </p>
+              Your grant can still receive contributions, but will not get additional matching funds this round because it has reached the maximum matching cap.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" target="_blank">
+              Learn More
+            </a>
+            <hr class="my-4">
+          </template>
 
           <!-- L2 contributions -->
           <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
