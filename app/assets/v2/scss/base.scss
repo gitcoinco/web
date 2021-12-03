@@ -537,6 +537,10 @@ input[type=text].loading {
   font-size: 19px;
 }
 
+#view-grants-link {
+  margin-top: -20px;
+}
+
 @keyframes bg-move {
   0% {
     background-position: center, 0 center;
