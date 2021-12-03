@@ -24,16 +24,13 @@ Vue.mixin({
           vm.grant = json.grants;
           vm.loading = false;
 
-          const clr_prediction_curve_2d = grant.clr_prediction_curve;
-          const has_reached_cap = clr_prediction_curve_2d[0][1] !== 0 && clr_prediction_curve_2d[1][2] == 0 && clr_prediction_curve_2d[2][2] == 0 && clr[3][2] == 0 && clr_prediction_curve_2d[4][2] == 0 && clr_prediction_curve_2d[5][2] == 0;
-          
-          vm.grant.__has_reached_cap = has_reached_cap;
+          // pick up the curve from the grants model
+          const clr_curve = vm.grant.clr_prediction_curve;
 
-          // if (vm.tab) {
-          //   setTimeout(function() {
-          //     vm.scrollToElement('grant-tabs');
-          //   }, 1000);
-          // }
+          // check if this grant has reached the cap for its respective clrs
+          vm.grant.__has_reached_cap = clr_curve && (
+            clr_curve[0][1] !== 0 && clr_curve[1][2] == 0 && clr_curve[2][2] == 0 && clr_curve[3][2] == 0 && clr_curve[4][2] == 0 && clr_curve[5][2] == 0
+          );
 
           resolve();
         }).catch(console.error);
