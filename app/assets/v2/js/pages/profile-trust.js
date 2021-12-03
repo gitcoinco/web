@@ -2246,4 +2246,180 @@ $(document).ready(function() {
 
     });
   });
+
+  const passportCredential = (() => {
+    const CERAMIC_NODE_URL = 'https://ceramic-clay.3boxlabs.com';
+    const CERAMIC_DOC_FAMILY = 'popp';
+    const CERAMIC_DOC_TAGS = [
+      'gitcoin',
+      'PoPP',
+      'ProofOfPersonhoodPassport',
+      'VerifiableCredential',
+      'DIDKit'
+    ];
+
+    let credential;
+    let verifier;
+
+    const CERAMIC_DOC_OPTIONS = {
+      family: CERAMIC_DOC_FAMILY,
+      tags: CERAMIC_DOC_TAGS
+    };
+
+    const params = () => ({
+      'network': networkName,
+      'coinbase': selectedAccount
+    });
+
+    const downloadLink = () => {
+      const str = JSON.stringify(credential, null, 2);
+      const encoded = encodeURIComponent(str);
+
+      return `data:application/json;charset=utf-8,${encoded}`;
+    };
+
+    const baseContent = () => {
+      const formatted = JSON.stringify(credential, null, 2);
+      const { issuer, credentialSubject, passport } = credential;
+
+      const value = passport['personhood_score'];
+      // substring(12) removes 'did:pkh:eth:'
+      const address = credentialSubject['id'].substring(12);
+
+      const style = 'style="margin: 0.5rem;width: 100%;"';
+      const href = downloadLink();
+
+      const verifiableCredential = '<a href="https://www.w3.org/TR/vc-data-model/" target="_blank">W3C Verifiable Credential</a>';
+      const did = '<a href="https://www.w3.org/TR/did-core/" target="_blank">DID</a>';
+
+      return `
+        <p>This is a ${verifiableCredential} that contains your trust bonus signed by the ${did} <strong>${issuer}</strong>.</p>
+        <p>Your trust bonus score is <strong>${value}</strong> for the Ethereum address <strong>${address}</strong>.</p>
+        <textarea id="vc-copy" style="width: 100%;margin: 0 0 1rem 0;padding: 1rem;" rows="4" class="text-monospace" readonly>${formatted}</textarea>
+        <div style="display: flex;flex-direction: column;">
+          <div style="display: flex;">
+            <button ${style} type="button" class="btn btn-info" data-copyclipboard="#vc-copy">Copy</button>
+            <a ${style} href="${verifier}" target="_blank" class="btn btn-success">Verify</a>
+            <a ${style} href="${href}" class="btn btn-link" download="gitcoin-popp-vc.json"">Download</a>
+          </div>
+          <button ${style} type="button" class="btn btn-primary" id="vc-ceramic">Save to Ceramic</button>
+        </div>
+      `;
+    };
+
+    const messages = {
+      init: [
+        'Initialize Ceramic client',
+        'Initializing Ceramic client',
+        'Initialized Ceramic client'
+      ],
+      auth: [
+        'Authenticate with Ceramic client',
+        'Authenticating with Ceramic client',
+        'Authenticated with Ceramic client'
+      ],
+      write: [
+        'Save passport credential',
+        'Saving passport credential',
+        'Saved passport credential'
+      ]
+    };
+
+    const getMessage = (source, state) => {
+      if (state === true) {
+        return '<s>' + source[2] + '</s> ✓';
+      } else if (state === false) {
+        return '<strong>' + source[1] + '</strong>';
+      }
+      return '<em>' + source[0] + '</em>';
+    };
+
+    const getContent = (init, auth, write) => {
+      let list = '<ul>';
+
+      list += '<li>';
+      list += getMessage(messages.init, init);
+      list += '</li>';
+
+      list += '<li>';
+      list += getMessage(messages.auth, auth);
+      list += '</li>';
+
+      list += '<li>';
+      list += getMessage(messages.write, write);
+      list += '</li>';
+
+      list += '</ul>';
+
+      return `
+        <div>
+          <p>
+            <strong>Ceramic integration:</strong>
+            you can save a POPP credential to Ceramic.
+          </p>
+          ${list}
+        </div>
+      `;
+    };
+
+    const vcPassport = () => {
+      if (document.web3network != 'rinkeby' && document.web3network != 'mainnet') {
+        _alert('Please connect your web3 wallet to mainnet + unlock it', 'danger', 1000);
+        return;
+      }
+
+      const call = () => {
+        $.get('/passport/verifiable-credential', params(), async function(response) {
+          let status = response['status'];
+
+          if (status == 'error') {
+            _alert(response['msg'], 'danger', 5000);
+            return;
+          }
+
+          credential = response.vc;
+          verifier = response.verifier;
+
+          $('.modal-body').html(baseContent());
+          copyClipboard();
+        });
+      };
+
+      if (!provider) {
+        onConnect().then(call);
+      } else {
+        call();
+      }
+    };
+
+    const vcCeramic = async() => {
+      const modal = $('.modal-body');
+      const base = baseContent();
+
+      modal.html(`${base} <hr /> ${getContent(false)}`);
+
+      const client = await Ceramic.initializeClient(CERAMIC_NODE_URL);
+
+
+      modal.html(`${base} <hr /> ${getContent(true, false)}`);
+
+      await Ceramic.authenticateEthAddress(client, selectedAccount);
+
+
+      modal.html(`${base} <hr /> ${getContent(true, true, false)}`);
+
+      await Ceramic.writeDocument(client, credential, CERAMIC_DOC_OPTIONS);
+
+
+      modal.html(`${base} <hr /> ${getContent(true, true, true)}`);
+
+      _alert('Your passport has been uploaded to Ceramic', 'success', 5000);
+    };
+
+    return { vcPassport, vcCeramic };
+  })();
+
+  $(document).on('click', '#vc-passport', passportCredential.vcPassport);
+  $(document).on('click', '#vc-ceramic', passportCredential.vcCeramic);
+
 });
