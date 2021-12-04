@@ -798,10 +798,10 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     if not activities:
         activities = Activity.objects.exclude(activities_index__key__isnull=True)
 
-    # Cross-ref the activity_pks->activity_id with the Activity objects
+    # 3. Cross-ref the activity_pks->activity_id with the Activity objects
     activities = activities.filter(hidden=False).order_by('-created_on')
 
-    # 4. Filter out activites based on on network
+    # 4. Filter out activities based on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'
     if 'grant:' in what:
@@ -815,6 +815,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
 
+    # 5. Apply pagination slice and return Activities
     return activities[start_index:end_index]
 
 
@@ -824,7 +825,7 @@ def activity(request):
     page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
-    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request, page)
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request, page=page)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     activities = activities.cache()
 

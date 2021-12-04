@@ -1033,7 +1033,7 @@ def latest_activities(user):
     from townsquare.tasks import increment_view_counts
     cutoff_date = timezone.now() - timezone.timedelta(days=1)
     # request more activityIndex items than we need to account for hidden/rinkeby/etc activity
-    activities = get_specific_activities('connect', 0, user, 0, page=1, page_size=10)[:4]
+    activities = get_specific_activities('connect', 0, user, 0, page=1, page_size=4)
     activities_pks = list(activities.values_list('pk', flat=True))
     increment_view_counts.delay(activities_pks)
     return activities
