@@ -332,11 +332,11 @@ def recalc_clr(self, grant_id, grant_clr, retry: bool = True) -> None:
             clr_round=clr_round,
             network=network,
             only_grant_pk=grant_id,
-            what='slim'
+            what='full'
         )
     elif grant_id:
         obj = Grant.objects.get(pk=grant_id)
-
+        obj.calc_clr_round()
         for clr_round in obj.in_active_clrs.all():
             network = 'mainnet'
             predict_clr(
@@ -345,7 +345,7 @@ def recalc_clr(self, grant_id, grant_clr, retry: bool = True) -> None:
                 clr_round=clr_round,
                 network=network,
                 only_grant_pk=obj.pk,
-                what='slim'
+                what='full'
             )
 
 
