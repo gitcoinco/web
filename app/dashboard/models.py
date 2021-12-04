@@ -479,8 +479,9 @@ class Bounty(SuperModel):
     @property
     def latest_activity(self):
         # request more activityIndex items than we need to account for hidden/rinkeby/etc activity
-        activity_indexes = ActivityIndex.objects.filter(key=f'bounty:{self.pk}').values_list('activity__pk', flat=True)[0:10]
-        activity = Activity.objects.filter(pk__in=list(activity_indexes)).order_by('-pk')
+        activity = Activity.objects.filter(
+            activities_index__key=f'bounty:{self.pk}'
+        ).order_by('-pk')[0:10]
         if activity.exists():
             from dashboard.router import ActivitySerializer
             return ActivitySerializer(activity.first()).data
@@ -4310,20 +4311,17 @@ class Profile(SuperModel):
         """
 
         if not self.is_org:
-            activity_indexes = ActivityIndex.objects.filter(key=f'profile:{self.pk}').values_list('activity__pk', flat=True)
             all_activities = self.activities.all() | self.other_activities.all()
             return Activity.objects.filter(
-                pk__in=list(activity_indexes)
+                activities_index__key=f'profile:{self.pk}'
             ).order_by('-created').cache()
         else:
             # orgs
-            activity_indexes = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
             url = self.github_url
             all_activities = Activity.objects.filter(
-                Q(pk__in=list(activity_indexes)) |
                 Q(bounty__github_url__istartswith=url) |
                 Q(tip__github_url__istartswith=url)
-            )
+            ).exclude(activities_index__key__isnull=True)
 
         return all_activities.all().order_by('-created')
 
@@ -5739,13 +5737,11 @@ def psave_answer(sender, instance, created, **kwargs):
 
                 registration.save()
 
-                activityIndex = ActivityIndex.objects.filter(
-                    key=f'profile:{instance.user.profile.id}',
-                    activity__hackathonevent=instance.hackathon,
-                    activity__activity_type='hackathon_new_hacker'
+                activity = Activity.objects.filter(
+                    activities_index__key=f'profile:{instance.user.profile.id}',
+                    hackathonevent=instance.hackathon,
+                    activity_type='hackathon_new_hacker'
                 ).last()
-
-                activity = activityIndex.activity
 
                 if activity:
                     activity.metadata['looking_team_members'] = registration.looking_team_members

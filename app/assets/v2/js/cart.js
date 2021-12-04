@@ -257,7 +257,7 @@ Vue.component('grants-cart', {
       return {
         'token': donationToken,
         'total': totalEstimatedMatch.toFixed(2),
-        'total_str': totalEstimatedMatch.toFixed(2).toString() + ' ' + 'DAI'
+        'total_str': totalEstimatedMatch.toFixed(2).toString() + ' DAI'
       };
     },
 
@@ -274,7 +274,7 @@ Vue.component('grants-cart', {
       if (match) {
         total += match;
       }
-      return total.toString() + ' ' + token;
+      return total.toFixed(2).toString() + ' ' + token;
     },
 
     // Array of objects containing all donations and associated data
@@ -493,7 +493,7 @@ Vue.component('grants-cart', {
       // collate grants which represent contracts which cannot be interacted with
       const withCode = [];
       const unsafeGrants = [];
-      
+
       // make these checks on mainnet
       const mainnetProvider = new Web3('https://mainnet.infura.io/v3/1e0a90928efe4bb78bb1eeceb8aacc27');
 
@@ -1645,8 +1645,11 @@ Vue.component('grants-cart', {
             this.$set(this.grantData[i], 'grant_donation_amount_usd', amount);
 
             const matchAmount = await this.predictCLRMatch(grant, amount);
+            const clr_curve = grant.grant_clr_prediction_curve;
+            const has_reached_cap = clr_curve && (clr_curve[0][1] !== 0 && clr_curve[1][2] == 0 && clr_curve[2][2] == 0 && clr_curve[3][2] == 0 && clr_curve[4][2] == 0 && clr_curve[5][2] == 0);
 
             this.$set(this.grantData[i], 'grant_donation_clr_match', matchAmount ? matchAmount.toFixed(2) : 0);
+            this.$set(this.grantData[i], 'has_reached_cap', has_reached_cap);
           }
         }
       },
