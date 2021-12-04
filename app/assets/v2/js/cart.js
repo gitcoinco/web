@@ -274,7 +274,7 @@ Vue.component('grants-cart', {
       if (match) {
         total += match;
       }
-      return total.toString() + ' ' + token;
+      return total.toFixed(2).toString() + ' ' + token;
     },
 
     // Array of objects containing all donations and associated data
