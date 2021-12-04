@@ -799,7 +799,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         activities = Activity.objects.exclude(activities_index__key__isnull=True)
 
     # Cross-ref the activity_pks->activity_id with the Activity objects
-    activities = activities.filter(hidden=False).order_by('-created_on')[start_index:end_index]
+    activities = activities.filter(hidden=False).order_by('-created_on')
 
     # 4. Filter out activites based on on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
@@ -814,7 +814,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    return activities
+
+    return activities[start_index:end_index]
 
 
 def activity(request):
