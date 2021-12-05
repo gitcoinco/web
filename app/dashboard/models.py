@@ -2919,6 +2919,7 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     last_calc_date = models.DateTimeField(default=get_0_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
+    email_index = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     # todo remove chat related
     gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
@@ -4584,6 +4585,7 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
+    instance.email_index = instance.email.lower()
 
     # sync organizations_fk and organizations
     if hasattr(instance, 'pk') and instance.pk:

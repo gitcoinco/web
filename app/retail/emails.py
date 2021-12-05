@@ -694,7 +694,7 @@ def get_notification_count(profile, days_ago, from_date):
 def email_to_profile(to_email):
     from dashboard.models import Profile
     try:
-        profile = Profile.objects.filter(email__iexact=to_email).last()
+        profile = Profile.objects.filter(email_index=to_email.lower()).last()
     except Profile.DoesNotExist:
         pass
     return profile
@@ -764,7 +764,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
     subscriber = get_or_save_email_subscriber(to_email, 'internal')
     from dashboard.models import Profile
     from inbox.models import Notification
-    profile = Profile.objects.filter(email__iexact=to_email).last()
+    profile = Profile.objects.filter(email_index=to_email.lower()).last()
 
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
@@ -789,7 +789,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
 def render_weekly_recap(to_email, from_date=date.today(), days_back=7):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     from dashboard.models import Profile
-    prof = Profile.objects.filter(email__iexact=to_email).last()
+    prof = Profile.objects.filter(email_index=to_email.lower()).last()
     bounties = prof.bounties.all()
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_back)
