@@ -1272,7 +1272,7 @@ def new_bounty_daily(es):
     to_emails = [to_email]
 
     from townsquare.utils import is_email_townsquare_enabled
-    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, latest_activities, upcoming_dates, upcoming_dates, email_announcements
+    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, upcoming_dates, upcoming_dates, email_announcements
     quest = quest_of_the_day()
     grant = upcoming_grant()
     hackathons = get_hackathons()
