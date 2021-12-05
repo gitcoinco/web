@@ -504,36 +504,15 @@ Vue.component('grants-cart', {
       await Promise.all(grants.map((grant) => new Promise((resolve) => {
         // check for contract on Polygon
         mainnetProvider.eth.getCode(grant.grant_admin_address).then((code) => {
+          // if the address points to a contract, we want to stop any contributions from being sent here
           if (code !== '0x') {
-            withCode.push(grant);
+            // (this could be a gnosis safe created via a relayer and until we can check for that, we want to block all contribs from hitting this address on polygon)
+            unsafeGrants.push(grant);
           }
           // resolve the discovered code
           resolve(code);
         });
       })));
-
-      // if codes are detected then we need to check that each of the deployed contract holds a valid gnosis safe which could be deployed on polygon
-      if (withCode.length) {
-        // check that each of the discovered contracts can respond with a version (ie it is a gnosis safe)
-        await Promise.all(withCode.map((grant) => new Promise((resolve) => {
-          // test for a successful read of the contract.version()
-          const contract = new mainnetProvider.eth.Contract(gnosisSafeAbi, grant.grant_admin_address);
-
-          // attempt to read the version from the contract
-          contract.methods.VERSION().call().then((version) => {
-            // check that the contract holds a valid version
-            if (version == '1.0.0') { // if version is 1.0.0 the safe was deployed with create, and more recent versions are deployed with create2 and can be deployed on polygon
-              unsafeGrants.push(grant);
-            }
-          }).catch((e) => {
-            // no version method available... this could be a proxy or a different type of contract - to be safe we ensure no funds are sent here
-            unsafeGrants.push(grant);
-          }).finally(() => {
-            // resolve the outer promise
-            resolve();
-          });
-        })));
-      }
 
       // return any grants which cannot be contributed to
       return unsafeGrants;
