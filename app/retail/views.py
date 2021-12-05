@@ -796,10 +796,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
     # Defaults
     if not activities:
-        # limit the subquery to only include a subset of the ActivityIndex, we'll over shoot incase any matches fit the network exclusions below
-        activities = Activity.objects.raw(
-            Activity.objects.exclude(activities_index__key__isnull=True).query.sql_with_params()[0].replace('IS NULL', f'IS NULL LIMIT {page_size * 2}')
-        )
+        # Just use all of the activity and allow the [start_index:end_index] slice to limit the response
+        activities = Activity.objects.all()
 
     # 3. Cross-ref the activity_pks->activity_id with the Activity objects
     activities = activities.filter(hidden=False).order_by('-created_on')
