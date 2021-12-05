@@ -1329,10 +1329,8 @@ def new_bounty_daily(es):
             from_email = settings.CONTACT_EMAIL
 
             from django.contrib.auth.models import User
-            user = User.objects.filter(email__iexact=to_email).first()
-            activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, hackathons=get_hackathons(), latest_activities=activities)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, hackathons=get_hackathons())
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])

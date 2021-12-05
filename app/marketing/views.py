@@ -1028,17 +1028,6 @@ def get_hackathons():
         return current_hackathons, upcoming_hackathons
 
 
-def latest_activities(user):
-    from retail.views import get_specific_activities
-    from townsquare.tasks import increment_view_counts
-    cutoff_date = timezone.now() - timezone.timedelta(days=1)
-    # request more activityIndex items than we need to account for hidden/rinkeby/etc activity
-    activities = get_specific_activities('connect', 0, user, 0, page=1, page_size=4)
-    activities_pks = list(activities.values_list('pk', flat=True))
-    increment_view_counts.delay(activities_pks)
-    return activities
-
-
 @staff_member_required
 def new_bounty_daily_preview(request):
     profile = request.user.profile
@@ -1050,5 +1039,5 @@ def new_bounty_daily_preview(request):
     max_bounties = 5
     if len(new_bounties) > max_bounties:
         new_bounties = new_bounties[0:max_bounties]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), latest_activities=latest_activities(request.user))
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons())
     return HttpResponse(response_html)
