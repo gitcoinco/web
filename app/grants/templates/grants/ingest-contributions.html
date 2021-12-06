@@ -61,7 +61,6 @@
                 <hr>
               </div>
 
-              <!-- Amount -->
               <div class="col-12 mb-3">
                 <p class="font-body mb-1">
                   <ul>
@@ -79,22 +78,41 @@
                 <hr>
               </div>
 
+              <!-- Checkout Type -->
+              <div class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">Checkout Type</label>
+                <v-select class="vselect-clean rounded-pill" 
+                  style="min-width:230px; border: 1px solid #ced4da;" 
+                  id="checkout_type"
+                  :required="true"
+                  :options="checkoutOptions" 
+                  :searchable="false" 
+                  :clearable="false"
+                  :reduce="obj => obj.value"
+                  placeholder="Please select an option"
+                  v-model="form.checkoutType">
+                </v-select>
+                <div class="col-12 text-danger pl-0 mt-1" v-if="errors.checkoutType">
+                  [[errors.checkoutType]]
+                </div>
+              </div>
+
               <!-- Transaction hash -->
               <div class="col-12 mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase">Transaction Hash (for Standard Checkout on L1)</label>
-                <input id="amount" v-model="form.txHash" name="amount" class="form__input form__input-lg" />
-              </div>
-              <div class="col-12 text-danger" v-if="errors.txHash">
-                [[errors.txHash]]
+                <input id="transaction-hash" v-model="form.txHash" name="amount" class="form__input form__input-lg" />
+                <div class="col-12 text-danger pl-0 mt-1" v-if="errors.txHash">
+                  [[errors.txHash]]
+                </div>
               </div>
 
               <!-- User address -->
               <div class="col-12 mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase">Wallet Address (for zkSync Checkout)</label>
-                <input id="amount" v-model="form.userAddress" name="amount" class="form__input form__input-lg" />
-              </div>
-              <div class="col-12 text-danger" v-if="errors.address">
-                [[errors.address]]
+                <input id="wallet-address" v-model="form.userAddress" name="amount" class="form__input form__input-lg" />
+                <div class="col-12 text-danger pl-0 mt-1" v-if="errors.address">
+                  [[errors.address]]
+                </div>
               </div>
 
               <!-- Profile to ingest for, only usable by staff -->
@@ -108,9 +126,9 @@
                     enter your own username to ingest your own contributions.
                   </p>
                   <input id="amount" v-model="form.handle" name="amount" class="form__input form__input-lg" />
-                </div>
-                <div class="col-12 text-danger" v-if="errors.handle">
-                  [[errors.handle]]
+                  <div class="col-12 text-danger pl-0 mt-1" v-if="errors.handle">
+                    [[errors.handle]]
+                  </div>
                 </div>
               {% endif %}
 

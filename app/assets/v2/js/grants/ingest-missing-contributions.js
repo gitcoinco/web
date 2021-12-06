@@ -11,10 +11,16 @@ Vue.component('grants-ingest-contributions', {
   data: function() {
     return {
       form: {
-        txHash: undefined, // user transaction hash, used to ingest L1 donations
+        checkoutType: undefined,
+        txHash: undefined, // user transaction hash, used to ingest L1 and Polygon L2 donations
         userAddress: undefined, // user address, used to ingest zkSync (L2) donations
         handle: undefined // user to ingest under -- ignored unless you are a staff
       },
+      checkoutOptions: [
+        { value: 'eth_std', label: 'Standard' },
+        { value: 'eth_zksync', label: 'zkSync' },
+        { value: 'eth_polygon', label: 'Polygon'}
+      ],
       errors: {}, // keys are errors that occurred
       submitted: false // true if form has been submitted and we are waiting on response
     };
@@ -31,25 +37,26 @@ Vue.component('grants-ingest-contributions', {
       // most common use case, and (2) later when we update cart.js to fallback to manual ingestion if regular POSTing
       // fails, that will make DRYing the manual ingestion code simpler. Reference implementation of DRY code for
       // fallback to manual ingestion here: https://github.com/gitcoinco/web/pull/8563
-      const { txHash, userAddress } = this.form;
-      const isFormComplete = Boolean(txHash) != Boolean(userAddress);
+      const { checkoutType, txHash, userAddress } = this.form;
 
-      if (!isFormComplete) {
-        // Form was not filled out
-        this.$set(this.errors, 'invalidForm', 'Please enter a valid transaction hash OR a valid wallet address, but not both');
-      } else {
-        // Form was filled out, so validate the inputs
-        isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString(txHash);
-        isValidAddress = ethers.utils.isAddress(userAddress);
+      // Form was filled out, so validate the inputs
+      isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString(txHash);
+      isValidAddress = ethers.utils.isAddress(userAddress);
 
-        if (txHash && !isValidTxHash) {
-          this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
-        } else if (userAddress && !isValidAddress) {
-          this.$set(this.errors, 'address', 'Please enter a valid address');
-        }
-        if (document.contxt.is_staff && !this.form.handle) {
-          this.$set(this.errors, 'handle', 'Since you are staff, you must enter the handle of the profile to ingest for');
-        }
+      if (!checkoutType) {
+        this.$set(this.errors, 'checkoutType', 'Please select a valid checkout type');
+      }
+      
+      if ((!txHash || !isValidTxHash) && (checkoutType == 'eth_std' || checkoutType == 'eth_polygon')) {
+        this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
+      }
+
+      if ((!userAddress || !isValidAddress) && (checkoutType == 'eth_zksync')) {
+        this.$set(this.errors, 'address', 'Please enter a valid address');
+      }
+
+      if (document.contxt.is_staff && !this.form.handle) {
+        this.$set(this.errors, 'handle', 'Since you are staff, you must enter the handle of the profile to ingest for');
       }
 
       if (Object.keys(this.errors).length) {
