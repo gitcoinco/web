@@ -247,7 +247,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
         // Check if we can checkout using polygon
         if (unsafeGrants.length > 0) {
-          _alert(`Contributions cannot be sent to the following Grants (with a multisig payout address) on Polygon: <ul class="mt-3 font-caption">${unsafeGrants.map((grant) => `<li style="mb-1">'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
+          _alert(`Contributions cannot be sent to the following Grants (with a multisig payout address) on Polygon: <ul class="mt-3 font-caption font-weight-normal">${unsafeGrants.map((grant) => `<li style="mb-1">'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
           return;
         }
 
