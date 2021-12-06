@@ -370,7 +370,7 @@ Vue.component('grantsCartEthereumPolygon', {
         return;
       }
 
-      let gasLimit = 100000;
+      let gasLimit = 500000;
 
       // If user has enough balance within Polygon, cost equals the minimum amount
       let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
@@ -480,7 +480,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
           // check if ProposeGasPrice is min at 100
           const overridePolygonGasPrice = Number(document.polygonGasPrice) > 100 ? Number(document.polygonGasPrice) : 100;
-          
+
           const gasFeeInWei = web3.utils.toWei(
             (this.polygon.estimatedGasCost * overridePolygonGasPrice).toString(), 'gwei'
           );
