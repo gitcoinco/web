@@ -752,6 +752,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     end_index = page * page_size
 
     activities = Activity.objects.none()
+    filter_applied = False
 
     # 2. Choose which filter to index
 
@@ -760,27 +761,34 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         what in ['grants', 'all_grants']
     ):
         activities = Activity.objects.filter(activities_index__key__startswith='grant:')
+        filter_applied = True
     elif 'grant:' in what:
         activities = Activity.objects.filter(activities_index__key=what)
+        filter_applied = True
 
     # all Grants
     if what == 'all_grants':
         activities = Activity.objects.filter(activities_index__key__startswith='grant:')
+        filter_applied = True
 
     # kudos
     if (
         what in ['kudos']
     ):
         activities = Activity.objects.filter(activities_index__key__startswith='kudo:')
+        filter_applied = True
     elif 'kudos:' in what:
         activities = Activity.objects.filter(activities_index__key=what.replace('kudos', 'kudo'))
+        filter_applied = True
 
     # hackathon project
     if 'project:' in what:
         activities = Activity.objects.filter(activities_index__key=what)
+        filter_applied = True
 
     # tribes
     if 'tribe:' in what:
+        filter_applied = True
         handle = what[6:]
         profile = Profile.objects.filter(handle=handle).first()
         if profile:
@@ -789,13 +797,15 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
     # hackathon activity
     if 'hackathon:' in what:
         activities = Activity.objects.filter(activities_index__key=what)
+        filter_applied = True
 
     # single activity
     if 'activity:' in what:
         activities = Activity.objects.filter(activities_index__key=what.replace('activity:', ''))
+        filter_applied = True
 
     # Defaults
-    if not activities:
+    if not activities and not filter_applied:
         # Just use all of the activity and allow the [start_index:end_index] slice to limit the response
         activities = Activity.objects.all()
 
