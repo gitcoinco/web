@@ -700,7 +700,7 @@ def email_to_profile(to_email):
     return profile
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, hackathons=(), from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[]):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, hackathons=(), from_date=date.today(), days_ago=7, chats_count=0, featured_bounties=[], trending_grants=[]):
     from dateutil.parser import parse
     from marketing.views import email_announcements, trending_avatar
 
@@ -729,6 +729,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     print(counter, time.time())
     params = {
         'old_bounties': old_bounties,
+        'trending_grants': trending_grants,
         'bounties': bounties,
         'featured_bounties': featured_bounties,
         'trending_avatar': trending_avatar(),
@@ -1517,10 +1518,11 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons
+    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, get_trending_grants
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), chats_count=7)
+    trending_grants = get_trending_grants()
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), chats_count=7, trending_grants=trending_grants())
     return HttpResponse(response_html)
 
 

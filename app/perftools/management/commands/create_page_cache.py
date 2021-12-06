@@ -38,8 +38,18 @@ from quests.views import current_round_number
 from retail.utils import build_stat_results, programming_languages
 from retail.views import get_contributor_landing_page_context, get_specific_activities
 from townsquare.views import tags
+from django.db import connection
 
 logger = logging.getLogger(__name__)
+
+def query_to_results(query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = []
+        for _row in cursor.fetchall():
+            rows.append(list(_row))
+        return rows
+    return []
 
 
 def create_email_inventory_cache():
@@ -64,6 +74,32 @@ def create_grant_clr_cache():
     pks = Grant.objects.filter(active=True, hidden=False).values_list('pk', flat=True)
     for pk in pks:
         update_grant_metadata.delay(pk)
+
+
+def created_trending_grant_cache():
+    print('created_trending_grant_cache')
+    day = 1 if not settings.DEBUG else 10
+    query = f"""
+select
+normalized_data->'id',
+count(1)
+from grants_contribution
+where created_on > now() - interval '{day} day'
+group by normalized_data->'id'
+order by count(1) desc
+limit 5
+"""
+    data = query_to_results(query)
+    view = 'trending_grants'
+    with transaction.atomic():
+        items = []
+        JSONStore.objects.filter(view=view).all().delete()
+        print("- creating")
+        JSONStore.objects.create(
+                view=view,
+                key=view,
+                data=json.loads(json.dumps(data, cls=EncodeAnything)),
+                )
 
 
 def create_grant_type_cache():
@@ -364,11 +400,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         operations = []
-        operations.append(create_grant_active_clr_mapping)
-        operations.append(create_grant_type_cache)
-        operations.append(create_grant_clr_cache)
+        operations.append(created_trending_grant_cache)
 
         if not settings.DEBUG:
+            operations.append(create_grant_active_clr_mapping)
+            operations.append(create_grant_type_cache)
+            operations.append(create_grant_clr_cache)
             operations.append(create_results_cache)
             operations.append(create_hack_event_cache)
             operations.append(create_hidden_profiles_cache)

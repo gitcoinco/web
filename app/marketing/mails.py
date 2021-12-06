@@ -1272,13 +1272,14 @@ def new_bounty_daily(es):
     to_emails = [to_email]
 
     from townsquare.utils import is_email_townsquare_enabled
-    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, upcoming_dates, upcoming_dates, email_announcements
+    from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons, upcoming_dates, upcoming_dates, email_announcements, get_trending_grants
     quest = quest_of_the_day()
     grant = upcoming_grant()
     hackathons = get_hackathons()
     dates = hackathons[0] + hackathons[1] + list(upcoming_dates())
     announcements = email_announcements()
     town_square_enabled = is_email_townsquare_enabled(to_email)
+    trending_grants = get_trending_grants()
     should_send = (len(bounties) > 0) or town_square_enabled
     if not should_send:
         return False
@@ -1303,9 +1304,9 @@ def new_bounty_daily(es):
             plural_old_bounties = "Bounties" if len(old_bounties)>1 else "Bounty"
             new_bounties = f"💰{len(old_bounties)} {plural_old_bounties}"
 
-        new_quests = ""
+        new_grants = ""
         if quest:
-            new_quests = f"🎯1 Quest"
+            new_grants = f"🎯{len(trending_grants)} Grants"
 
         new_dates = ""
         if dates:
@@ -1318,9 +1319,9 @@ def new_bounty_daily(es):
             new_announcements = f"📣 1 {plural}"
 
         def comma(a):
-            return ", " if a and (new_bounties or new_quests or new_dates or new_announcements or notifications) else ""
+            return ", " if a and (new_bounties or new_grants or new_dates or new_announcements or notifications) else ""
 
-        subject = f"{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}"
+        subject = f"{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_grants}{comma(new_grants)}{offers}"
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -1330,7 +1331,7 @@ def new_bounty_daily(es):
 
             from django.contrib.auth.models import User
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, hackathons=get_hackathons())
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, hackathons=get_hackathons(), trending_grants=trending_grants)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
