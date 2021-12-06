@@ -1013,6 +1013,17 @@ def upcoming_grant():
     grant = Grant.objects.order_by('-weighted_shuffle').first()
     return grant
 
+def get_trending_grants():
+    from perftools.models import JSONStore
+    from dateutil.parser import parse
+
+    grants = JSONStore.objects.get(key='trending_grants', view='trending_grants').data
+    return_me = []
+    for pkg in grants:
+        grant = Grant.objects.get(pk=pkg[0])
+        return_me.append([grant, pkg[1]])
+    return return_me
+
 def get_hackathons():
     from perftools.models import JSONStore
     from dateutil.parser import parse
@@ -1039,5 +1050,5 @@ def new_bounty_daily_preview(request):
     max_bounties = 5
     if len(new_bounties) > max_bounties:
         new_bounties = new_bounties[0:max_bounties]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons())
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), trending_grants=get_trending_grants())
     return HttpResponse(response_html)

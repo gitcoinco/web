@@ -113,6 +113,28 @@ along with this program. If not, see
   <p class="text-left" style="line-height: 24px; word-wrap: break-word;">No new announcements today!</p>
   {% endif %}
 
+  {% if trending_grants %}
+  <h3 class="section-header">{% trans "Grants to Fund" %}</h3>
+  <hr style="margin-bottom: 2em;">
+
+    <p class="text-left grey mb-0">Trending Grants</p><br>
+    {% for grant in trending_grants %}
+      <div style="display: inline-block; margin-top: 1em;">
+        <div style="float:left; width: 95px; min-height: 80px;">
+          <img class="avatar-bounty" style="max-width: 80px; height: auto;" src="{{ media_url }}{{grant.0.logo}}">
+        </div>
+        <div style="margin: 0 0 0 95px;">
+          <p class="font-weight-bold mb-0" style="margin-block-start: 0; word-wrap: break-word;">{{grant.0.title}}</p>
+          <p style="margin-top: 0; margin-bottom: 0;">{{grant.1}} contributions last 24hr</p>
+          <a href="{{base_url}}grants/{{grant.0.url}}?{{ utm_tracking }}">View Grant</a>
+        </div>
+      </div>
+      <br>
+    {% endfor %}
+  {% endif %}
+
+
+
   {% if current_hackathons or upcoming_hackathons %}
   <h3 class="section-header">{% trans "Hackathons to Join" %}</h3>
   <hr style="margin-bottom: 2em;">
