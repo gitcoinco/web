@@ -151,7 +151,6 @@ Vue.component('grants-ingest-contributions', {
           }
         }
 
-
         // If we are here, the provided form data is valid. However, someone could just POST directly to the endpoint,
         // so to workaround that we ask the user for a signature, and the backend will verify that signature
         const { signature, message } = await this.signMessage(walletAddress);
