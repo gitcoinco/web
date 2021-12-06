@@ -68,7 +68,7 @@ along with this program. If not, see
   {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'grants/nav.html' %}
 
-    <div class="container-fluid">
+    <div>
       {% if announcement %}
       <div class="py-3 text-center" style="background-color: #6F3FF5">
         <p class="mb-0 white">{{announcement.desc | safe}}</p>
@@ -81,13 +81,13 @@ along with this program. If not, see
             <div v-if="isLandingPage" class="my-5">
               {% include 'grants/landing/active_clr_round.html'%}
             </div>
-            <div class="mb-5">
+            <div class="mb-5 py-5 bg-violet-100">
               <div class="container">
-                <div class="row justify-content-between align-items-end mb-4">
+                <div class="row justify-content-between align-items-center mb-4">
                   <div class="col-auto">
                     <div class="row justify-content-start align-items-center">
                       <div class="col-auto">
-                        <h4 class="font-weight-bold py-0 my-0 pl-0">Discover Grants</h4>
+                        <h4 class="font-weight-bold pt-0 pb-2 mt-0 pl-0">Discover Grants</h4>
                         <p class="">Popular and interesting Grants from the Gitcoin community</p>
                       </div>
                     </div>
