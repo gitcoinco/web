@@ -465,7 +465,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                     grants_clr = curr_grants_clr.get(grant.id)
                     predicted_clr = grants_clr['clr_amount'] if grants_clr else 0.0
                 else:
-                    raw_grants_clr = curr_grants_clr.get(grant.id)
+                    raw_grants_clr = totals.get(grant.id)
                     # final will save the current distribution for every grant (ie without predictions)
                     if what == 'final' or raw_grants_clr['clr_amount'] == match_cap_per_grant:
                         # ignore the other ones
