@@ -174,7 +174,7 @@ def render_thank_you_for_supporting_email(grants_with_subscription):
             totals[key] = 0
         totals[key] += float(val)
 
-        total_match_amount = float(gws['subscription'].match_amount)
+        total_match_amount += float(gws['subscription'].match_amount)
         match_token = gws['subscription'].match_amount_token
 
     params = {
