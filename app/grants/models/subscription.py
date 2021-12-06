@@ -187,6 +187,14 @@ class Subscription(SuperModel):
         return self.is_postive_vote == False
 
     @property
+    def match_amount(self):
+        return 4.4 # TODO: actually calc it
+
+    @property
+    def match_amount_token(self):
+        return 'DAI'
+
+    @property
     def status(self):
         """Return grants status, current or past due."""
         if self.next_contribution_date < timezone.now():

@@ -165,6 +165,8 @@ def render_new_contributions_email(grant):
 
 def render_thank_you_for_supporting_email(grants_with_subscription):
     totals = {}
+    total_match_amount = 0
+    match_token = 'DAI'
     for gws in grants_with_subscription:
         key = gws['subscription'].token_symbol
         val = float(gws['subscription'].amount_per_period)
@@ -172,9 +174,14 @@ def render_thank_you_for_supporting_email(grants_with_subscription):
             totals[key] = 0
         totals[key] += float(val)
 
+        total_match_amount = float(gws['subscription'].match_amount)
+        match_token = gws['subscription'].match_amount_token
+
     params = {
         'grants_with_subscription': grants_with_subscription,
         "totals": totals,
+        'total_match_amount': total_match_amount,
+        'match_token': match_token,
         'utm_tracking': build_utm_tracking('thank_you_for_supporting_email'),
     }
     response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
