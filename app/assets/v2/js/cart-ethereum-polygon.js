@@ -191,6 +191,19 @@ Vue.component('grantsCartEthereumPolygon', {
       const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
 
       try {
+        const selectedETHCartToken = appCart.$refs.cart.selectedETHCartToken;
+        const unsuportedCheckoutPolygon = !appCart.$refs.cart.polygonSupportedTokens.includes(selectedETHCartToken);
+
+        if (unsuportedCheckoutPolygon) {
+          _alert(`Polygon checkout not supported due to the use of the token ${selectedETHCartToken}`, 'danger');
+          return;
+        }
+
+        if (this.grantsByTenant.length > this.maxCartItems) {
+          _alert(`Polygon checkout supports checkout for ${this.maxCartItems} items. Please remove ${this.grantsByTenant.length - this.maxCartItems} grants from your cart to use Polygon checkout or select standard
+          checkout.`, 'danger');
+          return;
+        }
 
         if (typeof ga !== 'undefined') {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');

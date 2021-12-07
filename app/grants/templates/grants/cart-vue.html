@@ -264,7 +264,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <button
                 @click="checkoutWithPolygon()"
                 class="btn p-0 checkout-logo"
-                :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
+                :disabled="grantsUnderMinimalContribution?.length > 0"
                 id='js-polygonfundGrants-button'
               >
               <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -370,9 +370,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div id="zksync-tooltip">
               <!-- Checkout with zkSync button -->
               <button
-                @click="zksync.showModal = true"
+                @click="checkoutWithzkSync()"
                 class="btn p-0 checkout-logo"
-                :disabled="cart.unsupportedTokens.length > 0 || grantsByTenant.length > maxCartItems || grantsUnderMinimalContribution?.length > 0"
+                :disabled="grantsUnderMinimalContribution?.length > 0"
                 id='js-zkSyncfundGrants-button'
               >
                 <svg width="23" height="15" viewBox="0 0 23 15" fill="none" xmlns="http://www.w3.org/2000/svg">

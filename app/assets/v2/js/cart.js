@@ -1603,23 +1603,6 @@ Vue.component('grants-cart', {
       //   await onConnect();
       // }
     },
-    selectedETHCartToken: function(val) {
-      const zkSyncFlag = !this.zkSyncSupportedTokens.includes(val);
-      const polygonFlag = !this.polygonSupportedTokens.includes(val);
-      let checkoutOptions;
-
-      if (zkSyncFlag && polygonFlag) {
-        checkoutOptions = 'zkSync and Polygon';
-      } else if (zkSyncFlag) {
-        checkoutOptions = 'zkSync';
-      } else if (polygonFlag) {
-        checkoutOptions = 'Polygon';
-      }
-
-      if (checkoutOptions) {
-        _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
-      }
-    },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
       async handler() {
