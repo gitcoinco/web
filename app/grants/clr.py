@@ -543,7 +543,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
                 grant.save()
 
-        debug_output.append({'grant': grant.id, "title": grant.title, "clr_prediction_curve": (clr_prediction_curve, "grants_clr": grants_clr})
+        debug_output.append({'grant': grant.id, "title": grant.title, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
     print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
 
