@@ -246,7 +246,7 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
             tot = float(tot.real)
 
         bigtot += tot
-        totals[proj] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
+        totals[proj] = {'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
 
     return bigtot, totals
 
@@ -315,7 +315,7 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
             if type(tot) == complex:
                 tot = float(tot.real)
 
-            totals[grant_id] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
+            totals[grant_id] = {'id': grant_id, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
 
             # normalise the result
             grants_clr = normalise(bigtot + tot, totals, total_pot, match_cap_per_grant)
@@ -533,29 +533,29 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 potential_clr.append(predicted_clr)
 
         # save the result of the prediction
-        if save_to_db:
-            clr_prediction_curve = list(zip(potential_donations, potential_clr))
-            base = clr_prediction_curve[0][1]
-            grant.last_clr_calc_date = timezone.now()
-            grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=60)
+        # if save_to_db:
+        clr_prediction_curve = list(zip(potential_donations, potential_clr))
+        base = clr_prediction_curve[0][1]
+        grant.last_clr_calc_date = timezone.now()
+        grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=60)
 
-            # check that we have enough data to set the curve
-            can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
-            if can_estimate:
-                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base if ele[1] != 0 else 0.0] for ele in clr_prediction_curve ]
-            else:
-                clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+        # check that we have enough data to set the curve
+        can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
+        if can_estimate:
+            clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base if ele[1] != 0 else 0.0] for ele in clr_prediction_curve ]
+        else:
+            clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
-            print(grant.id)
-            print(grant.title)
-            print(clr_prediction_curve)
+        print(grant.id)
+        print(grant.title)
+        print(clr_prediction_curve)
 
             # clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
 
             # if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
             #     grant.save()
 
-        debug_output.append({'grant': grant.id, "title": grant.title,  "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+        debug_output.append({'grant': grant.id, "title": grant.title,  "clr_prediction_curve": clr_prediction_curve, "grants_clr": grants_clr})
 
     print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
 
