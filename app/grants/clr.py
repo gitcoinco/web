@@ -372,16 +372,18 @@ def apply_cap(totals, match_cap_per_grant):
     # cap each of the clr_amounts
     for key, t in totals.items():
         if t['clr_amount'] >= match_cap_per_grant:
-            # grant has exceeded the cap
+            # grant has exceeed the cap
             #  - so cap the clr_amount
             #  - add the extra funds to remainder
             remainder += t['clr_amount'] - match_cap_per_grant
             t['clr_amount'] = match_cap_per_grant
         else:
+            # grant has not exceed cap so add amount to uncapped
             uncapped += t['clr_amount']
 
     # check that we have both capped and uncapped grants
     if remainder > 0 and uncapped > 0:
+        # there are grants which have capped and not capped
 
         # div so we can spread the remainder proportionally
         per_remainder = remainder / uncapped
