@@ -200,7 +200,7 @@ def get_totals_by_pair(contrib_dict):
     return pair_totals
 
 
-def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, match_cap_per_grant):
+def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
     '''
         calculates the clr amount at the given threshold and total pot
         args:
@@ -245,17 +245,13 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, mat
         if type(tot) == complex:
             tot = float(tot.real)
 
-        # ensure CLR match for a grant in CLR round does not exceed 2.5 of the total pot
-        if total_pot != match_cap_per_grant and tot > match_cap_per_grant:
-            tot = match_cap_per_grant
-
         bigtot += tot
         totals[proj] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
 
     return bigtot, totals
 
 
-def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant_id, amount):
+def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant_id, amount, match_cap_per_grant):
     '''
         clubbed function that runs all calculation functions and returns the result for a single grant_id
 
@@ -322,7 +318,7 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
             totals[grant_id] = {'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}
 
             # normalise the result
-            grants_clr = normalise(bigtot + tot, totals, total_pot)
+            grants_clr = normalise(bigtot + tot, totals, total_pot, match_cap_per_grant)
 
         # find grant we added the contribution to and get the new clr amount
         grant_clr = grants_clr.get(grant_id)
@@ -339,7 +335,7 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
     return (grants_clr, 0.0, 0, 0.0)
 
 
-def normalise(bigtot, totals, total_pot):
+def normalise(bigtot, totals, total_pot, match_cap_per_grant):
     '''
         given the total amount distributed (bigtot) and the total_pot size normalise the distribution
         args:
@@ -362,6 +358,43 @@ def normalise(bigtot, totals, total_pot):
         percentage_increase = np.log(total_pot / bigtot) / 100
         for key, t in totals.items():
             t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
+
+    totals = apply_cap(totals, match_cap_per_grant)
+
+    return totals
+
+
+def apply_cap(totals, match_cap_per_grant):
+    # work out how much of the pool is remaining after capping each grant
+    remainder = 0
+    uncapped = 0
+
+    # cap each of the clr_amounts
+    for key, t in totals.items():
+        if t['clr_amount'] >= match_cap_per_grant:
+            remainder += t['clr_amount'] - match_cap_per_grant
+            t['clr_amount'] = match_cap_per_grant
+        else:
+            uncapped += t['clr_amount']
+
+    if remainder > 0 and uncapped > 0:
+        # div so we can spread the remainder proportionally
+        per_remainder = remainder / uncapped
+
+        # reset remainder to check if any grants enter the cap region after spreading the remainder
+        remainder = 0
+
+        # spread the remainder
+        for key, t in totals.items():
+            if t['clr_amount'] < match_cap_per_grant:
+                t['clr_amount'] += per_remainder * t['clr_amount']
+                # check if the cap is hit after spreading the remainder
+                if t['clr_amount'] >= match_cap_per_grant:
+                    remainder += t['clr_amount'] - match_cap_per_grant
+
+        # apply the cap again (recursively)
+        if remainder > 0:
+            apply_cap(totals, match_cap_per_grant)
 
     return totals
 
@@ -404,11 +437,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     pair_totals = get_totals_by_pair(curr_agg)
 
     grant_clr_percentage_cap = clr_round.grant_clr_percentage_cap if clr_round.grant_clr_percentage_cap else 100
+    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot)
+
+    # $ value of the percentage cap
     match_cap_per_grant = total_pot * (float(grant_clr_percentage_cap) / 100)
-    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, match_cap_per_grant)
 
     # normalise against a deepcopy of the totals to avoid mutations
-    curr_grants_clr = normalise(bigtot, copy.deepcopy(totals), total_pot)
+    curr_grants_clr = normalise(bigtot, copy.deepcopy(totals), total_pot, match_cap_per_grant)
 
     # for slim calc - only update the current distribution and skip calculating predictions
     if what == 'slim':
@@ -474,7 +509,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                     else:
                         # calculate clr with additional donation amount
                         grants_clr, predicted_clr, _, _ = calculate_clr_for_prediction(
-                            bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant.id, amount
+                            bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant.id, amount, match_cap_per_grant
                         )
 
                 # record each point of the prediction
