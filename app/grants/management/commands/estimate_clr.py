@@ -61,7 +61,7 @@ class Command(BaseCommand):
             for clr_round in active_clr_rounds:
                 if sync == 'true':
                     # run it sync -> useful for payout / debugging
-                    clr = predict_clr(
+                    predict_clr(
                         save_to_db=True if not skip_save else False,
                         from_date=timezone.now(),
                         clr_round=clr_round,
@@ -69,10 +69,6 @@ class Command(BaseCommand):
                         what=what,
                         use_sql=use_sql,
                     )
-
-                    if skip_save:
-                        # print output while running in sync and no save to DB
-                        print(clr)
                 else:
                     # runs it as celery task.
                     process_predict_clr(
