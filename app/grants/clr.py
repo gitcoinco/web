@@ -366,18 +366,23 @@ def normalise(bigtot, totals, total_pot, match_cap_per_grant):
 
 def apply_cap(totals, match_cap_per_grant):
     # work out how much of the pool is remaining after capping each grant
-    remainder = 0
-    uncapped = 0
+    remainder = 0   # amount left to be redistributed after cap
+    uncapped = 0    # total amount matched for grants which haven't capped
 
     # cap each of the clr_amounts
     for key, t in totals.items():
         if t['clr_amount'] >= match_cap_per_grant:
+            # grant has exceeded the cap
+            #  - so cap the clr_amount
+            #  - add the extra funds to remainder
             remainder += t['clr_amount'] - match_cap_per_grant
             t['clr_amount'] = match_cap_per_grant
         else:
             uncapped += t['clr_amount']
 
+    # check that we have both capped and uncapped grants
     if remainder > 0 and uncapped > 0:
+
         # div so we can spread the remainder proportionally
         per_remainder = remainder / uncapped
 
