@@ -188,7 +188,58 @@ class Subscription(SuperModel):
 
     @property
     def match_amount(self):
-        return 4.4 # TODO: actually calc it
+        # discover the match_amount based on amount_per_period_usdt
+        amount = self.amount_per_period_usdt
+
+        clr_prediction_curve_2d = self.grant.clr_prediction_curve
+        clr_prediction_curve = [clr[2] for clr in clr_prediction_curve_2d]
+
+        if (amount > 10000):
+            amount = 10000
+
+        contributions_axis = [ 0, 1, 10, 100, 1000, 10000 ]
+        predicted_clr = 0
+        index = 0
+
+        if amount == 0:
+            predicted_clr = clr_prediction_curve[index]
+        elif amount in contributions_axis:
+            index = contributions_axis.index(amount)
+            predicted_clr = clr_prediction_curve[index]
+        else:
+            x_lower = 0
+            x_upper = 0
+            y_lower = 0
+            y_upper = 0
+
+            if 0 < amount and amount < 1:
+                x_lower = 0
+                x_upper = 1
+                y_lower = clr_prediction_curve[0]
+                y_upper = clr_prediction_curve[1]
+            elif 1 < amount and amount < 10:
+                x_lower = 1
+                x_upper = 10
+                y_lower = clr_prediction_curve[1]
+                y_upper = clr_prediction_curve[2]
+            elif 10 < amount and amount < 100:
+                x_lower = 10
+                x_upper = 100
+                y_lower = clr_prediction_curve[2]
+                y_upper = clr_prediction_curve[3]
+            elif 100 < amount and amount < 1000:
+                x_lower = 100
+                x_upper = 1000
+                y_lower = clr_prediction_curve[3]
+                y_upper = clr_prediction_curve[4]
+            else:
+                x_lower = 1000
+                x_upper = 10000
+                y_lower = clr_prediction_curve[4]
+                y_upper = clr_prediction_curve[5]
+
+        # use lerp to discover the predicted match_amount
+        return y_lower + (((y_upper - y_lower) * (float(amount) - x_lower)) / (x_upper - x_lower))
 
     @property
     def match_amount_token(self):
