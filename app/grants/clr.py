@@ -347,8 +347,10 @@ def normalise(bigtot, totals, total_pot, match_cap_per_grant):
                 [{'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}]
 
     '''
+    # check if saturation is reached
+    is_saturated = bigtot >= total_pot
     # check for saturation and normalise if reached
-    if bigtot >= total_pot:
+    if is_saturated:
         # print(f'saturation reached. Total Pot: ${total_pot} | Total Allocated ${bigtot}. Normalizing')
         for key, t in totals.items():
             t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
@@ -359,12 +361,13 @@ def normalise(bigtot, totals, total_pot, match_cap_per_grant):
         for key, t in totals.items():
             t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
 
-    totals = apply_cap(totals, match_cap_per_grant)
+    # apply the match cap post-normalisation
+    totals = apply_cap(totals, match_cap_per_grant, is_saturated)
 
     return totals
 
 
-def apply_cap(totals, match_cap_per_grant):
+def apply_cap(totals, match_cap_per_grant, should_spread):
     # work out how much of the pool is remaining after capping each grant
     remainder = 0   # amount left to be redistributed after cap
     uncapped = 0    # total amount matched for grants which haven't capped
@@ -382,16 +385,12 @@ def apply_cap(totals, match_cap_per_grant):
             # grant has not exceed cap so add amount to uncapped
             uncapped += t['clr_amount']
 
-    # check that we have both capped and uncapped grants
-    if remainder > 0 and uncapped > 0:
-        # there are grants which have capped and not capped
-
+    # check that we have both capped and uncapped grants and that we should be spreading the remainder
+    if should_spread and remainder > 0 and uncapped > 0:
         # div so we can spread the remainder proportionally
         per_remainder = remainder / uncapped
-
         # reset remainder to check if any grants enter the cap region after spreading the remainder
         remainder = 0
-
         # spread the remainder
         for key, t in totals.items():
             if t['clr_amount'] < match_cap_per_grant:
@@ -402,7 +401,7 @@ def apply_cap(totals, match_cap_per_grant):
 
         # apply the cap again (recursively)
         if remainder > 0:
-            apply_cap(totals, match_cap_per_grant)
+            apply_cap(totals, match_cap_per_grant, should_spread)
 
     return totals
 
