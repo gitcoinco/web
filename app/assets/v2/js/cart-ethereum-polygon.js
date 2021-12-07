@@ -467,7 +467,7 @@ Vue.component('grantsCartEthereumPolygon', {
         const tokenIsMatic = tokenDetails && tokenDetails.name === 'MATIC';
 
         // Check user matic balance against required amount
-        if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
+        if (userMaticBalance.toNumber() && userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
           requiredAmounts[tokenSymbol].isBalanceSufficient = false;
           requiredAmounts[tokenSymbol].amount = parseFloat(((
             requiredAmounts[tokenSymbol].amount - userMaticBalance
@@ -511,7 +511,7 @@ Vue.component('grantsCartEthereumPolygon', {
             .balanceOf(userAddress)
             .call({ from: userAddress }));
 
-          if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
+          if (userTokenBalance.toNumber() && userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
             requiredAmounts[tokenSymbol].isBalanceSufficient = false;
             requiredAmounts[tokenSymbol].amount = parseFloat(((
               requiredAmounts[tokenSymbol].amount - userTokenBalance
