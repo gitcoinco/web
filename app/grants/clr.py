@@ -381,7 +381,7 @@ def apply_cap(totals, match_cap_per_grant):
             remainder += t['clr_amount'] - match_cap_per_grant
             t['clr_amount'] = match_cap_per_grant
 
-            print(f"remainer: {remainder}")
+            print(f"remainder: {remainder}")
             print("=======")
 
         else:
@@ -550,12 +550,12 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             print(grant.title)
             print(clr_prediction_curve)
 
-            clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
+            # clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
 
-            if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
-                grant.save()
+            # if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
+            #     grant.save()
 
-        debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+        debug_output.append({'grant': grant.id, "title": grant.title,  "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
     print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
 
