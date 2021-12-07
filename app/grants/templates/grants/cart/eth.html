@@ -269,15 +269,6 @@
             :network="network"
             >
           </eth-checkout-button>
-
-          <b-tooltip target="zksync-tooltip" triggers="hover">
-            <p v-if="grantsByTenant.length > maxCartItems">
-              zkSync checkout supports checkout for [[maxCartItems]] items.
-              Please remove [[ grantsByTenant.length - maxCartItems ]] grant
-              <span v-if="grantsByTenant.length - maxCartItems > 1">s</span>
-              from your cart to use zkSync checkout.
-            </p>
-          </b-tooltip>
         </div>
 
         <!-- Checkout recommendation -->
