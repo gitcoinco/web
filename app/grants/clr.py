@@ -375,8 +375,15 @@ def apply_cap(totals, match_cap_per_grant):
             # grant has exceeed the cap
             #  - so cap the clr_amount
             #  - add the extra funds to remainder
+            print("=======")
+            print(f"{t['id']} has exceeded cap cause amount {t['clr_amount']}")
+
             remainder += t['clr_amount'] - match_cap_per_grant
             t['clr_amount'] = match_cap_per_grant
+
+            print(f"remainer: {remainder}")
+            print("=======")
+
         else:
             # grant has not exceed cap so add amount to uncapped
             uncapped += t['clr_amount']
@@ -397,7 +404,10 @@ def apply_cap(totals, match_cap_per_grant):
                 t['clr_amount'] += per_remainder * t['clr_amount']
                 # check if the cap is hit after spreading the remainder
                 if t['clr_amount'] >= match_cap_per_grant:
+                    print("***********")
+                    print(f"uncapped grant {t['id']} has exceeded cap cause amount {t['clr_amount']}")
                     remainder += t['clr_amount'] - match_cap_per_grant
+                    print("***********")
 
         # apply the cap again (recursively)
         if remainder > 0:
