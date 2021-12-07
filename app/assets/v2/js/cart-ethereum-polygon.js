@@ -247,7 +247,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
         // Check if we can checkout using polygon
         if (unsafeGrants.length > 0) {
-          _alert(`Contributions cannot be sent to the following Grants on Polygon: <ul class="mt-3">${unsafeGrants.map((grant) => `<li>'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
+          _alert(`Contributions cannot be sent to the following Grants (with a multisig payout address) on Polygon: <ul class="mt-3 font-caption font-weight-normal">${unsafeGrants.map((grant) => `<li style="mb-1">'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
           return;
         }
 
@@ -370,7 +370,7 @@ Vue.component('grantsCartEthereumPolygon', {
         return;
       }
 
-      let gasLimit = 100000;
+      let gasLimit = 500000;
 
       // If user has enough balance within Polygon, cost equals the minimum amount
       let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
@@ -480,7 +480,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
           // check if ProposeGasPrice is min at 100
           const overridePolygonGasPrice = Number(document.polygonGasPrice) > 100 ? Number(document.polygonGasPrice) : 100;
-          
+
           const gasFeeInWei = web3.utils.toWei(
             (this.polygon.estimatedGasCost * overridePolygonGasPrice).toString(), 'gwei'
           );
