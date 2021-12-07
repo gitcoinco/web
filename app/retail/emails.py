@@ -1519,7 +1519,6 @@ def new_bounty(request):
     from dashboard.models import Bounty
     from marketing.views import quest_of_the_day, upcoming_grant, get_hackathons
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), chats_count=7)
     return HttpResponse(response_html)
 

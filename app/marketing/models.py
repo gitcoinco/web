@@ -72,11 +72,13 @@ class EmailSubscriber(SuperModel):
 
     def should_send_email_type_to(self, email_type):
         is_on_global_suppression_list = EmailSupressionList.objects.filter(email__iexact=self.email).exists()
+        
         if is_on_global_suppression_list:
+            # User has been added to global EmailSupressionList, so no emails should be sent
             return False
 
-        should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
-        return not should_suppress
+        should_not_send_email = self.preferences.get('suppression_preferences', {}).get(email_type, False)
+        return not should_not_send_email
 
     def set_should_send_email_type_to(self, key, should_send):
         suppression_preferences = self.preferences.get('suppression_preferences', {})
