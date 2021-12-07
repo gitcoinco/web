@@ -529,6 +529,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             else:
                 clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
+            print(grant.id)
+            print(grant.title)
             print(clr_prediction_curve)
 
             clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
