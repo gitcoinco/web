@@ -363,6 +363,7 @@ def presave_contrib(sender, instance, **kwargs):
         'title': grant.title,
         'amount_per_period_minus_gas_price': float(instance.subscription.amount_per_period_minus_gas_price),
         'amount_per_period_to_gitcoin': float(instance.subscription.amount_per_period_to_gitcoin),
+        'match_amount_when_contributed': sub.match_amount,
         'created_on': ele.created_on.strftime('%Y-%m-%d'),
         'frequency': int(sub.frequency),
         'frequency_unit': sub.frequency_unit,

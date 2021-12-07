@@ -173,8 +173,8 @@ def render_thank_you_for_supporting_email(grants_with_subscription):
         if key not in totals.keys():
             totals[key] = 0
         totals[key] += float(val)
-
-        total_match_amount += float(gws['subscription'].match_amount)
+        match_amount = float(gws.normalized_data['match_amount_when_contributed'])
+        total_match_amount += match_amount if match_amount else float(gws['subscription'].match_amount)
         match_token = gws['subscription'].match_amount_token
 
     params = {
