@@ -27,13 +27,17 @@ from django.templatetags.static import static
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-import requests
 from mailchimp3 import MailChimp
-from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank, EmailSubscriber
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
 logger = logging.getLogger(__name__)
+
+
+def delete_email_subscription(email):
+    EmailSupressionList.objects.filter(email=email).delete()
+    EmailSubscriber.objects.filter(email=email).delete()
 
 
 def is_deleted_account(handle):
