@@ -319,7 +319,9 @@ class QuestFeedback(SuperModel):
 
     def __str__(self):
         """Return the string representation of this obj."""
-        return f'{self.pk}, {self.profile.handle} => {self.quest.title} ({self.comment})'
+        handle = self.profile.handle if self.profile else 'deleted profile'
+        title = self.quest.title if self.quest else 'deleted quest'
+        return f'{self.pk}, {self.profile.handle} => {title} ({self.comment})'
 
 
 class QuestPointAward(SuperModel):
