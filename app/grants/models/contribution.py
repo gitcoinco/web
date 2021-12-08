@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from economy.models import SuperModel
+from economy.models import SuperModel, Token
 from economy.tx import check_for_replaced_tx
 from townsquare.models import Comment
 from web3 import Web3
@@ -195,19 +195,53 @@ class Contribution(SuperModel):
                     raise Exception('Unsupported zkSync transaction hash format')
                 tx_hash = self.split_tx_id.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
 
+                # First we get a list of zkSync tokens (TODO: this should be fetched with a management command and be cached)
+                tokens_url = 'https://rinkeby-api.zksync.io/api/v0.1/tokens' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1/tokens'
+                r = requests.get(tokens_url)
+                r.raise_for_status()
+                token_data = r.json() # zkSync token data
+                tokens = {}
+                for token in token_data:
+                    tokens[token['symbol']] = token["id"]
+
                 # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
                 base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
                 r = requests.get(f"{base_url}/transactions_all/{tx_hash}")
                 r.raise_for_status()
                 tx_data = r.json() # zkSync transaction data
 
+                # get decimals for the token used in this transaction
+                token = Token.objects.filter(
+                    network_id=1,
+                    network=self.subscription.network,
+                    symbol=self.subscription.token_symbol,
+                    approved=True
+                ).first().to_dict
+
+                # This amount should match what is stated in the API response
+                has_same_amount = float(tx_data['amount']) == float(self.subscription.amount_per_period * 10 ** token['decimals'])
+                # Get the zksync token ID for the expected token_symbol
+                has_same_token = tx_data['token'] == tokens[self.subscription.token_symbol]
+
                 # Update contribution values based on transaction data
                 self.originated_address = tx_data['from'] # assumes sender is originator
-                self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
-                self.validator_passed = True
-                self.split_tx_confirmed = True
-                self.tx_cleared = True
-                self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
+
+                # Ensure the onchain token data matches the expected contribution data
+                if has_same_token and has_same_amount:
+                    self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
+                    self.validator_passed = True
+                    self.split_tx_confirmed = True
+                    self.tx_cleared = True
+                    self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
+                else:
+                    # mark the failure as a validator comment
+                    fail_reason = "Token ids do not match" if has_same_token else "Amounts do not match"
+                    # this contribution data has been deliberately altered mid-flight: fail hard
+                    self.success = False
+                    self.validator_passed = False
+                    self.split_tx_confirmed = False
+                    self.tx_cleared = False
+                    self.validator_comment = f"zkSync Checkout. Failed: {fail_reason}"
 
             elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
                 # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
@@ -294,7 +328,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "from_profile":instance.subscription.contributor_profile,
                     "org_profile":instance.subscription.grant.org_profile,
                     "to_profile":instance.subscription.grant.admin_profile,
-                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(False),
+                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(True),
                     "url":instance.subscription.grant.url,
                     "network":instance.subscription.network,
                     "txid":instance.subscription.split_tx_id,
@@ -329,6 +363,7 @@ def presave_contrib(sender, instance, **kwargs):
         'title': grant.title,
         'amount_per_period_minus_gas_price': float(instance.subscription.amount_per_period_minus_gas_price),
         'amount_per_period_to_gitcoin': float(instance.subscription.amount_per_period_to_gitcoin),
+        'match_amount_when_contributed': sub.match_amount,
         'created_on': ele.created_on.strftime('%Y-%m-%d'),
         'frequency': int(sub.frequency),
         'frequency_unit': sub.frequency_unit,

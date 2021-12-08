@@ -58,8 +58,10 @@ connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'n
 
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
-    activity_indexes = ActivityIndex.objects.filter(key__startswith=f'bounty:').values_list('activity__pk', flat=True)
-    activities = Activity.objects.filter(pk__in=list(activity_indexes),hidden=False).order_by('-created_on')
+    activities = Activity.objects.filter(
+        activities_index__key__startswith=f'bounty:',
+        hidden=False
+    ).order_by('-created_on')
 
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
@@ -742,87 +744,75 @@ def results(request, keyword=None):
     context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
-def get_specific_activities(what, trending_only, user, after_pk, request=None, page=None):
+def get_specific_activities(what, trending_only, user, after_pk, request=None, page=1, page_size=10):
 
     # 1. Init
     view_count_threshold = 10
-    activity_pks = []
+    start_index = (page-1) * page_size
+    end_index = page * page_size
 
     activities = Activity.objects.none()
+    filter_applied = False
 
     # 2. Choose which filter to index
-
-    filter_applied = False
 
     # grants
     if (
         what in ['grants', 'all_grants']
     ):
-        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
+        activities = Activity.objects.filter(activities_index__key__startswith='grant:')
         filter_applied = True
     elif 'grant:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what)
+        activities = Activity.objects.filter(activities_index__key=what)
         filter_applied = True
 
     # all Grants
     if what == 'all_grants':
-        activity_pks = ActivityIndex.objects.filter(key__startswith='grant:')
+        activities = Activity.objects.filter(activities_index__key__startswith='grant:')
         filter_applied = True
 
     # kudos
     if (
         what in ['kudos']
     ):
-        activity_pks = ActivityIndex.objects.filter(key__startswith='kudo:')
+        activities = Activity.objects.filter(activities_index__key__startswith='kudo:')
         filter_applied = True
     elif 'kudos:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what.replace('kudos', 'kudo'))
+        activities = Activity.objects.filter(activities_index__key=what.replace('kudos', 'kudo'))
         filter_applied = True
 
     # hackathon project
     if 'project:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what)
+        activities = Activity.objects.filter(activities_index__key=what)
         filter_applied = True
 
     # tribes
     if 'tribe:' in what:
+        filter_applied = True
         handle = what[6:]
         profile = Profile.objects.filter(handle=handle).first()
-        filter_applied = True
         if profile:
-            activity_pks = ActivityIndex.objects.filter(key=f'profile:{profile.pk}')
+            activities = Activity.objects.filter(activities_index__key=f'profile:{profile.pk}')
 
     # hackathon activity
     if 'hackathon:' in what:
-        activity_pks = ActivityIndex.objects.filter(key=what)
+        activities = Activity.objects.filter(activities_index__key=what)
         filter_applied = True
 
     # single activity
     if 'activity:' in what:
-        activity_pks = [what.replace('activity:', '')]
+        activities = Activity.objects.filter(activities_index__key=what.replace('activity:', ''))
         filter_applied = True
 
     # Defaults
-    if not activity_pks and not filter_applied:
-        activity_pks = ActivityIndex.objects.all()
+    if not activities and not filter_applied:
+        # Just use all of the activity and allow the [start_index:end_index] slice to limit the response
+        activities = Activity.objects.all()
 
-    # Are the pks already in a list?
-    if not isinstance(activity_pks, list):
-        # Order the activity index data
-        activity_pks = activity_pks.order_by('-id')
-        # Pagination is done here
-        if page:
-            page_size = 10
-            start_index = (page-1) * page_size
-            end_index = page * page_size
-            activity_pks = activity_pks[start_index:end_index].values_list('activity_id', flat=True)
-        else:
-            activity_pks = activity_pks.values_list('activity_id', flat=True)
+    # 3. Cross-ref the activity_pks->activity_id with the Activity objects
+    activities = activities.filter(hidden=False).order_by('-created_on')
 
-    # Cross-ref the activity_pks->activity_id with the Activity objects
-    activities = Activity.objects.filter(pk__in=list(activity_pks),hidden=False).order_by('-created_on')
-
-    # 4. Filter out activites based on on network
+    # 4. Filter out activities based on network
     network = 'rinkeby' if settings.DEBUG else 'mainnet'
     filter_network = 'rinkeby' if network == 'mainnet' else 'mainnet'
     if 'grant:' in what:
@@ -835,7 +825,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    return activities
+
+    # 5. Apply pagination slice and return Activities
+    return activities[start_index:end_index]
 
 
 def activity(request):
@@ -844,7 +836,7 @@ def activity(request):
     page = int(request.GET.get('page', 1)) if request.GET.get('page') and request.GET.get('page').isdigit() else 1
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0)) if request.GET.get('trending_only') and request.GET.get('trending_only').isdigit() else 0
-    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request, page)
+    activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request, page=page)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     activities = activities.cache()
 

@@ -74,6 +74,9 @@ along with this program. If not, see
     padding: 5px;
     border-top: 1px solid black;
   }
+  .green{
+    color: green;
+  }
 </style>
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
@@ -86,6 +89,9 @@ along with this program. If not, see
       </td>
       <td>
         Amount
+      </td>
+      <td>
+        Match
       </td>
       <td>
         Transaction
@@ -101,6 +107,9 @@ along with this program. If not, see
       </td>
       <td>
       {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
+      </td>
+      <td class=green>
+      + {{ subscription.match_amount|floatformat:4|intcomma }} {{ subscription.match_amount_token }}
       </td>
       <td>
         <a href="{{subscription.subscription_contribution.first.blockexplorer_url_split_txid}}">view &gt;&gt;</a>
@@ -119,13 +128,29 @@ along with this program. If not, see
         {{val|floatformat:4}} {{key}}
       {%endfor%}
       </td>
+      <td class=green>
+        + {{total_match_amount|floatformat:4}}
+        {{match_token}}
+        
+      </td>
       <td>
       </td>
     </tr>
   </table>
 
-    <p>{% trans "You can see all the grants you support and your transaction history " %}
-      <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
-    </p>
+  <p>{% trans "You can see all the grants you support and your transaction history " %}
+    <a href="{% url 'grants:profile' %}?{{ utm_tracking }}">{% trans "here." %}</a>
+  </p>
+
+  <hr>
+
+  <h4 style="font-weight: bold;">Help us improve Gitcoin Grants for you!</h4>
+  <p>
+    We’d love to hear how about your experience funding grants!
+    Your honest feedback helps us improve the product.
+    <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLScKg-hThHsrP9Pny_2cLCVfPnn4CHII9hzlQ7G8MAM7WUnqvw/viewform?usp=sf_link">
+      Take the 2 minute survey.
+    </a>
+  </p>
 </div>
 {% endblock %}

@@ -33,7 +33,7 @@ from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
 from marketing.mails import featured_funded_bounty, send_mail, setup_lang, tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
-from marketing.utils import should_suppress_notification_email
+from marketing.utils import allowed_to_send_email
 from pyshorteners import Shortener
 from retail.emails import render_new_kudos_email
 from slackclient import SlackClient
@@ -217,7 +217,7 @@ def maybe_market_kudos_to_email(kudos_transfer):
             html, text = render_new_kudos_email(to_email, kudos_transfer, True)
 
             # 4. Send email unless the email address has notifications disabled
-            if not should_suppress_notification_email(to_email, 'kudos'):
+            if allowed_to_send_email(to_email, 'kudos'):
                 # TODO:  Should we be doing something with the response from SendGrid?
                 #        Maybe we should store it somewhere.
                 send_mail(from_email, to_email, subject, text, html)

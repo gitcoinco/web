@@ -234,6 +234,10 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
         indexes = (GinIndex(fields=["vector_column"]),)
+        index_together = [
+            ["last_update", "network", "active", "hidden"],
+            ["last_update", "network", "active", "hidden", "weighted_shuffle"],
+        ]
 
 
     REGIONS = [
@@ -495,6 +499,7 @@ class Grant(SuperModel):
         help_text=_('The last grant admin update date'),
         null=True,
         blank=True,
+        db_index=True,
     )
     categories = models.ManyToManyField('GrantCategory', blank=True) # TODO: REMOVE
     tags = models.ManyToManyField('GrantTag', blank=True)

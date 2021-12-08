@@ -467,9 +467,9 @@
   <nav class="navbar-nav navbar-icons d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}
       {% include 'shared/notifications.html' %}
-      {% include 'shared/search.html' %}
-      {% include 'shared/cart_nav.html' %}
     {% endif %}
+    {% include 'shared/search.html' %}
+    {% include 'shared/cart_nav.html' %}
   </nav>
 
   <nav class="navbar-nav gc-navbar-nav d-flex align-items-md-center gc-navbar-auth">

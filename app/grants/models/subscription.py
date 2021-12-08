@@ -187,6 +187,65 @@ class Subscription(SuperModel):
         return self.is_postive_vote == False
 
     @property
+    def match_amount(self):
+        # discover the match_amount based on amount_per_period_usdt
+        amount = self.amount_per_period_usdt
+
+        clr_prediction_curve_2d = self.grant.clr_prediction_curve
+        clr_prediction_curve = [clr[2] for clr in clr_prediction_curve_2d]
+
+        if (amount > 10000):
+            amount = 10000
+
+        contributions_axis = [ 0, 1, 10, 100, 1000, 10000 ]
+        predicted_clr = 0
+        index = 0
+
+        if amount == 0:
+            predicted_clr = clr_prediction_curve[index]
+        elif amount in contributions_axis:
+            index = contributions_axis.index(amount)
+            predicted_clr = clr_prediction_curve[index]
+        else:
+            x_lower = 0
+            x_upper = 0
+            y_lower = 0
+            y_upper = 0
+
+            if 0 < amount and amount < 1:
+                x_lower = 0
+                x_upper = 1
+                y_lower = clr_prediction_curve[0]
+                y_upper = clr_prediction_curve[1]
+            elif 1 < amount and amount < 10:
+                x_lower = 1
+                x_upper = 10
+                y_lower = clr_prediction_curve[1]
+                y_upper = clr_prediction_curve[2]
+            elif 10 < amount and amount < 100:
+                x_lower = 10
+                x_upper = 100
+                y_lower = clr_prediction_curve[2]
+                y_upper = clr_prediction_curve[3]
+            elif 100 < amount and amount < 1000:
+                x_lower = 100
+                x_upper = 1000
+                y_lower = clr_prediction_curve[3]
+                y_upper = clr_prediction_curve[4]
+            else:
+                x_lower = 1000
+                x_upper = 10000
+                y_lower = clr_prediction_curve[4]
+                y_upper = clr_prediction_curve[5]
+
+        # use lerp to discover the predicted match_amount
+        return y_lower + (((y_upper - y_lower) * (float(amount) - x_lower)) / (x_upper - x_lower))
+
+    @property
+    def match_amount_token(self):
+        return 'DAI'
+
+    @property
     def status(self):
         """Return grants status, current or past due."""
         if self.next_contribution_date < timezone.now():
@@ -198,7 +257,7 @@ class Subscription(SuperModel):
         if self.amount_per_period == self.amount_per_period_to_gitcoin:
             return float(self.amount_per_period)
 
-        return float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
+        return float(self.amount_per_period)
 
     @property
     def amount_per_period_to_gitcoin(self):
@@ -452,7 +511,7 @@ next_valid_timestamp: {next_valid_timestamp}
                 logger.info(no_conversion_e)
                 return None
 
-    def get_converted_monthly_amount(self, ignore_gitcoin_fee=False):
+    def get_converted_monthly_amount(self, ignore_gitcoin_fee=True):
         converted_amount = self.get_converted_amount(ignore_gitcoin_fee=ignore_gitcoin_fee) or 0
 
         total_sub_seconds = Decimal(self.real_period_seconds) * Decimal(self.num_tx_approved)
@@ -488,7 +547,7 @@ next_valid_timestamp: {next_valid_timestamp}
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
 
-        value_usdt = self.get_converted_amount(False)
+        value_usdt = self.get_converted_amount(True)
         if value_usdt:
             self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)
@@ -539,7 +598,7 @@ next_valid_timestamp: {next_valid_timestamp}
         contribution.save()
         grant = self.grant
 
-        value_usdt = self.get_converted_amount(False)
+        value_usdt = self.get_converted_amount(True)
         if value_usdt:
             self.amount_per_period_usdt = value_usdt
             grant.amount_received += Decimal(value_usdt)

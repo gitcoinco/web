@@ -82,7 +82,7 @@
 
         </div>
 
-        <div class="border-bottom py-4 mt-1 row font-smaller-1 mb-4">
+        <div class="row border-bottom font-smaller-1 py-4 mx-0 mt-1 mb-4 ">
 
           <!-- Grant Link -->
           <div class="col-12 col-md-5 col-md-auto mb-3">
@@ -423,6 +423,20 @@
             <hr class="my-4">
           </template>
 
+          <!-- Max matching reached -->
+          <template v-if="grant.__has_reached_cap && grant.active && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-wallet mr-1"></i>
+                Maximum matching reached
+              </p>
+              Your grant can still receive contributions, but will not get additional matching funds this round because it has reached the maximum matching cap.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" target="_blank">
+              Learn More
+            </a>
+            <hr class="my-4">
+          </template>
 
           <!-- L2 contributions -->
           <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
@@ -470,7 +484,18 @@
             <div class="d-inline-flex flex-column-reverse mt-n4 position-absolute" style="right: 0px;">
               <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && (index == 1 || index == 3)" class="bg-white d-flex flex-column" style="flex: 1 1 50%;margin-top: 14px;">
                 <!-- 1, 100 $ matching (reversed to display against fake chart) -->
-                <span>$[[prediction[0] ]] contribution</span>
+                <span>$[[prediction[0] ]] contribution
+                  <i v-if="grant.__has_reached_cap && index === 1" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                    id="tooltip-matching-cap"
+                  ></i>
+                </span>
+                <b-tooltip v-if="grant.__has_reached_cap && index === 1" target="tooltip-matching-cap" triggers="hover">
+                  <div class="text-left p-2">
+                    <p>
+                      This grant can still receive contributions, but will not receive additional matching funds this round because it has reached the maximum matching cap. <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
+                    </p>
+                  </div>
+                </b-tooltip>
                 <span class="text-secondary"><b>$[[prediction[2] || 0 | round]] match</b></span>
               </div>
             </div>

@@ -478,8 +478,10 @@ class Bounty(SuperModel):
 
     @property
     def latest_activity(self):
-        activity_indexes = ActivityIndex.objects.filter(key=f'bounty:{self.pk}').values_list('activity__pk', flat=True)
-        activity = Activity.objects.filter(pk__in=list(activity_indexes)).order_by('-pk')
+        # request more activityIndex items than we need to account for hidden/rinkeby/etc activity
+        activity = Activity.objects.filter(
+            activities_index__key=f'bounty:{self.pk}'
+        ).order_by('-pk')[0:10]
         if activity.exists():
             from dashboard.router import ActivitySerializer
             return ActivitySerializer(activity.first()).data
@@ -2304,10 +2306,10 @@ class ActivityIndex(SuperModel):
     """All Activity Reads happen from this table"""
     key = models.CharField(max_length=255, db_index=True)
     activity = models.ForeignKey(
-        'dashboard.Activity', 
-        null=True, 
-        on_delete=models.SET_NULL, 
-        related_name='activities_index', 
+        'dashboard.Activity',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='activities_index',
         blank=True
     )
 
@@ -2648,7 +2650,7 @@ class Activity(SuperModel):
                 key=key,
                 activity=_activity,
                 created_on=_activity.created_on
-            )    
+            )
 
 
     def to_dict(self, fields=None, exclude=None):
@@ -2908,6 +2910,7 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     last_calc_date = models.DateTimeField(default=get_0_time)
     email = models.CharField(max_length=255, blank=True, db_index=True)
+    email_index = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     # todo remove chat related
     gitcoin_chat_access_token = models.CharField(max_length=255, blank=True, db_index=True)
@@ -4300,20 +4303,17 @@ class Profile(SuperModel):
         """
 
         if not self.is_org:
-            activity_indexes = ActivityIndex.objects.filter(key=f'profile:{self.pk}').values_list('activity__pk', flat=True)
             all_activities = self.activities.all() | self.other_activities.all()
             return Activity.objects.filter(
-                pk__in=list(activity_indexes)
+                activities_index__key=f'profile:{self.pk}'
             ).order_by('-created').cache()
         else:
             # orgs
-            activity_indexes = ActivityIndex.objects.all().values_list('activity__pk', flat=True)
             url = self.github_url
             all_activities = Activity.objects.filter(
-                Q(pk__in=list(activity_indexes)) |
                 Q(bounty__github_url__startswith=url.lower()) |
                 Q(tip__github_url__istartswith=url)
-            )
+            ).exclude(activities_index__key__isnull=True)
 
         return all_activities.all().order_by('-created')
 
@@ -4434,7 +4434,8 @@ class Profile(SuperModel):
         params['active_bounties'] = list(active_bounties.values_list('pk', flat=True))
 
         all_activities = self.get_various_activities()
-        params['activities'] = list(all_activities.values_list('pk', flat=True))
+        # commenting this out because we believe its responsible for the long-running query we're seeing on RR1 & RR2
+        # params['activities'] = list(all_activities.values_list('pk', flat=True))
         counts = {}
         if not all_activities or all_activities.count() == 0:
             params['none'] = True
@@ -4443,7 +4444,6 @@ class Profile(SuperModel):
             counts = {ele['activity_type']: ele['the_count'] for ele in counts}
         params['activities_counts'] = counts
 
-        params['activities'] = list(self.get_various_activities().values_list('pk', flat=True))
         params['tips'] = list(self.tips.filter(**query_kwargs).send_happy_path().values_list('pk', flat=True))
         params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
         params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
@@ -4576,6 +4576,7 @@ def psave_profile(sender, instance, **kwargs):
     instance.handle = instance.handle.replace(' ', '')
     instance.handle = instance.handle.replace('@', '')
     instance.handle = instance.handle.lower()
+    instance.email_index = instance.email.lower()
 
     # sync organizations_fk and organizations
     if hasattr(instance, 'pk') and instance.pk:
@@ -5716,7 +5717,7 @@ def psave_answer(sender, instance, created, **kwargs):
                 }
             )
             activity.populate_activity_index()
-            
+
         elif instance.question.hook == 'LOOKING_TEAM_PROJECT':
             registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
                                                                 registrant=instance.user.profile).first()
@@ -5729,13 +5730,11 @@ def psave_answer(sender, instance, created, **kwargs):
 
                 registration.save()
 
-                activityIndex = ActivityIndex.objects.filter(
-                    key=f'profile:{instance.user.profile.id}',
-                    activity__hackathonevent=instance.hackathon,
-                    activity__activity_type='hackathon_new_hacker'
+                activity = Activity.objects.filter(
+                    activities_index__key=f'profile:{instance.user.profile.id}',
+                    hackathonevent=instance.hackathon,
+                    activity_type='hackathon_new_hacker'
                 ).last()
-
-                activity = activityIndex.activity
 
                 if activity:
                     activity.metadata['looking_team_members'] = registration.looking_team_members

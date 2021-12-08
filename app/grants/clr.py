@@ -200,7 +200,7 @@ def get_totals_by_pair(contrib_dict):
     return pair_totals
 
 
-def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, grant_clr_percentage_cap):
+def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, match_cap_per_grant):
     '''
         calculates the clr amount at the given threshold and total pot
         args:
@@ -226,7 +226,6 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, gra
     '''
     bigtot = 0
     totals = {}
-    match_cap_per_grant = total_pot * (float(grant_clr_percentage_cap) / 100)
 
     for proj, contribz in curr_agg.items():
         tot = 0
@@ -247,7 +246,7 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, gra
             tot = float(tot.real)
 
         # ensure CLR match for a grant in CLR round does not exceed 2.5 of the total pot
-        if grant_clr_percentage_cap != 100 and tot > match_cap_per_grant:
+        if total_pot != match_cap_per_grant and tot > match_cap_per_grant:
             tot = match_cap_per_grant
 
         bigtot += tot
@@ -405,7 +404,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     pair_totals = get_totals_by_pair(curr_agg)
 
     grant_clr_percentage_cap = clr_round.grant_clr_percentage_cap if clr_round.grant_clr_percentage_cap else 100
-    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, grant_clr_percentage_cap)
+    match_cap_per_grant = total_pot * (float(grant_clr_percentage_cap) / 100)
+    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot, match_cap_per_grant)
 
     # normalise against a deepcopy of the totals to avoid mutations
     curr_grants_clr = normalise(bigtot, copy.deepcopy(totals), total_pot)
@@ -465,8 +465,9 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                     grants_clr = curr_grants_clr.get(grant.id)
                     predicted_clr = grants_clr['clr_amount'] if grants_clr else 0.0
                 else:
+                    raw_grants_clr = totals.get(grant.id)
                     # final will save the current distribution for every grant (ie without predictions)
-                    if what == 'final':
+                    if what == 'final' or raw_grants_clr['clr_amount'] == match_cap_per_grant:
                         # ignore the other ones
                         grants_clr = None
                         predicted_clr = 0.0
@@ -489,7 +490,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
             # check that we have enough data to set the curve
             can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
             if can_estimate:
-                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in clr_prediction_curve ]
+                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base if ele[1] != 0 else 0.0] for ele in clr_prediction_curve ]
             else:
                 clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
