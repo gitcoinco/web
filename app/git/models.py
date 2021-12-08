@@ -41,10 +41,16 @@ class GitCache(SuperModel):
     class Category:
         USER = "user"
         REPO = "repo"
+        ISSUE = "issue"
+        COMMIT_COMMENT = "commit_comment"
+        ISSUE_COMMENT = "commit_comment"
 
     CATEGORY_CHOICES = [
         (Category.USER, 'User'),
         (Category.REPO, 'Repository'),
+        (Category.ISSUE, 'Issue'),
+        (Category.COMMIT_COMMENT, 'Commit Comment'),
+        (Category.ISSUE_COMMENT, 'Issue Comment'),
     ]
 
     handle = models.CharField(max_length=200, null=False, blank=True)
@@ -58,16 +64,73 @@ class GitCache(SuperModel):
         """Return the string representation of a model."""
         return f"[{self.category}] {self.handle}"
 
-    @classmethod
-    def get_user(self, handle):
-        """Utility function to retreive a user object"""
-        try:
-            return self.objects.get(category=GitCache.Category.USER, handle=handle)
-        except self.DoesNotExist:
-            raise
-
     def update_data(self, data):
         """Update the data field if it has changed."""
         if self.data != data:
             self.data = data
             self.save()
+
+    @classmethod
+    def create_user_cache(self, user):
+        """Create a user cache object"""
+        return GitCache(handle=user, category=GitCache.Category.REPO)
+
+    @classmethod
+    def get_user(self, handle):
+        """Utility function to retreive a user object"""
+        try:
+            return self.objects.get(handle=handle, category=GitCache.Category.USER)
+        except self.DoesNotExist:
+            raise
+
+    @classmethod
+    def create_repo_cache(self, user, repo):
+        """Create a repository cache object"""
+        return GitCache(handle=f"{user}/{repo}", category=GitCache.Category.REPO)
+
+    @classmethod
+    def get_repo(self, user, repo):
+        """Utility function to retreive a repo object"""
+        try:
+            return self.objects.get(handle=f"{user}/{repo}", category=GitCache.Category.REPO)
+        except self.DoesNotExist:
+            raise
+
+    @classmethod
+    def create_issue_cache(self, user, repo, issue):
+        """Create a issue cache object"""
+        return GitCache(handle=f"{user}/{repo}/issue/{issue}", category=GitCache.Category.ISSUE)
+
+    @classmethod
+    def get_issue(self, user, repo, issue):
+        """Utility function to retreive an issue object"""
+        try:
+            return self.objects.get(handle=f"{user}/{repo}/issue/{issue}", category=GitCache.Category.ISSUE)
+        except self.DoesNotExist:
+            raise
+
+    @classmethod
+    def create_commit_comment_cache(self, user, repo, comment):
+        """Create a commit comment cache object"""
+        return GitCache(handle=f"{user}/{repo}/commit_comment/{comment}", category=GitCache.Category.COMMIT_OMMENT)
+
+    @classmethod
+    def get_commit_comment(self, user, repo, comment):
+        """Utility function to retreive an commit comment object"""
+        try:
+            return self.objects.get(handle=f"{user}/{repo}/commit_comment/{comment}", category=GitCache.Category.COMMIT_OMMENT)
+        except self.DoesNotExist:
+            raise
+
+    @classmethod
+    def create_issue_comment_cache(self, user, repo, issue, comment):
+        """Create a issue comment cache object"""
+        return GitCache(handle=f"{user}/{repo}/issue/{issue}/{comment}", category=GitCache.Category.ISSUE_OMMENT)
+
+    @classmethod
+    def get_issue_comment(self, user, repo, issue, comment):
+        """Utility function to retreive an issue comment object"""
+        try:
+            return self.objects.get(handle=f"{user}/{repo}/issue/{issue}/{comment}", category=GitCache.Category.ISSUE_OMMENT)
+        except self.DoesNotExist:
+            raise
