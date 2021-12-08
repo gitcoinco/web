@@ -267,13 +267,21 @@ Vue.component('grants-cart', {
 
     totalString() {
       const token = Object.keys(this['donationsTotal'])[0];
+      let total = Number(this['donationsTotal'][token]);
       const match = Number(this.predictionTotal['total']);
 
-      let total = Number(this['donationsTotal'][token]);
-
-      if (match) {
+      if (match && token === 'DAI') {
         total += match;
+
+        return total.toFixed(2).toString() + ' ' + token;
+      } else if (match) {
+        
+        const match_str = this.predictionTotal['total_str'];
+        const donation_total_str = total.toFixed(2).toString() + ' ' + token;
+        
+        return donation_total_str + ' + ' + match_str;
       }
+
       return total.toFixed(2).toString() + ' ' + token;
     },
 
