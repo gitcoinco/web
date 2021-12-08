@@ -19,11 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import timedelta
 from unittest.mock import MagicMock, patch
-from urllib.parse import quote_plus, urlencode
+from github import NamedUser, Repository, CommitComment, Issue
 
 from django.conf import settings
 from django.test.utils import override_settings
 from django.utils import timezone
+from git.models import GitCache
+from faker import Faker
 
 import responses
 from faker import Faker
@@ -32,7 +34,8 @@ from git.tests.factories.git_cache_factory import GitCacheFactory
 from git.utils import (
     HEADERS, TOKEN_URL, _get_user, build_auth_dict, delete_issue_comment, get_github_emails, get_github_primary_email,
     get_issue_comments, get_issue_timeline_events, github_connect, is_github_token_valid, org_name, patch_issue_comment,
-    post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token,
+    post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token, _get_issue_comment, _get_repo, _get_issue, 
+    _get_commit_comment
 )
 from github import NamedUser
 from test_plus.test import TestCase
@@ -259,7 +262,8 @@ class GitUtilitiesTest(TestCase):
         gh_client.get_user = MagicMock(return_value=gh_user)
 
         # Step 1: Make the call
-        _get_user(gh_client, user_handle)
+        returned_user = _get_user(gh_client, user_handle)
+        assert returned_user == gh_user
 
         # Verify what was called and that the user has been cached:
         #   - expected: get_user 
@@ -286,7 +290,286 @@ class GitUtilitiesTest(TestCase):
         #   - not expected: get_user (because user is already in DB)
         gh_client.load.assert_called_once()
         assert gh_client.load.call_args[0][0].getbuffer() == user_binary_data
-        gh_client.get_user.assert_not_called()
         gh_user.update.assert_called_once()
 
+        gh_client.get_user.assert_not_called()
+
         assert loaded_user == gh_user
+
+    @responses.activate
+    @patch('git.utils.github_connect')
+    @patch('git.utils._get_user')
+    def test_get_repo_caching(self, mock__get_user, mock_github_connect):
+        """Test the github utility _get_repo method."""
+        fake = Faker()
+
+        # Create a dummy handle and some binary data that is supposed to be the serialized user
+        user = fake.user_name()
+        repo = fake.user_name()
+        repo_binary_data = fake.text().encode('utf-8')
+
+        def dump_mock(repo_obj, file_obj):
+            file_obj.write(repo_binary_data)
+
+        gh_repo = MagicMock(spec=Repository)
+        gh_repo.update = MagicMock()
+
+        gh_user = MagicMock(spec=NamedUser)
+        gh_user.get_repo = MagicMock(return_value=gh_repo)
+
+        # Mock the gh client
+        gh_client = mock_github_connect()
+        gh_client.load = MagicMock(return_value=gh_repo)
+        gh_client.dump = dump_mock
+        gh_client.get_user = MagicMock(return_value=gh_user)
+
+        # configure the _get_user mock
+        mock__get_user.return_value = gh_user
+
+        # Step 1: Make the call
+        returned_repo = _get_repo(gh_client, user, repo)
+        assert returned_repo == gh_repo
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: _get_user, gh_user.get_repo() 
+        #   - not expected: gh_client load, update or get_user - because user is new
+        mock__get_user.assert_called_with(gh_client, user)
+        gh_user.get_repo.assert_called_with(repo)
+
+        gh_client.get_user.assert_not_called()
+        gh_client.load.assert_not_called()
+        gh_repo.update.assert_not_called()
+
+        # Verify that user has been cached
+        saved_repo = GitCache.get_repo(user, repo)
+        assert saved_repo.data.tobytes() == repo_binary_data
+
+        # Step 2: Repeat the call, user should be leaded from DB
+        mock__get_user.reset_mock()
+        gh_client.reset_mock()
+        gh_client.load.reset_mock()
+        gh_repo.reset_mock()
+        gh_user.get_repo.reset_mock()
+
+        loaded_repo = _get_repo(gh_client, user, repo)
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: load and update (for the repo loaded from DB) 
+        #   - not expected: _get_user, gh_client.get_user  (because user was mocked and repo is already in DB)
+        gh_client.load.assert_called_once()
+        assert gh_client.load.call_args[0][0].getbuffer() == repo_binary_data
+        gh_repo.update.assert_called_once()
+
+        mock__get_user.assert_not_called()
+        gh_client.get_user.assert_not_called()
+
+        assert loaded_repo == gh_repo
+
+    @responses.activate
+    @patch('git.utils.github_connect')
+    @patch('git.utils._get_repo')
+    def test_get_issue_caching(self, mock__get_repo, mock_github_connect):
+        """Test the github utility _get_issue method."""
+        fake = Faker()
+
+        # Create a dummy handle and some binary data that is supposed to be the serialized user
+        user = fake.user_name()
+        repo = fake.user_name()
+        issue = fake.pyint()
+        issue_binary_data = fake.text().encode('utf-8')
+
+        def dump_mock(repo_obj, file_obj):
+            file_obj.write(issue_binary_data)
+
+        gh_issue = MagicMock(spec=Issue)
+        gh_issue.update = MagicMock()
+
+        gh_repo = MagicMock(spec=Repository)
+        gh_repo.update = MagicMock()
+        gh_repo.get_issue = MagicMock(return_value=gh_issue)
+
+        # Mock the gh client
+        gh_client = mock_github_connect()
+        gh_client.load = MagicMock(return_value=gh_issue)
+        gh_client.dump = dump_mock
+
+        # configure the _get_repo mock
+        mock__get_repo.return_value = gh_repo
+
+        # Step 1: Make the call
+        returned_issue = _get_issue(gh_client, user, repo, issue)
+        assert returned_issue == gh_issue
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: _get_user, gh_repo.get_issue() 
+        #   - not expected: gh_client load, update - because user is new
+        mock__get_repo.assert_called_with(gh_client, user, repo)
+        gh_repo.get_issue.assert_called_with(issue)
+
+        gh_client.load.assert_not_called()
+        gh_issue.update.assert_not_called()
+
+        # Verify that user has been cached
+        saved_issue = GitCache.get_issue(user, repo, issue)
+        assert saved_issue.data.tobytes() == issue_binary_data
+
+        # Step 2: Repeat the call, user should be leaded from DB
+        mock__get_repo.reset_mock()
+        gh_client.reset_mock()
+        gh_client.load.reset_mock()
+        gh_repo.reset_mock()
+        gh_repo.get_issue.reset_mock()
+
+        loaded_issue = _get_issue(gh_client, user, repo, issue)
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: load and update (for the repo loaded from DB) 
+        #   - not expected: _get_repo, gh_repo.get_issue  (because user was mocked and repo is already in DB)
+        gh_client.load.assert_called_once()
+        assert gh_client.load.call_args[0][0].getbuffer() == issue_binary_data
+        gh_issue.update.assert_called_once()
+
+        mock__get_repo.assert_not_called()
+        gh_repo.get_issue.assert_not_called()
+
+        assert loaded_issue == gh_issue
+
+    @responses.activate
+    @patch('git.utils.github_connect')
+    @patch('git.utils._get_repo')
+    def test_get_commit_comment_caching(self, mock__get_repo, mock_github_connect):
+        """Test the github utility _get_commit_comment method."""
+        fake = Faker()
+
+        # Create a dummy handle and some binary data that is supposed to be the serialized user
+        user = fake.user_name()
+        repo = fake.user_name()
+        comment_num = fake.pyint()
+        comment_binary_data = fake.text().encode('utf-8')
+
+        def dump_mock(repo_obj, file_obj):
+            file_obj.write(comment_binary_data)
+
+        gh_comment = MagicMock(spec=CommitComment)
+        gh_comment.update = MagicMock()
+
+        gh_repo = MagicMock(spec=Repository)
+        gh_repo.update = MagicMock()
+        gh_repo.get_comment = MagicMock(return_value=gh_comment)
+
+        # Mock the gh client
+        gh_client = mock_github_connect()
+        gh_client.load = MagicMock(return_value=gh_comment)
+        gh_client.dump = dump_mock
+
+        # configure the _get_repo mock
+        mock__get_repo.return_value = gh_repo
+
+        # Step 1: Make the call
+        returned_comment = _get_commit_comment(gh_client, user, repo, comment_num)
+        assert returned_comment == gh_comment
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: _get_comment, gh_repo.get_comment() 
+        #   - not expected: gh_client load, update - because user is new
+        mock__get_repo.assert_called_with(gh_client, user, repo)
+        gh_repo.get_comment.assert_called_with(comment_num)
+
+        gh_client.load.assert_not_called()
+        gh_comment.update.assert_not_called()
+
+        # Verify that user has been cached
+        saved_comment = GitCache.get_commit_comment(user, repo, comment_num)
+        assert saved_comment.data.tobytes() == comment_binary_data
+
+        # Step 2: Repeat the call, user should be leaded from DB
+        mock__get_repo.reset_mock()
+        gh_client.reset_mock()
+        gh_client.load.reset_mock()
+        gh_repo.reset_mock()
+        gh_repo.get_comment.reset_mock()
+
+        loaded_comment = _get_commit_comment(gh_client, user, repo, comment_num)
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: load and update (for the repo loaded from DB) 
+        #   - not expected: _get_repo, gh_repo.get_comment  (because user was mocked and repo is already in DB)
+        gh_client.load.assert_called_once()
+        assert gh_client.load.call_args[0][0].getbuffer() == comment_binary_data
+        gh_comment.update.assert_called_once()
+
+        mock__get_repo.assert_not_called()
+        gh_repo.get_comment.assert_not_called()
+
+        assert loaded_comment == gh_comment
+
+    @responses.activate
+    @patch('git.utils.github_connect')
+    @patch('git.utils._get_issue')
+    def test_get_issue_comment_caching(self, mock__get_issue, mock_github_connect):
+        """Test the github utility _get_issue_comment method."""
+        fake = Faker()
+
+        # Create a dummy handle and some binary data that is supposed to be the serialized user
+        user = fake.user_name()
+        repo = fake.user_name()
+        issue_num = fake.pyint()
+        comment_num = fake.pyint()
+        comment_binary_data = fake.text().encode('utf-8')
+
+        def dump_mock(repo_obj, file_obj):
+            file_obj.write(comment_binary_data)
+
+        gh_comment = MagicMock(spec=Repository)
+        gh_comment.update = MagicMock()
+
+        gh_issue = MagicMock(spec=Issue)
+        gh_issue.update = MagicMock()
+        gh_issue.get_comment = MagicMock(return_value=gh_comment)
+
+        # Mock the gh client
+        gh_client = mock_github_connect()
+        gh_client.load = MagicMock(return_value=gh_comment)
+        gh_client.dump = dump_mock
+
+        # configure the _get_repo mock
+        mock__get_issue.return_value = gh_issue
+
+        # Step 1: Make the call
+        returned_comment = _get_issue_comment(gh_client, user, repo, issue_num, comment_num)
+        assert returned_comment == gh_comment
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: _get_user, gh_issue.get_comment() 
+        #   - not expected: gh_client load, update or get_user - because user is new
+        mock__get_issue.assert_called_with(gh_client, user, repo, issue_num)
+        gh_issue.get_comment.assert_called_with(comment_num)
+
+        gh_client.get_user.assert_not_called()
+        gh_client.load.assert_not_called()
+        gh_comment.update.assert_not_called()
+
+        # Verify that user has been cached
+        saved_comment = GitCache.get_issue_comment(user, repo, issue_num, comment_num)
+        assert saved_comment.data.tobytes() == comment_binary_data
+
+        # Step 2: Repeat the call, user should be leaded from DB
+        mock__get_issue.reset_mock()
+        gh_client.reset_mock()
+        gh_client.load.reset_mock()
+        gh_issue.reset_mock()
+        gh_issue.get_comment.reset_mock()
+
+        loaded_comment = _get_issue_comment(gh_client, user, repo, issue_num, comment_num)
+
+        # Verify what was called and that the user has been cached:
+        #   - expected: load and update (for the repo loaded from DB) 
+        #   - not expected: _get_repo, gh_repo.get_issue  (because user was mocked and repo is already in DB)
+        gh_client.load.assert_called_once()
+        assert gh_client.load.call_args[0][0].getbuffer() == comment_binary_data
+        gh_comment.update.assert_called_once()
+
+        mock__get_issue.assert_not_called()
+        gh_issue.get_comment.assert_not_called()
+
+        assert loaded_comment == gh_comment

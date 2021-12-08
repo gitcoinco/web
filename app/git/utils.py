@@ -61,7 +61,7 @@ def github_connect(token=None):
     return github_client
 
 
-def _get_repo(gh_client, user, repo):
+def _get_repo(gh_client, user, repo_name):
     """Internal function to retrieve repositories
     
     This function will attempt to retrieve the repository from cache and update it. 
@@ -72,7 +72,7 @@ def _get_repo(gh_client, user, repo):
 
     # We'll attempt to load the repo data from the cache, deserialize the data and update it
     try:
-        cached_obj = GitCache.get_repo(user, repo)
+        cached_obj = GitCache.get_repo(user, repo_name)
         ret = gh_client.load(BytesIO(cached_obj.data))
         ret.update()
     except GitCache.DoesNotExist:
@@ -82,12 +82,12 @@ def _get_repo(gh_client, user, repo):
 
     if not ret:
         org_user = _get_user(gh_client, user)
-        ret = org_user.get_repo(repo)
+        ret = org_user.get_repo(repo_name)
 
     # Cache the data
     if ret:
         if not cached_obj:
-            cached_obj = GitCache.create_repo_cache(user, repo)
+            cached_obj = GitCache.create_repo_cache(user, repo_name)
 
         data_dump = BytesIO()
         gh_client.dump(ret, data_dump)
@@ -96,7 +96,7 @@ def _get_repo(gh_client, user, repo):
     return ret
 
 
-def _get_issue(gh_client, user, repo, issue):
+def _get_issue(gh_client, user, repo_name, issue_num):
     """Internal function to retrieve issues
     
     This function will attempt to retrieve the issue from cache and update it. 
@@ -107,7 +107,7 @@ def _get_issue(gh_client, user, repo, issue):
 
     # We'll attempt to load the issue data from the cache, deserialize the data and update it
     try:
-        cached_obj = GitCache.get_issue(user, repo, issue)
+        cached_obj = GitCache.get_issue(user, repo_name, issue_num)
         ret = gh_client.load(BytesIO(cached_obj.data))
         ret.update()
     except GitCache.DoesNotExist:
@@ -116,13 +116,13 @@ def _get_issue(gh_client, user, repo, issue):
         logger.error("Failed to load issue from cache", exc_info=True)
 
     if not ret:
-        repo = _get_repo(gh_client, user)
-        ret = repo.get_issue(issue)
+        repo = _get_repo(gh_client, user, repo_name)
+        ret = repo.get_issue(issue_num)
 
     # Cache the data
     if ret:
         if not cached_obj:
-            cached_obj = GitCache.create_issue_cache(user, repo, issue)
+            cached_obj = GitCache.create_issue_cache(user, repo_name, issue_num)
 
         data_dump = BytesIO()
         gh_client.dump(ret, data_dump)
@@ -131,7 +131,7 @@ def _get_issue(gh_client, user, repo, issue):
     return ret
 
 
-def _get_commit_comment(gh_client, user, repo, comment):
+def _get_commit_comment(gh_client, user, repo_name, comment_num):
     """Internal function to retrieve comments
     
     This function will attempt to retrieve the comment from cache and update it. 
@@ -142,7 +142,7 @@ def _get_commit_comment(gh_client, user, repo, comment):
 
     # We'll attempt to load the comment data from the cache, deserialize the data and update it
     try:
-        cached_obj = GitCache.get_commit_comment(user, repo, comment)
+        cached_obj = GitCache.get_commit_comment(user, repo_name, comment_num)
         ret = gh_client.load(BytesIO(cached_obj.data))
         ret.update()
     except GitCache.DoesNotExist:
@@ -151,13 +151,13 @@ def _get_commit_comment(gh_client, user, repo, comment):
         logger.error("Failed to load comment from cache", exc_info=True)
 
     if not ret:
-        repo = _get_repo(gh_client, user, repo)
-        ret = repo.get_comment(comment)
+        repo = _get_repo(gh_client, user, repo_name)
+        ret = repo.get_comment(comment_num)
 
     # Cache the data
     if ret:
         if not cached_obj:
-            cached_obj = GitCache.create_commit_comment_cache(user, repo, comment)
+            cached_obj = GitCache.create_commit_comment_cache(user, repo_name, comment_num)
 
         data_dump = BytesIO()
         gh_client.dump(ret, data_dump)
@@ -166,7 +166,7 @@ def _get_commit_comment(gh_client, user, repo, comment):
     return ret
 
 
-def _get_issue_comment(gh_client, user, repo, issue, comment):
+def _get_issue_comment(gh_client, user, repo_name, issue_num, comment_num):
     """Internal function to retrieve comments
     
     This function will attempt to retrieve the comment from cache and update it. 
@@ -177,7 +177,7 @@ def _get_issue_comment(gh_client, user, repo, issue, comment):
 
     # We'll attempt to load the comment data from the cache, deserialize the data and update it
     try:
-        cached_obj = GitCache.get_issue_comment(user, repo, issue, comment)
+        cached_obj = GitCache.get_issue_comment(user, repo_name, issue_num, comment_num)
         ret = gh_client.load(BytesIO(cached_obj.data))
         ret.update()
     except GitCache.DoesNotExist:
@@ -186,13 +186,13 @@ def _get_issue_comment(gh_client, user, repo, issue, comment):
         logger.error("Failed to load comment from cache", exc_info=True)
 
     if not ret:
-        repo = _get_issue(gh_client, user, repo, comment)
-        ret = repo.get_comment(comment)
+        issue = _get_issue(gh_client, user, repo_name, issue_num)
+        ret = issue.get_comment(comment_num)
 
     # Cache the data
     if ret:
         if not cached_obj:
-            cached_obj = GitCache.create_issue_comment_cache(user, repo, issue, comment)
+            cached_obj = GitCache.create_issue_comment_cache(user, repo_name, issue_num, comment_num)
 
         data_dump = BytesIO()
         gh_client.dump(ret, data_dump)
@@ -261,7 +261,7 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
         try:
             last_validated = dateutil.parser.parse(last_validated)
         except ValueError:
-            print('Validation of date failed.')
+            logger.debug('Validation of date failed.')
             last_validated = None
 
     # Check whether or not the user's access token has been validated recently.
@@ -283,7 +283,7 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
         if not settings.ENV == 'local':
             logger.error(e)
         else:
-            print(e, '- No connection available. Unable to authenticate with Github.')
+            logger.debug(e, '- No connection available. Unable to authenticate with Github.')
         return False
 
     if response.status_code == 200:
