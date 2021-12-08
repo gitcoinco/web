@@ -1,4 +1,3 @@
-from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
@@ -8,8 +7,7 @@ from kudos.models import Token
 from quests.models import Quest
 
 
-class StaticViewSitemap(sitemaps.Sitemap):
-
+class StaticViewSitemap(Sitemap):
     priority = 0.5
     changefreq = 'weekly'
 
@@ -28,8 +26,9 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
 
 class IssueSitemap(Sitemap):
-    changefreq = "daily"
+    changefreq = "weekly"
     priority = 0.9
+    limit = 5000
 
     def items(self):
         return Bounty.objects.current().order_by('-pk').cache()
@@ -42,8 +41,9 @@ class IssueSitemap(Sitemap):
 
 
 class KudosSitemap(Sitemap):
-    changefreq = "daily"
+    changefreq = "weekly"
     priority = 0.9
+    limit = 5000
 
     def items(self):
         return Token.objects.filter(hidden=False, num_clones_allowed__gt=0).order_by('-pk')
@@ -73,6 +73,7 @@ class ProfileSitemap(Sitemap):
 class ContributorLandingPageSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.6
+    limit = 5000
 
     def items(self):
         from retail.utils import programming_languages
@@ -89,6 +90,7 @@ class ContributorLandingPageSitemap(Sitemap):
 class ResultsSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.6
+    limit = 5000
 
     def items(self):
         from retail.utils import programming_languages
@@ -107,6 +109,7 @@ class ResultsSitemap(Sitemap):
 class GrantsSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.6
+    limit = 5000
 
     def items(self):
         return Grant.objects.filter(hidden=False).order_by('-pk').cache()
@@ -121,6 +124,7 @@ class GrantsSitemap(Sitemap):
 class QuestsSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.6
+    limit = 5000
 
     def items(self):
         return Quest.objects.filter(visible=True).order_by('-pk').cache()
@@ -135,6 +139,7 @@ class QuestsSitemap(Sitemap):
 class HackathonEventSiteMap(Sitemap):
     changefreq = "weekly"
     priority = 0.6
+    limit = 5000
 
     def items(self):
         return HackathonEvent.objects.order_by('-pk').cache()
@@ -149,6 +154,7 @@ class HackathonEventSiteMap(Sitemap):
 class HackathonProjectSiteMap(Sitemap):
     changefreq = "weekly"
     priority = 0.8
+    limit = 5000
 
     def items(self):
         return HackathonProject.objects.order_by('-pk').cache()
@@ -161,7 +167,7 @@ class HackathonProjectSiteMap(Sitemap):
 
 
 class PostSitemap(Sitemap):
-    changefreq = "daily"
+    changefreq = "weekly"
     priority = 0.9
     limit = 5000
 
@@ -181,7 +187,7 @@ class PostSitemap(Sitemap):
 
 class ActivitySitemap(Sitemap):
     changefreq = "weekly"
-    priority = 0.6
+    priority = 0.8
     limit = 5000
 
     def items(self):
@@ -200,12 +206,12 @@ sitemaps = {
     'grants': GrantsSitemap,
     'hackathons': HackathonEventSiteMap,
     'projects': HackathonProjectSiteMap,
-#    'profiles': ProfileSitemap,
-#    'posts': PostSitemap,
+    # 'profiles': ProfileSitemap,
+    # 'posts': PostSitemap,
     'quests': QuestsSitemap,
     'issues': IssueSitemap,
     'kudos': KudosSitemap,
-#    'activity': ActivitySitemap,
+    # 'activity': ActivitySitemap,
     'landers': ContributorLandingPageSitemap,
     'results': ResultsSitemap,
     'static': StaticViewSitemap,
