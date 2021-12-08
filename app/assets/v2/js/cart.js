@@ -267,13 +267,21 @@ Vue.component('grants-cart', {
 
     totalString() {
       const token = Object.keys(this['donationsTotal'])[0];
-      const match = Number(this.predictionTotal['total']);
-
       let total = Number(this['donationsTotal'][token]);
-
-      if (match) {
+      const match = Number(this.predictionTotal['total']);
+  
+      if (match && token === 'DAI') {
         total += match;
+  
+        return total.toFixed(2).toString() + ' ' + token;
+      } else if (match) {
+        
+        const match_str = this.predictionTotal['total_str'];
+        const donation_total_str = total.toFixed(2).toString() + ' ' + token;
+        
+        return donation_total_str + ' + ' + match_str;
       }
+  
       return total.toFixed(2).toString() + ' ' + token;
     },
 
@@ -536,7 +544,7 @@ Vue.component('grants-cart', {
       // Rinkeby list: https://rinkeby-api.zksync.io/api/v0.1/tokens
       this.zkSyncSupportedTokens = this.network === 'rinkeby'
         ? [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ]
-        : [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN' ];
+        : [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN', 'RAI' ];
 
       // Polygon
       // We hardcode the list from Gitcoin's historical data based on the top ten tokens
