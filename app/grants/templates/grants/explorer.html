@@ -668,23 +668,29 @@ along with this program. If not, see
               </template>
             </div>
           </div>
-
-          <template v-if="grants && grants.length">
-
-            {% include 'grants/shared/top-filters.html' %}
-
-            <div class="d-flex" v-if="grantsHasPrev">
-              <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
-            </div>
-
-            <div class="infinite-container row">
-              <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-                <a class="text-decoration-none" :href="grant.details_url">
-                  {% include 'grants/components/card.html' %}
-                </a>
-              </div>
+          <template v-if="showLoading">
+            <div class="d-flex flex-column justify-content-center">
+              <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
             </div>
           </template>
+          <template v-else>
+            <template v-if="grants && grants.length">
+              {% include 'grants/shared/top-filters.html' %}
+
+              <div class="d-flex" v-if="grantsHasPrev">
+                <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+              </div>
+
+              <div class="infinite-container row">
+                <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                  <a class="text-decoration-none" :href="grant.details_url">
+                    {% include 'grants/components/card.html' %}
+                  </a>
+                </div>
+              </div>
+            </template>
+          </template>
+
 
           <template v-else-if="collection_owner == handle">
             <div class="text-center">
