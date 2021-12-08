@@ -238,8 +238,10 @@ class Subscription(SuperModel):
                 y_lower = clr_prediction_curve[4]
                 y_upper = clr_prediction_curve[5]
 
-        # use lerp to discover the predicted match_amount
-        return y_lower + (((y_upper - y_lower) * (float(amount) - x_lower)) / (x_upper - x_lower))
+            # use lerp to discover the predicted match_amount
+            predicted_clr = y_lower + (((y_upper - y_lower) * (float(amount) - x_lower)) / (x_upper - x_lower))
+    
+        return predicted_clr
 
     @property
     def match_amount_token(self):
