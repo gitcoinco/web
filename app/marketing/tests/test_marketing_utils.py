@@ -79,7 +79,7 @@ class MarketingEmailUtilsTest(TestCase):
         """Test the marketing util test_allowed_to_send_email method."""
         assert allowed_to_send_email('emailSubscriber1@gitcoin.co', 'foo')
         assert allowed_to_send_email('emailSubscriber2@gitcoin.co', 'foo')
-        assert allowed_to_send_email('emailSubscriber3@gitcoin.co', 'foo')
+        assert not allowed_to_send_email('emailSubscriber3@gitcoin.co', 'foo')
 
     def test_get_of_get_or_save_email_subscriber(self):
         """Test the marketing util get_or_save_email_subscriber method."""
