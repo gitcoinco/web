@@ -2,21 +2,21 @@ describe('Grants Explorer page', () => {
   before(() => {
     cy.setupMetamask();
   });
-  
+
   afterEach(() => {
     cy.logout();
   });
-  
+
   after(() => {
     cy.clearWindows();
   });
-  
+
   describe('grants explorer sort menu', () => {
     it('contains the proper sort options', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -34,15 +34,15 @@ describe('Grants Explorer page', () => {
         .should('contain', 'Highest Amount Raised')
         .should('contain', 'Highest Contributor Count')
         .should('contain', 'All-Time');
-      cy.get('.vs__dropdown-menu').find('#vs3__option-13').should('contain', 'Highest Amount Raised'); // need to be more specific to test two elements with same name
-      cy.get('.vs__dropdown-menu').find('#vs3__option-14').should('contain', 'Highest Contributor Count');
+      cy.get('.vs__dropdown-menu').find('#vs3__option-14').should('contain', 'Highest Amount Raised'); // need to be more specific to test two elements with same name
+      cy.get('.vs__dropdown-menu').find('#vs3__option-15').should('contain', 'Highest Contributor Count');
     });
 
     it('does not contain Most Relevant option by default', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
       cy.get('.vs__dropdown-menu').should('not.contain', 'Most Relevant');
     });
@@ -62,7 +62,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.contains('Discover').parent().should('have.class', 'vs__dropdown-option--disabled');
@@ -74,7 +74,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -87,7 +87,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -100,7 +100,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       // Options in Discover category
@@ -161,12 +161,12 @@ describe('Grants Explorer page', () => {
       // Options in All-Time category
       cy.get('.vselect-clean').click();
 
-      cy.get('.vs__dropdown-menu').find('#vs3__option-13').contains('Highest Amount Raised').click(); // Need to be more specific here because the same options exist above
+      cy.get('.vs__dropdown-menu').find('#vs3__option-14').contains('Highest Amount Raised').click(); // Need to be more specific here because the same options exist above
       cy.url().should('contain', 'sort_option=-amount_received');
 
       cy.get('.vselect-clean').click();
 
-      cy.get('.vs__dropdown-menu').find('#vs3__option-14').contains('Highest Contributor Count').click();
+      cy.get('.vs__dropdown-menu').find('#vs3__option-15').contains('Highest Contributor Count').click();
       cy.url().should('contain', 'sort_option=-contributor_count');
 
       // Admin options
@@ -182,4 +182,3 @@ describe('Grants Explorer page', () => {
     });
   });
 });
-  
