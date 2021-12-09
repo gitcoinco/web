@@ -160,14 +160,12 @@ describe('Grants Explorer page', () => {
       // Options in All-Time category
       cy.get('.vselect-clean').click();
 
-      cy.get('.vs__dropdown-menu').find('#vs3__option-14') // Need to be more specific here because the same options exist above. If sort options are added or removed, this option will need to be altered accordingly.
-                                  .contains('Highest Amount Raised').click();
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Amount Raised")').last().click();
       cy.url().should('contain', 'sort_option=-amount_received');
 
       cy.get('.vselect-clean').click();
 
-      cy.get('.vs__dropdown-menu').find('#vs3__option-15') // Need to be more specific here because the same options exist above. If sort options are added or removed, this option will need to be altered accordingly.
-                                  .contains('Highest Contributor Count').click();
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Contributor Count")').last().click();
       cy.url().should('contain', 'sort_option=-contributor_count');
 
       // Admin options
