@@ -1684,18 +1684,7 @@ Vue.component('grants-cart', {
     // Read array of grants in cart from localStorage
     let grantData = CartData.loadCart();
 
-    this.selectedETHCartToken = null;
-
-    for (var index = 0; index < grantData.length; index++) {
-      if (grantData[index].grant_donation_currency) {
-        this.selectedETHCartToken = grantData[index].grant_donation_currency;
-        break;
-      }
-    }
-
-    if (!this.selectedETHCartToken) {
-      this.selectedETHCartToken = 'DAI';
-    }
+    this.selectedETHCartToken = grantData.length > 0 && grantData[0].grant_donation_currency;
 
     const grantIds = grantData.map(grant => grant.grant_id);
 
