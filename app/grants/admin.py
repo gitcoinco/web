@@ -85,7 +85,9 @@ class GrantCLRCalculationAdmin(admin.ModelAdmin):
         'grant','grantclr','clr_prediction_curve'
     ]
     search_fields = [
-        'grantclr'
+        'grant__title',
+        'grantclr__round_num',
+        'grantclr__pk'
     ]
 
 class CLRMatchAdmin(admin.ModelAdmin):
