@@ -2417,10 +2417,22 @@ def get_replaced_tx(request):
 
 
 def grants_cart_view(request):
+
+    try:
+        checkout_status = StaticJsonEnv.objects.get(key='L2_CHECKOUT_STATUS').data
+        disableZksync = checkout_status['disableZksync']
+        disablePolygon = checkout_status['disablePolygon']
+    except:
+        disableZksync = 'false'
+        disablePolygon = 'false'
+
     context = {
         'title': 'Grants Cart',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
+        'disableZksync': disableZksync,
+        'disablePolygon': disablePolygon
     }
+
     if request.user.is_authenticated:
         profile = request.user.profile
         context['username'] = profile.username
