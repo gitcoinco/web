@@ -33,8 +33,8 @@ describe('Grants Explorer page', () => {
         .should('contain', 'Z to A')
         .should('contain', 'Highest Match Amount');
 
-      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Amount Raised")').should('have.length', 2)
-      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Contributor Count")').should('have.length', 2)
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Amount Raised")').should('have.length', 2);
+      cy.get('.vs__dropdown-menu li').filter(':contains("Highest Contributor Count")').should('have.length', 2);
     });
 
     it('does not contain Most Relevant option by default', () => {
