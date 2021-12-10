@@ -1684,7 +1684,18 @@ Vue.component('grants-cart', {
     // Read array of grants in cart from localStorage
     let grantData = CartData.loadCart();
 
-    this.selectedETHCartToken = grantData.length > 0 && grantData[0].grant_donation_currency;
+    this.selectedETHCartToken = null;
+
+    for (var index = 0; index < grantData.length; index++) {
+      if (grantData[index].grant_donation_currency) {
+        this.selectedETHCartToken = grantData[index].grant_donation_currency;
+        break;
+      }
+    }
+
+    if (!this.selectedETHCartToken) {
+      this.selectedETHCartToken = 'DAI';
+    }
 
     const grantIds = grantData.map(grant => grant.grant_id);
 
@@ -1701,7 +1712,7 @@ Vue.component('grants-cart', {
 
       // Make sure none have empty currencies, and if they do default to 5 DAI. This is done
       // to prevent the cart from getting stuck loading if a currency is empty
-      updatedGrant[grantIndex]['grant_donation_currency'] = grant.grant_donation_currency ? grant.grant_donation_currency : 'DAI';
+      updatedGrant[grantIndex]['grant_donation_currency'] = this.selectedETHCartToken;
       updatedGrant[grantIndex]['grant_donation_amount'] = grant.grant_donation_amount ? grant.grant_donation_amount : '5';
     });
 
