@@ -23,10 +23,8 @@ import json
 import logging
 import math
 import re
-import time
 import uuid
 from datetime import datetime
-from io import StringIO
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -34,8 +32,8 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
-from django.contrib.postgres.search import SearchQuery, SearchVector
-from django.core.paginator import EmptyPage, Paginator
+from django.contrib.postgres.search import SearchVector
+from django.core.paginator import EmptyPage
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
@@ -61,22 +59,21 @@ from app.settings import (
     TWITTER_CONSUMER_SECRET,
 )
 from app.utils import allow_all_origins, get_profile
-from boto3.s3.transfer import S3Transfer
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3
-from dashboard.views import invalid_file_response
 from economy.models import Token as FTokens
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
-    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
-    GrantTag, GrantType, MatchPledge, Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
+    GrantCollection, GrantTag, GrantType, MatchPledge, Subscription,
 )
+from grants.serializers import CLRMatchSerializer
 from grants.tasks import (
     process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write,
     update_grant_metadata,
@@ -85,11 +82,13 @@ from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
     is_grant_team_member, sync_payout, toggle_user_sybil,
 )
-from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
+from rest_framework import permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
@@ -3733,7 +3732,6 @@ def get_trust_bonus(request):
     return allow_all_origins(JsonResponse(response, safe=False))
 
 
-
 def api_toggle_user_sybil(request):
     '''
         POST endpoint which allows to mark a list of users as sybil
@@ -3802,3 +3800,24 @@ def upload_sybil_csv(request):
         return JsonResponse({'success': 'failed'}, status=500)
 
     return JsonResponse({'success': 'ok'}, status=200)
+
+
+@csrf_exempt
+@login_required
+@api_view(['GET'])
+@permission_classes((permissions.IsAuthenticated,))
+def clr_matches(request, round_number=None):
+    profile = get_profile(request)
+
+    if not profile:
+        return Response({'message': 'Profile not found!'}, status=404)
+
+    clr_matches = CLRMatch.objects.select_related(
+        'grant', 'grant_payout').filter(grant__admin_profile=profile)
+
+    if round_number:
+        clr_matches = clr_matches.filter(round_number=round_number)
+
+    serializer = CLRMatchSerializer(clr_matches, many=True)
+
+    return Response(serializer.data)

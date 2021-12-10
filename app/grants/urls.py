@@ -21,7 +21,7 @@ from django.urls import path, re_path
 
 from grants.views import (
     add_grant_from_collection, api_toggle_user_sybil, bulk_fund, bulk_grants_for_cart, cancel_grant_v1, cart_thumbnail,
-    clr_grants, collage, collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
+    clr_grants, clr_matches, collage, collection_thumbnail, contribute_to_grants_v1, contribution_addr_from_all_as_json,
     contribution_addr_from_grant_as_json, contribution_addr_from_grant_during_round_as_json,
     contribution_addr_from_round_as_json, contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1,
     delete_collection, flag, get_clr_sybil_input, get_collection, get_collections_list, get_ethereum_cart_data,
@@ -99,6 +99,7 @@ urlpatterns = [
     path('v1/api/grant/<int:grant_id>/contributors', grant_details_contributors, name='grant_details_contributors'),
     path('v1/api/grant/edit/<int:grant_id>/', grant_edit, name='grant_edit'),
     path('v1/api/grant/<int:grant_id>/cancel', cancel_grant_v1, name='cancel_grant_v1'),
+    re_path(r'^v1/api/clr-matches/(?P<round_number>\d+)?$', clr_matches, name='clr_matches'),
 
 
     path('v1/api/trust-bonus', get_trust_bonus, name='get_trust_bonus'),

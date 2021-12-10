@@ -32,7 +32,6 @@ class CLRMatch(SuperModel):
         on_delete=models.SET_NULL,
         help_text=_('Contribution for the test payout')
     )
-
     ready_for_payout = models.BooleanField(default=False, help_text=_('Ready for regular payout or not'))
     payout_tx = models.CharField(
         max_length=255,
@@ -47,6 +46,14 @@ class CLRMatch(SuperModel):
         blank=True,
         on_delete=models.SET_NULL,
         help_text=_('Contribution for the payout')
+    )
+    grant_payout = models.ForeignKey(
+        'grants.GrantPayout',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='clr_matches',
+        help_text=_('Grant Payout'),
     )
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
 

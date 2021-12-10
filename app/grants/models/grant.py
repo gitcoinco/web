@@ -24,6 +24,20 @@ from .grant_collection import GrantCollection
 from .subscription import Subscription
 
 
+class GrantPayout(SuperModel):
+    name = models.CharField(
+        max_length=25,
+        help_text=_('Display Name for Payout')
+    )
+    contract_address = models.CharField(
+        max_length=255,
+        help_text=_('Payout Contract from which funds would be claimed')
+    )
+
+    def __str__(self):
+        return f"{self.name} Payout"
+
+
 class GrantCLR(SuperModel):
 
     class Meta:
@@ -33,7 +47,7 @@ class GrantCLR(SuperModel):
         max_length=15,
         default='',
         blank=True,
-        help_text="used to genrate customer_name/round_num/sub_round_slug"
+        help_text="used to generate customer_name/round_num/sub_round_slug"
     )
     round_num = models.PositiveIntegerField(
         help_text="CLR Round Number. used to generate customer_name/round_num/sub_round_slug"
@@ -107,6 +121,14 @@ class GrantCLR(SuperModel):
         blank=True,
         max_length=500,
         help_text=_('sets the background in CLR banner on the landing page'),
+    )
+    grant_payout = models.ForeignKey(
+        'grants.GrantPayout',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='grant_clrs',
+        help_text=_('Grant Payout')
     )
 
     def __str__(self):

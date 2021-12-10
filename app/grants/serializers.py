@@ -2,7 +2,7 @@ from dashboard.router import ProfileSerializer
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-from .models import Contribution, Grant, GrantCLR, GrantCollection, GrantTag, GrantType, Subscription
+from .models import CLRMatch, Contribution, Grant, GrantCLR, GrantCollection, GrantTag, GrantType, Subscription
 from .utils import amount_in_wei, get_converted_amount
 
 
@@ -148,6 +148,23 @@ class GrantCLRSerializer(FlexFieldsModelSerializer):
         expandable_fields = {
           'owner': (ProfileSerializer)
         }
+
+
+class CLRMatchSerializer(FlexFieldsModelSerializer):
+    grant = GrantSerializer(fields=['title', 'logo', 'admin_address'])
+    grant_clrs = GrantCLRSerializer(
+        fields=['display_text', 'claim_start_date', 'claim_end_date', 'is_active'],
+        source='grant_payout.grant_clrs',
+        many=True
+    )
+    payout_contract_address = serializers.CharField(source='grant_payout.contract_address')
+
+    class Meta:
+        model = CLRMatch
+        fields = (
+            'amount', 'round_number', 'payout_tx', 'payout_tx_date', 'grant',
+            'payout_contract_address', 'grant_clrs', 'ready_for_payout'
+        )
 
 
 class GrantTypeSerializer(FlexFieldsModelSerializer):

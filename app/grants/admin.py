@@ -28,7 +28,7 @@ from django.utils.safestring import mark_safe
 import twitter
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantStat, GrantTag, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantCollection, GrantPayout, GrantStat, GrantTag, GrantType, MatchPledge, PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
@@ -537,6 +537,12 @@ class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
 
+class GrantPayoutAdmin(admin.ModelAdmin):
+    """Define the GrantPayout administration layout."""
+
+    list_display =['pk', 'name', 'contract_address']
+
+
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -552,3 +558,4 @@ admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
 admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
 admin.site.register(GrantCLRCalculation, GrantCLRCalculationAdmin)
+admin.site.register(GrantPayout, GrantPayoutAdmin)
