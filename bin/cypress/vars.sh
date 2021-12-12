@@ -1,14 +1,5 @@
-#! /bin/bash
-set -eou pipefail
-
 export SECRET_WORDS="chief loud snack trend chief net field husband vote message decide replace"
 export NETWORK_NAME=localhost
 export PASSWORD="g1tc01nc0"
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
-
-node_modules/.bin/cypress install
-node_modules/.bin/cypress run \
-  --browser chrome \
-  --headed \
-  --record \
-  --key 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
+export VERBOSE=1
