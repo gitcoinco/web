@@ -26,57 +26,92 @@ Vue.mixin({
       }
       window.history.replaceState({}, document.title, `${window.location.pathname}`);
     },
-    fetchCLRMatches: function() {
-      // fetch clr match entries of owned grants
-      const vm = this;
-
-      vm.loadingRelated = true;
-
-      const url = '/grants/v1/api/clr_matches';
-
-      fetch(url).then(function(res) {
-        return res.json();
-      }).then(function(json) {
-        // some computation
-        vm.loadingRelated = false;
-      }).catch(console.error);
-    },
-    async hasClaimed(address, txHash) {
-      web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
-      // const CONTRACT_ADDRESS = '0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a';
-      // const CONTRACT_ABI = [{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_funder","type":"address"},{"internalType":"contract IERC20","name":"_dai","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[],"name":"Finalized","type":"event"},{"anonymous":false,"inputs":[],"name":"Funded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"contract IERC20","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"FundingWithdrawn","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"PayoutAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"recipient","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"PayoutClaimed","type":"event"},{"inputs":[{"internalType":"address","name":"_recipient","type":"address"}],"name":"claimMatchPayout","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"dai","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"enablePayouts","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"finalize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"funder","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"payouts","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"components":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct MatchPayouts.PayoutFields[]","name":"_payouts","type":"tuple[]"}],"name":"setPayouts","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"state","outputs":[{"internalType":"enum MatchPayouts.State","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"}],"name":"withdrawFunding","outputs":[],"stateMutability":"nonpayable","type":"function"}]
-
-      // const matchingContract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
-      // matchingContract.getPastEvents('PayoutClaimed', {
-      //   filter: {
-      //     recipient: '0x1208a26FAa0F4AC65B42098419EB4dAA5e580AC6'
-      //   },
-      //   fromBlock: 11479195,
-      //   toBlock: 'latest'
-      // })
-      // .then(function(events){
-      //   console.log(events);
-      // })
-      // .catch(function(e) {
-      //   console.log("Failed to fetch claim status.");
-      // });
-      let tx = await web3.eth.getTransaction(txHash);
-      
-      addressWithout0x = address.replace('0x', '').toLowerCase();
-
-      // check if user attempted to claim match payout
-      // 0x8658b34 is the method id of the claimMatchPayout(address _recipient) function
-      console.log(tx);
-      userClaimedMatchPayout = tx.input.startsWith('0x8658b34') && tx.input.endsWith(addressWithout0x);
-      
-      if (userClaimedMatchPayout) {
-        let receipt = await web3.eth.getTransactionReceipt(txHash);
-
-        if (receipt)
-          return true;
+    async fetchCLRMatches() {
+      // partition function to split result array based on condition
+      function partition(array, isValid) {
+        return array.reduce(([ pass, fail ], elem) => {
+          return isValid(elem) ? [ [ ...pass, elem ], fail ] : [ pass, [ ...fail, elem ] ];
+        }, [ [], [] ]);
       }
 
-      return false;
+      let vm = this;
+
+      // fetch clr match entries of owned grants
+      const url = '/grants/v1/api/clr-matches';
+
+      try {
+        let result = await (await fetch(url)).json();
+
+        // update claim status + format date fields
+        result.map(async m => {
+          m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
+            ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
+            : null;
+
+          const claimData = await vm.hasClaimed(
+            m.grant.admin_address,
+            m.grant_payout.contract_address,
+            m.payout_tx
+          );
+
+          m.has_claimed = claimData.status;
+          m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
+        });
+
+
+        // split result into clr matches that are ready to claim and those for history
+        const [ pass, fail ] = partition(result, a => !a.hasClaimed && !a.grant_payout.funding_withdrawn);
+        
+        // group clr matches by grant title
+        this.readyToClaim = await this.groupByGrant(pass);
+        this.clrMatchHistory = await this.groupByGrant(fail);
+
+        this.loading = false;
+
+      } catch (e) {
+        console.error(e);
+        _alert('Something went wrong. Please try again later', 'danger');
+      }
+    },
+    async groupByGrant(clrMatches) {
+      // group clr matches by grant title
+
+      result = await clrMatches.reduce(async function(r, a) {
+        r[a.grant.title] = r[a.grant.title] || [];
+        r[a.grant.title].push(a);
+        return r;
+      }, Object.create(null));
+
+      return result;
+    },
+    async hasClaimed(recipientAddress, contractAddress, txHash) {
+      let status = false;
+      let timestamp = null;
+
+      web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
+
+      let tx = await web3.eth.getTransaction(txHash);
+
+      if (tx && tx.to == contractAddress) {
+        addressWithout0x = recipientAddress.replace('0x', '').toLowerCase();
+
+        // check if user attempted to claim match payout
+        // 0x8658b34 is the method id of the claimMatchPayout(address _recipient) function
+        userClaimedMatchPayout = tx.input.startsWith('0x8658b34') && tx.input.endsWith(addressWithout0x);
+        
+        if (userClaimedMatchPayout) {
+          let receipt = await web3.eth.getTransactionReceipt(txHash);
+
+          console.log(receipt);
+
+          if (receipt) {
+            status = true;
+            timestamp = (await web3.eth.getBlock(receipt.blockNumber)).timestamp; // fetch claim date
+          }
+        }
+      }
+
+      return { status, timestamp };
     },
     backNavigation: function() {
       const vm = this;
@@ -102,10 +137,10 @@ if (document.getElementById('gc-matching-funds')) {
     el: '#gc-matching-funds',
     data() {
       return {
-        loading: false,
-        loadingTx: false,
-        clrMatchHistory: {},
-        tabSelected: 1,
+        loading: true,
+        clrMatchHistory: null,
+        readyToClaim: null,
+        tabSelected: 2,
         tab: null,
         backLink: {
           url: '/grants',
@@ -113,13 +148,18 @@ if (document.getElementById('gc-matching-funds')) {
         }
       };
     },
-    mounted: function() {
+    mounted: async function() {
       this.enableTab();
       this.backNavigation();
-      this.hasClaimed(
-        '0xdbb16c68aa373229db9f37d85087264361691ab9',
-        '0x43ee7def85a5b4b5ecf7c551bbf99014220e779046d6faccc43e790e2b7e7ab8'
-      ).then(console.log);
+
+      // fetch CLR match history of the user's owned grants
+      await this.fetchCLRMatches();
+
+      // this.hasClaimed(
+      //   '0xdbb16c68aa373229db9f37d85087264361691ab9',
+      //   '0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
+      //   '0x43ee7def85a5b4b5ecf7c551bbf99014220e779046d6faccc43e790e2b7e7ab8'
+      // ).then(console.log);
     }
   });
 }

@@ -31,7 +31,24 @@ class GrantPayout(SuperModel):
     )
     contract_address = models.CharField(
         max_length=255,
+        null=True,
+        blank=True,
         help_text=_('Payout Contract from which funds would be claimed')
+    )
+    ready_to_claim = models.BooleanField(default=False, help_text="Is grant payout ready to be claimed?")
+    payout_token = models.CharField(
+        max_length=10,
+        default='DAI',
+        help_text=_('Currency in which funds would be paid')
+    )
+    funding_withdrawn = models.BooleanField(
+        default=False,
+        help_text=_('Was the Matching Contract funding withdrawn?')
+    )
+    funding_withdrawal_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text=_('When was funding in Matching Contract withdrawn?')
     )
 
     def __str__(self):

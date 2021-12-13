@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load static humanize i18n grants_extra bundle %}
+{% load static i18n grants_extra bundle %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,6 +36,17 @@
         padding-right: 0;
         margin-right: 2rem;
       }
+
+      /* .gc-tabs-left > div {
+        position: sticky !important;
+        top: 0;
+        z-index: 100;
+        background-color: #FFFFFF;
+      } */
+
+      .tab-content {
+        z-index: -1 !important;
+      }
     </style>
   </head>
 
@@ -52,152 +63,189 @@
         </div>
 
         <div class="container">
-        <h2 class="mt-4 mb-3 mt-lg-5 mb-lg-4">Matching Funds</h2>
+        <div class="row align-items-center mt-4 mb-3 mt-lg-5 mb-lg-4">
+          <div class="col-12 col-md-8">
+            <h2>Matching Funds</h2>
+          </div>
+          <div class="d-none d-md-inline col-md-4 text-right">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="50" fill="#E6FFF9"/>
+              <path d="M63.4326 23.5805C67.5567 23.4827 69.1278 24.607 69.2751 29.1042C69.0787 24.9981 70.1589 23.4827 74.6266 23.4338C70.5516 23.4827 68.9805 22.3584 68.7841 17.9102C68.9805 22.3584 67.5567 23.5316 63.4326 23.5805Z" fill="#5BF1CD"/>
+              <path d="M79.104 55.9314C83.418 55.8292 85.0615 57.0052 85.2155 61.7095C85.0101 57.4143 86.14 55.8292 90.8135 55.778C86.5508 55.8292 84.9074 54.6531 84.702 50C84.9074 54.6531 83.418 55.8803 79.104 55.9314Z" fill="#E6FFF9"/>
+              <path d="M39.5522 17.8719C43.8663 17.7696 45.5097 18.9457 45.6638 23.6499C45.4583 19.3547 46.5882 17.7696 51.2617 17.7185C46.9991 17.7696 45.3556 16.5935 45.1502 11.9404C45.3556 16.5935 43.8663 17.8207 39.5522 17.8719Z" fill="#E6FFF9"/>
+              <path d="M33.3315 38.3832C37.5479 38.2832 39.1542 39.4327 39.3048 44.0305C39.104 39.8325 40.2083 38.2832 44.7761 38.2332C40.6099 38.2832 39.0036 37.1338 38.8028 32.5859C39.0036 37.1338 37.5479 38.3332 33.3315 38.3832Z" fill="#5BF1CD"/>
+              <path d="M57.8836 31.6598C54.6835 28.3192 49.5487 28.0479 46.4146 31.0538C43.2805 34.0597 43.334 39.2045 46.534 42.5451C49.734 45.8857 54.8688 46.157 58.0029 43.1511C61.137 40.1452 61.0836 35.0003 57.8836 31.6598Z" fill="#FFE48D" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linejoin="round"/>
+              <path d="M59.2146 30.7359C56.0146 27.3954 50.8798 27.124 47.7457 30.1299C44.6116 33.1358 44.665 38.2807 47.865 41.6213C51.0651 44.9618 56.1999 45.2332 59.334 42.2273C62.4681 39.2214 62.4146 34.0765 59.2146 30.7359Z" fill="#FFE48D" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linejoin="round"/>
+              <path d="M57.9995 31.9015C55.4818 29.2732 51.444 29.0576 48.9807 31.4201C46.5175 33.7826 46.5617 37.8284 49.0794 40.4568C51.5972 43.0851 55.635 43.3007 58.0982 40.9382C60.5615 38.5757 60.5173 34.5298 57.9995 31.9015Z" fill="white" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linejoin="round"/>
+              <path d="M56.055 39.6231L51.2819 37.6123L51.2061 32.3984L55.9792 34.4092L56.055 39.6231Z" stroke="#6F3FF5" stroke-width="0.871705" stroke-linejoin="round"/>
+              <path d="M51.2661 37.6025L54.4854 37.2839L55.9886 34.4532" stroke="#6F3FF5" stroke-width="0.871705" stroke-linejoin="round"/>
+              <path d="M51.2231 32.3545L56.038 39.6669" stroke="#6F3FF5" stroke-width="0.871705" stroke-linejoin="round"/>
+              <path d="M81.6962 37.4589C82.4692 33.7767 80.2976 30.2109 76.8457 29.4944C73.3938 28.7779 69.9688 31.182 69.1957 34.8641C68.4226 38.5463 70.5942 42.1121 74.0461 42.8286C77.4981 43.5451 80.9231 41.141 81.6962 37.4589Z" fill="#5BF1CD" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linejoin="round"/>
+              <path d="M82.9272 37.9179C83.7003 34.2357 81.5287 30.6699 78.0767 29.9534C74.6248 29.2368 71.1997 31.641 70.4266 35.3231C69.6536 39.0053 71.8252 42.5711 75.2771 43.2876C78.7291 44.0041 82.1542 41.6 82.9272 37.9179Z" fill="#5BF1CD" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linejoin="round"/>
+              <path d="M81.5896 37.6384C82.1978 34.7414 80.4916 31.9363 77.7786 31.3732C75.0656 30.8101 72.3731 32.7021 71.7649 35.5991C71.1567 38.4962 72.8629 41.3012 75.5759 41.8644C78.2889 42.4275 80.9813 40.5355 81.5896 37.6384Z" fill="white" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linejoin="round"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M76.261 33.4502L76.5005 33.4879L76.644 32.5752L77.5051 32.7107L77.3616 33.6233L77.6048 33.6615C78.0701 33.7347 78.4585 34.0273 78.7032 34.2526C78.8319 34.371 78.9358 34.4849 79.0078 34.5693C79.044 34.6117 79.0726 34.6473 79.0928 34.6731C79.1029 34.686 79.1109 34.6965 79.1167 34.7042L79.1238 34.7136L79.1261 34.7167L79.1269 34.7178L79.1272 34.7183L79.1274 34.7185C79.1274 34.7186 79.1275 34.7187 78.7752 34.9753C78.4228 35.2318 78.4229 35.2319 78.423 35.232L78.4206 35.2288L78.4063 35.2102C78.3928 35.193 78.372 35.1671 78.3446 35.135C78.2894 35.0703 78.2098 34.9832 78.1129 34.894C77.9066 34.7041 77.6759 34.5551 77.4694 34.5226L76.1256 34.3114L76.261 33.4502ZM76.1252 34.3116C75.6209 34.2323 75.1478 34.5769 75.0685 35.0812C74.9892 35.5856 75.3337 36.0587 75.8381 36.138L75.7027 36.9991C74.7227 36.845 74.0532 35.9257 74.2073 34.9458C74.3614 33.9659 75.2807 33.2964 76.2606 33.4505L76.1252 34.3116ZM77.8167 38.2662C77.896 37.7618 77.5514 37.2887 77.0471 37.2094L77.1825 36.3483C78.1624 36.5024 78.8319 37.4217 78.6778 38.4016C78.5237 39.3815 77.6045 40.051 76.6245 39.8969L76.7599 39.0358C77.2643 39.1151 77.7374 38.7705 77.8167 38.2662ZM76.3817 39.8591L76.6239 39.8972L76.7593 39.0361L75.4155 38.8248C75.209 38.7923 74.9783 38.6434 74.772 38.4535C74.6751 38.3643 74.5955 38.2772 74.5403 38.2125C74.5129 38.1804 74.4921 38.1544 74.4786 38.1372L74.4643 38.1186L74.4619 38.1155C74.462 38.1155 74.4621 38.1156 74.1097 38.3722C73.7574 38.6288 73.7575 38.6289 73.7575 38.629L73.7577 38.6292L73.758 38.6296L73.7588 38.6307L73.7611 38.6338L73.7682 38.6433C73.774 38.651 73.782 38.6615 73.7921 38.6744C73.8123 38.7002 73.8409 38.7358 73.8771 38.7782C73.9491 38.8626 74.053 38.9765 74.1817 39.0949C74.4264 39.3201 74.8148 39.6128 75.2801 39.6859L75.5206 39.7237L75.3769 40.6377L76.238 40.7732L76.3817 39.8591ZM75.7027 36.9988L77.0465 37.2101L77.1819 36.3489L75.8381 36.1376L75.7027 36.9988ZM74.4617 38.1151L74.4618 38.1153L74.4616 38.115L74.4615 38.1148L74.4617 38.1151Z" fill="#6F3FF5"/>
+              <path d="M33.0919 46.1113H27.8877V69.5303H33.0919V46.1113Z" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M27.8876 72.5128L16.8286 75.3843V40.2559L27.8876 43.1274V72.5128Z" fill="#6F3FF5" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22.6835 45.46H20.7319V55.2179H22.6835V45.46Z" fill="white"/>
+              <path d="M22.6835 57.1699H20.7319V59.1215H22.6835V57.1699Z" fill="white"/>
+              <path d="M27.8877 57.8203H33.0919" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M27.8877 51.9658H33.0919" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M27.8877 63.6748H33.0919" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M41.7743 66.9002L41.687 66.8596H41.5906H33.5272V57.6365V48.4134H42.6896L55.4991 61.1403L55.6556 61.2958L55.8736 61.2617L76.111 58.0994L76.5467 61.769L53.4013 72.3029L41.7743 66.9002Z" fill="white" stroke="#6F3FF5" stroke-width="0.871705"/>
+              <path d="M43.9223 59.3278L50.6165 66.0176L55.8063 60.8311M55.8063 60.8311L42.8693 47.9775H41.5906H33.0913V54.8514V57.0896V59.3278V67.2955H41.5906L53.3994 72.7827L77.017 62.0338L76.4905 57.5989L55.8063 60.8311Z" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M63.0649 66.5821L69.783 63.4814" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="square" stroke-linejoin="round"/>
+              <path d="M70.8159 62.9639L71.8495 62.4471" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="square" stroke-linejoin="round"/>
+              <circle cx="32.6244" cy="67.6996" r="6.50526" fill="#E6FFF9" stroke="#6F3FF5" stroke-width="0.871705"/>
+              <path d="M20.8955 67.4102C20.6194 67.4102 20.3955 67.634 20.3955 67.9102C20.3955 68.1863 20.6194 68.4102 20.8955 68.4102L20.8955 67.4102ZM33.9356 68.2637C34.1309 68.0684 34.1309 67.7519 33.9356 67.5566L30.7536 64.3746C30.5584 64.1794 30.2418 64.1794 30.0465 64.3746C29.8513 64.5699 29.8513 64.8865 30.0465 65.0817L32.875 67.9102L30.0465 70.7386C29.8513 70.9338 29.8513 71.2504 30.0465 71.4457C30.2418 71.641 30.5584 71.641 30.7536 71.4457L33.9356 68.2637ZM20.8955 68.4102L33.5821 68.4102L33.5821 67.4102L20.8955 67.4102L20.8955 68.4102Z" fill="#6F3FF5"/>
+              <path d="M66.1638 56.2409L67.6603 55.8813C70.5448 55.066 72.0123 51.2599 70.9136 47.3791C69.8148 43.4982 66.5986 41.0172 63.6985 41.8457L62.0286 42.1915" fill="#C9B8FF"/>
+              <path d="M66.1638 56.2409L67.6603 55.8813C70.5448 55.066 72.0123 51.2599 70.9136 47.3791C69.8148 43.4982 66.5986 41.0172 63.6985 41.8457L62.0286 42.1915" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10" stroke-linecap="round"/>
+              <path d="M58.9323 50.6679C60.0343 54.5655 63.2753 57.0614 66.1713 56.2426C69.0673 55.4238 70.5216 51.6004 69.4196 47.7028C68.3177 43.8052 65.0766 41.3093 62.1807 42.1281C59.2847 42.9469 57.8303 46.7703 58.9323 50.6679Z" fill="#C9B8FF" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10"/>
+              <path d="M60.0359 50.356C60.904 53.4262 63.4611 55.391 65.7474 54.7446C68.0337 54.0982 69.1834 51.0853 68.3154 48.0151C67.4473 44.9449 64.8902 42.9801 62.6039 43.6265C60.3176 44.2729 59.1679 47.2858 60.0359 50.356Z" fill="white" stroke="#6F3FF5" stroke-width="0.871705" stroke-miterlimit="10"/>
+              <path d="M61.8335 48.3867L67.2673 48.984" stroke="#6F3FF5" stroke-width="0.871705"/>
+              <path d="M61.7329 49.3027L67.1667 49.9" stroke="#6F3FF5" stroke-width="0.871705"/>
+              <path d="M62.3428 51.4545L63.7535 51.6096C64.377 51.6781 65.0042 51.4785 65.4971 51.0546C65.9899 50.6307 66.3081 50.0173 66.3815 49.3493C66.4549 48.6812 66.2776 48.0134 65.8886 47.4925C65.4996 46.9717 64.9308 46.6406 64.3072 46.5721L62.8965 46.417L62.3428 51.4545Z" stroke="#6F3FF5" stroke-width="0.871705"/>
+              <path d="M66.9055 45.9832C68.7227 45.0033 69.6787 45.1481 70.7654 47.1205C69.7456 45.3337 69.8834 44.4126 71.865 43.3765C70.0585 44.3234 69.1025 44.1786 68.0051 42.2392C69.1025 44.1786 68.7338 45.0251 66.9055 45.9832Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
         <b-tabs content-class="mt-3" class="gc-tabs-left" v-model="tabSelected">
+
+          <!-- Ready to Claim -->
           <b-tab :title-link-class="'nav-line'">
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Ready to Claim</span>
             </template>
-          </b-tab>
-
-          <!-- Contributions -->
-          <b-tab :title-link-class="'nav-line'" lazy @click="hasClaimed">
-            <template v-slot:title>
-              <span class="font-weight-bold font-bigger-1">Claim History</span>
-            </template>
-            <div class="container py-lg-5 px-0" style="padding-bottom: 96px;">
+            <p class="font-subheader mt-3 mb-lg-0 mb-5 text-grey-500">
+              View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.<br>
+              <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
+            </p>
+            <div v-for="grant in readyToClaim" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
+              <div v-for="claim in grant">
               <b-row>
-                <div class="d-inline-block mb-lg-4 mb-0">
-                  <div class="d-inline-block">
-                    <img src="https://c.gitcoin.co/grants/db5cf23b3a0d12a00f5f9bbb5805dc7c/ChasyrLogo_2021_.png" style="max-width: 160px; height: 92px;">
+                <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
+                  <div class="d-inline-block ml-2 ml-lg-0">
+                    <img :src="[[ claim.grant.logo ]]" style="max-width: 160px; height: 92px;">
                   </div>
                   <div class="d-inline-block">
-                    <span class="font-bigger-2 ml-2">Mask Network</span>
+                    <span class="font-bigger-2 ml-2">[[ claim.grant.title ]]</span>
                   </div>
                 </div>
               </b-row>
               <b-row class="mt-4 align-items-center">
                 <b-col lg="4" sm="12">
-                  <span class="font-bigger-1 text-grey-500">Community, Latin America +2 more</span>
+                  <span class="font-bigger-1 text-grey-500">[[ claim.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
                 </b-col>
                 <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">7.756 DAI</h4>
-                  <span class="d-lg-none d-inline font-weight-bold font-subheader">7.756 DAI</span>
-                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$7.756</span>
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</span>
+                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ claim.amount ]]</span>
+                  <span v-if="claim.grant_payout.ready_to_claim === false">(pending review)</span>
                 </b-col>
-                <b-col lg="4" sm="12" class="mt-2 mt-lg-0">
+                <b-col v-if="claim.grant_payout.ready_to_claim === false" lg="4" sm="12" class="mt-2 mt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">In Review</h4>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader">In Review</span>
+                </b-col>
+                <b-col v-else lg="4" sm="12" class="pt-2 pt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base text-grey-500">Ready to Claim</h4>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">Ready to Claim</span>
+                </b-col>
+                <b-col class="text-lg-right mt-2 mt-lg-0">
+                  <a href="#" class="btn btn-primary font-body w-100" :class="[[ claim.grant_payout.ready_to_claim === false ? 'disabled' : '' ]]">
+                    Claim
+                  </a>
+                </b-col>
+              </b-row>
+              </div>
+            </div>
+          </b-tab>
+
+          <!-- Claim History -->
+          <b-tab :title-link-class="'nav-line'" lazy>
+            <template v-slot:title>
+              <span class="font-weight-bold font-bigger-1">Claim History</span>
+            </template>
+            <div v-for="grant in clrMatchHistory" v-if="!loading" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
+              <div v-for="claim in grant">
+              <b-row>
+                <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
+                  <div class="d-inline-block ml-2 ml-lg-0">
+                    <img :src="[[ claim.grant.logo ]]" style="max-width: 160px; height: 92px;">
+                  </div>
+                  <div class="d-inline-block">
+                    <span class="font-bigger-2 ml-2">[[ claim.grant.title ]]</span>
+                  </div>
+                </div>
+              </b-row>
+              <b-row class="mt-4 align-items-center">
+                <b-col lg="4" sm="12">
+                  <span class="font-bigger-1 text-grey-500">[[ claim.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
+                </b-col>
+                <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</span>
+                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ claim.amount ]]</span>
+                </b-col>
+                <b-col v-if="claim.has_claimed === true" lg="4" sm="12" class="mt-2 mt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-highlight-green gc-font-base">
                     <i class="far fa-check mr-1"></i>Claimed
                   </h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-highlight-green">
                     <i class="far fa-check mr-1"></i>Claimed
                   </span>
-                  <span class="font-body text-grey-500">Oct 20, 2021</span>
+                  <span class="font-body text-grey-500">[[ claim.claim_date ]]</span>
                 </b-col>
-                <b-col class="text-right-lg mt-2 mt-lg-0">
-                  <a href="#" class="d-lg-block d-none font-body">
-                    View Transaction<i class="far fa-external-link ml-2"></i>
-                  </a>
-                  <a href="#" class="d-lg-none d-block font-subheader">
-                    View Transaction<i class="far fa-external-link ml-2"></i>
-                  </a>
-                </b-col>
-              </b-row>
-              <b-row class="mt-4 align-items-center">
-                <b-col lg="4" sm="12">
-                  <span class="font-bigger-1 text-grey-500">Community, Latin America +2 more</span>
-                </b-col>
-                <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">7.756 DAI</h4>
-                  <span class="d-lg-none d-inline font-weight-bold font-subheader">7.756 DAI</span>
-                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$7.756</span>
-                </b-col>
-                <b-col lg="4" sm="12" class="pt-2 pt-lg-0">
+                <b-col v-else lg="4" sm="12" class="pt-2 pt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
                     Returned to matching pool
                   </h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
                     Returned to matching pool
                   </span>
-                  <span class="font-body text-grey-500">Oct 20, 2021</span>
+                  <span class="font-body text-grey-500">[[ claim.funding_withdrawal_date ]]</span>
                 </b-col>
-                <b-col class="text-right-lg mt-2 mt-lg-0">
-                  <a href="#" class="d-lg-block d-none font-body">
+                <b-col class="text-lg-right mt-2 mt-lg-0">
+                  <a :href="[[`https://etherscan.io/tx/${claim.payout_tx}` ]]" target="_blank" class="d-lg-block d-none font-body">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
-                  <a href="#" class="d-lg-none d-block font-subheader">
+                  <a :href="[[`https://etherscan.io/tx/${claim.payout_tx}` ]]" target="_blank" class="d-lg-none d-block font-subheader">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
                 </b-col>
               </b-row>
+              </div>
             </div>
-            <div class="container py-lg-5 px-0" style="padding-bottom: 96px;">
-              <b-row>
-                <div class="d-inline-block mb-lg-4 mb-3">
-                  <div class="d-inline-block">
-                    <img src="https://c.gitcoin.co/avatars/d8250e3f9e065b6f7e66c6a0ec0b6f9d/lakki1.png" style="max-width: 160px; height: auto;">
-                  </div>
-                  <div class="d-inline-block">
-                    <span class="font-bigger-2 ml-2">Mask Network</span>
-                  </div>
-                </div>
-              </b-row>
-              <b-row class="mt-4 align-items-center">
-                <b-col lg="4" sm="12">
-                  <span class="font-bigger-1 text-grey-500">Community, Latin America +2 more</span>
-                </b-col>
-                <b-col lg="2" sm="12">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">100,756 DAI</h4>
-                  <span class="d-lg-none d-inline font-weight-bold font-subheader">100,756 DAI</span>
-                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$7.756</span>
-                </b-col>
-                <b-col lg="4" sm="12">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
-                    Returned to matching pool
-                  </h4>
-                  <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
-                    Returned to matching pool
-                  </span>
-                  <span class="font-body text-grey-500">Oct 20, 2021</span>
-                </b-col>
-                <b-col class="text-right-lg mt-2 mt-lg-0">
-                  <a href="#" class="d-lg-block d-none font-body">
-                    View Transaction<i class="far fa-external-link ml-2"></i>
-                  </a>
-                  <a href="#" class="d-lg-none d-block font-subheader">
-                    View Transaction<i class="far fa-external-link ml-2"></i>
-                  </a>
-                </b-col>
-              </b-row>
-            </div>
-            <!-- <b-skeleton-wrapper :loading="loadingTx">
+            <b-skeleton-wrapper :loading="loading" class="py-lg-5 px-0" style="padding-bottom: 96px;">
               <template #loading>
-                  <b-row class="mb-3">
-                  <b-col cols="12">
-                      <b-skeleton width="50%" height="35px"></b-skeleton>
+                <b-row class="align-items-center">
+                  <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
+                    <div class="d-inline-block ml-2 ml-lg-0">
+                      <b-skeleton width="150px" height="92px"></b-skeleton>
+                    </div>
+                    <div class="d-inline-block">
+                      <b-skeleton class="ml-2" width="200px" height="25px"></b-skeleton>
+                    </div>
+                  </div>
+                </b-row>
+                <b-row class="mt-4 align-items-center">
+                  <b-col lg="4" sm="12">
+                    <b-skeleton width="80%" height="16px"></b-skeleton>
                   </b-col>
-                  </b-row>
-                  <b-row class="mb-3" v-for="index in 2" :key="index">
-                  <b-col cols="12">
-                      <b-row>
-                      <b-col cols="6">
-                          <b-skeleton width="80%" height="25px" class="col mb-2"></b-skeleton>
-                      </b-col>
-                      <b-col cols="6">
-                          <b-skeleton width="40%" height="25px" class="col mb-2 ml-auto"></b-skeleton>
-                      </b-col>
-                      </b-row>
+                  <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
+                    <b-skeleton class="d-lg-block d-none" width="100%" height="20px"></b-skeleton>
+                    <b-skeleton width="70%" height="14px"></b-skeleton>
                   </b-col>
-                  <b-col cols="12">
-                      <b-skeleton width="100%" height="30px" class="mb-2"></b-skeleton>
+                  <b-col lg="4" sm="12" class="mt-2 mt-lg-0">
+                    <b-skeleton class="d-lg-block d-none" width="80%" height="20px"></b-skeleton>
+                    <b-skeleton class="d-lg-none d-block" width="80%" height="16px"></b-skeleton>
+                    <b-skeleton width="60%" height="20px"></b-skeleton>
                   </b-col>
-                  </b-row>
+                  <b-col class="text-lg-right mt-2 mt-lg-0">
+                    <b-skeleton class="d-lg-block d-none" width="80%" height="14px"></b-skeleton>
+                    <b-skeleton class="d-lg-none d-block" width="80%" height="16px"></b-skeleton>
+                  </b-col>
+                </b-row>
               </template>
             </b-skeleton-wrapper>
-
-            <div class="text-center" v-if="transactions.grantTransactions?.length && !loadingTx">
-            <button class="btn btn-outline-primary btn-sm mt-n4 mb-4" v-if="transactions.next_page_number" @click="fetchTransactions()" :disabled="loadingTx">Load more</button>
-            </div> -->
           </b-tab>
         </b-tabs>
         </div>
@@ -209,6 +257,7 @@
       {% include 'grants/shared/shared_scripts.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
       {{user_code|json_script:"user_code"}}
+      <script src="https://momentjs.com/downloads/moment-timezone-with-data-10-year-range.min.js"></script>
       <script src="{% static "v2/js/grants/matching_funds.js" %}"></script>
 
     </div>

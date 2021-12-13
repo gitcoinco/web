@@ -200,7 +200,7 @@ class Command(BaseCommand):
             print(f"continuing with {target_matches.count()} unpaid scheduled payouts")
 
             if is_real_payout:
-                user_input = input(F"THIS IS A REAL PAYOUT FOR {network} {token_name}.  ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
+                user_input = input(f"THIS IS A REAL PAYOUT FOR {network} {token_name}. ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
                 if user_input != 'y':
                     return
 
