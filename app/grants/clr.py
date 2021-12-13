@@ -24,6 +24,7 @@ from django.utils import timezone
 
 import numpy as np
 from grants.clr_data_src import fetch_contributions, fetch_grants, fetch_summed_contributions
+from grants.models import GrantCLRCalculation
 
 
 def populate_data_for_clr(grants, contributions, clr_round):
@@ -485,7 +486,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     print(f"- starting grants iter at {round(time.time(),1)}")
     # for full calc - calculate the clr for each grant given additional potential_donations
     total_count = grants.count()
+
+    invalid_clr_calculations = GrantCLRCalculation.objects.filter(latest=True, grantclr=clr_round.pk)
+
     for grant in grants:
+        invalid_clr_calculations.exclude(grant=grant.pk)
         # five potential additional donations plus the base case of 0
         potential_donations = [0, 1, 10, 100, 1000, 10000]
 
@@ -545,6 +550,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
         debug_output.append({'grant': grant.id, "title": grant.title, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
+    invalid_clr_calculations.update(latest=False)
+    
     print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
 
     return debug_output
