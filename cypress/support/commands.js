@@ -59,6 +59,12 @@ Cypress.Commands.add('logout', () => {
   cy.request('logout/?next=/');
 });
 
+// accept cookie banner
+Cypress.Commands.add('acceptCookies', () => {
+   cy.visit("/");
+   cy.contains('I agree').click();
+});
+
 // grants
 Cypress.Commands.add('createGrantSubmission', (options = {}) => {
   cy.logout();

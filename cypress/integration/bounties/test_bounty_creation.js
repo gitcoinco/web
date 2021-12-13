@@ -4,6 +4,7 @@ describe('Creating a new bounty', () => {
   });
 
   beforeEach(() => {
+    cy.acceptCookies();
     cy.impersonateUser();
     cy.window().then((win) => {
       win.localStorage.setItem('quickstart_dontshow', true);
@@ -28,8 +29,6 @@ describe('Creating a new bounty', () => {
 
   it('can create a new bounty', () => {
     cy.visit('bounty/new');
-
-    cy.contains('I agree').click();
 
     // unfortunately some of the events do not seem bound in time for this
     // to run without any errors. adding in this manual wait is not advised

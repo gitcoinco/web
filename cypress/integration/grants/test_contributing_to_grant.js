@@ -3,6 +3,10 @@ describe('contributing to grant', () => {
     cy.setupMetamask();
   });
 
+  beforeEach(() => {
+    cy.acceptCookies();
+  });
+
   afterEach(() => {
     cy.disconnectMetamaskWallet();
     cy.logout();
@@ -26,8 +30,6 @@ describe('contributing to grant', () => {
 
       cy.get('#gc-cart').click();
       cy.contains('Checkout').click();
-
-      cy.contains('I agree').click();
 
       cy.contains('MetaMask').click();
       cy.acceptMetamaskAccess();
