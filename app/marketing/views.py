@@ -39,7 +39,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import HackathonEvent, Profile, TokenApproval
+from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from dashboard.views import mautic_proxy_backend
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -48,7 +48,7 @@ from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
-from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
+from marketing.utils import get_or_save_email_subscriber, validate_slack_integration, delete_email_subscription
 from retail.emails import render_new_bounty
 from retail.helpers import get_ip
 from townsquare.models import Announcement
@@ -578,6 +578,10 @@ def account_settings(request):
             logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
             return logout_redirect
         elif request.POST.get('delete', False):
+
+            email = profile.email
+            if email:
+                delete_email_subscription(email)
 
             # remove profile
             profile.hide_profile = True
