@@ -1701,7 +1701,7 @@ Vue.component('grants-cart', {
 
       // Make sure none have empty currencies, and if they do default to 5 DAI. This is done
       // to prevent the cart from getting stuck loading if a currency is empty
-      updatedGrant[grantIndex]['grant_donation_currency'] = grant.grant_donation_currency ? grant.grant_donation_currency : 'DAI';
+      updatedGrant[grantIndex]['grant_donation_currency'] = this.selectedETHCartToken;
       updatedGrant[grantIndex]['grant_donation_amount'] = grant.grant_donation_amount ? grant.grant_donation_amount : '5';
     });
 
