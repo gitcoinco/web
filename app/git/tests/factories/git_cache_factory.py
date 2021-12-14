@@ -16,4 +16,3 @@ class GitCacheFactory(factory.django.DjangoModelFactory):
 
     # Generate binary data depending on n
     data = factory.Sequence(lambda n: ("{n}" * 100).encode("utf-8"))
-

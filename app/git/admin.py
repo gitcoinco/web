@@ -18,7 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.contrib import admin
+
 from git.models import GitCache
+
 
 class GitCacheAdmin(admin.ModelAdmin):
     list_display = ['pk', 'category', 'handle']
