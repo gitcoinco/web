@@ -25,7 +25,6 @@ class Command(BaseCommand):
 
     help = 'fixes avatars whose pngs have failed'
 
-
     def handle(self, *args, **options):
         avatars = CustomAvatar.objects.filter(png='').order_by('-pk')
         for avatar in avatars:

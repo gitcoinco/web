@@ -191,9 +191,7 @@ class ActivitySitemap(Sitemap):
     limit = 5000
 
     def items(self):
-        return Activity.objects.exclude(
-            activities_index__key__isnull=True
-        ).order_by('-pk').cache()
+        return Activity.objects.exclude(activities_index__key__isnull=True).order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
