@@ -445,8 +445,14 @@
                 <i class="fal fa-wallet mr-1"></i>
                 You’ve received L2 contributions
               </p>
-              Some of your grant funds may be in L2 (zkSync or Polygon). Polygon contributions are not supported
-              for your grant since it is using a contract address (e.g. Gnosis Safe, multi-sig wallet).
+              Some of your grant funds may be in L2 (zkSync or Polygon).
+              <span v-if="grantIsContract">
+                Polygon contributions are not supported
+                for your grant since it is using a contract address (e.g. Gnosis Safe, multi-sig wallet).
+              </span>
+              <span v-else>
+                Read more on how to withdraw from L2 wallets.
+              </span>
             </b-card-text>
             <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/75-how-do-i-withdraw-my-funds-from-an-l2-layer-zksync-and-or-polygon-matic/" target="_blank">
               Read L2 Withdrawal guide
