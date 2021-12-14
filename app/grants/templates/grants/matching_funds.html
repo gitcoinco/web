@@ -119,29 +119,30 @@
               View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.<br>
               <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
             </p>
+            <p v-if="!loading && Object.keys(readyToClaim).length === 0" class="py-lg-5 px-0 font-subheader text-grey-400">There’s no matching funds ready to claim for this grant.</p>
             <div v-for="grant in readyToClaim" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
-              <div v-for="claim in grant">
+              <div v-for="match in grant">
               <b-row>
                 <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
                   <div class="d-inline-block ml-2 ml-lg-0">
-                    <img :src="[[ claim.grant.logo ]]" style="max-width: 160px; height: 92px;">
+                    <img :src="[[ match.grant.logo ]]" style="max-width: 160px; height: 92px;">
                   </div>
                   <div class="d-inline-block">
-                    <span class="font-bigger-2 ml-2">[[ claim.grant.title ]]</span>
+                    <span class="font-bigger-2 ml-2">[[ match.grant.title ]]</span>
                   </div>
                 </div>
               </b-row>
               <b-row class="mt-4 align-items-center">
                 <b-col lg="4" sm="12">
-                  <span class="font-bigger-1 text-grey-500">[[ claim.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
+                  <span class="font-bigger-1 text-grey-500">[[ match.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
                 </b-col>
                 <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</h4>
-                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</span>
-                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ claim.amount ]]</span>
-                  <span v-if="claim.grant_payout.ready_to_claim === false">(pending review)</span>
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</span>
+                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount ]]</span>
+                  <span v-if="match.grant_payout.ready_to_claim === false">(pending review)</span>
                 </b-col>
-                <b-col v-if="claim.grant_payout.ready_to_claim === false" lg="4" sm="12" class="mt-2 mt-lg-0">
+                <b-col v-if="match.grant_payout.ready_to_claim === false" lg="4" sm="12" class="mt-2 mt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">In Review</h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader">In Review</span>
                 </b-col>
@@ -150,13 +151,49 @@
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">Ready to Claim</span>
                 </b-col>
                 <b-col class="text-lg-right mt-2 mt-lg-0">
-                  <a href="#" class="btn btn-primary font-body w-100" :class="[[ claim.grant_payout.ready_to_claim === false ? 'disabled' : '' ]]">
+                  <a href="javascript:;" id="claim-match"
+                    @click="claimMatch(match)"
+                    class="btn btn-primary font-body w-100"
+                    :class="[[ match.grant_payout.ready_to_claim === false ? 'disabled' : '' ]]">
                     Claim
                   </a>
                 </b-col>
               </b-row>
               </div>
             </div>
+
+            <!-- Loading skeleton -->
+            <b-skeleton-wrapper :loading="loading" class="py-lg-5 px-0" style="padding-bottom: 96px;">
+              <template #loading>
+                <b-row class="align-items-center">
+                  <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
+                    <div class="d-inline-block ml-2 ml-lg-0">
+                      <b-skeleton width="150px" height="92px"></b-skeleton>
+                    </div>
+                    <div class="d-inline-block">
+                      <b-skeleton class="ml-2" width="200px" height="25px"></b-skeleton>
+                    </div>
+                  </div>
+                </b-row>
+                <b-row class="mt-4 align-items-center">
+                  <b-col lg="4" sm="12">
+                    <b-skeleton width="80%" height="16px"></b-skeleton>
+                  </b-col>
+                  <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
+                    <b-skeleton class="d-lg-block d-none" width="100%" height="20px"></b-skeleton>
+                    <b-skeleton width="70%" height="14px"></b-skeleton>
+                  </b-col>
+                  <b-col lg="4" sm="12" class="mt-2 mt-lg-0">
+                    <b-skeleton class="d-lg-block d-none" width="80%" height="20px"></b-skeleton>
+                    <b-skeleton class="d-lg-none d-block" width="80%" height="16px"></b-skeleton>
+                  </b-col>
+                  <b-col class="text-lg-right mt-2 mt-lg-0">
+                    <b-skeleton class="d-lg-block d-none" width="80%" height="14px"></b-skeleton>
+                    <b-skeleton class="d-lg-none d-block" width="80%" height="16px"></b-skeleton>
+                  </b-col>
+                </b-row>
+              </template>
+            </b-skeleton-wrapper>
           </b-tab>
 
           <!-- Claim History -->
@@ -164,35 +201,36 @@
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Claim History</span>
             </template>
+            <p v-if="!loading && Object.keys(clrMatchHistory).length === 0" class="py-lg-5 px-0 font-subheader text-grey-400">No claim history found for this grant</p>
             <div v-for="grant in clrMatchHistory" v-if="!loading" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
-              <div v-for="claim in grant">
+              <div v-for="match in grant">
               <b-row>
                 <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
                   <div class="d-inline-block ml-2 ml-lg-0">
-                    <img :src="[[ claim.grant.logo ]]" style="max-width: 160px; height: 92px;">
+                    <img :src="[[ match.grant.logo ]]" style="max-width: 160px; height: 92px;">
                   </div>
                   <div class="d-inline-block">
-                    <span class="font-bigger-2 ml-2">[[ claim.grant.title ]]</span>
+                    <span class="font-bigger-2 ml-2">[[ match.grant.title ]]</span>
                   </div>
                 </div>
               </b-row>
               <b-row class="mt-4 align-items-center">
                 <b-col lg="4" sm="12">
-                  <span class="font-bigger-1 text-grey-500">[[ claim.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
+                  <span class="font-bigger-1 text-grey-500">[[ match.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
                 </b-col>
                 <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</h4>
-                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ claim.amount ]] [[ claim.grant_payout.payout_token ]]</span>
-                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ claim.amount ]]</span>
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</span>
+                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount ]]</span>
                 </b-col>
-                <b-col v-if="claim.has_claimed === true" lg="4" sm="12" class="mt-2 mt-lg-0">
+                <b-col v-if="match.has_claimed === true" lg="4" sm="12" class="mt-2 mt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-highlight-green gc-font-base">
                     <i class="far fa-check mr-1"></i>Claimed
                   </h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-highlight-green">
                     <i class="far fa-check mr-1"></i>Claimed
                   </span>
-                  <span class="font-body text-grey-500">[[ claim.claim_date ]]</span>
+                  <span class="font-body text-grey-500">[[ match.claim_date ]]</span>
                 </b-col>
                 <b-col v-else lg="4" sm="12" class="pt-2 pt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
@@ -201,19 +239,21 @@
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
                     Returned to matching pool
                   </span>
-                  <span class="font-body text-grey-500">[[ claim.funding_withdrawal_date ]]</span>
+                  <span class="font-body text-grey-500">[[ match.funding_withdrawal_date ]]</span>
                 </b-col>
                 <b-col class="text-lg-right mt-2 mt-lg-0">
-                  <a :href="[[`https://etherscan.io/tx/${claim.payout_tx}` ]]" target="_blank" class="d-lg-block d-none font-body">
+                  <a :href="[[`https://etherscan.io/tx/${match.payout_tx}` ]]" target="_blank" class="d-lg-block d-none font-body">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
-                  <a :href="[[`https://etherscan.io/tx/${claim.payout_tx}` ]]" target="_blank" class="d-lg-none d-block font-subheader">
+                  <a :href="[[`https://etherscan.io/tx/${match.payout_tx}` ]]" target="_blank" class="d-lg-none d-block font-subheader">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
                 </b-col>
               </b-row>
               </div>
             </div>
+
+            <!-- Loading skeleton -->
             <b-skeleton-wrapper :loading="loading" class="py-lg-5 px-0" style="padding-bottom: 96px;">
               <template #loading>
                 <b-row class="align-items-center">

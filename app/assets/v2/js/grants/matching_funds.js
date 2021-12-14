@@ -113,6 +113,50 @@ Vue.mixin({
 
       return { status, timestamp };
     },
+    async claimMatch(match) {
+      console.log(match);
+
+      // Helper method to manage state
+      const waitingState = (state) => {
+        if (state === true) {
+          document.getElementById('claim-match').classList.add('disabled');
+        } else {
+          document.getElementById('claim-match').classList.remove('disabled');
+        }
+        indicateMetamaskPopup(!state);
+      };
+      
+      waitingState(true);
+
+      // Connect wallet
+      if (!provider) {
+        await onConnect();
+      }
+
+      // Confirm wallet was connected (user may have closed wallet connection prompt)
+      if (!provider) {
+        return;
+      }
+      const user = (await web3.eth.getAccounts())[0];
+
+      // Get contract instance
+      const matchPayouts = await new web3.eth.Contract(
+        JSON.parse(document.contxt.match_payouts_abi),
+        match.grant_payout.contract_address
+      );
+
+      // Claim payout
+      matchPayouts.methods.claimMatchPayout(match.grant.admin_address)
+        .send({from: user})
+        .on('transactionHash', async function(txHash) {
+          waitingState(false);
+          _alert("Match payout claimed! Funds will be sent to your grant's address", 'success');
+        })
+        .on('error', function(error) {
+          waitingState(false);
+          _alert(error, 'danger');
+        });
+    },
     backNavigation: function() {
       const vm = this;
       const lgt = localStorage.getItem('last_grants_title') || 'Grants';
@@ -140,7 +184,7 @@ if (document.getElementById('gc-matching-funds')) {
         loading: true,
         clrMatchHistory: null,
         readyToClaim: null,
-        tabSelected: 2,
+        tabSelected: 1,
         tab: null,
         backLink: {
           url: '/grants',
@@ -154,6 +198,9 @@ if (document.getElementById('gc-matching-funds')) {
 
       // fetch CLR match history of the user's owned grants
       await this.fetchCLRMatches();
+
+      console.log(this.clrMatchHistory);
+      console.log(this.readyToClaim);
 
       // this.hasClaimed(
       //   '0xdbb16c68aa373229db9f37d85087264361691ab9',
