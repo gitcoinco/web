@@ -61,8 +61,8 @@ Cypress.Commands.add('logout', () => {
 
 // accept cookie banner
 Cypress.Commands.add('acceptCookies', () => {
-   cy.visit("/");
-   cy.contains('I agree').click();
+  cy.visit('/');
+  cy.contains('I agree').click();
 });
 
 // grants

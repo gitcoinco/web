@@ -2,7 +2,7 @@ describe('Grants Explorer page', () => {
   before(() => {
     cy.setupMetamask();
   });
-  
+
   beforeEach(() => {
     cy.acceptCookies();
   });
