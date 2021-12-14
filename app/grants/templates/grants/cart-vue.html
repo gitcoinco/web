@@ -219,6 +219,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       document.authenticated = {{ authenticated | yesno:"true,false" }};
       document.isFullyVerified = '{{is_fully_verified}}' === 'True';
       document.polygonGasPrice = "{{ gas_prices|get_item:'polygon' }}"
+
+      // Checkout Status
+      document.disableZksync = '{{ disableZksync }}' === 'true';
+      document.disablePolygon = '{{ disablePolygon }}' === 'true';
+
     </script>
     {% bundle merge_js file qrcode %}
       <script src="qrcode.min.js" base-dir="/node_modules/qrcodejs/"></script>
