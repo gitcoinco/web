@@ -3752,11 +3752,7 @@ def get_trust_bonus(request):
         except:
             return allow_all_origins(HttpResponse(status=400))
 
-    query = Q()
-    for address in addresses:
-        query |= Q(contributor_address=address)
-
-    subscriptions = Subscription.objects.filter(query).prefetch_related('contributor_profile')
+    subscriptions = Subscription.objects.filter(contributor_address__in=addresses).prefetch_related('contributor_profile')
     response = []
     _addrs = []
     for subscription in subscriptions:
