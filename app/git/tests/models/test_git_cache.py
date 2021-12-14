@@ -62,19 +62,6 @@ class TestGitCache:
         assert git_cache.handle == f"{user}/{repo}/issue/{issue}/{comment}"
         assert git_cache.category == GitCache.Category.ISSUE_COMMENT
 
-    def test_create_commit_comment_cache(self):
-        """Test create_commit_comment_cache helper function."""
-        fake = Faker()
-
-        user = fake.user_name()
-        repo = fake.user_name()
-        comment = fake.pyint()
-
-        git_cache = GitCache.create_commit_comment_cache(user, repo, comment)
-
-        assert git_cache.handle == f"{user}/{repo}/commit_comment/{comment}"
-        assert git_cache.category == GitCache.Category.COMMIT_COMMENT
-
     def test_get_user(self):
         """Test get_user helper function."""
         fake = Faker()
@@ -140,24 +127,6 @@ class TestGitCache:
         saved = GitCache.get_issue_comment(user, repo, issue, comment)
         assert saved.id == git_cache.id
         assert saved.category == GitCache.Category.ISSUE_COMMENT
-        assert bytes(saved.data) == binary_data
-
-    def test_get_commit_comment(self):
-        """Test get_commit_comment helper function."""
-        fake = Faker()
-
-        user = fake.user_name()
-        repo = fake.user_name()
-        comment = fake.pyint()
-        binary_data = fake.text().encode('utf-8')
-
-        git_cache = GitCache(handle=f"{user}/{repo}/commit_comment/{comment}",
-                             category=GitCache.Category.COMMIT_COMMENT, data=binary_data)
-        git_cache.save()
-
-        saved = GitCache.get_commit_comment(user, repo, comment)
-        assert saved.id == git_cache.id
-        assert saved.category == GitCache.Category.COMMIT_COMMENT
         assert bytes(saved.data) == binary_data
 
     def test_update_data(self):

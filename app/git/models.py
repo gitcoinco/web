@@ -42,14 +42,12 @@ class GitCache(SuperModel):
         USER = "user"
         REPO = "repo"
         ISSUE = "issue"
-        COMMIT_COMMENT = "commit_comment"
-        ISSUE_COMMENT = "commit_comment"
+        ISSUE_COMMENT = "issue_comment"
 
     CATEGORY_CHOICES = [
         (Category.USER, 'User'),
         (Category.REPO, 'Repository'),
         (Category.ISSUE, 'Issue'),
-        (Category.COMMIT_COMMENT, 'Commit Comment'),
         (Category.ISSUE_COMMENT, 'Issue Comment'),
     ]
 
@@ -106,19 +104,6 @@ class GitCache(SuperModel):
         """Utility function to retreive an issue object"""
         try:
             return self.objects.get(handle=f"{user}/{repo}/issue/{issue}", category=GitCache.Category.ISSUE)
-        except self.DoesNotExist:
-            raise
-
-    @classmethod
-    def create_commit_comment_cache(self, user, repo, comment):
-        """Create a commit comment cache object"""
-        return GitCache(handle=f"{user}/{repo}/commit_comment/{comment}", category=GitCache.Category.COMMIT_COMMENT)
-
-    @classmethod
-    def get_commit_comment(self, user, repo, comment):
-        """Utility function to retreive an commit comment object"""
-        try:
-            return self.objects.get(handle=f"{user}/{repo}/commit_comment/{comment}", category=GitCache.Category.COMMIT_COMMENT)
         except self.DoesNotExist:
             raise
 
