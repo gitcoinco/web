@@ -617,3 +617,8 @@ next_valid_timestamp: {next_valid_timestamp}
 
         update_grant_metadata.delay(self.pk)
         return contribution
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['contributor_address',]),
+        ]
