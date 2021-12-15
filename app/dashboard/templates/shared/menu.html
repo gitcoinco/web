@@ -272,7 +272,7 @@
                   <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
                   <ul class="list-unstyled">
                     <li>
-                      <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants' %}">{% trans "Explore Grants" %}</a>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}">{% trans "Explore Grants" %}</a>
                     </li>
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'grants:new' %}">{% trans "Create Grant" %}</a>
@@ -467,9 +467,9 @@
   <nav class="navbar-nav navbar-icons d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}
       {% include 'shared/notifications.html' %}
-      {% include 'shared/search.html' %}
-      {% include 'shared/cart_nav.html' %}
     {% endif %}
+    {% include 'shared/search.html' %}
+    {% include 'shared/cart_nav.html' %}
   </nav>
 
   <nav class="navbar-nav gc-navbar-nav d-flex align-items-md-center gc-navbar-auth">

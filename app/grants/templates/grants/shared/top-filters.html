@@ -4,9 +4,11 @@
 
     <div class="row mt-2 mb-3 mt-xl-0 font-caption">
 
-      <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto">
+      <span class="col-12 col-lg-6 text-right text-lg-left pt-2 my-auto font-header">
         <template v-if="grants && grants.length">
-          [[numGrants.toLocaleString()]] [[ 'Grant' | pluralize(numGrants)]]
+          <span class="font-weight-semibold">[[numGrants.toLocaleString()]]</span>
+          [[ 'Grant' | pluralize(numGrants)]]
+          <span v-if="params.keyword">- '[[params.keyword]]'</span>
         </template>
       </span>
 
@@ -14,36 +16,44 @@
         <div class="d-inline-block ml-4 pr-2 sort_container" v-if="current_type !== 'collections'">
           <div class="d-flex align-items-baseline" >
             <label class="heading mr-2">{% trans "Sort by" %}</label>
-            <v-select class="vselect-clean rounded-pill" style="min-width:230px;border: 1px solid #ced4da;" id="experience_level" :clearable="false" :options="[
-              {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
-              {label: 'Trending', value: '-metadata__upcoming'},
-              {label: 'Undiscovered Gems', value: '-metadata__gem'},
-              {label: 'Newest', value: '-created_on'},
-              {label: 'Most Relevant', value: ''},
-              {label: 'Match Estimate (This round)', value: '-clr_prediction_curve__0__1'},
-              {label: 'Amount Raised (This round)', value: '-amount_received_in_round'},
-              {label: 'Contributors (This round)', value: '-positive_round_contributor_count'},
-              {label: 'Amount Raised (Alltime)', value: '-amount_received'},
-              {label: 'Most Contributions (Alltime)', value: '-contribution_count'},
-              {label: 'Most Contributors (Alltime)', value: '-contributor_count'},
-              {label: 'Updated Recently', value: '-last_update'},
-              {label: 'Oldest Grants', value: 'created_on'},
-              {% if is_staff %}
-              {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
-              {label: 'ADMIN:Sybil Score', value: '-sybil_score'},
-              {% endif %}
-
-            ]" placeholder="Sort by" v-model="params.sort_option" :reduce="obj => obj.value" @input="fetchGrants(1)">
-              <template #search="{attributes, events}">
-                <input
-                  class="vs__search"
-                  v-bind="attributes"
-                  v-on="events"
-                />
+            {% if is_staff %}
+              <v-select class="vselect-clean rounded-pill" 
+                        style="min-width:230px; border: 1px solid #ced4da;" 
+                        id="experience_level" 
+                        :options="params.keyword && params.keyword !== '' 
+                                  ? selectOptions.concat(adminOptions) 
+                                  : selectOptions.concat(adminOptions).filter(option => option.value !== '')"
+                        :searchable="false" 
+                        :clearable="false" 
+                        :selectable="(option) => !option.hasOwnProperty('group')" 
+                        placeholder="Sort by" 
+                        v-model="params.sort_option" 
+                        :reduce="obj => obj.value" 
+                        @input="fetchGrants(1)" >
+            {% else %}
+              <v-select class="vselect-clean rounded-pill" 
+                        style="min-width:230px; border: 1px solid #ced4da;" 
+                        id="experience_level" 
+                        :options="params.keyword && params.keyword !== '' 
+                                  ? selectOptions 
+                                  : selectOptions.filter(option => option.value !== '')" 
+                        :searchable="false" 
+                        :clearable="false" 
+                        :selectable="(option) => !option.hasOwnProperty('group')" 
+                        placeholder="Sort by" 
+                        v-model="params.sort_option" 
+                        :reduce="obj => obj.value" 
+                        @input="fetchGrants(1)" >
+            {% endif %}
+              <template #option="{ group, label }">
+                <div v-if="group">
+                  <hr v-if="group !== 'Discover'">
+                  [[group]] 
+                </div>
+                [[label]]
               </template>
             </v-select>
           </div>
-
         </div>
         <div class="d-inline-block position-relative mt-2 mt-md-0" style="top: -3px;">
           <span class="mx-2">|</span>

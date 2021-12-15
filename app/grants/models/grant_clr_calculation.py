@@ -7,6 +7,7 @@ from economy.models import SuperModel
 
 class GrantCLRCalculation(SuperModel):
 
+    active = models.BooleanField(default=False, db_index=True, help_text="Is this calc active?")
     latest = models.BooleanField(default=False, db_index=True, help_text="Is this calc the latest?")
     grant = models.ForeignKey('Grant', on_delete=models.CASCADE, related_name='clr_calculations',
                               help_text=_('The grant'))

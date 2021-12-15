@@ -4,10 +4,8 @@ import pytest
 from dashboard.models import Activity, Profile
 from grants.models.flag import Flag
 from grants.models.grant import Grant
+from grants.tests.factories import FlagFactory
 from townsquare.models import Comment
-
-from .factories.flag_factory import FlagFactory
-from .factories.profile_factory import ProfileFactory
 
 
 @pytest.mark.django_db
@@ -70,7 +68,7 @@ class TestFlag:
 
     def test_post_flag_method_calls_collaborators_with_appropriate_attributes(self):
         """Test post_flag() method calls filter() on Profile.objects, create() on Activity.objects, and create() on Comment.objects."""
-        
+
         flag = FlagFactory()
 
         with patch.object(Profile.objects, 'filter') as filter:

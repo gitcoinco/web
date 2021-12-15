@@ -1,5 +1,5 @@
 import pytest
-from dashboard.tests.factories.bounty_factory import BountyFactory
+from dashboard.tests.factories import BountyFactory
 from rest_framework.test import APIClient
 
 

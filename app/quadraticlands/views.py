@@ -32,6 +32,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 
+import bleach
 from dashboard.abi import erc20_abi
 from dashboard.utils import get_web3
 from eth_account.messages import defunct_hash_message
@@ -121,8 +122,6 @@ def mission_postcard_svg(request):
 
     width = 100
     height = 100
-    viewBox = request.GET.get('viewbox', '')
-    tags = ['{http://www.w3.org/2000/svg}style']
     ET.register_namespace('', "http://www.w3.org/2000/svg")
     prepend = f'''<?xml version="1.0" encoding="utf-8"?>
 <svg width="{width}%" height="{height}%" viewBox="0 0 1400 500" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -131,7 +130,11 @@ def mission_postcard_svg(request):
 </svg>
 '''
 
-    package = request.GET.dict()
+    package = {
+        k: bleach.clean(v) for k, v in
+        request.GET.dict().items()
+    }
+
     file = 'assets/v2/images/quadraticlands/postcard.svg'
     with open(file) as file:
         elements = []
@@ -147,7 +150,7 @@ def mission_postcard_svg(request):
                 replace_text = package.get('text')
 
                 # chop up the text by word length to create line breaks.
-                line_words_length = int(request.GET.get('line_words_length', 8))
+                line_words_length = int(package.get('line_words_length', 8))
                 include_item = True
                 end_wrap = '</tspan>'
                 words = replace_text.split(' ')
@@ -180,7 +183,7 @@ def mission_postcard_svg(request):
                 # actually insert the text
                 replace_text = " ".join(new_words)
                 output = output.replace('POSTCARD_TEXT_GOES_HERE', replace_text)
-                replace_color = '#1a103d' if request.GET.get('color','') == 'light' else '#FFFFFF'
+                replace_color = '#1a103d' if package.get('color','') == 'light' else '#FFFFFF'
                 output = output.replace('POSTCARD_COLOR_GOES_HERE', replace_color)
             if _id:
                 val = _id.split(":")[-1]

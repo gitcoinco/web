@@ -20,7 +20,6 @@ if (document.getElementById('grants-showcase')) {
       page: 1,
       collectionsPage: null,
       limit: 6,
-      show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
       sort: sort,
       network: document.network,
       keyword: document.keyword,
@@ -84,10 +83,6 @@ if (document.getElementById('grants-showcase')) {
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
 
-      },
-      toggleActiveCLRs() {
-        this.show_active_clrs = !this.show_active_clrs;
-        window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
       },
       scrollEnd: async function(event) {
         const vm = this;

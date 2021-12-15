@@ -47,21 +47,6 @@ Vue.component('grantsCartEthereumPolygon', {
   },
 
   computed: {
-    /**
-     * @dev List of tokens supported by Polygon + Gitcoin. To add a token to this list:
-     *   1. Make sure the token is top 10 used tokens based on Gitcoin's historical data
-     *   2. Confirm the token exists on Polygon's list of supported tokens: https://mapper.matic.today/
-     *   2. Add the token symbol to the appropriate list below
-     * @dev We hardcode the list from Gitcoin's historical data based on the top ten tokens
-     *   on ethereum chain and also Polygon network used by users to checkout
-     */
-    supportedTokens() {
-      const mainnetTokens = [ 'DAI', 'ETH', 'USDT', 'USDC', 'PAN', 'BNB', 'UNI', 'CELO', 'MASK', 'MATIC' ];
-      const testnetTokens = [ 'DAI', 'ETH', 'USDT', 'USDC', 'UNI', 'MATIC' ];
-
-      return appCart.$refs.cart.network === 'mainnet' ? mainnetTokens : testnetTokens;
-    },
-
     donationInputsNativeAmount() {
       return appCart.$refs.cart.donationInputsNativeAmount;
     },
@@ -115,7 +100,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       if (appCart.$refs.cart.network === 'mainnet') {
         appCart.$refs.cart.networkId = '137';
-        url = 'https://rpc-mainnet.maticvigil.com';
+        url = 'https://polygon-rpc.com';
       } else {
         appCart.$refs.cart.networkId = '80001';
         appCart.$refs.cart.network = 'testnet';
@@ -180,7 +165,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Get list of tokens in cart not supported by Polygon
       this.cart.unsupportedTokens = this.cart.tokenList.filter(
-        (token) => !this.supportedTokens.includes(token)
+        (token) => !appCart.$refs.cart.polygonSupportedTokens.includes(token)
       );
 
       // Update the fee estimate and gas cost based on changes
@@ -188,7 +173,6 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('polygon-data-updated', {
-        polygonUnsupportedTokens: this.cart.unsupportedTokens,
         polygonEstimatedGasCost: this.polygon.estimatedGasCost
       });
     },
@@ -256,6 +240,15 @@ Vue.component('grantsCartEthereumPolygon', {
 
         if (typeof ga !== 'undefined') {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
+        }
+
+        // Check for contracts/gnosis safes - we cannot send funds if the contract isnt deployed on Polygon
+        const unsafeGrants = await appCart.$refs.cart.checkForGnosisSafes();
+
+        // Check if we can checkout using polygon
+        if (unsafeGrants.length > 0) {
+          _alert(`Contributions cannot be sent to the following Grants (with a multisig payout address) on Polygon: <ul class="mt-3 font-caption font-weight-normal">${unsafeGrants.map((grant) => `<li style="mb-1">'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
+          return;
         }
 
         // Throw if invalid Gitcoin contribution percentage
@@ -377,7 +370,7 @@ Vue.component('grantsCartEthereumPolygon', {
         return;
       }
 
-      let gasLimit = 0;
+      let gasLimit = 500000;
 
       // If user has enough balance within Polygon, cost equals the minimum amount
       let { isBalanceSufficient, requiredAmounts } = await this.hasEnoughBalanceInPolygon();
@@ -445,15 +438,17 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Get total amount needed for eack token by summing over donation inputs
       this.donationInputs.forEach((donation) => {
-        const tokenSymbol = donation.name;
-        const amount = toBigNumber(donation.amount);
+        if (donation) {
+          const tokenSymbol = donation.name;
+          const amount = toBigNumber(donation.amount);
 
-        if (!requiredAmounts[tokenSymbol]) {
-          // First time seeing this token, set the field and initial value
-          requiredAmounts[tokenSymbol] = { amount };
-        } else {
-          // Increment total required amount of the token with new found value
-          requiredAmounts[tokenSymbol].amount = requiredAmounts[tokenSymbol].amount.add(amount);
+          if (!requiredAmounts[tokenSymbol]) {
+            // First time seeing this token, set the field and initial value
+            requiredAmounts[tokenSymbol] = { amount };
+          } else {
+            // Increment total required amount of the token with new found value
+            requiredAmounts[tokenSymbol].amount = requiredAmounts[tokenSymbol].amount.add(amount);
+          }
         }
       });
 
@@ -469,10 +464,10 @@ Vue.component('grantsCartEthereumPolygon', {
         const tokenDetails = this.getTokenByName(tokenSymbol);
 
         const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
-        const tokenIsMatic = tokenDetails.name === 'MATIC';
+        const tokenIsMatic = tokenDetails && tokenDetails.name === 'MATIC';
 
         // Check user matic balance against required amount
-        if (userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
+        if (userMaticBalance.toString() !== '0' && userMaticBalance.lt(requiredAmounts[tokenSymbol].amount) && tokenIsMatic) {
           requiredAmounts[tokenSymbol].isBalanceSufficient = false;
           requiredAmounts[tokenSymbol].amount = parseFloat(((
             requiredAmounts[tokenSymbol].amount - userMaticBalance
@@ -482,8 +477,12 @@ Vue.component('grantsCartEthereumPolygon', {
 
         // Check if user has enough MATIC to cover gas costs
         if (this.polygon.estimatedGasCost) {
+
+          // check if ProposeGasPrice is min at 100
+          const overridePolygonGasPrice = Number(document.polygonGasPrice) > 100 ? Number(document.polygonGasPrice) : 100;
+
           const gasFeeInWei = web3.utils.toWei(
-            (this.polygon.estimatedGasCost * 2).toString(), 'gwei' // using 2 gwei as gas price
+            (this.polygon.estimatedGasCost * overridePolygonGasPrice).toString(), 'gwei'
           );
 
           if (userMaticBalance.lt(gasFeeInWei)) {
@@ -505,19 +504,20 @@ Vue.component('grantsCartEthereumPolygon', {
             }
           }
         }
+        if (tokenDetails) {
+          // Check user token balance against required amount
+          const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+          const userTokenBalance = toBigNumber(await tokenContract.methods
+            .balanceOf(userAddress)
+            .call({ from: userAddress }));
 
-        // Check user token balance against required amount
-        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-        const userTokenBalance = toBigNumber(await tokenContract.methods
-          .balanceOf(userAddress)
-          .call({ from: userAddress }));
-
-        if (userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
-          requiredAmounts[tokenSymbol].isBalanceSufficient = false;
-          requiredAmounts[tokenSymbol].amount = parseFloat(((
-            requiredAmounts[tokenSymbol].amount - userTokenBalance
-          ) / 10 ** tokenDetails.decimals).toFixed(5));
-          isBalanceSufficient = false;
+          if (userTokenBalance.toString() !== '0' && userTokenBalance.lt(requiredAmounts[tokenSymbol].amount)) {
+            requiredAmounts[tokenSymbol].isBalanceSufficient = false;
+            requiredAmounts[tokenSymbol].amount = parseFloat(((
+              requiredAmounts[tokenSymbol].amount - userTokenBalance
+            ) / 10 ** tokenDetails.decimals).toFixed(5));
+            isBalanceSufficient = false;
+          }
         }
       }
 

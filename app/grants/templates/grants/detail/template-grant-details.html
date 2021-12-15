@@ -82,7 +82,7 @@
 
         </div>
 
-        <div class="border-bottom py-4 mt-1 row font-smaller-1 mb-4">
+        <div class="row border-bottom font-smaller-1 py-4 mx-0 mt-1 mb-4 ">
 
           <!-- Grant Link -->
           <div class="col-12 col-md-5 col-md-auto mb-3">
@@ -315,6 +315,24 @@
             <div v-if="grant?.clr_prediction_curve?.[0]?.[1] > 0" class="col col-4">
               <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>
               <span>estimated QF matching</span>
+              <i
+                class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                id="tooltip-active-rounds"
+              ></i>
+              <b-tooltip target="tooltip-active-rounds" triggers="hover">
+                <div class="text-left p-2" style="min-width: 150px;">
+                  <p>The estimated match from the active matching rounds at this moment in time.
+                    <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" rel="noopener noreferrer" target="_blank">Learn more</a>
+                  </p>
+                  <p>
+                    This grant is currently part of [[ grant?.active_round_names.length ]] active matching round
+                    <template v-if="grant?.active_round_names.length > 1">s</template>:
+                    <dl class="mt-0">
+                      <li v-for="round_name in grant.active_round_names">[[round_name]]</li>
+                    </dl>
+                  </p>
+                </div>
+              </b-tooltip>
             </div>
           </div>
         </div>
@@ -327,46 +345,131 @@
       </div>
 
       <!-- Grant Management -->
-      <div class="grant-managment mt-4 mt-md-0">
-        <div class="my-0 mx-0" v-if="grant.admin_message">
-          <div class="bs-alert alert alert-warning p-2 d-flex">
-            <div class="text-center w-100">
-              <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
-              <div class="d-inline-block uppercase font-weight-semibold w-100">
-                [[grant.admin_message]]
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="my-0 mx-0" v-if="grant.active && !grant.verified">
-          <div class="bs-alert alert alert-warning p-2 d-flex">
-            <div class="text-center">
-              <i class="fas fa-exclamation-triangle verification__warning__icon mr-1 my-2 d-inline-block" style="font-size:1rem"></i>
-              <div class="d-inline-block uppercase">
-                <span class="font-weight-semibold">Warning:</span> This grant has not verified their ownership of the twitter account listed.
-              </div>
-              <template v-if="grant.is_on_team && user_code">
-                <div class="my-2 d-inline-block text-center w-100">
-                  <b-button v-b-modal.modal-start-twitter-verification variant="primary">
-                    <i class="fab fa-twitter mr-2"></i>
-                    Verify Grant
-                  </b-button>
-                  <br/>
-                  <span class="small px-2">OR</span>
-                  <a class="d-inline-block font-caption pt-2" target="_blank" href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md&title=Verify%20Grant%20Issue">SUBMIT SUPPORT REQUEST</a>.
-                </div>
+      <div class="grant-managment mt-4 mt-md-0" v-if="(grant.is_on_team || isStaff)">
+        <b-card>
+
+          <!-- Admin Message -->
+          <template v-if="grant.admin_message">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1 text-danger"></i>
+                Message from gitcoin
+              </p>
+              [[grant.admin_message]]
+            </b-card-text>
+            <hr class="my-4">
+          </template>
+
+          <!-- Inactive Grant -->
+          <template v-if="!grant.active && !grant.verified">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1"></i>
+                Your grant is inactive
+              </p>
+              Our team reviews each grant before it goes live on the website.
+              This process usually takes 1-2 days.
+            </b-card-text>
+
+            <a class="btn btn-block btn-primary" href="https://support.gitcoin.co/kb/article/79-why-isn-t-my-grant-active/" rel="noopener noreferrer">
+              Read Grant Approval Process
+            </a>
+
+            <hr class="my-4">
+
+          </template>
+
+          <!-- Verify Grant -->
+          <template v-if="grant.active && !grant.verified">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1 text-danger"></i>
+                Unverified on twitter
+              </p>
+              This grant has not verified their ownership of the twitter account listed.
+            </b-card-text>
+
+            <div v-if="(grant.is_on_team || isStaff)" class="text-center">
+
+              <template v-if="user_code">
+                <b-button v-b-modal.modal-start-twitter-verification variant="primary" class="btn btn-block btn-primary">
+                  <i class="fab fa-twitter mr-2"></i>
+                  Verify Grant
+                </b-button>
               </template>
-              <template v-else-if="grant.is_on_team && !user_code">
-                <div class="my-2 font-weight-semibold text-center">
-                  <p class="mb-1">Visit grant details page to verify the grant.</p>
-                  <a :href="grant.details_url">Go to grant details page</a>
-                </div>
+
+              <template v-else>
+                <p class="mb-1">Visit grant details page to verify the grant.</p>
+                <a :href="grant.details_url">Go to grant details page</a>
               </template>
+
             </div>
-          </div>
-        </div>
-        <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview && (grant.active && grant.is_on_team) || fullview && (grant.active && isStaff)">Edit Grant</button>
-        <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else-if="!fullview && (grant.active && grant.is_on_team)">Edit Grant</a>
+
+            <hr class="my-4">
+          </template>
+
+          <!-- Idle Grant -->
+          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.is_idle">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-exclamation-circle mr-1 text-danger"></i>
+                Update and make your grant visible
+              </p>
+              Your grant is hidden from the explorer because it hasn’t been updated for more than 3 months.
+              Update your grant to make it visible.
+            </b-card-text>
+            <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview">Update Grant</button>
+            <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else>Update Grant</a>
+            <hr class="my-4">
+          </template>
+
+          <!-- Max matching reached -->
+          <template v-if="grant.__has_reached_cap && grant.active && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-wallet mr-1"></i>
+                Maximum matching reached
+              </p>
+              Your grant can still receive contributions, but will not get additional matching funds this round because it has reached the maximum matching cap.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" target="_blank">
+              Learn More
+            </a>
+            <hr class="my-4">
+          </template>
+
+          <!-- L2 contributions -->
+          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-wallet mr-1"></i>
+                You’ve received L2 contributions
+              </p>
+              Some of your grant funds may be in L2 (zkSync or Polygon).
+              Read more on how to withdraw from L2 wallets.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/75-how-do-i-withdraw-my-funds-from-an-l2-layer-zksync-and-or-polygon-matic/" target="_blank">
+              Read L2 Withdrawal guide
+            </a>
+            <hr class="my-4">
+          </template>
+
+
+          <!-- Edit Grant Button -->
+          <template v-if="!grant.is_idle && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-edit mr-1"></i>
+                Keep your grant up to date
+              </p>
+              Let your grant contributors know about your project and progress.
+            </b-card-text>
+            <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview">Edit Grant</button>
+            <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else>Edit Grant</a>
+          </template>
+
+        </b-card>
+
       </div>
 
       <!-- CLR details and Add-to/remove-from cart -->
@@ -381,7 +484,18 @@
             <div class="d-inline-flex flex-column-reverse mt-n4 position-absolute" style="right: 0px;">
               <div v-for="(prediction, index) in grant.clr_prediction_curve" v-if="grant.clr_prediction_curve && (index == 1 || index == 3)" class="bg-white d-flex flex-column" style="flex: 1 1 50%;margin-top: 14px;">
                 <!-- 1, 100 $ matching (reversed to display against fake chart) -->
-                <span>$[[prediction[0] ]] contribution</span>
+                <span>$[[prediction[0] ]] contribution
+                  <i v-if="grant.__has_reached_cap && index === 1" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                    id="tooltip-matching-cap"
+                  ></i>
+                </span>
+                <b-tooltip v-if="grant.__has_reached_cap && index === 1" target="tooltip-matching-cap" triggers="hover">
+                  <div class="text-left p-2">
+                    <p>
+                      This grant can still receive contributions, but will not receive additional matching funds this round because it has reached the maximum matching cap. <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
+                    </p>
+                  </div>
+                </b-tooltip>
                 <span class="text-secondary"><b>$[[prediction[2] || 0 | round]] match</b></span>
               </div>
             </div>
@@ -401,48 +515,44 @@
           </template>
         </div>
 
-        <div class="col-12 mt-2">
-          <div class="row text-grey-400 font-smaller-1">
+        <div class="d-flex justify-content-between mt-2 text-grey-400 font-smaller-1">
 
-            <!-- Grants Fav-->
-            <div class="col-md-4">
-              <template v-if="isUserLogged">
-                <button @click="toggleFollowingGrant(grant.id, $event)"
-                  v-b-tooltip.hover.bottom="!grant.favorite ? 'follow' : 'unfollow'"
-                  :class="`pl-0 btn btn-link mx-0 my-auto ${!grant.favorite ? 'text-grey-300' : 'text-primary'}`"
-                  :data-grant="grant.id"
-                >
-                  <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
-                  Follow
-                </button>
-              </template>
-            </div>
-
-            <!-- Grants Rules-->
-            <div class="col-md-8 text-right">
-              <div class="d-inline font-smaller-2 cursor-pointer" id="popover-target-1" style="width: 65px;">
-                <i class="fas fa-info-circle mr-2"></i>
-                Rules
-              </div>
-              <b-popover target="popover-target-1" triggers="hover" placement="left">
-                <template #title>Rules</template>
-                <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
-                <ul class="pl-3">
-                  <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
-                  <li><b>DO NOT</b> make up a new identity to contribute.</li>
-                  <li><b>DO NOT</b> try to falsify a contribution.</li>
-                </ul>
-                If you see someone breaking the rules, please use 'Flag Grant' to report them.
-              </b-popover>
-
-              <!-- Grants Flag-->
-              <button @click="flag" class="btn ml-1 px-1"  style="width: 65px;">
-                <i class="text-grey-400 fas fa-flag mr-2"></i>
-                Flag
-              </button>
-            </div>
-
+          <!-- Grants Fav-->
+          <div v-if="isUserLogged">
+            <button @click="toggleFollowingGrant(grant.id, $event)"
+              v-b-tooltip.hover.bottom="!grant.favorite ? 'follow' : 'unfollow'"
+              :class="`pl-0 btn btn-link mx-0 my-auto ${!grant.favorite ? 'text-grey-300' : 'text-primary'}`"
+              :data-grant="grant.id"
+            >
+              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+              Follow
+            </button>
           </div>
+
+          <!-- Grants Rules-->
+          <div>
+            <div class="d-inline font-smaller-2 cursor-pointer" id="popover-target-1" style="width: 65px;">
+              <i class="fas fa-info-circle mr-2"></i>
+              Rules
+            </div>
+            <b-popover target="popover-target-1" triggers="hover" placement="left">
+              <template #title>Rules</template>
+              <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
+              <ul class="pl-3">
+                <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
+                <li><b>DO NOT</b> make up a new identity to contribute.</li>
+                <li><b>DO NOT</b> try to falsify a contribution.</li>
+              </ul>
+              If you see someone breaking the rules, please use 'Flag Grant' to report them.
+            </b-popover>
+
+            <!-- Grants Flag-->
+            <div class="ml-3 d-inline font-smaller-2 cursor-pointer" v-if="!grant.is_on_team" @click="flag">
+              <i class="text-grey-400 fas fa-flag mr-2"></i>
+              Flag
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -465,7 +575,7 @@
 
     <!-- Verify Twitter (step 1) -->
     <b-modal ref="startTwitterVerification" id="modal-start-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
-      <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+      <img height="45" class="mb-4" src="{% static 'v2/images/badge-verify.svg' %}" >
       <h5 class="font-weight-bold mb-3">Verify Grant Ownership</h5>
       <p class="mb-4">Verify your grant ownership to ensure that your supporters are contributing to the correct grant.</p>
       <b-button v-b-modal.modal-twitter-verification size="lg" variant="gc-blue">Verify with twitter</b-button>
@@ -473,7 +583,7 @@
 
     <!-- Verify Twitter (step 2) -->
     <b-modal ref="twitterVerification" id="modal-twitter-verification" hide-footer no-stacking header-class="border-bottom-0" content-class="text-center px-4">
-      <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
+      <img height="45" class="mb-4" src="{% static 'v2/images/badge-verify.svg' %}" >
       <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
       <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
         <i class="fas fa-check text-highlight-green" v-if="grant.twitter_handle_1"></i>
@@ -491,31 +601,17 @@
     <!-- Edit Grant Details -->
     <b-sidebar
       id="sidebar-grant-edit"
-      title="Edit Grant"
       backdrop-variant="dark"
       bg-variant="white"
       backdrop
       shadow
       width="70%"
       >
+      <template v-slot:title><h2 class="d-inline">Edit Grant</h2></template>
       <form action="" @submit="checkForm($event)" ref="formEditGrant" v-if="grant" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
         <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="logo">
-            Project Logo
-          </label>
-          <div class="form__drop mt-0" id="js-drop">
-            <span v-if="!logoPreview">Drag & Drop or Browse</span>
-            <b-img-lazy v-if="logoPreview" id="preview" class="w-100 img-edit" :style="grant.image_css" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
-            <b-form-file @change="onFileChange($event)" v-model="logo" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
-          </div>
-        </div>
-        <div class="col-12 mb-3 d-flex align-items-center">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0 mr-3" for="title">Logo background color</label>
-          <input type="color" v-model="logoBackground" @input="changeColor">
-        </div>
-        <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">Title</label>
-          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+          <label class="font-subheader letter-spacing text-grey-500" for="title">Title</label>
+          <span class="font-smaller-6 badge badge-greylight ml-1">required</span>
 
           <input id="title" name="title" v-model.trim="grant.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="The Human Fund" required />
 
@@ -524,8 +620,8 @@
           </div>
         </div>
         <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="description">Description</label>
-          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="description">Description</label>
+          <span class="font-smaller-6 badge badge-greylight ml-1">required</span>
 
           <quill-editor
             ref="myQuillEditor"
@@ -539,11 +635,31 @@
             [[errors.description]]
           </div>
         </div>
-
-        <!-- Project url -->
         <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="reference_url">Project Website</label>
-          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="logo">
+            Project Logo
+          </label>
+          <div class="form__drop mt-0" id="js-drop" style="max-width: 345px; height: 128px;">
+            <span v-if="!logoPreview">Drag & Drop or Browse</span>
+            <b-img-lazy v-if="logoPreview" id="preview" class="img-edit" :style="grant.image_css" :src="logoPreview" :class="{'blur-img':imgTransition}"></b-img-lazy>
+            <b-form-file @change="onFileChange($event)" v-model="logo" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
+          </div>
+        </div>
+        <div class="col-12 mb-3 d-flex align-items-center">
+          <label class="font-subheader letter-spacing text-grey-500 mb-0 mr-3" for="title">Logo background color</label>
+          <input type="color" v-model="logoBackground" @input="changeColor">
+        </div>
+        
+        <!-- Github -->
+        <div class="col-12 mb-3">
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="github_project_url">Github URL</label>
+          <input v-model.trim="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/humanfund"/>
+        </div>
+
+        <!-- Project website -->
+        <div class="col-12 mb-3">
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="reference_url">Project Website</label>
+          <span class="font-smaller-6 badge badge-greylight ml-1">required</span>
           <input v-model.trim="grant.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
           <div class="text-danger" v-if="errors.reference_url">
             [[errors.reference_url]]
@@ -552,8 +668,8 @@
 
         <!-- Project twitter -->
         <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_1">Project Twitter Handle</label>
-          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="twitter_handle_1">Project Twitter Handle</label>
+          <span class="font-smaller-6 badge badge-greylight ml-1">required</span>
 
           <input id="twitter_handle_1" v-model="grant.twitter_handle_1" @change="transformTwitterHandle1" name="twitter_handle_1" class="form__input form__input-lg" type="text" placeholder="humanfund" required>
 
@@ -564,7 +680,7 @@
 
         <!-- Owner twitter -->
         <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="twitter_handle_2">Your Twitter Handle</label>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="twitter_handle_2">Your Twitter Handle</label>
 
           <input id="twitter_handle_2" v-model="grant.twitter_handle_2" @change="transformTwitterHandle2" name="twitter_handle_2" class="form__input form__input-lg" type="text" placeholder="georgecostanza"/>
 
@@ -573,15 +689,9 @@
           </div>
         </div>
 
-        <!-- Github -->
-        <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="github_project_url">Github URL</label>
-          <input v-model.trim="grant.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/humanfund"/>
-        </div>
-
         <!-- Team Members -->
         <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="team_members">Team Members</label>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="team_members">Team Members</label>
           <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch"  :options="usersOptions" placeholder="Add your team Gitcoin usernames" v-model="teamFormatted" multiple>
             <template slot="no-options">
               type to search Users..
@@ -605,29 +715,14 @@
           </v-select>
         </div>
 
-        <!-- Region -->
-        <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="grant_region">Region</label>
-          <v-select placeholder="Pick your region" :options="grantRegions" label="label" v-model="grant.region">
-            <template v-slot:option="option">
-              <span class="font-weight-semibold">[[ option.label ]]</span>
-            </template>
-          </v-select>
+        <div class="mx-3 mt-5">
+          <hr class="mb-5">
+          <h4 class="font-bigger-1 text-black">Help contributors discover your grant</h4>
         </div>
 
-        <!-- Is CLR Eligible -->
+        <!-- Project Stage -->
         <div class="col-12 mb-3">
-          <b-form-checkbox v-model="grant.is_clr_eligible" name="is_clr_eligible">
-            <label class="font-caption letter-spacing text-black-60 text-uppercase">OPT IN FOR CLR</label>
-            <span class="font-smaller-6 text-black-60 text-capitalize ml-2">
-              (If unchecked, your grant will not be able part of the CLR rounds on Gitcoin)
-            </span>
-          </b-form-checkbox>
-        </div>
-
-        <!-- External Funding -->
-        <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase">External Funding (VC Funding / Token Sale)</label>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500">Project Stage</label>
           <v-select :options="externalFundingOptions" label="value" v-model="grant.has_external_funding" :reduce="state => state.key">
             <template v-slot:option="option">
               <span class="font-weight-semibold">[[ option.value ]]</span>
@@ -639,41 +734,38 @@
           </div>
         </div>
 
-        <!-- Grant Tags -->
+        <!-- Region -->
         <div class="col-12 mb-3">
-          <label class="font-caption letter-spacing text-black-60 text-uppercase" for="grant_tags">Tags</label>
-          <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">Required</span>
-
-          <v-select placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="grantTagsFormatted" multiple>
-            <template #search="{attributes, events}">
-              <input
-                class="vs__search"
-                v-bind="attributes"
-                v-on="events"
-              />
-            </template>
+          <label class="mt-3 font-subheader letter-spacing text-grey-500" for="grant_region">Region</label>
+          <v-select placeholder="Pick your region" :options="grantRegions" label="label" v-model="grant.region">
             <template v-slot:option="option">
-              <span class="font-weight-semibold">[[ option.name ]]</span>
+              <span class="font-weight-semibold">[[ option.label ]]</span>
             </template>
           </v-select>
+        </div>
 
-          <div class="text-danger" v-if="errors.grant_tags">
-            [[errors.grant_tags]]
-          </div>
+        <!-- Is CLR Eligible -->
+        <div class="col-12 my-3">
+          <b-form-checkbox v-model="grant.is_clr_eligible" name="is_clr_eligible">
+            <label class="font-caption letter-spacing text-grey-500">OPT IN FOR CLR</label>
+            <span class="font-smaller-6 text-grey-500 text-capitalize ml-2">
+              (If unchecked, your grant will not be a part of the CLR rounds on Gitcoin)
+            </span>
+          </b-form-checkbox>
         </div>
 
         <!-- Save/Cancel -->
         <div class="col-12 mb-3 text-right">
-          <button @click="saveGrant($event)" class="btn btn-primary">SAVE CHANGES</button>
+          <button @click="saveGrant($event)" class="btn btn-primary py-2 w-100 w-lg-25">Save Changes</button>
         </div>
         <div class="col-12 mb-3 mt-5">
           <div class="alert bs-alert alert-danger py-4" role="alert">
-            <h4 class="alert-heading pt-2 mb-2">Cancel Your Grant</h4>
-            <p class="mb-0">Once the grant is canceled will not longer receive contributions or participate on CLR matching.</p>
-            <p>If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a>
+            <h4 class="alert-heading font-bigger-1 pt-2 mb-2">Cancel your grant</h4>
+            <p class="mb-0 font-body">Once the grant is canceled will not longer receive contributions or participate on CLR matching.</p>
+            <p class="font-body">If you need help instead, please create an <a href="https://github.com/gitcoinco/web/issues/new?assignees=&labels=help%20wanted&template=custom.md" target="_blank" class="alert-link">issue</a>
               and don't forget to include your username and grant link.
             </p>
-            <button @click="cancelGrant($event)" class="btn btn-sm btn-danger font-weight-semibold">CANCEL GRANT</button>
+            <button @click="cancelGrant($event)" class="btn btn-sm btn-danger font-body px-4 py-2">Cancel Grant</button>
           </div>
         </div>
       </form>
@@ -685,6 +777,18 @@
 
 <style>
 
+  .badge-greylight {
+    color: #757087;
+  }
+
+  #sidebar-grant-edit {
+    padding: 40px 50px;
+  }
+
+  .b-sidebar-header {
+    padding-bottom: 48px !important;
+  }
+
   .blur-img {
     filter: blur(9px);
     transition: 0.5s all linear;
@@ -692,7 +796,7 @@
 
   .img-edit {
     width: 100%;
-    height: 300px;
+    height: 100%;
     object-fit: contain;
     background: black;
   }
@@ -759,6 +863,10 @@
     grid-area: grant-managment;
   }
 
+  input {
+    border-radius: 4px !important;
+  }
+
   input[type=color]{
     width: 20px;
     height: 20px;
@@ -790,6 +898,13 @@
   .grid-template-sidebar-row {
     gap: 1.2em;
     grid-template-areas: "grant-data";
+  }
+
+  @media only screen and (max-width: 600px) {
+    #sidebar-grant-edit {
+      padding: 10px 0px;
+      width: 100% !important;
+    }
   }
 
   @media (min-width: 960px) {

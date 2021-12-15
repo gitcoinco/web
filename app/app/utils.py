@@ -110,6 +110,7 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
                 user.save()
                 profile.handle = data.login
                 profile.email = user.email
+                profile.email_index = user.email.lower()
                 profile.save()
 
         except Exception as e:
@@ -133,6 +134,7 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
             defaults['github_access_token'] = user.social_auth.filter(provider='github').latest('pk').access_token
             if user and user.email:
                 defaults['email'] = user.email
+                defaults['email_index'] = user.email.lower()
         except UserSocialAuth.DoesNotExist:
             pass
 

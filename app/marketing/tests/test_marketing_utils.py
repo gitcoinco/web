@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from marketing.models import EmailSubscriber, Stat
-from marketing.utils import func_name, get_or_save_email_subscriber, get_stat, should_suppress_notification_email
+from marketing.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber, get_stat
 from test_plus.test import TestCase
 
 
@@ -75,11 +75,11 @@ class MarketingEmailUtilsTest(TestCase):
             }}
         )
 
-    def test_should_suppress_notification_email(self):
-        """Test the marketing util test_should_suppress_notification_email method."""
-        assert not should_suppress_notification_email('emailSubscriber1@gitcoin.co', 'foo')
-        assert not should_suppress_notification_email('emailSubscriber2@gitcoin.co', 'foo')
-        assert should_suppress_notification_email('emailSubscriber3@gitcoin.co', 'foo')
+    def test_allowed_to_send_email(self):
+        """Test the marketing util test_allowed_to_send_email method."""
+        assert allowed_to_send_email('emailSubscriber1@gitcoin.co', 'foo')
+        assert allowed_to_send_email('emailSubscriber2@gitcoin.co', 'foo')
+        assert not allowed_to_send_email('emailSubscriber3@gitcoin.co', 'foo')
 
     def test_get_of_get_or_save_email_subscriber(self):
         """Test the marketing util get_or_save_email_subscriber method."""

@@ -113,6 +113,7 @@ Vue.mixin({
               vm.grant.verified = false;
             }
             vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
+            vm.grant.is_idle = false;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 
@@ -569,7 +570,7 @@ Vue.component('grant-details', {
           }
         },
         theme: 'snow',
-        placeholder: 'Give a detailed desciription about your Grant'
+        placeholder: 'Describe what your project is about. What would you like to build? How will you use the funding?'
       },
       grantRegions: [
         { 'name': 'north_america', 'label': 'North America'},
