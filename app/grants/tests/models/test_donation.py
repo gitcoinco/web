@@ -3,7 +3,6 @@ from dashboard.models import Profile
 from grants.models.contribution import Contribution
 from grants.models.donation import Donation
 from grants.models.subscription import Subscription
-
 from grants.tests.factories import DonationFactory
 
 

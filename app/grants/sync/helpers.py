@@ -63,6 +63,8 @@ def record_contribution_activity(contribution):
         }
 
         activity = Activity.objects.create(**kwargs)
+        activity.populate_activity_index()
+
         if subscription.comments and activity:
             Comment.objects.create(
                 profile=subscription.contributor_profile,

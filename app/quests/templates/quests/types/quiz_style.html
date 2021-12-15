@@ -109,6 +109,9 @@
     </div>
 
   </div>
+
+  {{quest_json|json_script:"quest_json"}}
+
   <script>
     document.kudos_reward = {
       'name': '{{quest.kudos_reward.ui_name}}',
@@ -117,19 +120,21 @@
 
     document.num_questions = parseInt('{{quest.questions|length}}');
     document.music = '{{quest.music}}';
+    document.music_enabled = true;
     document.seconds_per_question = parseInt('{{seconds_per_question}}');
     document.reward_tip = {
       'token': '{{quest.reward_tip.tokenName}}',
       'token_amount': '{{quest.reward_tip.value_true}}'
     };
-    document.quest = {{quest_json|safe}};
+
+    // quest_json is a json_dict and needs to be parsed twice
+    document.quest = JSON.parse(JSON.parse(document.getElementById('quest_json').textContent));
     document.quest_url = '{{quest.url}}';
     document.quest_feedback_url = '{{quest.feedback_url}}';
     document.attempts = {
       'success_count': parseInt('{{success_count}}'),
       'attempt_count': parseInt('{{attempt_count}}'),
     };
-    document.music_enabled = true;
   </script>
 {% endblock %}
 {% block 'scripts' %}

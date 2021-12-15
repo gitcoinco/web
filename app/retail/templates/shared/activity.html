@@ -17,6 +17,7 @@
 {% endcomment %}
 
 {% load humanize i18n static grants_extra slug %}
+{% if env is not 'prod' or row.bounty is None or row.bounty.network == 'mainnet' %}
 <div class="box d-block m-0 mb-3 activity {% if is_pin %} pinned-activity {% else %} infinite-item {% endif %} {{ row.activity_type }} px-sm-3 py-4" {% if not is_pin %} data-pk="{{row.pk}}" {% endif %}>
   <div class="activity_main pl-2 row bg_{{ row.activity_type }} m-0">
     <div class="col-2 p-0">
@@ -670,3 +671,4 @@
     </div>
   {% endif %}
 </div>
+{% endif %}

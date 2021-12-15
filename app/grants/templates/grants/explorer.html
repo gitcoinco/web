@@ -95,14 +95,6 @@ along with this program. If not, see
             <b-tab ref="grants" id="grants" title-link-class="nav-line font-weight-bold">
               <template v-slot:title>Grants</template>
 
-              <div v-if="clrData.count > 0" class="d-flex vertical-scroll" style="gap: 10px; padding: 4px 0;">
-                <button class="btn rounded-pill flex-shrink-0" @click="resetFilters()" :class="`${ !params?.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
-                  All Grants
-                </button>
-                <button class="btn rounded-pill flex-shrink-0" v-for="clr in clrData.results" @click="changeQuery({page: 1, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})" v-if="clr.is_active" :class="`${ params?.sub_round_slug == clr.sub_round_slug ? 'btn-gc-black':'btn-gc-grey'}`">
-                  [[clr.display_text]] ($[[clr.total_pot | moneyCompact]])
-                </button>
-              </div>
               <div
                 ref="filterNav"
                 id="filterNav"
@@ -111,24 +103,49 @@ along with this program. If not, see
               >
                 <div class="flex-lg-shrink-0 mt-n2">
 
-                  <span v-if="currentCLR?.display_text" class="align-middle border-grey border-right-1 d-inline-block h-100 mt-2 mr-2 pr-2 pt-1" style="max-height: 32px;">
-                    [[currentCLR?.display_text]]
-                  </span>
-
-                  <!-- GRANT TYPE FILTERS -->
-                  <b-dropdown ref="grantFlitersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2" no-caret no-flip v-if="grant_types.length">
+                  <!-- CLR ROUND FILTERS -->
+                  <b-dropdown v-if="round_types.length" ref="grantFlitersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2 btn-gc-black text-white" no-caret no-flip v-if="grant_types.length">
                     <template #button-content>
-                      Categories <span v-if="params.grant_types.length"> • [[params.grant_types.length]]</span>
+                      <span class="pr-1">
+                        Grant Round <span class="text-capitalize" v-if="params.round_type" class="">: [[ params.round_type ]]</span><span v-if="currentCLR?.display_text" class=""> - [[ currentCLR?.display_text ]]</span>
+                      </span>
+                      <i class="b-dropdown-direction fas fa-chevron-down"></i>
+                      <i class="b-dropdown-direction fas fa-chevron-up"></i>
                     </template>
-                    <b-dropdown-form>
-                      <div class="mt-2">
-                        <b-form-checkbox-group id="checkbox-group-types" v-model.lazy="params.grant_types" aria-describedby="ariaDescribedby" name="grant_types">
-                          <template v-for="grant_type in grant_types" v-if="grant_type.is_visible">
-                            <b-form-checkbox @input="fetchGrants(1)" class="mb-3" :value="grant_type.keyword">[[grant_type.label]]</b-form-checkbox>
-                          </template>
-                        </b-form-checkbox-group>
+                    <div class="d-block d-md-flex flex-md-row pb-0 h-100" style="width: 448px; max-width: calc(100vw - 30px);">
+                      <div class="flex-basis-40 flex-column h-auto border-grey border-right-1 h-100 grant-round-selector-row">
+                        <template v-for="(round_type, key) in round_types">
+                          <div
+                            class="d-flex text-capitalize cursor-pointer bg-violet-nav-item"
+                            @click.stop="selectRoundType(round_type)"
+                          >
+                            <div :class="`w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-2 py-1 ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'bg-violet-nav' : '' }`">
+                              [[ round_type ]]
+                            </div>
+                          </div>
+                          <div class="d-block d-md-none" v-for="clr in active_rounds[round_type]">
+                            <div
+                              :class="`pl-3 line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
+                              @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
+                            >
+                              [[ clr.display_text ]]
+                            </div>
+                          </div>
+                        </template>
                       </div>
-                    </b-dropdown-form>
+                      <div class="d-none d-md-flex flex-basis-60 flex-column grant-round-selector-row overflow-auto">
+                        <div v-for="(round_type, key) in round_types">
+                          <template v-for="clr in active_rounds[round_type]" v-if="(params.round_type && params.round_type == round_type) || (!params.round_type && key == 0)">
+                            <div
+                              :class="`line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
+                              @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
+                            >
+                              [[ clr.display_text ]]
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                    </div>
                   </b-dropdown>
 
                   <!-- TAG FILTERS -->
@@ -358,7 +375,7 @@ along with this program. If not, see
                       </template>
                       <li v-if="showFilter()">Try different filters or filter combinations</li>
                       <li>
-                        <a class="link" @click="searchVisible=false,resetFilters()">
+                        <a class="link cursor-pointer" @click="searchVisible=false,resetFilters()">
                           View All Grants
                         </a>
                       </li>
@@ -651,23 +668,29 @@ along with this program. If not, see
               </template>
             </div>
           </div>
-
-          <template v-if="grants && grants.length">
-
-            {% include 'grants/shared/top-filters.html' %}
-
-            <div class="d-flex" v-if="grantsHasPrev">
-              <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
-            </div>
-
-            <div class="infinite-container row">
-              <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
-                <a class="text-decoration-none" :href="grant.details_url">
-                  {% include 'grants/components/card.html' %}
-                </a>
-              </div>
+          <template v-if="showLoading">
+            <div class="d-flex flex-column justify-content-center">
+              <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
             </div>
           </template>
+          <template v-else>
+            <template v-if="grants && grants.length">
+              {% include 'grants/shared/top-filters.html' %}
+
+              <div class="d-flex" v-if="grantsHasPrev">
+                <button class="btn btn-outline-gc-grey btn-sm mb-2" @click="unshiftGrants(lowestPage-1)">Load previous page</button>
+              </div>
+
+              <div class="infinite-container row">
+                <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
+                  <a class="text-decoration-none" :href="grant.details_url">
+                    {% include 'grants/components/card.html' %}
+                  </a>
+                </div>
+              </div>
+            </template>
+          </template>
+
 
           <template v-else-if="collection_owner == handle">
             <div class="text-center">
@@ -740,6 +763,8 @@ along with this program. If not, see
   </div>
   {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
   {% include 'grants/shared/shared_scripts.html' %}
+  {{round_types|json_script:"round_types"}}
+  {{active_rounds|json_script:"active_rounds"}}
   {{collections|json_script:"collections-object"}}
   {{type|json_script:"current_type"}}
   {{grant_bg.inline_css|json_script:"inline_css"}}
@@ -755,7 +780,9 @@ along with this program. If not, see
     </script>
   {% endbundle %}
   <script>
-    // document.current_type = "{{ type|default:'all' }}";
+    document.current_type = "{{ type|default:'all' }}";
+    document.round_types = JSON.parse(document.getElementById('round_types').textContent);
+    document.active_rounds = JSON.parse(document.getElementById('active_rounds').textContent);
     document.current_type = JSON.parse(document.getElementById('current_type').textContent);
     document.selected_category = "{{ selected_category }}";
     document.network = "{{ network}}";

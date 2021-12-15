@@ -7,8 +7,7 @@ from dashboard.models import Profile
 from grants.models.grant import Grant, GrantCLR
 from grants.models.grant_clr_calculation import GrantCLRCalculation
 from grants.models.grant_collection import GrantCollection
-
-from grants.tests.factories import GrantFactory, GrantCLRFactory, GrantCollectionFactory
+from grants.tests.factories import GrantCLRFactory, GrantCollectionFactory, GrantFactory
 
 
 @pytest.mark.django_db
@@ -273,6 +272,7 @@ class TestGrantCLR:
             grantclr=grant_clr,
             grant=grant,
             clr_prediction_curve=grant.clr_prediction_curve,
+            active=False, # new factory obj defaults to inactive
             latest=True
         )
 

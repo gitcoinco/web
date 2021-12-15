@@ -1,6 +1,5 @@
 import factory
 import pytest
-
 from grants.models.clr_match import CLRMatch
 
 from .contribution_factory import ContributionFactory

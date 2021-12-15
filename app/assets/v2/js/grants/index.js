@@ -40,7 +40,8 @@ if (document.getElementById('grants-showcase')) {
     grant_tags: [],
     tenants: [],
     idle: false,
-    featured: true
+    featured: true,
+    round_type: false
   };
 
   const grantRegions = [
@@ -83,6 +84,8 @@ if (document.getElementById('grants-showcase')) {
       cart_data_count: CartData.length(),
       network: document.network,
       keyword: document.keyword,
+      active_rounds: document.active_rounds,
+      round_types: document.round_types,
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
@@ -130,6 +133,7 @@ if (document.getElementById('grants-showcase')) {
       previouslyLoadedGrants: {},
       selectOptions: [
         {group: 'Discover', label: null},
+        {label: 'Most Relevant', value: ''},
         {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
         {label: 'Trending', value: '-metadata__upcoming'},
         {label: 'Undiscovered Gems', value: '-metadata__gem'},
@@ -139,6 +143,7 @@ if (document.getElementById('grants-showcase')) {
         {label: 'A to Z', value: 'title'},
         {label: 'Z to A', value: '-title'},
         {group: 'Current Round', label: null},
+        {label: 'Highest Match Amount', value: '-clr_prediction_curve__0__1'},
         {label: 'Highest Amount Raised', value: '-amount_received_in_round'},
         {label: 'Highest Contributor Count', value: '-positive_round_contributor_count'},
         {group: 'All-Time', label: null},
@@ -171,7 +176,7 @@ if (document.getElementById('grants-showcase')) {
       },
       fetchClrGrants: async function() {
         let vm = this;
-        let url = '/api/v0.1/grants_clr/';
+        let url = '/api/v0.1/grants_clr/?page_size=25';
         let getClr = await fetch(url);
         let clrJson = await getClr.json();
 
@@ -330,6 +335,7 @@ if (document.getElementById('grants-showcase')) {
 
         vm.scrollTriggered = append_mode;
         vm.lock = true;
+        console.log(vm.searchParams.toString());
         const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!requestGrants.ok) {
@@ -579,6 +585,7 @@ if (document.getElementById('grants-showcase')) {
           'network',
           'state',
           'profile',
+          'round_type',
           'sub_round_slug',
           'collections_page',
           'grant_regions',
@@ -653,6 +660,18 @@ if (document.getElementById('grants-showcase')) {
       deleteCollection: function() {
         // deleteCollection exists as a component with selected_collection passed in as a prop
         this.$refs.deleteCollection.show();
+      },
+      selectRoundType: function(roundType) {
+        // round_type_selected
+        this.params.round_type = roundType;
+        // clear selected round
+        this.params.sub_round_slug = false;
+        this.params.round_num = 0;
+        this.params.customer_name = false;
+        // save params to url
+        this.updateUrlParams(false);
+        // reset results
+        this.changeQuery({page: 1});
       }
     },
     computed: {

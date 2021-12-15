@@ -1,10 +1,10 @@
 import json
 
 import factory
+from dashboard.tests.factories import ProfileFactory
 from grants.models.match_pledge import MatchPledge
 
 from .grant_clr_factory import GrantCLRFactory
-from dashboard.tests.factories import ProfileFactory
 
 
 class MatchPledgeFactory(factory.django.DjangoModelFactory):

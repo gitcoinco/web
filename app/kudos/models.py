@@ -375,18 +375,18 @@ class Token(SuperModel):
         root = environ.Path(__file__) - 2  # Set the base directory to two levels.
         file_path = root('assets') + '/' + self.image
 
-        # download it if file is remote
-        if settings.AWS_STORAGE_BUCKET_NAME and settings.AWS_STORAGE_BUCKET_NAME in self.image:
-            file_path = f'cache/{self.pk}.png'
-            if not path.exists(file_path):
-                safe_url = self.image.replace(' ', '%20')
-                filedata = urllib.request.urlopen(safe_url)
-                datatowrite = filedata.read()
-                with open(file_path, 'wb') as f:
-                    f.write(datatowrite)
-
-        # serve file
         try:
+            # download it if file is remote
+            if settings.AWS_STORAGE_BUCKET_NAME and settings.AWS_STORAGE_BUCKET_NAME in self.image:
+                file_path = f'cache/{self.pk}.png'
+                if not path.exists(file_path):
+                    safe_url = self.image.replace(' ', '%20')
+                    filedata = urllib.request.urlopen(safe_url)
+                    datatowrite = filedata.read()
+                    with open(file_path, 'wb') as f:
+                        f.write(datatowrite)
+
+            # serve file
             with open(file_path, 'rb') as f:
                 obj = File(f)
                 from avatar.utils import svg_to_png
@@ -483,7 +483,8 @@ def postsave_token(sender, instance, created, **kwargs):
                 'metadata': {
                 }
             }
-            Activity.objects.create(**kwargs)
+            activity = Activity.objects.create(**kwargs)
+            activity.populate_activity_index()
 
 
 class KudosTransfer(SendCryptoAsset):

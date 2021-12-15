@@ -47,7 +47,7 @@
       <input type="submit" value="Post Activity Feed" name="_post_flag" value="1">
     {% elif 'grants/grant/' in request.build_absolute_uri %}
       Recalc
-      {% if  original.is_clr_eligible %}
+      {% if original.is_clr_eligible %}
         <input type="submit" value="Recalculate CLR" name="_calc_clr" value="1">
       {% endif %}
       <br>

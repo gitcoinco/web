@@ -1,10 +1,9 @@
 import pytest
 from dashboard.models import Profile
+from dashboard.tests.factories import ProfileFactory
 from grants.models.grant import Grant
 from grants.models.grant_collection import GrantCollection
-
-from grants.tests.factories import GrantFactory, GrantCollectionFactory
-from dashboard.tests.factories import ProfileFactory
+from grants.tests.factories import GrantCollectionFactory, GrantFactory
 
 
 @pytest.mark.django_db

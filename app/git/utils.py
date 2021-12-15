@@ -23,10 +23,12 @@ from datetime import timedelta
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
+from io import BytesIO
 from django.utils import timezone
 
 import dateutil.parser
 import requests
+from .models import GitCache
 from github import Github
 from github.GithubException import BadCredentialsException, GithubException, UnknownObjectException
 from requests.exceptions import ConnectionError
@@ -62,7 +64,7 @@ def get_issue_details(org, repo, issue_num, token=None):
     details = {'keywords': []}
     try:
         gh_client = github_connect(token)
-        org_user = gh_client.get_user(login=org)
+        org_user = _get_user(gh_client, org)
         repo_obj = org_user.get_repo(repo)
         issue_details = repo_obj.get_issue(issue_num)
         langs = repo_obj.get_languages()
@@ -82,7 +84,7 @@ def get_issue_details(org, repo, issue_num, token=None):
 
 def get_issue_state(org, repo, issue_num):
     gh_client = github_connect()
-    org_user = gh_client.get_user(login=org)
+    org_user = _get_user(gh_client, org)
     repo_obj = org_user.get_repo(repo)
     issue_details = repo_obj.get_issue(issue_num)
     return issue_details.state
@@ -257,7 +259,7 @@ def get_github_event_emails(oauth_token, username):
 
     try:
         gh_client = github_connect(oauth_token)
-        events = gh_client.get_user(username).get_public_events()
+        events = _get_user(gh_client, username).get_public_events()
         for event in events:
             payload = event.payload if event.payload else {}
             for commit in payload.get('commits', []):
@@ -514,11 +516,48 @@ def get_interested_actions(github_url, username, email=''):
     return actions_by_interested_party
 
 
+def _get_user(gh_client, user=None):
+    """Internal function to retrieve users
+    
+    This function will attempt to retrieve the user from cache and update it. 
+    If that fails, the user will be retreived via API 
+    """
+    ret = None
+    cached_user = None
+
+    # We only attempt reading from the cache table if a user handle is provided
+    if user:
+        # We'll attempt to load the users data from the cache, deserialize the data and update it
+        try:
+            cached_user = GitCache.get_user(user)
+            ret = gh_client.load(BytesIO(cached_user.data))
+            ret.update()
+        except GitCache.DoesNotExist:
+            logger.debug("User not found in cache")
+        except Exception:
+            logger.error("Failed to load user rom cache", exc_info=True)
+
+    # If no user has been retreived (either no handle or not in cache yet) we get the user
+    if not ret:
+        ret = gh_client.get_user(user) if user else gh_client.get_user()
+
+    # Cache the data if a user handle is provided
+    if user and ret:
+        if not cached_user:
+            cached_user = GitCache(handle=user, category=GitCache.Category.USER)
+
+        user_dump = BytesIO()
+        gh_client.dump(ret, user_dump)
+        cached_user.update_data(user_dump.getbuffer())
+
+    return ret
+
+
 def get_user(user=None, token=None):
     """Get the github user details."""
     try:
         gh_client = github_connect(token)
-        return gh_client.get_user(user) if user else gh_client.get_user()
+        return _get_user(gh_client, user)
     except GithubException as e:
         # Do not log exception for github users which are deleted
         if e.data.get("message") != 'Not Found':

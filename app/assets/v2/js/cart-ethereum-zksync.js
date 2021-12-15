@@ -64,22 +64,6 @@ Vue.component('grantsCartEthereumZksync', {
   },
 
   computed: {
-    /**
-     * @dev List of tokens supported by zkSync + Gitcoin. To add a token to this list:
-     *   1. Make sure the token is supported by zkSync
-     *        Mainnet list: https://api.zksync.io/api/v0.1/tokens
-     *        Rinkeby list: https://rinkeby-api.zksync.io/api/v0.1/tokens
-     *   2. Add the token symbol to the appropriate list below
-     * @dev We hardcode the list here instead of fetching from the API to improve performance and
-     * reduce problems that arise if zkSync's server is slow
-     */
-    supportedTokens() {
-      const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN' ];
-      const rinkebyTokens = [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ];
-
-      return this.network === 'rinkeby' ? rinkebyTokens : mainnetTokens;
-    },
-
     // Array of transfer objects in the format zkSync needs
     transfers() {
       // Generate array of objects used to send the transfer. We give each transfer a fee of zero,
@@ -135,12 +119,8 @@ Vue.component('grantsCartEthereumZksync', {
 
       // Get list of tokens in cart not supported by zkSync
       this.cart.unsupportedTokens = this.cart.tokenList.filter(
-        (token) => !this.supportedTokens.includes(token)
+        (token) => !appCart.$refs.cart.zkSyncSupportedTokens.includes(token)
       );
-
-      if (this.cart.unsupportedTokens.length > 0) {
-        _alert(`zkSync checkout not supported due to the use of the token ${this.cart.unsupportedTokens[0]}`, 'danger');
-      }
 
       // If currently selected fee token is still in the cart, don't change it. Otherwise, set
       // fee token to the token used for the first item in the cart
@@ -349,7 +329,7 @@ Vue.component('grantsCartEthereumZksync', {
         const userAmount = toBigNumber(zksyncBalances[tokenSymbol]);
         const requiredAmount = requiredAmounts[tokenSymbol];
 
-        if (requiredAmount.gt(userAmount))
+        if (typeof requiredAmount !== 'undefined' && requiredAmount.gt(userAmount))
           isBalanceSufficient = false;
       });
 

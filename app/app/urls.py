@@ -830,7 +830,7 @@ urlpatterns += [
         name='profile_min'
     ),
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+[-]?)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),

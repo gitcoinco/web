@@ -90,13 +90,12 @@ from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
+from PIL import Image
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
-from PIL import Image
-
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -150,7 +149,7 @@ def helper_grants_round_start_end_date(request, round_id):
     start = timezone.now()
     end = timezone.now()
     try:
-        gclr = GrantCLR.objects.filter(round_num=round_id, customer_name='ethereum').first()
+        gclr = GrantCLR.objects.filter(round_num=round_id).filter(Q(customer_name='ethereum') | Q(customer_name='GitcoinMain')).order_by('-total_pot').first()
         start = gclr.start_date
         end = gclr.end_date
     except Exception as e:
@@ -416,7 +415,7 @@ def bulk_grants_for_cart(request):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
-        'clr_round': clr_round,
+        'clr_rounds': [clr_round],
         'omit_my_grants': True
     }
     _grants = get_grants_by_filters(**filters)
@@ -481,6 +480,7 @@ def get_grants(request):
     only_contributions = request.GET.get('only_contributions', '') == 'true'
     featured = request.GET.get('featured', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
+    round_type = request.GET.get('round_type', None)
     round_num = request.GET.get('round_num', None)
     sub_round_slug = request.GET.get('sub_round_slug', '')
     customer_name = request.GET.get('customer_name', '')
@@ -490,18 +490,22 @@ def get_grants(request):
     my_grants = request.GET.get('me', None) == 'true'
     my_collections = request.GET.get('my_collections', None) == 'true'
 
-    # 2. Fetch GrantCLR if round_num is present
-    clr_round = None
-    try:
-        if round_num:
-            params = {
-                'round_num': round_num,
-                'sub_round_slug': sub_round_slug,
-                'customer_name': customer_name
-            }
-            clr_round = GrantCLR.objects.get(**params)
-    except GrantCLR.DoesNotExist:
-        pass
+
+    # 2. Fetch GrantCLR(s) if present
+    clr_rounds = []
+    if round_type and round_type != 'false' and (not sub_round_slug or sub_round_slug == 'false'):
+        clr_rounds = GrantCLR.objects.filter(type=round_type, start_date__lt=timezone.now(), end_date__gt=timezone.now())
+    else:
+        try:
+            if round_num:
+                params = {
+                    'round_num': round_num,
+                    'sub_round_slug': sub_round_slug,
+                    'customer_name': customer_name
+                }
+                clr_rounds.append(GrantCLR.objects.get(**params))
+        except GrantCLR.DoesNotExist:
+            pass
 
     # 3. Populate filters to fetch grants
     filters = {
@@ -515,7 +519,7 @@ def get_grants(request):
         'following': following,
         'idle_grants': idle_grants,
         'only_contributions': only_contributions,
-        'clr_round': clr_round,
+        'clr_rounds': clr_rounds,
         'tenants': tenants,
         'grant_regions': grant_regions,
         'my_grants': my_grants
@@ -622,7 +626,7 @@ def get_grants(request):
             'customer_name': customer_name,
             'collection_id': collection_id
         },
-        'grant_types': get_grant_clr_types(clr_round, _grants, network) if clr_round and _grants else get_grant_type_cache(network),
+        'grant_types': get_grant_clr_types(clr_rounds[0], _grants, network) if len(clr_rounds) and _grants else get_grant_type_cache(network),
         'grants': grants_array,
         'collections': [collection.to_json_dict(request.build_absolute_uri) for collection in collections],
         'credentials': {
@@ -636,10 +640,10 @@ def get_grants(request):
         'count': paginator.count if paginator else 0,
         'num_pages': paginator.num_pages if paginator else 0,
         'metadata': {
-            'claim_start_date': clr_round.claim_start_date if clr_round else None,
-            'claim_end_date': clr_round.claim_end_date if clr_round else None,
-            'start_date': clr_round.start_date if clr_round else None,
-            'end_date': clr_round.end_date if clr_round else None,
+            'claim_start_date': clr_rounds[0].claim_start_date if len(clr_rounds) else None,
+            'claim_end_date': clr_rounds[0].claim_end_date if len(clr_rounds) else None,
+            'start_date': clr_rounds[0].start_date if len(clr_rounds) else None,
+            'end_date': clr_rounds[0].end_date if len(clr_rounds) else None,
         }
     })
 
@@ -656,7 +660,7 @@ def get_grants_by_filters(
     idle_grants=False,
     only_contributions=False,
     omit_my_grants=False,
-    clr_round=None,
+    clr_rounds=None,
     tenants='',
     grant_regions='',
     my_grants=False
@@ -670,12 +674,20 @@ def get_grants_by_filters(
     _grants = Grant.objects.filter(network=network, hidden=False)
 
     # 2. Filter grants belonging to a CLR round
-    if clr_round:
-        if clr_round.collection_filters:
-            grant_ids = GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True)
+    if clr_rounds and len(clr_rounds):
+        grant_ids = []
+        grant_filters = Q()
+        # for each round collect all applicable filters
+        for clr_round in clr_rounds:
+            if clr_round.collection_filters:
+                grant_ids = grant_ids + list(GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True))
+            # construct query by ORing each of the given clr_rounds grant_filters
+            grant_filters |= Q(**clr_round.grant_filters)
+        # apply grant_ids from the collection_filters 
+        if len(grant_ids):
             _grants = _grants.filter(pk__in=grant_ids)
-
-        _grants = _grants.filter(**clr_round.grant_filters)
+        # apply the grant_filters
+        _grants = _grants.filter(grant_filters)
 
     if profile:
         if my_grants:
@@ -847,14 +859,12 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
         return grant_types
 
     for _grant_type in _grant_types:
-        count = active_grants.filter(grant_type=_grant_type,network=network).count() if active_grants else 0
 
         grant_types.append({
             'label': _grant_type.label,
             'keyword': _grant_type.name,
             'is_active': _grant_type.is_active,
             'is_visible': _grant_type.is_visible,
-            'count': count,
             'funding': int(_grant_type.active_clrs_sum),
             'funding_ui': f"${round(int(_grant_type.active_clrs_sum)/1000)}k",
         })
@@ -899,12 +909,11 @@ def get_policy_state(policy, request):
         "url_pattern": policy.url_pattern,
         "banner_image": request.build_absolute_uri(policy.banner_image.url) if policy.banner_image else '',
         "background_image": request.build_absolute_uri(policy.background_image.url) if policy.background_image else '',
-        "inline_css": policy.inline_css
+        "inline_css": policy.inline_css,
     }
 
 
 def get_branding_info(request):
-
     all_policies = GrantBrandingRoutingPolicy.objects.filter().order_by('-priority')
     for policy in all_policies:
         if re.search(policy.url_pattern, request.get_full_path()):
@@ -921,7 +930,7 @@ def grants_landing(request):
 
     active_main_rounds= active_rounds.filter(type='main').order_by('-total_pot')
     active_cause_rounds= active_rounds.filter(type='cause').order_by('-total_pot')
-    active_sponsor_rounds= active_rounds.filter(type='sponsor').order_by('-total_pot')
+    active_ecosystem_rounds= active_rounds.filter(type='ecosystem').order_by('-total_pot')
 
 
     now = datetime.now()
@@ -933,17 +942,18 @@ def grants_landing(request):
             'active': 'grants_landing',
             'network': network,
             'grant_bg': get_branding_info(request),
+            'show_main_round_banner': True,
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
-            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants11.png')),
+            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants12.png')),
             'card_type': 'summary_large_image',
             'avatar_height': 675,
             'avatar_width': 1200,
             'has_active_rounds': True if active_rounds else False,
             'active_main_rounds': active_main_rounds,
             'active_cause_rounds': active_cause_rounds,
-            'active_sponsor_rounds': active_sponsor_rounds,
+            'active_ecosystem_rounds': active_ecosystem_rounds,
             'sponsors': sponsors,
             'featured': True,
             'now': now,
@@ -1020,14 +1030,32 @@ def grants_by_grant_type(request, grant_type):
             } for collection in allowed_collections.distinct()
         ]
 
-    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('-total_pot')
+    active_rounds = GrantCLR.objects.filter(is_active=True, start_date__lt=timezone.now(), end_date__gt=timezone.now()).order_by('display_text')
 
     # populate active round info
+    rounds = {}
     total_clr_pot = None
+    round_types = []
+    round_types_set = set()
+    round_types_order = ['main', 'cause', 'ecosystem']
     if active_rounds:
         for active_round in active_rounds:
             clr_round_amount = active_round.total_pot
             total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
+            round_types_set.add(active_round.type)
+            rounds[active_round.type] = rounds[active_round.type] if rounds.get(active_round.type) else []
+            rounds[active_round.type].append({
+                'display_text': active_round.display_text,
+                'sub_round_slug': active_round.sub_round_slug,
+                'customer_name': active_round.customer_name,
+                'round_num': active_round.round_num,
+                'total_pot': active_round.total_pot
+            })
+
+        # order the roundTypes in fixed order
+        for round_type in round_types_order:
+            if round_type in round_types_set:
+                round_types.append(round_type)
 
     if total_clr_pot:
         if total_clr_pot > 1000 * 1000:
@@ -1089,7 +1117,8 @@ def grants_by_grant_type(request, grant_type):
         'collection_id': collection_id,
         'collections': collections,
         'featured': featured,
-        'active_rounds': active_rounds,
+        'round_types': round_types,
+        'active_rounds': rounds,
         'trust_bonus': round(request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
 
@@ -1172,7 +1201,7 @@ def grants_by_grant_clr(request, clr_round):
             'grant_tags': grant_tags,
             'idle_grants': True,
             'only_contributions': only_contributions,
-            'clr_round': clr_round
+            'clr_rounds': [clr_round]
         }
 
         _grants = get_grants_by_filters(**filters)
@@ -1619,7 +1648,7 @@ def grant_details_contributions(request, grant_id):
         all_contributions.append(contribution_json)
 
     response['contributions'] = json.loads(json.dumps(all_contributions, default=str))
-    response['next_page_number'] = page + 1 
+    response['next_page_number'] = page + 1
 
     return JsonResponse(response)
 
@@ -1782,12 +1811,6 @@ def grant_edit(request, grant_id):
         if region:
             grant.region = region
 
-        grant_tags = request.POST.get('grant_tags[]', None)
-        if grant_tags:
-            tags = [d['id'] for d in json.loads(grant_tags)]
-            grant.tags.set(tags)
-
-
         team_members = request.POST.getlist('team_members[]', None)
         if team_members:
             save_team_members = []
@@ -1915,13 +1938,15 @@ def grant_new(request):
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
         
-        try:
-            im = Image.open(logo)
-            im.verify()
-        except IOError as e:
-            # logo is not an image file
-            response['message'] = 'error: invalid logo file'
-            return JsonResponse(response)
+        if logo:
+            # If logo is present, validate that it is an image
+            try:
+                im = Image.open(logo)
+                im.verify()
+            except IOError as e:
+                # logo is not an image file
+                response['message'] = 'error: invalid logo file'
+                return JsonResponse(response)
 
         metdata = json.loads(request.POST.get('receipt', '{}'))
         team_members = request.POST.getlist('team_members[]')
@@ -2036,20 +2061,8 @@ def grant_new(request):
 
     profile = get_profile(request)
 
-    grant_types = []
-    for g_type in GrantType.objects.filter(is_active=True):
-        grant_type_temp = {
-            'id': g_type.pk,
-            'name': g_type.name,
-            'label': g_type.label,
-        }
-        if g_type.logo:
-            grant_type_temp['image_url'] = request.build_absolute_uri(g_type.logo.url)
-
-        grant_types.append(grant_type_temp)
-
     grant_tags = []
-    for g_tag in GrantTag.objects.all():
+    for g_tag in GrantTag.objects.all().cache().order_by(Lower("name")):
         _grant_tag = {
             'id': g_tag.pk,
             'name': g_tag.name
@@ -2062,7 +2075,6 @@ def grant_new(request):
         'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
         'profile': profile,
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
-        'grant_types': grant_types,
         'grant_tags': grant_tags
     }
     return TemplateResponse(request, 'grants/_new.html', params)
@@ -2405,10 +2417,22 @@ def get_replaced_tx(request):
 
 
 def grants_cart_view(request):
+
+    try:
+        checkout_status = StaticJsonEnv.objects.get(key='L2_CHECKOUT_STATUS').data
+        disableZksync = checkout_status['disableZksync']
+        disablePolygon = checkout_status['disablePolygon']
+    except:
+        disableZksync = 'false'
+        disablePolygon = 'false'
+
     context = {
         'title': 'Grants Cart',
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
+        'disableZksync': disableZksync,
+        'disablePolygon': disablePolygon
     }
+
     if request.user.is_authenticated:
         profile = request.user.profile
         context['username'] = profile.username
@@ -2419,6 +2443,9 @@ def grants_cart_view(request):
         context['is_fully_verified'] = (is_brightid_verified and profile.sms_verification and \
                                             profile.is_poap_verified and profile.is_twitter_verified and \
                                             profile.is_google_verified and profile.is_poh_verified)
+        context['gas_prices'] = {
+            'polygon': JSONStore.objects.get(view='gas_prices', key='polygon').data['ProposeGasPrice']
+        }
     else:
         return redirect('/login/github/?next=' + request.get_full_path())
 
@@ -2596,7 +2623,9 @@ def record_subscription_activity_helper(activity_type, subscription, profile, an
         'activity_type': activity_type,
         'metadata': metadata,
     }
-    return Activity.objects.create(**kwargs)
+    activity = Activity.objects.create(**kwargs)
+    activity.populate_activity_index()
+    return activity
 
 
 def record_grant_activity_helper(activity_type, grant, profile, amount=None, token=None):
@@ -2627,7 +2656,8 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
         'activity_type': activity_type,
         'metadata': metadata,
     }
-    Activity.objects.create(**kwargs)
+    activity = Activity.objects.create(**kwargs)
+    activity.populate_activity_index()
 
 
 @login_required
@@ -3532,7 +3562,8 @@ def ingest_contributions(request):
                 "metadata": metadata,
             }
 
-            Activity.objects.create(**kwargs)
+            activity = Activity.objects.create(**kwargs)
+            activity.populate_activity_index()
             logger.info("Saved!\n")
 
         except Exception as e:
@@ -3761,11 +3792,7 @@ def get_trust_bonus(request):
         except:
             return allow_all_origins(HttpResponse(status=400))
 
-    query = Q()
-    for address in addresses:
-        query |= Q(contributor_address=address)
-
-    subscriptions = Subscription.objects.filter(query).prefetch_related('contributor_profile')
+    subscriptions = Subscription.objects.filter(contributor_address__in=addresses).prefetch_related('contributor_profile')
     response = []
     _addrs = []
     for subscription in subscriptions:

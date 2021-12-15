@@ -90,7 +90,9 @@ class GrantCLRCalculationAdmin(admin.ModelAdmin):
         'grant','grantclr','clr_prediction_curve'
     ]
     search_fields = [
-        'grantclr'
+        'grant__title',
+        'grantclr__round_num',
+        'grantclr__pk'
     ]
 
 class CLRMatchAdmin(admin.ModelAdmin):
@@ -206,8 +208,8 @@ class GrantAdmin(GeneralAdmin):
             self.message_user(request, "Marked Grant as Fraudulent. Consider blocking the grant admin next?")
         if "_calc_clr" in request.POST:
             from grants.tasks import recalc_clr
-            recalc_clr.delay(obj.pk)
-            self.message_user(request, "recaclulation of clr queued")
+            recalc_clr.delay(obj.pk, False)
+            self.message_user(request, "recalculation of clr queued")
         if "_request_more_info" in request.POST:
             more_info = request.POST.get('more_info')
             grant_more_info_required(obj, more_info)
@@ -494,26 +496,26 @@ class GrantCLRAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         if "_recalculate_clr" in request.POST:
             from grants.tasks import recalc_clr
-            for grant in obj.grants:
-                recalc_clr.delay(grant.pk)
-            self.message_user(request, "submitted recaclulation to queue")
+            # enqueue this round to be recalculated
+            recalc_clr.delay(False, int(obj.pk))
+            self.message_user(request, f"submitted recalculation of GrantCLR:{ obj.pk } to queue")
 
         if "_set_current_grant_clr_calculations_to_false" in request.POST:
-            latest_calculations = GrantCLRCalculation.objects.filter(grantclr=obj, latest=True)
+            active_calculations = GrantCLRCalculation.objects.filter(grantclr=obj, active=True)
 
-            if latest_calculations.count() == 0:
-                self.message_user(request, "Latest Flag is already false. No action taken")
+            if active_calculations.count() == 0:
+                self.message_user(request, "Active Flag is already false. No action taken")
             else:
-                latest_calculations.update(latest=False)
-                self.message_user(request, "Current Grant CLR Calculations's latest flag is set to false")
+                active_calculations.update(active=False)
+                self.message_user(request, "Current Grant CLR Calculations's active flag is set to false")
 
         if "_set_all_grant_clr_calculations_to_false" in request.POST:
-            latest_calculations = GrantCLRCalculation.objects.filter(latest=True)
-            if latest_calculations.count() == 0:
-                self.message_user(request, "Latest Flag is already false for all CLRs. No action taken")
+            active_calculations = GrantCLRCalculation.objects.filter(active=True)
+            if active_calculations.count() == 0:
+                self.message_user(request, "Active Flag is already false for all CLRs. No action taken")
             else:
-                latest_calculations.update(latest=False)
-                self.message_user(request, "All Grant CLR Calculations's latest flag is set to false")
+                active_calculations.update(active=False)
+                self.message_user(request, "All Grant CLR Calculations's active flag is set to false")
 
         return redirect(obj.admin_url)
 

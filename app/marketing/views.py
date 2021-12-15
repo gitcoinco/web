@@ -39,7 +39,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import HackathonEvent, Profile, TokenApproval
+from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from dashboard.views import mautic_proxy_backend
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -48,7 +48,7 @@ from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
-from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
+from marketing.utils import get_or_save_email_subscriber, validate_slack_integration, delete_email_subscription
 from retail.emails import render_new_bounty
 from retail.helpers import get_ip
 from townsquare.models import Announcement
@@ -579,6 +579,10 @@ def account_settings(request):
             return logout_redirect
         elif request.POST.get('delete', False):
 
+            email = profile.email
+            if email:
+                delete_email_subscription(email)
+
             # remove profile
             profile.hide_profile = True
             profile = record_form_submission(request, profile, 'account-delete')
@@ -1027,15 +1031,6 @@ def get_hackathons():
 
         return current_hackathons, upcoming_hackathons
 
-def latest_activities(user):
-    from retail.views import get_specific_activities
-    from townsquare.tasks import increment_view_counts
-    cutoff_date = timezone.now() - timezone.timedelta(days=1)
-    activities = get_specific_activities('connect', 0, user, 0)[:4]
-    activities_pks = list(activities.values_list('pk', flat=True))
-    increment_view_counts.delay(activities_pks)
-    return activities
-
 
 @staff_member_required
 def new_bounty_daily_preview(request):
@@ -1048,5 +1043,5 @@ def new_bounty_daily_preview(request):
     max_bounties = 5
     if len(new_bounties) > max_bounties:
         new_bounties = new_bounties[0:max_bounties]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons(), latest_activities=latest_activities(request.user))
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), hackathons=get_hackathons())
     return HttpResponse(response_html)

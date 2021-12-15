@@ -56,7 +56,7 @@ $(document).ready(function() {
 
   // update activity views when scroll happens
   function updateView(ignoreScrollOffset) {
-    window.setTimeout(updateView, 300);
+    // window.setTimeout(updateView, 300);
 
     if (fetchInProgress) {
       return;
@@ -91,7 +91,7 @@ $(document).ready(function() {
 
       fetch(fetch_url + '?p=' + (++page) + '&a=' + activityName).then(
         function(response) {
-          if (response.status === 200) {
+          if (response.status === 200 || response.status === 204) {
             response.text().then(
               function(html) {
                 const results = document.createElement('div');
@@ -111,7 +111,6 @@ $(document).ready(function() {
             );
             return;
           }
-
           fetchInProgress = false;
           hideBusyOverlay();
         }
