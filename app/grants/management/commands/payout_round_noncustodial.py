@@ -220,7 +220,7 @@ class Command(BaseCommand):
                     else:
                         full_payouts_mapping_dict[recipient] = amount
                 except Exception as e:
-                    print(f"could not payout grant:{match.grant.pk} bc exceptoin{e}")
+                    print(f"could not payout grant:{match.grant.pk} bc exception{e}")
 
             # Convert dict to array to use it as inputs to the contract
             full_payouts_mapping = []

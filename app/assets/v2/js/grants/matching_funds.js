@@ -1,11 +1,6 @@
 Vue.mixin({
   methods: {
-    paginate: function(array, page_size, page_number) {
-      return array.slice(page_number * page_size, page_number * page_size + page_size);
-    },
     tabChange: function(input) {
-
-      console.log(input);
       window.location = `${this.grant.details_url}?tab=${input}`;
     },
     enableTab: function() {
@@ -27,17 +22,12 @@ Vue.mixin({
       window.history.replaceState({}, document.title, `${window.location.pathname}`);
     },
     async fetchCLRMatches() {
-      // partition function to split result array based on condition
-      function partition(array, isValid) {
-        return array.reduce(([ pass, fail ], elem) => {
-          return isValid(elem) ? [ [ ...pass, elem ], fail ] : [ pass, [ ...fail, elem ] ];
-        }, [ [], [] ]);
-      }
-
       let vm = this;
 
+      this.loading = true;
+
       // fetch clr match entries of owned grants
-      const url = '/grants/v1/api/clr-matches';
+      const url = '/grants/v1/api/clr-matches/';
 
       try {
         let result = await (await fetch(url)).json();
@@ -48,23 +38,25 @@ Vue.mixin({
             ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
             : null;
 
-          const claimData = await vm.hasClaimed(
-            m.grant.admin_address,
-            m.grant_payout.contract_address,
-            m.payout_tx
-          );
+          const claimData = await vm.checkClaimStatus(m);
 
-          m.has_claimed = claimData.status;
+          m.status = claimData.status;
           m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
         });
 
-
-        // split result into clr matches that are ready to claim and those for history
-        const [ pass, fail ] = partition(result, a => !a.hasClaimed && !a.grant_payout.funding_withdrawn);
-        
         // group clr matches by grant title
-        this.readyToClaim = await this.groupByGrant(pass);
-        this.clrMatchHistory = await this.groupByGrant(fail);
+        result = await this.groupByGrant(result);
+
+        // assign property for if grants have any claim or not
+        Object.keys(result).forEach(grantTitle => {
+          if (result[grantTitle].filter(a => a.has_claimed).length === 0) {
+            result[grantTitle].hasNoClaim = true;
+          } else {
+            result[grantTitle].hasNoClaim = false;
+          }
+        });
+
+        this.clrMatches = result;
 
         this.loading = false;
 
@@ -84,8 +76,12 @@ Vue.mixin({
 
       return result;
     },
-    async hasClaimed(recipientAddress, contractAddress, txHash) {
-      let status = false;
+    async checkClaimStatus(match) {
+      const recipientAddress = match.grant.admin_address;
+      const contractAddress = match.grant_payout.contract_address;
+      const txHash = match.payout_tx;
+
+      let status = 'not-found';
       let timestamp = null;
 
       web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
@@ -93,6 +89,8 @@ Vue.mixin({
       let tx = await web3.eth.getTransaction(txHash);
 
       if (tx && tx.to == contractAddress) {
+        status = 'pending'; // claim transaction is pending
+
         addressWithout0x = recipientAddress.replace('0x', '').toLowerCase();
 
         // check if user attempted to claim match payout
@@ -102,10 +100,8 @@ Vue.mixin({
         if (userClaimedMatchPayout) {
           let receipt = await web3.eth.getTransactionReceipt(txHash);
 
-          console.log(receipt);
-
-          if (receipt) {
-            status = true;
+          if (receipt && receipt.status) {
+            status = 'claimed';
             timestamp = (await web3.eth.getBlock(receipt.blockNumber)).timestamp; // fetch claim date
           }
         }
@@ -114,7 +110,7 @@ Vue.mixin({
       return { status, timestamp };
     },
     async claimMatch(match) {
-      console.log(match);
+      const vm = this;
 
       // Helper method to manage state
       const waitingState = (state) => {
@@ -149,6 +145,9 @@ Vue.mixin({
       matchPayouts.methods.claimMatchPayout(match.grant.admin_address)
         .send({from: user})
         .on('transactionHash', async function(txHash) {
+          await this.fetchCLRMatches();
+          vm.$forceUpdate();
+          this.tabSelected = 1;
           waitingState(false);
           _alert("Match payout claimed! Funds will be sent to your grant's address", 'success');
         })
@@ -156,16 +155,6 @@ Vue.mixin({
           waitingState(false);
           _alert(error, 'danger');
         });
-    },
-    backNavigation: function() {
-      const vm = this;
-      const lgt = localStorage.getItem('last_grants_title') || 'Grants';
-      const lgi = document.referrer.indexOf(location.host) != -1 ? 'javascript:history.back()' : '/grants/explorer';
-
-      if (lgi && lgt) {
-        vm.$set(vm.backLink, 'url', lgi);
-        vm.$set(vm.backLink, 'title', lgt);
-      }
     },
     scrollToElement(element) {
       const container = this.$refs[element];
@@ -182,31 +171,16 @@ if (document.getElementById('gc-matching-funds')) {
     data() {
       return {
         loading: true,
-        clrMatchHistory: null,
-        readyToClaim: null,
+        clrMatches: null,
         tabSelected: 1,
-        tab: null,
-        backLink: {
-          url: '/grants',
-          title: 'Grants'
-        }
+        tab: null
       };
     },
     mounted: async function() {
       this.enableTab();
-      this.backNavigation();
 
       // fetch CLR match history of the user's owned grants
       await this.fetchCLRMatches();
-
-      console.log(this.clrMatchHistory);
-      console.log(this.readyToClaim);
-
-      // this.hasClaimed(
-      //   '0xdbb16c68aa373229db9f37d85087264361691ab9',
-      //   '0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
-      //   '0x43ee7def85a5b4b5ecf7c551bbf99014220e779046d6faccc43e790e2b7e7ab8'
-      // ).then(console.log);
     }
   });
 }

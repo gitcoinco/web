@@ -161,8 +161,8 @@ class GrantPayoutSerializer(FlexFieldsModelSerializer):
     class Meta:
         model = GrantPayout
         fields = [
-            'contract_address', 'ready_to_claim', 'payout_token', 'funding_withdrawn',
-            'funding_withdrawal_date', 'grant_clrs'
+            'status', 'contract_address', 'payout_token', 'funding_withdrawal_date',
+            'grant_clrs'
         ]
 
 
@@ -173,7 +173,7 @@ class CLRMatchSerializer(FlexFieldsModelSerializer):
     class Meta:
         model = CLRMatch
         fields = (
-            'amount', 'round_number', 'payout_tx', 'payout_tx_date', 'grant',
+            'pk', 'amount', 'round_number', 'payout_tx', 'payout_tx_date', 'grant',
             'grant_payout'
         )
 

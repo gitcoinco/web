@@ -37,12 +37,12 @@
         margin-right: 2rem;
       }
 
-      /* .gc-tabs-left > div {
+      .gc-tabs-left > div {
         position: sticky !important;
         top: 0;
         z-index: 100;
         background-color: #FFFFFF;
-      } */
+      }
 
       .tab-content {
         z-index: -1 !important;
@@ -59,7 +59,7 @@
       </div>
       <div id="gc-matching-funds" v-cloak>
         <div class="container mt-4 mt-lg-5">
-          <a :href="backLink.url" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
+          <a href="javascript:history.back()" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back</a>
         </div>
 
         <div class="container">
@@ -119,8 +119,7 @@
               View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.<br>
               <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
             </p>
-            <p v-if="!loading && Object.keys(readyToClaim).length === 0" class="py-lg-5 px-0 font-subheader text-grey-400">There’s no matching funds ready to claim for this grant.</p>
-            <div v-for="grant in readyToClaim" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
+            <div v-for="grant in clrMatches" v-if="!loading" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
               <div v-for="match in grant">
               <b-row>
                 <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
@@ -132,7 +131,7 @@
                   </div>
                 </div>
               </b-row>
-              <b-row class="mt-4 align-items-center">
+              <b-row v-if="clrMatches[match.grant.title].hasNoClaim" class="mt-4 align-items-center">
                 <b-col lg="4" sm="12">
                   <span class="font-bigger-1 text-grey-500">[[ match.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
                 </b-col>
@@ -140,25 +139,26 @@
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</h4>
                   <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</span>
                   <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount ]]</span>
-                  <span v-if="match.grant_payout.ready_to_claim === false">(pending review)</span>
+                  <span v-if="match.grant_payout.status === 'pending'">(pending review)</span>
                 </b-col>
-                <b-col v-if="match.grant_payout.ready_to_claim === false" lg="4" sm="12" class="mt-2 mt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">In Review</h4>
-                  <span class="d-lg-none d-block font-weight-bold font-subheader">In Review</span>
-                </b-col>
-                <b-col v-else lg="4" sm="12" class="pt-2 pt-lg-0">
+                <b-col v-if="match.grant_payout.status === 'ready'" lg="4" sm="12" class="pt-2 pt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base text-grey-500">Ready to Claim</h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">Ready to Claim</span>
+                </b-col>
+                <b-col v-else lg="4" sm="12" class="mt-2 mt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">In Review</h4>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader">In Review</span>
                 </b-col>
                 <b-col class="text-lg-right mt-2 mt-lg-0">
                   <a href="javascript:;" id="claim-match"
                     @click="claimMatch(match)"
                     class="btn btn-primary font-body w-100"
-                    :class="[[ match.grant_payout.ready_to_claim === false ? 'disabled' : '' ]]">
+                    :class="[[ match.grant_payout.status === 'pending' ? 'disabled' : '' ]]">
                     Claim
                   </a>
                 </b-col>
               </b-row>
+              <p v-else class="font-subheader text-grey-400 pt-2 pt-lg-0">There’s no matching funds ready to claim for this grant.</p>
               </div>
             </div>
 
@@ -201,8 +201,7 @@
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Claim History</span>
             </template>
-            <p v-if="!loading && Object.keys(clrMatchHistory).length === 0" class="py-lg-5 px-0 font-subheader text-grey-400">No claim history found for this grant</p>
-            <div v-for="grant in clrMatchHistory" v-if="!loading" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
+            <div v-for="grant in clrMatches" v-if="!loading" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
               <div v-for="match in grant">
               <b-row>
                 <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
@@ -214,7 +213,7 @@
                   </div>
                 </div>
               </b-row>
-              <b-row class="mt-4 align-items-center">
+              <b-row v-if="!clrMatches[match.grant.title].hasNoClaim" class="mt-4 align-items-center">
                 <b-col lg="4" sm="12">
                   <span class="font-bigger-1 text-grey-500">[[ match.grant_payout.grant_clrs.map(a => a.display_text).join(", ") ]]</span>
                 </b-col>
@@ -223,16 +222,24 @@
                   <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</span>
                   <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount ]]</span>
                 </b-col>
-                <b-col v-if="match.has_claimed === true" lg="4" sm="12" class="mt-2 mt-lg-0">
+                <b-col v-if="match.status == 'pending'" lg="4" sm="12" class="pt-2 pt-lg-0">
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
+                    <i class="far fa-spinner fa-spin mr-2"></i>Processing
+                  </h4>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
+                    <i class="far fa-spinner fa-spin mr-2"></i>Processing
+                  </span>
+                </b-col>
+                <b-col v-else-if="match.status == 'claimed'" lg="4" sm="12" class="mt-2 mt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-highlight-green gc-font-base">
-                    <i class="far fa-check mr-1"></i>Claimed
+                    <i class="far fa-check mr-2"></i>Claimed
                   </h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-highlight-green">
-                    <i class="far fa-check mr-1"></i>Claimed
+                    <i class="far fa-check mr-2"></i>Claimed
                   </span>
                   <span class="font-body text-grey-500">[[ match.claim_date ]]</span>
                 </b-col>
-                <b-col v-else lg="4" sm="12" class="pt-2 pt-lg-0">
+                <b-col v-else-if="match.grant_payout.status === 'funding_withdrawn'" lg="4" sm="12" class="pt-2 pt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
                     Returned to matching pool
                   </h4>
@@ -250,6 +257,7 @@
                   </a>
                 </b-col>
               </b-row>
+              <p v-else class="font-subheader text-grey-400 pt-2 pt-lg-0">No claim history found for this grant</p>
               </div>
             </div>
 
