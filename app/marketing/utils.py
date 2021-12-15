@@ -28,7 +28,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 from mailchimp3 import MailChimp
-from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank, EmailSubscriber
+from marketing.models import AccountDeletionRequest, EmailSubscriber, EmailSupressionList, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 

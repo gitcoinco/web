@@ -20,19 +20,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 from datetime import timedelta
+from io import BytesIO
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
-from io import BytesIO
 from django.utils import timezone
 
 import dateutil.parser
 import requests
-from .models import GitCache
 from github import Github
 from github.GithubException import BadCredentialsException, GithubException, UnknownObjectException
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
+
+from .models import GitCache
 
 logger = logging.getLogger(__name__)
 

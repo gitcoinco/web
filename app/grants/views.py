@@ -311,6 +311,7 @@ def query_to_results(query):
         return rows
     return []
 
+
 @login_required
 @cached_view(timeout=3600)
 def contribution_addr_from_all_as_json(request):
@@ -344,11 +345,9 @@ def grants(request):
 
 @login_required
 def matching_funds(request):
-    """Handle grant matching funds page explorer."""
+    """Handle grant matching funds page."""
 
-    context = {
-        "greeting": "i love this"
-    }
+    context = {}
 
     response = TemplateResponse(request, 'grants/matching_funds.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
@@ -3675,7 +3674,6 @@ def ingest_contributions(request):
         return JsonResponse({ 'success': False, 'message': err })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
-
 
 
 def get_clr_sybil_input(request, round_id):

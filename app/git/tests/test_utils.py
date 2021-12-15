@@ -18,23 +18,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import timedelta
-from urllib.parse import quote_plus, urlencode
 from unittest.mock import MagicMock, patch
-from github import NamedUser
+from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
 from django.test.utils import override_settings
 from django.utils import timezone
-from git.models import GitCache
-from git.tests.factories.git_cache_factory import GitCacheFactory
-from faker import Faker
 
 import responses
+from faker import Faker
+from git.models import GitCache
+from git.tests.factories.git_cache_factory import GitCacheFactory
 from git.utils import (
-    HEADERS, TOKEN_URL, build_auth_dict, delete_issue_comment, get_github_emails, get_github_primary_email,
+    HEADERS, TOKEN_URL, _get_user, build_auth_dict, delete_issue_comment, get_github_emails, get_github_primary_email,
     get_issue_comments, get_issue_timeline_events, github_connect, is_github_token_valid, org_name, patch_issue_comment,
-    post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token, _get_user
+    post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token,
 )
+from github import NamedUser
 from test_plus.test import TestCase
 
 
