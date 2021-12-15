@@ -31,6 +31,7 @@ from grants.views import (
     grants_cart_view, grants_info, grants_landing, grants_type_redirect, ingest_contributions,
     ingest_contributions_view, invoice, leaderboard, manage_ethereum_cart_data, new_matching_partner, profile,
     quickstart, remove_grant_from_collection, save_collection, toggle_grant_favorite, upload_sybil_csv, verify_grant,
+    hall_of_fame
 )
 
 app_name = 'grants/'
@@ -74,6 +75,7 @@ urlpatterns = [
     path('get-replaced-tx', get_replaced_tx, name='get-replaced-tx'),
     re_path(r'^profile', profile, name='profile'),
     re_path(r'^quickstart', quickstart, name='quickstart'),
+    re_path(r'^hall_of_fame', hall_of_fame, name='hall_of_fame'),
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),
     re_path(r'^matching-partners/new', new_matching_partner, name='new_matching_partner'),
     re_path(r'^v1/api/matching-pledge/create', create_matching_pledge_v1, name='create_matching_pledge_v1'),

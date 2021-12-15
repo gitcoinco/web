@@ -20,18 +20,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.messages import constants as messages
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django import forms
 
 import twitter
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantStat, GrantTag, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantStat, GrantTag, GrantType, MatchPledge,
+    PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
+
+from django_svg_image_form_field import SvgAndImageFormField
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -538,6 +543,43 @@ class GrantCollectionAdmin(admin.ModelAdmin):
 class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
+class GrantHallOfFameGranteeInline(admin.StackedInline):
+    model = GrantHallOfFameGrantee
+    fields = ['grantee', 'name', 'funded_by', 'amount', 'description', 'accomplishment_1', 'accomplishment_2']
+    raw_id_fields = ['grantee']
+    extra = 1
+
+
+class GrantHallOfFameForm(forms.ModelForm):
+    class Meta:
+        model = GrantHallOfFame
+        exclude = []
+        field_classes = {
+            'top_matching_partners': SvgAndImageFormField,
+            'top_matching_partners_mobile': SvgAndImageFormField,
+            'top_individual_donors': SvgAndImageFormField,
+            'top_individual_donors_mobile': SvgAndImageFormField,
+        }
+
+class GrantHallOfFameAdmin(admin.ModelAdmin):
+    form = GrantHallOfFameForm
+    inlines = (GrantHallOfFameGranteeInline, )
+    list_display = ['pk', 'total_donations', 'is_published' ]
+    readonly_fields = ['is_published', ]
+
+    actions = ['hall_of_fame_publish']
+
+    def hall_of_fame_publish(self, request, queryset):
+        object_list = list(queryset)
+        if len(object_list) == 1:
+            obj = object_list[0]
+            obj.publish()
+            self.message_user(request, f"The object '{obj}'' successfully marked as published.")
+        else:
+            self.message_user(request, f"Only 1 object can be published mode. Please select exactly 1 object to set it in published state.", level=messages.WARNING)
+
+    hall_of_fame_publish.short_description = "Publish"
+
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
@@ -554,3 +596,4 @@ admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
 admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
 admin.site.register(GrantCLRCalculation, GrantCLRCalculationAdmin)
+admin.site.register(GrantHallOfFame, GrantHallOfFameAdmin)

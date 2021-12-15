@@ -76,8 +76,8 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
-    GrantTag, GrantType, MatchPledge, Subscription,
-)
+    GrantTag, GrantType, MatchPledge, Subscription, GrantHallOfFame) 
+
 from grants.tasks import (
     process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write,
     update_grant_metadata,
@@ -2542,6 +2542,46 @@ def quickstart(request):
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
+def hall_of_fame(request):
+    """Display the hall of fame."""
+    hall_of_fame_query = GrantHallOfFame.objects.filter(is_published=True)
+    try:
+        hall_of_fame = hall_of_fame_query[:1][0]
+    except IndexError:
+        raise Http404
+
+    if hall_of_fame.top_individual_donors:
+        top_individual_donors_is_svg = hall_of_fame.top_individual_donors.name.endswith('.svg')
+
+    if hall_of_fame.top_individual_donors_mobile:
+        top_individual_donors_mobile_is_svg = hall_of_fame.top_individual_donors_mobile.name.endswith('.svg')
+
+    if hall_of_fame.top_matching_partners:
+        top_matching_partners_is_svg = hall_of_fame.top_matching_partners.name.endswith('.svg')
+
+    if hall_of_fame.top_matching_partners_mobile:
+        top_matching_partners_mobile_is_svg = hall_of_fame.top_matching_partners_mobile.name.endswith('.svg')
+
+    params = {
+        'active': 'hall_of_fame',
+        'title': _('Hall of Fame'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+
+        'total_donations': hall_of_fame.total_donations,
+        'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
+        'top_matching_partners_url': hall_of_fame.top_matching_partners.url,
+        'top_individual_donors_is_svg': top_individual_donors_is_svg,
+        'top_matching_partners_is_svg': top_matching_partners_is_svg,
+        'top_individual_donors_mobile_is_svg': top_individual_donors_mobile_is_svg,
+        'top_matching_partners_mobile_is_svg': top_matching_partners_mobile_is_svg,
+        'top_individual_donors_mobile_url': hall_of_fame.top_individual_donors_mobile.url,
+        'top_matching_partners_mobile_url': hall_of_fame.top_matching_partners_mobile.url,
+        'graduated_grantees_description': hall_of_fame.graduated_grantees_description,
+        'share_your_story_email': hall_of_fame.share_your_story_email,
+        'graduated_grantees': hall_of_fame.get_grantees_data(),
+    }
+
+    return TemplateResponse(request, 'grants/hall_of_fame.html', params)
 
 def leaderboard(request):
     """Display leaderboard."""

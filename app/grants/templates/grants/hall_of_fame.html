@@ -1,0 +1,195 @@
+{% comment %}
+Copyright (C) 2021 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
+{% endcomment %}
+{% load i18n static bundle %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' with slim=1 %}
+  {% include 'shared/cards.html' %}
+
+  {% bundle css file hall_of_fame %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/hall_of_fame.scss" %} />
+  {% endbundle %}
+
+  <style>
+    .hof-banner {
+      background-image: url("{% static "v2/images/grants/hall_of_fame/hall_of_fame.svg" %}");
+      background-size: auto 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  </style>
+</head>
+
+<body class="interior {{active}} hall_of_fame g-font-muli">
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'grants/nav.html' %}
+
+    <div id="hall-of-fame" class="container-fluid px-0">
+      <div class="container-fluid hof-banner">
+        <div class="container content text-left pt-5 pb-5">
+
+          <h2 class="hof-section-title text-center pt-sm-4 mb-0">{%trans "Grants Hall of Fame" %}</h2>
+
+          <div class="d-block d-sm-none row pt-3 text-violet-400 text-center">
+            <div class="col-xs-12 col-sm-6 font-bigger-2">
+                {{total_donations}}
+            </div>
+            <div class="col-xs-12 col-sm-6 font-bigger-1 pt-2">
+                {% trans 'in Total Donations' %}
+            </div>
+          </div>
+          <div class="d-none d-sm-block row pt-2 text-violet-400 text-center">
+            <div class="col font-bigger-2">
+                {{total_donations}} {% trans 'in Total Donations' %}
+            </div>
+          </div>
+          <div class="row pt-3 pt-sm-5">
+            <div class="col-xs-12 col-sm-8 offset-sm-2 text-center text-grey-400 text font-header">
+              Top Gitcoin Grant funders and grantees making impact in the web3 ecosystem.
+            </div>
+          </div>
+          <div class="text-center pt-4 pt-sm-3">
+            <a class="btn btn-primary btn-lg" href="{%url 'grants:new_matching_partner' %}">
+              Join the Funder's League
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid px-0">
+        <div class="container content text-left pt-4 pt-sm-5 pb-5">
+          <h2 class="hof-section-title text-grey-500 mb-0 pb-3">{%trans "Top Matching Partners" %}</h2>
+          {% if top_matching_partners_is_svg %}
+            <object class="d-none d-sm-block" type="image/svg+xml" data="{{ top_matching_partners_url }}">
+            </object>
+          {% else %}
+            <img class="d-none d-sm-block w-100" src="{{ top_matching_partners_url }}" alt="{%trans 'Top matching partners' %}">
+          {% endif %}
+
+          {% if top_matching_partners_mobile_is_svg %}
+            <object class="d-block d-sm-none" type="image/svg+xml" data="{{ top_matching_partners_mobile_url }}">
+            </object>
+          {% else %}
+            <img class="d-block d-sm-none w-100" src="{{ top_matching_partners_mobile_url }}" alt="{%trans 'Top matching partners' %}">
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="container-fluid bg-violet-500 px-0">
+        <div class="container content text-left pt-4 pt-sm-5 pb-5">
+          <h2 class="hof-section-title text-white mb-0 pb-3">{%trans "Top Individual Grant Donors" %}</h2>
+          {% if top_individual_donors_is_svg %}
+            <object class="d-none d-sm-block" type="image/svg+xml" data="{{ top_individual_donors_url }}">
+            </object>
+          {% else %}
+            <img class="d-none d-sm-block w-100" src="{{ top_individual_donors_url }}" alt="{%trans 'Top individual donors' %}">
+          {% endif %}
+
+          {% if top_individual_donors_mobile_is_svg %}
+            <object class="d-block d-sm-none" type="image/svg+xml" data="{{ top_individual_donors_mobile_url }}">
+            </object>
+          {% else %}
+            <img class="d-block d-sm-none w-100" src="{{ top_individual_donors_mobile_url }}" alt="{%trans 'Top individual donors' %}">
+          {% endif %}
+
+        </div>
+      </div>
+
+      <div class="container text-left pt-4 pt-sm-5 pb-5 text-grey-500">
+        <h2 class="hof-section-title text-grey-500 mb-0">{%trans "Graduated Grantees" %}</h2>
+        <div class="mt-3 text-grey-400">{{ graduated_grantees_description }}</div>
+
+        <div class="container pt-4 pt-sm-5">
+          {% for g in graduated_grantees %}
+            {% if not forloop.first %}
+            <div class="row mt-3"></div>
+            {% endif %}
+          <div class="row pb-4 hof-grantee-border">
+            <div class="d-none d-sm-block col-sm-2 text-center mt-4">
+              <img class="rounded-circle w-100 hof-grantee-logo" src="/dynamic/avatar/{{ g.grantee_handle }}">
+              <div>@{{ g.grantee_handle }}</div>
+            </div>
+            <div class="d-block d-sm-none col-xs-12 col-sm-2 mt-4">
+              <img class="d-inline d-sm-block rounded-circle w-100 hof-grantee-logo" src="/dynamic/avatar/{{ g.grantee_handle }}">
+              <div class="d-inline d-sm-block">{{ g.name }}</div>
+            </div>
+            <div class="col-xs-12 col-sm-2 mt-4">
+              <div class="font-title">{{ g.name }}</div>
+              <div class="font-caption text-grey-400">{% trans 'funded by' %}</div>
+              <div class="font-caption">{{ g.funded_by }}</div>
+              <div class="font-title mt-3">{{ g.amount }}</div>
+              <div class="font-caption text-grey-400">{% trans 'raised on Gitcoin' %}</div>
+            </div>
+            <div class="col-xs-12 col-sm-3 mt-4">
+              <h5 class="font-body">{% trans 'Project Description' %}</h5>
+              <div>{{ g.description }}</div>
+            </div>
+            <div class="col-xs-12 col-sm-5 mt-4">
+              <h5 class="font-body">{% trans 'Accomplishment 1' %}</h5>
+              <div class="font-body">{{ g.accomplishment_1 }}</div>
+              <h5 class="font-body mt-4">{% trans 'Accomplishment 2' %}</h5>
+              <div class="font-body">{{ g.accomplishment_2 }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="container text-left pt-4 pt-sm-5">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 offset-sm-1 container pb-5">
+            <div class="row">
+              <h2 class="hof-section-title col mb-0">{%trans "Are you a Grantee?" %}</h2>
+            </div>
+
+            <div class="row">
+              <div class="col mt-3 font-subheader">{%trans "We'd love to hear your journey. Share your story via email." %}
+              </div>
+            </div>
+
+            <div class="row pt-3 pt-sm-4">
+              <div class="col">
+                <a class="btn btn-primary" href="mailto:{{share_your_story_email}}">
+                  Share Your Story
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-5 d-none d-sm-block">
+            <div class="float-right w-100 hof-letter">
+              {% include 'grants/components/hall_of_fame_envelope.html' %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer.html' %}
+  </div>
+  {% bundle merge_js file grants_hall_of_fame_svgs %}
+  <script src="{% static 'v2/js/lib/svgator_player.js' %}"></script>
+  <script>
+    // envelope
+    __SVGATOR_PLAYER__.build({ "root": "elrb9K7qzRH1", "animations": [{ "duration": 1500, "direction": 1, "iterations": 1, "fill": 1, "alternate": false, "speed": 1, "elements": { "elrb9K7qzRH5": { "transform": { "data": { "o": { "x": 64.382818, "y": 84.000001, "type": "corner" }, "t": { "x": -84.500004, "y": -84 } }, "keys": { "s": [{ "t": 0, "v": { "x": 1, "y": 1 } }, { "t": 300, "v": { "x": 0.4, "y": 0.4 } }, { "t": 700, "v": { "x": 1, "y": 1 } }, { "t": 1100, "v": { "x": 0.4, "y": 0.4 } }, { "t": 1500, "v": { "x": 1, "y": 1 } }] } }, "opacity": [{ "t": 0, "v": 1 }, { "t": 400, "v": 0.26 }, { "t": 900, "v": 0.78 }, { "t": 1400, "v": 1 }] }, "elrb9K7qzRH6": { "transform": { "data": { "o": { "x": 183.882011, "y": 146.779001, "type": "corner" }, "t": { "x": -185.5, "y": -159.5 } }, "keys": { "s": [{ "t": 0, "v": { "x": 0.4, "y": 0.4 } }, { "t": 300, "v": { "x": 1, "y": 1 } }, { "t": 600, "v": { "x": 1, "y": 1 } }, { "t": 1000, "v": { "x": 0.4, "y": 0.4 } }, { "t": 1400, "v": { "x": 1, "y": 1 } }] } }, "opacity": [{ "t": 0, "v": 0.46 }, { "t": 400, "v": 1 }, { "t": 800, "v": 0.51 }, { "t": 1100, "v": 1 }, { "t": 1500, "v": 0.46 }] }, "elrb9K7qzRH7": { "transform": { "data": { "o": { "x": 239.200415, "y": 56.000001, "type": "corner" }, "t": { "x": -234.5, "y": -68 } }, "keys": { "s": [{ "t": 0, "v": { "x": 0.5, "y": 0.5 } }, { "t": 500, "v": { "x": 1, "y": 1 } }, { "t": 1000, "v": { "x": 1.2, "y": 1.2 } }, { "t": 1500, "v": { "x": 0.5, "y": 0.5 } }] } }, "opacity": [{ "t": 0, "v": 0.12 }, { "t": 400, "v": 1 }, { "t": 900, "v": 0 }, { "t": 1500, "v": 1 }] }, "elrb9K7qzRH9": { "transform": { "data": { "t": { "x": -179, "y": -101.787002 } }, "keys": { "o": [{ "t": 300, "v": { "x": 179, "y": 101.787003, "type": "corner" } }, { "t": 900, "v": { "x": 178, "y": -37.787003, "type": "corner" } }, { "t": 1100, "v": { "x": 179, "y": 228.787002, "type": "corner" } }, { "t": 1500, "v": { "x": 179, "y": 101.787003, "type": "corner" } }], "r": [{ "t": 0, "v": 0 }, { "t": 130, "v": 4 }, { "t": 300, "v": 0 }, { "t": 1100, "v": 0 }, { "t": 1230, "v": 4 }, { "t": 1400, "v": 0 }] } }, "opacity": [{ "t": 800, "v": 1 }, { "t": 900, "v": 0 }, { "t": 1000, "v": 0 }, { "t": 1090, "v": 0 }, { "t": 1100, "v": 1 }] }, "elrb9K7qzRH13": { "transform": { "data": { "t": { "x": -179.072006, "y": -138.141502 } }, "keys": { "o": [{ "t": 0, "v": { "x": 179.072006, "y": 138.141502, "type": "corner" } }, { "t": 300, "v": { "x": 179.072006, "y": 141.141502, "type": "corner" } }, { "t": 700, "v": { "x": 179.072006, "y": 138.141502, "type": "corner" } }] } } }, "elrb9K7qzRH14": { "transform": { "data": { "t": { "x": -179.074005, "y": -126.183498 } }, "keys": { "o": [{ "t": 0, "v": { "x": 179.074005, "y": 126.183498, "type": "corner" } }, { "t": 300, "v": { "x": 179.074005, "y": 130.183498, "type": "corner" } }, { "t": 700, "v": { "x": 179.074005, "y": 126.183498, "type": "corner" } }] } } }, "elrb9K7qzRH15": { "transform": { "data": { "t": { "x": -187.498001, "y": -129.400002 } }, "keys": { "o": [{ "t": 0, "v": { "x": 187.498001, "y": 129.400002, "type": "corner" } }, { "t": 300, "v": { "x": 187.498001, "y": 126.400002, "type": "corner" } }, { "t": 700, "v": { "x": 187.498001, "y": 129.400002, "type": "corner" } }] } } }, "elrb9K7qzRH16": { "transform": { "data": { "t": { "x": -187.498001, "y": -114.783001 } }, "keys": { "o": [{ "t": 0, "v": { "x": 187.498001, "y": 114.783001, "type": "corner" } }, { "t": 300, "v": { "x": 187.498001, "y": 112.783001, "type": "corner" } }, { "t": 700, "v": { "x": 187.498001, "y": 114.783001, "type": "corner" } }] } } }, "elrb9K7qzRH17": { "transform": { "data": { "t": { "x": -171, "y": -132.264496 } }, "keys": { "o": [{ "t": 0, "v": { "x": 171, "y": 132.264496, "type": "corner" } }, { "t": 300, "v": { "x": 171, "y": 126.264496, "type": "corner" } }, { "t": 700, "v": { "x": 171, "y": 132.264496, "type": "corner" } }] } } }, "elrb9K7qzRH18": { "transform": { "data": { "t": { "x": -171.001999, "y": -115.278999 } }, "keys": { "o": [{ "t": 0, "v": { "x": 171.001999, "y": 115.278999, "type": "corner" } }, { "t": 300, "v": { "x": 171.001999, "y": 112.278999, "type": "corner" } }, { "t": 700, "v": { "x": 171.001999, "y": 115.278999, "type": "corner" } }] } } } } }], "options": { "start": "hover", "hover": "freeze", "click": null, "scroll": null, "font": "embed", "exportedIds": "unique", "svgFormat": "animated", "title": "envelope(350x200)" }, "animationSettings": { "duration": 1500, "direction": 1, "iterations": 1, "fill": 1, "alternate": false, "speed": 1 } })
+  </script>
+  {% endbundle %}
+</body>
