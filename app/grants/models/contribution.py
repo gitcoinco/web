@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from economy.models import SuperModel
+from economy.models import SuperModel, Token
 from economy.tx import check_for_replaced_tx
 from townsquare.models import Comment
 from web3 import Web3
@@ -30,7 +30,7 @@ class Contribution(SuperModel):
         ('algorand_std', 'algorand_std')
     ]
 
-    success = models.BooleanField(default=True, help_text=_('Whether or not success.'))
+    success = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
     tx_id = models.CharField(
@@ -53,12 +53,31 @@ class Contribution(SuperModel):
         null=True,
         help_text=_('The associated Subscription.'),
     )
+
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='contributions',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Grant.'),
+    )
+
+    amount_per_period_usdt = models.DecimalField(
+        default=0,
+        decimal_places=18,
+        max_digits=64,
+        db_index=True,
+        help_text=_('The amount per contribution period in USDT'),
+    )
+
     normalized_data = JSONField(
         default=dict,
         blank=True,
         help_text=_('the normalized grant data; for easy consumption on read'),
     )
-    match = models.BooleanField(default=True, help_text=_('Whether or not this contribution should be matched.'))
+
+    match = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not this contribution should be matched.'))
+
     originated_address = models.CharField(
         max_length=255,
         default='0x0',
@@ -100,9 +119,11 @@ class Contribution(SuperModel):
             return self.blockexplorer_url_helper(self.tx_id)
 
     def blockexplorer_url_helper(self, tx_id):
-        if self.checkout_type == 'eth_zksync':
+        if self.checkout_type == 'eth_polygon':
+            return f'https://polygonscan.com/tx/{tx_id}'
+        elif self.checkout_type == 'eth_zksync':
             return f'https://zkscan.io/explorer/transactions/{tx_id.replace("sync-tx:", "")}'
-        if self.checkout_type == 'eth_std':
+        elif self.checkout_type == 'eth_std':
             network_sub = f"{self.subscription.network}." if self.subscription and self.subscription.network != 'mainnet' else ''
             return f'https://{network_sub}etherscan.io/tx/{tx_id}'
         # TODO: support all block explorers for diff chains
@@ -136,14 +157,18 @@ class Contribution(SuperModel):
             comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
             profile = Profile.objects.get(handle='gitcoinbot')
             activity = self.subscription.activities.first()
-            Comment.objects.update_or_create(
+            # delete all before recreating
+            Comment.objects.filter(
                 profile=profile,
                 activity=activity,
-                defaults={
-                    "comment":comment,
-                    "is_edited":True,
-                }
-                );
+            ).delete()
+            # create new entry
+            Comment.objects.create(
+                profile=profile,
+                activity=activity,
+                comment=comment,
+                is_edited=True
+            )
         except Exception as e:
             print(e)
 
@@ -169,26 +194,60 @@ class Contribution(SuperModel):
                     raise Exception('Unsupported zkSync transaction hash format')
                 tx_hash = self.split_tx_id.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
 
+                # First we get a list of zkSync tokens (TODO: this should be fetched with a management command and be cached)
+                tokens_url = 'https://rinkeby-api.zksync.io/api/v0.1/tokens' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1/tokens'
+                r = requests.get(tokens_url)
+                r.raise_for_status()
+                token_data = r.json() # zkSync token data
+                tokens = {}
+                for token in token_data:
+                    tokens[token['symbol']] = token["id"]
+
                 # Get transaction data with zkSync's API: https://zksync.io/api/v0.1.html#transaction-details
                 base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
                 r = requests.get(f"{base_url}/transactions_all/{tx_hash}")
                 r.raise_for_status()
                 tx_data = r.json() # zkSync transaction data
 
+                # get decimals for the token used in this transaction
+                token = Token.objects.filter(
+                    network_id=1,
+                    network=self.subscription.network,
+                    symbol=self.subscription.token_symbol,
+                    approved=True
+                ).first().to_dict
+
+                # This amount should match what is stated in the API response
+                has_same_amount = float(tx_data['amount']) == float(self.subscription.amount_per_period * 10 ** token['decimals'])
+                # Get the zksync token ID for the expected token_symbol
+                has_same_token = tx_data['token'] == tokens[self.subscription.token_symbol]
+
                 # Update contribution values based on transaction data
                 self.originated_address = tx_data['from'] # assumes sender is originator
-                self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
-                self.validator_passed = True
-                self.split_tx_confirmed = True
-                self.tx_cleared = True
-                self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
+
+                # Ensure the onchain token data matches the expected contribution data
+                if has_same_token and has_same_amount:
+                    self.success = tx_data['fail_reason'] is None # if no failure string, transaction was successful
+                    self.validator_passed = True
+                    self.split_tx_confirmed = True
+                    self.tx_cleared = True
+                    self.validator_comment = "zkSync checkout. Success" if self.success else f"zkSync Checkout. {tx_data['fail_reason']}"
+                else:
+                    # mark the failure as a validator comment
+                    fail_reason = "Token ids do not match" if has_same_token else "Amounts do not match"
+                    # this contribution data has been deliberately altered mid-flight: fail hard
+                    self.success = False
+                    self.validator_passed = False
+                    self.split_tx_confirmed = False
+                    self.tx_cleared = False
+                    self.validator_comment = f"zkSync Checkout. Failed: {fail_reason}"
 
             elif self.checkout_type == 'eth_std' or self.checkout_type == 'eth_polygon':
                 # Standard L1 and sidechain L2 checkout using the BulkCheckout contract
 
                 # get active chain std/polygon
                 chain =  self.checkout_type.split('_')[-1]
-                
+
                 # Prepare web3 provider
                 w3 = get_web3(network, chain=chain)
 
@@ -268,7 +327,7 @@ def psave_contrib(sender, instance, **kwargs):
                     "from_profile":instance.subscription.contributor_profile,
                     "org_profile":instance.subscription.grant.org_profile,
                     "to_profile":instance.subscription.grant.admin_profile,
-                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(False),
+                    "value_usd":instance.subscription.amount_per_period_usdt if instance.subscription.amount_per_period_usdt else instance.subscription.get_converted_amount(True),
                     "url":instance.subscription.grant.url,
                     "network":instance.subscription.network,
                     "txid":instance.subscription.split_tx_id,
@@ -290,6 +349,12 @@ def presave_contrib(sender, instance, **kwargs):
     ele = instance
     sub = ele.subscription
     grant = sub.grant
+
+    # save hotpath data to the contribution itself
+    instance.grant = grant
+    instance.amount_per_period_usdt = float(sub.amount_per_period_usdt)
+
+    # everything else is stored in a JSONField
     instance.normalized_data = {
         'id': grant.id,
         'logo': grant.logo.url if grant.logo else None,
@@ -297,6 +362,7 @@ def presave_contrib(sender, instance, **kwargs):
         'title': grant.title,
         'amount_per_period_minus_gas_price': float(instance.subscription.amount_per_period_minus_gas_price),
         'amount_per_period_to_gitcoin': float(instance.subscription.amount_per_period_to_gitcoin),
+        'match_amount_when_contributed': sub.match_amount,
         'created_on': ele.created_on.strftime('%Y-%m-%d'),
         'frequency': int(sub.frequency),
         'frequency_unit': sub.frequency_unit,

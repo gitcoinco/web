@@ -9,4 +9,4 @@ class ProfileFactory(factory.django.DjangoModelFactory):
         model = Profile
 
     handle = factory.Sequence(lambda n: "Contributor_%03d" % n)
-    data = {}
+    data = factory.LazyFunction(dict)

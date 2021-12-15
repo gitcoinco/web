@@ -1,3 +1,5 @@
-{% for activity in activities %}
-  {% include 'shared/activity.html' with row=activity %}
-{% endfor %}
+{% if activities %}
+  {% for activity in activities %}
+    {% include 'shared/activity.html' with row=activity %}
+  {% endfor %}
+{% endif %}

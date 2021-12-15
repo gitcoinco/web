@@ -89,9 +89,9 @@ def create_grant_active_clr_mapping():
     # waits 14 days from removing them tho
     from grants.models import GrantCLRCalculation
     from_date = timezone.now() - timezone.timedelta(days=14)
-    gclrs = GrantCLRCalculation.objects.filter(latest=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
+    gclrs = GrantCLRCalculation.objects.filter(active=True, grantclr__is_active=False, grantclr__end_date__lt=from_date)
     for gclr in gclrs:
-        gclr.latest = False
+        gclr.active = False
         gclr.save()
         grant = gclr.grant
         grant.calc_clr_round()
@@ -224,31 +224,31 @@ def create_avatar_cache():
         at.save()
 
 
-def create_activity_cache():
-    hours = 24 if not settings.DEBUG else 1000
+# def create_activity_cache():
+#     hours = 24 if not settings.DEBUG else 1000
 
-    print('activity.1')
-    view = 'activity'
-    keyword = '24hcount'
-    data = Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
-    JSONStore.objects.filter(view=view, key=keyword).all().delete()
-    JSONStore.objects.create(
-        view=view,
-        key=keyword,
-        data=json.loads(json.dumps(data, cls=EncodeAnything)),
-        )
+#     print('activity.1')
+#     view = 'activity'
+#     keyword = '24hcount'
+#     activity_count = Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+#     JSONStore.objects.filter(view=view, key=keyword).all().delete()
+#     JSONStore.objects.create(
+#         view=view,
+#         key=keyword,
+#         data=json.loads(json.dumps(activity_count, cls=EncodeAnything)),
+#         )
 
-    print('activity.2')
+#     print('activity.2')
 
-    for tag in tags:
-        keyword = tag[2]
-        data = get_specific_activities(keyword, False, None, None).filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
-        JSONStore.objects.filter(view=view, key=keyword).all().delete()
-        JSONStore.objects.create(
-            view=view,
-            key=keyword,
-            data=json.loads(json.dumps(data, cls=EncodeAnything)),
-            )
+#     for tag in tags:
+#         keyword = tag[2]
+#         data = get_specific_activities(keyword, False, None, None, page=1, page_size=activity_count).filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+#         JSONStore.objects.filter(view=view, key=keyword).all().delete()
+#         JSONStore.objects.create(
+#             view=view,
+#             key=keyword,
+#             data=json.loads(json.dumps(data, cls=EncodeAnything)),
+#             )
 
 
 def create_quests_cache():
@@ -373,7 +373,7 @@ class Command(BaseCommand):
             operations.append(create_hack_event_cache)
             operations.append(create_hidden_profiles_cache)
             operations.append(create_tribes_cache)
-            operations.append(create_activity_cache)
+            # operations.append(create_activity_cache)
             operations.append(create_post_cache)
             operations.append(create_top_grant_spenders_cache)
             operations.append(create_avatar_cache)

@@ -766,18 +766,7 @@ urlpatterns = [
     re_path(r'^_administration/stats/$', dataviz.views.stats, name='stats'),
     re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
     re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
-    re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
     re_path(r'^_administration/mesh/?$', dataviz.d3_views.mesh_network_viz, name='mesh_network_viz'),
-    re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
-    re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
-    re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),
-    re_path(r'^_administration/viz/circles/(.*)?$', dataviz.d3_views.viz_circles, name='viz_circles'),
-    re_path(r'^_administration/viz/sankey/(.*)?$', dataviz.d3_views.viz_sankey, name='viz_sankey'),
-    re_path(r'^_administration/viz/spiral/(.*)?$', dataviz.d3_views.viz_spiral, name='viz_spiral'),
-    re_path(r'^_administration/viz/heatmap/(.*)?$', dataviz.d3_views.viz_heatmap, name='viz_heatmap'),
-    re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
-    re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
-    re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
     url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
     # quadratic lands
@@ -812,6 +801,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
     re_path(r'^login/github$', dashboard.views.gh_login, name='gh_login_'),
+    re_path(r'^complete/?$', retail.views.index, name='gh_complete_redirect'),
     path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
@@ -840,7 +830,7 @@ urlpatterns += [
         name='profile_min'
     ),
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+[-]?)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),

@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+import argparse
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -35,17 +37,20 @@ class Command(BaseCommand):
         parser.add_argument('clr_pk', type=str, default="all")
         parser.add_argument('what', type=str, default="full")
         parser.add_argument('sync', type=str, default="false")
+        parser.add_argument('--use-sql', type=bool, default=False)
+        parser.add_argument('--skip-save', type=bool, default=False)
         # slim = just run 0 contribution match upcate calcs
         # full, run [0, 1, 10, 100, calcs across all grants]
 
 
     def handle(self, *args, **options):
-
         network = options['network']
         clr_pk = options['clr_pk']
         what = options['what']
         sync = options['sync']
-        print (network, clr_pk, what, sync)
+        use_sql = options['use_sql']
+        skip_save = options['skip_save']
+        print (network, clr_pk, what, sync, use_sql)
 
         if clr_pk and clr_pk.isdigit():
             active_clr_rounds = GrantCLR.objects.filter(pk=clr_pk)
@@ -57,20 +62,22 @@ class Command(BaseCommand):
                 if sync == 'true':
                     # run it sync -> useful for payout / debugging
                     predict_clr(
-                        save_to_db=True,
+                        save_to_db=True if not skip_save else False,
                         from_date=timezone.now(),
                         clr_round=clr_round,
                         network=network,
                         what=what,
+                        use_sql=use_sql,
                     )
                 else:
                     # runs it as celery task.
                     process_predict_clr(
-                        save_to_db=True,
+                        save_to_db=True if not skip_save else False,
                         from_date=timezone.now(),
                         clr_round=clr_round,
                         network=network,
                         what=what,
+                        use_sql=use_sql,
                     )
         else:
             print("No active CLRs found")

@@ -64,22 +64,6 @@ Vue.component('grantsCartEthereumZksync', {
   },
 
   computed: {
-    /**
-     * @dev List of tokens supported by zkSync + Gitcoin. To add a token to this list:
-     *   1. Make sure the token is supported by zkSync
-     *        Mainnet list: https://api.zksync.io/api/v0.1/tokens
-     *        Rinkeby list: https://rinkeby-api.zksync.io/api/v0.1/tokens
-     *   2. Add the token symbol to the appropriate list below
-     * @dev We hardcode the list here instead of fetching from the API to improve performance and
-     * reduce problems that arise if zkSync's server is slow
-     */
-    supportedTokens() {
-      const mainnetTokens = [ 'ETH', 'DAI', 'USDC', 'TUSD', 'USDT', 'SUSD', 'BUSD', 'LEND', 'BAT', 'KNC', 'LINK', 'MANA', 'MKR', 'REP', 'SNX', 'WBTC', 'ZRX', 'MLTT', 'LRC', 'HEX', 'PAN', 'SNT', 'YFI', 'UNI', 'STORJ', 'TBTC', 'EURS', 'GUSD', 'RENBTC', 'RNDR', 'DARK', 'CEL', 'AUSDC', 'CVP', 'BZRX', 'REN' ];
-      const rinkebyTokens = [ 'ETH', 'USDT', 'USDC', 'LINK', 'TUSD', 'HT', 'OMG', 'TRB', 'ZRX', 'BAT', 'REP', 'STORJ', 'NEXO', 'MCO', 'KNC', 'LAMB', 'GNT', 'MLTT', 'XEM', 'DAI', 'PHNX' ];
-
-      return this.network === 'rinkeby' ? rinkebyTokens : mainnetTokens;
-    },
-
     // Array of transfer objects in the format zkSync needs
     transfers() {
       // Generate array of objects used to send the transfer. We give each transfer a fee of zero,
@@ -135,7 +119,7 @@ Vue.component('grantsCartEthereumZksync', {
 
       // Get list of tokens in cart not supported by zkSync
       this.cart.unsupportedTokens = this.cart.tokenList.filter(
-        (token) => !this.supportedTokens.includes(token)
+        (token) => !appCart.$refs.cart.zkSyncSupportedTokens.includes(token)
       );
 
       // If currently selected fee token is still in the cart, don't change it. Otherwise, set
@@ -170,7 +154,6 @@ Vue.component('grantsCartEthereumZksync', {
 
       // Emit event so cart.js can update state accordingly to display info to user
       this.$emit('zksync-data-updated', {
-        zkSyncUnsupportedTokens: this.cart.unsupportedTokens,
         zkSyncEstimatedGasCost: estimatedGasCost
       });
     },
@@ -180,8 +163,7 @@ Vue.component('grantsCartEthereumZksync', {
       this.zksync.showModal = false; // hide checkout modal if visible
       this.resetZkSyncModal(); // reset modal settings
 
-      _alert('There is an insufficient balance to complete checkout. Please load funds and try again.', 'danger');
-      this.handleError(new Error('Insufficient balance to complete checkout')); // throw error and show to user
+      this.handleError(new Error('There is an insufficient balance to complete checkout. Please load funds and try again.')); // throw error and show to user
     },
 
     // Reset zkSync modal status after a checkout failure
@@ -215,6 +197,26 @@ Vue.component('grantsCartEthereumZksync', {
         // Ensure wallet is connected
         if (!web3) {
           throw new Error('Please connect a wallet');
+        }
+
+        let networkId = String(Number(web3.eth.currentProvider.chainId));
+
+        if (networkId !== '1' && networkId !== '4') {
+          // User MetaMask must be connected to Ethereum mainnet
+          try {
+            await ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x1' }]
+            });
+          } catch (switchError) {
+            if (switchError.code === 4001) {
+              throw new Error('Please connect MetaMask to Ethereum network.');
+            } else if (switchError.code === -32002) {
+              throw new Error('Please respond to a pending MetaMask request.');
+            } else {
+              console.error(switchError);
+            }
+          }
         }
 
         // Make sure setup is completed properly
@@ -327,7 +329,7 @@ Vue.component('grantsCartEthereumZksync', {
         const userAmount = toBigNumber(zksyncBalances[tokenSymbol]);
         const requiredAmount = requiredAmounts[tokenSymbol];
 
-        if (requiredAmount.gt(userAmount))
+        if (typeof requiredAmount !== 'undefined' && requiredAmount.gt(userAmount))
           isBalanceSufficient = false;
       });
 

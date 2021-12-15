@@ -63,6 +63,11 @@ class GrantPayout(SuperModel):
 
 class GrantCLR(SuperModel):
 
+    CLR_TYPES = (
+        ('main', 'Main Round'),
+        ('ecosystem', 'Ecosystem Round'),
+        ('cause', 'Cause Round'),
+    )
     class Meta:
         unique_together = ('customer_name', 'round_num', 'sub_round_slug',)
 
@@ -94,6 +99,7 @@ class GrantCLR(SuperModel):
         on_delete=models.SET_NULL,
         help_text='sets the owners profile photo in CLR banner on the landing page'
     )
+    grant_clr_percentage_cap = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, help_text="Percentage of total pot at which Grant CLR should be capped")
     is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
     end_date = models.DateTimeField(help_text="CLR Round End Date")
@@ -145,6 +151,40 @@ class GrantCLR(SuperModel):
         max_length=500,
         help_text=_('sets the background in CLR banner on the landing page'),
     )
+    type = models.CharField(
+        max_length=25,
+        choices=CLR_TYPES,
+        default='main',
+        help_text="Grant CLR Type"
+    )
+    logo_text_hex= models.CharField(
+        blank=True,
+        null=True,
+        default='#000000',
+        max_length=15,
+        help_text=_("sets the text color of the logo")
+    )
+    banner_bg_hex = models.CharField(
+        blank=True,
+        null=True,
+        default='#11BC92',
+        max_length=15,
+        help_text=_("sets the bg color on the banner below the logo")
+    )
+    banner_text_hex = models.CharField(
+        blank=True,
+        null=True,
+        default='#FFF',
+        max_length=15,
+        help_text=_("sets the text color on the banner below the logo")
+    )
+    banner_text = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text=_("text which appears below banner")
+    )
+
     grant_payout = models.ForeignKey(
         'grants.GrantPayout',
         null=True,
@@ -188,6 +228,7 @@ class GrantCLR(SuperModel):
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
         for obj in self.clr_calculations.filter(grant=grant, latest=True):
+            obj.active = False
             obj.latest = False
             obj.save()
 
@@ -195,6 +236,7 @@ class GrantCLR(SuperModel):
             grantclr=self,
             grant=grant,
             clr_prediction_curve=clr_prediction_curve,
+            active=True if self.is_active else False,
             latest=True,
         )
 
@@ -237,6 +279,10 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
         indexes = (GinIndex(fields=["vector_column"]),)
+        index_together = [
+            ["last_update", "network", "active", "hidden"],
+            ["last_update", "network", "active", "hidden", "weighted_shuffle"],
+        ]
 
 
     REGIONS = [
@@ -498,6 +544,7 @@ class Grant(SuperModel):
         help_text=_('The last grant admin update date'),
         null=True,
         blank=True,
+        db_index=True,
     )
     categories = models.ManyToManyField('GrantCategory', blank=True) # TODO: REMOVE
     tags = models.ManyToManyField('GrantTag', blank=True)
@@ -635,7 +682,7 @@ class Grant(SuperModel):
         # [amount_donated, match amount, bonus_from_match_amount ], etc..
         # [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]
         _clr_prediction_curve = []
-        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True).order_by('-created_on'):
+        for insert_clr_calc in self.clr_calculations.using('default').filter(latest=True, active=True).order_by('-created_on'):
             insert_clr_calc = insert_clr_calc.clr_prediction_curve
             if not _clr_prediction_curve:
                 _clr_prediction_curve = insert_clr_calc
@@ -814,6 +861,14 @@ class Grant(SuperModel):
     def get_absolute_url(self):
         return self.url
 
+
+    @property
+    def is_idle(self):
+        """Return if grants is idle."""
+        three_months_ago = timezone.now() - timezone.timedelta(days=90)
+        return (self.last_update and self.last_update <= three_months_ago)
+
+
     @property
     def contract(self):
         """Return grants contract."""
@@ -861,6 +916,8 @@ class Grant(SuperModel):
             grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
 
         grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
+
+        active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
         return {
                 'id': self.id,
@@ -922,7 +979,9 @@ class Grant(SuperModel):
                 'admin_message': self.admin_message,
                 'link_to_new_grant': self.link_to_new_grant.url if self.link_to_new_grant else self.link_to_new_grant,
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
-                'has_external_funding': self.has_external_funding
+                'has_external_funding': self.has_external_funding,
+                'active_round_names': active_round_names,
+                'is_idle': self.is_idle
             }
 
     def favorite(self, user):

@@ -2,7 +2,7 @@ import json
 
 from django.core.management.base import BaseCommand
 
-from grants.tests.models.factories.grant_factory import GrantFactory
+from grants.tests.factories import GrantFactory
 
 
 class Command(BaseCommand):

@@ -33,7 +33,7 @@ from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
 from marketing.mails import featured_funded_bounty, send_mail, setup_lang, tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
-from marketing.utils import should_suppress_notification_email
+from marketing.utils import allowed_to_send_email
 from pyshorteners import Shortener
 from retail.emails import render_new_kudos_email
 from slackclient import SlackClient
@@ -217,7 +217,7 @@ def maybe_market_kudos_to_email(kudos_transfer):
             html, text = render_new_kudos_email(to_email, kudos_transfer, True)
 
             # 4. Send email unless the email address has notifications disabled
-            if not should_suppress_notification_email(to_email, 'kudos'):
+            if allowed_to_send_email(to_email, 'kudos'):
                 # TODO:  Should we be doing something with the response from SendGrid?
                 #        Maybe we should store it somewhere.
                 send_mail(from_email, to_email, subject, text, html)
@@ -409,21 +409,21 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
-        return False
-
-    # Define posting specific variables.
-    comment_id = None
-    url = bounty.github_url
-    uri = parse(url).path
-    uri_array = uri.split('/')
-
-    # Prepare the comment message string.
-    msg = build_github_notification(bounty, event_name, profile_pairs)
-    if not msg:
-        return False
-
     try:
+        if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
+            return False
+
+        # Define posting specific variables.
+        comment_id = None
+        url = bounty.github_url
+        uri = parse(url).path
+        uri_array = uri.split('/')
+
+        # Prepare the comment message string.
+        msg = build_github_notification(bounty, event_name, profile_pairs)
+        if not msg:
+            return False
+
         username = uri_array[1]
         repo = uri_array[2]
         issue_num = uri_array[4]

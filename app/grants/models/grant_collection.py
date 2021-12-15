@@ -42,6 +42,9 @@ class GrantCollection(SuperModel):
     objects = CollectionsQuerySet.as_manager()
     shuffle_rank = models.PositiveIntegerField(default=1, db_index=True)
     curators = models.ManyToManyField(blank=True, to='dashboard.Profile', help_text=_('List of allowed curators'))
+    
+    class Meta:
+        get_latest_by = 'created_on'
 
     def generate_cache(self):
         grants = self.grants.all()

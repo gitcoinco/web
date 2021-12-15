@@ -25,7 +25,7 @@ from django.utils import timezone
 
 from marketing.mails import gdpr_reconsent
 from marketing.models import EmailEvent, EmailSubscriber
-from marketing.utils import should_suppress_notification_email
+from marketing.utils import allowed_to_send_email
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -41,7 +41,7 @@ class Command(BaseCommand):
         email_type_sendgrid = "new_bounty_daily"
         email_type_settings = 'new_bounty_notifications'
         for es in eses:
-            if not should_suppress_notification_email(es.email, email_type_settings):
+            if allowed_to_send_email(es.email, email_type_settings):
                 base_email_events = EmailEvent.objects.filter(email=es.email, created_on__gt=time_threshold, category__icontains=email_type_sendgrid)
                 num_sends = base_email_events.filter(event='delivered').count()
                 num_opens = base_email_events.filter(event='open').count()

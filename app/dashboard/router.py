@@ -306,9 +306,9 @@ class BountySerializerSlim(BountySerializer):
         """Define the bounty serializer metadata."""
         model = Bounty
         fields = (
-            'pk', 'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on', 'event',
+            'pk', 'url', 'title', 'github_url', 'experience_level', 'status', 'fulfillment_accepted_on', 'event',
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
-            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
+            'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested_count', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
             'bounty_categories'
         )
@@ -326,8 +326,7 @@ class BountySerializerCheckIn(BountySerializer):
 
 class BountiesViewSet(viewsets.ModelViewSet):
     """Handle Bounties view behavior."""
-    queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'event') \
-        .all().order_by('-web3_created')
+    queryset = Bounty.objects.order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
@@ -401,8 +400,8 @@ class BountiesViewSet(viewsets.ModelViewSet):
 
         # filter by standard_bounties_id
         if 'standard_bounties_id__in' in param_keys:
-            statuses = self.request.query_params.get('standard_bounties_id__in').split(',')
-            queryset = queryset.filter(standard_bounties_id__in=statuses)
+            stdbounties = self.request.query_params.get('standard_bounties_id__in').split(',')
+            queryset = queryset.filter(standard_bounties_id__in=stdbounties)
 
         # filter by statuses
         if 'status__in' in param_keys:
@@ -601,7 +600,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         if 'github_url' in param_keys:
             url = self.request.query_params.get('github_url')
-            queryset = queryset.filter(github_url__iexact=url)
+            queryset = queryset.filter(github_url=url.lower())
 
         queryset = queryset.order_by('-web3_created')
         queryset = queryset.distinct()

@@ -3,8 +3,7 @@ from dashboard.models import Profile
 from grants.models.contribution import Contribution
 from grants.models.donation import Donation
 from grants.models.subscription import Subscription
-
-from .factories.donation_factory import DonationFactory
+from grants.tests.factories import DonationFactory
 
 
 @pytest.mark.django_db
@@ -73,7 +72,7 @@ class TestDonation:
 
         assert hasattr(donation, 'token_amount_usdt')
         assert donation.token_amount_usdt == 0
-    
+
     def test_donation_has_a_tx_id(self):
         """Test tx_id attribute is present and defaults to '0x0'."""
 

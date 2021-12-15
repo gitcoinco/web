@@ -46,7 +46,8 @@ def get_tezos_txn_status(fulfillment):
 
     tx_response = requests.get(f'{BASE_URL}/operations/{txnid}').json()
 
-    if tx_response:
+    # a valid response will return a list whereas an invalid response will return a dict
+    if tx_response and isinstance(tx_response, list) and len(tx_response) > 0:
         tx_response = tx_response[0]
         block_tip = requests.get(f'{BASE_URL}/head').json()['level']
         confirmations = block_tip - tx_response['level']
@@ -70,7 +71,7 @@ def sync_tezos_payout(fulfillment):
         if txn:
             fulfillment.payout_tx_id = txn['hash']
             fulfillment.save()
-            
+
     if fulfillment.payout_tx_id and fulfillment.payout_tx_id != "0x0":
         txn_status = get_tezos_txn_status(fulfillment)
 

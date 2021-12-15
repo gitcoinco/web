@@ -26,7 +26,7 @@ $(document).ready(() => {
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
     page: 1,
-    limit: 6,
+    limit: 12,
     me: false,
     sort_option: 'weighted_shuffle',
     collection_id: false,
@@ -40,7 +40,8 @@ if (document.getElementById('grants-showcase')) {
     grant_tags: [],
     tenants: [],
     idle: false,
-    featured: true
+    featured: true,
+    round_type: false
   };
 
   const grantRegions = [
@@ -81,9 +82,10 @@ if (document.getElementById('grants-showcase')) {
       grant: {},
       collectionsPage: null,
       cart_data_count: CartData.length(),
-      show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
       network: document.network,
       keyword: document.keyword,
+      active_rounds: document.active_rounds,
+      round_types: document.round_types,
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
@@ -126,7 +128,33 @@ if (document.getElementById('grants-showcase')) {
       handle: document.contxt.github_handle,
       editingCollection: false,
       createCollectionRedirect: false,
-      activeTimeout: null
+      activeTimeout: null,
+      scrollTriggered: false,
+      previouslyLoadedGrants: {},
+      selectOptions: [
+        {group: 'Discover', label: null},
+        {label: 'Most Relevant', value: ''},
+        {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
+        {label: 'Trending', value: '-metadata__upcoming'},
+        {label: 'Undiscovered Gems', value: '-metadata__gem'},
+        {label: 'Recently Updated', value: '-last_update'},
+        {label: 'Newest', value: '-created_on'},
+        {label: 'Oldest', value: 'created_on'},
+        {label: 'A to Z', value: 'title'},
+        {label: 'Z to A', value: '-title'},
+        {group: 'Current Round', label: null},
+        {label: 'Highest Match Amount', value: '-clr_prediction_curve__0__1'},
+        {label: 'Highest Amount Raised', value: '-amount_received_in_round'},
+        {label: 'Highest Contributor Count', value: '-positive_round_contributor_count'},
+        {group: 'All-Time', label: null},
+        {label: 'Highest Amount Raised', value: '-amount_received'},
+        {label: 'Highest Contributor Count', value: '-contributor_count'}
+      ],
+      adminOptions: [
+        {group: 'Misc', label: null},
+        {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
+        {label: 'ADMIN: Sybil Score', value: '-sybil_score'}
+      ]
     },
     methods: {
       toggleStyle: function(style) {
@@ -141,10 +169,6 @@ if (document.getElementById('grants-showcase')) {
           $('.page-styles').last().text('');
         }
       },
-      toggleActiveCLRs: function() {
-        this.show_active_clrs = !this.show_active_clrs;
-        window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
-      },
       setView: function(mode, event) {
         event.preventDefault();
         localStorage.setItem('grants_view', mode);
@@ -152,7 +176,7 @@ if (document.getElementById('grants-showcase')) {
       },
       fetchClrGrants: async function() {
         let vm = this;
-        let url = '/api/v0.1/grants_clr/';
+        let url = '/api/v0.1/grants_clr/?page_size=25';
         let getClr = await fetch(url);
         let clrJson = await getClr.json();
 
@@ -212,14 +236,14 @@ if (document.getElementById('grants-showcase')) {
 
         // reset the params and set collection_id
         vm.params = Object.assign({}, baseParams);
-        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collection_id }});
+        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collectionId }});
 
         // fetch the collections details
-        const collectionDetailsURL = `/grants/v1/api/collections/${collection_id}`;
+        const collectionDetailsURL = `/grants/v1/api/collections/${collectionId}`;
         const collection = await fetchData(collectionDetailsURL, 'GET');
 
         // update the stored state
-        vm.$set(vm, 'collection_id', collection_id);
+        vm.$set(vm, 'collection_id', collectionId);
         vm.$set(vm, 'collection_title', collection.title);
         vm.$set(vm, 'collection_description', collection.description);
         vm.$set(vm, 'collection_owner', collection.owner.handle);
@@ -309,11 +333,14 @@ if (document.getElementById('grants-showcase')) {
         if (vm.lock)
           return;
 
+        vm.scrollTriggered = append_mode;
         vm.lock = true;
+        console.log(vm.searchParams.toString());
         const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!requestGrants.ok) {
           vm.lock = false;
+          vm.scrollTriggered = false;
           vm.grantsHasNext = true;
           return;
         }
@@ -321,9 +348,14 @@ if (document.getElementById('grants-showcase')) {
 
         if (!append_mode) {
           vm.grants = [];
+          vm.prevouslyLoadedGrants = {};
         }
+
         getGrants.grants.forEach(function(item) {
-          vm.grants.push(item);
+          if (!vm.prevouslyLoadedGrants[item.id]) {
+            vm.grants.push(item);
+            vm.previouslyLoadedGrants[item.id] = item;
+          }
         });
 
         vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
@@ -353,6 +385,7 @@ if (document.getElementById('grants-showcase')) {
           }
         });
         vm.lock = false;
+        vm.scrollTriggered = false;
 
         return vm.grants;
       },
@@ -432,16 +465,16 @@ if (document.getElementById('grants-showcase')) {
 
         const scrollY = window.scrollY;
         const visible = document.documentElement.clientHeight;
-        const pageHeight = document.documentElement.scrollHeight - 500;
+        const pageHeight = document.documentElement.scrollHeight - 1600;
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
 
+
         if (bottomOfPage || pageHeight < visible) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
-            vm.fetchCollections(true);
-          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
-            vm.fetchGrants(vm.params.page, true, true);
-            vm.grantsHasNext = false;
+            await vm.fetchCollections(true);
+          } else if (vm.grantsHasNext) {
+            await vm.fetchGrants(vm.params.page, true, true);
           }
         }
       },
@@ -507,8 +540,8 @@ if (document.getElementById('grants-showcase')) {
           this.$set(grant, 'isInCart', (grant_ids_in_cart.indexOf(String(grant.id)) !== -1));
         });
       },
-      scrollBottom: function() {
-        this.bottom = this.scrollEnd();
+      scrollBottom: async function() {
+        this.bottom = await this.scrollEnd();
       },
       closeDropdown: function(ref) {
         // Close the menu and (by passing true) return focus to the toggle button
@@ -541,12 +574,6 @@ if (document.getElementById('grants-showcase')) {
         // load the correct tab
         this.loadTab(true);
       },
-      pageIsFetched: function(page) {
-        let vm = this;
-
-        return vm.fetchedPages.includes(page);
-
-      },
       showFilter: function() {
         let vm = this;
         let show_filter = false;
@@ -558,6 +585,7 @@ if (document.getElementById('grants-showcase')) {
           'network',
           'state',
           'profile',
+          'round_type',
           'sub_round_slug',
           'collections_page',
           'grant_regions',
@@ -632,6 +660,18 @@ if (document.getElementById('grants-showcase')) {
       deleteCollection: function() {
         // deleteCollection exists as a component with selected_collection passed in as a prop
         this.$refs.deleteCollection.show();
+      },
+      selectRoundType: function(roundType) {
+        // round_type_selected
+        this.params.round_type = roundType;
+        // clear selected round
+        this.params.sub_round_slug = false;
+        this.params.round_num = 0;
+        this.params.customer_name = false;
+        // save params to url
+        this.updateUrlParams(false);
+        // reset results
+        this.changeQuery({page: 1});
       }
     },
     computed: {
@@ -721,6 +761,9 @@ if (document.getElementById('grants-showcase')) {
         if (document.contxt.github_handle) {
           return true;
         }
+      },
+      showLoading() {
+        return this.lock && !this.scrollTriggered;
       }
     },
     beforeMount() {

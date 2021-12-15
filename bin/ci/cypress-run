@@ -19,6 +19,7 @@ python3 app/manage.py migrate
 python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/users.json"
 python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/profiles.json"
 python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/economy.json"
+python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/grants/fixtures/grant_types.json"
 
 # run app server
 python3 app/manage.py runserver 0.0.0.0:8000 &

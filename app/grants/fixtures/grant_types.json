@@ -1,0 +1,80 @@
+[
+  {
+    "model": "grants.granttype",
+    "pk": 1,
+    "fields": {
+      "created_on": "2021-10-18T18:21:10.384Z",
+      "modified_on": "2021-10-18T18:21:10.384Z",
+      "name": "tech",
+      "label": "Tech",
+      "is_active": true,
+      "is_visible": true,
+      "logo": ""
+    }
+  },
+  {
+    "model": "grants.granttype",
+    "pk": 2,
+    "fields": {
+      "created_on": "2021-10-18T18:21:10.391Z",
+      "modified_on": "2021-10-18T18:21:10.391Z",
+      "name": "media",
+      "label": "Community",
+      "is_active": true,
+      "is_visible": true,
+      "logo": ""
+    }
+  },
+  {
+    "model": "grants.granttype",
+    "pk": 3,
+    "fields": {
+      "created_on": "2021-10-18T18:21:10.392Z",
+      "modified_on": "2021-10-18T18:21:10.392Z",
+      "name": "matic",
+      "label": "Matic: Build-n-Earn",
+      "is_active": true,
+      "is_visible": true,
+      "logo": ""
+    }
+  },
+  {
+    "model": "grants.granttype",
+    "pk": 4,
+    "fields": {
+      "created_on": "2021-10-18T18:21:10.393Z",
+      "modified_on": "2021-10-18T18:21:10.393Z",
+      "name": "health",
+      "label": "Health",
+      "is_active": true,
+      "is_visible": true,
+      "logo": ""
+    }
+  },
+  {
+    "model": "grants.granttype",
+    "pk": 5,
+    "fields": {
+      "created_on": "2021-10-18T18:21:10.394Z",
+      "modified_on": "2021-10-18T18:21:10.394Z",
+      "name": "change",
+      "label": "Crypto for Black Lives",
+      "is_active": true,
+      "is_visible": true,
+      "logo": ""
+    }
+  },
+    {
+    "model": "grants.granttype",
+    "pk": 6,
+    "fields": {
+      "created_on": "2021-10-18T18:21:10.394Z",
+      "modified_on": "2021-10-18T18:21:10.394Z",
+      "name": "gr12",
+      "label": "Grants Round 12",
+      "is_active": true,
+      "is_visible": true,
+      "logo": ""
+    }
+  }
+]
