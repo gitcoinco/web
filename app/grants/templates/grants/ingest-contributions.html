@@ -49,7 +49,7 @@
                 <h1 class="text-center font-title-xl">Add Missing Contributions</h1>
                 <p class="text-center font-smaller-1 text-black-60">
                   If you completed a Gitcoin Grants checkout, but don't see evidence of this in your
-                  email or the Gitcoin interface, you can use this form to fix that! This form supports both L1 transactions and L2 transactions (on zkSync).
+                  email or the Gitcoin interface, you can use this form to fix that! This form supports both L1 transactions and L2 transactions (on zkSync & Polygon).
                 </p>
               </div>
 
@@ -98,8 +98,8 @@
               </div>
 
               <!-- Transaction hash -->
-              <div class="col-12 mb-3">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase">Transaction Hash (for Standard Checkout on L1)</label>
+              <div v-if="form.checkoutType === 'eth_std' || form.checkoutType === 'eth_polygon'" class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">Transaction Hash</label>
                 <input id="transaction-hash" v-model="form.txHash" name="amount" class="form__input form__input-lg" />
                 <div class="col-12 text-danger pl-0 mt-1" v-if="errors.txHash">
                   [[errors.txHash]]
@@ -107,8 +107,8 @@
               </div>
 
               <!-- User address -->
-              <div class="col-12 mb-3">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase">Wallet Address (for zkSync Checkout)</label>
+              <div v-if="form.checkoutType === 'eth_zksync'" class="col-12 mb-3">
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">Wallet Address</label>
                 <input id="wallet-address" v-model="form.userAddress" name="amount" class="form__input form__input-lg" />
                 <div class="col-12 text-danger pl-0 mt-1" v-if="errors.address">
                   [[errors.address]]
