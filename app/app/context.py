@@ -114,9 +114,9 @@ def preprocess(request):
         onboard_tasks = []
 
     # town square wall post max length
-    max_length_offset = abs(((
-        request.user.profile.created_on if user_is_authenticated_and_valid else timezone.now()
-    ) - timezone.now()).days)
+    max_length_offset = abs(
+        ((request.user.profile.created_on if user_is_authenticated_and_valid else timezone.now()) - timezone.now()).days
+    )
     max_length = 600 + max_length_offset
 
     context = {

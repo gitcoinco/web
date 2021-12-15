@@ -1,6 +1,6 @@
-from git.tests.factories.git_cache_factory import GitCacheFactory
 import pytest
 from git.models import GitCache
+from git.tests.factories.git_cache_factory import GitCacheFactory
 
 
 @pytest.mark.django_db

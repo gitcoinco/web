@@ -111,6 +111,7 @@ def data_viz_helper_get_data_responses(request, visual_type):
 
     return data_dict
 
+
 def data_viz_helper_merge_json_trees(output):
     """Handle merging the visualization data trees.
 
