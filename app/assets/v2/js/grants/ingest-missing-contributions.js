@@ -46,12 +46,8 @@ Vue.component('grants-ingest-contributions', {
 
       if (!checkoutType) {
         this.$set(this.errors, 'checkoutType', 'Please select a valid checkout type');
-      } else if ([ 'eth_std', 'eth_polygon' ].includes(checkoutType)) {
-        this.form.userAddress = undefined;
-      } else if (checkoutType == 'eth_zksync') {
-        this.form.txHash = undefined;
       }
-
+      
       if ((!txHash || !isValidTxHash) && (checkoutType == 'eth_std' || checkoutType == 'eth_polygon')) {
         this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
       }
