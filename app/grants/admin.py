@@ -107,7 +107,7 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'title',
+        'title', 'is_grant_idle',
         'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
         'grant_type', 'tags', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
@@ -127,11 +127,14 @@ class GrantAdmin(GeneralAdmin):
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
-        'emails'
+        'emails', 'is_grant_idle'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile', 'twitter_verified_by']
     search_fields = ['description', 'admin_profile__handle']
+
+    def is_grant_idle(self, instance):
+        return instance.is_idle
 
     def get_queryset(self, request):
         qs = super(GrantAdmin, self).get_queryset(request)
