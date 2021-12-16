@@ -69,8 +69,7 @@ from dashboard.brightid_utils import get_brightid_status
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3
-from dashboard.views import invalid_file_response
-from economy.models import Token as FTokens
+from economy.models import Token
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
@@ -683,7 +682,7 @@ def get_grants_by_filters(
                 grant_ids = grant_ids + list(GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True))
             # construct query by ORing each of the given clr_rounds grant_filters
             grant_filters |= Q(**clr_round.grant_filters)
-        # apply grant_ids from the collection_filters 
+        # apply grant_ids from the collection_filters
         if len(grant_ids):
             _grants = _grants.filter(pk__in=grant_ids)
         # apply the grant_filters
@@ -1937,7 +1936,7 @@ def grant_new(request):
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
-        
+
         if logo:
             # If logo is present, validate that it is an image
             try:
@@ -2474,7 +2473,7 @@ def grants_bulk_add(request, grant_str):
 
             if len(grant_data) == 3:  # backward compatibility
                 grants[grant_id]['amount'] = grant_data[1]
-                grants[grant_id]['token'] = FTokens.objects.filter(id=int(grant_data[2])).first()
+                grants[grant_id]['token'] = Token.objects.filter(id=int(grant_data[2])).first()
 
     by_whom = ""
     prefix = ""
@@ -3373,6 +3372,7 @@ def ingest_contributions(request):
     network = request.POST.get('network')
     ingestion_types = [] # after each series of ingestion, we append the ingestion_method to this array
     handle = request.POST.get('handle')
+    chain = request.POST.get('chain', 'std')
 
     if (profile.is_staff and
         ( not handle or Profile.objects.filter(handle=handle).count() == 0)
@@ -3380,7 +3380,7 @@ def ingest_contributions(request):
             return JsonResponse({ 'success': False, 'message': 'Profile could not be found' })
 
     # Setup web3
-    w3 = get_web3(network)
+    w3 = get_web3(network, chain=chain)
 
     def get_profile(profile):
         """
@@ -3412,17 +3412,43 @@ def ingest_contributions(request):
     except:
         return JsonResponse({ 'success': False, 'message': 'Signature could not be verified' })
 
+
+    """
+        For a given token address, returns the token's details.
+        For mainnet checkout in ETH, we change the token address to 0x0000000000000000000000000000000000000000
+        For polygon checkout in MATIC, we change the token address to 0x0000000000000000000000000000000000001010
+        since that's the address BulkCheckout uses 0xEeee as the zero address
+    """
     def get_token(w3, network, address):
-        if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
-            # 0xEeee... is used to represent ETH in the BulkCheckout contract
-            address = '0x0000000000000000000000000000000000000000'
+
+        if chain == 'std':
+            # set network_id and override address for ETH on mainnet
+            network_id = 1
+            if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
+                # 0xEeee... is used to represent ETH in the BulkCheckout contract
+                address = '0x0000000000000000000000000000000000000000'
+
+        elif chain == 'polygon':
+            # set network_id and override address for ETH on mainnet
+            network_id = 137 if network == 'mainnet' else 80001
+            if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
+                # 0xEeee... is used to represent MATIC in the BulkCheckout contract
+                address = '0x0000000000000000000000000000000000001010'
+
+        tokens = Token.objects.filter(
+            network=network,
+            network_id=network_id,
+            approved=True
+        )
+
         try:
             # First try checksum
             address_checksum = w3.toChecksumAddress(address)
-            return FTokens.objects.filter(network=network, address=address_checksum, approved=True).first().to_dict
+            return tokens.filter(address=address_checksum).first().to_dict
         except AttributeError as e:
+            # Retry with lowercase
             address_lowercase = address.lower()
-            return FTokens.objects.filter(network=network, address=address_lowercase, approved=True).first().to_dict
+            return tokens.filter(address=address_lowercase).first().to_dict
 
     def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address):
         """
@@ -3437,13 +3463,15 @@ def ingest_contributions(request):
             grant__pk=grant.pk, contributor_profile=profile, split_tx_id=txid, token_symbol=currency
         )
         for existing_subscription in existing_subscriptions:
-            tolerance = 0.01  # 1% tolerance to account for floating point
-            amount_max = amount * (1 + tolerance)
-            amount_min = amount * (1 - tolerance)
+            transfer_tolerance = 0.05  # 1% tolerance to account for floating point
+            amount_max = int(amount * (1 + transfer_tolerance))
+            amount_min = int(amount * (1 - transfer_tolerance))
+
+            amount_to_use = existing_subscription.amount_per_period
 
             if (
-                existing_subscription.amount_per_period_minus_gas_price > amount_min
-                and existing_subscription.amount_per_period_minus_gas_price < amount_max
+                amount_to_use >= amount_min and
+                amount_to_use <= amount_max
             ):
                 # Subscription exists
                 logger.info("Subscription exists, exiting function\n")
@@ -3526,7 +3554,15 @@ def ingest_contributions(request):
             raise Exception("Transaction was not successful")
 
         # Parse tx logs
-        bulk_checkout_contract = w3.eth.contract(address=settings.BULK_CHECKOUT_ADDRESS, abi=settings.BULK_CHECKOUT_ABI)
+        if network == 'mainnet' and chain == 'polygon':
+            bulk_checkout_address = '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
+        elif network == 'testnet' and chain == 'polygon':
+            bulk_checkout_address = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973'
+        else:
+            bulk_checkout_address = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C'
+
+
+        bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=settings.BULK_CHECKOUT_ABI)
         parsed_logs = bulk_checkout_contract.events.DonationSent().processReceipt(receipt)
 
         # Return if no donation logs were found
@@ -3564,7 +3600,8 @@ def ingest_contributions(request):
                 continue
 
             if do_write:
-                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_std', from_address)
+                checkout_type = 'eth_std' if chain == 'std' else 'eth_polygon'
+                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address)
         return
 
     def handle_ingestion(profile, network, identifier, do_write):
@@ -3573,14 +3610,13 @@ def ingest_contributions(request):
             # An address was provided, so we'll use the zkSync API to fetch their transactions
             ingestion_method = 'zksync_api'
         elif len(identifier) == 66:
-            # A transaction hash was provided, so we look for BulkCheckout logs in the L1 transaction
+            # A transaction hash was provided, so we look for BulkCheckout logs in the L1/L2 transaction
             ingestion_method = 'bulk_checkout'
         else:
             raise Exception('Invalid identifier')
 
         # Setup web3 and get user profile
-        PROVIDER = f"wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}"
-        w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+        w3 = get_web3(network, chain=chain)
 
         # Handle ingestion
         if ingestion_method == 'bulk_checkout':
@@ -3617,7 +3653,7 @@ def ingest_contributions(request):
                 # Extract contribution parameters from the JSON
                 symbol = transaction["tx"]["token"]
                 value = transaction["tx"]["amount"]
-                token = FTokens.objects.filter(network=network, symbol=transaction["tx"]["token"], approved=True).first().to_dict
+                token = Token.objects.filter(network=network, symbol=transaction["tx"]["token"], approved=True).first().to_dict
                 decimals = token["decimals"]
                 symbol = token["name"]
                 value_adjusted = int(value) / 10 ** int(decimals)
@@ -3645,10 +3681,14 @@ def ingest_contributions(request):
     try:
         if txHash != '':
             handle_ingestion(get_profile(profile), network, txHash, True)
-            ingestion_types.append('L1')
+            if chain == 'std':
+                ingestion_types.append('L1')
+            elif chain == 'polygon':
+                ingestion_types.append('L2-polygon')
         if userAddress != '':
             handle_ingestion(get_profile(profile), network, userAddress, True)
             ingestion_types.append('L2')
+
     except Exception as err:
         return JsonResponse({ 'success': False, 'message': err })
 
