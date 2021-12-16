@@ -11,6 +11,7 @@ Vue.component('grants-ingest-contributions', {
   data: function() {
     return {
       form: {
+        chain: undefined,
         checkoutType: undefined,
         txHash: undefined, // user transaction hash, used to ingest L1 and Polygon L2 donations
         userAddress: undefined, // user address, used to ingest zkSync (L2) donations
@@ -45,8 +46,12 @@ Vue.component('grants-ingest-contributions', {
 
       if (!checkoutType) {
         this.$set(this.errors, 'checkoutType', 'Please select a valid checkout type');
+      } else if ([ 'eth_std', 'eth_polygon' ].includes(checkoutType)) {
+        this.form.userAddress = undefined;
+      } else if (checkoutType == 'eth_zksync') {
+        this.form.txHash = undefined;
       }
-      
+
       if ((!txHash || !isValidTxHash) && (checkoutType == 'eth_std' || checkoutType == 'eth_polygon')) {
         this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
       }
@@ -139,7 +144,7 @@ Vue.component('grants-ingest-contributions', {
         }
 
         // Parse out provided form inputs and verify them, but bypass address checks if user is staff
-        ({ txHash, userAddress } = formParams);
+        ({ txHash, userAddress, checkoutType } = formParams);
 
         // If user entered an address, verify that it matches the user's connected wallet address
         if (!document.contxt.is_staff && userAddress && ethers.utils.getAddress(userAddress) !== ethers.utils.getAddress(walletAddress)) {
@@ -162,6 +167,14 @@ Vue.component('grants-ingest-contributions', {
         // so to workaround that we ask the user for a signature, and the backend will verify that signature
         const { signature, message } = await this.signMessage(walletAddress);
 
+        let chain = undefined;
+
+        if (checkoutType == 'eth_polygon') {
+          chain = 'polygon';
+        } else {
+          chain = 'std';
+        }
+
         // Send POST requests to ingest contributions
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const url = '/grants/ingest';
@@ -173,7 +186,8 @@ Vue.component('grants-ingest-contributions', {
           signature,
           message,
           network: document.web3network || 'mainnet',
-          handle: this.form.handle
+          handle: this.form.handle,
+          chain: chain
         };
         const postParams = {
           method: 'POST',

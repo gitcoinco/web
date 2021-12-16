@@ -36,20 +36,18 @@
         {% include 'grants/nav.html' %}
       </div>
 
-      <grants-ingest-contributions class="container-fluid bg-lightblue pb-5 pt-5" v-cloak id="gc-grants-ingest-contributions" inline-template>
+      <grants-ingest-contributions class="container-fluid bg-lightblue py-5" v-cloak id="gc-grants-ingest-contributions" inline-template>
         <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
-          <div class="text-center">
-            <img style="width:6rem;" src="{% static "v2/images/grants/torchbearer.svg" %}">
-          </div>
 
           <div class="container mt-3 mb-3 bg-white position-relative rounded col-lg-6 mx-auto">
             <div class="row p-4 p-md-5">
 
               <div class="col-12 text-center mb-4">
-                <h1 class="text-center font-title-xl">Add Missing Contributions</h1>
+                <h1 class="text-center font-title-xl my-5">Add Missing Contributions</h1>
                 <p class="text-center font-smaller-1 text-black-60">
                   If you completed a Gitcoin Grants checkout, but don't see evidence of this in your
-                  email or the Gitcoin interface, you can use this form to fix that! This form supports both L1 transactions and L2 transactions (on zkSync).
+                  email or the Gitcoin interface, you can use this form to fix that! 
+                  This form supports both L1 transactions and L2 transactions (on zkSync & polygon).
                 </p>
               </div>
 
@@ -65,7 +63,7 @@
                 <p class="font-body mb-1">
                   <ul>
                     <li>Make sure your wallet is connected to mainnet with the same address you used to checkout</li>
-                    <li>If you donated using L1 (Standard Checkout), please enter the transaction hash</li>
+                    <li>If you donated using L1 (Standard Checkout) / L2 (Polygon Checkout), please enter the transaction hash</li>
                     <li>If you donated using L2 (zkSync Checkout), please enter your wallet address</li>
                     <li>Only enter one of these at a time</li>
                   </ul>
@@ -73,13 +71,13 @@
               </div>
 
               <!-- Collect Information -->
-              <div class="col-12 mb-2">
+              <div class="col-12 mb-3">
                 <h5 class="mt-4">Contribution Data</h5>
                 <hr>
               </div>
 
               <!-- Checkout Type -->
-              <div class="col-12 mb-3">
+              <div class="col-12 mb-5">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase">Checkout Type</label>
                 <v-select class="vselect-clean rounded-pill" 
                   style="min-width:230px; border: 1px solid #ced4da;" 
@@ -97,17 +95,9 @@
                 </div>
               </div>
 
-              <!-- Transaction hash -->
-              <div class="col-12 mb-3">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase">Transaction Hash (for Standard Checkout on L1)</label>
-                <input id="transaction-hash" v-model="form.txHash" name="amount" class="form__input form__input-lg" />
-                <div class="col-12 text-danger pl-0 mt-1" v-if="errors.txHash">
-                  [[errors.txHash]]
-                </div>
-              </div>
 
-              <!-- User address -->
-              <div class="col-12 mb-3">
+              <!-- User address : zksync-->
+              <div class="col-12 mb-5" v-if="form.checkoutType =='eth_zksync'">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase">Wallet Address (for zkSync Checkout)</label>
                 <input id="wallet-address" v-model="form.userAddress" name="amount" class="form__input form__input-lg" />
                 <div class="col-12 text-danger pl-0 mt-1" v-if="errors.address">
@@ -115,9 +105,18 @@
                 </div>
               </div>
 
+              <!-- Transaction hash: mainnet and polygon -->
+              <div class="col-12 mb-5" v-else>
+                <label class="font-caption letter-spacing text-black-60 text-uppercase">Transaction Hash (for Standard Checkout on L1 / Checkout on Polygon)</label>
+                <input id="transaction-hash" v-model="form.txHash" name="amount" class="form__input form__input-lg" />
+                <div class="col-12 text-danger pl-0 mt-1" v-if="errors.txHash">
+                  [[errors.txHash]]
+                </div>
+              </div>
+
               <!-- Profile to ingest for, only usable by staff -->
               {% if is_staff %}
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-5">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase">Profile Handle</label>
                   <p>
                     <span class="font-weight-bold">NOTE</span>:
