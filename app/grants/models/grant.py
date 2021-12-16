@@ -31,6 +31,13 @@ class GrantPayout(SuperModel):
         ('expired', 'expired'),
         ('funding_withdrawn', 'funding_withdrawn')
     ]
+    NETWORKS = [
+        ('mainnet', 'mainnet'),
+        ('rinkeby', 'rinkeby'),
+        # ('polygon', 'polygon'),
+        # ('mumbai', 'mumbai'),
+    ]
+
     name = models.CharField(
         max_length=25,
         help_text=_('Display Name for Payout')
@@ -40,6 +47,12 @@ class GrantPayout(SuperModel):
         null=True,
         blank=True,
         help_text=_('Payout Contract from which funds would be claimed')
+    )
+    network = models.CharField(
+        max_length=15,
+        default='mainnet',
+        choices=NETWORKS,
+        help_text=_('Network where contract is deployed')
     )
     payout_token = models.CharField(
         max_length=10,

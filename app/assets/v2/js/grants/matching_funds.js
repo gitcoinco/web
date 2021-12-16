@@ -38,6 +38,11 @@ Vue.mixin({
             ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
             : null;
 
+          m.grant_payout.grant_clrs.map(e => {
+            e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
+            e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
+          });
+
           const claimData = await vm.checkClaimStatus(m);
 
           m.status = claimData.status;
@@ -79,10 +84,14 @@ Vue.mixin({
     async checkClaimStatus(match) {
       const recipientAddress = match.grant.admin_address;
       const contractAddress = match.grant_payout.contract_address;
-      const txHash = match.payout_tx;
+      const txHash = match.claim_tx;
 
       let status = 'not-found';
       let timestamp = null;
+
+      if (!txHash) {
+        return { status, timestamp };
+      }
 
       web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
 
@@ -145,16 +154,49 @@ Vue.mixin({
       matchPayouts.methods.claimMatchPayout(match.grant.admin_address)
         .send({from: user})
         .on('transactionHash', async function(txHash) {
+          _alert('Your matching funds claim is being processed', 'success');
           await this.fetchCLRMatches();
           vm.$forceUpdate();
           this.tabSelected = 1;
           waitingState(false);
-          _alert("Match payout claimed! Funds will be sent to your grant's address", 'success');
         })
         .on('error', function(error) {
           waitingState(false);
           _alert(error, 'danger');
         });
+    },
+    async postToDatabase(matchPk, claimTX) {
+      const url = '/grants/v1/api/clr-matches/';
+
+      try {
+        let result = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({pk: matchPk, claim_tx: claimTx})
+        });
+      } catch (err) {
+        // TODO: Something went wrong, manual ingestion?
+        console.error(err);
+        // console.log('Standard claim ingestion failed, falling back to manual ingestion');
+      }
+      
+    },
+    stringifyClrs(clrs) {
+      let c = clrs.map(a => a.display_text).join(', ');
+      let g = [];
+
+      c.forEach(elem => {
+        g.push(elem);
+        if (g.join(', ').length > 24) {
+          g.splice(-1);
+          g.push(`+${c.length - g.length} more`);
+        }
+      });
+
+      return g.slice(0, -1).join(', ') + ' ' + g.slice(-1);
     },
     scrollToElement(element) {
       const container = this.$refs[element];

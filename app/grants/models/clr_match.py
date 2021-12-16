@@ -36,7 +36,7 @@ class CLRMatch(SuperModel):
     payout_tx = models.CharField(
         max_length=255,
         blank=True,
-        help_text=_('The test payout txid'),
+        help_text=_('The payout txid'),
     )
     payout_tx_date = models.DateTimeField(null=True, blank=True)
     payout_contribution = models.ForeignKey(
@@ -46,6 +46,12 @@ class CLRMatch(SuperModel):
         blank=True,
         on_delete=models.SET_NULL,
         help_text=_('Contribution for the payout')
+    )
+    claim_tx = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('The claim txid'),
     )
     grant_payout = models.ForeignKey(
         'grants.GrantPayout',

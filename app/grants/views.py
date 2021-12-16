@@ -3846,7 +3846,7 @@ def upload_sybil_csv(request):
 
 @csrf_exempt
 @login_required
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @permission_classes((permissions.IsAuthenticated,))
 def clr_matches(request, round_number=None):
     profile = get_profile(request)
@@ -3854,12 +3854,32 @@ def clr_matches(request, round_number=None):
     if not profile:
         return Response({'message': 'Profile not found!'}, status=404)
 
-    clr_matches = CLRMatch.objects.select_related(
-        'grant', 'grant_payout').filter(grant__admin_profile=profile)
+    if request.method == 'GET':
+        clr_matches = CLRMatch.objects.select_related(
+            'grant', 'grant_payout').filter(grant__admin_profile=profile)
 
-    if round_number:
-        clr_matches = clr_matches.filter(round_number=round_number)
+        if round_number:
+            clr_matches = clr_matches.filter(round_number=round_number)
 
-    serializer = CLRMatchSerializer(clr_matches, many=True)
+        serializer = CLRMatchSerializer(clr_matches, many=True)
+    
+    elif request.method == 'POST':
+        pk = request.data.get('pk')
+        claim_tx = request.data.get('claim_tx')
+
+        if pk is None:
+            return Response({'message': 'pk field is required!'}, status=400)
+
+        if claim_tx is None:
+            return Response({'message': 'claim_tx field is required!'}, status=400)
+
+        clr_match = CLRMatch.objects.filter(pk=pk).first()
+
+        if not clr_match:
+            return Response({'message': 'CLR Match not found!'}, status=404)
+        
+        clr_match.claim_tx = claim_tx
+        clr_match.save(update_fields=['claim_tx'])
+
 
     return Response(serializer.data)

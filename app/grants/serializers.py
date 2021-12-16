@@ -173,8 +173,7 @@ class CLRMatchSerializer(FlexFieldsModelSerializer):
     class Meta:
         model = CLRMatch
         fields = (
-            'pk', 'amount', 'round_number', 'payout_tx', 'payout_tx_date', 'grant',
-            'grant_payout'
+            'pk', 'amount', 'round_number', 'claim_tx', 'grant', 'grant_payout'
         )
 
 
