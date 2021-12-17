@@ -154,38 +154,45 @@ Vue.mixin({
       matchPayouts.methods.claimMatchPayout(match.grant.admin_address)
         .send({from: user})
         .on('transactionHash', async function(txHash) {
-          _alert('Your matching funds claim is being processed', 'success');
+          await postToDatabase(match.pk, txHash);
           await this.fetchCLRMatches();
           vm.$forceUpdate();
           this.tabSelected = 1;
           waitingState(false);
+          _alert('Your matching funds claim is being processed', 'success');
         })
         .on('error', function(error) {
           waitingState(false);
           _alert(error, 'danger');
         });
     },
-    async postToDatabase(matchPk, claimTX) {
+    async postToDatabase(matchPk, claimTx) {
       const url = '/grants/v1/api/clr-matches/';
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
       try {
         let result = await fetch(url, {
           method: 'POST',
           headers: {
             'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfmiddlewaretoken
           },
           body: JSON.stringify({pk: matchPk, claim_tx: claimTx})
         });
+
+        if (result.status >= 400) {
+          throw await result.json();
+        }
       } catch (err) {
         // TODO: Something went wrong, manual ingestion?
         console.error(err);
+        _alert(err, 'danger');
         // console.log('Standard claim ingestion failed, falling back to manual ingestion');
       }
-      
     },
     stringifyClrs(clrs) {
-      let c = clrs.map(a => a.display_text).join(', ');
+      let c = clrs.map(a => a.display_text);
       let g = [];
 
       c.forEach(elem => {

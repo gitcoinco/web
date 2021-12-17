@@ -252,10 +252,10 @@
                   <span class="font-body text-grey-500">[[ match.funding_withdrawal_date ]]</span>
                 </b-col>
                 <b-col class="text-lg-right mt-2 mt-lg-0">
-                  <a :href="[[`https://etherscan.io/tx/${match.payout_tx}` ]]" target="_blank" rel="noopener noreferrer" class="d-lg-block d-none font-body">
+                  <a v-if="match.claim_tx" :href="[[`https://etherscan.io/tx/${match.claim_tx}` ]]" target="_blank" rel="noopener noreferrer" class="d-lg-block d-none font-body">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
-                  <a :href="[[`https://etherscan.io/tx/${match.payout_tx}` ]]" target="_blank" rel="noopener noreferrer" class="d-lg-none d-block font-subheader">
+                  <a v-if="match.claim_tx" :href="[[`https://etherscan.io/tx/${match.claim_tx}` ]]" target="_blank" rel="noopener noreferrer" class="d-lg-none d-block font-subheader">
                     View Transaction<i class="far fa-external-link ml-2"></i>
                   </a>
                 </b-col>

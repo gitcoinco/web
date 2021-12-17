@@ -3862,6 +3862,8 @@ def clr_matches(request, round_number=None):
             clr_matches = clr_matches.filter(round_number=round_number)
 
         serializer = CLRMatchSerializer(clr_matches, many=True)
+
+        return Response(serializer.data)
     
     elif request.method == 'POST':
         pk = request.data.get('pk')
@@ -3881,5 +3883,4 @@ def clr_matches(request, round_number=None):
         clr_match.claim_tx = claim_tx
         clr_match.save(update_fields=['claim_tx'])
 
-
-    return Response(serializer.data)
+        return Response({'message': 'Claim transaction successfully ingested!'}, status=200)
