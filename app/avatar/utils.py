@@ -568,10 +568,10 @@ def get_temp_image_file(image):
 
 
 def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=None, extra_flags=''):
-    print('creating svg with pyvips')
-    png = None
-    if not prefer or prefer == 'pyvips':
+    try:
         png = svg_to_png_pyvips(svg_content, scale=scale)
+    except:
+        png = None
     return png
 
 

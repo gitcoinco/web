@@ -135,7 +135,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 0 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash set_user_personas  >> /var/log/gitcoin/set_user_personas.log  2>&1
 50 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_brightid_status  >> /var/log/gitcoin/update_brightid_status.log  2>&1
 * 4 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_idena_status  >> /var/log/gitcoin/update_idena_status.log  2>&1
-*/30 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash fix_broken_avatars  >> /var/log/gitcoin/fix_broken_avatars.log  2>&1
 
 ## FEE ADDRESS CONVERSION
 ## 0 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash feeSwapper
