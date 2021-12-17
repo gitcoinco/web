@@ -567,7 +567,7 @@ def get_temp_image_file(image):
     return temp_io
 
 
-def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=None, extra_flags=''):
+def svg_to_png(svg_content, scale=1):
     try:
         png = svg_to_png_pyvips(svg_content, scale=scale)
     except:
@@ -602,7 +602,7 @@ def svg_to_png_pyvips(svg_content, scale=1):
     return None
 
 
-def convert_img(obj, input_fmt='svg', output_fmt='png', height=215, width=215, preferred_method='', extra_flags=''):
+def convert_img(obj):
     """Convert the provided buffer to another format.
 
     Args:
@@ -618,7 +618,7 @@ def convert_img(obj, input_fmt='svg', output_fmt='png', height=215, width=215, p
         None: If there is an exception, the method returns None.
 
     """
-    return svg_to_png(obj.read(), height=width, width=width, prefer=preferred_method, extra_flags=extra_flags)
+    return svg_to_png(obj.read())
 
 
 def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
