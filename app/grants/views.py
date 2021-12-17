@@ -85,7 +85,6 @@ from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
     is_grant_team_member, sync_payout, toggle_user_sybil,
 )
-from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
@@ -3449,7 +3448,6 @@ def ingest_contributions(request):
             # Retry with lowercase
             address_lowercase = address.lower()
             return tokens.filter(address=address_lowercase).first().to_dict
-
     def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address):
         """
         Creates contribution and subscription and saves it to database if no matching one exists
@@ -3561,7 +3559,6 @@ def ingest_contributions(request):
         else:
             bulk_checkout_address = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C'
 
-
         bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=settings.BULK_CHECKOUT_ABI)
         parsed_logs = bulk_checkout_contract.events.DonationSent().processReceipt(receipt)
 
@@ -3571,6 +3568,7 @@ def ingest_contributions(request):
 
         # Get transaction timestamp
         block_info = w3.eth.getBlock(receipt['blockNumber'])
+
         created_on = pytz.UTC.localize(datetime.fromtimestamp(block_info['timestamp']))
 
         # For each event in the parsed logs, create the DB objects
@@ -3617,13 +3615,15 @@ def ingest_contributions(request):
 
         # Setup web3 and get user profile
         w3 = get_web3(network, chain=chain)
+        if chain == 'polygon':
+            from web3.middleware import geth_poa_middleware
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
         # Handle ingestion
         if ingestion_method == 'bulk_checkout':
             # We were provided an L1 transaction hash, so process it
             txid = identifier
             process_bulk_checkout_tx(w3, txid, profile, network, True)
-
         elif ingestion_method == 'zksync_api':
             # Get history of transfers from this user's zkSync address using the zkSync API: https://zksync.io/api/v0.1.html#account-history
             user_address = identifier
@@ -3690,6 +3690,7 @@ def ingest_contributions(request):
             ingestion_types.append('L2')
 
     except Exception as err:
+        print(err)
         return JsonResponse({ 'success': False, 'message': err })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })

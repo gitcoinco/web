@@ -69,7 +69,8 @@ Vue.component('grants-ingest-contributions', {
       return {
         txHash: isValidTxHash ? txHash : '',
         // getAddress returns checksum address required by web3py, and throws if address is invalid
-        userAddress: isValidAddress ? ethers.utils.getAddress(userAddress) : ''
+        userAddress: isValidAddress ? ethers.utils.getAddress(userAddress) : '',
+        checkoutType: checkoutType
       };
     },
 
@@ -139,8 +140,16 @@ Vue.component('grants-ingest-contributions', {
           throw new Error('Please connect a wallet');
         }
 
+        if (!ethereum) {
+          throw new Error('Please connect to MetaMask wallet!');
+        }
+
         // Parse out provided form inputs and verify them, but bypass address checks if user is staff
         ({ txHash, userAddress, checkoutType } = formParams);
+        
+        if (checkoutType === 'eth_polygon') {
+          await setupPolygon(); // handles switching to polygon network + adding network config if doesn't exist
+        }
 
         // If user entered an address, verify that it matches the user's connected wallet address
         if (!document.contxt.is_staff && userAddress && ethers.utils.getAddress(userAddress) !== ethers.utils.getAddress(walletAddress)) {
@@ -152,7 +161,7 @@ Vue.component('grants-ingest-contributions', {
           const receipt = await this.getTxReceipt(txHash);
 
           if (!receipt) {
-            throw new Error('Transaction hash not found. Are you sure this transaction was confirmed?');
+            throw new Error("Transaction hash not found. Are you sure this transaction was confirmed and you're on the right network?");
           }
           if (!document.contxt.is_staff && ethers.utils.getAddress(receipt.from) !== ethers.utils.getAddress(walletAddress)) {
             throw new Error('Sender of the provided transaction does not match connected wallet address. Please contact Gitcoin and we can ingest your contributions for you');
