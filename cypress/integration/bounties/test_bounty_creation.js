@@ -1,19 +1,11 @@
 describe('Creating a new bounty', () => {
+
   before(() => {
     cy.setLocalStorage('quickstart_dontshow', true);
-    cy.setupMetamask();
   });
 
   beforeEach(() => {
     cy.impersonateUser();
-  });
-
-  afterEach(() => {
-    cy.logout();
-  });
-
-  after(() => {
-    cy.clearWindows();
   });
 
   it('can navigate to the create bounty screen', () => {
@@ -42,7 +34,6 @@ describe('Creating a new bounty', () => {
 
     cy.contains('ETH').click();
     cy.contains('MetaMask').click();
-    cy.acceptMetamaskAccess();
 
     cy.get('#issueURL').type('https://github.com/gitcoinco/web/issues/1');
 
@@ -62,7 +53,5 @@ describe('Creating a new bounty', () => {
     cy.get('#termsPrivacy').check();
 
     cy.get('Button').contains('Fund Issue').click();
-
-    cy.disconnectMetamaskWallet();
   });
 });

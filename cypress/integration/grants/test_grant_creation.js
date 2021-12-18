@@ -1,20 +1,4 @@
 describe('Creating a new grant', () => {
-  before(() => {
-    cy.setupMetamask();
-  });
-
-  beforeEach(() => {
-    cy.impersonateUser();
-  });
-
-  afterEach(() => {
-    cy.logout();
-  });
-
-  after(() => {
-    cy.clearWindows();
-  });
-
   it('can navigate to the new grant screen', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');
     cy.get('[data-submenu=products]').find('[data-submenu=grants]').click();
@@ -53,8 +37,8 @@ describe('Creating a new grant', () => {
 
         cy.get('input[placeholder="Has this project received external funding?"]').click();
         cy.contains('No, this project has not raised external funding.').click();
-       
-        
+
+
         cy.get('input[placeholder="Add tags to help others discover your grant"]').click();
         cy.contains('education').click();
 

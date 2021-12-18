@@ -1,22 +1,10 @@
 describe('Grants Explorer page', () => {
-  before(() => {
-    cy.setupMetamask();
-  });
-  
-  afterEach(() => {
-    cy.logout();
-  });
-  
-  after(() => {
-    cy.clearWindows();
-  });
-  
   describe('grants explorer sort menu', () => {
     it('contains the proper sort options', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -41,7 +29,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
       cy.get('.vs__dropdown-menu').should('not.contain', 'Most Relevant');
     });
@@ -61,7 +49,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.contains('Discover').parent().should('have.class', 'vs__dropdown-option--disabled');
@@ -73,7 +61,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -86,7 +74,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -99,7 +87,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       // Options in Discover category
@@ -181,4 +169,3 @@ describe('Grants Explorer page', () => {
     });
   });
 });
-  
