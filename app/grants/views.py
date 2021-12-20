@@ -3623,9 +3623,6 @@ def ingest_contributions(request):
 
         created_on = pytz.UTC.localize(datetime.fromtimestamp(block_info['timestamp']))
 
-        value_adjusted = None
-        symbol = None
-        to = None
         # For each event in the parsed logs, create the DB objects
         for (index,event) in enumerate(parsed_logs):
             logger.info(f'\nProcessing {index + 1} of {len(parsed_logs)}...')
@@ -3634,6 +3631,9 @@ def ingest_contributions(request):
             value = event["args"]["amount"]
             to = event["args"]["dest"]
 
+            value_adjusted = None
+            symbol = None
+            
             try:
                 token = get_token(w3, network, token_address)
                 decimals = token["decimals"]
