@@ -231,6 +231,50 @@ function displayProvider() {
   createImg(image);
 }
 
+async function setupPolygon(network = networkName) {
+  // Connect to Polygon network with MetaMask
+  let chainId = network === 'mainnet' ? '0x89' : '0x13881';
+  let rpcUrl = network === 'mainnet' ? 'https://rpc-mainnet.maticvigil.com'
+    : 'https://rpc-mumbai.maticvigil.com';
+
+  try {
+    await ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId }]
+    });
+  } catch (switchError) {
+    // This error code indicates that the chain has not been added to MetaMask
+    if (switchError.code === 4902) {
+      let networkText = network === 'rinkeby' || network === 'goerli' ||
+        network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
+
+      try {
+        await ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId,
+            rpcUrls: [rpcUrl],
+            chainName: `Polygon ${networkText.replace(/\b[a-z]/g, (x) => x.toUpperCase())}`,
+            nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
+          }]
+        });
+      } catch (addError) {
+        if (addError.code === 4001) {
+          throw new Error('Please connect MetaMask to Polygon network.');
+        } else {
+          console.error(addError);
+        }
+      }
+    } else if (switchError.code === 4001) {
+      throw new Error('Please connect MetaMask to Polygon network.');
+    } else if (switchError.code === -32002) {
+      throw new Error('Please respond to a pending MetaMask request.');
+    } else {
+      console.error(switchError);
+    }
+  }
+}
+
 async function onConnect() {
 
   // Setting this null forces to show the dialogue every time
@@ -511,7 +555,6 @@ async function getAllowance(address, tokenAddress) {
   let tokensContract = new web3.eth.Contract(minABI, tokenAddress);
 
   allowance = tokensContract.methods.allowance(selectedAccount, address).call({from: selectedAccount});
-  console.log(await allowance);
   return await allowance;
 }
 
