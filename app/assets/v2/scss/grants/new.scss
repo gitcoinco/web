@@ -83,3 +83,18 @@
 .ql-editor{
   min-height: 7rem;
 }
+
+.grant-edit-tooltip .tooltip-inner {
+  min-width: 290px;
+  text-align: left;
+  padding: 16px;
+}
+
+.grant-edit-disable-select .vs__selected {
+  background-color: $gc-grey-200;
+  padding: 0.3em 1.5em 0.3em 1.5em;
+}
+
+.grant-edit-disable-select .vs__deselect {
+  display: none;
+}

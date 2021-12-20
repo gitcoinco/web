@@ -727,11 +727,10 @@
         </div>
 
         <!-- Project Tags -->
-      <pre>
-    </pre>
-      <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
+        <div class="col-12 mb-3">
+          <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
 
-          <v-select id="grant-details-edit-tags" placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="grant_salected_tags" :reduce="tag => tag.id" multiple disabled>
+          <v-select id="grant-details-edit-tags" class="grant-edit-disable-select" placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="grant_salected_tags" :reduce="tag => tag.id" multiple disabled>
             <template #search="{attributes, events}">
               <input
                 class="vs__search"
@@ -745,9 +744,9 @@
             </template>
           </v-select>
 
-          <b-tooltip class="tooltip-inner" target="grant-details-edit-tags" triggers="hover">
+          <b-tooltip custom-class="grant-edit-tooltip" target="grant-details-edit-tags" triggers="hover" placement="bottomright">
             Editing tags requires approval as it might affect your matching round eligibility. <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
-            <br>
+            <br><br>
             To edit your tags, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
           </b-tooltip>
       </div>
@@ -794,145 +793,161 @@
 
           <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select a blockchain</label>
           
-          <v-select @input="resetAddress()" placeholder="Select a blockchain to receive funding" :options="grantChains" label="label" v-model="chainId" :reduce="state => state.name" disabled>
+          <v-select id="grant-details-edit-funding-details" class="grant-edit-disable-select" @input="resetAddress()" placeholder="Select a blockchain to receive funding" :options="grantChains" label="label" v-model="chainId" :reduce="state => state.name" disabled>
             <template v-slot:option="option">
               <span class="font-weight-semibold">[[ option.label ]]</span>
             </template>
           </v-select>
+
+          <b-tooltip custom-class="grant-edit-tooltip" target="grant-details-edit-funding-details" triggers="hover" placement="bottomright">
+            To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+          </b-tooltip> 
         </div>
 
         <!-- Wallet Address -->
         <div class="mb-3 col-12">
-          <template v-if="chainId == 'eth'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('ETH') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="eth_payout_address">
               ETH Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+            
+            <div id="eth_payout_address_wrapper">
+              <input id="eth_payout_address" v-model="eth_payout_address" name="eth_payout_address" class="form__input form__input-lg vs--disabled" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
-
-            <input id="eth_payout_address" v-model="eth_payout_address" name="eth_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="eth_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-else-if="chainId == 'zcash'">
+
+          <template v-else-if="grant.tenants && grant.tenants.indexOf('ZCASH') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="zcash_payout_address">
               Transparent Zcash Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">This is where funds from contributors to this grant will be sent.</br>
-              For Zcash grants, <span class="text-black-70 font-weight-bold">only t-addresses (transparent) are supported.</span>
-            </p>
+            <div id="zcash_payout_address_wrapper">
+              <input id="zcash_payout_address" v-model="grant.zcash_payout_address" name="zcash_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="t-" required disabled/>
+            </div>
 
-            <input id="zcash_payout_address" v-model="grant.zcash_payout_address" name="zcash_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="t-" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="zcash_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-if="chainId == 'celo'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('CELO') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="celo_payout_address">
               CELO Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="celo_payout_address_wrapper">
+              <input id="celo_payout_address" v-model="grant.celo_payout_address" name="celo_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="celo_payout_address" v-model="grant.celo_payout_address" name="celo_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="celo_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-if="chainId == 'zilliqa'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('ZIL') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="zil_payout_address">
               Zilliqa Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="zil_payout_address_wrapper">
+              <input id="zil_payout_address" v-model="grant.zil_payout_address" name="zil_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="zil_payout_address" v-model="grant.zil_payout_address" name="zil_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="zil_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-if="chainId == 'harmony'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('HARMONY') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="harmony_payout_address">
               Harmony Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="harmony_payout_address_wrapper">
+              <input id="harmony_payout_address" v-model="grant.harmony_payout_address" name="harmony_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="harmony_payout_address" v-model="grant.harmony_payout_address" name="harmony_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="harmony_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-if="chainId == 'binance'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('BINANCE') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="binance_payout_address">
               Binance Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="binance_payout_address_wrapper">
+              <input id="binance_payout_address" v-model="grant.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="binance_payout_address" v-model="grant.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="binance_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-if="chainId == 'polkadot'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('POLKADOT') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="polkadot_payout_address">
               Polkadot Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="polkadot_payout_address_wrapper">
+              <input id="polkadot_payout_address" v-model="grant.polkadot_payout_address" name="polkadot_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="polkadot_payout_address" v-model="grant.polkadot_payout_address" name="polkadot_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="polkadot_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-if="chainId == 'kusama'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('KUSAMA') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="kusama_payout_address">
               Kusama Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="kusama_payout_address_wrapper">
+              <input id="kusama_payout_address" v-model="grant.kusama_payout_address" name="kusama_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="kusama_payout_address" v-model="grant.kusama_payout_address" name="kusama_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="kusama_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
-          <template v-if="chainId == 'rsk'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('RSK') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="rsk_payout_address">
               RSK Recipient Wallet Address
             </label>
-            <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="rsk_payout_address_wrapper">
+              <input id="rsk_payout_address" v-model="grant.rsk_payout_address" name="rsk_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="rsk_payout_address" v-model="grant.rsk_payout_address" name="rsk_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="rsk_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
 
 
-          <template v-if="chainId == 'algorand'">
+          <template v-if="grant.tenants && grant.tenants.indexOf('ALGORAND') > -1">
             <label class="font-subheader font-weight-light letter-spacing" for="algorand_payout_address">
               Algorand Recipient Wallet Address
             </label>
-            <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">required</span>
 
-            <p class="text-black-60 font-caption mb-2">
-              This is where funds from contributors to this grant will be sent
-            </p>
+            <div id="algorand_payout_address_wrapper">
+              <input id="algorand_payout_address" v-model="grant.algorand_payout_address" name="algorand_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
 
-            <input id="algorand_payout_address" v-model="grant.algorand_payout_address" name="algorand_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+            <b-tooltip custom-class="grant-edit-tooltip" target="algorand_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
           </template>
+
         </div>
 
         <!-- Save/Cancel -->
@@ -1101,6 +1116,6 @@
     .grid-template-sidebar-row {
       grid-auto-columns: 1fr 1fr 1fr 1.2fr;
     }
-  }
+  } 
 
 </style>
