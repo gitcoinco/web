@@ -3623,35 +3623,45 @@ def ingest_contributions(request):
 
         created_on = pytz.UTC.localize(datetime.fromtimestamp(block_info['timestamp']))
 
+        value_adjusted = None
+        symbol = None
+        to = None
         # For each event in the parsed logs, create the DB objects
         for (index,event) in enumerate(parsed_logs):
             logger.info(f'\nProcessing {index + 1} of {len(parsed_logs)}...')
             # Extract contribution parameters from events
             token_address = event["args"]["token"]
             value = event["args"]["amount"]
-            token = get_token(w3, network, token_address)
-            decimals = token["decimals"]
-            symbol = token["name"]
-            value_adjusted = int(value) / 10 ** int(decimals)
             to = event["args"]["dest"]
 
-            # Find the grant
             try:
+                token = get_token(w3, network, token_address)
+                decimals = token["decimals"]
+                symbol = token["name"]
+                value_adjusted = int(value) / 10 ** int(decimals)
+            except Exception as e:
+                logger.exception(e)
+                raise Exception(f"unknown token with address {token_address} on network {network}")
+
+            try:
+                # Find the grant
                 grant = (
                     Grant.objects.filter(admin_address__iexact=to)
                     .order_by("-positive_round_contributor_count")
                     .first()
                 )
                 logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
+
+                if do_write:
+                    checkout_type = 'eth_std' if chain == 'std' else 'eth_polygon'
+                    save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address)
+
             except Exception as e:
                 logger.exception(e)
-                logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                logger.warning(f"{token_address} {value_adjusted} {symbol}  => {to}, Unknown Grant ")
                 logger.warning("Skipping unknown grant\n")
                 continue
 
-            if do_write:
-                checkout_type = 'eth_std' if chain == 'std' else 'eth_polygon'
-                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address)
         return
 
     def handle_ingestion(profile, network, identifier, do_write):
@@ -3743,7 +3753,7 @@ def ingest_contributions(request):
 
     except Exception as err:
         print(err)
-        return JsonResponse({ 'success': False, 'message': err })
+        return JsonResponse({ 'success': False, 'message': str(err) })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
 
