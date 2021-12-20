@@ -2540,6 +2540,8 @@ def quickstart(request):
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
+
+@staff_member_required
 def hall_of_fame(request):
     """Display the hall of fame."""
     hall_of_fame_query = GrantHallOfFame.objects.filter(is_published=True)
