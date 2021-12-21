@@ -121,6 +121,7 @@ along with this program. If not, see
                           >
                             <div :class="`w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-2 py-1 ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'bg-violet-nav' : '' }`">
                               [[ round_type ]]
+                              <i :class="`d-md-none ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'fas fa-chevron-up' : 'fas fa-chevron-down' }`"></i>
                             </div>
                           </div>
                           <div class="d-block d-md-none" v-for="clr in active_rounds[round_type]">
