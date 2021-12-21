@@ -105,7 +105,9 @@ along with this program. If not, see
 
                   <!-- CLR ROUND FILTERS -->
                   <b-dropdown v-if="round_types.length" ref="grantFlitersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2 btn-gc-black text-white" no-caret no-flip v-if="grant_types.length">
-                    <div class="d-md-none d-flex align-items-center"><b-dropdown-header><strong class="text-body">Browse Match Rounds</strong></b-dropdown-header></div>
+                    <div class="d-md-none d-flex align-items-center">
+                      <b-dropdown-header><strong class="text-body">Browse Match Rounds</strong></b-dropdown-header>
+                    </div>
                     <hr class="d-md-none m-0">
                     <template #button-content>
                       <span class="pr-1">
