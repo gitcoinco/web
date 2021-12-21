@@ -119,19 +119,21 @@ along with this program. If not, see
                             class="d-flex text-capitalize cursor-pointer bg-violet-nav-item"
                             @click.stop="selectRoundType(round_type)"
                           >
-                            <div :class="`w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-2 py-1 ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'bg-violet-nav' : '' }`">
+                            <div :class="`d-flex justify-content-between align-items-center w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-4 py-2 ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'bg-violet-nav' : '' }`">
                               [[ round_type ]]
                               <i :class="`d-md-none ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'fas fa-chevron-up' : 'fas fa-chevron-down' }`"></i>
                             </div>
                           </div>
+                          <hr class="m-0">
                           <div class="d-block d-md-none" v-for="clr in active_rounds[round_type]">
                             <div
                               v-if="(params.round_type && params.round_type == round_type) || (!params.round_type && key == 0)"
-                              :class="`pl-3 line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
+                              :class="`pl-3 line-clamp-1 line-height-4 px-5 py-2 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
                               @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
                             >
                               [[ clr.display_text ]]
                             </div>
+                            <hr class="m-0" v-if="(params.round_type && params.round_type == round_type)">
                           </div>
                         </template>
                       </div>
