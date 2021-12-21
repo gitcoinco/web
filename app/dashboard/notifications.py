@@ -436,7 +436,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         # Handle creating or updating comments if profiles are provided.
         if event_name in ['work_started', 'work_submitted'] and profile_pairs:
             if comment_id is not None:
-                patch_issue_comment(comment_id, username, repo, msg)
+                patch_issue_comment(issue_num, comment_id, username, repo, msg)
             else:
                 response = post_issue_comment(username, repo, issue_num, msg)
                 if response.id:
@@ -448,7 +448,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         # Handle deleting comments if no profiles are provided.
         elif event_name in ['work_started'] and not profile_pairs:
             if comment_id:
-                delete_issue_comment(comment_id, username, repo)
+                delete_issue_comment(issue_num, comment_id, username, repo)
                 if event_name == 'work_started':
                     bounty.interested_comment = None
                 elif event_name == 'work_done':
