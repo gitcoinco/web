@@ -125,6 +125,7 @@ along with this program. If not, see
                           </div>
                           <div class="d-block d-md-none" v-for="clr in active_rounds[round_type]">
                             <div
+                              v-if="(params.round_type && params.round_type == round_type) || (!params.round_type && key == 0)"
                               :class="`pl-3 line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
                               @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
                             >
