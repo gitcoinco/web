@@ -146,7 +146,6 @@ generate:
     - marketing.management.commands.sync_keywords++
     - marketing.management.commands.sync_mail++
     - marketing.management.commands.sync_slack++
-    - marketing.management.commands.debug_test++
   - marketing/admin.md:
     - marketing.admin++
   - marketing/mails.md:
