@@ -1,6 +1,6 @@
 describe('Creating a new bounty', () => {
   before(() => {
-    cy.setLocalStorage("quickstart_dontshow", true);
+    cy.setLocalStorage('quickstart_dontshow', true);
     cy.setupMetamask();
   });
 

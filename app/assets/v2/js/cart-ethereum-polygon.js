@@ -199,6 +199,11 @@ Vue.component('grantsCartEthereumPolygon', {
         // Check for contracts/gnosis safes - we cannot send funds if the contract isnt deployed on Polygon
         const unsafeGrants = await appCart.$refs.cart.checkForGnosisSafes();
 
+        if (web3.currentProvider && !web3.currentProvider.isMetaMask) {
+          _alert('Polygon Checkout is not supported on this wallet. Select another checkout option or switch to MetaMask.', 'danger');
+          return;
+        }
+
         // Check if we can checkout using polygon
         if (unsafeGrants.length > 0) {
           _alert(`Contributions cannot be sent to the following Grants (with a multisig payout address) on Polygon: <ul class="mt-3 font-caption font-weight-normal">${unsafeGrants.map((grant) => `<li style="mb-1">'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
