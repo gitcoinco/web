@@ -597,7 +597,6 @@ Vue.component('grant-details', {
       ],
       grant_tags: document.grant_tags,
       grant_salected_tags: [],
-      eth_payout_address: '',
       externalFundingOptions: [
         {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
         {'key': 'no', 'value': 'No, this project has not raised external funding.'}
@@ -623,7 +622,6 @@ Vue.component('grant-details', {
     vm.grant.description_rich_edited = vm.grant.description_rich;
     vm.grant_salected_tags = vm.grant.grant_tags.map(tag => tag.pk);
     vm.chainId = vm.grant.tenants.length > 0 ? vm.grant.tenants[0].toLowerCase() : '';
-    vm.eth_payout_address = vm.grant.admin_address; // admin_address will probably be renamed to eth_payout_address in the BE in the future
 
     if (vm.grant.description_rich_edited) {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
