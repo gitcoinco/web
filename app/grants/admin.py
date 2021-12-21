@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -25,9 +26,9 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django import forms
 
 import twitter
+from django_svg_image_form_field import SvgAndImageFormField
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
     GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantStat, GrantTag, GrantType, MatchPledge,
@@ -35,8 +36,6 @@ from grants.models import (
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
-
-from django_svg_image_form_field import SvgAndImageFormField
 
 
 class GeneralAdmin(admin.ModelAdmin):

@@ -1,6 +1,7 @@
-from economy.models import SuperModel
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from economy.models import SuperModel
 from grants.utils import get_upload_filename
 
 
