@@ -536,10 +536,12 @@ def build_stat_results(keyword=None):
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
+    total_bounties_usd += sum(ManualStat.objects.filter(key='bounty_gmv', date__lt=timezone.now()).values_list('val', flat=True))
     total_tips_usd = sum([
         tip.value_in_usdt
         for tip in Tip.objects.filter(network='mainnet').send_happy_path() if tip.value_in_usdt
     ])
+    total_tips_usd += sum(ManualStat.objects.filter(key='tip_gmv', date__lt=timezone.now()).values_list('val', flat=True))
     total_grants_usd = get_grants_history_at_date(timezone.now(), [])
     total_kudos_usd = get_kudos_history_at_date(timezone.now(), [])
     total_codefund_usd = get_codefund_history_at_date(timezone.now(), '')
