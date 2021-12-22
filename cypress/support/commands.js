@@ -110,3 +110,22 @@ Cypress.Commands.add('approveGrant', (grantSlug) => {
 
   cy.logout();
 });
+
+Cypress.Commands.add('createActiveGrantRound', () => {
+  cy.logout();
+  cy.loginRootUser();
+
+  cy.visit('_administrationgrants/grantclr/add/');
+  cy.get('[name=customer_name]').type('TestGrantCLR');
+  cy.get('[name=round_num]').type('1');
+  cy.get('[name=sub_round_slug]').type('TestGrantCLR');
+  cy.get('[name=display_text]').type('Test Grant CLR');
+  cy.get('[name=is_active]').check();
+  cy.get('[name=start_date_0]').type('2021-12-20');
+  cy.get('[name=start_date_1]').type('21:12:38');
+  cy.get('[name=end_date_0]').type('2041-1-1');
+  cy.get('[name=end_date_1]').type('21:12:38');
+  cy.get('[name=_save]').click();
+
+  cy.logout();
+});
