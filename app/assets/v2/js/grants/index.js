@@ -157,6 +157,12 @@ if (document.getElementById('grants-showcase')) {
       ]
     },
     methods: {
+      isSelectedRoundType: function(round_type, key) {
+        return (this.params.round_type && this.params.round_type == round_type) || (!this.params.round_type && key == 0)
+      },
+      isSelectedCLR: function(current_clr_sub_round_slug, current_clr_round_num, clr) {
+        return (current_clr_sub_round_slug == clr.sub_round_slug && current_clr_round_num == clr.round_num)
+      },
       toggleStyle: function(style) {
 
         if (!style) {
