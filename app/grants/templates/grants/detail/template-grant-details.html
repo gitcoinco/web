@@ -740,7 +740,7 @@
               />
             </template>
             <template v-slot:option="option">
-              <span class="font-weight-semibold">HELLO</span>
+              <span class="font-weight-semibold">[[ option.value ]]</span>
             </template>
           </v-select>
 
@@ -793,7 +793,7 @@
 
           <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select a blockchain</label>
           
-          <v-select id="grant-details-edit-funding-details" class="grant-edit-disable-select" @input="resetAddress()" placeholder="Select a blockchain to receive funding" :options="grantChains" label="label" v-model="chainId" :reduce="state => state.name" disabled>
+          <v-select id="grant-details-edit-funding-details" class="grant-edit-disable-select" placeholder="Select a blockchain to receive funding" :options="grantChains" label="label" v-model="chainId" :reduce="state => state.name" disabled>
             <template v-slot:option="option">
               <span class="font-weight-semibold">[[ option.label ]]</span>
             </template>
