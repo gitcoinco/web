@@ -33,7 +33,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
 from django.contrib.postgres.search import SearchVector
-from django.core.paginator import EmptyPage
+from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
 from django.db.models.functions import Lower
@@ -694,7 +694,7 @@ def get_grants_by_filters(
                 grant_ids = grant_ids + list(GrantCollection.objects.filter(**clr_round.collection_filters).values_list('grants', flat=True))
             # construct query by ORing each of the given clr_rounds grant_filters
             grant_filters |= Q(**clr_round.grant_filters)
-        # apply grant_ids from the collection_filters 
+        # apply grant_ids from the collection_filters
         if len(grant_ids):
             _grants = _grants.filter(pk__in=grant_ids)
         # apply the grant_filters
@@ -1948,7 +1948,7 @@ def grant_new(request):
 
         token_symbol = request.POST.get('token_symbol', 'Any Token')
         logo = request.FILES.get('logo', None)
-        
+
         if logo:
             # If logo is present, validate that it is an image
             try:
@@ -3864,7 +3864,7 @@ def clr_matches(request, round_number=None):
         serializer = CLRMatchSerializer(clr_matches, many=True)
 
         return Response(serializer.data)
-    
+
     elif request.method == 'POST':
         pk = request.data.get('pk')
         claim_tx = request.data.get('claim_tx')
@@ -3879,7 +3879,7 @@ def clr_matches(request, round_number=None):
 
         if not clr_match:
             return Response({'message': 'CLR Match not found!'}, status=404)
-        
+
         clr_match.claim_tx = claim_tx
         clr_match.save(update_fields=['claim_tx'])
 
