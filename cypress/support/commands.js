@@ -113,6 +113,7 @@ Cypress.Commands.add('approveGrant', (grantSlug) => {
 
 Cypress.Commands.add('createActiveGrantRound', () => {
   cy.logout();
+  
   cy.loginRootUser();
 
   cy.visit('_administrationgrants/grantclr/add/');
