@@ -99,11 +99,8 @@ Vue.component('grantsCartEthereumPolygon', {
       let url;
 
       if (appCart.$refs.cart.network === 'mainnet') {
-        appCart.$refs.cart.networkId = '137';
         url = 'https://polygon-rpc.com';
       } else {
-        appCart.$refs.cart.networkId = '80001';
-        appCart.$refs.cart.network = 'testnet';
         url = 'https://rpc-mumbai.maticvigil.com';
       }
 
