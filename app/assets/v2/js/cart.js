@@ -19,7 +19,6 @@ document.addEventListener('dataWalletReady', async function(e) {
 // Constants
 const MATIC_ADDRESS = '0x0000000000000000000000000000000000001010';
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-const gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6'; // Gitcoin donation address for mainnet and rinkeby
 
 // Contract parameters and constants
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
@@ -49,6 +48,7 @@ Vue.component('grants-cart', {
       selectedETHCartToken: 'DAI',
       standardCheckoutInitiated: false,
       chainId: '',
+      gitcoinAddress: '',
       networkId: '',
       network: 'mainnet',
       tabSelected: 'ETH',
@@ -322,7 +322,7 @@ Vue.component('grants-cart', {
         const gitcoinGrantInfo = {
           // Manually fill this in so we can access it for the POST requests.
           // We use empty strings for fields that are not needed here
-          grant_admin_address: gitcoinAddress,
+          grant_admin_address: this.gitcoinAddress,
           grant_contract_address: '0xeb00a9c1Aa8C8f4b20C5d3dDA2bbC64Aa39AF752',
           grant_contract_version: '1',
           grant_donation_amount: this.donationsToGitcoin[token],
@@ -344,7 +344,7 @@ Vue.component('grants-cart', {
           donations.push({
             amount: amount.toString(),
             token: tokenDetails?.addr,
-            dest: gitcoinAddress,
+            dest: this.gitcoinAddress,
             name: token, // token abbreviation, e.g. DAI
             grant: gitcoinGrantInfo, // equivalent to grant data from localStorage
             tokenApprovalTxHash: '' // tx hash of token approval required for this donation
@@ -371,6 +371,14 @@ Vue.component('grants-cart', {
 
     nativeCurrency() {
       let isPolygon = this.networkId === '80001' || this.networkId === '137';
+
+      if (isPolygon) {
+        // Polygon multi sig address
+        this.gitcoinAddress = '0x366adF5B96Ee15AfF5d66B0Fa44a56330b55E97B';
+      } else {
+        // Gitcoin multi sig address
+        this.gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6';
+      }
 
       return isPolygon ? 'MATIC' : 'ETH';
     },
@@ -1252,7 +1260,7 @@ Vue.component('grants-cart', {
           frequency_count: 1,
           frequency_unit: 'rounds',
           gas_price: 0,
-          gitcoin_donation_address: gitcoinAddress,
+          gitcoin_donation_address: this.gitcoinAddress,
           hide_wallet_address: this.hideWalletAddress,
           anonymize_gitcoin_grants_contributions: false,
           include_for_clr: this.include_for_clr,
