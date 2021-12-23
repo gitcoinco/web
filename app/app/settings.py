@@ -214,6 +214,8 @@ if ENV in ['prod']:
         'default': env.db(),
         'read_replica_1': env.db('READ_REPLICA_1_DATABASE_URL'),
         'read_replica_2': env.db('READ_REPLICA_2_DATABASE_URL'),
+        'read_replica_3': env.db('READ_REPLICA_3_DATABASE_URL'),
+        'read_replica_4': env.db('READ_REPLICA_4_DATABASE_URL'),
         }
     DATABASE_ROUTERS = ['app.db.PrimaryDBRouter']
 
@@ -643,17 +645,31 @@ SOCIAL_AUTH_SANITIZE_REDIRECTS = True
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True if ENV in ['prod', 'test', 'stage'] else False
 SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['state']
 
+# Ignore the default protected fields, because 'username' is among those, and specify a custom set
+# of fields to protected which does not include 'username'.
+# We want to achieve that the social auth app updates the username in gitcoin if it has been changed in github.
+SOCIAL_AUTH_NO_DEFAULT_PROTECTED_USER_FIELDS = True
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['id', 'pk', 'password', 'is_active', 'is_staff', 'is_superuser',]
+
 #custom scopes
 SOCIAL_AUTH_GH_CUSTOM_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
 
 SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed', 'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username', 'social_core.pipeline.user.create_user', 'app.pipeline.save_profile',
-    'social_core.pipeline.social_auth.associate_user', 'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.social_auth.social_details', 
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed', 
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username', 
+    'social_core.pipeline.user.create_user', 
+    'social_core.pipeline.social_auth.associate_user', 
+    'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
+# This should be executed after the '...user_details' step, as the user_details step will
+# update the username (aka github handle) which is then used in `save_profile`. This 
+# is relevant when the github username / handle changes.
+    'app.pipeline.save_profile',
 )
 
 # Gitter

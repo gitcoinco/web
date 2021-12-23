@@ -51,6 +51,14 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
     ]
     ordering = ['-id']
 
+    def response_change(self, request, obj):
+        from dashboard.utils import sync_payout
+
+        if "_update_txn_status" in request.POST:
+            sync_payout(obj)
+            self.message_user(request, f"Updated status of the txn from chain")
+            return redirect(obj.admin_url)
+
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']

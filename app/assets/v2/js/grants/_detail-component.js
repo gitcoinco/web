@@ -525,6 +525,7 @@ Vue.component('grant-details', {
   template: '#template-grant-details',
   data() {
     return {
+      chainId: '',
       dirty: false,
       submitted: false,
       user_code: userCode,
@@ -583,18 +584,45 @@ Vue.component('grant-details', {
         { 'name': 'east_asia', 'label': 'East Asia'},
         { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
       ],
+      grantChains: [
+        { 'name': 'eth', 'label': 'Ethereum'},
+        { 'name': 'zcash', 'label': 'ZCash'},
+        { 'name': 'celo', 'label': 'Celo'},
+        { 'name': 'zilliqa', 'label': 'Zilliqa'},
+        { 'name': 'harmony', 'label': 'Harmony'},
+        { 'name': 'binance', 'label': 'Binance'},
+        { 'name': 'polkadot', 'label': 'Polkadot'},
+        { 'name': 'kusama', 'label': 'Kusama'},
+        { 'name': 'algorand', 'label': 'Algorand'}
+      ],
       grant_tags: document.grant_tags,
+      grant_salected_tags: [],
       externalFundingOptions: [
         {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
         {'key': 'no', 'value': 'No, this project has not raised external funding.'}
       ]
     };
   },
+  computed: {
+    async grantIsContract() {
+      const { admin_address } = this.grant;
+
+      if (admin_address) {
+        const code = await web3.eth.getCode(admin_address);
+
+        return code !== '0x';
+      }
+      return false;
+    }
+  },
   mounted: function() {
     const vm = this;
 
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
+    vm.grant_salected_tags = vm.grant.grant_tags.map(tag => tag.pk);
+    vm.chainId = vm.grant.tenants.length > 0 ? vm.grant.tenants[0].toLowerCase() : '';
+
     if (vm.grant.description_rich_edited) {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     }

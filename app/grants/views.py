@@ -66,13 +66,13 @@ from dashboard.brightid_utils import get_brightid_status
 from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3
-from economy.models import Token as FTokens
+from economy.models import Token
 from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
-    GrantCollection, GrantTag, GrantType, MatchPledge, Subscription,
+    GrantCollection, GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription,
 )
 from grants.serializers import CLRMatchSerializer
 from grants.tasks import (
@@ -2495,7 +2495,7 @@ def grants_bulk_add(request, grant_str):
 
             if len(grant_data) == 3:  # backward compatibility
                 grants[grant_id]['amount'] = grant_data[1]
-                grants[grant_id]['token'] = FTokens.objects.filter(id=int(grant_data[2])).first()
+                grants[grant_id]['token'] = Token.objects.filter(id=int(grant_data[2])).first()
 
     by_whom = ""
     prefix = ""
@@ -2551,6 +2551,48 @@ def quickstart(request):
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
+
+@staff_member_required
+def hall_of_fame(request):
+    """Display the hall of fame."""
+    hall_of_fame_query = GrantHallOfFame.objects.filter(is_published=True)
+    try:
+        hall_of_fame = hall_of_fame_query[:1][0]
+    except IndexError:
+        raise Http404
+
+    if hall_of_fame.top_individual_donors:
+        top_individual_donors_is_svg = hall_of_fame.top_individual_donors.name.endswith('.svg')
+
+    if hall_of_fame.top_individual_donors_mobile:
+        top_individual_donors_mobile_is_svg = hall_of_fame.top_individual_donors_mobile.name.endswith('.svg')
+
+    if hall_of_fame.top_matching_partners:
+        top_matching_partners_is_svg = hall_of_fame.top_matching_partners.name.endswith('.svg')
+
+    if hall_of_fame.top_matching_partners_mobile:
+        top_matching_partners_mobile_is_svg = hall_of_fame.top_matching_partners_mobile.name.endswith('.svg')
+
+    params = {
+        'active': 'hall_of_fame',
+        'title': _('Hall of Fame'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+
+        'total_donations': hall_of_fame.total_donations,
+        'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
+        'top_matching_partners_url': hall_of_fame.top_matching_partners.url,
+        'top_individual_donors_is_svg': top_individual_donors_is_svg,
+        'top_matching_partners_is_svg': top_matching_partners_is_svg,
+        'top_individual_donors_mobile_is_svg': top_individual_donors_mobile_is_svg,
+        'top_matching_partners_mobile_is_svg': top_matching_partners_mobile_is_svg,
+        'top_individual_donors_mobile_url': hall_of_fame.top_individual_donors_mobile.url,
+        'top_matching_partners_mobile_url': hall_of_fame.top_matching_partners_mobile.url,
+        'graduated_grantees_description': hall_of_fame.graduated_grantees_description,
+        'share_your_story_email': hall_of_fame.share_your_story_email,
+        'graduated_grantees': hall_of_fame.get_grantees_data(),
+    }
+
+    return TemplateResponse(request, 'grants/hall_of_fame.html', params)
 
 def leaderboard(request):
     """Display leaderboard."""
@@ -3394,6 +3436,7 @@ def ingest_contributions(request):
     network = request.POST.get('network')
     ingestion_types = [] # after each series of ingestion, we append the ingestion_method to this array
     handle = request.POST.get('handle')
+    chain = request.POST.get('chain', 'std')
 
     if (profile.is_staff and
         ( not handle or Profile.objects.filter(handle=handle).count() == 0)
@@ -3401,7 +3444,7 @@ def ingest_contributions(request):
             return JsonResponse({ 'success': False, 'message': 'Profile could not be found' })
 
     # Setup web3
-    w3 = get_web3(network)
+    w3 = get_web3(network, chain=chain)
 
     def get_profile(profile):
         """
@@ -3433,18 +3476,43 @@ def ingest_contributions(request):
     except:
         return JsonResponse({ 'success': False, 'message': 'Signature could not be verified' })
 
+
+    """
+        For a given token address, returns the token's details.
+        For mainnet checkout in ETH, we change the token address to 0x0000000000000000000000000000000000000000
+        For polygon checkout in MATIC, we change the token address to 0x0000000000000000000000000000000000001010
+        since that's the address BulkCheckout uses 0xEeee as the zero address
+    """
     def get_token(w3, network, address):
-        if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
-            # 0xEeee... is used to represent ETH in the BulkCheckout contract
-            address = '0x0000000000000000000000000000000000000000'
+
+        if chain == 'std':
+            # set network_id and override address for ETH on mainnet
+            network_id = 1
+            if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
+                # 0xEeee... is used to represent ETH in the BulkCheckout contract
+                address = '0x0000000000000000000000000000000000000000'
+
+        elif chain == 'polygon':
+            # set network_id and override address for ETH on mainnet
+            network_id = 137 if network == 'mainnet' else 80001
+            if (address == '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'):
+                # 0xEeee... is used to represent MATIC in the BulkCheckout contract
+                address = '0x0000000000000000000000000000000000001010'
+
+        tokens = Token.objects.filter(
+            network=network,
+            network_id=network_id,
+            approved=True
+        )
+
         try:
             # First try checksum
             address_checksum = w3.toChecksumAddress(address)
-            return FTokens.objects.filter(network=network, address=address_checksum, approved=True).first().to_dict
+            return tokens.filter(address=address_checksum).first().to_dict
         except AttributeError as e:
+            # Retry with lowercase
             address_lowercase = address.lower()
-            return FTokens.objects.filter(network=network, address=address_lowercase, approved=True).first().to_dict
-
+            return tokens.filter(address=address_lowercase).first().to_dict
     def save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address):
         """
         Creates contribution and subscription and saves it to database if no matching one exists
@@ -3458,13 +3526,15 @@ def ingest_contributions(request):
             grant__pk=grant.pk, contributor_profile=profile, split_tx_id=txid, token_symbol=currency
         )
         for existing_subscription in existing_subscriptions:
-            tolerance = 0.01  # 1% tolerance to account for floating point
-            amount_max = amount * (1 + tolerance)
-            amount_min = amount * (1 - tolerance)
+            transfer_tolerance = 0.05  # 1% tolerance to account for floating point
+            amount_max = int(amount * (1 + transfer_tolerance))
+            amount_min = int(amount * (1 - transfer_tolerance))
+
+            amount_to_use = existing_subscription.amount_per_period
 
             if (
-                existing_subscription.amount_per_period_minus_gas_price > amount_min
-                and existing_subscription.amount_per_period_minus_gas_price < amount_max
+                amount_to_use >= amount_min and
+                amount_to_use <= amount_max
             ):
                 # Subscription exists
                 logger.info("Subscription exists, exiting function\n")
@@ -3547,7 +3617,14 @@ def ingest_contributions(request):
             raise Exception("Transaction was not successful")
 
         # Parse tx logs
-        bulk_checkout_contract = w3.eth.contract(address=settings.BULK_CHECKOUT_ADDRESS, abi=settings.BULK_CHECKOUT_ABI)
+        if network == 'mainnet' and chain == 'polygon':
+            bulk_checkout_address = '0xb99080b9407436eBb2b8Fe56D45fFA47E9bb8877'
+        elif network == 'testnet' and chain == 'polygon':
+            bulk_checkout_address = '0x3E2849E2A489C8fE47F52847c42aF2E8A82B9973'
+        else:
+            bulk_checkout_address = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C'
+
+        bulk_checkout_contract = w3.eth.contract(address=bulk_checkout_address, abi=settings.BULK_CHECKOUT_ABI)
         parsed_logs = bulk_checkout_contract.events.DonationSent().processReceipt(receipt)
 
         # Return if no donation logs were found
@@ -3556,6 +3633,7 @@ def ingest_contributions(request):
 
         # Get transaction timestamp
         block_info = w3.eth.getBlock(receipt['blockNumber'])
+
         created_on = pytz.UTC.localize(datetime.fromtimestamp(block_info['timestamp']))
 
         # For each event in the parsed logs, create the DB objects
@@ -3564,28 +3642,39 @@ def ingest_contributions(request):
             # Extract contribution parameters from events
             token_address = event["args"]["token"]
             value = event["args"]["amount"]
-            token = get_token(w3, network, token_address)
-            decimals = token["decimals"]
-            symbol = token["name"]
-            value_adjusted = int(value) / 10 ** int(decimals)
             to = event["args"]["dest"]
 
-            # Find the grant
+            value_adjusted = None
+            symbol = None
+            
             try:
+                token = get_token(w3, network, token_address)
+                decimals = token["decimals"]
+                symbol = token["name"]
+                value_adjusted = int(value) / 10 ** int(decimals)
+            except Exception as e:
+                logger.exception(e)
+                raise Exception(f"unknown token with address {token_address} on network {network}")
+
+            try:
+                # Find the grant
                 grant = (
                     Grant.objects.filter(admin_address__iexact=to)
                     .order_by("-positive_round_contributor_count")
                     .first()
                 )
                 logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
+
+                if do_write:
+                    checkout_type = 'eth_std' if chain == 'std' else 'eth_polygon'
+                    save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, checkout_type, from_address)
+
             except Exception as e:
                 logger.exception(e)
-                logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+                logger.warning(f"{token_address} {value_adjusted} {symbol}  => {to}, Unknown Grant ")
                 logger.warning("Skipping unknown grant\n")
                 continue
 
-            if do_write:
-                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_std', from_address)
         return
 
     def handle_ingestion(profile, network, identifier, do_write):
@@ -3594,21 +3683,22 @@ def ingest_contributions(request):
             # An address was provided, so we'll use the zkSync API to fetch their transactions
             ingestion_method = 'zksync_api'
         elif len(identifier) == 66:
-            # A transaction hash was provided, so we look for BulkCheckout logs in the L1 transaction
+            # A transaction hash was provided, so we look for BulkCheckout logs in the L1/L2 transaction
             ingestion_method = 'bulk_checkout'
         else:
             raise Exception('Invalid identifier')
 
         # Setup web3 and get user profile
-        PROVIDER = f"wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}"
-        w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+        w3 = get_web3(network, chain=chain)
+        if chain == 'polygon':
+            from web3.middleware import geth_poa_middleware
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
         # Handle ingestion
         if ingestion_method == 'bulk_checkout':
             # We were provided an L1 transaction hash, so process it
             txid = identifier
             process_bulk_checkout_tx(w3, txid, profile, network, True)
-
         elif ingestion_method == 'zksync_api':
             # Get history of transfers from this user's zkSync address using the zkSync API: https://zksync.io/api/v0.1.html#account-history
             user_address = identifier
@@ -3638,7 +3728,7 @@ def ingest_contributions(request):
                 # Extract contribution parameters from the JSON
                 symbol = transaction["tx"]["token"]
                 value = transaction["tx"]["amount"]
-                token = FTokens.objects.filter(network=network, symbol=transaction["tx"]["token"], approved=True).first().to_dict
+                token = Token.objects.filter(network=network, symbol=transaction["tx"]["token"], approved=True).first().to_dict
                 decimals = token["decimals"]
                 symbol = token["name"]
                 value_adjusted = int(value) / 10 ** int(decimals)
@@ -3666,12 +3756,17 @@ def ingest_contributions(request):
     try:
         if txHash != '':
             handle_ingestion(get_profile(profile), network, txHash, True)
-            ingestion_types.append('L1')
+            if chain == 'std':
+                ingestion_types.append('L1')
+            elif chain == 'polygon':
+                ingestion_types.append('L2-polygon')
         if userAddress != '':
             handle_ingestion(get_profile(profile), network, userAddress, True)
             ingestion_types.append('L2')
+
     except Exception as err:
-        return JsonResponse({ 'success': False, 'message': err })
+        print(err)
+        return JsonResponse({ 'success': False, 'message': str(err) })
 
     return JsonResponse({ 'success': True, 'ingestion_types': ingestion_types })
 

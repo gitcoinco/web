@@ -186,52 +186,6 @@ Vue.component('grantsCartEthereumPolygon', {
       this.polygon.showModal = false;
     },
 
-    async setupPolygon() {
-      indicateMetamaskPopup();
-      // Connect to Polygon network with MetaMask
-      const network = appCart.$refs.cart.network;
-      let chainId = network === 'mainnet' ? '0x89' : '0x13881';
-      let rpcUrl = network === 'mainnet' ? 'https://rpc-mainnet.maticvigil.com'
-        : 'https://rpc-mumbai.maticvigil.com';
-
-      try {
-        await ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId }]
-        });
-      } catch (switchError) {
-        // This error code indicates that the chain has not been added to MetaMask
-        if (switchError.code === 4902) {
-          let networkText = network === 'rinkeby' || network === 'goerli' ||
-            network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
-
-          try {
-            await ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId,
-                rpcUrls: [rpcUrl],
-                chainName: `Polygon ${networkText.replace(/\b[a-z]/g, (x) => x.toUpperCase())}`,
-                nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
-              }]
-            });
-          } catch (addError) {
-            if (addError.code === 4001) {
-              throw new Error('Please connect MetaMask to Polygon network.');
-            } else {
-              console.error(addError);
-            }
-          }
-        } else if (switchError.code === 4001) {
-          throw new Error('Please connect MetaMask to Polygon network.');
-        } else if (switchError.code === -32002) {
-          throw new Error('Please respond to a pending MetaMask request.');
-        } else {
-          console.error(switchError);
-        }
-      }
-    },
-
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
       const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
@@ -244,6 +198,11 @@ Vue.component('grantsCartEthereumPolygon', {
 
         // Check for contracts/gnosis safes - we cannot send funds if the contract isnt deployed on Polygon
         const unsafeGrants = await appCart.$refs.cart.checkForGnosisSafes();
+
+        if (web3.currentProvider && !web3.currentProvider.isMetaMask) {
+          _alert('Polygon Checkout is not supported on this wallet. Select another checkout option or switch to MetaMask.', 'danger');
+          return;
+        }
 
         // Check if we can checkout using polygon
         if (unsafeGrants.length > 0) {
@@ -285,7 +244,8 @@ Vue.component('grantsCartEthereumPolygon', {
           return;
         }
 
-        await this.setupPolygon();
+        indicateMetamaskPopup();
+        await setupPolygon(network = appCart.$refs.cart.network);
 
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)

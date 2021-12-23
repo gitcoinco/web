@@ -11,10 +11,17 @@ Vue.component('grants-ingest-contributions', {
   data: function() {
     return {
       form: {
-        txHash: undefined, // user transaction hash, used to ingest L1 donations
+        chain: undefined,
+        checkoutType: undefined,
+        txHash: undefined, // user transaction hash, used to ingest L1 and Polygon L2 donations
         userAddress: undefined, // user address, used to ingest zkSync (L2) donations
         handle: undefined // user to ingest under -- ignored unless you are a staff
       },
+      checkoutOptions: [
+        { value: 'eth_std', label: 'Standard' },
+        { value: 'eth_zksync', label: 'zkSync' },
+        { value: 'eth_polygon', label: 'Polygon'}
+      ],
       errors: {}, // keys are errors that occurred
       submitted: false // true if form has been submitted and we are waiting on response
     };
@@ -31,25 +38,26 @@ Vue.component('grants-ingest-contributions', {
       // most common use case, and (2) later when we update cart.js to fallback to manual ingestion if regular POSTing
       // fails, that will make DRYing the manual ingestion code simpler. Reference implementation of DRY code for
       // fallback to manual ingestion here: https://github.com/gitcoinco/web/pull/8563
-      const { txHash, userAddress } = this.form;
-      const isFormComplete = Boolean(txHash) != Boolean(userAddress);
+      const { checkoutType, txHash, userAddress } = this.form;
 
-      if (!isFormComplete) {
-        // Form was not filled out
-        this.$set(this.errors, 'invalidForm', 'Please enter a valid transaction hash OR a valid wallet address, but not both');
-      } else {
-        // Form was filled out, so validate the inputs
-        isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString(txHash);
-        isValidAddress = ethers.utils.isAddress(userAddress);
+      // Form was filled out, so validate the inputs
+      isValidTxHash = txHash && txHash.length === 66 && ethers.utils.isHexString(txHash);
+      isValidAddress = ethers.utils.isAddress(userAddress);
 
-        if (txHash && !isValidTxHash) {
-          this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
-        } else if (userAddress && !isValidAddress) {
-          this.$set(this.errors, 'address', 'Please enter a valid address');
-        }
-        if (document.contxt.is_staff && !this.form.handle) {
-          this.$set(this.errors, 'handle', 'Since you are staff, you must enter the handle of the profile to ingest for');
-        }
+      if (!checkoutType) {
+        this.$set(this.errors, 'checkoutType', 'Please select a valid checkout type');
+      }
+      
+      if ((!txHash || !isValidTxHash) && (checkoutType == 'eth_std' || checkoutType == 'eth_polygon')) {
+        this.$set(this.errors, 'txHash', 'Please enter a valid transaction hash');
+      }
+
+      if ((!userAddress || !isValidAddress) && (checkoutType == 'eth_zksync')) {
+        this.$set(this.errors, 'address', 'Please enter a valid address');
+      }
+
+      if (document.contxt.is_staff && !this.form.handle) {
+        this.$set(this.errors, 'handle', 'Since you are staff, you must enter the handle of the profile to ingest for');
       }
 
       if (Object.keys(this.errors).length) {
@@ -61,7 +69,8 @@ Vue.component('grants-ingest-contributions', {
       return {
         txHash: isValidTxHash ? txHash : '',
         // getAddress returns checksum address required by web3py, and throws if address is invalid
-        userAddress: isValidAddress ? ethers.utils.getAddress(userAddress) : ''
+        userAddress: isValidAddress ? ethers.utils.getAddress(userAddress) : '',
+        checkoutType: checkoutType
       };
     },
 
@@ -131,8 +140,16 @@ Vue.component('grants-ingest-contributions', {
           throw new Error('Please connect a wallet');
         }
 
+        if (!ethereum) {
+          throw new Error('Please connect to MetaMask wallet!');
+        }
+
         // Parse out provided form inputs and verify them, but bypass address checks if user is staff
-        ({ txHash, userAddress } = formParams);
+        ({ txHash, userAddress, checkoutType } = formParams);
+        
+        if (checkoutType === 'eth_polygon') {
+          await setupPolygon(); // handles switching to polygon network + adding network config if doesn't exist
+        }
 
         // If user entered an address, verify that it matches the user's connected wallet address
         if (!document.contxt.is_staff && userAddress && ethers.utils.getAddress(userAddress) !== ethers.utils.getAddress(walletAddress)) {
@@ -144,17 +161,24 @@ Vue.component('grants-ingest-contributions', {
           const receipt = await this.getTxReceipt(txHash);
 
           if (!receipt) {
-            throw new Error('Transaction hash not found. Are you sure this transaction was confirmed?');
+            throw new Error("Transaction hash not found. Are you sure this transaction was confirmed and you're on the right network?");
           }
           if (!document.contxt.is_staff && ethers.utils.getAddress(receipt.from) !== ethers.utils.getAddress(walletAddress)) {
             throw new Error('Sender of the provided transaction does not match connected wallet address. Please contact Gitcoin and we can ingest your contributions for you');
           }
         }
 
-
         // If we are here, the provided form data is valid. However, someone could just POST directly to the endpoint,
         // so to workaround that we ask the user for a signature, and the backend will verify that signature
         const { signature, message } = await this.signMessage(walletAddress);
+
+        let chain = undefined;
+
+        if (checkoutType == 'eth_polygon') {
+          chain = 'polygon';
+        } else {
+          chain = 'std';
+        }
 
         // Send POST requests to ingest contributions
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -167,7 +191,8 @@ Vue.component('grants-ingest-contributions', {
           signature,
           message,
           network: document.web3network || 'mainnet',
-          handle: this.form.handle
+          handle: this.form.handle,
+          chain: chain
         };
         const postParams = {
           method: 'POST',

@@ -6354,12 +6354,6 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
-    event_name = 'work_submitted'
-    record_bounty_activity(bounty, user, event_name)
-    maybe_market_to_email(bounty, event_name)
-    profile_pairs = build_profile_pairs(bounty)
-    maybe_market_to_github(bounty, event_name, profile_pairs)
-
     if bounty.bounty_state != 'work_submitted':
         bounty.bounty_state = 'work_submitted'
         bounty.idx_status = 'submitted'
@@ -6398,6 +6392,14 @@ def fulfill_bounty_v1(request):
 
     if project:
         project.save()
+
+    # The helpers to send out notifications, comments, etc ... should
+    # be called after all is saved in DB. Otherwise some messages might be incomplete.
+    event_name = 'work_submitted'
+    record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+    profile_pairs = build_profile_pairs(bounty)
+    maybe_market_to_github(bounty, event_name, profile_pairs)
 
     response = {
         'status': 204,

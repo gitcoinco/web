@@ -801,7 +801,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
 
     # single activity
     if 'activity:' in what:
-        activities = Activity.objects.filter(activities_index__key=what.replace('activity:', ''))
+        activities = Activity.objects.filter(pk=what.replace('activity:', ''))
         filter_applied = True
 
     # Defaults
