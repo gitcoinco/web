@@ -372,7 +372,7 @@ Vue.component('grants-cart', {
     nativeCurrency() {
       let isPolygon = this.networkId === '80001' || this.networkId === '137';
 
-      if (isPolygon) {
+      if (this.networkId === '137') {
         // Polygon multi sig address
         this.gitcoinAddress = '0x366adF5B96Ee15AfF5d66B0Fa44a56330b55E97B';
       } else {
