@@ -48,7 +48,6 @@ Vue.component('grants-cart', {
       selectedETHCartToken: 'DAI',
       standardCheckoutInitiated: false,
       chainId: '',
-      gitcoinAddress: '',
       networkId: '',
       network: 'mainnet',
       tabSelected: 'ETH',
@@ -372,15 +371,13 @@ Vue.component('grants-cart', {
     nativeCurrency() {
       let isPolygon = this.networkId === '80001' || this.networkId === '137';
 
-      if (this.networkId === '137') {
-        // Polygon multi sig address
-        this.gitcoinAddress = '0x366adF5B96Ee15AfF5d66B0Fa44a56330b55E97B';
-      } else {
-        // Gitcoin multi sig address
-        this.gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6';
-      }
-
       return isPolygon ? 'MATIC' : 'ETH';
+    },
+
+    gitcoinAddress() {
+      let isPolygon = this.networkId === '80001' || this.networkId === '137';
+
+      return isPolygon ? '0x366adF5B96Ee15AfF5d66B0Fa44a56330b55E97B' : '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6';
     },
 
     // Estimated gas limit for the transaction

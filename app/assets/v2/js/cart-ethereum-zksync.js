@@ -14,12 +14,14 @@ Vue.component('grantsCartEthereumZksync', {
     grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     maxCartItems: { type: Number, required: true }, // max number of items in cart
     network: { type: String, required: true }, // web3 network to use
+    networkId: { type: String, required: true }, // web3 chainId to use
     grantsUnderMinimalContribution: { type: Array, required: true } // Array of grants under min contribution
   },
 
   data: function() {
     return {
       ethersProvider: undefined,
+      stopWaitingForNetwork: null,
 
       zksync: {
         checkoutManager: undefined, // zkSync API CheckoutManager class
@@ -102,6 +104,12 @@ Vue.component('grantsCartEthereumZksync', {
         await this.setupZkSync();
         await this.onChangeHandler(this.donationInputs);
       }
+    },
+
+    networkId: function(newNetworkId, oldNetworkId) {
+      if (newNetworkId !== oldNetworkId && (newNetworkId === '1' || newNetworkId === '4') && this.stopWaitingForNetwork) {
+        this.stopWaitingForNetwork();
+      }
     }
   },
 
@@ -109,6 +117,13 @@ Vue.component('grantsCartEthereumZksync', {
     // Use the same error handler used by cart.js
     handleError(e) {
       appCart.$refs.cart.handleError(e);
+    },
+
+    // Wait for correct chainId
+    waitForCorrectChain() {
+      return new Promise((resolve, _reject) => {
+        this.stopWaitingForNetwork = resolve;
+      });
     },
 
     // We want to run this whenever wallet or cart content changes
@@ -208,6 +223,9 @@ Vue.component('grantsCartEthereumZksync', {
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: '0x1' }]
             });
+
+            await this.waitForCorrectChain();
+
           } catch (switchError) {
             if (switchError.code === 4001) {
               throw new Error('Please connect MetaMask to Ethereum network.');
