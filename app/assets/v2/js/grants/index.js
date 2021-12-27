@@ -131,6 +131,7 @@ if (document.getElementById('grants-showcase')) {
       activeTimeout: null,
       scrollTriggered: false,
       previouslyLoadedGrants: {},
+      closed: true,
       selectOptions: [
         {group: 'Discover', label: null},
         {label: 'Most Relevant', value: ''},
@@ -158,6 +159,7 @@ if (document.getElementById('grants-showcase')) {
     },
     methods: {
       isSelectedRoundType: function(round_type, key) {
+        // this.closed = false;
         return (this.params.round_type && this.params.round_type == round_type) || (!this.params.round_type && key == 0);
       },
       isSelectedCLR: function(current_clr_sub_round_slug, current_clr_round_num, clr) {
@@ -670,6 +672,8 @@ if (document.getElementById('grants-showcase')) {
       selectRoundType: function(roundType) {
         // round_type_selected
         this.params.round_type = roundType;
+        // open the dropdown menu on mobile
+        this.closed = false;
         // clear selected round
         this.params.sub_round_slug = false;
         this.params.round_num = 0;
