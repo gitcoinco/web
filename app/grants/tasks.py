@@ -7,6 +7,7 @@ from io import StringIO
 from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
+from app.grants.utils import toggle_user_sybil
 
 import boto3
 from app.services import RedisService
@@ -456,4 +457,5 @@ def process_bsci_sybil_csv(self, file_name, csv):
     csv = StringIO(csv.read().decode('utf-8'))
 
     # run bsci script
-    bsci_script(csv)
+    (sybil_users, non_sybil_users) = bsci_script(csv)
+    toggle_user_sybil(sybil_users, non_sybil_users)
