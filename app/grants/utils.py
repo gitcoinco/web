@@ -457,6 +457,7 @@ def bsci_script(csv: str) -> Union[FlaggingScriptOutput, None]:
         non_sybil_records = [ToggleUser(**d) for d in non_sybil_records]
         
         # Output
+        toggle_user_sybil(sybil_records, non_sybil_records)
         return (sybil_records, non_sybil_records)
     except Exception as e:
         logger.error(f'error: bsci_sybil_script - {e}')
