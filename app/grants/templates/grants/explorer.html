@@ -396,7 +396,7 @@ along with this program. If not, see
                   <p class="font-smaller-1 text-grey-400">Discover grants handpicked by the people you know, or create your own collection and share your favorite grants to the community.</p>
                   <b-button
                     class="mt-4 mt-lg-0 w-100 w-md-auto"
-                    variant="outline-primary"
+                    variant="primary"
                     @click="() => openCreateCollectionModal(true)"
                   >
                     Create a Collection
@@ -586,7 +586,7 @@ along with this program. If not, see
 
               {% include 'grants/shared/landing_grants.html' with container_class='container p-0' %}
             </b-tab>
-            <template v-slot:tabs-end>
+            <template v-slot:tabs-end v-if="tabIndex === 0">
               <li role="presentation" class="flex-fill nav-item text-right">
                 <a href="{% url 'grants:new' %}" class="btn btn-primary">{% trans 'Create a Grant' %}</a>
               </li>
