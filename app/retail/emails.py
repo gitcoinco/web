@@ -121,6 +121,8 @@ def render_new_contributions_email(grant):
     hours_ago = 12
     network = get_default_network()
     contributions = grant.contributions.filter(
+        success=True,
+        tx_cleared=True,
         created_on__gt=timezone.now() - timezone.timedelta(hours=hours_ago),
         subscription__network=network
     )

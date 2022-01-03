@@ -1,7 +1,7 @@
 import pytest
+from faker import Faker
 from git.models import GitCache
 from git.tests.factories.git_cache_factory import GitCacheFactory
-from faker import Faker
 
 
 @pytest.mark.django_db
