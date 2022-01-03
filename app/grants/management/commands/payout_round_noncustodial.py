@@ -102,6 +102,8 @@ class Command(BaseCommand):
         # get network on which the contract is deployed
         network = grant_payout.network
 
+        token_name = grant_payout.payout_token
+
         # Define parameters that vary by network. The expected total DAI amount uses the value here
         from_block = 11466409 if network == 'mainnet' else 7731622 # block contract was deployed at
 
@@ -188,7 +190,6 @@ class Command(BaseCommand):
             is_real_payout = what == 'set_payouts'
 
             kwargs = {}
-            token_name = 'DAI'
             key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
@@ -352,7 +353,6 @@ class Command(BaseCommand):
         # Create Contributions and send emails ----------------------------------------------------------
         if what == 'notify_users':
 
-            token_name = 'DAI'
             unpaid_scheduled_matches = scheduled_matches.filter(
                 ready_for_payout=True,
                 payout_tx=''
