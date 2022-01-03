@@ -59,6 +59,12 @@ class GrantPayout(SuperModel):
         default='DAI',
         help_text=_('Currency in which funds would be paid')
     )
+    # payout_token_address = models.CharField(
+    #     max_length=255,
+    #     null=True,
+    #     blank=True,
+    #     help_text=_('Address of the payout_token')
+    # )
     status = models.CharField(
         max_length=20,
         choices=PAYOUT_STATUS,
