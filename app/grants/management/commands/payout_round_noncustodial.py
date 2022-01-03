@@ -263,6 +263,10 @@ class Command(BaseCommand):
 
         # Verify contract is set properly ----------------------------------------------------------
         if what == 'verify':
+            from web3.middleware import geth_poa_middleware
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+
+
             # Get expected total match amount
             total_owed_grants = 0
             for grant in grants:
