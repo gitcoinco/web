@@ -84,9 +84,6 @@ async function fetchAccountData(provider) {
   // Get a Web3 instance for the wallet
   // web3 = new Web3(provider);
   web3 = Web3 ? new Web3(provider || 'ws://localhost:8546') : null;
-
-  console.log('Web3 instance is', web3);
-
   // Get connected chain id from Ethereum node
   if (web3.eth.currentProvider) {
     chainId = await web3.eth.currentProvider.chainId;
@@ -314,7 +311,6 @@ async function onConnect() {
 async function onDisconnect() {
 
   console.log('Killing the wallet connection', provider);
-
   // TODO: MetamaskInpageProvider does not provide disconnect?
   if (provider.close) {
     await provider.close();

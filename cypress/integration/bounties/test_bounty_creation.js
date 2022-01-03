@@ -16,7 +16,21 @@ describe('Creating a new bounty', () => {
   });
 
   it('can create a new bounty', () => {
-    cy.visit('bounty/new');
+    cy.visit('bounty/new', {
+      onBeforeLoad(win) {
+        const web3 = {
+          currentProvider: {
+            autoRefreshOnNetworkChange: false,
+            isMetaMask: true,
+            chainId: null,
+            networkVersion: "1639855158747",
+            selectedAddress: null
+          }
+        };
+        cy.stub(web3.currentProvider, 'chainId').resolves('0x539');
+        win.web3 = web3
+      }
+    });
 
     cy.contains('I agree').click();
 
