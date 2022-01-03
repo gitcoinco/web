@@ -1870,11 +1870,6 @@ def grant_new(request):
 
         # step 1: validate input
 
-        user = request.user if request.user.is_authenticated else None
-        if not user:
-            response['message'] = 'error: user needs to be authenticated to create grant'
-            return JsonResponse(response)
-
         profile = request.user.profile if hasattr(request.user, 'profile') else None
         if not profile:
             response['message'] = 'error: no matching profile found'
@@ -3635,7 +3630,7 @@ def ingest_contributions(request):
 
             value_adjusted = None
             symbol = None
-            
+
             try:
                 token = get_token(w3, network, token_address)
                 decimals = token["decimals"]
