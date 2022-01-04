@@ -32,8 +32,6 @@ from django.utils import timezone
 
 import numpy as np
 import pandas as pd
-from typing import Tuple, List, TypedDict, Union
-
 from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
 from avatar.utils import convert_img
@@ -50,7 +48,6 @@ from grants.sync.zil import sync_zil_payout
 from perftools.models import StaticJsonEnv
 from PIL import Image, ImageDraw, ImageOps
 from townsquare.models import SquelchProfile
-
 
 logger = logging.getLogger(__name__)
 
@@ -395,73 +392,88 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
             except Exception as e:
                 print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
 
-class ToggleUser(TypedDict, total=False):
-    """
-    Schema for the dictionaries that represents
-    users to be toggled as sybil or not.
-    """
-    handle: str
-    label: Union[str, None]
-    comment: Union[str, None]
-    
-FlaggingScriptOutput = Tuple[List[ToggleUser], List[ToggleUser]]
 
 
-def bsci_script(csv: str) -> Union[FlaggingScriptOutput, None]:
-    """
-    Generate records of sybil / non-sybil users based
-    on the CSV output as provided by BSci detection pipeline.
-    """
+def bsci_script(csv):
+    try:
+        # choose the specific csv you want to use
+        endpoint_df = pd.read_csv(csv)
 
-    # Assumptions
-    RENAME_MAP = {'notes': 'comment'}
-    ML_THRESHOLD = 0.8
-    EVAL_THRESHOLD = 0.8
-    HEURISTIC_THRESHOLD = 0.5
-    
-    # Read CSV
+        sybil_df = pd.DataFrame()
+        non_sybil_df = pd.DataFrame()
+        '''
+        filters human labeled sybils ('reviewer_is_certain (0/1)' and 'is_sybil_y' values can be adjusted)
+        human_sybil_score could also be used as a filter is wanted
+        '''
+        human_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] >= 0.99)  & (endpoint_df['is_sybil_y'] >= 0.99)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_sybil.handle)]
+        human_sybil = human_sybil[['handle', 'flag_type_y', 'notes']]
+        human_sybil = human_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        sybil_df = sybil_df.append(human_sybil)
 
-    try: 
-        df = (pd.read_csv(csv)
-                .assign(is_sybil=None)
-                .assign(label=None)
-                .rename(columns=RENAME_MAP))
-        
-        # Get label domains
-        rows_with_evaluation = ~pd.isnull(df.evaluation_score) 
-        rows_with_heuristic = ~pd.isnull(df.heuristic_score)
-        rows_with_prediction = ~pd.isnull(df.prediction_score)
-        
-        labels_by_evaluation = rows_with_evaluation
-        labels_by_heuristic = (rows_with_heuristic & (rows_with_heuristic 
-                                                    ^ labels_by_evaluation))
-        labels_by_prediction = (rows_with_prediction & (rows_with_prediction 
-                                                        ^ (labels_by_heuristic | 
-                                                        labels_by_evaluation)))
-        
-        # Assign final `is_sybil` markings according to a priorization criteria
-        df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score
-        df.loc[labels_by_evaluation, 'label'] = "Human Evaluation"
-        
-        df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score
-        df.loc[labels_by_heuristic, 'label'] = "Heuristics"
-        
-        df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score
-        df.loc[labels_by_prediction, 'label'] = "ML Prediction"
-        
-        # Generate dict records
-        sybil_records = df.query('is_sybil == True').to_dict('records')
-        non_sybil_records = df.query('is_sybil == False').to_dict('records')
-        
-        sybil_records = [ToggleUser(**d) for d in sybil_records]
-        non_sybil_records = [ToggleUser(**d) for d in non_sybil_records]
-        
-        # Output
-        return (sybil_records, non_sybil_records)
+        '''
+        filters heuristic labeled sybils, nothing can be adjusted here
+        '''
+        heuristic_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] >= 0.99)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_sybil.handle)]
+        heuristic_sybil = heuristic_sybil[['handle', 'flag_type_x', 'notes']]
+        hueristic_sybil = heuristic_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        sybil_df = sybil_df.append(heuristic_sybil)
+
+        '''
+        filters ml predicted sybils, ml_score can be adjusted to be either higher or lower
+        higher ml_score means less people are likely to appeal, but potentially some sybils slip through
+        lower ml_score means more people are likely to appeal, but more sybils are potentially caught
+        '''
+        ml_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Prediction') & (endpoint_df['ml_score'] >= 0.9)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(ml_sybil.handle)]
+        ml_sybil = ml_sybil[['handle', 'flag_type_x', 'notes']]
+        ml_sybil = ml_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        sybil_df = sybil_df.append(ml_sybil)
+
+        '''
+        filters human labeled non-sybil users
+        nothing here should be changed as these are just the remaining users that were marked by humans not included in the sybil filtering
+        '''
+        human_non_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] != np.nan)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_non_sybil.handle)]
+        human_non_sybil = human_non_sybil[['handle', 'flag_type_y', 'notes']]
+        human_non_sybil = human_non_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        non_sybil_df = non_sybil_df.append(human_non_sybil)
+
+        '''
+        filters heuristic non sybils, nothing here needs to be adjusted
+        '''
+        heuristic_non_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] <= 0.01)]
+        endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_non_sybil.handle)]
+        heuristic_non_sybil = heuristic_non_sybil[['handle', 'flag_type_x', 'notes']]
+        hueristic_non_sybil = heuristic_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        non_sybil_df = non_sybil_df.append(heuristic_non_sybil)
+
+        '''
+        This just filters out the remaining users that were not filtered in the previous sections, nothing can be adjusted here
+        '''
+        ml_non_sybil = endpoint_df
+        ml_non_sybil = ml_non_sybil[['handle', 'flag_type_x', 'notes']]
+        ml_non_sybil = ml_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
+        non_sybil_df = non_sybil_df.append(ml_non_sybil)
+
+        '''
+        conversion of all the data so that it can be pushed to the toggle_user_sybil endpoint
+        '''
+        #sybil_df = ml_df[ml_df['ml_score'] >= 0.9 and ml_df['flag_type'] != 'Human']
+        sybil_users = sybil_df.to_dict('records')
+        non_sybil_users = non_sybil_df.to_dict('records')
+
+        # print('=================SYBIL=================')
+        # print(sybil_users)
+        # print('=================NON SYBIL=================')
+        # print(non_sybil_users)
+
+        toggle_user_sybil(sybil_users, non_sybil_users)
+
     except Exception as e:
         logger.error(f'error: bsci_sybil_script - {e}')
-        return None
-
 
 def isNaN(string):
     return string != string
