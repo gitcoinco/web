@@ -23,7 +23,6 @@ class TestNewGrantGetRoute:
 
         client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
-
         response = client.get('/grants/new')
         templates = [t.name for t in response.templates]
 
@@ -42,8 +41,8 @@ class TestNewGrantsPostRoute:
 
     def test_requires_a_profile_associated_to_the_logged_in_user(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
-        client = Client(HTTP_USER_AGENT='chrome')
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new')
         response_data = json.loads(response.content)
@@ -55,8 +54,8 @@ class TestNewGrantsPostRoute:
     def test_requires_grant_type(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
-        client = Client(HTTP_USER_AGENT='chrome')
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new')
         response_data = json.loads(response.content)
@@ -68,8 +67,8 @@ class TestNewGrantsPostRoute:
     def test_requires_a_title(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
-        client = Client(HTTP_USER_AGENT='chrome')
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new', {'grant_type': 'gr12'})
         response_data = json.loads(response.content)
@@ -81,8 +80,8 @@ class TestNewGrantsPostRoute:
     def test_requires_a_description(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
-        client = Client(HTTP_USER_AGENT='chrome')
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new', {'grant_type': 'gr12', 'title': 'Test Submission'})
         response_data = json.loads(response.content)
@@ -97,13 +96,13 @@ class TestNewGrantsPostRoute:
     ):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
-        client = Client(HTTP_USER_AGENT='chrome')
         grant_data = {
             'grant_type': 'gr12',
             'title': 'Test Submission',
             'description': 'This is a test grant submission',
         }
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new', grant_data)
         response_data = json.loads(response.content)
@@ -118,7 +117,6 @@ class TestNewGrantsPostRoute:
     ):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
-        client = Client(HTTP_USER_AGENT='chrome')
         grant_data = {
             'grant_type': 'gr12',
             'title': 'Test Submission',
@@ -126,6 +124,7 @@ class TestNewGrantsPostRoute:
             'has_external_funding': 'no',
         }
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new', grant_data)
         response_data = json.loads(response.content)
@@ -140,7 +139,6 @@ class TestNewGrantsPostRoute:
     ):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
-        client = Client(HTTP_USER_AGENT='chrome')
         grant_data = {
             'grant_type': 'gr12',
             'title': 'Test Submission',
@@ -149,6 +147,7 @@ class TestNewGrantsPostRoute:
             'zcash_payout_address': '0xB81C935D01e734b3D8bb233F5c4E1D72DBC30f6c',
         }
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new', grant_data)
         response_data = json.loads(response.content)
@@ -160,7 +159,6 @@ class TestNewGrantsPostRoute:
     def test_requires_logo_to_be_an_image(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
-        client = Client(HTTP_USER_AGENT='chrome')
 
         with open(join(dirname(__file__), 'resources/not_an_image.txt'), 'rb') as logo:
             grant_data = {
@@ -172,6 +170,7 @@ class TestNewGrantsPostRoute:
                 'logo': logo,
             }
 
+            client = Client(HTTP_USER_AGENT='chrome')
             client.force_login(user)
             response = client.post('/grants/new', grant_data)
             response_data = json.loads(response.content)
@@ -184,8 +183,6 @@ class TestNewGrantsPostRoute:
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
         _grant_type = GrantTypeFactory(name='gr12')
-        client = Client(HTTP_USER_AGENT='chrome')
-
         grant_data = {
             'grant_type': 'gr12',
             'title': 'Test Submission',
@@ -195,6 +192,7 @@ class TestNewGrantsPostRoute:
             'handle1': '!',
         }
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new', grant_data)
         response_data = json.loads(response.content)
@@ -207,8 +205,6 @@ class TestNewGrantsPostRoute:
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
         _grant_type = GrantTypeFactory(name='gr12')
-        client = Client(HTTP_USER_AGENT='chrome')
-
         grant_data = {
             'grant_type': 'gr12',
             'title': 'Test Submission',
@@ -218,6 +214,7 @@ class TestNewGrantsPostRoute:
             'handle2': '!',
         }
 
+        client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.post('/grants/new', grant_data)
         response_data = json.loads(response.content)
@@ -225,3 +222,25 @@ class TestNewGrantsPostRoute:
         assert response.status_code == 200
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: enter your twitter handle e.g @georgecostanza'
+
+    def test_creates_new_grant_when_required_fields_submitted(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        _grant_type = GrantTypeFactory(name='gr12')
+        grant_data = {
+            'grant_type': 'gr12',
+            'title': 'Test Submission',
+            'description': 'This is a test grant submission',
+            'has_external_funding': 'no',
+            'admin_address': '0xB81C935D01e734b3D8bb233F5c4E1D72DBC30f6c',
+            'team_members[]': '',
+            'tags[]': '',
+        }
+
+        client = Client(HTTP_USER_AGENT='chrome')
+        client.force_login(user)
+        response = client.post('/grants/new', grant_data)
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 200
