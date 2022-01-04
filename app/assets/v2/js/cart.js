@@ -446,7 +446,7 @@ Vue.component('grants-cart', {
       }
 
       // Generate array of objects containing donation info from cart
-      const donations = this.grantsByTenant.map((grant, index) => {
+      const donations = this.grantsByTenant.map((grant) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
         let amount;
 
