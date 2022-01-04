@@ -14,7 +14,8 @@ from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCLR, GrantCollection, Subscription
-from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion
+from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion, toggle_user_sybil
+
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )
@@ -456,4 +457,5 @@ def process_bsci_sybil_csv(self, file_name, csv):
     csv = StringIO(csv.read().decode('utf-8'))
 
     # run bsci script
-    bsci_script(csv)
+    (sybil_users, non_sybil_users) = bsci_script(csv)
+    toggle_user_sybil(sybil_users, non_sybil_users)
