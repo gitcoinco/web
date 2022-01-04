@@ -1,9 +1,11 @@
 import json
 import pytest
 
+from os.path import dirname, join
 from django.test import Client
 
 from dashboard.tests.factories import ProfileFactory
+from grants.tests.factories import GrantTypeFactory
 
 
 @pytest.mark.django_db
@@ -38,7 +40,7 @@ class TestNewGrantsPostRoute:
         assert response.status_code == 302
         assert "gh-login" in response.url
 
-    def test_no_profile_error_message_when_profile_is_missing(self, django_user_model):
+    def test_requires_a_profile_associated_to_the_logged_in_user(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         client = Client(HTTP_USER_AGENT='chrome')
 
@@ -50,7 +52,7 @@ class TestNewGrantsPostRoute:
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: no matching profile found'
 
-    def test_grant_type_required_message_when_submitted_without_grant_type(self, django_user_model):
+    def test_requires_grant_type(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
         client = Client(HTTP_USER_AGENT='chrome')
@@ -63,7 +65,7 @@ class TestNewGrantsPostRoute:
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: grant_type is a mandatory parameter'
 
-    def test_title_required_message_when_submitted_without_title(self, django_user_model):
+    def test_requires_a_title(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
         client = Client(HTTP_USER_AGENT='chrome')
@@ -76,7 +78,7 @@ class TestNewGrantsPostRoute:
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: title is a mandatory parameter'
 
-    def test_description_required_message_when_submitted_without_description(self, django_user_model):
+    def test_requires_a_description(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
         _profile = ProfileFactory(user=user, handle='gitcoin')
         client = Client(HTTP_USER_AGENT='chrome')
@@ -89,7 +91,7 @@ class TestNewGrantsPostRoute:
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: description is a mandatory parameter'
 
-    def test_external_funding_required_message_when_submitted_without_external_funding_selection(
+    def test_requires_has_external_funding_selection(
         self,
         django_user_model
     ):
@@ -110,7 +112,7 @@ class TestNewGrantsPostRoute:
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: has_external_funding is a mandatory parameter'
 
-    def test_payout_address_required_message_when_submitted_without_payout_address(
+    def test_requires_payout_address(
         self,
         django_user_model
     ):
@@ -131,3 +133,95 @@ class TestNewGrantsPostRoute:
         assert response.status_code == 200
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: payout_address is a mandatory parameter'
+
+    def test_zcash_addresses_must_be_tranparent_addresses(
+        self,
+        django_user_model
+    ):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        client = Client(HTTP_USER_AGENT='chrome')
+        grant_data = {
+            'grant_type': 'gr12',
+            'title': 'Test Submission',
+            'description': 'This is a test grant submission',
+            'has_external_funding': 'no',
+            'zcash_payout_address': '0xB81C935D01e734b3D8bb233F5c4E1D72DBC30f6c',
+        }
+
+        client.force_login(user)
+        response = client.post('/grants/new', grant_data)
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: zcash_payout_address must be a transparent address'
+
+    def test_requires_logo_to_be_an_image(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        client = Client(HTTP_USER_AGENT='chrome')
+
+        with open(join(dirname(__file__), 'resources/not_an_image.txt'), 'rb') as logo:
+            grant_data = {
+                'grant_type': 'gr12',
+                'title': 'Test Submission',
+                'description': 'This is a test grant submission',
+                'has_external_funding': 'no',
+                'admin_address': '0xB81C935D01e734b3D8bb233F5c4E1D72DBC30f6c',
+                'logo': logo,
+            }
+
+            client.force_login(user)
+            response = client.post('/grants/new', grant_data)
+            response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: invalid logo file'
+
+    def test_requires_valid_project_twitter_handle(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        _grant_type = GrantTypeFactory(name='gr12')
+        client = Client(HTTP_USER_AGENT='chrome')
+
+        grant_data = {
+            'grant_type': 'gr12',
+            'title': 'Test Submission',
+            'description': 'This is a test grant submission',
+            'has_external_funding': 'no',
+            'admin_address': '0xB81C935D01e734b3D8bb233F5c4E1D72DBC30f6c',
+            'handle1': '!',
+        }
+
+        client.force_login(user)
+        response = client.post('/grants/new', grant_data)
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: enter a valid project twitter handle e.g @humanfund'
+
+    def test_requires_valid_personal_twitter_handle(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        _grant_type = GrantTypeFactory(name='gr12')
+        client = Client(HTTP_USER_AGENT='chrome')
+
+        grant_data = {
+            'grant_type': 'gr12',
+            'title': 'Test Submission',
+            'description': 'This is a test grant submission',
+            'has_external_funding': 'no',
+            'admin_address': '0xB81C935D01e734b3D8bb233F5c4E1D72DBC30f6c',
+            'handle2': '!',
+        }
+
+        client.force_login(user)
+        response = client.post('/grants/new', grant_data)
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: enter your twitter handle e.g @georgecostanza'
