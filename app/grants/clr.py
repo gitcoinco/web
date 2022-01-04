@@ -487,10 +487,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     # for full calc - calculate the clr for each grant given additional potential_donations
     total_count = grants.count()
 
+    # select all latest results which match this round
     invalid_clr_calculations = GrantCLRCalculation.objects.filter(latest=True, grantclr=clr_round.pk)
 
     for grant in grants:
-        invalid_clr_calculations.exclude(grant=grant.pk)
+        # exclude grants which will have a result saved in this run
+        invalid_clr_calculations = invalid_clr_calculations.exclude(grant=grant.pk)
+
         # five potential additional donations plus the base case of 0
         potential_donations = [0, 1, 10, 100, 1000, 10000]
 
@@ -550,8 +553,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
         debug_output.append({'grant': grant.id, "title": grant.title, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
-    invalid_clr_calculations.update(latest=False, active=False)
-    
+    # update the state on any past results which are no longer included in this round
+    if save_to_db:
+        invalid_clr_calculations.update(latest=False, active=False)
+
     print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
 
     return debug_output
