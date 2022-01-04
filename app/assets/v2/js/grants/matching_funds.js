@@ -140,6 +140,7 @@ Vue.mixin({
 
       // Confirm wallet was connected (user may have closed wallet connection prompt)
       if (!provider) {
+        _alert('Please connect MetaMask wallet', 'danger');
         return;
       }
       const user = (await web3.eth.getAccounts())[0];
