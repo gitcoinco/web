@@ -32,7 +32,6 @@ from django.utils import timezone
 
 import numpy as np
 import pandas as pd
-from typing import Tuple, List, TypedDict, Union
 
 from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
@@ -395,19 +394,8 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
             except Exception as e:
                 print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
 
-class ToggleUser(TypedDict, total=False):
-    """
-    Schema for the dictionaries that represents
-    users to be toggled as sybil or not.
-    """
-    handle: str
-    label: Union[str, None]
-    comment: Union[str, None]
-    
-FlaggingScriptOutput = Tuple[List[ToggleUser], List[ToggleUser]]
 
-
-def bsci_script(csv: str) -> Union[FlaggingScriptOutput, None]:
+def bsci_script(csv: str) -> tuple:
     """
     Generate records of sybil / non-sybil users based
     on the CSV output as provided by BSci detection pipeline.
@@ -452,9 +440,6 @@ def bsci_script(csv: str) -> Union[FlaggingScriptOutput, None]:
         # Generate dict records
         sybil_records = df.query('is_sybil == True').to_dict('records')
         non_sybil_records = df.query('is_sybil == False').to_dict('records')
-        
-        sybil_records = [ToggleUser(**d) for d in sybil_records]
-        non_sybil_records = [ToggleUser(**d) for d in non_sybil_records]
         
         # Output
         return (sybil_records, non_sybil_records)
