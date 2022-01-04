@@ -49,3 +49,85 @@ class TestNewGrantsPostRoute:
         assert response.status_code == 200
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: no matching profile found'
+
+    def test_grant_type_required_message_when_submitted_without_grant_type(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        client = Client(HTTP_USER_AGENT='chrome')
+
+        client.force_login(user)
+        response = client.post('/grants/new')
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: grant_type is a mandatory parameter'
+
+    def test_title_required_message_when_submitted_without_title(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        client = Client(HTTP_USER_AGENT='chrome')
+
+        client.force_login(user)
+        response = client.post('/grants/new', {'grant_type': 'gr12'})
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: title is a mandatory parameter'
+
+    def test_description_required_message_when_submitted_without_description(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        client = Client(HTTP_USER_AGENT='chrome')
+
+        client.force_login(user)
+        response = client.post('/grants/new', {'grant_type': 'gr12', 'title': 'Test Submission'})
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: description is a mandatory parameter'
+
+    def test_external_funding_required_message_when_submitted_without_external_funding_selection(
+        self,
+        django_user_model
+    ):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        client = Client(HTTP_USER_AGENT='chrome')
+        grant_data = {
+            'grant_type': 'gr12',
+            'title': 'Test Submission',
+            'description': 'This is a test grant submission',
+        }
+
+        client.force_login(user)
+        response = client.post('/grants/new', grant_data)
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: has_external_funding is a mandatory parameter'
+
+    def test_payout_address_required_message_when_submitted_without_payout_address(
+        self,
+        django_user_model
+    ):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        _profile = ProfileFactory(user=user, handle='gitcoin')
+        client = Client(HTTP_USER_AGENT='chrome')
+        grant_data = {
+            'grant_type': 'gr12',
+            'title': 'Test Submission',
+            'description': 'This is a test grant submission',
+            'has_external_funding': 'no',
+        }
+
+        client.force_login(user)
+        response = client.post('/grants/new', grant_data)
+        response_data = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert response_data.get('status') == 400
+        assert response_data.get('message') == 'error: payout_address is a mandatory parameter'
