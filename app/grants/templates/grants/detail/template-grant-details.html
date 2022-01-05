@@ -439,7 +439,7 @@
             <hr class="my-4">
           </template>
 
-          <!-- TODO: UPDATE CONDITION + LINK -->
+          <!-- TODO: UPDATE CONDITION -->
           <!-- Claim Matching Funds -->
           <template v-if="grant.active && (grant.is_on_team || isStaff)">
             <b-card-text>
@@ -455,7 +455,7 @@
             <hr class="my-4">
           </template>
 
-          <!-- TODO: UPDATE CONDITION + LINK -->
+          <!-- TODO: UPDATE CONDITION -->
           <!-- Matching Funds are in review -->
           <template v-if="grant.active && (grant.is_on_team || isStaff)">
             <b-card-text>
@@ -472,7 +472,7 @@
           </template>
 
 
-          <!-- TODO: UPDATE CONDITION + LINK -->
+          <!-- TODO: UPDATE CONDITION -->
           <!--  Claim History -->
           <template v-if="grant.active && (grant.is_on_team || isStaff)">
             <b-card-text>
@@ -482,7 +482,7 @@
               </p>
               View matching funds received and claim history.
             </b-card-text>
-            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}">
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?tab=claim_history">
               View Matching History
             </a>
             <hr class="my-4">
