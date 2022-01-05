@@ -78,6 +78,7 @@ Vue.mixin({
         });
       });
     },
+    validateTwitterHandle: (input) => input && !(/^@?[a-zA-Z0-9_]{2,15}$/).test(input),
     checkForm: function(e) {
       let vm = this;
 
@@ -92,10 +93,10 @@ Vue.mixin({
       if (!vm.form.twitter_handle_1.length) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter twitter handle of your project');
       }
-      if (vm.form.twitter_handle_1 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_1)) {
+      if (this.validateTwitterHandle(vm.form.twitter_handle_1)) {
         vm.$set(vm.errors, 'twitter_handle_1', 'Please enter a valid twitter handle of your project e.g @humanfund');
       }
-      if (vm.form.twitter_handle_2 && !(/^@?[a-zA-Z0-9_]{4,15}$/).test(vm.form.twitter_handle_2)) {
+      if (this.validateTwitterHandle(vm.form.twitter_handle_2)) {
         vm.$set(vm.errors, 'twitter_handle_2', 'Please enter your twitter handle e.g @georgecostanza');
       }
 
