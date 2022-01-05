@@ -33,8 +33,8 @@ let grantData = []; // data for grants in cart, initialized in mounted hook
 Vue.component('eth-checkout-button', {
   delimiters: [ '[[', ']]' ],
   template: '#eth-checkout-template',
-  props: [ 'maxCartItems', 'network', 'isZkSyncDown', 'donationInputs', 'onPolygonUpdate', 'currentTokens', 'grantsByTenant',
-    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ],
+  props: [ 'maxCartItems', 'network', 'isZkSyncDown', 'donationInputs', 'donationInputsPolygon', 'currentTokens', 'grantsByTenant',
+    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown' ],
   data: function() {
     return {
     };

@@ -205,10 +205,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 :is-polygon-down="isPolygonDown"
                 :current-tokens="currentTokens"
                 :donation-inputs="donationInputs"
+                :donation-inputs-polygon="donationInputsPolygon"
                 :max-cart-items="maxCartItems"
                 :grants-by-tenant="grantsByTenant"
                 :grants-under-minimal-contribution="grantsUnderMinimalContribution"
                 :network="network"
+                @polygon-data-updated="onPolygonUpdate"
+                @zksync-data-updated="onZkSyncUpdate"
                 >
               </eth-checkout-button>
             </div>
@@ -253,8 +256,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <b-dropdown-item-button v-if="!isPolygonDown">
           <grants-cart-ethereum-polygon
             inline-template
+            @polygon-data-updated="$emit('polygon-data-updated', arguments)"
             :current-tokens="currentTokens"
-            :donation-inputs="donationInputs"
+            :donation-inputs="donationInputsPolygon"
             :max-cart-items="100"
             :grants-by-tenant="grantsByTenant"
             :grants-under-minimal-contribution="grantsUnderMinimalContribution"
@@ -360,6 +364,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <b-dropdown-item-button v-if="!isZkSyncDown">
           <grants-cart-ethereum-zksync
             inline-template
+            @zksync-data-updated="$emit('zksync-data-updated', arguments)"
             :current-tokens="currentTokens"
             :donation-inputs="donationInputs"
             :max-cart-items="maxCartItems"

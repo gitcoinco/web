@@ -263,10 +263,13 @@
             :is-polygon-down="isPolygonDown"
             :current-tokens="currentTokens"
             :donation-inputs="donationInputs"
+            :donation-inputs-polygon="donationInputsPolygon"
             :max-cart-items="maxCartItems"
             :grants-by-tenant="grantsByTenant"
             :grants-under-minimal-contribution="grantsUnderMinimalContribution"
             :network="network"
+            @polygon-data-updated="onPolygonUpdate"
+            @zksync-data-updated="onZkSyncUpdate"
             >
           </eth-checkout-button>
 
