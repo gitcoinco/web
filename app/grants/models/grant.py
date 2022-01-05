@@ -511,7 +511,7 @@ class Grant(SuperModel):
     )
     admin_profile = models.ForeignKey(
         'dashboard.Profile',
-        related_name='grant_admin',
+        related_name='grants',
         on_delete=models.CASCADE,
         help_text=_('The Grant administrator\'s profile.'),
         null=True,

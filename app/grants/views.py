@@ -74,7 +74,7 @@ from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
     GrantCollection, GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription,
 )
-from grants.serializers import CLRMatchSerializer
+from grants.serializers import GrantSerializer
 from grants.tasks import (
     process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write,
     update_grant_metadata,
@@ -704,12 +704,12 @@ def get_grants_by_filters(
         if my_grants:
             # 3. Filter grants created by user
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                        list(profile.grant_admin.all().values_list('pk', flat=True))
+                        list(profile.grants.all().values_list('pk', flat=True))
             _grants = _grants.filter(id__in=grants_id)
         if omit_my_grants:
             # 4. Exclude grants created by user
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                        list(profile.grant_admin.all().values_list('pk', flat=True))
+                        list(profile.grants.all().values_list('pk', flat=True))
             _grants = _grants.exclude(id__in=grants_id)
         elif only_contributions:
             # 5. Filter grants to which the user has contributed to
@@ -3943,20 +3943,18 @@ def upload_sybil_csv(request):
 @login_required
 @api_view(['GET', 'POST'])
 @permission_classes((permissions.IsAuthenticated,))
-def clr_matches(request, round_number=None):
+def clr_matches(request):
     profile = get_profile(request)
 
     if not profile:
         return Response({'message': 'Profile not found!'}, status=404)
 
     if request.method == 'GET':
-        clr_matches = CLRMatch.objects.select_related(
-            'grant', 'grant_payout').filter(grant__admin_profile=profile)
-
-        if round_number:
-            clr_matches = clr_matches.filter(round_number=round_number)
-
-        serializer = CLRMatchSerializer(clr_matches, many=True)
+        serializer = GrantSerializer(
+            profile.grants.prefetch_related('clr_matches').all(),
+            fields=['title', 'logo', 'admin_address', 'clr_matches'],
+            many=True
+        )
 
         return Response(serializer.data)
 

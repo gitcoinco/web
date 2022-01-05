@@ -3419,7 +3419,7 @@ class Profile(SuperModel):
 
         hunter_count += self.interested.count()
         hunter_count += self.received_tips.count()
-        hunter_count += self.grant_admin.count()
+        hunter_count += self.grants.count()
         hunter_count += self.fulfilled.count()
 
         funder_count += self.bounties_funded.count()
@@ -4460,7 +4460,7 @@ class Profile(SuperModel):
         context['total_kudos_count'] = profile.get_my_kudos.count() + profile.get_sent_kudos.count() + profile.get_org_kudos.count()
         context['total_kudos_sent_count'] = profile.sent_kudos.count()
         context['total_kudos_received_count'] = profile.received_kudos.count()
-        context['total_grant_created'] = profile.grant_admin.count()
+        context['total_grant_created'] = profile.grants.count()
         context['total_grant_contributions'] = profile.grant_contributor.filter(subscription_contribution__success=True).values_list('subscription_contribution').count() + profile.grant_phantom_funding.count()
         context['total_grant_actions'] = context['total_grant_created'] + context['total_grant_contributions']
 
@@ -5560,7 +5560,7 @@ def get_my_grants(profile):
     # returns grants that a profile has done business with
     relevant_grants = list(profile.grant_contributor.all().values_list('grant', flat=True)) \
         + list(profile.grant_teams.all().values_list('pk', flat=True)) \
-        + list(profile.grant_admin.all().values_list('pk', flat=True))
+        + list(profile.grants.all().values_list('pk', flat=True))
     return relevant_grants
 
 

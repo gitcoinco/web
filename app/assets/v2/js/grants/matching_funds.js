@@ -33,35 +33,25 @@ Vue.mixin({
         let result = await (await fetch(url)).json();
 
         // update claim status + format date fields
-        result.map(async m => {
-          m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
-            ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
-            : null;
-
-          m.grant_payout.grant_clrs.map(e => {
-            e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
-            e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
+        result.map(async grant => {
+          grant.clr_matches.map(async m => {
+            m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
+              ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
+              : null;
+  
+            m.grant_payout.grant_clrs.map(e => {
+              e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
+              e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
+            });
+  
+            const claimData = await vm.checkClaimStatus(m, grant.admin_address);
+  
+            m.status = claimData.status;
+            m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
           });
-
-          const claimData = await vm.checkClaimStatus(m);
-
-          m.status = claimData.status;
-          m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
         });
 
-        // group clr matches by grant title
-        result = await this.groupByGrant(result);
-
-        // assign property for if grants have any claim or not
-        Object.keys(result).forEach(grantTitle => {
-          if (result[grantTitle].filter(a => a.has_claimed).length === 0) {
-            result[grantTitle].hasNoClaim = true;
-          } else {
-            result[grantTitle].hasNoClaim = false;
-          }
-        });
-
-        this.clrMatches = result;
+        this.grants = result;
 
         this.loading = false;
 
@@ -81,8 +71,8 @@ Vue.mixin({
 
       return result;
     },
-    async checkClaimStatus(match) {
-      const recipientAddress = match.grant.admin_address;
+    async checkClaimStatus(match, admin_address) {
+      const recipientAddress = admin_address;
       const contractAddress = match.grant_payout.contract_address;
       const txHash = match.claim_tx;
 
@@ -221,7 +211,7 @@ if (document.getElementById('gc-matching-funds')) {
     data() {
       return {
         loading: true,
-        clrMatches: null,
+        grants: null,
         tabSelected: 1,
         tab: null
       };

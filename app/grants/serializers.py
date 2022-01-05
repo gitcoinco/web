@@ -8,11 +8,47 @@ from .models import (
 from .utils import amount_in_wei, get_converted_amount
 
 
+class GrantCLRSerializer(FlexFieldsModelSerializer):
+    """Handle metadata of CLR rounds"""
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantCLR
+        fields = '__all__'
+        expandable_fields = {
+          'owner': (ProfileSerializer)
+        }
+
+
+class GrantPayoutSerializer(FlexFieldsModelSerializer):
+    grant_clrs = GrantCLRSerializer(
+        fields=['display_text', 'claim_start_date', 'claim_end_date', 'is_active'],
+        many=True
+    )
+
+    class Meta:
+        model = GrantPayout
+        fields = [
+            'status', 'contract_address', 'payout_token', 'funding_withdrawal_date',
+            'grant_clrs'
+        ]
+
+
+class CLRMatchSerializer(FlexFieldsModelSerializer):
+    grant_payout = GrantPayoutSerializer()
+
+    class Meta:
+        model = CLRMatch
+        fields = (
+            'pk', 'amount', 'round_number', 'claim_tx', 'grant_payout'
+        )
+
+
 class GrantSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Grant object."""
 
     admin_profile = ProfileSerializer()
     team_members = ProfileSerializer(many=True)
+    clr_matches = CLRMatchSerializer(fields=['pk', 'amount', 'round_number', 'claim_tx', 'grant_payout'], many=True)
 
     class Meta:
         """Define the grant serializer metadata."""
@@ -23,6 +59,7 @@ class GrantSerializer(FlexFieldsModelSerializer):
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
             'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
             'clr_round_num', 'is_clr_active', 'amount_received_in_round', 'positive_round_contributor_count',
+            'clr_matches',
         )
 
 
@@ -30,7 +67,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     """Handle serializing the Subscription object."""
 
     contributor_profile = ProfileSerializer()
-    grant = GrantSerializer()
+    grant = GrantSerializer(omit=['clr_matches'])
 
     class Meta:
         """Define the subscription serializer metadata."""
@@ -141,42 +178,6 @@ class DonorSerializer(serializers.Serializer):
         fields = ('grant_name', 'asset', 'timestamp', 'grant_amount', 'gitcoin_maintenance_amount', 'grant_usd_value', 'gitcoin_usd_value')
 
 
-class GrantCLRSerializer(FlexFieldsModelSerializer):
-    """Handle metadata of CLR rounds"""
-    class Meta:
-        """Define the GrantCLR serializer metadata."""
-        model = GrantCLR
-        fields = '__all__'
-        expandable_fields = {
-          'owner': (ProfileSerializer)
-        }
-
-
-class GrantPayoutSerializer(FlexFieldsModelSerializer):
-    grant_clrs = GrantCLRSerializer(
-        fields=['display_text', 'claim_start_date', 'claim_end_date', 'is_active'],
-        many=True
-    )
-
-    class Meta:
-        model = GrantPayout
-        fields = [
-            'status', 'contract_address', 'payout_token', 'funding_withdrawal_date',
-            'grant_clrs'
-        ]
-
-
-class CLRMatchSerializer(FlexFieldsModelSerializer):
-    grant = GrantSerializer(fields=['title', 'logo', 'admin_address'])
-    grant_payout = GrantPayoutSerializer()
-
-    class Meta:
-        model = CLRMatch
-        fields = (
-            'pk', 'amount', 'round_number', 'claim_tx', 'grant', 'grant_payout'
-        )
-
-
 class GrantTypeSerializer(FlexFieldsModelSerializer):
     """Handle metadata of CLR rounds"""
     class Meta:
@@ -207,8 +208,7 @@ class GrantCollectionSerializer(FlexFieldsModelSerializer):
             'grants': (
                 'grants.serializers.GrantSerializer',
                 {'many': True, 'fields': ['pk', 'title', 'logo']}
-
             )
-            }
+        }
     def get_count(self, obj):
         return obj.grants.count()

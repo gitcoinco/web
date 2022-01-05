@@ -100,7 +100,7 @@ urlpatterns = [
     path('v1/api/grant/<int:grant_id>/contributors', grant_details_contributors, name='grant_details_contributors'),
     path('v1/api/grant/edit/<int:grant_id>/', grant_edit, name='grant_edit'),
     path('v1/api/grant/<int:grant_id>/cancel', cancel_grant_v1, name='cancel_grant_v1'),
-    re_path(r'^v1/api/clr-matches/(?P<round_number>\d+)?$', clr_matches, name='clr_matches'),
+    path('v1/api/clr-matches/', clr_matches, name='clr_matches'),
 
 
     path('v1/api/trust-bonus', get_trust_bonus, name='get_trust_bonus'),
