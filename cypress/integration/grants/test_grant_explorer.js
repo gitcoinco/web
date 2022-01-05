@@ -194,5 +194,25 @@ describe('Grants Explorer page', () => {
       cy.get('.dropdown-menu').should('contain', 'Test Grant CLR');
     });
   });
+
+  describe('selecting a grant', () => {
+    it('opens the grant in a new browser tab', () => {
+      cy.createGrantSubmission().then((response) => {
+        const grantUrl = response.body.url;
+  
+        cy.approveGrant(grantUrl);
+        cy.impersonateUser();
+        
+        cy.visit('grants/explorer');
+
+        cy.contains('Test Grant Submission')
+          .should('have.attr', 'target', '_blank')
+          .should('have.attr', 'rel', 'noopener noreferrer')
+          .then(link => {
+            cy.request(link.prop('href')).its('status').should('eq', 200);
+          });  
+      });
+    });
+  });
 });
   

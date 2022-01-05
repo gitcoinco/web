@@ -130,7 +130,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     getDonationInputs() {
-      return appCart.$refs.cart.getDonationInputs();
+      return appCart.$refs.cart.getFilteredDonationInputs(this.donationInputs);
     },
 
     getTokenByName(name) {

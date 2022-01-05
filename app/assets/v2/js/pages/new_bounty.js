@@ -528,7 +528,21 @@ Vue.mixin({
 
         }
       });
+    },
+    /**
+     * Filters tokens by vm.networkId
+     * @param {*} tokens
+     * @returns {*} tokens
+     */
+    filterByNetworkId: function(tokens) {
+      let vm = this;
 
+      if (vm.networkId) {
+        tokens = tokens.filter((token) => {
+          return String(token.networkId) === vm.networkId;
+        });
+      }
+      return tokens;
     },
     submitForm: async function(event) {
       event.preventDefault();
@@ -730,6 +744,12 @@ Vue.mixin({
         result = vm.filterByNetwork.filter((item) => {
           return String(item.chainId) === vm.chainId;
         });
+
+        if (vm.chainId == '1') {
+          // allow only mainnet tokens in ETH chain
+          vm.networkId = '1';
+          result = vm.filterByNetworkId(result);
+        }
       }
       return result;
     }
