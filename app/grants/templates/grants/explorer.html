@@ -584,6 +584,11 @@ along with this program. If not, see
                 </a>
               </div>
 
+              <template v-if="showLoadingCollections">
+                <div class="d-flex flex-column justify-content-center">
+                  <img class="d-block w-25 mx-auto" src="/static/v2/images/loading_v2.gif">
+                </div>
+              </template>
               {% include 'grants/shared/landing_grants.html' with container_class='container p-0' %}
             </b-tab>
             <template v-slot:tabs-end v-if="tabIndex === 0">
