@@ -364,7 +364,7 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
                     label = user.get('label')
                     comment = user.get('comment')
 
-                    if comment and isNaN(comment):
+                    if not comment or comment and isNaN(comment):
                         comment = 'added by bsci'
 
                     # check if user has entry in SquelchProfile
@@ -379,9 +379,9 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
                             comments=comment
                         )
                 else:
-                    print(f"error: profile not found for ${user.get('handle')} as sybil.")
+                    print(f"error: profile not found for {user.get('handle')} as sybil.")
             except Exception as e:
-                print(f"error: unable to mark user ${user.get('handle')} as sybil. {e}")
+                print(f"error: unable to mark user {user.get('handle')} as sybil. {e}")
 
     if non_sybil_users:
         # exclude squelches added by manual
@@ -389,10 +389,10 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
         # iterate and remove sybil from user
         for user in non_sybil_users:
             try:
-                profile = Profile.objects.get(pk=user.get('id'))
+                profile = Profile.objects.filter(handle=user.get('handle')).first()
                 squelched_profiles.filter(profile=profile).delete()
             except Exception as e:
-                print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
+                print(f"error: unable to mark {user.get('handle')} as non sybil. {e}")
 
 
 def bsci_script(csv: str) -> tuple:
@@ -406,41 +406,41 @@ def bsci_script(csv: str) -> tuple:
     ML_THRESHOLD = 0.8
     EVAL_THRESHOLD = 0.8
     HEURISTIC_THRESHOLD = 0.5
-    
+
     # Read CSV
 
-    try: 
+    try:
         df = (pd.read_csv(csv)
                 .assign(is_sybil=None)
                 .assign(label=None)
                 .rename(columns=RENAME_MAP))
-        
+
         # Get label domains
-        rows_with_evaluation = ~pd.isnull(df.evaluation_score) 
+        rows_with_evaluation = ~pd.isnull(df.evaluation_score)
         rows_with_heuristic = ~pd.isnull(df.heuristic_score)
         rows_with_prediction = ~pd.isnull(df.prediction_score)
-        
+
         labels_by_evaluation = rows_with_evaluation
-        labels_by_heuristic = (rows_with_heuristic & (rows_with_heuristic 
+        labels_by_heuristic = (rows_with_heuristic & (rows_with_heuristic
                                                     ^ labels_by_evaluation))
-        labels_by_prediction = (rows_with_prediction & (rows_with_prediction 
-                                                        ^ (labels_by_heuristic | 
+        labels_by_prediction = (rows_with_prediction & (rows_with_prediction
+                                                        ^ (labels_by_heuristic |
                                                         labels_by_evaluation)))
-        
+
         # Assign final `is_sybil` markings according to a priorization criteria
         df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score
         df.loc[labels_by_evaluation, 'label'] = "Human Evaluation"
-        
+
         df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score
         df.loc[labels_by_heuristic, 'label'] = "Heuristics"
-        
+
         df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score
         df.loc[labels_by_prediction, 'label'] = "ML Prediction"
-        
+
         # Generate dict records
         sybil_records = df.query('is_sybil == True').to_dict('records')
         non_sybil_records = df.query('is_sybil == False').to_dict('records')
-        
+
         # Output
         return (sybil_records, non_sybil_records)
     except Exception as e:
