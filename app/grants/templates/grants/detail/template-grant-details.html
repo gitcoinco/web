@@ -1,8 +1,9 @@
 {% load static humanize i18n grants_extra %}
 <script type="text/x-template" id="template-grant-details">
   <div>
+    <!-- TODO: REMOVE should_show_claim_match_button  -->
     {% if should_show_claim_match_button %}
-      <div id="claim-payout-banner" class="mt-5 mb-4">
+      <!-- <div id="claim-payout-banner" class="mt-5 mb-4">
         <div class="alert alert-primary border-primary align-items-center mx-auto
           col-12 col-md-8
           d-flex flex-column flex-md-row justify-content-lg-between
@@ -48,7 +49,7 @@
             </div>
           </div>
         </div>
-      </b-modal>
+      </b-modal> -->
     {% endif %}
 
     <slot></slot>
@@ -434,6 +435,55 @@
             </b-card-text>
             <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" target="_blank">
               Learn More
+            </a>
+            <hr class="my-4">
+          </template>
+
+          <!-- TODO: UPDATE CONDITION + LINK -->
+          <!-- Claim Matching Funds -->
+          <template v-if="grant.active && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="green fal fa-coins mr-1"></i>
+                Claim your matching funds
+              </p>
+              Congratulations! The matching funds for your grant is ready to claim
+            </b-card-text>
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}">
+              Claim Funds
+            </a>
+            <hr class="my-4">
+          </template>
+
+          <!-- TODO: UPDATE CONDITION + LINK -->
+          <!-- Matching Funds are in review -->
+          <template v-if="grant.active && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-coins mr-1"></i>
+                Your matching funds are in review
+              </p>
+              Your grant has received matching funds from one or more matching pools and are now in review.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}">
+              View Matching Funds
+            </a>
+            <hr class="my-4">
+          </template>
+
+
+          <!-- TODO: UPDATE CONDITION + LINK -->
+          <!--  Claim History -->
+          <template v-if="grant.active && (grant.is_on_team || isStaff)">
+            <b-card-text>
+              <p class="font-weight-semibold mb-2">
+                <i class="fal fa-coins mr-1"></i>
+                View your matching funds
+              </p>
+              View matching funds received and claim history.
+            </b-card-text>
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}">
+              View Matching History
             </a>
             <hr class="my-4">
           </template>
