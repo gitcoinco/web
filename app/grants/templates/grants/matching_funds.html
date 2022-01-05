@@ -37,16 +37,15 @@
         margin-right: 2rem;
       }
 
-      /* .gc-tabs-left > div {
+      .gc-tabs-left > div {
         position: sticky !important;
         top: 0;
-        z-index: 100;
         background-color: #FFFFFF;
-      } */
-
-      .tab-content {
-        z-index: -1 !important;
       }
+
+      /* .tab-content {
+        z-index: -1 !important;
+      } */
     </style>
   </head>
 
@@ -123,7 +122,7 @@
                 <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
               </p>
 
-              <div v-for="grant in grants" v-if="!loading" class="container py-lg-5 px-md-0" style="padding-bottom: 96px;">
+              <div v-for="grant in grants" :key="grant.id" v-if="!loading" class="container py-lg-5 px-md-0" style="padding-bottom: 96px;">
                 <b-row>
                   <div class="d-flex mb-lg-4 ml-lg-3 mb-0 ml-2">
                     <div class="my-auto">
@@ -135,7 +134,7 @@
                   </div>
                 </b-row>
                 <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length === 0">
-                  <b-row v-for="match in grant.clr_matches" class="mt-4 align-items-center">
+                  <b-row v-for="match in grant.clr_matches" :key="match.pk" class="mt-4 align-items-center">
                     <b-col lg="4" sm="12">
                       <span class="font-bigger-1 text-grey-500" id="grant-clrs">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
                     </b-col>
@@ -365,7 +364,7 @@
               <span class="font-weight-bold font-bigger-1">Claim History</span>
             </template>
             <div v-if="grants.length > 0">
-              <div v-for="grant in grants" v-if="!loading" class="container pt-4 py-lg-5" style="padding-bottom: 96px;">
+              <div v-for="grant in grants" :key="grant.id" v-if="!loading" class="container pt-4 py-lg-5" style="padding-bottom: 96px;">
                 <b-row>
                   <div class="d-flex mb-lg-4 ml-lg-3 mb-0 ml-2">
                     <div class="my-auto">
@@ -377,7 +376,7 @@
                   </div>
                 </b-row>
                 <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length > 0">
-                  <b-row v-for="match in grant.clr_matches" class="mt-4 align-items-center">
+                  <b-row v-for="match in grant.clr_matches" :key="match.pk" class="mt-4 align-items-center">
                     <b-col lg="4" sm="12">
                       <span class="font-bigger-1 text-grey-500">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
                     </b-col>

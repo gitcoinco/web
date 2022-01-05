@@ -3952,7 +3952,7 @@ def clr_matches(request):
     if request.method == 'GET':
         serializer = GrantSerializer(
             profile.grants.prefetch_related('clr_matches').all(),
-            fields=['title', 'logo', 'admin_address', 'clr_matches'],
+            fields=['id', 'title', 'logo', 'admin_address', 'clr_matches'],
             many=True
         )
 

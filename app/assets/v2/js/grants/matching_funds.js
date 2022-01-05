@@ -211,7 +211,7 @@ if (document.getElementById('gc-matching-funds')) {
     data() {
       return {
         loading: true,
-        grants: null,
+        grants: [],
         tabSelected: 1,
         tab: null
       };
