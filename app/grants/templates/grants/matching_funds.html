@@ -115,8 +115,10 @@
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Ready to Claim</span>
             </template>
-            <p class="font-subheader mt-3 mb-lg-0 mb-5 text-grey-500">
-              View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.<br>
+            <p class="font-subheader mt-4 mb-lg-0 mb-5 text-grey-500">
+              View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.
+            </p>
+            <p class="font-subheader mt-1">
               <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
             </p>
             <div v-for="grant in clrMatches" v-if="!loading" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
@@ -127,7 +129,7 @@
                     <img :src="[[ match.grant.logo ]]" style="max-width: 160px; height: 92px;">
                   </div>
                   <div class="d-inline-block">
-                    <span class="font-bigger-2 ml-2">[[ match.grant.title ]]</span>
+                    <span class="font-bigger-2 ml-4">[[ match.grant.title ]]</span>
                   </div>
                 </div>
               </b-row>
@@ -136,25 +138,40 @@
                   <span class="font-bigger-1 text-grey-500" id="grant-clrs">[[ stringifyClrs(match.grant_payout.grant_clrs) ]]</span>
                 </b-col>
                 <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</h4>
-                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</span>
-                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount ]]</span>
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
+                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | round | formatNumber ]]</span>
                   <span v-if="match.grant_payout.status === 'pending'">(pending review)</span>
                 </b-col>
                 <b-col v-if="match.grant_payout.status === 'ready'" lg="4" sm="12" class="pt-2 pt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base text-grey-500">Ready to Claim</h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">Ready to Claim</span>
-                  <span class="font-body text-grey-500">Claim Period: [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]</span>
+                  <span class="font-body text-grey-500">
+                    <template v-if="match.grant_payout.grant_clrs[0].claim_start_date">
+                      [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
+                    </template>
+                    <template v-else>
+                      NA
+                    </template>
+                  </span>
                 </b-col>
                 <b-col v-else lg="4" sm="12" class="mt-2 mt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">In Review</h4>
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">In Review</h4>
                   <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">In Review</span>
-                  <span class="font-body text-grey-500">Claim Period: [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]</span>
+                  <span class="font-body text-grey-500">
+                    Claim Period:
+                    <template v-if="match.grant_payout.grant_clrs[0].claim_start_date">
+                      [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
+                    </template>
+                    <template v-else>
+                      NA
+                    </template>
+                  </span>
                 </b-col>
                 <b-col class="text-lg-right mt-2 mt-lg-0">
                   <a href="javascript:;" id="claim-match"
                     @click="claimMatch(match)"
-                    class="btn btn-primary font-body w-100"
+                    class="btn btn-primary btn-lg font-body w-100"
                     :class="[[ match.grant_payout.status === 'pending' ? 'disabled' : '' ]]">
                     Claim
                   </a>
@@ -220,9 +237,9 @@
                   <span class="font-bigger-1 text-grey-500">[[ stringifyClrs(match.grant_payout.grant_clrs) ]]</span>
                 </b-col>
                 <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</h4>
-                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount ]] [[ match.grant_payout.payout_token ]]</span>
-                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount ]]</span>
+                  <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
+                  <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
+                  <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | round | formatNumber ]]</span>
                 </b-col>
                 <b-col v-if="match.status == 'pending'" lg="4" sm="12" class="pt-2 pt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
