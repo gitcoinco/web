@@ -115,21 +115,21 @@
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Ready to Claim</span>
             </template>
-            <p class="font-subheader mt-4 mb-lg-0 mb-5 text-grey-500">
+            <p class="font-subheader mt-4 text-grey-500">
               View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.
             </p>
-            <p class="font-subheader mt-1">
+            <p class="font-subheader mt-1 mb-4">
               <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
             </p>
-            <div v-for="grant in clrMatches" v-if="!loading" class="container py-lg-5 px-0" style="padding-bottom: 96px;">
+            <div v-for="grant in clrMatches" v-if="!loading" class="container py-lg-5 px-md-0" style="padding-bottom: 96px;">
               <div v-for="match in grant">
               <b-row>
-                <div class="d-inline-block mb-lg-4 ml-lg-3 mb-0 ml-2">
-                  <div class="d-inline-block ml-2 ml-lg-0">
+                <div class="d-flex mb-lg-4 ml-lg-3 mb-0 ml-2">
+                  <div class="my-auto">
                     <img :src="[[ match.grant.logo ]]" style="max-width: 160px; height: 92px;">
                   </div>
-                  <div class="d-inline-block">
-                    <span class="font-bigger-2 ml-4">[[ match.grant.title ]]</span>
+                  <div class="my-auto ml-3 ml-md-4">
+                    <span class="font-bigger-2">[[ match.grant.title ]]</span>
                   </div>
                 </div>
               </b-row>
@@ -157,7 +157,7 @@
                 </b-col>
                 <b-col v-else lg="4" sm="12" class="mt-2 mt-lg-0">
                   <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">In Review</h4>
-                  <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">In Review</span>
+                  <span class="d-lg-none d-block font-weight-bold font-subheader">In Review</span>
                   <span class="font-body text-grey-500">
                     Claim Period:
                     <template v-if="match.grant_payout.grant_clrs[0].claim_start_date">
@@ -168,7 +168,7 @@
                     </template>
                   </span>
                 </b-col>
-                <b-col class="text-lg-right mt-2 mt-lg-0">
+                <b-col class="text-lg-right mt-3 mt-lg-0">
                   <a href="javascript:;" id="claim-match"
                     @click="claimMatch(match)"
                     class="btn btn-primary btn-lg font-body w-100"
