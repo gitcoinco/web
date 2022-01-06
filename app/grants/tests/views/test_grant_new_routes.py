@@ -134,7 +134,7 @@ class TestNewGrantsPostRoute:
         assert response_data.get('status') == 400
         assert response_data.get('message') == 'error: payout_address is a mandatory parameter'
 
-    def test_zcash_addresses_must_be_tranparent_addresses(
+    def test_zcash_addresses_must_be_transparent_addresses(
         self,
         django_user_model
     ):
