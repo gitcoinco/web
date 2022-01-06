@@ -1,9 +1,9 @@
 import json
-import pytest
-
 from os.path import dirname, join
+
 from django.test import Client
 
+import pytest
 from dashboard.tests.factories import ProfileFactory
 from grants.tests.factories import GrantTypeFactory
 
