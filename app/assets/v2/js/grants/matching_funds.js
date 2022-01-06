@@ -7,6 +7,8 @@ Vue.mixin({
       let vm = this;
       let urlParams = new URLSearchParams(window.location.search);
 
+      vm.targetGrant = urlParams.get('grant');
+
       vm.tab = urlParams.get('tab');
 
       switch (vm.tab) {
@@ -211,7 +213,8 @@ if (document.getElementById('gc-matching-funds')) {
         loading: true,
         grants: [],
         tabSelected: 1,
-        tab: null
+        tab: null,
+        targetGrant: null
       };
     },
     mounted: async function() {
@@ -219,6 +222,13 @@ if (document.getElementById('gc-matching-funds')) {
 
       // fetch user's owned grants with CLR match history
       await this.fetchGrants();
+
+      // scroll to specific grant if url specified a target grant
+      if (this.targetGrant) {
+        $('html, body').animate({
+          scrollTop: $('#grant-' + this.targetGrant).offset().top
+        }, 'slow');
+      }
     }
   });
 }

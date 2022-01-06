@@ -37,15 +37,16 @@
         margin-right: 2rem;
       }
 
-      .gc-tabs-left > div {
+      .gc-tabs-left > div:nth-child(1) {
         position: sticky !important;
         top: 0;
+        z-index: 1;
         background-color: #FFFFFF;
       }
 
-      /* .tab-content {
-        z-index: -1 !important;
-      } */
+      html {
+        scroll-behavior: smooth;
+      }
     </style>
   </head>
 
@@ -123,7 +124,7 @@
                 <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
               </p>
 
-              <div v-for="grant in grants" :key="grant.id" class="container py-lg-5 px-md-0" style="padding-bottom: 96px;">
+              <div v-for="grant in grants" :key="grant.id" :id="[[ 'grant-' + grant.id ]]" class="container py-lg-5 px-md-0" style="padding-bottom: 96px;">
                 <b-row>
                   <div class="d-flex mb-lg-4 ml-lg-3 mb-0 ml-2">
                     <div class="my-auto">

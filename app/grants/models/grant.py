@@ -941,11 +941,11 @@ class Grant(SuperModel):
 
         clr_matches = CLRMatch.objects.filter(grant=self)
 
-        # has funds which have already calimed
-        has_claim_history = clr_matches.exclude(payout_tx='').exists()
+        # has funds which have already been claimed
+        has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
 
         # has claims in pending / ready state
-        has_funds_to_be_claimed = clr_matches.filter(payout_tx='').exists()
+        has_funds_to_be_claimed = clr_matches.filter(claim_tx__isnull=True).exists()
         has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
         has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
 

@@ -398,7 +398,7 @@
               </p>
               Congratulations! The matching funds for your grant is ready to claim
             </b-card-text>
-            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}">
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?grant={{ grant.id }}">
               Claim Funds
             </a>
             <hr class="my-4">
@@ -413,7 +413,7 @@
               </p>
               Your grant has received matching funds from one or more matching pools and are now in review.
             </b-card-text>
-            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}">
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?grant={{ grant.id }}">
               View Matching Funds
             </a>
             <hr class="my-4">
@@ -429,7 +429,7 @@
               </p>
               View matching funds received and claim history.
             </b-card-text>
-            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?tab=claim_history">
+            <a class="btn btn-block btn-primary" href="{% url 'grants:matching_funds' %}?tab=claim_history&grant={{ grant.id }}">
               View Matching History
             </a>
             <hr class="my-4">
