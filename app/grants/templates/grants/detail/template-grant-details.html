@@ -439,9 +439,8 @@
             <hr class="my-4">
           </template>
 
-          <!-- TODO: UPDATE CONDITION -->
           <!-- Claim Matching Funds -->
-          <template v-if="grant.active && (grant.is_on_team || isStaff)">
+          <template v-if="grant.active && grant.has_pending_claim && (grant.is_on_team || isStaff)">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="green fal fa-coins mr-1"></i>
@@ -455,9 +454,8 @@
             <hr class="my-4">
           </template>
 
-          <!-- TODO: UPDATE CONDITION -->
           <!-- Matching Funds are in review -->
-          <template v-if="grant.active && (grant.is_on_team || isStaff)">
+          <template v-if="grant.active && grant.has_claims_in_review && (grant.is_on_team || isStaff)">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-coins mr-1"></i>
@@ -472,9 +470,8 @@
           </template>
 
 
-          <!-- TODO: UPDATE CONDITION -->
           <!--  Claim History -->
-          <template v-if="grant.active && (grant.is_on_team || isStaff)">
+          <template v-if="grant.active && grant.has_claim_history && (grant.is_on_team || isStaff)">
             <b-card-text>
               <p class="font-weight-semibold mb-2">
                 <i class="fal fa-coins mr-1"></i>

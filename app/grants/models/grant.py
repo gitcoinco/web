@@ -19,6 +19,7 @@ from townsquare.models import Favorite
 from web3 import Web3
 
 from .contribution import Contribution
+from .clr_match import CLRMatch
 from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
 from .subscription import Subscription
@@ -938,6 +939,16 @@ class Grant(SuperModel):
 
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
+        clr_matches = CLRMatch.objects.filter(grant=self)
+
+        # has funds which have already calimed
+        has_claim_history = clr_matches.exclude(payout_tx='').exists()
+
+        # has claims in pending / ready state
+        has_funds_to_be_claimed = clr_matches.filter(payout_tx='').exists()
+        has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
+        has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
+
         return {
                 'id': self.id,
                 'active': self.active,
@@ -1000,7 +1011,10 @@ class Grant(SuperModel):
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
                 'has_external_funding': self.has_external_funding,
                 'active_round_names': active_round_names,
-                'is_idle': self.is_idle
+                'is_idle': self.is_idle,
+                'has_pending_claim': has_pending_claim,
+                'has_claims_in_review': has_claims_in_review,
+                'has_claim_history': has_claim_history
             }
 
     def favorite(self, user):
