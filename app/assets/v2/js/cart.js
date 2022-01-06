@@ -20,6 +20,7 @@ document.addEventListener('dataWalletReady', async function(e) {
 const MATIC_ADDRESS = '0x0000000000000000000000000000000000001010';
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6'; // Gitcoin donation address for mainnet and rinkeby
+const gitcoinAddressPolygon = '0x366adF5B96Ee15AfF5d66B0Fa44a56330b55E97B'; // Gitcoin donation address for polygon mainnet and mumbai
 
 // Contract parameters and constants
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
@@ -287,72 +288,11 @@ Vue.component('grants-cart', {
 
     // Array of objects containing all donations and associated data
     donationInputs() {
-      let isPolygon = this.nativeCurrency == 'MATIC';
+      return this.computeDonationInputs(gitcoinAddress);
+    },
 
-      if (!this.grantsByTenant || this.tabSelected !== 'ETH') {
-        return undefined;
-      }
-
-      // Generate array of objects containing donation info from cart
-      const donations = this.grantsByTenant.map((grant, index) => {
-        const tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
-        let amount;
-
-        try {
-          amount = parseUnits(String(Number(grant.grant_donation_amount) || 0), tokenDetails?.decimals);
-        } catch {
-          amount = parseUnits(String(0), tokenDetails?.decimals);
-        }
-
-        return {
-          token: tokenDetails?.addr,
-          amount: amount.toString(),
-          dest: grant.grant_admin_address,
-          name: grant.grant_donation_currency, // token abbreviation, e.g. DAI
-          grant, // all grant data from localStorage
-          tokenApprovalTxHash: '' // tx hash of token approval required for this donation
-        };
-      });
-
-      // Append the Gitcoin donations (these already account for gitcoinFactor)
-      Object.keys(this.donationsToGitcoin).forEach((token) => {
-        const tokenDetails = this.getTokenByName(token, isPolygon);
-        const amount = parseUnits(String(this.donationsToGitcoin[token]), tokenDetails?.decimals);
-
-        const gitcoinGrantInfo = {
-          // Manually fill this in so we can access it for the POST requests.
-          // We use empty strings for fields that are not needed here
-          grant_admin_address: gitcoinAddress,
-          grant_contract_address: '0xeb00a9c1Aa8C8f4b20C5d3dDA2bbC64Aa39AF752',
-          grant_contract_version: '1',
-          grant_donation_amount: this.donationsToGitcoin[token],
-          grant_donation_clr_match: '',
-          grant_donation_currency: token,
-          grant_donation_num_rounds: 1,
-          grant_id: '12',
-          grant_image_css: '',
-          grant_logo: '',
-          grant_slug: 'gitcoin-grants-official-matching-pool-fund',
-          grant_title: 'Gitcoin Grants Official Matching Pool Fund',
-          grant_token_address: '0x0000000000000000000000000000000000000000',
-          grant_token_symbol: '',
-          isAutomatic: true // we add this field to help properly format the POST requests,
-        };
-
-        // Only add to donation inputs array if donation amount is greater than 0
-        if (amount.gt(ZERO)) {
-          donations.push({
-            amount: amount.toString(),
-            token: tokenDetails?.addr,
-            dest: gitcoinAddress,
-            name: token, // token abbreviation, e.g. DAI
-            grant: gitcoinGrantInfo, // equivalent to grant data from localStorage
-            tokenApprovalTxHash: '' // tx hash of token approval required for this donation
-          });
-        }
-
-      });
-      return donations;
+    donationInputsPolygon() {
+      return this.computeDonationInputs(gitcoinAddressPolygon);
     },
 
     // Total amount of native currency that needs to be sent along with the transaction
@@ -497,6 +437,76 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    // Array of objects containing all donations and associated data
+    computeDonationInputs(destGitcoinAddress) {
+      let isPolygon = destGitcoinAddress == gitcoinAddressPolygon;
+
+      if (!this.grantsByTenant || this.tabSelected !== 'ETH') {
+        return undefined;
+      }
+
+      // Generate array of objects containing donation info from cart
+      const donations = this.grantsByTenant.map((grant) => {
+        const tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
+        let amount;
+
+        try {
+          amount = parseUnits(String(Number(grant.grant_donation_amount) || 0), tokenDetails?.decimals);
+        } catch {
+          amount = parseUnits(String(0), tokenDetails?.decimals);
+        }
+
+        return {
+          token: tokenDetails?.addr,
+          amount: amount.toString(),
+          dest: grant.grant_admin_address,
+          name: grant.grant_donation_currency, // token abbreviation, e.g. DAI
+          grant, // all grant data from localStorage
+          tokenApprovalTxHash: '' // tx hash of token approval required for this donation
+        };
+      });
+
+      // Append the Gitcoin donations (these already account for gitcoinFactor)
+      Object.keys(this.donationsToGitcoin).forEach((token) => {
+        const tokenDetails = this.getTokenByName(token, isPolygon);
+        const amount = parseUnits(String(this.donationsToGitcoin[token]), tokenDetails?.decimals);
+
+        const gitcoinGrantInfo = {
+          // Manually fill this in so we can access it for the POST requests.
+          // We use empty strings for fields that are not needed here
+          grant_admin_address: destGitcoinAddress,
+          grant_contract_address: '0xeb00a9c1Aa8C8f4b20C5d3dDA2bbC64Aa39AF752',
+          grant_contract_version: '1',
+          grant_donation_amount: this.donationsToGitcoin[token],
+          grant_donation_clr_match: '',
+          grant_donation_currency: token,
+          grant_donation_num_rounds: 1,
+          grant_id: '12',
+          grant_image_css: '',
+          grant_logo: '',
+          grant_slug: 'gitcoin-grants-official-matching-pool-fund',
+          grant_title: 'Gitcoin Grants Official Matching Pool Fund',
+          grant_token_address: '0x0000000000000000000000000000000000000000',
+          grant_token_symbol: '',
+          isAutomatic: true // we add this field to help properly format the POST requests,
+        };
+
+        // Only add to donation inputs array if donation amount is greater than 0
+        if (amount.gt(ZERO)) {
+          donations.push({
+            amount: amount.toString(),
+            token: tokenDetails?.addr,
+            dest: destGitcoinAddress,
+            name: token, // token abbreviation, e.g. DAI
+            grant: gitcoinGrantInfo, // equivalent to grant data from localStorage
+            tokenApprovalTxHash: '' // tx hash of token approval required for this donation
+          });
+        }
+
+      });
+      return donations;
+    },
+
     checkForGnosisSafes: async function() {
       // collate grants which represent contracts which cannot be interacted with
       const withCode = [];
@@ -1193,8 +1203,13 @@ Vue.component('grants-cart', {
 
     // Returns donation inputs for a transaction, filtered to remove unused data
     getDonationInputs() {
+      return this.getFilteredDonationInputs(this.donationInputs);
+    },
+
+    // Returns donation inputs for a transaction, filtered to remove unused data
+    getFilteredDonationInputs(donationInputsToFilter) {
       // We use parse and stringify to avoid mutating this.donationInputs since we use it later
-      const donationInputs = JSON.parse(JSON.stringify(this.donationInputs)).map(donation => {
+      const donationInputs = JSON.parse(JSON.stringify(donationInputsToFilter)).map(donation => {
         delete donation.name;
         delete donation.grant;
         delete donation.tokenApprovalTxHash;
@@ -1208,7 +1223,7 @@ Vue.component('grants-cart', {
 
       return donationInputsFiltered;
     },
-
+    
     async sendDonationTx(userAddress) {
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);

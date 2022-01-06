@@ -28,7 +28,7 @@
         </div>
         <div class="col-md-7 p-3">
           <h2 class="font-subheader">
-            <a :href="grant.details_url" class="gc-font-base h5 text-black">[[ grant.title | truncate(60) ]]</a>
+            <a :href="grant.details_url" class="gc-font-base h5 text-black" target="_blank" rel="noopener noreferrer">[[ grant.title | truncate(60) ]]</a>
           </h2>
           <div>
             <div class="">
@@ -166,7 +166,7 @@
       </div>
       <div class="grant-item__content px-3">
         <h2 class="font-subheader">
-          <a :href="grant.details_url" class="gc-font-base h5 text-black">[[ grant.title | truncate(60) ]]</a>
+          <a :href="grant.details_url" class="gc-font-base h5 text-black" target="_blank" rel="noopener noreferrer">[[ grant.title | truncate(60) ]]</a>
         </h2>
         <span class="">by</span>
         <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">

@@ -450,13 +450,13 @@ CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=Tr
 CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
 
 CACHEOPS_DEFAULTS = {
-    'timeout': 60 * 60
+    'timeout': 60 * 60 * 5
 }
 
 # 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
 CACHEOPS = {
     '*.*': {
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'auth.user': {
         'ops': 'get',
@@ -468,7 +468,7 @@ CACHEOPS = {
     },
     'auth.*': {
         'ops': ('fetch', 'get'),
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'auth.permission': {
         'ops': 'all',
@@ -492,11 +492,11 @@ CACHEOPS = {
     },
     'dashboard.*': {
         'ops': ('fetch', 'get'),
-        'timeout': 60 * 30,
+        'timeout': 60 * 60 * 3,
     },
     'economy.*': {
         'ops': 'all',
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'gas.*': {
         'ops': 'all',
@@ -557,6 +557,7 @@ CACHES = {
     'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
+CACHES['default']['TIMEOUT'] = 60 * 60 * 3
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
