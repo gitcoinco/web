@@ -21,12 +21,12 @@ Vue.mixin({
       }
       window.history.replaceState({}, document.title, `${window.location.pathname}`);
     },
-    async fetchCLRMatches() {
+    async fetchGrants() {
       let vm = this;
 
       this.loading = true;
 
-      // fetch clr match entries of owned grants
+      // fetch owned grants with clr matches
       const url = '/grants/v1/api/clr-matches/';
 
       try {
@@ -51,7 +51,7 @@ Vue.mixin({
           });
         });
 
-        this.grants = result;
+        this.grants = result.sort((a, b) => b.clr_matches.length - a.clr_matches.length);
 
         this.loading = false;
 
@@ -59,17 +59,6 @@ Vue.mixin({
         console.error(e);
         _alert('Something went wrong. Please try again later', 'danger');
       }
-    },
-    async groupByGrant(clrMatches) {
-      // group clr matches by grant title
-
-      result = await clrMatches.reduce(async function(r, a) {
-        r[a.grant.title] = r[a.grant.title] || [];
-        r[a.grant.title].push(a);
-        return r;
-      }, Object.create(null));
-
-      return result;
     },
     async checkClaimStatus(match, admin_address) {
       const recipientAddress = admin_address;
@@ -108,7 +97,7 @@ Vue.mixin({
 
       return { status, timestamp };
     },
-    async claimMatch(match) {
+    async claimMatch(match, admin_address) {
       const vm = this;
 
       // Helper method to manage state
@@ -130,9 +119,18 @@ Vue.mixin({
 
       // Confirm wallet was connected (user may have closed wallet connection prompt)
       if (!provider) {
-        _alert('Please connect MetaMask wallet', 'danger');
+        _alert('Please connect Ethereum wallet', 'danger');
         return;
       }
+
+      let chainId = Number(web3.eth.currentProvider.chainId);
+
+      if (chainId < 1 || chainId > 5) {
+        waitingState(false);
+        _alert('Please connect to a valid Ethereum network', 'danger');
+        return;
+      }
+
       const user = (await web3.eth.getAccounts())[0];
 
       // Get contract instance
@@ -142,11 +140,11 @@ Vue.mixin({
       );
 
       // Claim payout
-      matchPayouts.methods.claimMatchPayout(match.grant.admin_address)
+      matchPayouts.methods.claimMatchPayout(admin_address)
         .send({from: user})
         .on('transactionHash', async function(txHash) {
           await postToDatabase(match.pk, txHash);
-          await this.fetchCLRMatches();
+          await this.fetchGrants();
           vm.$forceUpdate();
           this.tabSelected = 1;
           waitingState(false);
@@ -219,8 +217,8 @@ if (document.getElementById('gc-matching-funds')) {
     mounted: async function() {
       this.enableTab();
 
-      // fetch CLR match history of the user's owned grants
-      await this.fetchCLRMatches();
+      // fetch user's owned grants with CLR match history
+      await this.fetchGrants();
     }
   });
 }

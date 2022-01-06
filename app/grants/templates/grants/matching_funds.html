@@ -114,6 +114,7 @@
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Ready to Claim</span>
             </template>
+            <div v-if="!loading">
             <div v-if="grants.length > 0">
               <p class="font-subheader mt-4 text-grey-500">
                 View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.<br>
@@ -122,14 +123,16 @@
                 <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
               </p>
 
-              <div v-for="grant in grants" :key="grant.id" v-if="!loading" class="container py-lg-5 px-md-0" style="padding-bottom: 96px;">
+              <div v-for="grant in grants" :key="grant.id" class="container py-lg-5 px-md-0" style="padding-bottom: 96px;">
                 <b-row>
                   <div class="d-flex mb-lg-4 ml-lg-3 mb-0 ml-2">
                     <div class="my-auto">
-                      <img :src="[[ grant.logo ]]" style="max-width: 160px; height: 92px;">
+                      <img :src="[[ grant.logo_url ]]" style="max-width: 160px; height: 92px;">
                     </div>
                     <div class="my-auto ml-3 ml-md-4">
-                      <span class="font-bigger-2 ml-2">[[ grant.title ]]</span>
+                      <a class="font-bigger-2 ml-2" :href="[[ grant.details_url ]]" target="_blank" style="color: inherit">
+                        [[ grant.title ]]
+                      </a>
                     </div>
                   </div>
                 </b-row>
@@ -172,7 +175,7 @@
                     </b-col>
                     <b-col class="text-lg-right mt-3 mt-lg-0">
                       <a href="javascript:;" id="claim-match"
-                        @click="claimMatch(match)"
+                        @click="claimMatch(match, grant.admin_address)"
                         class="btn btn-primary btn-lg font-body w-100"
                         :class="[[ match.grant_payout.status === 'pending' ? 'disabled' : '' ]]">
                         Claim
@@ -323,6 +326,7 @@
                 </svg>
               </div>                
             </div>
+            </div>
 
             <!-- Loading skeleton -->
             <b-skeleton-wrapper :loading="loading" class="py-lg-5 px-0" style="padding-bottom: 96px;">
@@ -363,15 +367,18 @@
             <template v-slot:title>
               <span class="font-weight-bold font-bigger-1">Claim History</span>
             </template>
+            <div v-if="!loading">
             <div v-if="grants.length > 0">
-              <div v-for="grant in grants" :key="grant.id" v-if="!loading" class="container pt-4 py-lg-5" style="padding-bottom: 96px;">
+              <div v-for="grant in grants" :key="grant.id" class="container pt-4 py-lg-5" style="padding-bottom: 96px;">
                 <b-row>
                   <div class="d-flex mb-lg-4 ml-lg-3 mb-0 ml-2">
                     <div class="my-auto">
-                      <img :src="[[ grant.logo ]]" style="max-width: 160px; height: 92px;">
+                      <img :src="[[ grant.logo_url ]]" style="max-width: 160px; height: 92px;">
                     </div>
                     <div class="my-auto ml-3 ml-md-4">
-                      <span class="font-bigger-2 ml-2">[[ grant.title ]]</span>
+                      <a class="font-bigger-2 ml-2" :href="[[ grant.details_url ]]" target="_blank" style="color: inherit">
+                        [[ grant.title ]]
+                      </a>
                     </div>
                   </div>
                 </b-row>
@@ -565,6 +572,7 @@
                   <path d="M204.481 307.505C204.014 307.505 203.634 307.126 203.634 306.657V304.148C203.634 303.68 204.012 303.3 204.481 303.3C204.95 303.3 205.329 303.679 205.329 304.148V306.659C205.327 307.126 204.949 307.505 204.481 307.505Z" fill="#8C65F7"/>
                 </svg>
               </div>                
+            </div>
             </div>
 
             <!-- Loading skeleton -->

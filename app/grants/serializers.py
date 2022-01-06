@@ -1,3 +1,6 @@
+from django.templatetags.static import static
+from django.urls import reverse
+
 from dashboard.router import ProfileSerializer
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
@@ -46,6 +49,8 @@ class CLRMatchSerializer(FlexFieldsModelSerializer):
 class GrantSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Grant object."""
 
+    logo_url = serializers.SerializerMethodField()
+    details_url = serializers.SerializerMethodField()
     admin_profile = ProfileSerializer()
     team_members = ProfileSerializer(many=True)
     clr_matches = CLRMatchSerializer(fields=['pk', 'amount', 'round_number', 'claim_tx', 'grant_payout'], many=True)
@@ -59,8 +64,14 @@ class GrantSerializer(FlexFieldsModelSerializer):
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
             'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
             'clr_round_num', 'is_clr_active', 'amount_received_in_round', 'positive_round_contributor_count',
-            'clr_matches',
+            'clr_matches', 'logo_url', 'details_url',
         )
+
+    def get_logo_url(self, obj):
+        return obj.logo.url if obj.logo and obj.logo.url else self.context['request'].build_absolute_uri(static(f'v2/images/grants/logos/{obj.id % 3}.png')),
+
+    def get_details_url(self, obj):
+        return reverse('grants:details', args=(obj.id, obj.slug))
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):

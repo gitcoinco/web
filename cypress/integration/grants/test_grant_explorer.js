@@ -210,7 +210,7 @@ describe('Grants Explorer page', () => {
           .should('have.attr', 'rel', 'noopener noreferrer')
           .then(link => {
             cy.request(link.prop('href')).its('status').should('eq', 200);
-          });  
+          });
       });
     });
   });

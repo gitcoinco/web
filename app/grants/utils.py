@@ -32,7 +32,6 @@ from django.utils import timezone
 
 import numpy as np
 import pandas as pd
-
 from app.settings import BASE_URL, MEDIA_URL, NOTION_API_KEY, NOTION_SYBIL_DB
 from app.utils import notion_write
 from avatar.utils import convert_img
@@ -49,7 +48,6 @@ from grants.sync.zil import sync_zil_payout
 from perftools.models import StaticJsonEnv
 from PIL import Image, ImageDraw, ImageOps
 from townsquare.models import SquelchProfile
-
 
 logger = logging.getLogger(__name__)
 
