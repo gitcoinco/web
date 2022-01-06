@@ -181,6 +181,20 @@ describe('Grants Explorer page', () => {
     });
   });
 
+  describe('grants explorer filters', () => {
+    it('contains the proper filter options', () => {
+      cy.createActiveGrantRound();
+
+      cy.impersonateUser();
+
+      cy.visit('grants/explorer');
+
+      cy.contains('Grant Round').click();
+  
+      cy.get('.dropdown-menu').should('contain', 'Test Grant CLR');
+    });
+  });
+
   describe('selecting a grant', () => {
     it('opens the grant in a new browser tab', () => {
       cy.createGrantSubmission().then((response) => {
@@ -196,8 +210,7 @@ describe('Grants Explorer page', () => {
           .should('have.attr', 'rel', 'noopener noreferrer')
           .then(link => {
             cy.request(link.prop('href')).its('status').should('eq', 200);
-          });
-          
+          });  
       });
     });
   });
