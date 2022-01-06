@@ -370,7 +370,7 @@
             </template>
             <div v-if="!loading">
             <div v-if="grants.length > 0">
-              <div v-for="grant in grants" :key="grant.id" class="container pt-4 py-lg-5" style="padding-bottom: 96px;">
+              <div v-for="grant in grants" :key="grant.id" :id="[[ 'grant-' + grant.id ]]" class="container pt-4 py-lg-5" style="padding-bottom: 96px;">
                 <b-row>
                   <div class="d-flex mb-lg-4 ml-lg-3 mb-0 ml-2">
                     <div class="my-auto">
