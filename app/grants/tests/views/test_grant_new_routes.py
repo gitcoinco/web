@@ -13,9 +13,11 @@ class TestNewGrantGetRoute:
     def test_when_not_logged_in_redirects_to_github_for_auth(self):
         client = Client(HTTP_USER_AGENT='chrome')
         response = client.get('/grants/new')
+        content = str(response.content)
 
-        assert response.status_code == 302
-        assert 'gh-login' in response.url
+        assert response.status_code == 200
+        assert 'Create a Grant' not in content
+        assert 'Please log in before submitting a grant' in content
 
     def test_when_logged_in_renders_grants_new_template(self, django_user_model):
         user = django_user_model.objects.create(username='gitcoin', password='password123')
@@ -24,10 +26,9 @@ class TestNewGrantGetRoute:
         client = Client(HTTP_USER_AGENT='chrome')
         client.force_login(user)
         response = client.get('/grants/new')
-        templates = [t.name for t in response.templates]
 
         assert response.status_code == 200
-        assert 'grants/_new.html' in templates
+        assert 'Create a Grant' in str(response.content)
 
 
 @pytest.mark.django_db

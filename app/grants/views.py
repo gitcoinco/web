@@ -3931,7 +3931,6 @@ class GrantSubmissionView(View):
 
         return JsonResponse(response)
 
-    @method_decorator(login_required)
     def get(self, request):
         profile = get_profile(request)
 
