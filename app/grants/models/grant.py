@@ -18,8 +18,8 @@ from grants.utils import get_upload_filename, is_grant_team_member
 from townsquare.models import Favorite
 from web3 import Web3
 
-from .contribution import Contribution
 from .clr_match import CLRMatch
+from .contribution import Contribution
 from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
 from .subscription import Subscription

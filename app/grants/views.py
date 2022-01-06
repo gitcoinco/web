@@ -1477,36 +1477,6 @@ def grant_details(request, grant_id, grant_slug):
     if is_clr_active:
         title = '💰 ' + title
 
-    should_show_claim_match_button = False
-    try:
-        # If the user viewing the page is team member or admin, check if grant has match funds available
-        # to withdraw
-
-        is_match_available_to_claim = False
-        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2022, 2, 1, 12, 0).replace(tzinfo=pytz.utc)
-        is_staff = request.user.is_authenticated and request.user.is_staff
-
-        # Check if this grant needs to complete KYC before claiming match funds
-        clr_matches = grant.clr_matches.filter(round_number=settings.MATCH_PAYOUTS_ROUND_NUM)
-        is_blocked_by_kyc = clr_matches.exists() and not clr_matches.first().ready_for_payout
-
-        # calculate whether is available
-        # TODO - do this asyncronously so as not to block the pageload
-        amount_available = 0
-        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc and grant.admin_address != '0x0':
-            if is_team_member or is_staff or is_admin:
-                w3 = get_web3(grant.network)
-                match_payouts_abi = settings.MATCH_PAYOUTS_ABI
-                match_payouts_address = w3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)
-                match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
-                amount_available = match_payouts.functions.payouts(grant.admin_address).call()
-                is_match_available_to_claim = True if amount_available > 0 else False
-
-        # Determine if we should show the claim match button on the grant details page
-        should_show_claim_match_button = grant.active and (is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
-
-    except Exception as e:
-        logger.exception(e)
 
     grant_tags = []
     for g_tag in GrantTag.objects.all():
@@ -1545,8 +1515,6 @@ def grant_details(request, grant_id, grant_slug):
         'user_code': get_user_code(request.user.profile.id, grant, emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
-        'should_show_claim_match_button': should_show_claim_match_button,
-        'amount_available': amount_available / 10 ** 18,
         'grant_tags': grant_tags
     }
     # Stats
