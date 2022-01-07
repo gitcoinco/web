@@ -1,4 +1,5 @@
 import pytest
+from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.grant_type import GrantType
 from grants.tests.factories import GrantFactory
@@ -227,5 +228,34 @@ class TestGrant:
 
         assert hasattr(grant, 'metadata')
         assert grant.metadata == {}
+
+    def test_grant_has_network(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'network')
+        assert grant.network == 'mainnet'
+
+    def test_grant_has_required_gas_price(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'required_gas_price')
+        assert grant.required_gas_price == '0'
+
+    def test_grant_has_admin_profile(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'admin_profile')
+
+    def test_grant_has_team_members(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'team_members')
+
+    def test_grant_has_image_css(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'image_css')
+        assert grant.image_css == ''
+
 
     
