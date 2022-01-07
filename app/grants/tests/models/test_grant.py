@@ -204,10 +204,28 @@ class TestGrant:
         assert hasattr(grant, 'contract_address')
         assert grant.contract_address == '0x0'
 
-    def test_grant_has_a_deploy_tx_id(self):
+    def test_grant_has_deploy_tx_id(self):
         grant = GrantFactory()
 
         assert hasattr(grant, 'deploy_tx_id')
         assert grant.deploy_tx_id == '0x0'
+
+    def test_grant_has_cancel_tx_id(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'cancel_tx_id')
+        assert grant.cancel_tx_id == '0x0'
+
+    def test_grant_has_contract_version(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contract_version')
+        assert grant.contract_version == 0
+
+    def test_grant_has_metadata(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'metadata')
+        assert grant.metadata == {}
 
     
