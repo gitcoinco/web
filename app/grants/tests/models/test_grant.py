@@ -358,6 +358,37 @@ class TestGrant:
         assert hasattr(grant, 'twitter_handle_2_follower_count')
         assert grant.twitter_handle_2_follower_count == 0
 
+    def test_grant_has_sybil_score(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'sybil_score')
+        assert grant.sybil_score == 0
+
+    def test_grant_has_funding_info(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'funding_info')
+        assert grant.funding_info == ''
+
+    def test_grant_has_a_has_external_funding_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'has_external_funding')
+        assert grant.has_external_funding == 'unknown'
+
+    def test_grant_has_clr_prediction_curve(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'clr_prediction_curve')
+        assert grant.clr_prediction_curve == [[0.0, 0.0, 0.0], 
+                                              [0.0, 0.0, 0.0], 
+                                              [0.0, 0.0, 0.0],
+                                              [0.0, 0.0, 0.0],
+                                              [0.0, 0.0, 0.0],
+                                              [0.0, 0.0, 0.0]]
+
+    
+
 
 
 
