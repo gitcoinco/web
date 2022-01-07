@@ -168,4 +168,20 @@ class TestGrant:
 
         assert hasattr(grant, 'contract_owner_address')
 
-    
+    def test_grant_has_amount_received_in_round(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'amount_received_in_round')
+        assert grant.amount_received_in_round == 0
+
+    def test_grant_has_monthly_amount_subscribed(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'monthly_amount_subscribed')
+        assert grant.monthly_amount_subscribed == 0
+
+    def test_grant_has_amount_received(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'amount_received')
+        assert grant.amount_received == 0
