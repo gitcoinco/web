@@ -128,7 +128,7 @@ Vue.mixin({
       let chainId = Number(web3.eth.currentProvider.chainId);
 
       if (chainId < 1 || chainId > 5) {
-        vm.waitingState(false);
+        waitingState(false);
         _alert('Please connect to a valid Ethereum network', 'danger');
         return;
       }
@@ -149,11 +149,11 @@ Vue.mixin({
           await vm.fetchGrants();
           vm.$forceUpdate();
           vm.tabSelected = 1;
-          vm.waitingState(false);
+          waitingState(false);
           _alert('Your matching funds claim is being processed', 'success');
         })
         .on('error', function(error) {
-          vm.waitingState(false);
+          waitingState(false);
           _alert(error, 'danger');
         });
     },
