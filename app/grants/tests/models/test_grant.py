@@ -257,5 +257,25 @@ class TestGrant:
         assert hasattr(grant, 'image_css')
         assert grant.image_css == ''
 
+    def test_grant_has_amount_received_with_phantom_funds(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'amount_received_with_phantom_funds')
+        assert grant.amount_received_with_phantom_funds == 0
+
+    def test_grant_has_active_subscriptions(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'activeSubscriptions')
+        assert grant.activeSubscriptions == []
+
+    def test_grant_has_hidden_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'hidden')
+        assert grant.hidden == False
+
+    
+
 
     
