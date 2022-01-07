@@ -324,6 +324,18 @@ class TestGrant:
 
         assert hasattr(grant, 'last_update')
 
+    def test_grant_has_categories(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'categories')
+
+    def test_grant_has_tags(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'tags')
+
+    
+
     
 
     
