@@ -9,3 +9,5 @@ class GrantHallOfFameFactory(factory.django.DjangoModelFactory):
 class GrantHallOfFameGranteeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GrantHallOfFameGrantee
+
+    hall_of_fame = factory.SubFactory(GrantHallOfFameFactory)
