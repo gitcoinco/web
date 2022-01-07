@@ -3945,4 +3945,10 @@ def clr_matches(request):
         clr_match.claim_tx = claim_tx
         clr_match.save(update_fields=['claim_tx'])
 
+        # update other clr match entries with same grant admin address
+        CLRMatch.objects.filter(
+            grant__admin_address=clr_match.grant.admin_address,
+            grant_payout__pk=clr_match.grant_payout.pk
+        ).update(update_fields=['claim_tx'])
+
         return Response({'message': 'Claim transaction successfully ingested!'}, status=200)
