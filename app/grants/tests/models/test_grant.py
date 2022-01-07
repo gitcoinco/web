@@ -410,16 +410,19 @@ class TestGrant:
         assert hasattr(grant, 'clr_round_num')
         assert grant.clr_round_num == ''
 
+    def test_grant_has_twitter_verified_attribute(self):
+        grant = GrantFactory()
 
+        assert hasattr(grant, 'twitter_verified')
+        assert grant.twitter_verified == False
 
+    def test_grant_has_twitter_verified_by_attribute(self):
+        grant = GrantFactory()
 
+        assert hasattr(grant, 'twitter_verified_by')
 
-    
+    def test_grant_has_twitter_verified_at_attribute(self):
+        grant = GrantFactory()
 
-    
-
-    
-    
-
-
+        assert hasattr(grant, 'twitter_verified_at')
     
