@@ -185,3 +185,23 @@ class TestGrant:
 
         assert hasattr(grant, 'amount_received')
         assert grant.amount_received == 0
+
+    def test_grant_has_a_token_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'token_address')
+        assert grant.token_address == '0x0'
+
+    def test_grant_has_a_token_symbol(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'token_symbol')
+        assert grant.token_symbol == ''
+
+    def test_grant_has_a_contract_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contract_address')
+        assert grant.contract_address == '0x0'
+
+    
