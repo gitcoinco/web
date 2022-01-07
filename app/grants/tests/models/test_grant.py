@@ -87,4 +87,13 @@ class TestGrant:
         assert hasattr(grant, 'admin_message')
         assert grant.admin_message == ''
 
-    
+    def test_grant_has_visible_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'visible')
+        assert grant.visible == True
+
+    def test_grant_has_region_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'region')
