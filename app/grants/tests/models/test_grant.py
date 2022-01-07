@@ -334,6 +334,34 @@ class TestGrant:
 
         assert hasattr(grant, 'tags')
 
+    def test_grant_has_twitter_handle_1(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_handle_1')
+        assert grant.twitter_handle_1 == ''
+
+    def test_grant_has_twitter_handle_2(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_handle_2')
+        assert grant.twitter_handle_2 == ''
+
+    def test_grant_has_twitter_handle_1_follower_count(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_handle_1_follower_count')
+        assert grant.twitter_handle_1_follower_count == 0
+
+    def test_grant_has_twitter_handle_2_follower_count(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'twitter_handle_2_follower_count')
+        assert grant.twitter_handle_2_follower_count == 0
+
+
+
+
+
     
 
     
