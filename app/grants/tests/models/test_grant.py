@@ -204,4 +204,10 @@ class TestGrant:
         assert hasattr(grant, 'contract_address')
         assert grant.contract_address == '0x0'
 
+    def test_grant_has_a_deploy_tx_id(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'deploy_tx_id')
+        assert grant.deploy_tx_id == '0x0'
+
     
