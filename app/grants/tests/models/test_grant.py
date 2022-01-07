@@ -51,3 +51,16 @@ class TestGrant:
         grant = GrantFactory()
 
         assert hasattr(grant, 'slug')
+
+    def test_grant_has_a_description(self):
+        """Test Grant has a description attribute."""
+
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'description')
+
+    def test_grant_has_a_description_rich_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'description_rich')
+        assert grant.description_rich == ''
