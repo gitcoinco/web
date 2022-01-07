@@ -1,11 +1,11 @@
 describe('Creating a new bounty', () => {
   before(() => {
     cy.setupMetamask();
-    cy.setLocalStorage('quickstart_dontshow', true);
   });
 
   beforeEach(() => {
     cy.impersonateUser();
+    cy.setLocalStorage('quickstart_dontshow', true);
   });
 
   afterEach(() => {
