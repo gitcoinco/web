@@ -145,10 +145,10 @@ Vue.mixin({
       matchPayouts.methods.claimMatchPayout(admin_address)
         .send({from: user})
         .on('transactionHash', async function(txHash) {
-          await postToDatabase(match.pk, txHash);
-          await this.fetchGrants();
+          await vm.postToDatabase(match.pk, txHash);
+          await vm.fetchGrants();
           vm.$forceUpdate();
-          this.tabSelected = 1;
+          vm.tabSelected = 1;
           waitingState(false);
           _alert('Your matching funds claim is being processed', 'success');
         })
