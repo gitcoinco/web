@@ -387,7 +387,28 @@ class TestGrant:
                                               [0.0, 0.0, 0.0],
                                               [0.0, 0.0, 0.0]]
 
-    
+    def test_grant_has_weighted_risk_score(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'weighted_risk_score')
+        assert grant.weighted_risk_score == 0
+
+    def test_grant_has_an_in_active_clrs_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'in_active_clrs')
+
+    def test_grant_has_is_clr_active_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'is_clr_active')
+        assert grant.is_clr_active == False
+
+    def test_grant_has_clr_round_num(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'clr_round_num')
+        assert grant.clr_round_num == ''
 
 
 
