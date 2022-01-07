@@ -309,6 +309,23 @@ class TestGrant:
         assert hasattr(grant, 'negative_round_contributor_count')
         assert grant.negative_round_contributor_count == 0
 
+    def test_grant_has_defer_clr_to_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'defer_clr_to')
+
+    def test_grant_has_last_clr_calc_date(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'last_clr_calc_date')
+
+    def test_grant_has_last_update(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'last_update')
+
+    
+
     
     
 
