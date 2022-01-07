@@ -41,7 +41,6 @@ describe('Creating a new bounty', () => {
     // and is not how a user would interact with the application. we should make every
     // attempt to use the UI as a real user would.
     cy.wait(1000);
-    cy.get('button.btn-primary[data-dismiss]').scrollIntoView().click({force: true});
 
     cy.contains('ETH').click();
     cy.contains('MetaMask').click();
