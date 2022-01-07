@@ -97,3 +97,18 @@ class TestGrant:
         grant = GrantFactory()
 
         assert hasattr(grant, 'region')
+
+    def test_grant_has_link_to_new_grant(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'link_to_new_grant')
+
+    def test_grant_has_a_logo(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'logo')
+
+    def test_grant_has_a_logo_svg(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'logo_svg')
