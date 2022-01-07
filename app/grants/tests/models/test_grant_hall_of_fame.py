@@ -42,4 +42,18 @@ class TestGrantHallOfFame:
 
         assert hasattr(grant_hall_of_fame, 'top_individual_donors_mobile')
 
-    
+    def test_grant_hall_of_fame_has_graduated_grantees_description(self):
+        grant_hall_of_fame = GrantHallOfFameFactory()
+
+        assert hasattr(grant_hall_of_fame, 'graduated_grantees_description')
+
+    def test_grant_hall_of_fame_has_share_your_story_email(self):
+        grant_hall_of_fame = GrantHallOfFameFactory()
+
+        assert hasattr(grant_hall_of_fame, 'share_your_story_email')
+
+    def test_grant_has_is_published_attribute(self):
+        grant_hall_of_fame = GrantHallOfFameFactory()
+
+        assert hasattr(grant_hall_of_fame, 'is_published')
+        assert grant_hall_of_fame.is_published == False    
