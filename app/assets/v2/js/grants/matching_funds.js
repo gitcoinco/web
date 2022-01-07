@@ -145,8 +145,8 @@ Vue.mixin({
       matchPayouts.methods.claimMatchPayout(admin_address)
         .send({from: user})
         .on('transactionHash', async function(txHash) {
-          await this.postToDatabase(match.pk, txHash);
-          await this.fetchGrants();
+          await vm.postToDatabase(match.pk, txHash);
+          await vm.fetchGrants();
           vm.$forceUpdate();
           vm.tabSelected = 1;
           vm.waitingState(false);
