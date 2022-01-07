@@ -6,7 +6,7 @@ Gitcoin Grants allows developers like you to get recurring cashflow for working 
 
 You can also support exciting projects that you love.
 
-During matching grants rounds [Quadratic Funding](https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000) is used to empower every donation. More info on grants can be found [here](https://gitcoin.co/grants/quickstart).
+During matching grants rounds [Quadratic Funding](https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000) is used to increase the impact of every donation. More info on grants can be found [here](https://gitcoin.co/grants/quickstart).
 
 ## Grant Workflow process
 
