@@ -64,3 +64,27 @@ class TestGrant:
 
         assert hasattr(grant, 'description_rich')
         assert grant.description_rich == ''
+
+    def test_grant_has_a_reference_url(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'reference_url')
+
+    def test_grant_has_a_github_project_url(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'github_project_url')
+
+    def test_grant_has_is_clr_eligible_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'is_clr_eligible')
+        assert grant.is_clr_eligible == True
+
+    def test_grant_has_admin_message_attribute(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'admin_message')
+        assert grant.admin_message == ''
+
+    
