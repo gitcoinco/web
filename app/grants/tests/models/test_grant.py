@@ -112,3 +112,60 @@ class TestGrant:
         grant = GrantFactory()
 
         assert hasattr(grant, 'logo_svg')
+
+    def test_grant_has_admin_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'admin_address')
+
+    def test_grant_has_zcash_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'zcash_payout_address')
+
+    def test_grant_has_celo_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'celo_payout_address')
+
+    def test_grant_has_zil_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'zil_payout_address')
+
+    def test_grant_has_polkadot_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'polkadot_payout_address')
+
+    def test_grant_has_kusama_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'kusama_payout_address')
+
+    def test_grant_has_harmony_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'harmony_payout_address')
+
+    def test_grant_has_binance_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'binance_payout_address')
+
+    def test_grant_has_rsk_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'rsk_payout_address')
+
+    def test_grant_has_algorand_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'algorand_payout_address')
+
+    def test_grant_has_contract_owner_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contract_owner_address')
+
+    
