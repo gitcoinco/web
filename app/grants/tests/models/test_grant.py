@@ -275,6 +275,41 @@ class TestGrant:
         assert hasattr(grant, 'hidden')
         assert grant.hidden == False
 
+    def test_grant_has_random_shuffle(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'random_shuffle')
+
+    def test_grant_has_weighted_shuffle(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'weighted_shuffle')
+
+    def test_grant_has_contribution_count(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contribution_count')
+        assert grant.contribution_count == 0
+
+    def test_grant_has_contributor_count(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'contributor_count')
+        assert grant.contributor_count == 0
+
+    def test_grant_has_positive_round_contributor_count(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'positive_round_contributor_count')
+        assert grant.positive_round_contributor_count == 0
+
+    def test_grant_has_negative_round_contributor_count(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'negative_round_contributor_count')
+        assert grant.negative_round_contributor_count == 0
+
+    
     
 
 
