@@ -1,5 +1,4 @@
 import pytest
-from dashboard.models import Profile
 from grants.models.grant import Grant
 from grants.models.grant_type import GrantType
 from grants.tests.factories import GrantFactory
