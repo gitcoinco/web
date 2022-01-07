@@ -5,7 +5,10 @@ describe('Creating a new bounty', () => {
 
   beforeEach(() => {
     cy.impersonateUser();
-    cy.setLocalStorage('quickstart_dontshow', true);
+    cy.window().then((win) => {
+      win.;localStorage.setItem('quickstart_dontshow', true);
+    });
+
   });
 
   afterEach(() => {
