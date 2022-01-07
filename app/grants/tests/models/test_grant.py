@@ -365,14 +365,17 @@ class TestGrant:
 
     def test_grant_has_clr_prediction_curve(self):
         grant = GrantFactory()
+        expected_curve = [
+            [0.0, 0.0, 0.0], 
+            [0.0, 0.0, 0.0], 
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0]
+        ]
 
         assert hasattr(grant, 'clr_prediction_curve')
-        assert grant.clr_prediction_curve == [[0.0, 0.0, 0.0], 
-                                              [0.0, 0.0, 0.0], 
-                                              [0.0, 0.0, 0.0],
-                                              [0.0, 0.0, 0.0],
-                                              [0.0, 0.0, 0.0],
-                                              [0.0, 0.0, 0.0]]
+        assert grant.clr_prediction_curve == expected_curve
 
     def test_grant_has_weighted_risk_score(self):
         grant = GrantFactory()
