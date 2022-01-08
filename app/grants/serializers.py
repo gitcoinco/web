@@ -32,7 +32,7 @@ class GrantPayoutSerializer(FlexFieldsModelSerializer):
         model = GrantPayout
         fields = [
             'status', 'contract_address', 'payout_token', 'funding_withdrawal_date',
-            'grant_clrs'
+            'grant_clrs', 'network'
         ]
 
 

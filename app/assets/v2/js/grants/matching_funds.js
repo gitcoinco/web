@@ -125,11 +125,19 @@ Vue.mixin({
         return;
       }
 
-      let chainId = Number(web3.eth.currentProvider.chainId);
+      const chainId = Number(web3.eth.currentProvider.chainId);
 
       if (chainId < 1 || chainId > 5) {
         waitingState(false);
         _alert('Please connect to a valid Ethereum network', 'danger');
+        return;
+      }
+
+      const networkName = getDataChains(String(chainId), 'chainId')[0] && getDataChains(String(chainId), 'chainId')[0].network;
+
+      if (match.grant_payout.network != networkName) {
+        waitingState(false);
+        _alert(`Please connect to Ethereum ${match.grant_payout.network} network`, 'danger');
         return;
       }
 
