@@ -53,7 +53,7 @@ Vue.mixin({
           });
         });
 
-        this.grants = result.sort((a, b) => b.clr_matches.length - a.clr_matches.length);
+        this.grants = result;
 
         this.loading = false;
 
@@ -182,6 +182,24 @@ Vue.mixin({
         // console.log('Standard claim ingestion failed, falling back to manual ingestion');
       }
     },
+    sortGrants() {
+      // reset scroll to top grant
+      if (this.targetGrant === undefined) {
+        this.scrollToElement('grant-' + this.grants[0].id);
+        this.targetGrant = null;
+      }
+
+      this.$nextTick(() => {
+        switch (this.tabSelected) {
+          case 0:
+            this.grants.sort((a, b) => b.clr_matches.filter(a => !a.claim_tx).length - a.clr_matches.filter(a => !a.claim_tx).length);
+            break;
+          case 1:
+            this.grants.sort((a, b) => b.clr_matches.filter(a => a.claim_tx).length - a.clr_matches.filter(a => a.claim_tx).length);
+            break;
+        }
+      });
+    },
     stringifyClrs(clrs) {
       let c = clrs.map(a => a.display_text);
       let g = [];
@@ -197,9 +215,9 @@ Vue.mixin({
       return g.slice(0, -1).join(', ') + ' ' + g.slice(-1);
     },
     scrollToElement(element) {
-      const container = this.$refs[element];
+      const container = this.$refs[element][this.tabSelected];
 
-      container.scrollIntoViewIfNeeded({behavior: 'smooth', block: 'start'});
+      container.scrollIntoView(true);
     }
   }
 });
@@ -222,12 +240,14 @@ if (document.getElementById('gc-matching-funds')) {
 
       // fetch user's owned grants with CLR match history
       await this.fetchGrants();
-
-      // scroll to specific grant if url specified a target grant
+      
       if (this.targetGrant) {
-        $('html, body').animate({
-          scrollTop: $('#grant-' + this.targetGrant).offset().top
-        }, 'slow');
+        // scroll to specific grant if url specified a target grant
+        this.scrollToElement('grant-' + this.targetGrant);
+        this.targetGrant = undefined;
+      } else {
+        // sort grants - it happens in the else block cause sort messes up with scrollToElement
+        this.sortGrants();
       }
     }
   });
