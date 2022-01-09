@@ -15,7 +15,6 @@ from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, GrantCLR, GrantCollection, Subscription
 from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion, toggle_user_sybil
-
 from marketing.mails import (
     new_contributions, new_grant, new_grant_admin, notion_failure_email, thank_you_for_supporting,
 )

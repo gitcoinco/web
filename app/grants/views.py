@@ -23,10 +23,8 @@ import json
 import logging
 import math
 import re
-import time
 import uuid
 from datetime import datetime
-from io import StringIO
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -34,7 +32,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword
-from django.contrib.postgres.search import SearchQuery, SearchVector
+from django.contrib.postgres.search import SearchVector
 from django.core.paginator import EmptyPage, Paginator
 from django.db import connection, transaction
 from django.db.models import Q, Subquery
@@ -64,7 +62,6 @@ from app.settings import (
     TWITTER_CONSUMER_SECRET,
 )
 from app.utils import allow_all_origins, get_profile
-from boto3.s3.transfer import S3Transfer
 from bs4 import BeautifulSoup
 from cacheops import cached_view
 from dashboard.brightid_utils import get_brightid_status
@@ -76,9 +73,10 @@ from economy.utils import convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
-    CartActivity, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR, GrantCollection,
-    GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription,
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
+    GrantCollection, GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription,
 )
+from grants.serializers import GrantSerializer
 from grants.tasks import (
     process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email, process_notion_db_write,
     update_grant_metadata,
@@ -92,6 +90,9 @@ from marketing.models import Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
 from PIL import Image
 from ratelimit.decorators import ratelimit
+from rest_framework import permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 from retail.helpers import get_ip
 from townsquare.models import Announcement, Favorite, PinnedPost
 from townsquare.utils import can_pin
@@ -342,6 +343,17 @@ def grants(request):
 
     grant_types = request.GET.get('type', 'all')
     return grants_by_grant_type(request, grant_types)
+
+
+@login_required
+def matching_funds(request):
+    """Handle grant matching funds page."""
+
+    context = {}
+
+    response = TemplateResponse(request, 'grants/matching_funds.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 
 def get_collections(
@@ -697,12 +709,12 @@ def get_grants_by_filters(
         if my_grants:
             # 3. Filter grants created by user
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                        list(profile.grant_admin.all().values_list('pk', flat=True))
+                        list(profile.grants.all().values_list('pk', flat=True))
             _grants = _grants.filter(id__in=grants_id)
         if omit_my_grants:
             # 4. Exclude grants created by user
             grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
-                        list(profile.grant_admin.all().values_list('pk', flat=True))
+                        list(profile.grants.all().values_list('pk', flat=True))
             _grants = _grants.exclude(id__in=grants_id)
         elif only_contributions:
             # 5. Filter grants to which the user has contributed to
@@ -1477,38 +1489,6 @@ def grant_details(request, grant_id, grant_slug):
     if is_clr_active:
         title = '💰 ' + title
 
-    should_show_claim_match_button = False
-    try:
-        # If the user viewing the page is team member or admin, check if grant has match funds available
-        # to withdraw
-
-        is_match_available_to_claim = False
-        is_within_payout_period_for_most_recent_round = timezone.now() < timezone.datetime(2022, 2, 1, 12, 0).replace(
-            tzinfo=pytz.utc)
-        is_staff = request.user.is_authenticated and request.user.is_staff
-
-        # Check if this grant needs to complete KYC before claiming match funds
-        clr_matches = grant.clr_matches.filter(round_number=settings.MATCH_PAYOUTS_ROUND_NUM)
-        is_blocked_by_kyc = clr_matches.exists() and not clr_matches.first().ready_for_payout
-
-        # calculate whether is available
-        # TODO - do this asyncronously so as not to block the pageload
-        amount_available = 0
-        if is_within_payout_period_for_most_recent_round and not is_blocked_by_kyc and grant.admin_address != '0x0':
-            if is_team_member or is_staff or is_admin:
-                w3 = get_web3(grant.network)
-                match_payouts_abi = settings.MATCH_PAYOUTS_ABI
-                match_payouts_address = w3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)
-                match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
-                amount_available = match_payouts.functions.payouts(grant.admin_address).call()
-                is_match_available_to_claim = True if amount_available > 0 else False
-
-        # Determine if we should show the claim match button on the grant details page
-        should_show_claim_match_button = grant.active and (
-                is_team_member or is_staff or is_admin) and is_match_available_to_claim and not is_blocked_by_kyc
-
-    except Exception as e:
-        logger.exception(e)
 
     grant_tags = []
     for g_tag in GrantTag.objects.all():
@@ -1549,8 +1529,6 @@ def grant_details(request, grant_id, grant_slug):
                                    emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
-        'should_show_claim_match_button': should_show_claim_match_button,
-        'amount_available': amount_available / 10 ** 18,
         'grant_tags': grant_tags
     }
     # Stats
@@ -3568,7 +3546,6 @@ def ingest_contributions(request):
 
     return JsonResponse({'success': True, 'ingestion_types': ingestion_types})
 
-
 def get_clr_sybil_input(request, round_id):
     '''
         This returns a paginated JSON response to return contributions
@@ -3951,3 +3928,50 @@ class GrantSubmissionView(View):
             'grant_tags': grant_tags
         }
         return TemplateResponse(request, 'grants/_new.html', params)
+
+
+@csrf_exempt
+@login_required
+@api_view(['GET', 'POST'])
+@permission_classes((permissions.IsAuthenticated,))
+def clr_matches(request):
+    profile = get_profile(request)
+
+    if not profile:
+        return Response({'message': 'Profile not found!'}, status=404)
+
+    if request.method == 'GET':
+        serializer = GrantSerializer(
+            profile.grants.prefetch_related('clr_matches').all(),
+            context={'request': request},
+            fields=['id', 'title', 'logo_url', 'details_url', 'admin_address', 'clr_matches'],
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        pk = request.data.get('pk')
+        claim_tx = request.data.get('claim_tx')
+
+        if pk is None:
+            return Response({'message': 'pk field is required!'}, status=400)
+
+        if claim_tx is None:
+            return Response({'message': 'claim_tx field is required!'}, status=400)
+
+        clr_match = CLRMatch.objects.filter(pk=pk).first()
+
+        if not clr_match:
+            return Response({'message': 'CLR Match not found!'}, status=404)
+
+        clr_match.claim_tx = claim_tx
+        clr_match.save(update_fields=['claim_tx'])
+
+        # update other clr match entries with same grant admin address
+        CLRMatch.objects.filter(
+            grant__admin_address=clr_match.grant.admin_address,
+            grant_payout__pk=clr_match.grant_payout.pk
+        ).update(update_fields=['claim_tx'])
+
+        return Response({'message': 'Claim transaction successfully ingested!'}, status=200)

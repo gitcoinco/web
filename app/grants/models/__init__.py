@@ -23,7 +23,7 @@ from .clr_match import CLRMatch
 from .contribution import Contribution
 from .donation import Donation
 from .flag import Flag
-from .grant import Grant, GrantCLR
+from .grant import Grant, GrantCLR, GrantPayout
 from .grant_api_key import GrantAPIKey
 from .grant_branding_routing_policy import GrantBrandingRoutingPolicy
 from .grant_category import GrantCategory

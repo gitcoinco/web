@@ -21,7 +21,7 @@ from django.urls import path, re_path
 
 from grants.views import (
     GrantSubmissionView, add_grant_from_collection, api_toggle_user_sybil, bulk_fund, bulk_grants_for_cart,
-    cancel_grant_v1, cart_thumbnail, clr_grants, collage, collection_thumbnail, contribute_to_grants_v1,
+    cancel_grant_v1, cart_thumbnail, clr_grants, clr_matches, collage, collection_thumbnail, contribute_to_grants_v1,
     contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
     contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json,
     contribution_info_from_grant_during_round_as_json, create_matching_pledge_v1, delete_collection, flag,
@@ -30,8 +30,8 @@ from grants.views import (
     grant_details, grant_details_api, grant_details_contributions, grant_details_contributors, grant_edit, grant_fund,
     grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
     grants_type_redirect, hall_of_fame, ingest_contributions, ingest_contributions_view, invoice, leaderboard,
-    manage_ethereum_cart_data, new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection,
-    toggle_grant_favorite, upload_sybil_csv, verify_grant,
+    manage_ethereum_cart_data, matching_funds, new_matching_partner, profile, quickstart, remove_grant_from_collection,
+    save_collection, toggle_grant_favorite, upload_sybil_csv, verify_grant,
 )
 
 app_name = 'grants/'
@@ -39,6 +39,7 @@ urlpatterns = [
     path('', grants_landing, name='grants'),
     path('explorer', grants, name='grants_explorer'),
     path('explorer/', grants, name='grants_explorer'),
+    path('matching_funds', matching_funds, name='matching_funds'),
 
     # CLR
     path('clr/<int:round_num>', clr_grants, name='clr_grants'),
@@ -99,6 +100,7 @@ urlpatterns = [
     path('v1/api/grant/<int:grant_id>/contributors', grant_details_contributors, name='grant_details_contributors'),
     path('v1/api/grant/edit/<int:grant_id>/', grant_edit, name='grant_edit'),
     path('v1/api/grant/<int:grant_id>/cancel', cancel_grant_v1, name='cancel_grant_v1'),
+    path('v1/api/clr-matches/', clr_matches, name='clr_matches'),
 
 
     path('v1/api/trust-bonus', get_trust_bonus, name='get_trust_bonus'),
