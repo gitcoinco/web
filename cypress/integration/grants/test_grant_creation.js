@@ -44,7 +44,7 @@ describe('Creating a new grant', () => {
         cy.get('input[name=title]').type('Gitcoin Fund');
         cy.get('.quill-editor').type('We’re on a mission to build an internet that is open source, collaborative, and economically empowering.');
         cy.get('input[name=reference_url]').type('https://gitcoin.co');
-        cy.get('input[name=twitter_handle_1]').type('@gitcoin');
+        cy.get('input[name=twitter_handle_1]').type('@git');
 
         cy.get('input[placeholder="Select a blockchain to receive funding"]').type('eth').click();
         cy.contains('Ethereum').click();
