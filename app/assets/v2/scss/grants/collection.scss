@@ -6,6 +6,15 @@
   background-color: var(--bg-shade-0);
 }
 
+.collection-item__header h5 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.collection-item__content {
+  margin-top: 1.0625rem;
+}
+
 .collection-item__content {
   margin-top: 1.0625rem;
 }
@@ -24,7 +33,7 @@
 
 .collection-item__pitch {
   color: #666666;
-  height: 3.8rem;
+  height: 24px;
   overflow: hidden;
   line-height: 22px;
   text-overflow: ellipsis;

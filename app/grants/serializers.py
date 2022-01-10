@@ -212,11 +212,10 @@ class GrantCollectionSerializer(FlexFieldsModelSerializer):
     """Handle metadata of CLR rounds"""
     profile = ProfileSerializer()
     curators = ProfileSerializer(many=True)
-    count = serializers.SerializerMethodField()
     class Meta:
         """Define the GrantCLR serializer metadata."""
         model = GrantCollection
-        fields = ('id', 'title', 'description', 'cover', 'featured', 'cache', 'curators', 'grants', 'profile', 'count')
+        fields = ('id', 'title', 'description', 'cover', 'featured', 'cache', 'curators', 'grants', 'profile')
 
         expandable_fields = {
             'grants': (
@@ -224,5 +223,3 @@ class GrantCollectionSerializer(FlexFieldsModelSerializer):
                 {'many': True, 'fields': ['pk', 'title', 'logo']}
             )
         }
-    def get_count(self, obj):
-        return obj.grants.count()

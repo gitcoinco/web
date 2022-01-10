@@ -449,8 +449,9 @@ if (document.getElementById('grants-showcase')) {
 
         const profile = (vm.params.profile ? 'profile=' + vm.params.profile : '');
         const featured = (vm.params.featured ? 'featured=' + vm.params.featured : '');
+        const pageSize = 'page_size=12';
 
-        let url = `/api/v0.1/grants_collections/?${profile}&${featured}`;
+        let url = `/api/v0.1/grants_collections/?${profile}&${featured}&${pageSize}`;
 
         if (vm.collectionsPage && append_mode) {
           url = vm.collectionsPage;
@@ -773,6 +774,9 @@ if (document.getElementById('grants-showcase')) {
       },
       showLoading() {
         return this.lock && !this.scrollTriggered;
+      },
+      showLoadingCollections() {
+        return this.loadingCollections && !this.scrollTriggered;
       }
     },
     beforeMount() {
