@@ -1831,22 +1831,15 @@
                 
                 <h1 id="app.middleware">app.middleware</h1>
 
-<h2 id="app.middleware.drop_accept_langauge">drop_accept_langauge</h2>
+<h2 id="app.middleware.drop_accept_language">drop_accept_language</h2>
 
-<pre><code class="python">drop_accept_langauge(get_response)
+<pre><code class="python">drop_accept_language(get_response)
 </code></pre>
 
 <p>Define the middleware to remove accept-language headers from requests.</p>
 <p>This middleware is essentially a hack to allow us to continue to use the
 standard Django LocaleMiddleware without modification, but simply disable
 the autodetection aspect based on the Accept-Language header.</p>
-<h2 id="app.middleware.bleach_requests">bleach_requests</h2>
-
-<pre><code class="python">bleach_requests(get_response)
-</code></pre>
-
-<p>This middleware uses the bleach library to sanitize incoming requests to
-prevent XSS and injection attacks</p>
                 
                   
                 

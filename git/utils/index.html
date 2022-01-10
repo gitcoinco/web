@@ -2009,17 +2009,17 @@ Args:
     github.IssueComment.IssueComment: The GitHub created comment.</p>
 <h2 id="git.utils.patch_issue_comment">patch_issue_comment</h2>
 
-<pre><code class="python">patch_issue_comment(comment_id, owner, repo, comment)
+<pre><code class="python">patch_issue_comment(issue_id, comment_id, owner, repo, comment)
 </code></pre>
 
 <p>Update a comment on an issue via patch.
 <h2 id="git.utils.delete_issue_comment">delete_issue_comment</h2></p>
-<pre><code class="python">delete_issue_comment(comment_id, owner, repo)
+<pre><code class="python">delete_issue_comment(issue_id, comment_id, owner, repo)
 </code></pre>
 
 <p>Remove a comment on an issue via delete.
 <h2 id="git.utils.post_issue_comment_reaction">post_issue_comment_reaction</h2></p>
-<pre><code class="python">post_issue_comment_reaction(owner, repo, comment_id, content)
+<pre><code class="python">post_issue_comment_reaction(owner, repo, issue_id, comment_id, content)
 </code></pre>
 
 <p>React to an issue comment.

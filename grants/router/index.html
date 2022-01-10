@@ -1877,17 +1877,17 @@ errors defaults to 'strict'.
 The argument must be an iterable if specified.
 <h3 id="grants.router.GrantsClrViewSet.queryset">queryset</h3></p>
 <p>Represent a lazy database lookup for a set of objects.
-<h3 id="grants.router.GrantsClrViewSet.pagination_class">GrantCLRPagination</h3></p>
-<pre><code class="python">GrantsClrViewSet.GrantCLRPagination(self, /, *args, **kwargs)
-</code></pre>
-
-<h3 id="grants.router.GrantsClrViewSet.serializer_class">GrantCLRSerializer</h3>
-
+<h3 id="grants.router.GrantsClrViewSet.serializer_class">GrantCLRSerializer</h3></p>
 <pre><code class="python">GrantsClrViewSet.GrantCLRSerializer(self, *args, **kwargs)
 </code></pre>
 
 <p>Handle metadata of CLR rounds
-<h3 id="grants.router.GrantsClrViewSet.dispatch">dispatch</h3></p>
+<h3 id="grants.router.GrantsClrViewSet.pagination_class">GrantCLRPagination</h3></p>
+<pre><code class="python">GrantsClrViewSet.GrantCLRPagination(self, /, *args, **kwargs)
+</code></pre>
+
+<h3 id="grants.router.GrantsClrViewSet.dispatch">dispatch</h3>
+
 <pre><code class="python">GrantsClrViewSet.dispatch(self, request, *args, **kwargs)
 </code></pre>
 
@@ -2011,11 +2011,6 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
 <p>If the argument is a tuple, the return value is the same object.
 <h3 id="grants.router.SubscriptionViewSet.queryset">queryset</h3></p>
 <p>Represent a lazy database lookup for a set of objects.
-<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3></p>
-<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
-</code></pre>
-
-<p>Handle serializing the Subscription object.
 <h3 id="grants.router.SubscriptionViewSet.get_queryset">get_queryset</h3></p>
 <pre><code class="python">SubscriptionViewSet.get_queryset(self)
 </code></pre>
@@ -2025,8 +2020,13 @@ If iterable is specified the tuple is initialized from iterable's items.</p>
     * Add filter functionality.</p>
 <p>Returns:
     QuerySet: The Subscription queryset.</p>
-<h2 id="grants.router.GrantViewSet">GrantViewSet</h2>
+<h3 id="grants.router.SubscriptionViewSet.serializer_class">SubscriptionSerializer</h3>
 
+<pre><code class="python">SubscriptionViewSet.SubscriptionSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<p>Handle serializing the Subscription object.
+<h2 id="grants.router.GrantViewSet">GrantViewSet</h2></p>
 <pre><code class="python">GrantViewSet(self, **kwargs)
 </code></pre>
 
