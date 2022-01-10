@@ -33,7 +33,6 @@ class Contribution(SuperModel):
     success = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not success.'))
     tx_cleared = models.BooleanField(default=False, help_text=_('Whether or not tx cleared.'))
     tx_override = models.BooleanField(default=False, help_text=_('Whether or not the tx success and tx_cleared have been manually overridden. If this setting is True, update_tx_status will not change this object.'))
-
     tx_id = models.CharField(
         max_length=255,
         default='0x0',
@@ -76,6 +75,7 @@ class Contribution(SuperModel):
         blank=True,
         help_text=_('the normalized grant data; for easy consumption on read'),
     )
+
     match = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not this contribution should be matched.'))
 
     originated_address = models.CharField(
@@ -89,7 +89,6 @@ class Contribution(SuperModel):
         default='0x0',
         help_text=_('The why or why not validator passed'),
     )
-
     profile_for_clr = models.ForeignKey(
         'dashboard.Profile',
         related_name='clr_pledges',

@@ -31,7 +31,7 @@ import twitter
 from django_svg_image_form_field import SvgAndImageFormField
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantStat, GrantTag, GrantType, MatchPledge,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType, MatchPledge,
     PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
@@ -98,6 +98,7 @@ class CLRMatchAdmin(admin.ModelAdmin):
     """Define the CLRMatch administration layout."""
 
     ordering = ['-id']
+    list_display =['pk', 'grant', 'round_number', 'amount', 'grant_payout']
     raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution']
 
 
@@ -583,6 +584,12 @@ class GrantHallOfFameAdmin(admin.ModelAdmin):
     hall_of_fame_publish.short_description = "Publish"
 
 
+class GrantPayoutAdmin(admin.ModelAdmin):
+    """Define the GrantPayout administration layout."""
+
+    list_display =['pk', 'name', 'contract_address']
+
+
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -598,4 +605,5 @@ admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
 admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
 admin.site.register(GrantCLRCalculation, GrantCLRCalculationAdmin)
+admin.site.register(GrantPayout, GrantPayoutAdmin)
 admin.site.register(GrantHallOfFame, GrantHallOfFameAdmin)

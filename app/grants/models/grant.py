@@ -18,10 +18,67 @@ from grants.utils import get_upload_filename, is_grant_team_member
 from townsquare.models import Favorite
 from web3 import Web3
 
+from .clr_match import CLRMatch
 from .contribution import Contribution
 from .grant_clr_calculation import GrantCLRCalculation
 from .grant_collection import GrantCollection
 from .subscription import Subscription
+
+
+class GrantPayout(SuperModel):
+    PAYOUT_STATUS = [
+        ('pending', 'pending'),
+        ('ready', 'ready'),
+        ('expired', 'expired'),
+        ('funding_withdrawn', 'funding_withdrawn')
+    ]
+    NETWORKS = [
+        ('mainnet', 'mainnet'),
+        ('rinkeby', 'rinkeby'),
+        # ('polygon', 'polygon'),
+        # ('mumbai', 'mumbai'),
+    ]
+
+    name = models.CharField(
+        max_length=25,
+        help_text=_('Display Name for Payout')
+    )
+    contract_address = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text=_('Payout Contract from which funds would be claimed')
+    )
+    network = models.CharField(
+        max_length=15,
+        default='mainnet',
+        choices=NETWORKS,
+        help_text=_('Network where contract is deployed')
+    )
+    payout_token = models.CharField(
+        max_length=10,
+        default='DAI',
+        help_text=_('Currency in which funds would be paid')
+    )
+    # payout_token_address = models.CharField(
+    #     max_length=255,
+    #     null=True,
+    #     blank=True,
+    #     help_text=_('Address of the payout_token')
+    # )
+    status = models.CharField(
+        max_length=20,
+        choices=PAYOUT_STATUS,
+        default='pending'
+    )
+    funding_withdrawal_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text=_('When was funding in Matching Contract withdrawn?')
+    )
+
+    def __str__(self):
+        return f"{self.name} Payout"
 
 
 class GrantCLR(SuperModel):
@@ -148,6 +205,14 @@ class GrantCLR(SuperModel):
         help_text=_("text which appears below banner")
     )
 
+    grant_payout = models.ForeignKey(
+        'grants.GrantPayout',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='grant_clrs',
+        help_text=_('Grant Payout')
+    )
 
     def __str__(self):
         return f"pk:{self.pk}, round_num: {self.round_num}"
@@ -447,7 +512,7 @@ class Grant(SuperModel):
     )
     admin_profile = models.ForeignKey(
         'dashboard.Profile',
-        related_name='grant_admin',
+        related_name='grants',
         on_delete=models.CASCADE,
         help_text=_('The Grant administrator\'s profile.'),
         null=True,
@@ -874,6 +939,16 @@ class Grant(SuperModel):
 
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
+        clr_matches = CLRMatch.objects.filter(grant=self)
+
+        # has funds which have already been claimed
+        has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
+
+        # has claims in pending / ready state
+        has_funds_to_be_claimed = clr_matches.filter(claim_tx__isnull=True).exists()
+        has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
+        has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
+
         return {
                 'id': self.id,
                 'active': self.active,
@@ -936,7 +1011,10 @@ class Grant(SuperModel):
                 'region': {'name':self.region, 'label':self.get_region_display()} if self.region and self.region != 'null' else None,
                 'has_external_funding': self.has_external_funding,
                 'active_round_names': active_round_names,
-                'is_idle': self.is_idle
+                'is_idle': self.is_idle,
+                'has_pending_claim': has_pending_claim,
+                'has_claims_in_review': has_claims_in_review,
+                'has_claim_history': has_claim_history
             }
 
     def favorite(self, user):

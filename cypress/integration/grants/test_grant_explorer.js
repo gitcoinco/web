@@ -2,21 +2,21 @@ describe('Grants Explorer page', () => {
   before(() => {
     cy.setupMetamask();
   });
-  
+
   afterEach(() => {
     cy.logout();
   });
-  
+
   after(() => {
     cy.clearWindows();
   });
-  
+
   describe('grants explorer sort menu', () => {
     it('contains the proper sort options', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -41,7 +41,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
       cy.get('.vs__dropdown-menu').should('not.contain', 'Most Relevant');
     });
@@ -61,7 +61,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.contains('Discover').parent().should('have.class', 'vs__dropdown-option--disabled');
@@ -73,7 +73,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -86,7 +86,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       cy.get('.vs__dropdown-menu')
@@ -99,7 +99,7 @@ describe('Grants Explorer page', () => {
       cy.impersonateStaffUser();
 
       cy.visit('grants/explorer');
-  
+
       cy.get('.vselect-clean').click();
 
       // Options in Discover category
@@ -180,5 +180,38 @@ describe('Grants Explorer page', () => {
       cy.url().should('contain', 'sort_option=-sybil_score');
     });
   });
-});
+
+  describe('grants explorer filters', () => {
+    it('contains the proper filter options', () => {
+      cy.createActiveGrantRound();
+
+      cy.impersonateUser();
+
+      cy.visit('grants/explorer');
+
+      cy.contains('Grant Round').click();
   
+      cy.get('.dropdown-menu').should('contain', 'Test Grant CLR');
+    });
+  });
+
+  describe('selecting a grant', () => {
+    it('opens the grant in a new browser tab', () => {
+      cy.createGrantSubmission().then((response) => {
+        const grantUrl = response.body.url;
+  
+        cy.approveGrant(grantUrl);
+        cy.impersonateUser();
+        
+        cy.visit('grants/explorer');
+
+        cy.contains('Test Grant Submission')
+          .should('have.attr', 'target', '_blank')
+          .should('have.attr', 'rel', 'noopener noreferrer')
+          .then(link => {
+            cy.request(link.prop('href')).its('status').should('eq', 200);
+          });
+      });
+    });
+  });
+});

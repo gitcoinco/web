@@ -17,7 +17,7 @@
 '''
 
 '''
-    Used to verify the match payouts that are set in the Grants Round 8 Payout contract. This 
+    Used to verify the match payouts that are set in the Grants Round 8 Payout contract. This
     contract is deployed on both mainnet and Rinkeby at 0xAf32BDf2e2720f6C6a2Fce8B50Ed66fd2b46d478
 '''
 
@@ -36,13 +36,12 @@ from django.utils import timezone
 
 from dashboard.abi import erc20_abi
 from dashboard.models import Activity, Profile
-from grants.models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
+from grants.models import CLRMatch, Contribution, Grant, GrantCLR, GrantPayout, Subscription
 from marketing.mails import grant_match_distribution_final_txn, grant_match_distribution_kyc
 from townsquare.models import Comment
 from web3 import Web3
 
 match_payouts_abi = settings.MATCH_PAYOUTS_ABI
-match_payouts_address = Web3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)
 SCALE = Decimal(1e18) # scale factor for converting Dai units
 WAIT_TIME_BETWEEN_TXS = 15 # seconds
 
@@ -57,11 +56,6 @@ class Command(BaseCommand):
             type=str,
             help="what do we do? (finalize, payout_test, prepare_final_payout, verify, set_payouts_test, set_payouts, notify_users)"
         )
-        parser.add_argument('network',
-            default='rinkeby',
-            type=str,
-            help="Must be either 'mainnet' or 'rinkeby'"
-        )
 
         # Required if what != verify
         parser.add_argument('--clr_pks',
@@ -74,6 +68,13 @@ class Command(BaseCommand):
             type=int,
             help="what CLR round number is this? eg 7"
         )
+
+        parser.add_argument('--grant_payout_pk',
+            default=None,
+            type=int,
+            help="Payout Contract Record"
+        )
+
         parser.add_argument('--process_all', help='process_all, not just is_ready', action='store_true')
 
 
@@ -81,23 +82,36 @@ class Command(BaseCommand):
 
         # Parse inputs
         what = options['what']
-        network = options['network']
         process_all = options['process_all']
+        grant_payout_pk = options['grant_payout_pk']
 
         valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts_test', 'set_payouts', 'notify_users']
         if what not in valid_whats:
             raise Exception(f"Invalid value {what} for 'what' arg")
-        if network not in ['rinkeby', 'mainnet']:
-            raise Exception(f"Invalid value {network} for 'network' arg")
         if not options['clr_round'] or not options['clr_pks']:
             raise Exception('Must provide clr_round and clr_pks')
+        if not grant_payout_pk:
+            raise Exception('Must provide grant_payout_pk containing payout contract info')
+
+        # fetch GrantPayout contract
+        grant_payout = GrantPayout.objects.get(pk=grant_payout_pk)
+
+        # get deployed contract address
+        match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
+
+        # get network on which the contract is deployed
+        network = grant_payout.network
+
+        token_name = grant_payout.payout_token
 
         # Define parameters that vary by network. The expected total DAI amount uses the value here
-        # if one is not available in the database
         from_block = 11466409 if network == 'mainnet' else 7731622 # block contract was deployed at
+
+        # TODO: fetch token_address from grant_payout
         dai_address = '0x6B175474E89094C44Da98b954EedeAC495271d0F' if network == 'mainnet' else '0x2e055eEe18284513B993dB7568A592679aB13188'
+
         expected_total_dai_amount = 100_000 if network == 'mainnet' else 5000 # in dollars, not wei, e.g. 500 = 500e18
-        
+
         # Get contract instances
         PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
         w3 = Web3(Web3.WebsocketProvider(PROVIDER))
@@ -152,6 +166,7 @@ class Command(BaseCommand):
                     grant=grant,
                     comments=comments,
                     ready_for_test_payout=ready_for_test_payout,
+                    grant_payout=grant_payout
                 )
                 if needs_kyc:
                     grant_match_distribution_kyc(match)
@@ -175,7 +190,6 @@ class Command(BaseCommand):
             is_real_payout = what == 'set_payouts'
 
             kwargs = {}
-            token_name = 'DAI'
             key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
@@ -200,12 +214,12 @@ class Command(BaseCommand):
             print(f"continuing with {target_matches.count()} unpaid scheduled payouts")
 
             if is_real_payout:
-                user_input = input(F"THIS IS A REAL PAYOUT FOR {network} {token_name}.  ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
+                user_input = input(f"THIS IS A REAL PAYOUT FOR {network} {token_name}. ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
                 if user_input != 'y':
                     return
 
             # Generate dict of payout mapping that we'll use to set the contract's payout mapping
-            full_payouts_mapping_dict = {} 
+            full_payouts_mapping_dict = {}
             for match in target_matches.order_by('amount'):
 
                 try:
@@ -220,7 +234,7 @@ class Command(BaseCommand):
                     else:
                         full_payouts_mapping_dict[recipient] = amount
                 except Exception as e:
-                    print(f"could not payout grant:{match.grant.pk} bc exceptoin{e}")
+                    print(f"could not payout grant:{match.grant.pk} bc exception{e}")
 
             # Convert dict to array to use it as inputs to the contract
             full_payouts_mapping = []
@@ -249,6 +263,10 @@ class Command(BaseCommand):
 
         # Verify contract is set properly ----------------------------------------------------------
         if what == 'verify':
+            from web3.middleware import geth_poa_middleware
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+
+
             # Get expected total match amount
             total_owed_grants = 0
             for grant in grants:
@@ -294,11 +312,11 @@ class Command(BaseCommand):
             total_dai_required_wei = sum(payment_dict[recipient] for recipient in payment_dict.keys())
 
             # Convert to human units
-            total_dai_required = total_dai_required_wei / SCALE 
+            total_dai_required = total_dai_required_wei / SCALE
 
             # TODO: REMOVE THIS AFTER ROUND 11 PAYOUT
-            # THIS IS DUE TO SECOND CONTRACT DEPLOY FOR PAYOUT 
-            expected_total_dai_amount = total_dai_required
+            # THIS IS DUE TO SECOND CONTRACT DEPLOY FOR PAYOUT
+            # expected_total_dai_amount = total_dai_required
 
             # Verify that total DAI required (from event logs) equals the expected amount
             if math.floor(expected_total_dai_amount) != math.floor(total_dai_required):
@@ -339,7 +357,6 @@ class Command(BaseCommand):
         # Create Contributions and send emails ----------------------------------------------------------
         if what == 'notify_users':
 
-            token_name = 'DAI'
             unpaid_scheduled_matches = scheduled_matches.filter(
                 ready_for_payout=True,
                 payout_tx=''

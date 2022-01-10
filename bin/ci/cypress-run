@@ -28,6 +28,7 @@ python3 app/manage.py runserver 0.0.0.0:8000 &
 export NETWORK_NAME=localhost
 export PASSWORD="g1tc01nc0" # used in readme for root user account
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
+export METAMASK_VERSION="9.8.0"
 export VERBOSE=1
 node_modules/.bin/cypress install
 node_modules/.bin/wait-on http://0.0.0.0:8000

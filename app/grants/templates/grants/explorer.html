@@ -105,6 +105,10 @@ along with this program. If not, see
 
                   <!-- CLR ROUND FILTERS -->
                   <b-dropdown v-if="round_types.length" ref="grantFlitersDropdown" size="sm" menu-class="scroll-menu p-0 mt-1" variant="outline-gc-grey" toggle-class="rounded-pill mt-2 btn-gc-black text-white" no-caret no-flip v-if="grant_types.length">
+                    <div class="d-md-none d-flex align-items-center">
+                      <b-dropdown-header><strong class="text-body">Browse Match Rounds</strong></b-dropdown-header>
+                    </div>
+                    <hr class="d-md-none m-0">
                     <template #button-content>
                       <span class="pr-1">
                         Grant Round <span class="text-capitalize" v-if="params.round_type" class="">: [[ params.round_type ]]</span><span v-if="currentCLR?.display_text" class=""> - [[ currentCLR?.display_text ]]</span>
@@ -117,27 +121,31 @@ along with this program. If not, see
                         <template v-for="(round_type, key) in round_types">
                           <div
                             class="d-flex text-capitalize cursor-pointer bg-violet-nav-item"
-                            @click.stop="selectRoundType(round_type)"
+                            @click.stop="isSelectedRoundType(round_type, key) && !closed ? closed = true : selectRoundType(round_type)"
                           >
-                            <div :class="`w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-2 py-1 ${ (params.round_type && params.round_type == round_type) || (!params.round_type && key == 0) ? 'bg-violet-nav' : '' }`">
+                            <div :class="`d-flex justify-content-between align-items-center w-100 h-100 line-clamp-1 line-height-4 text-grey-500 px-4 py-2 ${ isSelectedRoundType(round_type, key) ? 'bg-violet-nav' : '' }`">
                               [[ round_type ]]
+                              <i :class="`d-md-none ${ isSelectedRoundType(round_type, key) && !closed ? 'fas fa-chevron-up' : 'fas fa-chevron-down' }`"></i>
                             </div>
                           </div>
+                          <hr class="d-md-none m-0">
                           <div class="d-block d-md-none" v-for="clr in active_rounds[round_type]">
                             <div
-                              :class="`pl-3 line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
+                              v-if="isSelectedRoundType(round_type, key) && !closed"
+                              :class="`pl-3 line-clamp-1 line-height-4 px-5 py-2 text-grey-500 cursor-pointer bg-violet-nav-item ${ isSelectedCLR(currentCLR?.sub_round_slug, currentCLR?.round_num, clr) ? 'bg-violet-nav' : '' }`"
                               @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
                             >
                               [[ clr.display_text ]]
                             </div>
+                            <hr class="d-md-none m-0" v-if="(params.round_type && params.round_type == round_type)">
                           </div>
                         </template>
                       </div>
                       <div class="d-none d-md-flex flex-basis-60 flex-column grant-round-selector-row overflow-auto">
                         <div v-for="(round_type, key) in round_types">
-                          <template v-for="clr in active_rounds[round_type]" v-if="(params.round_type && params.round_type == round_type) || (!params.round_type && key == 0)">
+                          <template v-for="clr in active_rounds[round_type]" v-if="isSelectedRoundType(round_type, key)">
                             <div
-                              :class="`line-clamp-1 line-height-4 px-2 py-1 text-grey-500 cursor-pointer bg-violet-nav-item ${ currentCLR?.sub_round_slug == clr.sub_round_slug && currentCLR?.round_num ==  clr.round_num ? 'bg-violet-nav' : '' }`"
+                              :class="`line-clamp-1 line-height-4 px-2 py-2 text-grey-500 cursor-pointer bg-violet-nav-item ${ isSelectedCLR(currentCLR?.sub_round_slug, currentCLR?.round_num, clr) ? 'bg-violet-nav' : '' }`"
                               @click.stop="changeQuery({page: 1, round_type: round_type, sub_round_slug: clr.sub_round_slug, round_num: clr.round_num, customer_name: clr.customer_name})"
                             >
                               [[ clr.display_text ]]

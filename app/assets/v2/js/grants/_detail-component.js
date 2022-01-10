@@ -369,44 +369,6 @@ Vue.mixin({
       }
       vm.submitted = false;
       return true; // no errors, continue to create grant
-    },
-    claimMatch: async function(recipient) {
-      // Helper method to manage state
-      const waitingState = (state) => {
-        indicateMetamaskPopup(!state);
-        $('#claim-match').prop('disabled', state);
-      };
-
-      // Connect wallet
-      if (!provider) {
-        await onConnect();
-      }
-
-      // Confirm wallet was connected (user may have closed wallet connection prompt)
-      if (!provider) {
-        return;
-      }
-      waitingState(true);
-      const user = (await web3.eth.getAccounts())[0];
-
-      // Get contract instance
-      const matchPayouts = await new web3.eth.Contract(
-        JSON.parse(document.contxt.match_payouts_abi),
-        document.contxt.match_payouts_address
-      );
-
-      // Claim payout
-      matchPayouts.methods.claimMatchPayout(recipient)
-        .send({from: user})
-        .on('transactionHash', async function(txHash) {
-          waitingState(false);
-          $('#claim-payout-banner').hide();
-          _alert("Match payout claimed! Funds will be sent to your grant's address", 'success');
-        })
-        .on('error', function(error) {
-          waitingState(false);
-          _alert(error, 'danger');
-        });
     }
   },
   computed: {

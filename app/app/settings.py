@@ -159,8 +159,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'app.middleware.drop_accept_langauge',
-    # 'app.middleware.bleach_requests',
+    'app.middleware.drop_accept_language',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -450,13 +449,13 @@ CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=Tr
 CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
 
 CACHEOPS_DEFAULTS = {
-    'timeout': 60 * 60
+    'timeout': 60 * 60 * 5
 }
 
 # 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
 CACHEOPS = {
     '*.*': {
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'auth.user': {
         'ops': 'get',
@@ -468,7 +467,7 @@ CACHEOPS = {
     },
     'auth.*': {
         'ops': ('fetch', 'get'),
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'auth.permission': {
         'ops': 'all',
@@ -492,11 +491,11 @@ CACHEOPS = {
     },
     'dashboard.*': {
         'ops': ('fetch', 'get'),
-        'timeout': 60 * 30,
+        'timeout': 60 * 60 * 3,
     },
     'economy.*': {
         'ops': 'all',
-        'timeout': 60 * 60,
+        'timeout': 60 * 60 * 5,
     },
     'gas.*': {
         'ops': 'all',
@@ -557,6 +556,7 @@ CACHES = {
     'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
+CACHES['default']['TIMEOUT'] = 60 * 60 * 3
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
@@ -915,8 +915,7 @@ IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min
 
 # Match Payouts contract
 MATCH_PAYOUTS_ABI = '[ { "inputs": [ { "internalType": "address", "name": "_owner", "type": "address" }, { "internalType": "address", "name": "_funder", "type": "address" }, { "internalType": "contract IERC20", "name": "_dai", "type": "address" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [], "name": "Finalized", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Funded", "type": "event" }, { "anonymous": false, "inputs": [], "name": "FundingWithdrawn", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutAdded", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutClaimed", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "_recipient", "type": "address" } ], "name": "claimMatchPayout", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "dai", "outputs": [ { "internalType": "contract IERC20", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "enablePayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "finalize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "funder", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "", "type": "address" } ], "name": "payouts", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "components": [ { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" } ], "internalType": "struct MatchPayouts.PayoutFields[]", "name": "_payouts", "type": "tuple[]" } ], "name": "setPayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "state", "outputs": [ { "internalType": "enum MatchPayouts.State", "name": "", "type": "uint8" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "withdrawFunding", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]'
-MATCH_PAYOUTS_ADDRESS = '0x0ebd2e2130b73107d0c45ff2e16c93e7e2e10e3a'
-MATCH_PAYOUTS_ROUND_NUM = 11
+MATCH_PAYOUTS_ADDRESS = '0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B'
 
 # BulkCheckout contract
 # BulkCheckout parameters
