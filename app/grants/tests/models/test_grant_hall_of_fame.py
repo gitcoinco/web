@@ -56,4 +56,46 @@ class TestGrantHallOfFame:
         grant_hall_of_fame = GrantHallOfFameFactory()
 
         assert hasattr(grant_hall_of_fame, 'is_published')
-        assert grant_hall_of_fame.is_published == False    
+        assert grant_hall_of_fame.is_published == False
+
+    def test_grant_hall_of_fame_grantee_has_associated_hall_of_fame(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'hall_of_fame')
+
+    def test_grant_hall_of_fame_grantee_has_grantee(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'grantee')
+
+    def test_grant_hall_of_fame_grantee_has_a_name(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'name')
+
+    def test_grant_hall_of_fame_grantee_has_funded_by_attribute(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'funded_by')
+
+    def test_grant_hall_of_fame_grantee_has_an_amount(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'amount')
+
+    def test_grant_hall_of_fame_grantee_has_a_description(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'description')
+
+    def test_grant_hall_of_fame_grantee_has_accomplishment_1(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'accomplishment_1')
+
+    def test_grant_hall_of_fame_grantee_has_accomplishment_2(self):
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+
+        assert hasattr(grant_hall_of_fame_grantee, 'accomplishment_2')
+    
+    
