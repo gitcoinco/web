@@ -81,21 +81,10 @@ Vue.component('sms-verify-modal', {
                 href="https://twitter.com/owocki/status/1271088915982675974">Read more</a> about why we are asking for account verification, or how Gitcoin <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                 href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy</a>.
               </p>
-              <div id='verify_offline_target' class="text-left" style="display:none;">
-                <strong>Verify Offline</strong>
-                <br />
-                <br />
-                <a href="mailto:support@gitcoin.co">Email Gitcoin</a>, and we will verify your information within 5-10 business days.
-                <br />
-                <br />
-                IMPORTANT: Be sure to include (1) your gitcoin username (2) proof of ownership of a SMS number.
-              </div>
               <div class="mb-1 float-right">
                 <b-button @click="forceStep='requestVerification'" variant="primary" class="btn-primary mt-5 mb-2">
                   Connect SMS
                 </b-button>
-                <br />
-                <b-button id="verify_offline" variant="link" class="py-0">Verify Offline</b-button><span id="verify_offline_or"> or </span><b-button @click="dismissVerification()" variant="link" class="py-0">Skip</b-button>
               </div>
             </div>
             <div class="mx-5 my-5 text-center" v-if="step == 'requestVerification'">
