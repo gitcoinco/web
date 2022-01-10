@@ -97,5 +97,3 @@ class TestGrantHallOfFame:
         grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
 
         assert hasattr(grant_hall_of_fame_grantee, 'accomplishment_2')
-    
-    
