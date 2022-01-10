@@ -5,17 +5,14 @@ from grants.models.hall_of_fame import GrantHallOfFame, GrantHallOfFameGrantee
 
 @pytest.mark.django_db
 class TestGrantHallOfFame:
-    """Test GrantHallOfFame model."""
+    """Test GrantHallOfFame class in GrantHallOfFame model."""
 
     def test_creation(self):
         """Test GrantHallOfFame data returned by factory is valid."""
 
         grant_hall_of_fame = GrantHallOfFameFactory()
-        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
         
-
         assert isinstance(grant_hall_of_fame, GrantHallOfFame)
-        assert isinstance(grant_hall_of_fame_grantee, GrantHallOfFameGrantee)
 
     def test_grant_hall_of_fame_has_total_donations(self):
         grant_hall_of_fame = GrantHallOfFameFactory()
@@ -57,6 +54,17 @@ class TestGrantHallOfFame:
 
         assert hasattr(grant_hall_of_fame, 'is_published')
         assert grant_hall_of_fame.is_published == False
+
+@pytest.mark.django_db
+class TestGrantHallOfFameGrantee:
+    """Test GrantHallOfFameGrantee class in GrantHallOfFame model."""
+
+    def test_creation(self):
+        """Test GrantHallOfFameGrantee data returned by factory is valid."""
+
+        grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
+        
+        assert isinstance(grant_hall_of_fame_grantee, GrantHallOfFameGrantee)
 
     def test_grant_hall_of_fame_grantee_has_associated_hall_of_fame(self):
         grant_hall_of_fame_grantee = GrantHallOfFameGranteeFactory()
