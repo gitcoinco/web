@@ -1,7 +1,8 @@
-import pytest
 import json
 
+import pytest
 from marketing.google_analytics import get_response
+
 
 def test_google_analytics_returns_zero_value_if_expected_metric_not_returned():
     ga_incomplete_response = '''{
