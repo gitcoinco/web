@@ -65,7 +65,7 @@
     "js-cookie": "^2.2.1",
     "jsrender": "0.9.88",
     "lib-jitsi-meet-dist": "^2.1.5",
-    "markdown-it": "^12.1.0",
+    "markdown-it": "^12.3.2",
     "moment": "2.19.3",
     "plyr": "^3.6.8",
     "popper.js": "^1.16.1",
