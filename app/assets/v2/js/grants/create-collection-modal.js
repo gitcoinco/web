@@ -6,7 +6,7 @@ Vue.component('create-collection-modal', {
       collectionTitle: '',
       collectionDescription: '',
       collections: [],
-      grantIds: '',
+      grantIds: [],
       imgURL: '',
       selectedCollection: null,
       showCreateCollection: false
