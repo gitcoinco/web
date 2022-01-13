@@ -103,10 +103,20 @@ class Command(BaseCommand):
                         last_heard_from_user_days = None
 
                         if not actions:
-                            should_warn_user = True
-                            should_delete_interest = False
-                            last_heard_from_user_days = (timezone.now() - interest_day_0).days
+                            last_action_by_user = interest_day_0
                             print(" - no actions")
+
+                            # some small calcs
+                            snooze_time = timezone.timedelta(days=bounty.snooze_warnings_for_days)
+                            delta_now_vs_last_action = timezone.now() - snooze_time - last_action_by_user
+                            last_heard_from_user_days = delta_now_vs_last_action.days
+
+                            # decide action params
+                            should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
+                            should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
+                            should_ignore = last_heard_from_user_days >= num_days_back_to_ignore_bc_mods_got_it
+
+                            print(f"- its been {last_heard_from_user_days} days since user expressed insterest, and we could not find any actions")
                         else:
                             # example format: 2018-01-26T17:56:31Z'
                             action_times = [
