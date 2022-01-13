@@ -18,7 +18,7 @@ Vue.component('create-collection-modal', {
 
     this.grantIds = cart.map(grant => grant.grant_id).join(',');
 
-    this.imgURL = '/dynamic/grants_cart_thumb/' + document.contxt['github_handle'] + '/' + this.grantIds;
+    this.imgURL = '/dynamic/grants_cart_thumb/' + document.contxt['github_handle'] + '/' + this.grantIds.join(',');
   },
   computed: {
     isValidCollection() {
