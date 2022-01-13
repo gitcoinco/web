@@ -12,7 +12,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 1 */4 * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_all_bounties mainnet  >> /var/log/gitcoin/sync_geth_weekly.log  2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_listener mainnet  >> /var/log/gitcoin/sync_listener.log  2>&1
 12 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth rinkeby -200 0  >> /var/log/gitcoin/sync_geth_rinkeby.log  2>&1
-*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_pending_fulfillments >> /var/log/gitcoin/sync_pending_fulfillments.log  2>&1
+*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_pending_fulfillments >> /var/log/gitcoin/sync_pending_fulfillments.log  2>&1
 
 
 ## TOWN SQUARE
@@ -52,7 +52,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash validate_grants_contributions last_hour >> /var/log/gitcoin/validate_grants_contributions.log  2>&1
 
 ## GRANTS
-*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_pending_contributions >> /var/log/gitcoin/sync_pending_contributions.log  2>&1
+*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_pending_contributions >> /var/log/gitcoin/sync_pending_contributions.log  2>&1
 1 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash send_grants_contributions_emails >> /var/log/gitcoin/send_grants_contributions_emails.log 2>&1
 5 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash fetch_gas_prices >> /var/log/gitcoin/fetch_gas_prices.log 2>&1
 
