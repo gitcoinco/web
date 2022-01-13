@@ -88,7 +88,7 @@ Vue.mixin({
         // check if user attempted to claim match payout
         // 0x8658b34 is the method id of the claimMatchPayout(address _recipient) function
         userClaimedMatchPayout = tx.input.startsWith('0x8658b34') && tx.input.endsWith(addressWithout0x);
-        
+
         if (userClaimedMatchPayout) {
           let receipt = await web3.eth.getTransactionReceipt(txHash);
 
@@ -113,7 +113,7 @@ Vue.mixin({
         }
         indicateMetamaskPopup(!state);
       };
-      
+
       waitingState(true);
 
       // Connect wallet
@@ -252,7 +252,7 @@ if (document.getElementById('gc-matching-funds')) {
 
       // fetch user's owned grants with CLR match history
       await this.fetchGrants();
-      
+
       if (this.targetGrant) {
         // scroll to specific grant if url specified a target grant
         this.scrollToElement('grant-' + this.targetGrant);
