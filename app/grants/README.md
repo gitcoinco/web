@@ -8,10 +8,10 @@ You can also support exciting projects that you love.
 
 During matching grants rounds [Quadratic Funding](https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000) is used to increase the impact of every donation. More info on grants can be found [here](https://gitcoin.co/grants/quickstart).
 
-## Grant Workflow process
+## Grant Workflow
 
-<https://miro.com/app/board/uXjVOXHTVFI=/>
+![Grants Workflow](https://github.com/gitcoinco/web/raw/master/docs/imgs/grants_map.jpg)
 
 ## Grants DB Structure
 
-<https://drive.google.com/file/d/1arwZDlj5nAdPJONL0tSZLCx_5r-LplAA/view?usp=sharing>
+![Grants database flow](https://github.com/gitcoinco/web/raw/master/docs/imgs/grants_map.jpg)
