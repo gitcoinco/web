@@ -16,7 +16,7 @@ Vue.component('create-collection-modal', {
     const checkedOut = CartData.loadCheckedOut();
     const cart = (checkedOut.length > 0 ? checkedOut : CartData.loadCart());
 
-    this.grantIds = cart.map(grant => grant.grant_id).join(',');
+    this.grantIds = cart.map(grant => grant.grant_id);
 
     this.imgURL = '/dynamic/grants_cart_thumb/' + document.contxt['github_handle'] + '/' + this.grantIds.join(',');
   },
