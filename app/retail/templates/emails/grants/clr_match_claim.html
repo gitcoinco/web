@@ -85,14 +85,20 @@ along with this program. If not, see
   <h1 style="text-transform: none; font-weight: normal; margin-top: 1.5em;">
     Claim Your Gitcoin Grants Round {{ round_number }} Matching Fund
   </h1>
-  <p style="font-size: 14px;">
-    Hi @{{ profile_handle }},<br><br>
 
-    Congratulations on a successful Gitcoin Grants Round {{ round_number }}!  Your grant has received a matching fund of
+  <p>
+    Hi @{{ profile_handle }},
   </p>
+  <p>
+    Congratulations on a successful Gitcoin Grants Round {{ round_number }}!
+    <br>
+    Your grant has received a matching fund of
+  </p>
+
   <p style="font-weight: bold; font-size: 24px; color: #11BC92; line-height: 1px;">
     ${{ rounded_amount|floatformat:2|intcomma }}
   </p>
+
   <hr style="margin-left: 0; margin-top: 40px;">
   <div style="display: inline-block; margin-top: 1.5em; margin-bottom: 2em; text-align: center;">
     <div class="grant-logo">
@@ -105,9 +111,29 @@ along with this program. If not, see
     </div>
   </div>
   <hr style="margin-left: 0; margin-bottom: 2.5em;">
+
   <p style="font-size: 14px;">
-    We have introduced a new <a href="https://gitcoin.co/blog/gitcoin-grants-round-11-governance-brief/">clawback period</a> where the matching funds will be returned to the matching pool at the start of the next Grants Round. Please claim your matching funds by <span style="color: #11BC92;">{{ claim_end_date }}</span>. 
+    <span style="font-weight: bold;">*Please note*: </span>
+    If your grant received donations in the Uniswap or Synthetix ecosystem round, that portion of your match will be sent directly to your wallet in UNI/SNX, no claim required.
+    All matching from other rounds is included in the claim contract, paid in DAI.
   </p>
+
+
+  <p style="font-weight: bold; font-size: 18px; margin-top: 35px;">Clawback Policy Update</p>
+  <p style="font-size: 14px;">
+    Going forward there will be a consistent policy where unclaimed matching funds are returned to the matching pool on the first day of the month the subsequent round begins.
+    For GR12 the deadline is March 1st, for GR13 the deadline will be June 1st, etc.
+    Matching funds from
+    <a href="https://etherscan.io/address/0x3342e3737732d879743f2682a3953a730ae4f47c">GR9</a>,
+    <a href="https://etherscan.io/address/0x3ebAFfe01513164e638480404c651E885cCA0AA4">GR10</a>, and
+    <a href="https://etherscan.io/address/0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a">GR11</a>
+    have yet to be clawed back.
+    These funds will all be returned to the pool alongside GR12 on March 1st.
+    Make sure to check if you have unclaimed funds from prior rounds - you can claim from the Gitcoin frontend, or the contracts directly (linked above).
+  </p>
+
+  <hr style="margin-left: 0; margin-bottom: 2.5em;">
+
   <a href="{{ grant.url }}?{{ utm_tracking }}" class="button large" style="display: inline-block; max-width: 6em; width: 70%">
     Claim Funds
   </a>

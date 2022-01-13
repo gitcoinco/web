@@ -1652,7 +1652,7 @@ def no_applicant_reminder(request):
 @staff_member_required
 def grant_match_distribution_final_txn(request):
     from grants.models import CLRMatch
-    match = CLRMatch.objects.first()
+    match = CLRMatch.objects.last()
     response_html, _ = render_grant_match_distribution_final_txn(match)
     return HttpResponse(response_html)
 
