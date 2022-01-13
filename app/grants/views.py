@@ -491,6 +491,7 @@ def get_grants(request):
     state = request.GET.get('state', 'active')
     grant_tags = request.GET.get('grant_tags', '')
     idle_grants = request.GET.get('idle', '') == 'true'
+    hidden_grants = request.GET.get('hidden', '') == 'true'
     following = request.GET.get('following', None) == 'true'
     only_contributions = request.GET.get('only_contributions', '') == 'true'
     featured = request.GET.get('featured', '') == 'true'
@@ -533,6 +534,7 @@ def get_grants(request):
         'grant_tags': grant_tags,
         'following': following,
         'idle_grants': idle_grants,
+        'hidden_grants': hidden_grants,
         'only_contributions': only_contributions,
         'clr_rounds': clr_rounds,
         'tenants': tenants,
@@ -674,6 +676,7 @@ def get_grants_by_filters(
     grant_tags='',
     following=False,
     idle_grants=False,
+    hidden_grants=False,
     only_contributions=False,
     omit_my_grants=False,
     clr_rounds=None,
@@ -686,7 +689,10 @@ def get_grants_by_filters(
     three_months_ago = timezone.now() - timezone.timedelta(days=90)
 
     # 1. Filter grants by network and hidden = false
-    _grants = Grant.objects.filter(network=network, hidden=False)
+    _grants = Grant.objects.filter(network=network)
+    
+    if not hidden_grants:
+        _grants = Grant.objects.filter(hidden=False)
 
     # 2. Filter grants belonging to a CLR round
     if clr_rounds and len(clr_rounds):
