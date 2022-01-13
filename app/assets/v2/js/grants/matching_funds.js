@@ -46,12 +46,11 @@ Vue.mixin({
                 e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
                 e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
               });
-
-              const claimData = await vm.checkClaimStatus(m, grant.admin_address);
-
-              m.status = claimData.status;
-              m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
             }
+            const claimData = await vm.checkClaimStatus(m, grant.admin_address);
+
+            m.status = claimData.status;
+            m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
           });
         });
 

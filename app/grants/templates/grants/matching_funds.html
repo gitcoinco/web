@@ -153,7 +153,7 @@
                       <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">Ready to Claim</span>
                       <span class="font-body text-grey-500">
                         Claim Period:
-                        <template v-if="match.grant_payout.grant_clrs[0].claim_start_date">
+                        <template v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0 && match.grant_payout.grant_clrs[0].claim_start_date">
                           [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
                         </template>
                         <template v-else>
@@ -166,7 +166,7 @@
                       <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">In Review</span>
                       <span class="font-body text-grey-500">
                         Claim Period:
-                        <template v-if="match.grant_payout.grant_clrs[0].claim_start_date">
+                        <template v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0  && match.grant_payout.grant_clrs[0].claim_start_date">
                           [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
                         </template>
                         <template v-else>
@@ -403,7 +403,9 @@
                       <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
                         <i class="far fa-spinner fa-spin mr-2"></i>Processing
                       </span>
-                      <span class="font-body text-grey-500">Claim Period: [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]</span>
+                      <span v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0" class="font-body text-grey-500">
+                        Claim Period: [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
+                      </span>
                     </b-col>
                     <b-col v-else-if="match.status == 'claimed'" lg="4" sm="12" class="mt-2 mt-lg-0">
                       <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-highlight-green gc-font-base">
