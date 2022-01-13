@@ -3973,7 +3973,7 @@ def clr_matches(request):
         if not clr_match:
             return Response({'message': 'CLR Match not found!'}, status=404)
 
-        # update claim tx for all grant with grant.admin_address paid out by 
+        # update claim tx for all grant with grant.admin_address paid out by
         # the clr_match contract
         clr_matches.filter(
             grant__admin_address=clr_match.grant.admin_address,
