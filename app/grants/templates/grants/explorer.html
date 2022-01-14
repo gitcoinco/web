@@ -357,6 +357,7 @@ along with this program. If not, see
                   <div v-if="grants && grants.length" class="infinite-container row" >
                     <div
                       v-for="(grant, id) in grants"
+                      :id="`grant-${grant.id}`"
                       :class="{'col-md-6 col-xl-4': view == 'grid', 'idle-or-hidden': idleOrHiddenGrants(grant)}"
                       class="col-12 mb-4 infinite-item grant-card" 
                     >
