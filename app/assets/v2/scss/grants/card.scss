@@ -31,6 +31,11 @@
   line-height: 22px;
   text-overflow: ellipsis;
 }
+.idle-or-hidden {
+  img, .font-subheader {
+    opacity: 50%;
+  }
+}
 
 .grant-item__img img {
   width: 100%;

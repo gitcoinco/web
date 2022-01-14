@@ -328,6 +328,7 @@ if (document.getElementById('grants-showcase')) {
 
 
       },
+      idleOrHiddenGrants: (grant) => grant.is_hidden || grant.is_idle,
       fetchGrants: async function(page, append_mode, replaceHistory) {
         let vm = this;
 
