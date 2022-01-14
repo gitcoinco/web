@@ -143,9 +143,9 @@
                       <span class="font-bigger-1 text-grey-500" id="grant-clrs">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
                     </b-col>
                     <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                      <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
-                      <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
-                      <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | round | formatNumber ]]</span>
+                      <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
+                      <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
+                      <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals:3 | formatNumber ]]</span>
                       <span v-if="match.grant_payout.status === 'pending'">(pending review)</span>
                     </b-col>
                     <b-col v-if="match.grant_payout.status === 'ready' && match.ready_for_payout" lg="4" sm="12" class="pt-2 pt-lg-0">
@@ -392,9 +392,9 @@
                       <span class="font-bigger-1 text-grey-500">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
                     </b-col>
                     <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                      <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
-                      <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | round | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
-                      <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | round | formatNumber ]]</span>
+                      <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
+                      <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
+                      <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals:3 | formatNumber ]]</span>
                     </b-col>
                     <b-col v-if="match.status == 'pending'" lg="4" sm="12" class="pt-2 pt-lg-0">
                       <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
