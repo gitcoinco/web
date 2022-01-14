@@ -17,7 +17,7 @@ GIVEN
 WHEN
 THEN
 
-**XD Links:**
+**Product & Design Links:**
 
 **Tech Details:**
 
