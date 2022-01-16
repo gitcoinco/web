@@ -14,8 +14,8 @@ const initAlgorandConnectionAlgoSigner = async(grant, vm) => {
     return;
   }
 
-  const NETWORK = 'TestNet';
-  //const NETWORK = 'MainNet';
+  //const NETWORK = 'TestNet';
+  const NETWORK = 'MainNet';
 
   // step2: get connected accounts
   AlgoSigner.connect().then(async() => {
@@ -119,8 +119,8 @@ const contributeWithAlgorandExtensionAlgoSigner = async(grant, vm, from_address)
   const to_address = grant.algorand_payout_address;
   const token = vm.getTokenByName(token_name);
 
-  const NETWORK = 'TestNet';
-  //const NETWORK = 'MainNet';
+  //const NETWORK = 'TestNet';
+  const NETWORK = 'MainNet';
 
   try {
     AlgoSigner.connect().then(async() => {
@@ -297,26 +297,15 @@ const contributeWithAlgorandExtensionAlgoSigner = async(grant, vm, from_address)
     }
   }
 };
-const contributeWithAlgorandExtensionMyAlgo = async(
-  grant = {},
-  vm = {},
-  from_address = "QLLLYBITHLFUX3BWLPAXD23SBMLUYHGCG6NOPOBWY7KQHBLHLC3JC7LVBA"
-) => {
+const contributeWithAlgorandExtensionMyAlgo = async(grant, vm, from_address) => {
 
-  //const token_name = grant.grant_donation_currency;
-  //const amount = grant.grant_donation_amount;
-  //const to_address = grant.algorand_payout_address;
-  //const token = vm.getTokenByName(token_name);
+  const token_name = grant.grant_donation_currency;
+  const amount = grant.grant_donation_amount;
+  const to_address = grant.algorand_payout_address;
+  const token = vm.getTokenByName(token_name);
 
-  // ALGO
-  const token_name = "ALGO"
-  const amount = 1
-  const to_address = "LOXKESTUNTAAYX53P3VT3TWMFO2ZDSPORZGMZNAITSLUXGSG4N4UYCYQIE"
-  const token = { decimals: 6 }
-  vm.updatePaymentStatus = () => {}
-
-  const NETWORK = 'TestNet';
-  //const NETWORK = 'MainNet';
+  //const NETWORK = 'TestNet';
+  const NETWORK = 'MainNet';
 
   try {
 
@@ -488,26 +477,15 @@ const contributeWithAlgorandExtensionMyAlgo = async(
     }
   }
 };
-const contributeWithAlgorandExtensionWalletConnect = async(
-  grant = {},
-  vm = {},
-  from_address = "7UBGYVIHJKBIDSVZABRZSGAMN55HZSBX4MK3VBCHVM6F7OIWSGEN3Z75L4"
-) => {
+const contributeWithAlgorandExtensionWalletConnect = async(grant, vm, from_address) => {
 
-  //const token_name = grant.grant_donation_currency;
-  //const amount = grant.grant_donation_amount;
-  //const to_address = grant.algorand_payout_address;
-  //const token = vm.getTokenByName(token_name);
+  const token_name = grant.grant_donation_currency;
+  const amount = grant.grant_donation_amount;
+  const to_address = grant.algorand_payout_address;
+  const token = vm.getTokenByName(token_name);
 
-  // ALGO
-  const token_name = "ALGO"
-  const amount = 1
-  const to_address = "LOXKESTUNTAAYX53P3VT3TWMFO2ZDSPORZGMZNAITSLUXGSG4N4UYCYQIE"
-  const token = { decimals: 6 }
-  vm.updatePaymentStatus = () => {}
-
-  const NETWORK = 'TestNet';
-  //const NETWORK = 'MainNet';
+  //const NETWORK = 'TestNet';
+  const NETWORK = 'MainNet';
 
   try {
     const connector = new WalletConnect.default({
