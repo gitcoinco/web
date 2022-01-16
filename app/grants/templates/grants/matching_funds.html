@@ -139,7 +139,7 @@
                 </b-row>
                 <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length === 0">
                   <template v-for="match in grant.clr_matches">
-                    <b-row v-if="match.grant_payout" :key="match.pk" class="mt-4 align-items-center">
+                    <b-row v-if="match.grant_payout &&  match.status != 'no-claim' " :key="match.pk" class="mt-4 align-items-center">
                       <b-col lg="4" sm="12">
                         <span class="font-bigger-1 text-grey-500" id="grant-clrs">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
                       </b-col>
