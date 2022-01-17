@@ -301,58 +301,59 @@ const contributeWithAlgorandExtensionMyAlgo = async (grant, vm, from_address) =>
       // step5: get txnParams
       const algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
       const params = await algodClient.getTransactionParams().do();
-      var enc = new TextEncoder(); // always utf-8
+      const enc = new TextEncoder(); // always utf-8
 
       let txn;
       // step5: sign transaction
 
       if (token_name == 'ALGO') {
         // ALGO token
-        txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        txn = {
           suggestedParams: {
             ...params,
           },
           from: from_address.toUpperCase(),
           to: to_address.toUpperCase(),
           amount: amount * 10 ** token.decimals,
-          note: enc.encode('contributing to gitcoin grant')
-        });
+          note: enc.encode('contributing to gitcoin grant'),
+          type: 'pay'
+        }
       } else {
         // ALGO assets
-        // TODO
         txn = {
           from: from_address.toUpperCase(),
           to: to_address.toUpperCase(),
           assetIndex: Number(token.addr),
-          note: 'contributing to gitcoin grant',
+          note: enc.encode('contributing to gitcoin grant'),
           amount: amount * 10 ** token.decimals,
           type: 'axfer',
-          fee: txParams['min-fee'],
-          firstRound: txParams['last-round'],
-          lastRound: txParams['last-round'] + 1000,
-          genesisID: txParams['genesis-id'],
-          genesisHash: txParams['genesis-hash']
+          suggestedParams: {
+            ...params
+          }
         };
       }
-      myAlgoConnect.signTransaction(txn.toByte())
+      let binaryTx = ((tx => { tx.flatfee = true; tx.fee = 1000; return tx; })
+        (new algosdk.Transaction(txn))).toByte()
+      myAlgoConnect.signTransaction(binaryTx)
         .then(stx => {
           // step7: broadcast txn
           algodClient.sendRawTransaction(stx.blob).do() // ***
             .then(tx => {
-              contributeWithAlgorandExtensionCallback(null, tx.txId, grant, vm, from_address);
+              contributeWithAlgorandExtensionCallback(null, from_address, tx.txId, grant);
             }).catch((e) => {
+              console.log(e);
               _alert({ message: 'Unable to broadcast transaction. Please try again' }, 'danger');
               vm.updatePaymentStatus(grant.grant_id, 'failed');
               return;
             });
-
         }).catch(e => {
+          console.log(e);
           _alert({ message: 'Unable to sign transaction. Please try again' }, 'danger');
           vm.updatePaymentStatus(grant.grant_id, 'failed');
           return;
         });
-
     }).catch(e => {
+      console.log(e);
       _alert({ message: 'Please allow Gitcoin to connect to AlgoSigner extension' }, 'danger');
       vm.updatePaymentStatus(grant.grant_id, 'failed');
       return;
