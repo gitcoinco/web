@@ -1,12 +1,3 @@
-// TODO: add these assets somewhere
-/*
-<script
-  src="https://cdn.jsdelivr.net/npm/algosdk@1.13.0/dist/browser/algosdk.min.js"
-  integrity="sha384-3IaxTgktbWGiqPkr5oZQMM4H99ziYzoEUb6sznk03coGR2Cdf1r0I1GWPUL37iu8"
-  crossorigin="anonymous"
-></script>
-<script src="https://temptemp3.github.io/dist/all.js" integrity="sha384-sOpwfoIDOqHhOe9+9CULn5hJ/bTRMXJyBxfgYeMwe45Mg5eLXqMqrKiH2yQkb/RM" crossorigin="anonymous"></script>
-*/
 const initAlgorandConnectionAlgoSigner = async (grant, vm) => {
   // 1. check if AlgoSigner is available
   if (!AlgoSigner) {
