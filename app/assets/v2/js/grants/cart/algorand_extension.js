@@ -290,7 +290,7 @@ const contributeWithAlgorandExtensionMyAlgo = async (grant, vm, from_address) =>
       vm.updatePaymentStatus(grant.grant_id, 'waiting');
 
       // step5: get txnParams
-      const algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+      const algodClient = new algosdk.Algodv2("", 'https://node.algoexplorerapi.io', '');
       const params = await algodClient.getTransactionParams().do();
       const enc = new TextEncoder(); // always utf-8
 
@@ -426,7 +426,7 @@ const contributeWithAlgorandExtensionWalletConnect = async (grant, vm, from_addr
         vm.updatePaymentStatus(grant.grant_id, 'waiting');
 
         // step5: get txnParams
-        const algodClient = new algosdk.Algodv2("", 'https://api.testnet.algoexplorer.io', '');
+        const algodClient = new algosdk.Algodv2("", 'https://node.algoexplorerapi.io', '');
         const params = await algodClient.getTransactionParams().do();
         var enc = new TextEncoder(); // always utf-8
 
