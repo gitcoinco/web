@@ -382,8 +382,9 @@ const contributeWithAlgorandExtensionWalletConnect = async (grant, vm, from_addr
     // Check if connection is already established
     if (!connector.connected) {
       // create new session
-      await connector.createSession();
+      connector.createSession();
     }
+
 
     (new Promise(resolve => resolve()))
       .then(async () => {
@@ -393,6 +394,7 @@ const contributeWithAlgorandExtensionWalletConnect = async (grant, vm, from_addr
           ledger: NETWORK,
           path: `/v2/accounts/${from_address}`
         });
+        console.log(balance)
 
         if (token_name == 'ALGO') {
           // ALGO token
@@ -453,27 +455,21 @@ const contributeWithAlgorandExtensionWalletConnect = async (grant, vm, from_addr
           });
         } else {
           // ALGO assets
-          // TODO
-          txn = {
+          txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+            suggestedParams: {
+              ...params,
+            },
             from: from_address.toUpperCase(),
             to: to_address.toUpperCase(),
             assetIndex: Number(token.addr),
-            note: 'contributing to gitcoin grant',
+            note: enc.encode('contributing to gitcoin grant'),
             amount: amount * 10 ** token.decimals,
-            type: 'axfer',
-            fee: txParams['min-fee'],
-            firstRound: txParams['last-round'],
-            lastRound: txParams['last-round'] + 1000,
-            genesisID: txParams['genesis-id'],
-            genesisHash: txParams['genesis-hash']
-          };
+          });
         }
         const txns = [txn]
         const txnsToSign = txns.map(txn => {
           const encodedTxn = btoa(String.fromCharCode.apply(null,
-            //enc.encode(
             algosdk.encodeUnsignedTransaction(txn)
-            //)//.toString("base64");
           ));
           return {
             txn: encodedTxn,
@@ -484,15 +480,12 @@ const contributeWithAlgorandExtensionWalletConnect = async (grant, vm, from_addr
           };
         });
         const requestParams = [txnsToSign];
-
         const ToBase64 = function (u8) {
           return btoa(String.fromCharCode.apply(null, u8));
         }
-
         const FromBase64 = function (str) {
           return atob(str).split('').map(function (c) { return c.charCodeAt(0); });
         }
-
         const request = formatJsonRpcRequest("algo_signTxn", requestParams);
         const result = await connector.sendCustomRequest(request);
         const decodedResult = result.map(element => {
@@ -500,7 +493,7 @@ const contributeWithAlgorandExtensionWalletConnect = async (grant, vm, from_addr
         });
         algodClient.sendRawTransaction(decodedResult).do()
           .then(tx => {
-            contributeWithAlgorandExtensionCallback(null, tx.txId, grant, vm, from_address);
+            contributeWithAlgorandExtensionCallback(null, from_address, tx.txId, grant);
           }).catch((e) => {
             _alert({ message: 'Unable to broadcast transaction. Please try again' }, 'danger');
             vm.updatePaymentStatus(grant.grant_id, 'failed');
