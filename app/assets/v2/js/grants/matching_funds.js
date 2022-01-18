@@ -242,7 +242,7 @@ Vue.mixin({
                 'round_number': 8,
                 'claim_tx': null,
                 'grant_payout': {
-                  'status': 'ready',
+                  'status': 'funding_withdrawn',
                   'contract_address': '0xf2354570bE2fB420832Fb7Ff6ff0AE0dF80CF2c6',
                   'payout_token': 'DAI',
                   'funding_withdrawal_date': null,
