@@ -34,264 +34,265 @@ Vue.mixin({
       try {
         let result = await (await fetch(url)).json();
         // TODO: REMOVE
+
         result = [
           {
-              "id": 149,
-              "title": "Rotki - The portfolio tracker and accounting tool that protects your privacy",
-              "admin_address": "0x9531C059098e3d194fF87FebB587aB07B30B1306",
-              "clr_matches": [
-                  {
-                      "pk": 6520,
-                      "amount": 99988.1229070029,
-                      "round_number": 12,
-                      "claim_tx": null,
-                      "grant_payout": {
-                          "status": "ready",
-                          "contract_address": "0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B",
-                          "payout_token": "DAI",
-                          "funding_withdrawal_date": null,
-                          "grant_clrs": [
-                              {
-                                  "display_text": "Advocacy",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "Polygon",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "Climate Change",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "Longevity",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "zkTech",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "Forefront",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR12 - Main",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              }
-                          ],
-                          "network": "mainnet"
-                      },
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 5611,
-                      "amount": 10368.02716,
-                      "round_number": 11,
-                      "claim_tx": null,
-                      "grant_payout": {
-                          "status": "ready",
-                          "contract_address": "0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a",
-                          "payout_token": "DAI",
-                          "funding_withdrawal_date": null,
-                          "grant_clrs": [
-                              {
-                                  "display_text": "GR11 - Latin America",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 - Africa",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 - dGov",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 - NFT",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 - Community",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 - dApp",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 - Infra",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 -Retroactive Funding",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR11 - Gitcoin DAO",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              }
-                          ],
-                          "network": "mainnet"
-                      },
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 4077,
-                      "amount": 26331.6051518633,
-                      "round_number": 10,
-                      "claim_tx": null,
-                      "grant_payout": {
-                          "status": "ready",
-                          "contract_address": "0x3ebAFfe01513164e638480404c651E885cCA0AA4",
-                          "payout_token": "DAI",
-                          "funding_withdrawal_date": null,
-                          "grant_clrs": [
-                              {
-                                  "display_text": "GR10 - Latin America",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR10 - Community",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR10 - Building Gitcoin",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR10 - NFT",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR10 - Infra",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              },
-                              {
-                                  "display_text": "GR10 - dApp",
-                                  "is_active": false,
-                                  "claim_start_date": null,
-                                  "claim_end_date": null
-                              }
-                          ],
-                          "network": "mainnet"
-                      },
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 2653,
-                      "amount": 5375.79707337043,
-                      "round_number": 9,
-                      "claim_tx": null,
-                      "grant_payout": {
-                          "status": "ready",
-                          "contract_address": "0x3342e3737732d879743f2682a3953a730ae4f47c",
-                          "payout_token": "DAI",
-                          "funding_withdrawal_date": null,
-                          "grant_clrs": [],
-                          "network": "mainnet"
-                      },
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 1942,
-                      "amount": 7792.5155898565,
-                      "round_number": 8,
-                      "claim_tx": null,
-                      "grant_payout": {
-                          "status": "funding_withdrawn",
-                          "contract_address": "0xf2354570bE2fB420832Fb7Ff6ff0AE0dF80CF2c6",
-                          "payout_token": "DAI",
-                          "funding_withdrawal_date": null,
-                          "grant_clrs": [],
-                          "network": "mainnet"
-                      },
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 1382,
-                      "amount": 3027.0,
-                      "round_number": 4,
-                      "claim_tx": null,
-                      "grant_payout": null,
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 1231,
-                      "amount": 21721.2278151826,
-                      "round_number": 7,
-                      "claim_tx": null,
-                      "grant_payout": null,
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 905,
-                      "amount": 2507.67587322087,
-                      "round_number": 6,
-                      "claim_tx": null,
-                      "grant_payout": null,
-                      "ready_for_payout": true
-                  },
-                  {
-                      "pk": 325,
-                      "amount": 3165.09486017034,
-                      "round_number": 5,
-                      "claim_tx": null,
-                      "grant_payout": null,
-                      "ready_for_payout": true
-                  }
-              ],
-              "logo_url": [
-                  "https://c.gitcoin.co/grants/55489dd9b0bb55d2454115c8ad6f6b6f/rotkehlchen_logo.png"
-              ],
-              "details_url": "/grants/149/rotki-the-portfolio-tracker-and-accounting-tool-t"
+            'id': 149,
+            'title': 'Rotki - The portfolio tracker and accounting tool that protects your privacy',
+            'admin_address': '0x9531C059098e3d194fF87FebB587aB07B30B1306',
+            'clr_matches': [
+              {
+                'pk': 6520,
+                'amount': 99988.1229070029,
+                'round_number': 12,
+                'claim_tx': null,
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [
+                    {
+                      'display_text': 'Advocacy',
+                      'is_active': false,
+                      'claim_start_date': '2021-12-20T03:30:21Z',
+                      'claim_end_date': '2022-01-10T03:30:28Z'
+                    },
+                    {
+                      'display_text': 'Polygon',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'Climate Change',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'Longevity',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'zkTech',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'Forefront',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR12 - Main',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    }
+                  ],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              },
+              {
+                'pk': 5611,
+                'amount': 10368.02716,
+                'round_number': 11,
+                'claim_tx': null,
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [
+                    {
+                      'display_text': 'GR11 - Latin America',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Africa',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - dGov',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - NFT',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Community',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - dApp',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Infra',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 -Retroactive Funding',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Gitcoin DAO',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    }
+                  ],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              },
+              {
+                'pk': 4077,
+                'amount': 26331.6051518633,
+                'round_number': 10,
+                'claim_tx': null,
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0x3ebAFfe01513164e638480404c651E885cCA0AA4',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [
+                    {
+                      'display_text': 'GR10 - Latin America',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - Community',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - Building Gitcoin',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - NFT',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - Infra',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - dApp',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    }
+                  ],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              },
+              {
+                'pk': 2653,
+                'amount': 5375.79707337043,
+                'round_number': 9,
+                'claim_tx': null,
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0x3342e3737732d879743f2682a3953a730ae4f47c',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              },
+              {
+                'pk': 1942,
+                'amount': 7792.5155898565,
+                'round_number': 8,
+                'claim_tx': null,
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0xf2354570bE2fB420832Fb7Ff6ff0AE0dF80CF2c6',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              },
+              {
+                'pk': 1382,
+                'amount': 3027.0,
+                'round_number': 4,
+                'claim_tx': null,
+                'grant_payout': null,
+                'ready_for_payout': true
+              },
+              {
+                'pk': 1231,
+                'amount': 21721.2278151826,
+                'round_number': 7,
+                'claim_tx': null,
+                'grant_payout': null,
+                'ready_for_payout': true
+              },
+              {
+                'pk': 905,
+                'amount': 2507.67587322087,
+                'round_number': 6,
+                'claim_tx': null,
+                'grant_payout': null,
+                'ready_for_payout': true
+              },
+              {
+                'pk': 325,
+                'amount': 3165.09486017034,
+                'round_number': 5,
+                'claim_tx': null,
+                'grant_payout': null,
+                'ready_for_payout': true
+              }
+            ],
+            'logo_url': [
+              'https://c.gitcoin.co/grants/55489dd9b0bb55d2454115c8ad6f6b6f/rotkehlchen_logo.png'
+            ],
+            'details_url': '/grants/149/rotki-the-portfolio-tracker-and-accounting-tool-t'
           }
-        ]
+        ];
 
         // update claim status + format date fields
-        result.map(async grant => {
+        result.map(grant => {
           grant.clr_matches.map(async m => {
             if (m.grant_payout) {
               m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
@@ -302,15 +303,22 @@ Vue.mixin({
                 e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
                 e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
               });
+
               const claimData = await vm.checkClaimStatus(m, grant.admin_address);
 
               m.status = claimData.status;
+
+              // // check to ensure we don't allow users to claim if balance is 0
+              // if (!m.claim_tx && m.status == 'no-balance-to-claim') {
+              //   m.claim_tx = 'NA';
+              // }
+
               m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
             }
           });
         });
-
-        this.grants = result;
+        this.grants = await Promise.all(result);
+        console.log(this.grants);
 
         this.loading = false;
 
@@ -335,15 +343,16 @@ Vue.mixin({
         contractAddress
       );
       const amount = await payout_contract.methods.payouts(recipientAddress).call();
+
       if (amount == 0) {
-        status = 'no-claim';
-        return  { status, timestamp };
+        status = 'no-balance-to-claim';
+        this.$forceUpdate();
+        return { status, timestamp };
       }
 
       if (!txHash) {
         return { status, timestamp };
       }
-
 
       let tx = await web3.eth.getTransaction(txHash);
 
