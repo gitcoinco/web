@@ -46,7 +46,6 @@ Vue.mixin({
                 e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
                 e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
               });
-
               const claimData = await vm.checkClaimStatus(m, grant.admin_address);
 
               m.status = claimData.status;
@@ -214,12 +213,14 @@ Vue.mixin({
       let c = clrs.map(a => a.display_text);
       let g = [];
 
-      c.forEach(elem => {
+      c.every(elem => {
         g.push(elem);
         if (g.join(', ').length > 24) {
           g.splice(-1);
           g.push(`+${c.length - g.length} more`);
+          return false;
         }
+        return true;
       });
 
       return g.slice(0, -1).join(', ') + ' ' + g.slice(-1);
