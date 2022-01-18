@@ -3,6 +3,7 @@ import json
 import math
 import os
 from datetime import datetime
+from sys import exc_info
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -359,8 +360,11 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
 @app.shared_task(bind=True, max_retries=1)
 def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> None:
     from app.utils import actually_sync_profile
-    user = User.objects.filter(pk=user_pk).first() if user_pk else None
-    actually_sync_profile(handle, user=user, hide_profile=hide_profile)
+    try:
+        user = User.objects.get(pk=user_pk)
+        actually_sync_profile(handle, user=user, hide_profile=hide_profile)
+    except User.DoesNotExist:
+        logger.error("Failed to sync profile, user does not exist.", exc_info=True)
 
 
 @app.shared_task(bind=True, max_retries=1)

@@ -658,10 +658,12 @@ class Bounty(SuperModel):
 
     @property
     def org_name(self):
+        # TODO: This is not uniquely identifying the org - the github handle can change
         return self.github_org_name
 
     @property
     def org_profile(self):
+        # TODO: This is not uniquely identifying the org - the github handle can change
         if not self.org_name:
             return None
         profiles = Profile.objects.filter(handle=self.org_name.lower())

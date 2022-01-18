@@ -69,6 +69,13 @@ class Command(BaseCommand):
                 print('- no refresh needed')
             else:
                 try:
+                    # TODO: Sooooo soooooo BBBAAAAAADDDDDD
+                    # We have a user that has changed his github handle
+                    # We call this function WITH THE OLD HANDLE ! => a new profile will be created for the user !!!
+                    # We MUST drop the reliance to the github handle as a "relation" to github
+                    #       => this is not uninque
+                    #       => users can change it
+                    #       => AND user CAN SWAP it
                     sync_profile(handle)
                 except Exception as e:
                     print(e)

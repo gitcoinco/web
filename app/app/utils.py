@@ -82,11 +82,22 @@ def get_upload_filename(instance, filename):
 
 
 def sync_profile(handle, user=None, hide_profile=True, delay_okay=False):
-    from dashboard.models import Profile
     handle = handle.strip().replace('@', '').lower()
-    profile = Profile.objects.filter(handle=handle).exists()
+    # Assumption:
+    #   - the handle is the User.username
+    #   - normally User.username == Profile.handle, but NOT ALWAYS. These might be out of sync due to a user updating his 
+    #       github handle. After a login, User.username will be updated automatically, but Profile.handle not
+    #   - this is why we should retrieve the Profile by querying the User.username == handle and follow the profile relation
+    profile = None
+
+    try:
+        profile = user.profile
+    except:
+        pass
+
     # cant sync_profile if profile not existing, especially if profile is needed for login
     delay = delay_okay and profile
+
     if delay:
         from dashboard.tasks import sync_profile as sync_profile_task
         user_pk = user.pk if user else None
@@ -95,29 +106,38 @@ def sync_profile(handle, user=None, hide_profile=True, delay_okay=False):
         actually_sync_profile(handle, user=user, hide_profile=hide_profile)
 
 
-def actually_sync_profile(handle, user=None, hide_profile=True):
+def actually_sync_profile(handle, user, hide_profile=True):
+    """
+        handle - the users github handle
+        user - must be an User instance and not None
+    """
     from dashboard.models import Profile
-    handle = handle.strip().replace('@', '').lower()
-    if user and hasattr(user, 'profile'):
-        try:
-            access_token = user.social_auth.filter(provider='github').latest('pk').access_token
-            data = get_user(handle, token=access_token)
+    profile = None
+    try:
+        profile = user.profile
+    except:
+        pass
 
-            user = User.objects.get(username__iexact=handle)
-            if data and data.login:
-                profile = user.profile
-                user.username = data.login
-                user.save()
+    handle = handle.strip().replace('@', '').lower()
+
+    try:
+        access_token = user.social_auth.filter(provider='github').latest('pk').access_token
+        data = get_user(handle, token=access_token)
+
+        if data and data.login:
+            user.username = data.login
+            user.save()
+            
+            if profile:
                 profile.handle = data.login
                 profile.email = user.email
                 profile.email_index = user.email.lower()
                 profile.save()
 
-        except Exception as e:
-            logger.error(e)
-            return None
-    else:
-        data = get_user(handle)
+    except Exception as e:
+        logger.error(e)
+        return None
+
 
     email = ''
     is_error = not hasattr(data, 'name')
@@ -126,29 +146,29 @@ def actually_sync_profile(handle, user=None, hide_profile=True):
         logger.warning(f'Failed to fetch github username {handle}', exc_info=True, extra={'handle': handle})
         return None
 
-    defaults = {'last_sync_date': timezone.now(), 'data': data.raw_data}
-
-    if user and isinstance(user, User):
-        defaults['user'] = user
-        try:
-            defaults['github_access_token'] = user.social_auth.filter(provider='github').latest('pk').access_token
-            if user and user.email:
-                defaults['email'] = user.email
-                defaults['email_index'] = user.email.lower()
-        except UserSocialAuth.DoesNotExist:
-            pass
+    defaults = {'last_sync_date': timezone.now(), 'data': data.raw_data, 'user': user, 'handle':handle}
+    
+    try:
+        defaults['github_access_token'] = user.social_auth.filter(provider='github').latest('pk').access_token
+        if user and user.email:
+            defaults['email'] = user.email
+            defaults['email_index'] = user.email.lower()
+    except UserSocialAuth.DoesNotExist:
+        pass
 
     # store the org info in postgres
     try:
-        profile_exists = Profile.objects.filter(handle=handle).count()
+        profile_exists = bool(profile)
         if not profile_exists:
             defaults['hide_profile'] = hide_profile
-        profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
+
+        profile, created = Profile.objects.update_or_create(user=user, defaults=defaults)
         latest_obj = profile.user.social_auth.filter(provider='github').latest('pk') if profile.user else None
         access_token = latest_obj.access_token if latest_obj else None
         orgs = get_user(handle, token=access_token).get_orgs()
         profile.organizations = [ele.login for ele in orgs if ele] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
+        print("Profile:", profile.pk, profile.handle, profile.user)
         keywords = []
         if get_user(handle):
             for repo in get_user(handle).get_repos():
