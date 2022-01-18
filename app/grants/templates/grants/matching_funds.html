@@ -137,7 +137,7 @@
                     </div>
                   </div>
                 </b-row>
-                <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length === 0">
+                <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => !a.claim_tx).length">
                   <template v-for="match in grant.clr_matches">
                     <b-row v-if="match.grant_payout" :key="match.pk" class="mt-4 align-items-center">
                       <b-col lg="4" sm="12">
@@ -402,7 +402,7 @@
                     </div>
                   </div>
                 </b-row>
-                <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length > 0">
+                <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length">
                   <template v-for="match in grant.clr_matches">
                     <b-row v-if="match.grant_payout" :key="match.pk" class="mt-4 align-items-center">
                       <b-col lg="4" sm="12">
