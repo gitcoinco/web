@@ -26,7 +26,7 @@ Vue.mixin({
     async fetchGrants() {
       let vm = this;
 
-      this.loading = true;
+      vm.loading = true;
 
       // fetch owned grants with clr matches
       const url = '/grants/v1/api/clr-matches/';
@@ -35,7 +35,7 @@ Vue.mixin({
         let result = await (await fetch(url)).json();
 
         // update claim status + format date fields
-        result.map(async grant => {
+        result.map(grant => {
           grant.clr_matches.map(async m => {
             if (m.grant_payout) {
               m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
@@ -49,14 +49,20 @@ Vue.mixin({
               const claimData = await vm.checkClaimStatus(m, grant.admin_address);
 
               m.status = claimData.status;
+
+              // check to ensure we don't allow users to claim if balance is 0
+              if (!m.claim_tx && m.status == 'no-balance-to-claim') {
+                m.claim_tx = 'NA';
+              }
+
               m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
             }
           });
         });
 
-        this.grants = result;
+        vm.grants = result;
 
-        this.loading = false;
+        vm.loading = false;
 
       } catch (e) {
         console.error(e);
@@ -71,11 +77,24 @@ Vue.mixin({
       let status = 'not-found';
       let timestamp = null;
 
+      web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
+
+      // check if contract has funds for recipientAddress
+      const payout_contract = await new web3.eth.Contract(
+        JSON.parse(document.contxt.match_payouts_abi),
+        contractAddress
+      );
+      const amount = await payout_contract.methods.payouts(recipientAddress).call();
+
+      if (amount == 0) {
+        status = 'no-balance-to-claim';
+        return { status, timestamp };
+      }
+
       if (!txHash) {
         return { status, timestamp };
       }
 
-      web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
 
       let tx = await web3.eth.getTransaction(txHash);
 
