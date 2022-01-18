@@ -34,9 +34,202 @@ Vue.mixin({
       try {
         let result = await (await fetch(url)).json();
 
+        result = [
+          {
+            'id': 2575,
+            'title': 'DefiLab_xyz',
+            'admin_address': '0xD7ceb6F030699BF707Cb8b927A4f39c989c5Ab8B',
+            'clr_matches': [
+              {
+                'pk': 6218,
+                'amount': 9054.20287179098,
+                'round_number': 12,
+                'claim_tx': null,
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [
+                    {
+                      'display_text': 'Advocacy',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'Polygon',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'Climate Change',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'Longevity',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'zkTech',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'Forefront',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR12 - Main',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    }
+                  ],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              },
+              {
+                'pk': 3571,
+                'amount': 4230.1445376782,
+                'round_number': 10,
+                'claim_tx': '0x12527416a39b0a57463e1556a947cf66de09214e075b9e4bd6806fc4998ddba4',
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0x3ebAFfe01513164e638480404c651E885cCA0AA4',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [
+                    {
+                      'display_text': 'GR10 - Latin America',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - Community',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - Building Gitcoin',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - NFT',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - Infra',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR10 - dApp',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    }
+                  ],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              },
+              {
+                'pk': 5226,
+                'amount': 1100.506135,
+                'round_number': 11,
+                'claim_tx': null,
+                'grant_payout': {
+                  'status': 'ready',
+                  'contract_address': '0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
+                  'payout_token': 'DAI',
+                  'funding_withdrawal_date': null,
+                  'grant_clrs': [
+                    {
+                      'display_text': 'GR11 - Latin America',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Africa',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - dGov',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - NFT',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Community',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - dApp',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Infra',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 -Retroactive Funding',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    },
+                    {
+                      'display_text': 'GR11 - Gitcoin DAO',
+                      'is_active': false,
+                      'claim_start_date': null,
+                      'claim_end_date': null
+                    }
+                  ],
+                  'network': 'mainnet'
+                },
+                'ready_for_payout': true
+              }
+            ],
+            'logo_url': [
+              'https://c.gitcoin.co/grants/264c45a088a5ee415f4bfd259cecde50/Screenshot_2021-05-14_at_10.33.28.png'
+            ],
+            'details_url': '/grants/2575/defilab_xyz'
+          }
+        ];
         // update claim status + format date fields
-        result.map(grant => {
-          grant.clr_matches.map(async m => {
+        await Promise.all(result.map(async grant => {
+          await Promise.all(grant.clr_matches.map(async m => {
             if (m.grant_payout) {
               m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
                 ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
@@ -56,9 +249,11 @@ Vue.mixin({
               }
 
               m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
+            } else {
+              Promise.resolve();
             }
-          });
-        });
+          }));
+        }));
 
         vm.grants = result;
 
