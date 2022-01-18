@@ -1,0 +1,75 @@
+Python CircleCI 2.1 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2.1
+
+executors:
+  gitcoin-latest:
+    docker:
+      - image: gitcoin/web:latest
+        environment:
+          CACHE_URL: dbcache://my_cache_table
+          DATABASE_URL: psql://postgres:postgres@localhost/testdb
+          REDIS_URL: rediscache://localhost:6379/0?client_class=django_redis.client.DefaultClient
+          CACHEOPS_REDIS: redis://localhost:6379/0
+          ENV: test
+          COLLECTFAST_CACHE_URL: dbcache://collectfast
+    working_directory: ~/web
+
+jobs:
+  test:
+    executor: gitcoin-latest
+    branches:
+      ignore:
+        - gh-pages
+    docker:
+      - image: circleci/postgres:10-alpine
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+      - image: circleci/redis:4-alpine3.8
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - deps37-{{ .Branch }}-{{ checksum "requirements/ci.txt" }}-alpine
+          # fallback to using the latest cache if no exact match is found
+          - deps37-{{ .Branch }}-alpine
+
+      - run:
+          name: install dependencies
+          command: |
+            python -m venv venv
+            echo "Activating virtualenv..."
+            . venv/bin/activate
+            echo "Installing requirements..."
+            pip install -r requirements/test.txt
+            echo "Requirements installed!"
+
+      - save_cache:
+          key: deps37-{{ .Branch }}-{{ checksum "requirements/ci.txt" }}-alpine
+          paths:
+            - ./venv
+            - "/usr/local/bin"
+            - "/usr/local/lib/python3.7/site-packages"
+
+      - run:
+          name: run tests
+          command: |
+            echo "Activating environment for tests..."
+            . venv/bin/activate
+            cd ~/web/app
+            echo "Running pytest..."
+            pytest -p no:ethereum
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+          destination: test-results
