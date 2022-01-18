@@ -26,7 +26,7 @@ Vue.mixin({
     async fetchGrants() {
       let vm = this;
 
-      this.loading = true;
+      vm.loading = true;
 
       // fetch owned grants with clr matches
       const url = '/grants/v1/api/clr-matches/';
@@ -320,7 +320,7 @@ Vue.mixin({
         this.grants = await Promise.all(result);
         console.log(this.grants);
 
-        this.loading = false;
+        vm.loading = false;
 
       } catch (e) {
         console.error(e);
