@@ -3,6 +3,10 @@ describe('contributing to grant', () => {
     cy.setupMetamask();
   });
 
+  beforeEach(() => {
+    cy.acceptCookies();
+  });
+
   afterEach(() => {
     cy.disconnectMetamaskWallet();
     cy.logout();

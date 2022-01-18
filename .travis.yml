@@ -58,7 +58,7 @@ jobs:
         # Run the tests
         - pytest -p no:ethereum -p no:warnings
         # Run cypress tests
-        - bin/ci/cypress-run
+        - bin/cypress/ci
         # Generate Markdown documentation and static docs page.
         - pydocmd build
       env:

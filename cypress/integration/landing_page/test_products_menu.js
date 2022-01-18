@@ -4,6 +4,7 @@ describe('Products menu', () => {
   });
 
   beforeEach(() => {
+    cy.acceptCookies();
     cy.impersonateUser();
   });
 
@@ -19,7 +20,7 @@ describe('Products menu', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');
     cy.contains('Grants Crowdfunding for Open Source').trigger('mouseenter');
     cy.contains('Explore Grants').click();
-    
+
     cy.url().should('contain', 'grants/explorer');
   });
 });
