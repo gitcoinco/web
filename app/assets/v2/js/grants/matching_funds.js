@@ -38,7 +38,7 @@ Vue.mixin({
           {
               "id": 149,
               "title": "Rotki - The portfolio tracker and accounting tool that protects your privacy",
-              "admin_address": "0x9531C059098e3d194fF87FebB587aB07B30B1306",
+              "admin_address": "0x3257284FF47cbcB0c59BD522B40A34D5f748117D",
               "clr_matches": [
                   {
                       "pk": 6520,
