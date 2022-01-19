@@ -39,7 +39,7 @@ jobs:
         node-version: [14]
 
     env:
-      PYTHONPATH: ${GITHUB_WORKSPACE}/app/
+      PYTHONPATH: ${{ GITHUB_WORKSPACE }}/app/
       DJANGO_SETTINGS_MODULE: app.settings
       SUPRESS_DEBUG_TOOLBAR: 1
 
@@ -62,6 +62,7 @@ jobs:
 
       - name: Setup Env
         run: |
+          echo "${{ GITHUB_WORKSPACE }}"
           cp app/app/travis.env app/app/.env
           pip install pip==20.0.2 setuptools wheel --upgrade
 
