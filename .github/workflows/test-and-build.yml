@@ -3,11 +3,10 @@ name: Build and Publish
 on:
   # run it on push to master and stable repository branches
   push:
-    branches:
-      - master
-      - stable
+    branches: [ master, stable ]
   # run it during pull request
   pull_request:
+    branches: [ master, stable ]
 
 jobs:
   test:
@@ -39,6 +38,11 @@ jobs:
         python-version: [3.7]
         node-version: [14]
 
+    env:
+      # PYTHONPATH: "${TRAVIS_BUILD_DIR}/app/"
+      DJANGO_SETTINGS_MODULE: app.settings
+      SUPRESS_DEBUG_TOOLBAR: 1
+
     # steps to perform in job
     steps:
       - name: Checkout code
@@ -55,9 +59,6 @@ jobs:
         with:
           python-version: "${{ matrix.python-version }}"
           cache: "pip"
-
-      # - name: Lint and Fix Python/JS
-      #   run: make fix
 
       - name: Setup Env
       - run: |
