@@ -39,7 +39,7 @@ jobs:
         node-version: [14]
 
     env:
-      # PYTHONPATH: "${TRAVIS_BUILD_DIR}/app/"
+      PYTHONPATH: ${GITHUB_WORKSPACE}/app/
       DJANGO_SETTINGS_MODULE: app.settings
       SUPRESS_DEBUG_TOOLBAR: 1
 
