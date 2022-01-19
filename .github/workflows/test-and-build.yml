@@ -61,12 +61,12 @@ jobs:
           cache: "pip"
 
       - name: Setup Env
-      - run: |
+        run: |
           cp app/app/travis.env app/app/.env
           pip install pip==20.0.2 setuptools --upgrade
 
       - name: Fetch and Install GeoIP database files
-      - run: |
+        run: |
           sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
           cp dist/*.gz ./
           gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
@@ -76,7 +76,7 @@ jobs:
           sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
 
       - name: Install libvips, Node, and Python dependencies
-      - run: |
+        run: |
           sudo apt-get install -y libvips libvips-dev
           node --version
           yarn install
@@ -86,15 +86,15 @@ jobs:
           (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
 
       - name: Run management commands
-      - run: |
+        run: |
           python app/manage.py migrate
           python app/manage.py fetch_gas_prices
 
       - name: Run tests
-      - run: |
+        run: |
           pytest -p no:ethereum -p no:warnings
           bin/ci/cypress-run
 
       - name: Generate Markdown documentation and static docs page
-      - run: pydocmd build
+        run: pydocmd build
 
