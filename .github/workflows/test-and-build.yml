@@ -1,0 +1,99 @@
+name: Build and Publish
+
+on:
+  # run it on push to master and stable repository branches
+  push:
+    branches:
+      - master
+      - stable
+  # run it during pull request
+  pull_request:
+
+jobs:
+  test:
+    name: Lint and Test
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_DB: testdb
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    strategy:
+      matrix:
+        # Run in all these versions of Python and Node
+        python-version: [3.7]
+        node-version: [14]
+
+    # steps to perform in job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Use Python ${{ matrix.python-version }}
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "${{ matrix.python-version }}"
+          cache: "pip"
+
+      # - name: Lint and Fix Python/JS
+      #   run: make fix
+
+      - name: Setup Env
+      - run: |
+          cp app/app/travis.env app/app/.env
+          pip install pip==20.0.2 setuptools --upgrade
+
+      - name: Fetch and Install GeoIP database files
+      - run: |
+          sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
+          cp dist/*.gz ./
+          gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
+          tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
+          sudo mkdir -p /opt/GeoIP/
+          sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
+          sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
+
+      - name: Install libvips, Node, and Python dependencies
+      - run: |
+          sudo apt-get install -y libvips libvips-dev
+          node --version
+          yarn install
+          pip install -r requirements/test.txt
+          yarn run eslint
+          yarn run stylelint
+          (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
+
+      - name: Run management commands
+      - run: |
+          python app/manage.py migrate
+          python app/manage.py fetch_gas_prices
+
+      - name: Run tests
+      - run: |
+          pytest -p no:ethereum -p no:warnings
+          bin/ci/cypress-run
+
+      - name: Generate Markdown documentation and static docs page
+      - run: pydocmd build
+
