@@ -32,6 +32,12 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
 
+      redis:
+        image: redis
+        ports:
+        - 6379/tcp
+        options: --entrypoint redis-server
+
     strategy:
       matrix:
         # Run in all these versions of Python and Node
