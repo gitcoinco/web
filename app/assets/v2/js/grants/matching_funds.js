@@ -35,8 +35,8 @@ Vue.mixin({
         let result = await (await fetch(url)).json();
 
         // update claim status + format date fields
-        result.map(grant => {
-          grant.clr_matches.map(async m => {
+        await Promise.all(result.map(async grant => {
+          await Promise.all(grant.clr_matches.map(async m => {
             if (m.grant_payout) {
               m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
                 ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
@@ -56,9 +56,11 @@ Vue.mixin({
               }
 
               m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
+            } else {
+              Promise.resolve();
             }
-          });
-        });
+          }));
+        }));
 
         vm.grants = result;
 
