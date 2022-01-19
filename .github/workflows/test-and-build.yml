@@ -34,9 +34,14 @@ jobs:
 
       redis:
         image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
-        - 6379/tcp
-        options: --entrypoint redis-server
+          - 6379:6379
 
     strategy:
       matrix:
@@ -96,10 +101,14 @@ jobs:
           python app/manage.py migrate
           python app/manage.py fetch_gas_prices
 
-      - name: Run tests
-        run: |
-          pytest -p no:ethereum -p no:warnings
-          bin/ci/cypress-run
+      - name: Run python tests
+        run: pytest -p no:ethereum -p no:warnings
+
+      - name: Run UI tests
+        uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          headless: true
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
