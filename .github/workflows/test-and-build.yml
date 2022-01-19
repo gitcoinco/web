@@ -63,7 +63,7 @@ jobs:
       - name: Setup Env
         run: |
           cp app/app/travis.env app/app/.env
-          pip install pip==20.0.2 setuptools --upgrade
+          pip install pip==20.0.2 setuptools wheel --upgrade
 
       - name: Fetch and Install GeoIP database files
         run: |
