@@ -118,7 +118,6 @@ jobs:
           cname: docs.gitcoin.co
 
       - name: Deploy master to Docker Hub 🚀
-        uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/master' }} && ${{ github.event_name != 'pull_request' }}
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -129,6 +128,7 @@ jobs:
           docker push gitcoin/web:latest
 
       - name: Deploy stable to Docker Hub 🚀
+        if: ${{ github.ref == 'refs/heads/stable' }}
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker pull python:3.6-slim-jessie
