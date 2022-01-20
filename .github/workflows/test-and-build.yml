@@ -101,15 +101,40 @@ jobs:
           python app/manage.py migrate
           python app/manage.py fetch_gas_prices
 
-      - name: Run python tests
-        run: pytest -p no:ethereum -p no:warnings
-
-      - name: Run UI tests
-        uses: cypress-io/github-action@v2
-        with:
-          browser: chrome
-          headless: true
+      - name: Run Python and UI tests
+        run: |
+          pytest -p no:ethereum -p no:warnings
+          bin/ci/cypress-run
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
+
+      - name: Deploy to Github Pages 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/site
+          cname: docs.gitcoin.co
+
+      - name: Deploy master to Docker Hub 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }} && ${{ github.event_name != 'pull_request' }}
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker pull python:3.6-slim-jessie
+          docker build -t gitcoin/web:${{ GITHUB_RUN_NUMBER }} .
+          docker push gitcoin/web:${{ GITHUB_RUN_NUMBER }}
+          docker tag gitcoin/web:${{ GITHUB_RUN_NUMBER }} gitcoin/web:latest
+          docker push gitcoin/web:latest
+
+      - name: Deploy stable to Docker Hub 🚀
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker pull python:3.6-slim-jessie
+          docker build -t gitcoin/web:${{ GITHUB_RUN_NUMBER }} .
+          docker push gitcoin/web:${{ GITHUB_RUN_NUMBER }}
+          docker tag gitcoin/web:${{ GITHUB_RUN_NUMBER }} gitcoin/web:stable
+          docker push gitcoin/web:stable
+
 
