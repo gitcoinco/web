@@ -24,6 +24,9 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+const Web3 = require('web3');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+
 // authentication
 Cypress.Commands.add('loginRootUser', () => {
   const url = '_administrationlogin/';
@@ -135,4 +138,32 @@ Cypress.Commands.add('createActiveGrantRound', () => {
   cy.get('[name=_save]').click();
 
   cy.logout();
+});
+
+
+Cypress.Commands.add('setupWallet', () => {
+  cy.on('window:load', (win) => {
+
+    let hd_provider = new HDWalletProvider({
+      mnemonic: Cypress.env('SECRET_WORDS'),
+      providerOrUrl: 'http://127.0.0.1:8545',
+      addressIndex: 5
+    });
+
+    win.ethereum = hd_provider;
+    win.provider = hd_provider;
+    win.web3 = new Web3(hd_provider);
+    let onConnect = async function() {
+      console.log('TESTING -- dummy onConnect override');
+    };
+
+    Object.defineProperty(win, 'onConnect', {
+      set (value) {
+      },
+      get () {
+        return onConnect;
+      }
+    })
+
+  });
 });

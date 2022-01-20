@@ -1,19 +1,17 @@
 describe('contributing to grant', () => {
   before(() => {
-    cy.setupMetamask();
   });
 
   beforeEach(() => {
+    cy.setupWallet();
     cy.acceptCookies();
   });
 
   afterEach(() => {
-    cy.disconnectMetamaskWallet();
     cy.logout();
   });
 
   after(() => {
-    cy.clearWindows();
   });
 
   it('contributes eth to a single grant', () => {
@@ -31,17 +29,12 @@ describe('contributing to grant', () => {
       cy.get('#gc-cart').click();
       cy.contains('Checkout').click();
 
-      cy.contains('MetaMask').click();
-      cy.acceptMetamaskAccess();
-
       cy.get('#vs3__combobox').click().type('ETH{enter}');
       cy.get('#gitcoin-grant-input-amount').type('{backspace}');
       cy.contains("I'm Ready to Checkout").scrollIntoView().click();
       cy.get('#js-fundGrants-button').click();
 
-      cy.confirmMetamaskTransaction();
-
-      cy.get('body').should('contain.text', 'Thank you for contributing to open source!');
+      cy.get('body', {timeout: 10000}).should('contain.text', 'Thank you for contributing to open source!');
     });
   });
 
@@ -76,18 +69,12 @@ describe('contributing to grant', () => {
 
     cy.visit('grants/cart?');
 
-
-    cy.contains('MetaMask').click();
-    cy.acceptMetamaskAccess();
-
     cy.get('#vs3__combobox').click().type('ETH{enter}');
     cy.get('#gitcoin-grant-input-amount').type('{backspace}');
     cy.contains("I'm Ready to Checkout").scrollIntoView().click();
     cy.get('#js-fundGrants-button').click();
 
-    cy.confirmMetamaskTransaction();
-
-    cy.get('body').should('contain.text', 'Thank you for contributing to open source!');
+    cy.get('body', {timeout: 10000}).should('contain.text', 'Thank you for contributing to open source!');
   });
 
   it('defaults donation amount to 25 DAI in the cart', () => {
@@ -104,9 +91,6 @@ describe('contributing to grant', () => {
 
       cy.get('#gc-cart').click();
       cy.contains('Checkout').click();
-
-      cy.contains('MetaMask').click();
-      cy.acceptMetamaskAccess();
 
       cy.get('[placeholder="Amount"]').should('have.value', '25'); // assert donation input field has default value of 25 DAI
     });

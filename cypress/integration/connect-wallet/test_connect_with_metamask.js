@@ -1,4 +1,4 @@
-describe('connect wallet: metamask', () => {
+describe.skip('connect wallet: metamask', () => {
   before(() => {
     cy.setupMetamask();
   });
@@ -12,7 +12,7 @@ describe('connect wallet: metamask', () => {
     cy.clearWindows();
   });
 
-  it('pulls address from metamask accounts', () => {
+  it.skip('pulls address from metamask accounts', () => {
     cy.impersonateUser();
 
     cy.get('#navbarDropdownWallet').as('wallet').click();

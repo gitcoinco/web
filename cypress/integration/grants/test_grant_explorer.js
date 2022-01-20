@@ -1,6 +1,5 @@
 describe('Grants Explorer page', () => {
   before(() => {
-    cy.setupMetamask();
   });
 
   beforeEach(() => {
@@ -12,7 +11,6 @@ describe('Grants Explorer page', () => {
   });
 
   after(() => {
-    cy.clearWindows();
   });
 
   describe('grants explorer sort menu', () => {

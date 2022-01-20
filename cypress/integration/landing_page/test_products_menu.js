@@ -1,6 +1,5 @@
 describe('Products menu', () => {
   before(() => {
-    cy.setupMetamask();
   });
 
   beforeEach(() => {
@@ -13,7 +12,6 @@ describe('Products menu', () => {
   });
 
   after(() => {
-    cy.clearWindows();
   });
 
   it('navigates to the grants explorer when \'Explore Grants\' is selected', () => {
