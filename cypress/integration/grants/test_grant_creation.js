@@ -1,6 +1,5 @@
 describe('Creating a new grant', () => {
   before(() => {
-    cy.setupMetamask();
   });
 
   beforeEach(() => {
@@ -13,7 +12,6 @@ describe('Creating a new grant', () => {
   });
 
   after(() => {
-    cy.clearWindows();
   });
 
   it('can navigate to the new grant screen', () => {

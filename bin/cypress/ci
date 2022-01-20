@@ -29,6 +29,5 @@ node_modules/.bin/cypress install
 node_modules/.bin/wait-on http://0.0.0.0:8000
 node_modules/.bin/cypress run \
   --browser chrome \
-  --headed \
   --record \
   --key 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
