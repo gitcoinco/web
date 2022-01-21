@@ -1,4 +1,4 @@
-name: Build and Publish
+name: Build and Test
 
 on:
   # run it on push to master and stable repository branches
@@ -9,8 +9,7 @@ on:
     branches: [ master, stable ]
 
 jobs:
-  test:
-    name: Lint and Test
+  build-and-test:
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
 
@@ -73,7 +72,7 @@ jobs:
       - name: Setup Env
         run: |
           echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
-          cp app/app/travis.env app/app/.env
+          cp app/app/ci.env app/app/.env
           pip install pip==20.0.2 setuptools wheel --upgrade
 
       - name: Fetch and Install GeoIP database files
@@ -104,7 +103,6 @@ jobs:
       - name: Run Python and UI tests
         run: |
           pytest -p no:ethereum -p no:warnings
-          bin/ci/cypress-run
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
