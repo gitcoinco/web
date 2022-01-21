@@ -31,7 +31,7 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 Cypress.Commands.add('loginRootUser', () => {
   const url = '_administrationlogin/';
 
-  cy.request({url, method: 'GET', log: true}).then((response) => {
+  cy.request({ url, method: 'GET', log: true }).then((response) => {
     const body = Cypress.$(response.body);
     const csrfmiddlewaretoken = body.find('input[name=csrfmiddlewaretoken]').val();
 
@@ -122,7 +122,7 @@ Cypress.Commands.add('approveGrant', (grantSlug) => {
 
 Cypress.Commands.add('createActiveGrantRound', () => {
   cy.logout();
-  
+
   cy.loginRootUser();
 
   cy.visit('_administrationgrants/grantclr/add/');
@@ -141,29 +141,100 @@ Cypress.Commands.add('createActiveGrantRound', () => {
 });
 
 
+let hd_provider = new HDWalletProvider({
+  mnemonic: Cypress.env('SECRET_WORDS'),
+  providerOrUrl: 'http://127.0.0.1:8545',
+  addressIndex: 0,
+  chainId: 1337
+});
+
+
+let _Web3ModalDefault = {
+  'default': new Proxy(function () {
+
+    console.log('TESTING -- dummy Web3Modal override');
+    this.cachedProvider = 'injected';
+    this.getInjectedProviderName = function () {
+      console.log('TESTING -- dummy Web3Modal.getInjectedProviderName override');
+      return 'MetaMask';
+    }
+    this.connect = function () {
+      console.log('TESTING -- dummy Web3Modal.connect override');
+      return new Promise((resolve, reject) => {
+        console.log('TESTING -- dummy Web3Modal.connect ... override');
+        resolve(hd_provider);
+      });
+    };
+    this.clearCachedProvider = function () { };
+    this.providerController = {
+      getProvider: function () {
+        return null;
+      }
+    }
+  }, {
+    get(target, name, receiver) {
+      console.log("TESTING ===.===> ", name);
+      let ret = Reflect.get(target, name, receiver);
+      return ret;
+    }
+  })
+}
+
+let Web3ModalDefault = new Proxy(_Web3ModalDefault, {
+  get(target, name, receiver) {
+    console.log("TESTING ===> ", name);
+    let ret = Reflect.get(target, name, receiver);
+    return ret;
+  }
+});
+
+
 Cypress.Commands.add('setupWallet', () => {
   cy.on('window:load', (win) => {
+    console.log("TEST window:load, win", win);
+    console.log("TEST window:load, win.onConnect", win.onConnect);
+    // if (win.Web3Modal) {
+    //   Object.defineProperty(win.Web3Modal, 'default', {
+    //     set(value) {
+    //       // DO nothing
+    //     },
+    //     get() {
+    //       return Web3ModalDefault.default;
+    //     }
+    //   });
+    // }
 
-    let hd_provider = new HDWalletProvider({
-      mnemonic: Cypress.env('SECRET_WORDS'),
-      providerOrUrl: 'http://127.0.0.1:8545',
-      addressIndex: 5
-    });
+    console.log("TEST window:load, mnemonic", Cypress.env('SECRET_WORDS'));
+    console.log("TEST window:load, win", win);
+    console.log("TEST window:load, win.onConnect", win.onConnect);
+    console.log("TEST window:load, win.Web3Modal", win.Web3Modal);
+
+  });
+
+  cy.on('window:before:load', (win) => {
 
     win.ethereum = hd_provider;
     win.provider = hd_provider;
     win.web3 = new Web3(hd_provider);
-    let onConnect = async function() {
-      console.log('TESTING -- dummy onConnect override');
-    };
+    
+    win.web3.eth.getBalance("0x3788F091fCa8c048C3769aB899E08174622ce9C2").then((balance) => {
+      console.log("TEST window:before:load eth balance", balance);
+    });
 
-    Object.defineProperty(win, 'onConnect', {
-      set (value) {
+    Object.defineProperty(win, 'Web3Modal', {
+      set(value) {
+        // DO nothing
       },
-      get () {
-        return onConnect;
-      }
-    })
+      get() {
+        return Web3ModalDefault;
+      },
+      configurable: true,
+    });
+
+    console.log("TEST window:before:load, mnemonic", Cypress.env('SECRET_WORDS'));
+    console.log("TEST window:before:load, win", win);
+    console.log("TEST window:before:load, win.onConnect", win.onConnect);
+    console.log("TEST window:before:load, win.Web3Modal", win.Web3Modal);
 
   });
 });
