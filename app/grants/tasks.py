@@ -5,6 +5,7 @@ from decimal import Decimal
 from io import StringIO
 
 from django.conf import settings
+from django.core.management import call_command
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -458,3 +459,8 @@ def process_bsci_sybil_csv(self, file_name, csv):
     # run bsci script
     (sybil_users, non_sybil_users) = bsci_script(csv)
     toggle_user_sybil(sybil_users, non_sybil_users)
+
+
+@app.shared_task
+def sync_clr_match_payouts(network='mainnet', contract_address='0x0'):
+    call_command('sync_clr_match_payouts', f'-n {network}', f'-c {contract_address}')
