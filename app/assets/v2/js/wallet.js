@@ -6,7 +6,7 @@ const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 if (!Object.hasOwnProperty.call(window, 'web3')) {
   window.web3 = null;
 }
-let web3Modal;
+window.web3Modal = null;
 window.provider = null;
 let selectedAccount;
 let balance;
@@ -275,7 +275,7 @@ async function setupPolygon(network = networkName) {
   }
 }
 
-window.onConnect = async function _onConnect() {
+window.onConnect = async function() {
 
   // Setting this null forces to show the dialogue every time
   // regardless if we play around with a cacheProvider settings
