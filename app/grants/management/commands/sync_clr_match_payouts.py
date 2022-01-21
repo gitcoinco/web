@@ -46,17 +46,22 @@ class Command(BaseCommand):
 
         payout = GrantPayout.objects.get(contract_address=contract_address, network=network)
         clr_matches = payout.clr_matches.filter(Q(claim_tx='0x0') | Q(claim_tx=None)).select_related('grant')
-        grouped_matches = groupby(clr_matches, lambda m: m.grant.admin_address)
+        grouped_matches = dict(groupby(clr_matches, lambda m: m.grant.admin_address))
 
         self.stdout.write(f'Number of unclaimed CLR Matches: {len(clr_matches)}')
 
         event_logs = MatchesContract(address=contract_address, network=network).get_payout_claimed_entries()
 
+        updates_completed = 0
         for event in event_logs:
            matches = grouped_matches.get(event['recipient'], [])
            for match in matches:
+               self.stdout.write(f'Updating CLR Match - {match.pk}')
                match.claim_tx = event['tx_hash']
                match.save()
+               updates_completed += 1
+
+        self.stdout.write(f'Total CLR Matches updated {updates_completed}')
 
 
 
