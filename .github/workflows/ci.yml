@@ -1,15 +1,17 @@
-name: Build and Test
+name: CI
 
 on:
-  # run it on push to master and stable repository branches
+  # run it on push to master and stable branches
   push:
     branches: [ master, stable ]
-  # run it during pull request
+  # run it during pull request to master and stable branches
   pull_request:
     branches: [ master, stable ]
 
 jobs:
   build-and-test:
+    name: Build and Test
+
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
 
@@ -51,6 +53,9 @@ jobs:
     env:
       DJANGO_SETTINGS_MODULE: app.settings
       SUPRESS_DEBUG_TOOLBAR: 1
+      GITCOIN_API_USER: ${{ secrets.GITCOIN_API_USER }}
+      GITHUB_API_TOKEN: ${{ secrets.GITCOIN_API_TOKEN }}
+      POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
 
     # steps to perform in job
     steps:
@@ -66,12 +71,11 @@ jobs:
       - name: Use Python ${{ matrix.python-version }}
         uses: "actions/setup-python@v2"
         with:
-          python-version: "${{ matrix.python-version }}"
+          python-version: ${{ matrix.python-version }}
           cache: "pip"
 
       - name: Setup Env
         run: |
-          echo "${{ github.event_name }}"
           echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
           cp app/app/ci.env app/app/.env
           pip install pip==20.0.2 setuptools wheel --upgrade
@@ -104,20 +108,21 @@ jobs:
       - name: Run Python and UI tests
         run: |
           pytest -p no:ethereum -p no:warnings
+          bin/ci/cypress-run
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
 
       - name: Deploy to Github Pages 🚀
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: github.ref == 'refs/heads/master'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _build/site
           cname: docs.gitcoin.co
 
       - name: Deploy master to Docker Hub 🚀
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker pull python:3.6-slim-jessie
@@ -127,7 +132,7 @@ jobs:
           docker push gitcoin/web:latest
 
       - name: Deploy stable to Docker Hub 🚀
-        if: ${{ github.ref == 'refs/heads/stable' }}
+        if: github.ref == 'refs/heads/stable'
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker pull python:3.6-slim-jessie
