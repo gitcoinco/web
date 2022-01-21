@@ -1,6 +1,6 @@
 describe('Creating a new grant', () => {
-  before(() => {
-  });
+  // before(() => {
+  // });
 
   beforeEach(() => {
     cy.acceptCookies();
@@ -11,8 +11,8 @@ describe('Creating a new grant', () => {
     cy.logout();
   });
 
-  after(() => {
-  });
+  // after(() => {
+  // });
 
   it('can navigate to the new grant screen', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');

@@ -1,6 +1,6 @@
 describe('contributing to grant', () => {
-  before(() => {
-  });
+  // before(() => {
+  // });
 
   beforeEach(() => {
     cy.setupWallet();
@@ -11,8 +11,8 @@ describe('contributing to grant', () => {
     cy.logout();
   });
 
-  after(() => {
-  });
+  // after(() => {
+  // });
 
   it('contributes eth to a single grant', () => {
     cy.createGrantSubmission().then((response) => {

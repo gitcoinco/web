@@ -1,6 +1,6 @@
 describe('Creating a new bounty', () => {
-  before(() => {
-  });
+  // before(() => {
+  // });
 
   beforeEach(() => {
     cy.setupWallet();
@@ -16,8 +16,8 @@ describe('Creating a new bounty', () => {
     cy.logout();
   });
 
-  after(() => {
-  });
+  // after(() => {
+  // });
 
   it('can navigate to the create bounty screen', () => {
     cy.get('#dropdownProfile').trigger('mouseenter');

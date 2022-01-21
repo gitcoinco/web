@@ -1,6 +1,6 @@
 describe('Grants Explorer page', () => {
-  before(() => {
-  });
+  // before(() => {
+  // });
 
   beforeEach(() => {
     cy.acceptCookies();
@@ -10,8 +10,8 @@ describe('Grants Explorer page', () => {
     cy.logout();
   });
 
-  after(() => {
-  });
+  // after(() => {
+  // });
 
   describe('grants explorer sort menu', () => {
     it('contains the proper sort options', () => {

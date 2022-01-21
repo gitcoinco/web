@@ -309,7 +309,7 @@ window.onConnect = async function() {
   }
 
   await refreshAccountData();
-}
+};
 
 async function onDisconnect() {
 
