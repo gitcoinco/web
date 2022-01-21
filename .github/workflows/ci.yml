@@ -71,6 +71,7 @@ jobs:
 
       - name: Setup Env
         run: |
+          echo "${{ github.event_name }}"
           echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
           cp app/app/ci.env app/app/.env
           pip install pip==20.0.2 setuptools wheel --upgrade
@@ -116,7 +117,7 @@ jobs:
           cname: docs.gitcoin.co
 
       - name: Deploy master to Docker Hub 🚀
-        if: ${{ github.ref == 'refs/heads/master' }} && ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker pull python:3.6-slim-jessie
