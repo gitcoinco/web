@@ -176,6 +176,7 @@ let _Web3ModalDefault = {
     get(target, name, receiver) {
       console.log('TESTING ===.===> ', name);
       let ret = Reflect.get(target, name, receiver);
+
       console.log('              ===.===> ', ret);
 
       return ret;
@@ -184,7 +185,7 @@ let _Web3ModalDefault = {
   getInjectedProviderName: function() {
     console.log('TESTING -- dummy Web3Modal.getInjectedProviderName 2 override');
     return 'MetaMask';
-  },
+  }
 
 };
 
@@ -218,10 +219,10 @@ Cypress.Commands.add('setupWallet', () => {
         method: 'eth_accounts'
       })
       .then((accounts) => {
-        console.log("Accounts:", accounts);
+        console.log('Accounts:', accounts);
       })
       .catch((error) => {
-        console.log("Error:", error);
+        console.log('Error:', error);
       });
       
     win.web3.eth.getBalance('0x3788F091fCa8c048C3769aB899E08174622ce9C2').then((balance) => {
