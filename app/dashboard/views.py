@@ -2708,7 +2708,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                     activities_index__key=f'profile:{profile.pk}',
                     hidden=False
                 ).order_by('-created_on')
- 
+
                 paginator = Paginator(
                     profile_filter_activities(all_activities, activity_type, activity_tabs), 10
                 )
@@ -2817,14 +2817,14 @@ def get_profile_tab(request, profile, tab, prev_context):
                 except IntegrityError:
                     messages.error(request, 'Portfolio Already Exists.')
         if pk:
-            # delete portfolio item
-            if not request.user.is_authenticated or request.user.profile.pk != profile.pk:
-                messages.error(request, 'Not Authorized')
-                return
             pi = PortfolioItem.objects.filter(pk=pk).first()
             if pi:
-                pi.delete()
-                messages.info(request, 'Portfolio Item has been deleted.')
+                # delete portfolio item
+                if request.user.is_authenticated and request.user.profile.pk == pi.profile.pk or request.user.is_staff:
+                    pi.delete()
+                    messages.info(request, 'Portfolio Item has been deleted.')
+                else:
+                    messages.error(request, 'Not Authorized')
     elif tab == 'earnings':
         context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'spent':
