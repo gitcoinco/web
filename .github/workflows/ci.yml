@@ -108,7 +108,7 @@ jobs:
       - name: Run Python and UI tests
         run: |
           pytest -p no:ethereum -p no:warnings
-          bin/ci/cypress-run
+          bin/cypress/ci
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
