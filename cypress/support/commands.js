@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 const Web3 = require('web3');
-const HDWalletProvider = require("@truffle/hdwallet-provider");
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 // authentication
 Cypress.Commands.add('loginRootUser', () => {
@@ -150,40 +150,43 @@ let hd_provider = new HDWalletProvider({
 
 
 let _Web3ModalDefault = {
-  'default': new Proxy(function () {
+  'default': new Proxy(function() {
 
     console.log('TESTING -- dummy Web3Modal override');
     this.cachedProvider = 'injected';
-    this.getInjectedProviderName = function () {
+    this.getInjectedProviderName = function() {
       console.log('TESTING -- dummy Web3Modal.getInjectedProviderName override');
       return 'MetaMask';
-    }
-    this.connect = function () {
+    };
+    this.connect = function() {
       console.log('TESTING -- dummy Web3Modal.connect override');
       return new Promise((resolve, reject) => {
         console.log('TESTING -- dummy Web3Modal.connect ... override');
         resolve(hd_provider);
       });
     };
-    this.clearCachedProvider = function () { };
+    // eslint-disable-next-line no-empty-function
+    this.clearCachedProvider = function() { };
     this.providerController = {
-      getProvider: function () {
+      getProvider: function() {
         return null;
       }
-    }
+    };
   }, {
     get(target, name, receiver) {
-      console.log("TESTING ===.===> ", name);
+      console.log('TESTING ===.===> ', name);
       let ret = Reflect.get(target, name, receiver);
+
       return ret;
     }
   })
-}
+};
 
 let Web3ModalDefault = new Proxy(_Web3ModalDefault, {
   get(target, name, receiver) {
-    console.log("TESTING ===> ", name);
+    console.log('TESTING ===> ', name);
     let ret = Reflect.get(target, name, receiver);
+
     return ret;
   }
 });
@@ -191,8 +194,8 @@ let Web3ModalDefault = new Proxy(_Web3ModalDefault, {
 
 Cypress.Commands.add('setupWallet', () => {
   cy.on('window:load', (win) => {
-    console.log("TEST window:load, win", win);
-    console.log("TEST window:load, win.onConnect", win.onConnect);
+    console.log('TEST window:load, win', win);
+    console.log('TEST window:load, win.onConnect', win.onConnect);
     // if (win.Web3Modal) {
     //   Object.defineProperty(win.Web3Modal, 'default', {
     //     set(value) {
@@ -204,10 +207,10 @@ Cypress.Commands.add('setupWallet', () => {
     //   });
     // }
 
-    console.log("TEST window:load, mnemonic", Cypress.env('SECRET_WORDS'));
-    console.log("TEST window:load, win", win);
-    console.log("TEST window:load, win.onConnect", win.onConnect);
-    console.log("TEST window:load, win.Web3Modal", win.Web3Modal);
+    console.log('TEST window:load, mnemonic', Cypress.env('SECRET_WORDS'));
+    console.log('TEST window:load, win', win);
+    console.log('TEST window:load, win.onConnect', win.onConnect);
+    console.log('TEST window:load, win.Web3Modal', win.Web3Modal);
 
   });
 
@@ -217,8 +220,8 @@ Cypress.Commands.add('setupWallet', () => {
     win.provider = hd_provider;
     win.web3 = new Web3(hd_provider);
     
-    win.web3.eth.getBalance("0x3788F091fCa8c048C3769aB899E08174622ce9C2").then((balance) => {
-      console.log("TEST window:before:load eth balance", balance);
+    win.web3.eth.getBalance('0x3788F091fCa8c048C3769aB899E08174622ce9C2').then((balance) => {
+      console.log('TEST window:before:load eth balance', balance);
     });
 
     Object.defineProperty(win, 'Web3Modal', {
@@ -228,13 +231,13 @@ Cypress.Commands.add('setupWallet', () => {
       get() {
         return Web3ModalDefault;
       },
-      configurable: true,
+      configurable: true
     });
 
-    console.log("TEST window:before:load, mnemonic", Cypress.env('SECRET_WORDS'));
-    console.log("TEST window:before:load, win", win);
-    console.log("TEST window:before:load, win.onConnect", win.onConnect);
-    console.log("TEST window:before:load, win.Web3Modal", win.Web3Modal);
+    console.log('TEST window:before:load, mnemonic', Cypress.env('SECRET_WORDS'));
+    console.log('TEST window:before:load, win', win);
+    console.log('TEST window:before:load, win.onConnect', win.onConnect);
+    console.log('TEST window:before:load, win.Web3Modal', win.Web3Modal);
 
   });
 });
