@@ -76,6 +76,7 @@ jobs:
 
       - name: Setup Env
         run: |
+          echo "${{ github.event_name }}"
           echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
           cp app/app/ci.env app/app/.env
           pip install pip==20.0.2 setuptools wheel --upgrade
