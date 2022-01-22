@@ -5,7 +5,7 @@ source bin/cypress/vars.sh
 
 # start ganache and send to background
 # using published ganache mnemonic - known globally and not a secret
-node_modules/.bin/ganache-cli -m "${SECRET_WORDS}" -h 0.0.0.0 &
+node_modules/.bin/ganache-cli -m "${SECRET_WORDS}" -h 0.0.0.0 > /dev/null 2>&1 &
 
 # build assets
 mkdir -p app/assets/{static,media}
