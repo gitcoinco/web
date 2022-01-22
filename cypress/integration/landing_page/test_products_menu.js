@@ -1,4 +1,4 @@
-describe('Products menu', () => {
+describe.skip('Products menu', () => {
   // before(() => {
   // });
 
