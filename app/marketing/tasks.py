@@ -1,9 +1,12 @@
 from django.conf import settings
 
+import csv
 import marketing.stats as stats
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
+from django.http import HttpResponse
+from django.utils import timezone
 from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
@@ -14,6 +17,30 @@ logger = get_task_logger(__name__)
 redis = RedisService().redis
 
 rate_limit = '300000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
+
+@app.shared_task(bind=True)
+def export_earnings_to_csv(self):
+    response = HttpResponse(content_type='text/csv')
+    # name = f"gitcoin_{export_type}_{timezone.now().strftime('%Y_%m_%dT%H_00_00')}"
+    # response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
+    # writer = csv.writer(response)
+    # writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'txid', 'token_name', 'token_value', 'url'])
+    # for earning in earnings:
+    #     writer.writerow([earning.pk,
+    #         earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
+    #         earning.from_profile.handle if earning.from_profile else '*',
+    #         earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
+    #         earning.to_profile.handle if earning.to_profile else '*',
+    #         earning.to_profile.data.get('location', 'Unknown') if earning.to_profile else 'Unknown',
+    #         earning.source_type_human,
+    #         earning.value_usd,
+    #         earning.txid,
+    #         earning.token_name,
+    #         earning.token_value,
+    #         earning.url,
+    #         ])
+
+    # return response
 
 @app.shared_task(bind=True, rate_limit=rate_limit, soft_time_limit=600, time_limit=660, max_retries=1)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
