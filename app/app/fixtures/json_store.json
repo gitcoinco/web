@@ -1,0 +1,24 @@
+[
+  {
+    "model": "perftools.jsonstore",
+    "pk1": 1,
+    "fields": {
+      "created_on": "2019-09-08T18:08:52Z",
+      "modified_on": "2019-09-11T01:24:49.728Z",
+      "view": "jtbd",
+      "key": "fund",
+      "data": {"builders":["austintgriffith","alexmasmej","cryptomental","samczsun"],"projects":[{"id":4,"logo":"","title":"Test","description":"Test 123456789","in_active_clrs":null,"amount_received":"13.1433","contributor_count":3,"clr_prediction_curve":[[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]],"admin_profile__handle":"gdixon","amount_received_in_round":"0.0000","positive_round_contributor_count":0},{"id":6,"logo":"","title":"etherland","description":"my etherland","in_active_clrs":null,"amount_received":"0.0000","contributor_count":0,"clr_prediction_curve":[[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]],"admin_profile__handle":"octavioamu","amount_received_in_round":"0.0000","positive_round_contributor_count":0}],"testimonial":{"role":"Javascript Developer","handle":"Austin Griffith","comment":"As one of the first quadratic freelancers to go through the platform, I know from personal experience that Gitcoin Grants empowers builders to create the future on Ethereum. My grant enabled me to leave my job and build open source tutorials and prototypes for the open internet. Super excited to see quadratic funding continue to help high leverage outliers find their place in our ecosystem","avatar_url":"","github_handle":"austintgriffith","twitter_handle":"austingriffith"}}
+    }
+  },
+  {
+    "model": "perftools.jsonstore",
+    "pk1": 2,
+    "fields": {
+      "created_on": "2019-09-08T18:08:52Z",
+      "modified_on": "2019-09-11T01:24:49.728Z",
+      "view": "gas_prices",
+      "key": "polygon",
+      "data": {"UsdPrice": 1.86, "LastBlock": "23996735", "FastGasPrice": "1196.6", "SafeGasPrice": "585.3", "ProposeGasPrice": 838}
+    }
+  }
+]
