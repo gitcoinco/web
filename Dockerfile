@@ -64,6 +64,9 @@ RUN apt-get install -y yarn
 RUN yarn global add n
 RUN n stable
 
+RUN yarn install
+COPY node_modules /code/
+
 # Increase number of file watches (524288 is the max we can set this to)
 RUN echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf
 
