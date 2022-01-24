@@ -18,3 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+from unittest.mock import patch
+
+from tasks import export_earnings_to_csv
+
+def test_export_earnings_to_csv(self, earnings, export_type):
+    assert True
+
