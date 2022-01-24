@@ -688,11 +688,11 @@ def get_grants_by_filters(
     profile = request.user.profile if request.user.is_authenticated else None
     three_months_ago = timezone.now() - timezone.timedelta(days=90)
 
-    # 1. Filter grants by network and hidden = false
+    # 1. Filter grants by network
     _grants = Grant.objects.filter(network=network)
-    
+
     if not hidden_grants:
-        _grants = Grant.objects.filter(hidden=False)
+        _grants = _grants.filter(hidden=False)
 
     # 2. Filter grants belonging to a CLR round
     if clr_rounds and len(clr_rounds):
