@@ -17,9 +17,18 @@ describe('Account settings', () => {
   
     it('can navigate to the account settings menu', () => {
       cy.get('#dropdownProfile').trigger('mouseenter');
+      cy.contains('My Account').click();
       cy.get('.gc-profile-submenu').contains('Settings').click();
   
       cy.url().should('contain', 'settings/email');
+    });
+
+    it('can export earnings as a CSV file', () => {
+      cy.get('#dropdownProfile').trigger('mouseenter');
+      cy.get('.gc-profile-submenu').contains('Settings').click();
+  
+      cy.url().should('contain', 'settings/email');
+      cy.contains('Export').first().click();
     });
   });
   
