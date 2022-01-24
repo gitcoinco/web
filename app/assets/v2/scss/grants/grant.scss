@@ -1,3 +1,7 @@
+@import "../lib/bootstrap.scss";
+@import "../gitcoin.scss";
+@import "../colors.scss";
+
 .infinite-more-link{
   display: none;
 }
@@ -769,6 +773,38 @@
     position: absolute;
     bottom: 0px;
     right: 0px;
+  }
+}
+
+.transaction_text {
+  font-size: var(--fs-body);
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
+  }
+}
+.processing_text {
+  @extend .font-weight-bold;
+  @extend .text-grey-400;
+  font-size: 1.2rem;
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
+  }
+}
+
+.claimed_text {
+  @extend .text-highlight-green;
+  @extend .font-weight-bold;
+  font-size: 1.2rem;
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
+  }
+}
+.returned_text {
+  @extend .text-grey-400;
+  @extend .font-weight-bold;
+  font-size: 1.2rem;
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
   }
 }
 
