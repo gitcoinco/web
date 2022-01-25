@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import copy
 import time
 
+from django.db import transaction
 from django.utils import timezone
 
 import numpy as np
@@ -472,7 +473,7 @@ def apply_cap(totals, match_cap_per_grant, should_spread):
 
     return totals
 
-
+@transaction.atomic
 def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet', only_grant_pk=None, what='full', use_sql=False):
     # setup
     counter = 0
