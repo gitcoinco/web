@@ -1,4 +1,5 @@
 from io import StringIO
+from unittest import mock
 
 import pytest
 
@@ -10,9 +11,19 @@ from grants.tests.factories import GrantFactory, GrantPayoutFactory, CLRMatchFac
 @pytest.fixture
 def grant_payout():
     return GrantPayoutFactory(
-        contract_address='0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
+        contract_address='0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B',
         network='mainnet'
     )
+
+
+@pytest.fixture
+def payout_logs():
+    return [
+        {
+            'recipient': '0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F',
+            'tx_hash': '0x8b5def65058838c52a72efb48b62b251eb8c5e91334fbc65a3b9bd4b5f0182d1',
+        }
+    ]
 
 
 @pytest.mark.django_db
@@ -43,45 +54,50 @@ class TestSyncCLRMatchPayouts:
         out = StringIO()
         call_command(
             'sync_clr_match_payouts',
-            '-n mainnet',
-            '-c 0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
+            f'-n {grant_payout.network}',
+            f'-c {grant_payout.contract_address}',
             stdout=out
         )
 
         result = out.getvalue()
         assert "Number of unclaimed CLR Matches: 1" in result
 
-    def test_reports_each_item_being_updated(self, grant_payout):
+    def test_reports_each_item_being_updated(self, grant_payout, payout_logs):
         grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
         match = CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
         out = StringIO()
-        call_command(
-            'sync_clr_match_payouts',
-            '-n mainnet',
-            '-c 0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
-            stdout=out
-        )
+        with mock.patch('grants.management.commands.sync_clr_match_payouts.MatchesContract.get_payout_claimed_entries') as events:
+            events.return_value = payout_logs
+            call_command(
+                'sync_clr_match_payouts',
+                f'-n {grant_payout.network}',
+                f'-c {grant_payout.contract_address}',
+                stdout=out
+            )
 
         result = out.getvalue()
         assert f"Updating CLR Match - {match.pk}" in result
 
-    def test_reports_total_updates(self, grant_payout):
+    def test_reports_total_updates(self, grant_payout, payout_logs):
         grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
         CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
         out = StringIO()
-        call_command(
-            'sync_clr_match_payouts',
-            '-n mainnet',
-            '-c 0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
-            stdout=out
-        )
+
+        with mock.patch('grants.management.commands.sync_clr_match_payouts.MatchesContract.get_payout_claimed_entries') as events:
+            events.return_value = payout_logs
+            call_command(
+                'sync_clr_match_payouts',
+                f'-n {grant_payout.network}',
+                f'-c {grant_payout.contract_address}',
+                stdout=out
+            )
 
         result = out.getvalue()
         assert f"Total CLR Matches updated 1" in result
 
-    def test_skips_updating_clr_matches_with_existing_claim_tx(self, grant_payout):
+    def test_skips_updating_clr_matches_with_existing_claim_tx(self, grant_payout, payout_logs):
         grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
         CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
@@ -93,14 +109,30 @@ class TestSyncCLRMatchPayouts:
         )
 
         out = StringIO()
-        call_command(
-            'sync_clr_match_payouts',
-            '-n mainnet',
-            '-c 0x0EbD2E2130b73107d0C45fF2E16c93E7e2e10e3a',
-            stdout=out
-        )
+        with mock.patch('grants.management.commands.sync_clr_match_payouts.MatchesContract.get_payout_claimed_entries') as events:
+            events.return_value = payout_logs
+            call_command(
+                'sync_clr_match_payouts',
+                f'-n {grant_payout.network}',
+                f'-c {grant_payout.contract_address}',
+                stdout=out
+            )
 
         result = out.getvalue()
         assert f"Total CLR Matches updated 1" in result
 
+    def test_catches_value_error_on_new_deploys(self, grant_payout):
+        grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
+        CLRMatchFactory(grant=grant, grant_payout=grant_payout)
+
+        out = StringIO()
+
+        call_command(
+            'sync_clr_match_payouts',
+            f'-n {grant_payout.network}',
+            f'-c {grant_payout.contract_address}',
+            stdout=out
+        )
+
+        assert out.getvalue()
 
