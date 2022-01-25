@@ -1,14 +1,9 @@
 import json
 
 import pytest
-from rest_framework.test import APIClient
-
 from dashboard.tests.factories import ProfileFactory
-from grants.tests.factories import (
-    GrantFactory,
-    CLRMatchFactory,
-    GrantPayoutFactory
-)
+from grants.tests.factories import CLRMatchFactory, GrantFactory, GrantPayoutFactory
+from rest_framework.test import APIClient
 
 
 @pytest.fixture

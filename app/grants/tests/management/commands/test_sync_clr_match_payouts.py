@@ -1,11 +1,10 @@
 from io import StringIO
 from unittest import mock
 
+from django.core.management import CommandError, call_command
+
 import pytest
-
-from django.core.management import call_command, CommandError
-
-from grants.tests.factories import GrantFactory, GrantPayoutFactory, CLRMatchFactory
+from grants.tests.factories import CLRMatchFactory, GrantFactory, GrantPayoutFactory
 
 
 @pytest.fixture
@@ -135,4 +134,3 @@ class TestSyncCLRMatchPayouts:
         )
 
         assert out.getvalue()
-

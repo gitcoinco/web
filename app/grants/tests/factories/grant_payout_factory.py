@@ -7,4 +7,3 @@ from grants.models.grant import GrantPayout
 class GrantPayoutFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GrantPayout
-

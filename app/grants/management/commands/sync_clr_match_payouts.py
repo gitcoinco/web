@@ -1,13 +1,13 @@
 from itertools import groupby
 
-import web3
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
+import web3
+from app import settings
 from grants.models import GrantPayout
 from web3 import Web3
 
-from app import settings
 
 class MatchesContract:
     def __init__(self, address, network):
@@ -72,6 +72,3 @@ class Command(BaseCommand):
                updates_completed += 1
 
         self.stdout.write(f'Total CLR Matches updated {updates_completed}')
-
-
-
