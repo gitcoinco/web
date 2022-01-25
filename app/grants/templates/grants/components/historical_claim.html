@@ -9,7 +9,7 @@
       <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals:3 | formatNumber ]]</span>
     </b-col>
     <b-col v-if="match.status == 'pending'" lg="4" sm="12" class="pt-2 pt-lg-0">
-      <p class="processing_text">
+      <p class="font-weight-bold text-grey-400 processing_text">
         <i class="far fa-spinner fa-spin mr-2"></i>Processing
       </p>
       <span v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0" class="font-body text-grey-500">
@@ -17,13 +17,13 @@
       </span>
     </b-col>
     <b-col v-else-if="match.status == 'claimed'" lg="4" sm="12" class="mt-2 mt-lg-0">
-      <p class="claimed_text">
+      <p class="text-highlight-green font-weight-bold claimed_text">
         <i class="far fa-check mr-2"></i>Claimed
       </p>
       <span class="font-body text-grey-500">[[ match.claim_date ]]</span>
     </b-col>
     <b-col v-else-if="match.grant_payout.status === 'funding_withdrawn'" lg="4" sm="12" class="pt-2 pt-lg-0">
-      <p class="returned_text">
+      <p class="text-grey-400 font-weight-bold returned_text">
         Returned to matching pool
       </p>
       <span class="font-body text-grey-500">[[ match.funding_withdrawal_date ]]</span>
