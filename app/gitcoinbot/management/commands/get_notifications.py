@@ -54,10 +54,9 @@ class Command(BaseCommand):
                             continue
                         _comment_id = latest_comment_url.split('/')[-1]
                         comment = get_issue_comments(_org_name, _repo_name, _issue_number, _comment_id)
-                        does_mention_gitcoinbot = settings.GITHUB_API_USER in comment.body
                         if isinstance(comment, dict) and comment.get('message', '') == 'Not Found':
                             print("comment was not found")
-                        elif not does_mention_gitcoinbot:
+                        elif settings.GITHUB_API_USER not in comment.body:
                             print("does not mention gitcoinbot")
                         else:
                             comment_from = comment.user.login
