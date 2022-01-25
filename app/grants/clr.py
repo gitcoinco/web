@@ -132,10 +132,10 @@ def translate_data(grants_data):
     for g in grants_data:
         grant_id = g.get('id')
         for c in g.get('contributions'):
-            profile_id = c.get('id')
+            profile_id = int(c.get('id'))
             trust_bonus = c.get('profile_trust_bonus')
             if profile_id:
-                val = [grant_id] + [c.get('id')] + [c.get('sum_of_each_profiles_contributions')]
+                val = [grant_id] + [profile_id] + [c.get('sum_of_each_profiles_contributions')]
                 grants_list.append(val)
                 trust_dict[profile_id] = trust_bonus
 
@@ -167,7 +167,7 @@ def aggregate_contributions(grant_contributions):
     return contrib_dict
 
 
-def get_totals_by_pair(contrib_dict):
+def get_totals_by_pair(curr_agg):
     '''
         gets pair totals between current round, current round
 
@@ -181,27 +181,60 @@ def get_totals_by_pair(contrib_dict):
 
         returns:
             pair totals between current round
-                {user_id (str): {user_id (str): pair_total (float)}}
-
+                {
+                    user_id (str): {
+                        user_id (str): pair_total (float)
+                    }
+                }
+            curr_agg_sqrts
+                {
+                    grantId (int): {
+                        user_id (float): sqrt(aggregated_amount) (float)
+                    }
+                }
+            pairs_tot
+                int: the number of cycles it took to construct the pairs
     '''
+    pairs_tot = 0
     pair_totals = {}
-
+    curr_agg_sqrts = {}
     # start pairwise match
-    for _, contribz in contrib_dict.items():
+    for proj, contribz in curr_agg.items():
+        # build inner layer against contributors
+        contributors = []
+        # cache sqrts of each contribution to make pairing easier
+        curr_agg_sqrts[proj] = {}
+        # iterate on the contributions and set default state
         for k1, v1 in contribz.items():
-            if k1 not in pair_totals:
-                pair_totals[k1] = {}
+            # cache the sqrt of the given value (v1 = total contribution to this grant by this user)
+            curr_agg_sqrts[proj][k1] = float(v1) ** 0.5
 
-            # pairwise matches to current round
-            for k2, v2 in contribz.items():
-                if k2 not in pair_totals[k1]:
-                    pair_totals[k1][k2] = 0
-                pair_totals[k1][k2] += float(v1 * v2) ** 0.5
+            # iterate on the contributions again to create pairs
+            for k2 in contributors:
+                # fix direction of comparison
+                u_k1 = k1 if k2 > k1 else k2
+                u_k2 = k2 if k2 > k1 else k1
+                # never pair against matching contribs
+                if k2 != k1:
+                    # count how many pairs we're constructing
+                    pairs_tot += 1
+                    # only store pairs in this direction to match clr calc usage
+                    if u_k1 not in pair_totals:
+                        pair_totals[u_k1] = {}
 
-    return pair_totals
+                    if u_k2 not in pair_totals[u_k1]:
+                        pair_totals[u_k1][u_k2] = 0
+
+                    # sum the multiple of the pair of sqrts every time a pair of users contribute to the same grant
+                    pair_totals[u_k1][u_k2] += curr_agg_sqrts[proj][u_k1] * curr_agg_sqrts[proj][u_k2]
+
+            # record each item in the dict to a copy
+            contributors.append(k1)
+
+    return pair_totals, curr_agg_sqrts, pairs_tot
 
 
-def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
+def calculate_clr(curr_agg, trust_dict, pair_totals, curr_agg_sqrts, v_threshold, total_pot):
     '''
         calculates the clr amount at the given threshold and total pot
         args:
@@ -212,9 +245,19 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
                     }
                 }
             pair_totals
-                {user_id (str): {user_id (str): pair_total (float)}}
+                {
+                    user_id (str): {user_id (str): pair_total (float)}
+                }
+            curr_agg_sqrts
+                {
+                    grantId (int): {
+                        k1 (float): sqrt(v1) (float)
+                    }
+                }
             trust_dict
-                {user_id (str): trust_score (float)}
+                {
+                    user_id (str): trust_score (float)
+                }
             v_threshold
                 float
             total_pot
@@ -232,16 +275,26 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
         tot = 0
         _num = 0
         _sum = 0
-
+        # record contributors to reduce time complexity of the inner contribz iteration
+        contributors = []
+        # get the sqrts of this projects contributions
+        sqrts = curr_agg_sqrts[proj]
         # start pairwise matches
         for k1, v1 in contribz.items():
             _num += 1
             _sum += v1
 
             # pairwise matches to current round
-            for k2, v2 in contribz.items():
-                if int(k2) > int(k1):
-                    tot += (float(v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * float(max(trust_dict[k2], trust_dict[k1]))) + 1)
+            for k2 in contributors:
+                # fix direction of comparison
+                u_k1 = k1 if k2 > k1 else k2
+                u_k2 = k2 if k2 > k1 else k1
+                # never pair against matching contribs
+                if k2 != k1:
+                    tot += (sqrts[u_k1] * sqrts[u_k2]) / (pair_totals[u_k1][u_k2] / (v_threshold * float(max(trust_dict[u_k1], trust_dict[u_k2]))) + 1)
+
+            # record each item in the dict to a copy
+            contributors.append(k1)
 
         if type(tot) == complex:
             tot = float(tot.real)
@@ -252,7 +305,7 @@ def calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot):
     return bigtot, totals
 
 
-def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant_id, amount, match_cap_per_grant):
+def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, curr_agg_sqrts, v_threshold, total_pot, grant_id, amount, match_cap_per_grant):
     '''
         clubbed function that runs all calculation functions and returns the result for a single grant_id
 
@@ -275,6 +328,12 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
             trust_dict  :
                 {
                     profileId (str): trust_bonus (float)
+                }
+            curr_agg_sqrts
+                {
+                    grantId (int): {
+                        k1 (float): sqrt(v1) (float)
+                    }
                 }
             v_threshold :   float
             total_pot   :   float
@@ -306,11 +365,17 @@ def calculate_clr_for_prediction(bigtot, totals, curr_agg, trust_dict, v_thresho
             # remove old total from bigtot
             bigtot -= tot
 
+            # get sqrt for the prediction
+            amount_sqrt = float(amount) ** 0.5
+
+            # get the sqrts of this projects contributions
+            sqrts = curr_agg_sqrts[grant_id]
+
             # we can simplify this section of the algorithm as we know that only one additional contribution (amount) is being presented,
             # which will only be paired with other contributions for this grant - because of this we can skip rebuilding the pair_total
             # and only have to consider the curr grants contributions and the prediction amount - this saves a huge amount of compute O(n)
             for k2, v2 in contribz.items():
-                pt = (float(amount * v2) ** 0.5)
+                pt =  amount_sqrt * sqrts[k2]
                 tot +=  pt / (pt / (v_threshold * float(max(trust_dict[k2], 1))) + 1)
 
             if type(tot) == complex:
@@ -380,6 +445,7 @@ def apply_cap(totals, match_cap_per_grant, should_spread):
             #  - so cap the clr_amount
             #  - add the extra funds to remainder
             remainder += t['clr_amount'] - match_cap_per_grant
+            #  - apply the cap
             t['clr_amount'] = match_cap_per_grant
 
         else:
@@ -431,7 +497,6 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         print(f"- starting sum (of {contributions.count()} contributions) at {round(time.time(),1)}")
         grant_contributions_curr = populate_data_for_clr(grants, contributions, clr_round)
         curr_round, trust_dict = translate_data(grant_contributions_curr)
-
         # this aggregates the data into the expected format
         curr_agg = aggregate_contributions(curr_round)
 
@@ -440,12 +505,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
         print(f"\nTotal execution time: {(timezone.now() - clr_calc_start_time)}\n")
         return
 
-    print(f"- starting current distributions calc at {round(time.time(),1)}")
     # aggregate pairs and run calculation to get current distribution
-    pair_totals = get_totals_by_pair(curr_agg)
+    print(f"- starting pairwise component with {len(trust_dict)} contributors at {round(time.time(),1)}")
+    pair_totals, curr_agg_sqrts, pairs_tot = get_totals_by_pair(curr_agg)
 
+    print(f"- starting current distributions calc with {pairs_tot} pairs at {round(time.time(),1)}")
     grant_clr_percentage_cap = clr_round.grant_clr_percentage_cap if clr_round.grant_clr_percentage_cap else 100
-    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, v_threshold, total_pot)
+    bigtot, totals = calculate_clr(curr_agg, trust_dict, pair_totals, curr_agg_sqrts, v_threshold, total_pot)
 
     # $ value of the percentage cap
     match_cap_per_grant = total_pot * (float(grant_clr_percentage_cap) / 100)
@@ -524,32 +590,31 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                     else:
                         # calculate clr with additional donation amount
                         grants_clr, predicted_clr, _, _ = calculate_clr_for_prediction(
-                            bigtot, totals, curr_agg, trust_dict, v_threshold, total_pot, grant.id, amount, match_cap_per_grant
+                            bigtot, totals, curr_agg, trust_dict, curr_agg_sqrts, v_threshold, total_pot, grant.id, amount, match_cap_per_grant
                         )
 
                 # record each point of the prediction
                 potential_clr.append(predicted_clr)
 
+        # calculate the prediction curve
+        clr_prediction_curve = list(zip(potential_donations, potential_clr))
+        base = clr_prediction_curve[0][1]
+        grant.last_clr_calc_date = timezone.now()
+        grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=60)
+
+        # check that we have enough data to set the curve
+        can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
+        if can_estimate:
+            clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base if ele[1] != 0 else 0.0] for ele in clr_prediction_curve ]
+        else:
+            clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+
+        print(clr_prediction_curve)
+
         # save the result of the prediction
-        if save_to_db:
-            clr_prediction_curve = list(zip(potential_donations, potential_clr))
-            base = clr_prediction_curve[0][1]
-            grant.last_clr_calc_date = timezone.now()
-            grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=60)
-
-            # check that we have enough data to set the curve
-            can_estimate = True if base or clr_prediction_curve[1][1] or clr_prediction_curve[2][1] or clr_prediction_curve[3][1] else False
-            if can_estimate:
-                clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base if ele[1] != 0 else 0.0] for ele in clr_prediction_curve ]
-            else:
-                clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
-
-            print(clr_prediction_curve)
-
+        if save_to_db and from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
             clr_round.record_clr_prediction_curve(grant, clr_prediction_curve)
-
-            if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
-                grant.save()
+            grant.save()
 
         debug_output.append({'grant': grant.id, "title": grant.title, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
 
