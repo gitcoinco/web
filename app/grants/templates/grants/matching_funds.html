@@ -137,7 +137,9 @@
                     </div>
                   </div>
                 </b-row>
+                <!-- check if grant has a match that can be claimed -->
                 <div v-if="canClaimMatch(grant)">
+                  <!-- map over matches that have an existing payout -->
                   <div v-for="match in filterMatchingPayout(grant.clr_matches)" :key="match.pk">
                     {% include './components/ready_claim.html' %}
                   </div>
@@ -344,7 +346,9 @@
                     </div>
                   </div>
                 </b-row>
+                <!-- filter out grant matches that do not have a historical payout -->
                 <div v-if="hasHistoricalMatches(grant)">
+                  <!-- map over clr_matches for grant that have an existing payout  -->
                   <div v-for="match in filterMatchingPayout(grant.clr_matches)" :key="match.pk">
                     {% include './components/historical_claim.html' %}
                   </div>
