@@ -40,7 +40,7 @@ class Command(BaseCommand):
             for notification in notifications:
                 if hasattr(notification, '_subject') and notification.reason == 'mention':
                     try:
-                        url = notification.subject.url
+                        url = notification.subject.url if notification.subject.url else ''
                         url = url.replace('/repos', '')
                         url = url.replace('//api.github', '//github')
                         latest_comment_url = notification.subject.latest_comment_url
