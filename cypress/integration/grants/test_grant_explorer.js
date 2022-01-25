@@ -1,4 +1,4 @@
-describe.skip('Grants Explorer page', () => {
+describe('Grants Explorer page', () => {
   // before(() => {
   // });
 

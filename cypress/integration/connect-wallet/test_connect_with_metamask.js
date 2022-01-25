@@ -12,7 +12,7 @@ describe.skip('connect wallet: metamask', () => {
     cy.clearWindows();
   });
 
-  it.skip('pulls address from metamask accounts', () => {
+  it('pulls address from metamask accounts', () => {
     cy.impersonateUser();
 
     cy.get('#navbarDropdownWallet').as('wallet').click();

@@ -1,6 +1,6 @@
 // TODO: commented out tests require github login support
 
-describe.skip('Visit Tests', function() {
+describe('Visit Tests', function() {
   it('Visits the Explorer', function() {
     cy.visit('http://localhost:8000/explorer');
   });

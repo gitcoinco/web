@@ -142,9 +142,13 @@ Cypress.Commands.add('createActiveGrantRound', () => {
 });
 
 
+// Create Stub for Web3Modal default
+// The 'default' stub will be wrapped in a proxy in order to be able to track what attributes and
+// functions are accessed
 let _Web3ModalDefault = {
   'default': new Proxy(function() {
 
+    // Create a provider that will approve all transactions
     this.hd_provider = new HDWalletProvider({
       mnemonic: Cypress.env('SECRET_WORDS'),
       providerOrUrl: 'http://127.0.0.1:8545',
@@ -152,19 +156,17 @@ let _Web3ModalDefault = {
       chainId: 1337
     });
     
-    console.log('TESTING -- dummy Web3Modal override');
     this.cachedProvider = 'injected';
     this.getInjectedProviderName = function() {
-      console.log('TESTING -- dummy Web3Modal.getInjectedProviderName override');
       return 'MetaMask';
     };
+    
     this.connect = function() {
-      console.log('TESTING -- dummy Web3Modal.connect override');
       return new Promise((resolve, reject) => {
-        console.log('TESTING -- dummy Web3Modal.connect ... override');
         resolve(this.hd_provider);
       });
     };
+
     // eslint-disable-next-line no-empty-function
     this.clearCachedProvider = function() { };
     this.providerController = {
@@ -174,24 +176,23 @@ let _Web3ModalDefault = {
     };
   }, {
     get(target, name, receiver) {
-      console.log('TESTING ===.===> ', name);
+      console.log('Web3Modal.default Stub ===> ', name);
       let ret = Reflect.get(target, name, receiver);
-
-      console.log('              ===.===> ', ret);
 
       return ret;
     }
   }),
-  getInjectedProviderName: function() {
-    console.log('TESTING -- dummy Web3Modal.getInjectedProviderName 2 override');
+
+  'getInjectedProviderName': function() {
     return 'MetaMask';
   }
-
 };
 
+// We wrap the Web3 modal, only for the purpose of tracking the
+// functions and atttributes that are accessed ...
 let Web3ModalDefault = new Proxy(_Web3ModalDefault, {
   get(target, name, receiver) {
-    console.log('TESTING ===> ', name);
+    console.log('Web3Modal Stub wrapper ===> ', name);
     let ret = Reflect.get(target, name, receiver);
 
     return ret;
