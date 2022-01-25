@@ -18,17 +18,7 @@ class MatchesContract:
 
     def get_payout_claimed_entries(self):
         payout_claim_filter = self.contract.events.PayoutClaimed.createFilter(fromBlock='0x0')
-        try:
-            entries = payout_claim_filter.get_all_entries()
-        except ValueError:
-            # NOTE: When testing against the contract for round twelve
-            # deployment address - `0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B`
-            # a value error was thrown. This could be due to the fact no claims
-            # have been processed yet and event logs were not present. Other
-            # addresses respond as expected.This also could mean the ABI from
-            # ln 17 needs to be updated.
-            entries = []
-
+        entries = payout_claim_filter.get_all_entries()
         return [{'recipient': log['args']['recipient'], 'tx_hash': log['transactionHash'].hex() } for log in entries]
 
 
