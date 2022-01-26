@@ -1,4 +1,5 @@
 import os
+import environ
 
 from django.apps import AppConfig, apps
 from django.conf import settings
@@ -6,10 +7,23 @@ from django.conf import settings
 from celery import Celery
 from celery.signals import setup_logging
 
+import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
+
+env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
+# Sentry
+SENTRY_DSN = env.str('SENTRY_DSN', default='')
+SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 
 app = Celery('app')
 
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_JS_DSN,
+        integrations=[CeleryIntegration()]
+    )
 
 class CeleryConfig(AppConfig):
     name = 'taskapp'
