@@ -1,4 +1,4 @@
-describe('Products menu', () => {
+describe('Products menu', { tags: ['platform'] }, () => {
   // before(() => {
   // });
 

@@ -1,4 +1,4 @@
-describe('Grants Explorer page', () => {
+describe('Grants Explorer page', { tags: ['grants-no-run'] }, () => {
   // before(() => {
   // });
 

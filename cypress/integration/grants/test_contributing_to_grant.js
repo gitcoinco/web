@@ -1,4 +1,4 @@
-describe('contributing to grant', () => {
+describe('contributing to grant', { tags: ['grants'] }, () => {
   // before(() => {
   // });
 

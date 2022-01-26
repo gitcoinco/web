@@ -31,4 +31,4 @@ node_modules/.bin/cypress run \
   --browser chrome \
   --record \
   --key 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51 \
-  --env grep=Explorer
+  $@

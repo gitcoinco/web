@@ -1,4 +1,4 @@
-describe('Creating a new bounty', () => {
+describe('Creating a new bounty', { tags: ['bounties'] }, () => {
   // before(() => {
   // });
 

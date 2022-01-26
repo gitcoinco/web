@@ -105,10 +105,21 @@ jobs:
           python app/manage.py migrate
           python app/manage.py fetch_gas_prices
 
-      - name: Run Python and UI tests
+      - name: Run Python
         run: |
           pytest -p no:ethereum -p no:warnings
-          bin/cypress/ci
+
+      - name: Run UI grant tests
+        run: |
+          bin/cypress/ci grepTags=grants
+
+      - name: Run UI bounties tests
+        run: |
+          bin/cypress/ci grepTags=bounties
+
+      - name: Run UI platform tests
+        run: |
+          bin/cypress/ci grepTags=platform
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
