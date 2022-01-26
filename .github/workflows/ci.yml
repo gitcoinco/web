@@ -121,7 +121,7 @@ jobs:
           # install: false
           browser: chrome
           config-file: cypress.json
-          reord: true
+          record: true
         env:
           CYPRESS_RECORD_KEY: 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
 
