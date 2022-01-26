@@ -214,4 +214,28 @@ describe('Grants Explorer page', () => {
       });
     });
   });
+
+  describe('displaying idle and inactive grants', () => {
+    it('indicates that grant is inactive', () => {
+      cy.createGrantSubmission().then((response) => {
+        const grant_id = response.body.url.match(/(\d+)/);
+
+        cy.visit('grants/explorer/?page=1&limit=12&me=true&sort_option=weighted_shuffle&collection_id=false&network=mainnet&state=all&profile=false&sub_round_slug=false&collections_page=1&grant_regions=&grant_types=&grant_tags=&tenants=&idle=true&featured=true&round_type=false&hidden=true&tab=grants');
+
+        const grantCard = cy.get(`#grant-${grant_id[0]}`).should('have.class', 'idle-or-hidden');
+      });
+    });
+    it('should not indicate that grant is inactive', () => {
+      cy.createGrantSubmission().then((response) => {
+        const grantUrl = response.body.url;
+
+        cy.approveGrant(grantUrl);
+        const grant_id = grantUrl.match(/(\d+)/);
+
+        cy.visit('grants/explorer/?page=1&limit=12&me=true&sort_option=weighted_shuffle&collection_id=false&network=mainnet&state=all&profile=false&sub_round_slug=false&collections_page=1&grant_regions=&grant_types=&grant_tags=&tenants=&idle=true&featured=true&round_type=false&hidden=true&tab=grants');
+
+        const grantCard = cy.get(`#grant-${grant_id[0]}`).should('not.have.class', 'idle-or-hidden');
+      });
+    });
+  });
 });

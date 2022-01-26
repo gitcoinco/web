@@ -126,6 +126,21 @@ Vue.component('grant-card', {
     }
   },
   computed: {
+    inactiveGrant() {
+      return this.grant.is_hidden || this.grant.is_idle;
+    },
+    inactiveGrantCopy() {
+      if (this.grant.is_hidden) {
+        return 'This grant is inactive because it is in review or deactivated.';
+      }
+      return this.grant.is_idle && "This grant is hidden from the explorer because it hasn't been updated for more than 3 months. Update your grant to make it visible.";
+    },
+    inactiveGrantHeader() {
+      if (this.grant.is_hidden) {
+        return 'Hidden from Explorer';
+      }
+      return this.grant.is_idle && 'Inactive';
+    },
     has_collections() {
       return this.collections.length;
     },

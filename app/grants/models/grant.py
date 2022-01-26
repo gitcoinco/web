@@ -1012,6 +1012,7 @@ class Grant(SuperModel):
                 'has_external_funding': self.has_external_funding,
                 'active_round_names': active_round_names,
                 'is_idle': self.is_idle,
+                'is_hidden': self.hidden,
                 'has_pending_claim': has_pending_claim,
                 'has_claims_in_review': has_claims_in_review,
                 'has_claim_history': has_claim_history
