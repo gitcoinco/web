@@ -109,7 +109,7 @@ pyPEG2==2.15.2
 base58==2.1.0
 libnacl==1.7.2
 pyaes==1.6.1
-numpy==1.19.5
+numpy==1.21.0
 rjsmin==1.1.0
 rcssmin==1.0.6
 libsass==0.20.1
