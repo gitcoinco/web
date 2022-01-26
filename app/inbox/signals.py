@@ -24,6 +24,7 @@ from django.urls import reverse
 
 from app.utils import get_profiles_from_text
 from dashboard.models import Activity
+from html import escape
 from inbox.utils import (
     comment_notification, mentioned_users_notification, send_mention_notification_to_users, send_notification_to_user,
 )
@@ -51,7 +52,7 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
             bounty.url,
             'worker_applied',
-            f'<b>{activity.profile.user} applied</b> to work on {bounty.title}'
+            f'<b>{activity.profile.user} applied</b> to work on {escape(bounty.title)}'
         )
 
     if activity.activity_type == 'worker_approved':
@@ -61,7 +62,7 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username__iexact=activity.metadata['worker_handle']),
             bounty.url,
             'worker_approved',
-            f'You have been <b>approved to work on {bounty.title}</b>'
+            f'You have been <b>approved to work on {escape(bounty.title)}</b>'
         )
 
     if activity.activity_type == 'worker_rejected':
@@ -71,7 +72,7 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username__iexact=activity.metadata['worker_handle']),
             bounty.url,
             'worker_rejected',
-            f'Your request to work on <b>{bounty.title} has been rejected</b>'
+            f'Your request to work on <b>{escape(bounty.title)} has been rejected</b>'
         )
 
     if activity.activity_type == 'start_work':
@@ -81,7 +82,7 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
             bounty.url,
             'start_work',
-            f'<b>{activity.profile.user} has started work</b> on {bounty.title}'
+            f'<b>{activity.profile.user} has started work</b> on {escape(bounty.title)}'
         )
 
     if activity.activity_type == 'work_submitted':
@@ -91,7 +92,7 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
             bounty.url,
             'work_submitted',
-            f'<b>{activity.profile.user} has submitted work</b> for {bounty.title}'
+            f'<b>{activity.profile.user} has submitted work</b> for {escape(bounty.title)}'
         )
 
     if activity.activity_type == 'work_done':
@@ -103,7 +104,7 @@ def create_notification(sender, **kwargs):
             bounty.url,
             'work_done',
             f'<b>{bounty.bounty_owner_github_username}</b> has paid out ' +
-            f'{amount_paid} USD for your work on {bounty.title}'
+            f'{amount_paid} USD for your work on {escape(bounty.title)}'
         )
 
     if activity.activity_type == 'stop_work':
@@ -113,7 +114,7 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
             bounty.url,
             'stop_work',
-            f'<b>{activity.profile.user} has stopped work</b> on {bounty.title}'
+            f'<b>{activity.profile.user} has stopped work</b> on {escape(bounty.title)}'
         )
 
     if activity.activity_type == 'new_crowdfund':
@@ -124,7 +125,7 @@ def create_notification(sender, **kwargs):
             get_user_model().objects.get(username__iexact=bounty.bounty_owner_github_username),
             bounty.url,
             'new_crowdfund',
-            f'A <b>crowdfunding contribution worth {amount} USD</b> has been attached for {bounty.title}'
+            f'A <b>crowdfunding contribution worth {amount} USD</b> has been attached for {escape(bounty.title)}'
         )
 
     if activity.activity_type == 'new_kudos':
