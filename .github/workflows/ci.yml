@@ -109,17 +109,21 @@ jobs:
         run: |
           pytest -p no:ethereum -p no:warnings
 
-      - name: Run UI grant tests
+      - name: E2E tests preparation
         run: |
-          bin/cypress/ci grepTags=grants
+          bin/cypress/ci
 
-      - name: Run UI bounties tests
-        run: |
-          bin/cypress/ci grepTags=bounties
-
-      - name: Run UI platform tests
-        run: |
-          bin/cypress/ci grepTags=platform
+      - name: E2E tests
+        timeout-minutes: 30
+        uses: cypress-io/github-action@v1
+        with:
+          start: python3 app/manage.py runserver 0.0.0.0:8000, node_modules/.bin/ganache-cli -m "chief loud snack trend chief net field husband vote message decide replace" -h 0.0.0.0 > /dev/null 2>&1 &
+          # install: false
+          browser: chrome
+          config-file: cypress.json
+          reord: true
+        env:
+          CYPRESS_RECORD_KEY: 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
