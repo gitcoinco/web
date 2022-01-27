@@ -63,7 +63,12 @@ class TestSyncCLRMatchPayouts:
 
     def test_reports_each_item_being_updated(self, grant_payout, payout_logs):
         grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
-        match = CLRMatchFactory(grant=grant, grant_payout=grant_payout)
+        match = CLRMatchFactory(
+            grant=grant,
+            grant_payout=grant_payout,
+            amount=2.0,
+            round_number=12
+        )
 
         out = StringIO()
         with mock.patch('grants.management.commands.sync_clr_match_payouts.MatchesContract.get_payout_claimed_entries') as events:
@@ -80,7 +85,12 @@ class TestSyncCLRMatchPayouts:
 
     def test_reports_total_updates(self, grant_payout, payout_logs):
         grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
-        CLRMatchFactory(grant=grant, grant_payout=grant_payout)
+        CLRMatchFactory(
+            grant=grant,
+            grant_payout=grant_payout,
+            amount=2.0,
+            round_number=12
+        )
 
         out = StringIO()
 
@@ -98,12 +108,19 @@ class TestSyncCLRMatchPayouts:
 
     def test_skips_updating_clr_matches_with_existing_claim_tx(self, grant_payout, payout_logs):
         grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
-        CLRMatchFactory(grant=grant, grant_payout=grant_payout)
+        CLRMatchFactory(
+            grant=grant,
+            grant_payout=grant_payout,
+            amount=2.0,
+            round_number=12
+        )
 
         grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
         CLRMatchFactory(
             grant=grant,
             grant_payout=grant_payout,
+            amount=2.0,
+            round_number=12,
             claim_tx='0x8b5def65058838c52a72efb48b62b251eb8c5e91334fbc65a3b9bd4b5f0182d1'
         )
 
