@@ -19,7 +19,7 @@ def grant_payout():
 def payout_logs():
     return [
         {
-            'recipient': '0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F',
+            'recipient': '0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f',
             'tx_hash': '0x8b5def65058838c52a72efb48b62b251eb8c5e91334fbc65a3b9bd4b5f0182d1',
         }
     ]
@@ -46,7 +46,7 @@ class TestSyncCLRMatchPayouts:
         assert error == "Error: the following arguments are required: --contract-address/-c"
 
     def test_reports_number_of_clr_matches_missing_claim_tx(self, grant_payout):
-        grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
+        grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
 
         CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
@@ -62,7 +62,7 @@ class TestSyncCLRMatchPayouts:
         assert "Number of unclaimed CLR Matches: 1" in result
 
     def test_reports_each_item_being_updated(self, grant_payout, payout_logs):
-        grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
+        grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
         match = CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
         out = StringIO()
@@ -79,7 +79,7 @@ class TestSyncCLRMatchPayouts:
         assert f"Updating CLR Match - {match.pk}" in result
 
     def test_reports_total_updates(self, grant_payout, payout_logs):
-        grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
+        grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
         CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
         out = StringIO()
@@ -97,10 +97,10 @@ class TestSyncCLRMatchPayouts:
         assert f"Total CLR Matches updated 1" in result
 
     def test_skips_updating_clr_matches_with_existing_claim_tx(self, grant_payout, payout_logs):
-        grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
+        grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
         CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
-        grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
+        grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
         CLRMatchFactory(
             grant=grant,
             grant_payout=grant_payout,
@@ -121,7 +121,7 @@ class TestSyncCLRMatchPayouts:
         assert f"Total CLR Matches updated 1" in result
 
     def test_catches_value_error_on_new_deploys(self, grant_payout):
-        grant = GrantFactory(admin_address='0x230Fc981F7CaE90cFC4ed4c18F7C178B239e5F9F')
+        grant = GrantFactory(admin_address='0x230fc981f7cae90cfc4ed4c18f7c178b239e5f9f')
         CLRMatchFactory(grant=grant, grant_payout=grant_payout)
 
         out = StringIO()
