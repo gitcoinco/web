@@ -53,7 +53,7 @@ class Command(BaseCommand):
         event_logs = MatchesContract(address=contract_address, network=network).get_payout_claimed_entries()
 
         self.stdout.write(f'event_logs: {event_logs}')
-        self.stdout.write(f'grouped_matches: {grouped_matches}')
+        self.stdout.write(f'grouped_matches: {grouped_matches.keys()}')
 
         updates_completed = 0
         for event in event_logs:
