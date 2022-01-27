@@ -122,8 +122,11 @@ jobs:
           start: python3 app/manage.py runserver 0.0.0.0:8000, node_modules/.bin/ganache-cli -m "chief loud snack trend chief net field husband vote message decide replace" -h 0.0.0.0 > /dev/null 2>&1 &
           # install: false
           browser: chrome
+          headless: true
           config-file: cypress.json
           record: true
+        env:
+          CYPRESS_grepTags: bounties
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
