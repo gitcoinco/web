@@ -125,6 +125,7 @@ jobs:
           headless: true
           config-file: cypress.json
           record: true
+          wait-on: 'http://localhost:8545, http://localhost:8000'
         env:
           CYPRESS_grepTags: bounties
 
