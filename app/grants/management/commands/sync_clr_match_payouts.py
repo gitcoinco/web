@@ -58,6 +58,7 @@ class Command(BaseCommand):
             self.stdout.write(f'admin_addresses: {grouped_matches.keys()}')
 
             matches = grouped_matches.get(event['recipient'], [])
+            self.stdout.write(f'admin_addresses: {len(grouped_matches)}')
 
             for match in matches:
                 self.stdout.write(f'Updating CLR Match - {match.pk}')
