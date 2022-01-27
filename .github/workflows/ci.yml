@@ -56,6 +56,7 @@ jobs:
       GITCOIN_API_USER: ${{ secrets.GITCOIN_API_USER }}
       GITHUB_API_TOKEN: ${{ secrets.GITCOIN_API_TOKEN }}
       POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
+      CYPRESS_RECORD_KEY: 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
 
     # steps to perform in job
     steps:
@@ -122,8 +123,6 @@ jobs:
           browser: chrome
           config-file: cypress.json
           record: true
-        env:
-          CYPRESS_RECORD_KEY: 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
 
       - name: Generate Markdown documentation and static docs page
         run: pydocmd build
