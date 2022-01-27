@@ -1174,7 +1174,6 @@ Vue.component('grants-cart', {
         // Token approvals and balance checks (just checks data, does not execute approavals)
         const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
-
         // Send donation if no approvals -----------------------------------------------------------
         if (allowanceData.length === 0) {
           // Send transaction and exit function
