@@ -54,6 +54,9 @@ class Command(BaseCommand):
 
         updates_completed = 0
         for event in event_logs:
+            self.stdout.write(f'recipient: {event["recipient"]}')
+            self.stdout.write(f'admin_addresses: {grouped_matches.keys()}')
+
             matches = grouped_matches.get(event['recipient'], [])
 
             for match in matches:
