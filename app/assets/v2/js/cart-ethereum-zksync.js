@@ -168,6 +168,7 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Reset zkSync modal status after a checkout failure
     resetZkSyncModal() {
+      appCart.$refs.cart.showConfirmationModal = false;
       this.zksync.checkoutStatus = 'not-started';
     },
 
@@ -227,7 +228,11 @@ Vue.component('grantsCartEthereumZksync', {
         }
 
         // Save off cart data
+        appCart.$refs.cart.activeCheckout = 'zksync';
         this.zksync.checkoutStatus = 'pending';
+
+        appCart.$refs.cart.showConfirmationModal = true;
+        this.zksync.showModal = false;
 
         // Send user to zkSync to complete checkout
         const txHashes = await this.zksync.checkoutManager.zkSyncBatchCheckout(
