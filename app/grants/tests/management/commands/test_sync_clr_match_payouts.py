@@ -1,3 +1,4 @@
+from datetime import datetime
 from io import StringIO
 from unittest import mock
 
@@ -5,6 +6,7 @@ from django.core.management import CommandError, call_command
 
 import pytest
 from grants.tests.factories import CLRMatchFactory, GrantFactory, GrantPayoutFactory
+from economy.models import ConversionRate
 
 
 @pytest.fixture
@@ -23,6 +25,19 @@ def payout_logs():
             'tx_hash': '0x8b5def65058838c52a72efb48b62b251eb8c5e91334fbc65a3b9bd4b5f0182d1',
         }
     ]
+
+
+
+@pytest.fixture(autouse=True)
+def conversion_rate(db):
+    ConversionRate.objects.create(
+        from_amount=1.0,
+        to_amount=1.0,
+        timestamp=datetime.now(),
+        source='cryptocompare',
+        from_currency='0x0',
+        to_currency='USDT'
+    )
 
 
 @pytest.mark.django_db
