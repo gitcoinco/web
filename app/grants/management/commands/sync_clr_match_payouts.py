@@ -52,16 +52,15 @@ class Command(BaseCommand):
 
         event_logs = MatchesContract(address=contract_address, network=network).get_payout_claimed_entries()
 
-        self.stdout.write(f'event_logs: {event_logs}')
-        self.stdout.write(f'grouped_matches: {grouped_matches.keys()}')
-
         updates_completed = 0
         for event in event_logs:
-           matches = grouped_matches.get(event['recipient'], [])
-           for match in matches:
-               self.stdout.write(f'Updating CLR Match - {match.pk}')
-               match.claim_tx = event['tx_hash']
-               match.save()
-               updates_completed += 1
+            self.stdout.write(f'event: {event}')
+            matches = grouped_matches.get(event['recipient'], [])
+            self.stdout.write(f'matches: {matches}')
+            for match in matches:
+                self.stdout.write(f'Updating CLR Match - {match.pk}')
+                match.claim_tx = event['tx_hash']
+                match.save()
+                updates_completed += 1
 
         self.stdout.write(f'Total CLR Matches updated {updates_completed}')
