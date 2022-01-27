@@ -35,8 +35,8 @@ Vue.mixin({
         let result = await (await fetch(url)).json();
 
         // update claim status + format date fields
-        result.map(async grant => {
-          grant.clr_matches.map(async m => {
+        await Promise.all(result.map(async grant => {
+          await Promise.all(grant.clr_matches.map(async m => {
             if (m.grant_payout) {
               m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
                 ? moment(m.grant_payout.funding_withdrawal_date).format('MMM D, Y')
@@ -50,9 +50,11 @@ Vue.mixin({
 
               m.status = claimData.status;
               m.claim_date = claimData.timestamp ? moment.unix(claimData.timestamp).format('MMM D, Y') : null;
+            } else {
+              Promise.resolve();
             }
-          });
-        });
+          }));
+        }));
 
         this.grants = result;
 
@@ -229,6 +231,15 @@ Vue.mixin({
       const container = this.$refs[element][this.tabSelected];
 
       container.scrollIntoView(true);
+    },
+    hasHistoricalMatches(grant) {
+      return grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length;
+    },
+    canClaimMatch(grant) {
+      return grant.clr_matches.length && grant.clr_matches.filter(a => !a.claim_tx).length;
+    },
+    filterMatchingPayout(matches) {
+      return matches.filter(match => match.grant_payout);
     }
   }
 });

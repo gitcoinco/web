@@ -1,0 +1,37 @@
+<historical-claim inline-template :match="match">
+  <b-row  class="mt-4 align-items-center">
+    <b-col lg="4" sm="12">
+      <span class="font-bigger-1 text-grey-500">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
+    </b-col>
+    <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
+      <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals:3 | formatNumber ]] [[ payoutToken ]]</h4>
+      <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals:3 | formatNumber ]] [[ payoutToken ]]</span>
+      <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals:3 | formatNumber ]]</span>
+    </b-col>
+    <b-col v-if="match.status == 'pending'" lg="4" sm="12" class="pt-2 pt-lg-0">
+      <p class="font-weight-bold text-grey-400 processing_text">
+        <i class="far fa-spinner fa-spin mr-2"></i>Processing
+      </p>
+      <span v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0" class="font-body text-grey-500">
+        Claim Period: [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
+      </span>
+    </b-col>
+    <b-col v-else-if="match.status == 'claimed'" lg="4" sm="12" class="mt-2 mt-lg-0">
+      <p class="text-highlight-green font-weight-bold claimed_text">
+        <i class="far fa-check mr-2"></i>Claimed
+      </p>
+      <span class="font-body text-grey-500">[[ match.claim_date ]]</span>
+    </b-col>
+    <b-col v-else-if="match.grant_payout.status === 'funding_withdrawn'" lg="4" sm="12" class="pt-2 pt-lg-0">
+      <p class="text-grey-400 font-weight-bold returned_text">
+        Returned to matching pool
+      </p>
+      <span class="font-body text-grey-500">[[ match.funding_withdrawal_date ]]</span>
+    </b-col>
+    <b-col class="text-lg-right mt-2 mt-lg-0">
+      <a v-if="match.claim_tx" :href="[[`https://etherscan.io/tx/${match.claim_tx}` ]]" target="_blank" rel="noopener noreferrer" class="transaction_text">
+        View Transaction<i class="far fa-external-link ml-2"></i>
+      </a>
+    </b-col>
+  </b-row>
+</historical-claim>
