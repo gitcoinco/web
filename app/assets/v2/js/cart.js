@@ -34,7 +34,7 @@ Vue.component('eth-checkout-button', {
   delimiters: [ '[[', ']]' ],
   template: '#eth-checkout-template',
   props: [ 'maxCartItems', 'network', 'isZkSyncDown', 'donationInputs', 'onPolygonUpdate', 'currentTokens', 'grantsByTenant',
-    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ],
+    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ]
 });
 
 
