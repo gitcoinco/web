@@ -28,8 +28,15 @@ const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
 const gnosisSafeAbi = [{'constant': true, 'inputs': [], 'name': 'VERSION', 'outputs': [{'internalType': 'string', 'name': '', 'type': 'string'}], 'payable': false, 'stateMutability': 'view', 'type': 'function'}];
 
 // Grant data
-let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
 let grantData = []; // data for grants in cart, initialized in mounted hook
+
+Vue.component('eth-checkout-button', {
+  delimiters: [ '[[', ']]' ],
+  template: '#eth-checkout-template',
+  props: [ 'maxCartItems', 'network', 'isZkSyncDown', 'donationInputs', 'onPolygonUpdate', 'currentTokens', 'grantsByTenant',
+    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ],
+});
+
 
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
@@ -59,7 +66,6 @@ Vue.component('grants-cart', {
       tokenList: undefined, // array of all tokens for selected network
       isLoading: undefined,
       gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
-      grantHeaders,
       grantData,
       hideWalletAddress: true,
       AnonymizeGrantsContribution: false,
@@ -1593,23 +1599,6 @@ Vue.component('grants-cart', {
       //   await onConnect();
       // }
     },
-    selectedETHCartToken: function(val) {
-      const zkSyncFlag = !this.zkSyncSupportedTokens.includes(val);
-      const polygonFlag = !this.polygonSupportedTokens.includes(val);
-      let checkoutOptions;
-
-      if (zkSyncFlag && polygonFlag) {
-        checkoutOptions = 'zkSync and Polygon';
-      } else if (zkSyncFlag) {
-        checkoutOptions = 'zkSync';
-      } else if (polygonFlag) {
-        checkoutOptions = 'Polygon';
-      }
-
-      if (checkoutOptions) {
-        _alert(`${checkoutOptions} checkout not supported due to the use of the token ${val}`, 'danger');
-      }
-    },
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
       async handler() {
@@ -1765,8 +1754,6 @@ if (document.getElementById('gc-grants-cart')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-grants-cart',
     data: {
-      grantHeaders,
-      grantData
     }
   });
 }
