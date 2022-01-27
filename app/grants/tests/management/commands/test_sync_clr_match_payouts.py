@@ -27,19 +27,6 @@ def payout_logs():
     ]
 
 
-
-@pytest.fixture(autouse=True)
-def conversion_rate(db):
-    ConversionRate.objects.create(
-        from_amount=1.0,
-        to_amount=1.0,
-        timestamp=datetime.now(),
-        source='cryptocompare',
-        from_currency='0x0',
-        to_currency='USDT'
-    )
-
-
 @pytest.mark.django_db
 class TestSyncCLRMatchPayouts:
     def test_error_message_informs_to_pass_in_network(self):
