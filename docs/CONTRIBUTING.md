@@ -140,7 +140,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
 
 Running the Cypress Tests:
 
-GitCoin is experimenting with the use of [Cypress](https://cypress.io) for end-to-end testing. To run the Cypress tests
+Gitcoin is experimenting with the use of [Cypress](https://cypress.io) for end-to-end testing. To run the Cypress tests
 locally you must first ensure you have started the application with the `TEST_MNEMONIC` environment variable set. This
 should be set to the same value as the `SECRET_WORDS` variable found in `bin/cypress/vars.sh`.
 
