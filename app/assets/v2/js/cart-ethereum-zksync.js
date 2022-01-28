@@ -338,6 +338,24 @@ Vue.component('grantsCartEthereumZksync', {
         isBalanceSufficient,
         requiredAmounts
       };
+    },
+
+    // Checkout With zkSync
+    checkoutWithzkSync() {
+      const selectedETHCartToken = appCart.$refs.cart.selectedETHCartToken;
+      const unsuportedCheckoutZkSync = !appCart.$refs.cart.zkSyncSupportedTokens.includes(selectedETHCartToken);
+
+      if (unsuportedCheckoutZkSync) {
+        this.handleError(`zkSync checkout not supported due to the use of the token ${selectedETHCartToken}`, 'danger');
+        return;
+      }
+
+      if (this.grantsByTenant.length > this.maxCartItems) {
+        _alert(`zkSync checkout supports checkout for ${this.maxCartItems} items. Please remove ${this.grantsByTenant.length - this.maxCartItems} grants from your cart to use zkSync checkout or select standard
+        checkout.`, 'danger');
+        return;
+      }
+      this.zksync.showModal = true;
     }
   }
 });

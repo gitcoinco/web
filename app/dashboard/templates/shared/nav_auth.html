@@ -134,7 +134,7 @@
                 <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-1 pb-2">{% trans "My Grants" %}</b>
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?me=true&idle=true">{% trans "Projects" %}</a>
+                    <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?me=true&idle=true&hidden=true&state=all">{% trans "Created by Me" %}</a>
                   </li>
                   <li>
                     <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}?tab=collections&profile={{ user.profile.pk }}&idle=true&featured=false">{% trans "Collections" %}</a>
