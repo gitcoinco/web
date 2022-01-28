@@ -1246,7 +1246,9 @@ Vue.component('grants-cart', {
           this.handleError(error);
         });
     },
-
+    formatZkSyncTx(txHashes) {
+      return txHashes ? txHashes.map((hash) => hash.replace('0x', 'sync-tx:')) : [];
+    },
     // POSTs donation data to database. Wrapped in a try/catch, and if it fails, we fallback to the manual ingestion script
     async postToDatabase(txHash, contractAddress, userAddress, checkout_type = 'eth_std') {
       try {
@@ -1256,7 +1258,7 @@ Vue.component('grants-cart', {
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
-        const txHashes = checkout_type === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
+        const txHashes = checkout_type === 'eth_zksync' ? this.formatZkSyncTx(txHash) : new Array(donations.length).fill(txHash[0]);
 
         // Configure template payload
         const saveSubscriptionPayload = {
