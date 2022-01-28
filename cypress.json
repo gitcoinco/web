@@ -4,7 +4,7 @@
   "projectId": "e7rv3w",
   "pageLoadTimeout": 90000,
   "retries": {
-    "runMode": 0,
+    "runMode": 2,
     "openMode": 0
   }
 }
