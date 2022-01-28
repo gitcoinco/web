@@ -6,8 +6,8 @@ const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 if (!Object.hasOwnProperty.call(window, 'web3')) {
   window.web3 = null;
 }
-let web3Modal;
-let provider;
+window.web3Modal = null;
+window.provider = null;
 let selectedAccount;
 let balance;
 let chainId;
@@ -95,7 +95,7 @@ async function fetchAccountData(provider) {
   }
   await web3.eth.net.getId().then(id => {
     networkId = id;
-    networkName = getDataChains(id, 'chainId')[0] && getDataChains(id, 'chainId')[0].network;
+    networkName = getDataChains(id, 'chainId')[0] && getDataChains(id, 'chainId')[0].network || 'unknown';
   });
   // web3.currentProvider.chainId
   // networkName = await web3.eth.net.getNetworkType();
@@ -275,7 +275,7 @@ async function setupPolygon(network = networkName) {
   }
 }
 
-async function onConnect() {
+window.onConnect = async function() {
 
   // Setting this null forces to show the dialogue every time
   // regardless if we play around with a cacheProvider settings
@@ -309,7 +309,7 @@ async function onConnect() {
   }
 
   await refreshAccountData();
-}
+};
 
 async function onDisconnect() {
 

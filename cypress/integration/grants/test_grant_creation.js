@@ -1,9 +1,9 @@
-describe('Creating a new grant', () => {
-  before(() => {
-    cy.setupMetamask();
-  });
+describe('Creating a new grant', { tags: ['grants-no-run'] }, () => {
+  // before(() => {
+  // });
 
   beforeEach(() => {
+    cy.acceptCookies();
     cy.impersonateUser();
   });
 
@@ -11,9 +11,8 @@ describe('Creating a new grant', () => {
     cy.logout();
   });
 
-  after(() => {
-    cy.clearWindows();
-  });
+  // after(() => {
+  // });
 
   it('can navigate to the new grant screen', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');
@@ -53,8 +52,8 @@ describe('Creating a new grant', () => {
 
         cy.get('input[placeholder="Has this project received external funding?"]').click();
         cy.contains('No, this project has not raised external funding.').click();
-       
-        
+
+
         cy.get('input[placeholder="Add tags to help others discover your grant"]').click();
         cy.contains('education').click();
 

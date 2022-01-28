@@ -2,5 +2,9 @@
   "chromeWebSecurity": true,
   "baseUrl": "http://localhost:8000",
   "projectId": "e7rv3w",
-  "pageLoadTimeout": 90000
+  "pageLoadTimeout": 90000,
+  "retries": {
+    "runMode": 0,
+    "openMode": 0
+  }
 }

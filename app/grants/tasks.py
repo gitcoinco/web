@@ -207,6 +207,9 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
             # https://gitcoincore.slack.com/archives/C01FQV4FX4J/p1607980714026400
             if not settings.DEBUG:
                 subscription.network = 'mainnet'
+            else:
+                # Truncate the field length as the max length in DB is 8 at this time
+                subscription.network = "undef"
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.comments = package.get('comment', '')

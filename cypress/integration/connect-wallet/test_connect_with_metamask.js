@@ -1,7 +1,10 @@
-describe('connect wallet: metamask', () => {
+describe.skip('connect wallet: metamask', () => {
   before(() => {
     cy.setupMetamask();
-    cy.changeMetamaskNetwork('localhost');
+  });
+
+  beforeEach(() => {
+    cy.acceptCookies();
   });
 
   after(() => {
