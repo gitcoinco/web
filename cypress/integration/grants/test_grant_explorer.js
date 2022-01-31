@@ -1,6 +1,4 @@
 describe('Grants Explorer page', { tags: ['no-run'] }, () => {
-  // before(() => {
-  // });
 
   beforeEach(() => {
     cy.acceptCookies();
@@ -9,9 +7,6 @@ describe('Grants Explorer page', { tags: ['no-run'] }, () => {
   afterEach(() => {
     cy.logout();
   });
-
-  // after(() => {
-  // });
 
   describe('grants explorer sort menu', () => {
     it('contains the proper sort options', () => {

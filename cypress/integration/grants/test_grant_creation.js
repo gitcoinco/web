@@ -1,6 +1,4 @@
 describe('Creating a new grant', { tags: ['grants-no-run'] }, () => {
-  // before(() => {
-  // });
 
   beforeEach(() => {
     cy.acceptCookies();
@@ -10,9 +8,6 @@ describe('Creating a new grant', { tags: ['grants-no-run'] }, () => {
   afterEach(() => {
     cy.logout();
   });
-
-  // after(() => {
-  // });
 
   it('can navigate to the new grant screen', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');

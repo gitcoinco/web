@@ -16,7 +16,6 @@
 // Import commands.js using ES2015 syntax:
 require('cypress-grep')();
 import './commands';
-import 'cypress-metamask';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

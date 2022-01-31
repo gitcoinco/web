@@ -1,6 +1,4 @@
 describe('Products menu', { tags: ['platform'] }, () => {
-  // before(() => {
-  // });
 
   beforeEach(() => {
     cy.acceptCookies();
@@ -10,9 +8,6 @@ describe('Products menu', { tags: ['platform'] }, () => {
   afterEach(() => {
     cy.logout();
   });
-
-  // after(() => {
-  // });
 
   it('navigates to the grants explorer when \'Explore Grants\' is selected', () => {
     cy.get('#dropdownProducts').trigger('mouseenter');

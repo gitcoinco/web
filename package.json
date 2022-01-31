@@ -29,7 +29,6 @@
     "css-loader": "^5.2.4",
     "cypress": "^8.3.1",
     "cypress-grep": "^2.13.1",
-    "cypress-metamask": "github:gitcoinco/cypress-metamask#v1.0.11-dev",
     "eslint": "^7.14.0",
     "eth-provider": "^0.10.0",
     "file-loader": "^6.2.0",
