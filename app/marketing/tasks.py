@@ -20,20 +20,12 @@ redis = RedisService().redis
 
 rate_limit = '300000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
 
-@app.shared_task(bind=True)
-def export_earnings_to_csv(self, user_pk, export_type):
-    user = User.objects.get(pk=user_pk)
-    profile = user.profile
-    earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
-    earnings = earnings.filter(network='mainnet').order_by('-created_on')
-
+def create_csv(export_type, profile, earnings):
     path = f'app/assets/tmp/user-{export_type}/{profile}'
     if not os.path.isdir(path):
         os.makedirs(path)
     name = f"{timezone.now().strftime('%Y_%m_%dT%H')}"
     file_path = f'{path}/{name}.csv'
-
-    # import pdb; pdb.set_trace()
 
     with open(file_path, 'w', encoding='utf-8') as earnings_csv:
         writer = csv.writer(earnings_csv)
@@ -52,8 +44,11 @@ def export_earnings_to_csv(self, user_pk, export_type):
                 earning.token_value,
                 earning.url,
             ])
+
+    send_csv(writer, profile)
     
-    to_email = 'jeremy@redsquirrel.com'
+def send_csv(attachment, user_profile):
+    to_email = user_profile.user.email
     from_email = settings.CONTACT_EMAIL
     subject = "Your exported csv is attached"
     html = text = 'Your exported csv is attached.'
@@ -63,12 +58,22 @@ def export_earnings_to_csv(self, user_pk, export_type):
         subject,
         text,
         html,
-        from_name="@jer-sch",
+        from_name=f"@{user_profile.handle}",
         categories=['transactional'],
-        csv=writer
+        csv=attachment
     )
 
-    os.remove(file_path)
+
+@app.shared_task(bind=True)
+def export_earnings_to_csv(self, user_pk, export_type):
+    user = User.objects.get(pk=user_pk)
+    profile = user.profile
+    earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
+    earnings = earnings.filter(network='mainnet').order_by('-created_on')
+
+    create_csv(export_type, profile, earnings)
+
+    # import pdb; pdb.set_trace()
 
 @app.shared_task(bind=True, rate_limit=rate_limit, soft_time_limit=600, time_limit=660, max_retries=1)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
