@@ -23,6 +23,8 @@ import csv
 import json
 import logging
 
+from celery.result import ResultBase
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -30,7 +32,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Avg, Max
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -536,13 +538,13 @@ def account_settings(request):
             profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
+            
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
+            user_pk = request.user.pk
+            export_earnings_to_csv.delay(user_pk, export_type)
+            return JsonResponse({'message' : 'Your request is processing and will be delivered to your email'}) 
 
-            profile = request.user.profile
-            # earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
-            # earnings = earnings.filter(network='mainnet').order_by('-created_on')
-            export_earnings_to_csv.delay()
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile = record_form_submission(request, profile, 'account-disconnect')

@@ -17,13 +17,31 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
+from pathlib import Path
+import glob
+import os
 from unittest.mock import patch
 
+import pytest
+
+from dashboard.tests.factories import ProfileFactory, EarningFactory
+from grants.tests.factories import GrantFactory
 from marketing.tasks import export_earnings_to_csv
 
-class TestTasks:
 
-    def test_export_earnings_to_csv(self):
-        assert True
+@pytest.mark.django_db
+class TestExportEarningsToCSVTask:
 
+    def test_export_earnings_to_csv(self, django_user_model):
+        user = django_user_model.objects.create(username='gitcoin', password='password123')
+        profile = ProfileFactory(user=user, handle='gitcoin')
+        grant = GrantFactory(admin_profile=profile)
+        earnings = EarningFactory.create_batch(5, to_profile=profile, source=grant)
+
+        path = 'app/assets/tmp/user-earnings/gitcoin'
+
+        assert len(list(Path(path).glob('*.csv'))) == 0
+
+        export_earnings_to_csv(user.pk, 'earnings')
+
+        assert len(list(Path(path).glob('*.csv'))) == 1
