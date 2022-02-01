@@ -64,26 +64,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
             <div class="container px-0">
               <b-modal
-              id="clear-cart-modal"
-              class="modal-dialog modal-lg" header-border-variant="transparent"
-              center hide-footer no-close-on-backdrop no-close-on-esc
-            >
-              <div class="mx-5 mb-5">
-                <h1 class="font-bigger-4">
-                  Are you sure you want to clear your cart?
-                </h1>
-                <p class="font-smaller-1 text-muted mt-4 mb-4">
-                  This action can’t be undone.
-                </p>
+                id="clear-cart-modal"
+                class="modal-dialog modal-lg" header-border-variant="transparent"
+                center hide-footer no-close-on-backdrop no-close-on-esc
+              >
+                <div class="mx-5 mb-5">
+                  <h1 class="font-bigger-4">
+                    Are you sure you want to clear your cart?
+                  </h1>
+                  <p class="font-smaller-1 text-muted mt-4 mb-4">
+                    This action can't be undone.
+                  </p>
 
-                <div class="d-flex justify-content-between mb-3">
-                  <b-button class="px-4 px-md-5" variant="outline-primary"
-                    @click="$bvModal.hide('clear-cart-modal')"
-                  >Cancel</b-button>
-                  <b-button class="px-4 px-md-5" variant="danger" @click="confirmClearCart(), $bvModal.hide('clear-cart-modal')">Clear Cart</b-button>
+                  <div class="d-flex justify-content-between mb-3">
+                    <b-button class="px-4 px-md-5" variant="outline-primary"
+                      @click="$bvModal.hide('clear-cart-modal')"
+                    >Cancel</b-button>
+                    <b-button class="px-4 px-md-5" variant="danger" @click="confirmClearCart(), $bvModal.hide('clear-cart-modal')">Clear Cart</b-button>
+                  </div>
                 </div>
-              </div>
-            </b-modal>
+              </b-modal>
 
 
               <div v-if="isLoading" class="text-center mb-5">
@@ -195,6 +195,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
               {% include 'shared/create_collection_modal.html' %}
+              {% include 'shared/checkout_confirmation_modal.html' %}
             </div>
             
             <!-- Sticky checkout for ETH -->
@@ -476,7 +477,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <script>
       document.authenticated = {{ authenticated | yesno:"true,false" }};
       document.isFullyVerified = '{{is_fully_verified}}' === 'True';
-      document.polygonGasPrice = "{{ gas_prices|get_item:'polygon' }}"
+      document.polygonGasPrice = "{{ gas_prices|get_item:'polygon' }}";
 
       // Checkout Status
       document.disableZksync = '{{ disableZksync }}' === 'true';

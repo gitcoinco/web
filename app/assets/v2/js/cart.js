@@ -55,7 +55,6 @@ Vue.component('grants-cart', {
         { text: 'Transaction Hash', value: 'txid' }
       ],
       selectedETHCartToken: 'DAI',
-      standardCheckoutInitiated: false,
       chainId: '',
       networkId: '',
       network: 'mainnet',
@@ -73,6 +72,7 @@ Vue.component('grants-cart', {
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
+      activeCheckout: undefined, // standard / polygon / zksync
       maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,
       // Checkout, zkSync
@@ -83,6 +83,7 @@ Vue.component('grants-cart', {
       isZkSyncDown: document.disableZksync, // disable zkSync when true
       isPolygonDown: document.disablePolygon, // disable polygon when true
       isPolkadotExtInstalled: false,
+      showConfirmationModal: false, // Used to display interim transaction confirmation modal
       chainScripts: {
         'POLKADOT': [
           `${static_url}v2/js/lib/polkadot/core.min.js`,
@@ -909,7 +910,8 @@ Vue.component('grants-cart', {
         message = err;
 
       _alert(message, 'danger');
-      this.isCheckoutOngoing = false;
+      this.activeCheckout = undefined;
+      this.showConfirmationModal = false;
       indicateMetamaskPopup(true);
     },
 
@@ -1163,14 +1165,12 @@ Vue.component('grants-cart', {
 
     // Standard L1 checkout flow
     async standardCheckout() {
-      this.standardCheckoutInitiated = true;
-      this.resetNetwork();
-
       try {
         // Setup -----------------------------------------------------------------------------------
-        this.isCheckoutOngoing = true;
+        this.activeCheckout = 'standard';
+        this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
-
+        
         // Token approvals and balance checks (just checks data, does not execute approavals)
         const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
@@ -1192,7 +1192,6 @@ Vue.component('grants-cart', {
       } catch (err) {
         this.handleError(err);
       }
-      this.standardCheckoutInitiated = false;
     },
 
     /**
@@ -1243,7 +1242,6 @@ Vue.component('grants-cart', {
         .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
-          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
           await this.postToDatabase([txHash], bulkCheckoutAddress, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
         })
@@ -1459,17 +1457,19 @@ Vue.component('grants-cart', {
     async finalizeCheckout() {
       // Number of items decides the timeout time
       const timeout_amount = 1500 + (this.grantsByTenant.length * 500);
+
       // Clear cart, redirect back to grants page, and show success alert
 
       CartData.setCheckedOut(this.grantsByTenant);
+
       // Remove each grant from the cart which has just been checkout
       this.grantsByTenant.forEach((grant) => {
         CartData.removeIdFromCart(grant.grant_id);
       });
 
       setTimeout(function() {
-        _alert('Contributions saved', 'success', 1000);
         setTimeout(function() {
+          this.activeCheckout = undefined;
           window.location.href = `${window.location.origin}/grants/explorer`;
         }, 500);
       }, timeout_amount);
