@@ -1,0 +1,3 @@
+@{{profile.handle}}
+
+Your Exported CSV Is Attached

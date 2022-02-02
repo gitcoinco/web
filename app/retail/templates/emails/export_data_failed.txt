@@ -1,0 +1,4 @@
+@{{profile.handle}}
+
+Unfortunately your CSV download has failed — sorry for the inconvenience!
+Please retry your download or submit a support ticket at support.gitcoin.co if a retry has already failed.
