@@ -186,11 +186,20 @@
         </div>
         </div>
         <div class="mt-5 px-3 px-md-5 py-5" style="background-color: #F0EBFF;">
-            <p class="font-body text-primary">How long should I expect?</p>
-            <p>It depends on how busy the network is, but in most cases should be less than 30 mins. Please don't close this tab until the confirmation window appears.</p>
-            <a href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172" target="_blank" class="text-black">
-                <u>Learn more about gas fees and the transaction process (Metamask)</u>
-            </a>
+            <template v-if="activeCheckout == 'zksync'">
+                <p class="font-body text-primary">What is zkSync?</p>
+                <p>zkSync provides a trustless and zero-compromise Layer 2 scaling solution for the Ethereum blockchain. It has instant confirmations, up to 99% fee reduction, removes the need for third parties, and ensures payments can occur to existing Ethereum addresses and smart contracts alike.</p>
+                <a href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172" target="_blank" class="text-black">
+                    <u>Learn more about how zkSync works</u>
+                </a>
+            </template>
+            <template v-else>
+                <p class="font-body text-primary">How long should I expect?</p>
+                <p>It depends on how busy the network is, but in most cases should be less than 30 mins. Please don't close this tab until the confirmation window appears.</p>
+                <a href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172" target="_blank" class="text-black">
+                    <u>Learn more about gas fees and the transaction process (Metamask)</u>
+                </a>
+            </template>
         </div>
     </div>
 </b-modal>

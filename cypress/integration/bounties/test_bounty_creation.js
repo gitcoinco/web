@@ -1,9 +1,8 @@
-describe('Creating a new bounty', () => {
-  before(() => {
-    cy.setupMetamask();
-  });
+describe('Creating a new bounty', { tags: ['bounties'] }, () => {
 
   beforeEach(() => {
+    cy.setupWallet();
+    cy.acceptCookies();
     cy.impersonateUser();
     cy.window().then((win) => {
       win.localStorage.setItem('quickstart_dontshow', true);
@@ -15,10 +14,6 @@ describe('Creating a new bounty', () => {
     cy.logout();
   });
 
-  after(() => {
-    cy.clearWindows();
-  });
-
   it('can navigate to the create bounty screen', () => {
     cy.get('#dropdownProfile').trigger('mouseenter');
     cy.get('.gc-profile-submenu').contains('Create a Bounty').click();
@@ -28,8 +23,6 @@ describe('Creating a new bounty', () => {
 
   it('can create a new bounty', () => {
     cy.visit('bounty/new');
-
-    cy.contains('I agree').click();
 
     // unfortunately some of the events do not seem bound in time for this
     // to run without any errors. adding in this manual wait is not advised
@@ -43,8 +36,6 @@ describe('Creating a new bounty', () => {
     cy.wait(1000);
 
     cy.contains('ETH').click();
-    cy.contains('MetaMask').click();
-    cy.acceptMetamaskAccess();
 
     cy.get('#issueURL').type('https://github.com/gitcoinco/web/issues/1');
 
@@ -65,6 +56,5 @@ describe('Creating a new bounty', () => {
 
     cy.get('Button').contains('Fund Issue').click();
 
-    cy.disconnectMetamaskWallet();
   });
 });

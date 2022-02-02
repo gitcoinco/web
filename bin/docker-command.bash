@@ -80,6 +80,8 @@ then
         python3 manage.py loaddata app/fixtures/dashboard.json
         python3 manage.py loaddata app/fixtures/avatar.json
         python3 manage.py loaddata app/fixtures/marketing.json
+        python3 manage.py loaddata app/grants/fixtures/grant_types.json
+
 
     fi
     date >> /provisioned

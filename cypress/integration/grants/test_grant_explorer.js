@@ -1,14 +1,11 @@
-describe('Grants Explorer page', () => {
-  before(() => {
-    cy.setupMetamask();
+describe('Grants Explorer page', { tags: ['no-run'] }, () => {
+
+  beforeEach(() => {
+    cy.acceptCookies();
   });
 
   afterEach(() => {
     cy.logout();
-  });
-
-  after(() => {
-    cy.clearWindows();
   });
 
   describe('grants explorer sort menu', () => {
@@ -190,7 +187,7 @@ describe('Grants Explorer page', () => {
       cy.visit('grants/explorer');
 
       cy.contains('Grant Round').click();
-  
+
       cy.get('.dropdown-menu').should('contain', 'Test Grant CLR');
     });
   });
@@ -199,10 +196,10 @@ describe('Grants Explorer page', () => {
     it('opens the grant in a new browser tab', () => {
       cy.createGrantSubmission().then((response) => {
         const grantUrl = response.body.url;
-  
+
         cy.approveGrant(grantUrl);
         cy.impersonateUser();
-        
+
         cy.visit('grants/explorer');
 
         cy.contains('Test Grant Submission')
