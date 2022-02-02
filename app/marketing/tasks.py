@@ -29,9 +29,10 @@ def create_csv(export_type, profile, earnings):
 
     with open(file_path, 'w', encoding='utf-8') as earnings_csv:
         writer = csv.writer(earnings_csv)
-        writer.writerow(['test', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'txid', 'token_name', 'token_value', 'url'])
+        writer.writerow(['ID', 'Date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'TXID', 'Token Name', 'Token Value', 'URL'])
         for earning in earnings:
-            writer.writerow([earning.pk,
+            writer.writerow([
+                earning.pk,
                 earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
                 earning.from_profile.handle if earning.from_profile else '*',
                 earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
@@ -45,13 +46,14 @@ def create_csv(export_type, profile, earnings):
                 earning.url,
             ])
 
-    send_csv(writer, profile)
+    return file_path
     
+
 def send_csv(attachment, user_profile):
     to_email = user_profile.user.email
     from_email = settings.CONTACT_EMAIL
-    subject = "Your exported csv is attached"
-    html = text = 'Your exported csv is attached.'
+    # subject = "Your exported csv is attached"
+    html, text, subject = render_export_data_email(user_profile=user_profile)
     send_mail(
         from_email,
         to_email,
@@ -71,9 +73,9 @@ def export_earnings_to_csv(self, user_pk, export_type):
     earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
     earnings = earnings.filter(network='mainnet').order_by('-created_on')
 
-    create_csv(export_type, profile, earnings)
+    attachment = create_csv(export_type, profile, earnings)
+    send_csv(attachment=attachment, user_profile=profile)
 
-    # import pdb; pdb.set_trace()
 
 @app.shared_task(bind=True, rate_limit=rate_limit, soft_time_limit=600, time_limit=660, max_retries=1)
 def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
@@ -97,6 +99,7 @@ def new_bounty_daily(self, email_subscriber_id, retry: bool = True) -> None:
         return
 
     new_bounty_daily_email(es)
+
 
 @app.shared_task(bind=True, rate_limit=rate_limit)
 def weekly_roundup(self, to_email, retry: bool = True) -> None:
