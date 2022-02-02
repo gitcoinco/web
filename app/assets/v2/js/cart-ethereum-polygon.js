@@ -99,10 +99,10 @@ Vue.component('grantsCartEthereumPolygon', {
       let url;
 
       if (appCart.$refs.cart.network === 'mainnet') {
-        appCart.$refs.cart.networkId = '137';
+        appCart.$refs.cart.networkId = POLYGON_MAINNET_NETWORK_ID;
         url = 'https://polygon-rpc.com';
       } else {
-        appCart.$refs.cart.networkId = '80001';
+        appCart.$refs.cart.networkId = POLYGON_TESTNET_NETWORK_ID;
         appCart.$refs.cart.network = 'testnet';
         url = 'https://rpc-mumbai.maticvigil.com';
       }
@@ -333,7 +333,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       let networkId = appCart.$refs.cart.networkId;
 
-      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.isCheckoutOngoing == true) {
+      if (networkId !== POLYGON_TESTNET_NETWORK_ID && networkId !== POLYGON_MAINNET_NETWORK_ID && appCart.$refs.cart.isCheckoutOngoing == true) {
         return;
       }
 
