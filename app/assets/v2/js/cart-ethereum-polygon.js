@@ -34,12 +34,6 @@ Vue.component('grantsCartEthereumPolygon', {
   },
 
   mounted() {
-    window.addEventListener('beforeunload', (e) => {
-      if (this.polygon.checkoutStatus === 'pending') {
-        e.returnValue = 'Polygon checkout in progress. Are you sure you want to leave?';
-      }
-    });
-
     // Update Polygon checkout connection, state, and data frontend needs when wallet connection changes
     window.addEventListener('dataWalletReady', async(e) => {
       await this.onChangeHandler(this.donationInputs);
