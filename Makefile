@@ -74,16 +74,8 @@ load_initial_data: ## Load initial development fixtures.
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
-cypress: ## Open cypress testing UI
-	@npx cypress open
-
 cypress-local: ## Run the cypress tests locally - the application MUST already be running for these to pass
-	@source "./app/app/.env"
-	@npx cypress install
-	@npx cypress run --headed --browser chrome
-
-cypress-docker: ## Run the cypress tests in a container - the application MUST already be running for these to pass
-	@docker-compose exec -e VERBOSE=1 -e CYPRESS_REMOTE_DEBUGGING_PORT=9222 web node_modules/.bin/cypress run --browser chrome --headed
+	./bin/cypress/local
 
 pytest: ## Run pytest (Backend)
 	@docker-compose exec -e PYTHONPATH=/code/app/ -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum

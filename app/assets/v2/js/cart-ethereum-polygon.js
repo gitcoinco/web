@@ -99,10 +99,10 @@ Vue.component('grantsCartEthereumPolygon', {
       let url;
 
       if (appCart.$refs.cart.network === 'mainnet') {
-        appCart.$refs.cart.networkId = '137';
+        appCart.$refs.cart.networkId = POLYGON_MAINNET_NETWORK_ID;
         url = 'https://polygon-rpc.com';
       } else {
-        appCart.$refs.cart.networkId = '80001';
+        appCart.$refs.cart.networkId = POLYGON_TESTNET_NETWORK_ID;
         appCart.$refs.cart.network = 'testnet';
         url = 'https://rpc-mumbai.maticvigil.com';
       }
@@ -267,6 +267,7 @@ Vue.component('grantsCartEthereumPolygon', {
         );
 
         // Save off cart data
+        appCart.$refs.cart.activeCheckout = 'polygon';
         this.polygon.checkoutStatus = 'pending';
 
         if (allowanceData.length === 0) {
@@ -305,13 +306,14 @@ Vue.component('grantsCartEthereumPolygon', {
       });
 
       // Send transaction
+      appCart.$refs.cart.showConfirmationModal = true;
+
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.polygon.estimatedGasCost, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
           indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
-          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
           await this.postToDatabase([txHash], bulkCheckoutAddressPolygon, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
         })
@@ -331,7 +333,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       let networkId = appCart.$refs.cart.networkId;
 
-      if (networkId !== '80001' && networkId !== '137' && appCart.$refs.cart.standardCheckoutInitiated == true) {
+      if (networkId !== POLYGON_TESTNET_NETWORK_ID && networkId !== POLYGON_MAINNET_NETWORK_ID && appCart.$refs.cart.isCheckoutOngoing == true) {
         return;
       }
 

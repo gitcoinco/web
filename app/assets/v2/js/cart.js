@@ -21,6 +21,8 @@ const MATIC_ADDRESS = '0x0000000000000000000000000000000000001010';
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6'; // Gitcoin donation address for mainnet and rinkeby
 const gitcoinAddressPolygon = '0x366adF5B96Ee15AfF5d66B0Fa44a56330b55E97B'; // Gitcoin donation address for polygon mainnet and mumbai
+const POLYGON_TESTNET_NETWORK_ID = '80001';
+const POLYGON_MAINNET_NETWORK_ID = '137';
 
 // Contract parameters and constants
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
@@ -34,7 +36,7 @@ Vue.component('eth-checkout-button', {
   delimiters: [ '[[', ']]' ],
   template: '#eth-checkout-template',
   props: [ 'maxCartItems', 'network', 'isZkSyncDown', 'donationInputs', 'onPolygonUpdate', 'currentTokens', 'grantsByTenant',
-    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ],
+    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ]
 });
 
 
@@ -55,7 +57,6 @@ Vue.component('grants-cart', {
         { text: 'Transaction Hash', value: 'txid' }
       ],
       selectedETHCartToken: 'DAI',
-      standardCheckoutInitiated: false,
       chainId: '',
       networkId: '',
       network: 'mainnet',
@@ -73,6 +74,7 @@ Vue.component('grants-cart', {
       windowWidth: window.innerWidth,
       userAddress: undefined,
       isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
+      activeCheckout: undefined, // standard / polygon / zksync
       maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,
       // Checkout, zkSync
@@ -83,6 +85,7 @@ Vue.component('grants-cart', {
       isZkSyncDown: document.disableZksync, // disable zkSync when true
       isPolygonDown: document.disablePolygon, // disable polygon when true
       isPolkadotExtInstalled: false,
+      showConfirmationModal: false, // Used to display interim transaction confirmation modal
       chainScripts: {
         'POLKADOT': [
           `${static_url}v2/js/lib/polkadot/core.min.js`,
@@ -316,7 +319,7 @@ Vue.component('grants-cart', {
     },
 
     nativeCurrency() {
-      let isPolygon = this.networkId === '80001' || this.networkId === '137';
+      let isPolygon = this.networkId === POLYGON_TESTNET_NETWORK_ID || this.networkId === POLYGON_MAINNET_NETWORK_ID;
 
       return isPolygon ? 'MATIC' : 'ETH';
     },
@@ -909,7 +912,8 @@ Vue.component('grants-cart', {
         message = err;
 
       _alert(message, 'danger');
-      this.isCheckoutOngoing = false;
+      this.activeCheckout = undefined;
+      this.showConfirmationModal = false;
       indicateMetamaskPopup(true);
     },
 
@@ -1163,14 +1167,12 @@ Vue.component('grants-cart', {
 
     // Standard L1 checkout flow
     async standardCheckout() {
-      this.standardCheckoutInitiated = true;
-      this.resetNetwork();
-
       try {
         // Setup -----------------------------------------------------------------------------------
-        this.isCheckoutOngoing = true;
+        this.activeCheckout = 'standard';
+        this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
-
+        
         // Token approvals and balance checks (just checks data, does not execute approavals)
         const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
@@ -1192,7 +1194,6 @@ Vue.component('grants-cart', {
       } catch (err) {
         this.handleError(err);
       }
-      this.standardCheckoutInitiated = false;
     },
 
     /**
@@ -1243,7 +1244,6 @@ Vue.component('grants-cart', {
         .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
-          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
           await this.postToDatabase([txHash], bulkCheckoutAddress, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
         })
@@ -1252,7 +1252,9 @@ Vue.component('grants-cart', {
           this.handleError(error);
         });
     },
-
+    formatZkSyncTx(txHashes) {
+      return txHashes ? txHashes.map((hash) => hash.replace('0x', 'sync-tx:')) : [];
+    },
     // POSTs donation data to database. Wrapped in a try/catch, and if it fails, we fallback to the manual ingestion script
     async postToDatabase(txHash, contractAddress, userAddress, checkout_type = 'eth_std') {
       try {
@@ -1262,7 +1264,7 @@ Vue.component('grants-cart', {
         const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
-        const txHashes = checkout_type === 'eth_zksync' ? txHash : new Array(donations.length).fill(txHash[0]);
+        const txHashes = checkout_type === 'eth_zksync' ? this.formatZkSyncTx(txHash) : new Array(donations.length).fill(txHash[0]);
 
         // Configure template payload
         const saveSubscriptionPayload = {
@@ -1457,17 +1459,19 @@ Vue.component('grants-cart', {
     async finalizeCheckout() {
       // Number of items decides the timeout time
       const timeout_amount = 1500 + (this.grantsByTenant.length * 500);
+
       // Clear cart, redirect back to grants page, and show success alert
 
       CartData.setCheckedOut(this.grantsByTenant);
+
       // Remove each grant from the cart which has just been checkout
       this.grantsByTenant.forEach((grant) => {
         CartData.removeIdFromCart(grant.grant_id);
       });
 
       setTimeout(function() {
-        _alert('Contributions saved', 'success', 1000);
         setTimeout(function() {
+          this.activeCheckout = undefined;
           window.location.href = `${window.location.origin}/grants/explorer`;
         }, 500);
       }, timeout_amount);

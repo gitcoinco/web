@@ -247,11 +247,9 @@ class GrantCLR(SuperModel):
 
 
     def record_clr_prediction_curve(self, grant, clr_prediction_curve):
-        for obj in self.clr_calculations.filter(grant=grant, latest=True):
-            obj.active = False
-            obj.latest = False
-            obj.save()
-
+        # update matching records
+        self.clr_calculations.filter(grant=grant, latest=True).update(active=False, latest=False)
+        # create the new record
         GrantCLRCalculation.objects.create(
             grantclr=self,
             grant=grant,

@@ -24,11 +24,15 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+const Web3 = require('web3');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+const provider = require('eth-provider');
+
 // authentication
 Cypress.Commands.add('loginRootUser', () => {
   const url = '_administrationlogin/';
 
-  cy.request({url, method: 'GET', log: true}).then((response) => {
+  cy.request({ url, method: 'GET', log: true }).then((response) => {
     const body = Cypress.$(response.body);
     const csrfmiddlewaretoken = body.find('input[name=csrfmiddlewaretoken]').val();
 
@@ -57,6 +61,12 @@ Cypress.Commands.add('impersonateStaffUser', () => {
 
 Cypress.Commands.add('logout', () => {
   cy.request('logout/?next=/');
+});
+
+// accept cookie banner
+Cypress.Commands.add('acceptCookies', () => {
+  cy.visit('/');
+  cy.contains('I agree').click();
 });
 
 // grants
@@ -113,7 +123,7 @@ Cypress.Commands.add('approveGrant', (grantSlug) => {
 
 Cypress.Commands.add('createActiveGrantRound', () => {
   cy.logout();
-  
+
   cy.loginRootUser();
 
   cy.visit('_administrationgrants/grantclr/add/');
@@ -129,4 +139,111 @@ Cypress.Commands.add('createActiveGrantRound', () => {
   cy.get('[name=_save]').click();
 
   cy.logout();
+});
+
+
+// Create Stub for Web3Modal default
+// The 'default' stub will be wrapped in a proxy in order to be able to track what attributes and
+// functions are accessed
+let _Web3ModalDefault = {
+  'default': new Proxy(function() {
+
+    // Create a provider that will approve all transactions
+    this.hd_provider = new HDWalletProvider({
+      mnemonic: Cypress.env('SECRET_WORDS'),
+      providerOrUrl: 'http://127.0.0.1:8545',
+      addressIndex: 0,
+      chainId: 1337
+    });
+    
+    this.cachedProvider = 'injected';
+    this.getInjectedProviderName = function() {
+      return 'MetaMask';
+    };
+    
+    this.connect = function() {
+      return new Promise((resolve, reject) => {
+        resolve(this.hd_provider);
+      });
+    };
+
+    // eslint-disable-next-line no-empty-function
+    this.clearCachedProvider = function() { };
+    this.providerController = {
+      getProvider: function() {
+        return null;
+      }
+    };
+  }, {
+    get(target, name, receiver) {
+      console.log('Web3Modal.default Stub ===> ', name);
+      let ret = Reflect.get(target, name, receiver);
+
+      return ret;
+    }
+  }),
+
+  'getInjectedProviderName': function() {
+    return 'MetaMask';
+  }
+};
+
+// We wrap the Web3 modal, only for the purpose of tracking the
+// functions and atttributes that are accessed ...
+let Web3ModalDefault = new Proxy(_Web3ModalDefault, {
+  get(target, name, receiver) {
+    console.log('Web3Modal Stub wrapper ===> ', name);
+    let ret = Reflect.get(target, name, receiver);
+
+    return ret;
+  }
+});
+
+
+Cypress.Commands.add('setupWallet', () => {
+
+  cy.on('window:before:load', (win) => {
+
+    let hd_provider = new HDWalletProvider({
+      mnemonic: Cypress.env('SECRET_WORDS'),
+      providerOrUrl: 'http://127.0.0.1:8545',
+      addressIndex: 0,
+      chainId: 1337
+    });
+
+    win.ethereum = provider('http://127.0.0.1:8545');
+    // win.provider = hd_provider;
+    win.web3 = new Web3(hd_provider);
+    
+    win.ethereum
+      .request({
+        method: 'eth_accounts'
+      })
+      .then((accounts) => {
+        console.log('Accounts:', accounts);
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+      });
+      
+    win.web3.eth.getBalance('0x3788F091fCa8c048C3769aB899E08174622ce9C2').then((balance) => {
+      console.log('TEST window:before:load eth balance', balance);
+    });
+
+    Object.defineProperty(win, 'Web3Modal', {
+      set(value) {
+        // DO nothing
+      },
+      get() {
+        return Web3ModalDefault;
+      },
+      configurable: true
+    });
+
+    console.log('TEST window:before:load, mnemonic', Cypress.env('SECRET_WORDS'));
+    console.log('TEST window:before:load, win', win);
+    console.log('TEST window:before:load, win.onConnect', win.onConnect);
+    console.log('TEST window:before:load, win.Web3Modal', win.Web3Modal);
+
+  });
 });
