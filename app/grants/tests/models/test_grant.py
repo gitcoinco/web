@@ -415,4 +415,3 @@ class TestGrant:
         grant = GrantFactory()
 
         assert hasattr(grant, 'twitter_verified_at')
-    

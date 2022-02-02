@@ -772,6 +772,32 @@
   }
 }
 
+.transaction_text {
+  font-size: var(--fs-body);
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
+  }
+}
+.processing_text {
+  font-size: 1.2rem;
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
+  }
+}
+
+.claimed_text {
+  font-size: 1.2rem;
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
+  }
+}
+.returned_text {
+  font-size: 1.2rem;
+  @include media-breakpoint-down(md) {
+    font-size: var(--fs-subheader);
+  }
+}
+
 @media only screen and (min-width: 992px) {
   .grant .side-cart-open #sidebar_container + div {
     padding-right: 25%!important;

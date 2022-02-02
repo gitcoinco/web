@@ -6,21 +6,19 @@ Vue.component('create-collection-modal', {
       collectionTitle: '',
       collectionDescription: '',
       collections: [],
+      grantIds: [],
       imgURL: '',
       selectedCollection: null,
       showCreateCollection: false
     };
   },
   mounted: function() {
-    const checkoutData = CartData.loadCheckedOut();
+    const checkedOut = CartData.loadCheckedOut();
+    const cart = (checkedOut.length > 0 ? checkedOut : CartData.loadCart());
 
-    let grant_ids = '';
+    this.grantIds = cart.map(grant => grant.grant_id);
 
-    for (let i = 0; i < checkoutData.length; i++) {
-      grant_ids = grant_ids + checkoutData[i]['grant_id'] + ',';
-    }
-
-    this.imgURL = '/dynamic/grants_cart_thumb/' + document.contxt['github_handle'] + '/' + grant_ids;
+    this.imgURL = '/dynamic/grants_cart_thumb/' + document.contxt['github_handle'] + '/' + this.grantIds.join(',');
   },
   computed: {
     isValidCollection() {
@@ -37,7 +35,6 @@ Vue.component('create-collection-modal', {
     fetchCollections() {
       this.showCreateCollection = true;
       fetchData('/grants/v1/api/collections/').then(response => {
-        console.log('COLLECTIONS', response);
         if (response.collections && response.collections.length > 0) {
           this.collections = response.collections;
         }
@@ -48,15 +45,12 @@ Vue.component('create-collection-modal', {
     },
     createCollection: async function() {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const checkedOut = CartData.loadCheckedOut();
-      const cart = (checkedOut.length > 0 ? checkedOut : CartData.loadCart());
-      const grantIds = cart.map(grant => grant.grant_id);
       let response;
 
       const body = {
         collectionTitle: this.collectionTitle,
         collectionDescription: this.collectionDescription,
-        grants: grantIds
+        grants: this.grantIds
       };
 
       if (this.selectedCollection) {

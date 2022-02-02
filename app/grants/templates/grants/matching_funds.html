@@ -137,68 +137,12 @@
                     </div>
                   </div>
                 </b-row>
-                <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => !a.claim_tx).length">
-                  <template v-for="match in grant.clr_matches">
-                    <b-row v-if="match.grant_payout && !match.claim_tx " :key="match.pk" class="mt-4 align-items-center">
-                      <b-col lg="4" sm="12">
-                        <span class="font-bigger-1 text-grey-500" id="grant-clrs">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
-                      </b-col>
-                      <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
-                        <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
-                        <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals:3 | formatNumber ]]</span>
-                        <span v-if="match.grant_payout.status === 'pending'">(pending review)</span>
-                      </b-col>
-                      <b-col v-if="match.grant_payout.status === 'ready' && match.ready_for_payout" lg="4" sm="12" class="pt-2 pt-lg-0">
-                        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base text-grey-500">Ready to Claim</h4>
-                        <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">Ready to Claim</span>
-                        <span class="font-body text-grey-500">
-                          Claim Period:
-                          <template v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0 && match.grant_payout.grant_clrs[0].claim_start_date">
-                            [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
-                          </template>
-                          <template v-else>
-                            N/A
-                          </template>
-                        </span>
-                      </b-col>
-                      <b-col v-else lg="4" sm="12" class="mt-2 mt-lg-0">
-
-                        <!-- In Review State -->
-                        <template v-if="match.grant_payout.status == 'pending'">
-                          <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">In Review</h4>
-                          <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">In Review</span>
-                          <span class="font-body text-grey-500">
-                            Claim Period:
-                            <template v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0  && match.grant_payout.grant_clrs[0].claim_start_date">
-                              [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
-                            </template>
-                            <template v-else>
-                              N/A
-                            </template>
-                          </span>
-                        </template>
-
-                        <!-- Funding Withdrawn State -->
-                        <template v-else>
-                          <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">No Action</h4>
-                          <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">No Action</span>
-                        </template>
-
-                      </b-col>
-
-                      <b-col class="text-lg-right mt-3 mt-lg-0">
-                        <template v-if="['pending', 'ready'].includes(match.grant_payout.status)">
-                          <a href="javascript:;" id="claim-match"
-                            @click="claimMatch(match, grant.admin_address)"
-                            class="btn btn-primary btn-lg font-body w-100"
-                            :class="[[ match.grant_payout.status === 'pending' ? 'disabled' : '' ]]">
-                            Claim
-                          </a>
-                        </template>
-                      </b-col>
-                    </b-row>
-                  </template>
+                <!-- check if grant has a match that can be claimed -->
+                <div v-if="canClaimMatch(grant)">
+                  <!-- map over matches that have an existing payout -->
+                  <div v-for="match in filterMatchingPayout(grant.clr_matches)" :key="match.pk">
+                    {% include './components/ready_claim.html' %}
+                  </div>
                 </div>
                 <p v-else class="font-subheader text-grey-400 pt-2 pt-lg-0">There’s no matching funds ready to claim for this grant.</p>
               </div>
@@ -402,66 +346,12 @@
                     </div>
                   </div>
                 </b-row>
-                <div v-if="grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length">
-                  <template v-for="match in grant.clr_matches">
-                    <b-row v-if="match.grant_payout && match.claim_tx" :key="match.pk" class="mt-4 align-items-center">
-                      <b-col lg="4" sm="12">
-                        <span class="font-bigger-1 text-grey-500">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
-                      </b-col>
-                      <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-                        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</h4>
-                        <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.payout_token ]]</span>
-                        <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals:3 | formatNumber ]]</span>
-                      </b-col>
-                      <b-col v-if="match.status == 'pending'" lg="4" sm="12" class="pt-2 pt-lg-0">
-                        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
-                          <i class="far fa-spinner fa-spin mr-2"></i>Processing
-                        </h4>
-                        <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
-                          <i class="far fa-spinner fa-spin mr-2"></i>Processing
-                        </span>
-                        <span v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0" class="font-body text-grey-500">
-                          Claim Period: [[ match.grant_payout.grant_clrs[0].claim_start_date ]] - [[ match.grant_payout.grant_clrs[0].claim_end_date ]]
-                        </span>
-                      </b-col>
-                      <b-col v-else-if="match.status == 'claimed'" lg="4" sm="12" class="mt-2 mt-lg-0">
-                        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-highlight-green gc-font-base">
-                          <i class="far fa-check mr-2"></i>Claimed
-                        </h4>
-                        <span class="d-lg-none d-block font-weight-bold font-subheader text-highlight-green">
-                          <i class="far fa-check mr-2"></i>Claimed
-                        </span>
-                        <span class="font-body text-grey-500">[[ match.claim_date ]]</span>
-                      </b-col>
-                      <b-col v-else-if="match.grant_payout.status === 'funding_withdrawn'" lg="4" sm="12" class="pt-2 pt-lg-0">
-                        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">
-                          Returned to matching pool
-                        </h4>
-                        <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">
-                          Returned to matching pool
-                        </span>
-                        <span class="font-body text-grey-500">[[ match.funding_withdrawal_date ]]</span>
-                      </b-col>
-                      <b-col class="text-lg-right mt-2 mt-lg-0">
-                        <template v-if="match.claim_tx == 'NA'">
-                          <a :href="[[`https://etherscan.io/address/${match.grant_payout.contract_address}/#events`]]" target="_blank" rel="noopener noreferrer" class="d-lg-block d-none font-body">
-                            View Contract Event<i class="far fa-external-link ml-2"></i>
-                          </a>
-                          <a :href="[[`https://etherscan.io/address/${match.grant_payout.contract_address}/#events`]]" target="_blank" rel="noopener noreferrer" class="d-lg-none d-block font-subheader">
-                            View Contract Event<i class="far fa-external-link ml-2"></i>
-                          </a>
-                        </template>
-                        <template v-else>
-                          <a :href="[[`https://etherscan.io/tx/${match.claim_tx}` ]]" target="_blank" rel="noopener noreferrer" class="d-lg-block d-none font-body">
-                            View Transaction<i class="far fa-external-link ml-2"></i>
-                          </a>
-                          <a :href="[[`https://etherscan.io/tx/${match.claim_tx}` ]]" target="_blank" rel="noopener noreferrer" class="d-lg-none d-block font-subheader">
-                            View Transaction<i class="far fa-external-link ml-2"></i>
-                          </a>
-                        </template>
-                      </b-col>
-                    </b-row>
-                  </template>
+                <!-- filter out grant matches that do not have a historical payout -->
+                <div v-if="hasHistoricalMatches(grant)">
+                  <!-- map over clr_matches for grant that have an existing payout  -->
+                  <div v-for="match in filterMatchingPayout(grant.clr_matches)" :key="match.pk">
+                    {% include './components/historical_claim.html' %}
+                  </div>
                 </div>
                 <p v-else class="font-subheader text-grey-400 pt-2 pt-lg-0">No claim history found for this grant</p>
               </div>
@@ -655,6 +545,7 @@
       {{user_code|json_script:"user_code"}}
       <script src="https://momentjs.com/downloads/moment-timezone-with-data-10-year-range.min.js"></script>
       <script src="{% static "v2/js/grants/matching_funds.js" %}"></script>
-
+      <script src="{% static "v2/js/grants/historical_claim.js" %}"></script>
+      <script src="{% static "v2/js/grants/ready_claim.js" %}"></script>
     </div>
   </body>

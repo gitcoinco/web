@@ -256,7 +256,7 @@
 .tooltip-inner {
   text-align: left;
   max-width: 290px !important;
-  padding: 1rem;
+  padding: 6px 1rem;
 }
 
 .inputs-height {
@@ -289,6 +289,9 @@
   }
 }
 
+.cart-grant-thumbnail {
+  max-height: 50px;
+}
 
 @media (max-width: 767.98px) {
   .left-section {

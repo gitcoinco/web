@@ -7,6 +7,7 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 from django.http import HttpRequest
 from django.utils import timezone
 
@@ -440,13 +441,19 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
     :return: None
     """
 
-    profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
-    if profile:
-        try:
-            activity = Activity.objects.create(profile=profile, activity_type='joined')
-            activity.populate_activity_index()
-        except Exception as e:
-            logger.exception(e)
+    # There seems to be a race condition, this is task is sometimes
+    # executed in parallel for the same profile. And this leads to an integrity 
+    # error (becasue Activity.objects.create also performs delete operations in a
+    # post_save signal)
+    # To avoid the integrity error we execute this operation in a transaction
+    with transaction.atomic():
+        profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
+        if profile:
+            try:
+                activity = Activity.objects.create(profile=profile, activity_type='joined')
+                activity.populate_activity_index()
+            except Exception as e:
+                logger.exception(e)
 
 
 @app.shared_task(bind=True, max_retries=3)

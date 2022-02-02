@@ -250,6 +250,15 @@ Vue.mixin({
       const container = this.$refs[element][this.tabSelected];
 
       container.scrollIntoView(true);
+    },
+    hasHistoricalMatches(grant) {
+      return grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length;
+    },
+    canClaimMatch(grant) {
+      return grant.clr_matches.length && grant.clr_matches.filter(a => !a.claim_tx).length;
+    },
+    filterMatchingPayout(matches) {
+      return matches.filter(match => match.grant_payout);
     }
   }
 });

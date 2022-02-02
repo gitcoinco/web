@@ -1,6 +1,6 @@
 import pytest
-from grants.tests.factories.grant_hall_of_fame_factory import GrantHallOfFameFactory, GrantHallOfFameGranteeFactory
 from grants.models.hall_of_fame import GrantHallOfFame, GrantHallOfFameGrantee
+from grants.tests.factories.grant_hall_of_fame_factory import GrantHallOfFameFactory, GrantHallOfFameGranteeFactory
 
 
 @pytest.mark.django_db

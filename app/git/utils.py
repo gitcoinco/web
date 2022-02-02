@@ -514,7 +514,7 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None, page=1):
 
         return paginated_list
     except Exception as e:
-        logger.error(
+        logger.warn(
             "could not get issues - Reason: %s - owner: %s repo: %s page: %s status_code: %s",
             e.data.get("message"), owner, repo, page, e.status
         )
@@ -533,7 +533,7 @@ def get_issues(owner, repo, page=1, state='open'):
             state=state, sort='created', direction='desc').get_page(page)
         return paginated_list
     except Exception as e:
-        logger.error(
+        logger.warn(
             "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status_code: %s",
             e.data.get("message"), owner, repo, page, state, e.status
         )
@@ -560,7 +560,7 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
         paginated_list = _get_issue(gh_client, owner, issue).get_timeline().get_page(page)
         return paginated_list
     except GithubException as e:
-        logger.error(e)
+        logger.warn(e)
     return []
 
 
@@ -645,7 +645,7 @@ def _get_user(gh_client, user=None):
         except GitCache.DoesNotExist:
             logger.debug("User not found in cache")
         except Exception:
-            logger.error("Failed to load user from cache", exc_info=True)
+            logger.warn("Failed to load user from cache", exc_info=True)
 
     # If no user has been retreived (either no handle or not in cache yet) we get the user
     if not ret:
@@ -671,7 +671,7 @@ def get_user(user=None, token=None):
     except GithubException as e:
         # Do not log exception for github users which are deleted
         if e.data.get("message") != 'Not Found':
-            logger.error(e)
+            logger.warn(e)
 
     return None
 
@@ -684,7 +684,7 @@ def get_notifications():
         paginated_list = repo_user.get_notifications(all=True)
         return paginated_list
     except GithubException as e:
-        logger.error(e)
+        logger.warn(e)
         return []
 
 
@@ -706,7 +706,7 @@ def post_issue_comment(owner, repo, issue_num, comment):
         issue_comment = _get_issue(gh_client, owner, repo, issue_num).create_comment(comment)
         return issue_comment
     except GithubException as e:
-        logger.error(e)
+        logger.warn(e)
         return {}
 
 
@@ -717,7 +717,7 @@ def patch_issue_comment(issue_id, comment_id, owner, repo, comment):
         issue_comment = _get_issue_comment(gh_client, owner, repo, issue_id, comment_id).edit(comment)
         return issue_comment
     except GithubException as e:
-        logger.error(e)
+        logger.warn(e)
         return {}
 
 
@@ -728,7 +728,7 @@ def delete_issue_comment(issue_id, comment_id, owner, repo):
         issue_comment = _get_issue_comment(gh_client, owner, repo, issue_id, comment_id).delete()
         return issue_comment
     except GithubException as e:
-        logger.error(e)
+        logger.warn(e)
         return {}
 
 
@@ -739,7 +739,7 @@ def post_issue_comment_reaction(owner, repo, issue_id, comment_id, content):
         reaction = _get_issue_comment(gh_client, owner, repo, issue_id, comment_id).create_reaction(content)
         return reaction
     except GithubException as e:
-        logger.error(e)
+        logger.warn(e)
         return {}
 
 
@@ -841,5 +841,5 @@ def get_current_ratelimit(token=None):
         gh_client = github_connect(token)
         return gh_client.get_rate_limit()
     except GithubException as e:
-        logger.error(e)
+        logger.warn(e)
         return {}
