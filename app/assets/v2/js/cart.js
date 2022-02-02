@@ -1235,9 +1235,12 @@ Vue.component('grants-cart', {
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputsFiltered = this.getDonationInputs();
-
+      
       // Send transaction
+      this.showConfirmationModal = true;
+      
       indicateMetamaskPopup();
+      
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsNativeAmount })
