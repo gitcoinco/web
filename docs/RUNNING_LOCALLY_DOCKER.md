@@ -193,6 +193,21 @@ If the script worked correctly, you will be asked for the following information:
 7. Congratulations, your local environment now supports your custom token!
 8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
 
+In case `tokenfactory.surge.sh` doesn't work, you can deploy a simple `ERC20` token to a testnet using [remix](https://remix.ethereum.org).
+
+```
+// SPDX-License-Identifier:MIT
+pragma solidity 0.8.10;
+
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.4.2/contracts/token/ERC20/ERC20.sol";
+
+contract Token is ERC20 {
+    constructor() ERC20("My Test Token", "TEST") {
+        _mint(msg.sender, 1_000_000 * (10 ** decimals()));
+    }
+}
+```
+
 ## Optional: Import bounty data from web3 to your database
 
 This can be useful if you'd like data to test with shared data:
