@@ -103,10 +103,10 @@
   </div>
   <div class="form-group mb-4">
     <div class="major_button_container">
-      <form id="export" method="POST" action="{% url 'account_settings' %}">
+      <form id="exportEarnings" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="earnings">
-        <input type="submit" class="btn btn-primary" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export" data-toggle="modal" data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Earnings" %} ({{profile.earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your earnings for @" %}{{ github_handle }}</p>
@@ -114,10 +114,10 @@
   </div>
   <div class="form-group mb-4">
     <div class="major_button_container">
-      <form id="export" method="POST" action="{% url 'account_settings' %}">
+      <form id="exportSpending" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="sent">
-        <input type="submit" class="btn btn-primary" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export" data-toggle="modal" data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Spending" %} ({{profile.sent_earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your spending for @" %}{{ github_handle }}</p>
@@ -167,6 +167,25 @@
       </form>
       <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
       <p class="font-body">{% trans "This action deletes all of your data" %}</p>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exportNotification" tabindex="-1" role="dialog" aria-labelledby="exportNotificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exportModalLabel">Download in progress</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        It may take a minute to download the export. We'll send it to your email when it's ready.
+        You can close the window now.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="closeModalButton" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
@@ -229,7 +248,18 @@
         }
       });
     });
+    $("#exportEarningsButton, #exportSpendingButton").on('click', function(e) {
+      e.preventDefault();
+
+      $(`#${this.id}`).addClass('bound')
+    });
+    $("#closeModalButton").on('click', function() {
+      $('.bound').unbind('click').trigger('click');
+    }).removeClass('bound');
   });
+  
+  
+  
 </script>
 <script src="{% static "v2/js/3box-sync.js" %}"></script>
 <script src="{% static "v2/js/pages/profile-backup.js" %}"></script>
