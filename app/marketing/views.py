@@ -543,7 +543,6 @@ def account_settings(request):
             export_type = request.POST.get('export_type', False)
             user_pk = request.user.pk
             export_earnings_to_csv.delay(user_pk, export_type)
-            return JsonResponse({'message' : 'Your request is processing and will be delivered to your email'}) 
 
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
@@ -556,6 +555,7 @@ def account_settings(request):
             logout_redirect = redirect(redirect_url)
             logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
             return logout_redirect
+
         elif request.POST.get('delete', False):
 
             email = profile.email
@@ -591,6 +591,7 @@ def account_settings(request):
             messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
+            
         else:
             msg = _('Error: did not understand your request')
 

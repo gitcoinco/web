@@ -13,6 +13,7 @@ from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email, send_mail
 from marketing.models import EmailSubscriber
 from marketing.utils import allowed_to_send_email
+from retail.emails import render_export_data_email, render_export_data_email_failed
 
 logger = get_task_logger(__name__)
 
@@ -52,7 +53,6 @@ def create_csv(export_type, profile, earnings):
 def send_csv(attachment, user_profile):
     to_email = user_profile.user.email
     from_email = settings.CONTACT_EMAIL
-    # subject = "Your exported csv is attached"
     html, text, subject = render_export_data_email(user_profile=user_profile)
     send_mail(
         from_email,
@@ -66,6 +66,21 @@ def send_csv(attachment, user_profile):
     )
 
 
+def send_download_failure_email(user_profile):
+    to_email = user_profile.user.email
+    from_email = settings.CONTACT_EMAIL
+    html, text, subject = render_export_data_email_failed(user_profile=user_profile)
+    send_mail(
+        from_email,
+        to_email,
+        subject,
+        text,
+        html,
+        from_name=f"@{user_profile.handle}",
+        categories=['transactional'],
+    )
+
+
 @app.shared_task(bind=True)
 def export_earnings_to_csv(self, user_pk, export_type):
     user = User.objects.get(pk=user_pk)
@@ -74,7 +89,10 @@ def export_earnings_to_csv(self, user_pk, export_type):
     earnings = earnings.filter(network='mainnet').order_by('-created_on')
 
     attachment = create_csv(export_type, profile, earnings)
-    send_csv(attachment=attachment, user_profile=profile)
+    if attachment:
+        send_csv(attachment=attachment, user_profile=profile)
+    else:
+        send_download_failure_email(profile)
 
 
 @app.shared_task(bind=True, rate_limit=rate_limit, soft_time_limit=600, time_limit=660, max_retries=1)
