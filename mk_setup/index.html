@@ -2514,6 +2514,19 @@ superuser. You can also create a new one using the following command:</p>
 <li>Congratulations, your local environment now supports your custom token!</li>
 <li>You may continue administering your token over at <a href="http://tokenfactory.surge.sh">http://tokenfactory.surge.sh</a>.  Hint:  Maybe you should mint some? 🤔</li>
 </ol>
+<p>In case <code>tokenfactory.surge.sh</code> doesn't work, you can deploy a simple <code>ERC20</code> token to a testnet using <a href="https://remix.ethereum.org">remix</a>.</p>
+<pre><code>// SPDX-License-Identifier:MIT
+pragma solidity 0.8.10;
+
+import &quot;https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.4.2/contracts/token/ERC20/ERC20.sol&quot;;
+
+contract Token is ERC20 {
+    constructor() ERC20(&quot;My Test Token&quot;, &quot;TEST&quot;) {
+        _mint(msg.sender, 1_000_000 * (10 ** decimals()));
+    }
+}
+</code></pre>
+
 <h2 id="optional-import-bounty-data-from-web3-to-your-database">Optional: Import bounty data from web3 to your database</h2>
 <p>This can be useful if you'd like data to test with shared data:</p>
 <pre><code class="shell">docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
