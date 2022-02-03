@@ -187,10 +187,11 @@ class Contribution(SuperModel):
             network = self.subscription.network
             if self.checkout_type == 'eth_zksync':
                 # zkSync checkout using their zksync-checkout library
-
-                # Get the tx hash
-                if not self.split_tx_id.startswith('sync-tx:') or len(self.split_tx_id) != 72:
-                    # Tx hash should start with `sync-tx:` and have a 64 character hash (no 0x prefix)
+                is_hash_tx = self.split_tx_id.startswith('0x') and len(self.split_tx_id) == 66
+                is_zksync_tx = self.split_tx_id.startswith('sync-tx:') and len(self.split_tx_id) == 72
+                # Get the tx hash (allow the tx to be in sync-tx: or 0x format)
+                if not is_hash_tx and not is_zksync_tx:
+                    # Tx hash should start with `sync-tx:` and have a 64 character hash (no 0x prefix) or be a full tx hash (66)
                     raise Exception('Unsupported zkSync transaction hash format')
                 tx_hash = self.split_tx_id.replace('sync-tx:', '0x') # replace `sync-tx:` prefix with `0x`
 
