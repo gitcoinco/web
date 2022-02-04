@@ -1,13 +1,12 @@
 import os
-import environ
 
 from django.apps import AppConfig, apps
 from django.conf import settings
 
+import environ
+import sentry_sdk
 from celery import Celery
 from celery.signals import setup_logging
-
-import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
 
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
