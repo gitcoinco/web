@@ -114,7 +114,7 @@ get_ipdb_shell: ## Drop into the active Django shell for inspection via ipdb.
 	@docker attach $(WEB_CONTAINER_ID)
 
 get_django_shell: ## Open a standard Django shell.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell_plus
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell
 
 get_shell_plus: ## Open a standard Django shell.
 	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell_plus
