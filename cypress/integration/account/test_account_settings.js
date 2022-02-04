@@ -22,13 +22,5 @@ describe('Account settings', () => {
   
       cy.url().should('contain', 'settings/email');
     });
-
-    it('can export earnings as a CSV file', () => {
-      cy.get('#dropdownProfile').trigger('mouseenter');
-      cy.get('.gc-profile-submenu').contains('Settings').click();
-  
-      cy.url().should('contain', 'settings/email');
-      cy.contains('Export').first().click();
-    });
   });
   
