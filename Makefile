@@ -71,6 +71,12 @@ fresh: ## Completely destroy all compose assets and start compose with a fresh b
 load_initial_data: ## Load initial development fixtures.
 	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py loaddata initial
 
+load_clr_grant_match_data:
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py loaddata app/app/fixtures/users.json
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py loaddata app/app/fixtures/profiles.json
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py loaddata initial
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py loaddata app/app/fixtures/clr_match.json
+
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
@@ -108,7 +114,7 @@ get_ipdb_shell: ## Drop into the active Django shell for inspection via ipdb.
 	@docker attach $(WEB_CONTAINER_ID)
 
 get_django_shell: ## Open a standard Django shell.
-	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell_plus
 
 get_shell_plus: ## Open a standard Django shell.
 	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell_plus

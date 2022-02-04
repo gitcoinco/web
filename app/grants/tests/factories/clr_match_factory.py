@@ -11,7 +11,7 @@ class CLRMatchFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CLRMatch
 
-    amount = factory.Faker('pyfloat')
+    amount = factory.Faker('pyfloat', positive=True)
     grant = factory.SubFactory(GrantFactory)
     test_payout_contribution = factory.SubFactory(ContributionFactory)
     payout_contribution = factory.SubFactory(ContributionFactory)
