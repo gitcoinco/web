@@ -6,7 +6,6 @@ import marketing.stats as stats
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
-from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from marketing.mails import new_bounty_daily as new_bounty_daily_email

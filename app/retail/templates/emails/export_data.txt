@@ -1,3 +1,4 @@
-@{{profile.handle}}
+Your Gitcoin CSV Download
 
-Your Exported CSV Is Attached
+The CSV file you requested from the Gitcoin platform is now ready for download. 
+Please download the attached file to see your data. If you have any issues, feel free to submit a support ticket at support.gitcoin.co/new/ 

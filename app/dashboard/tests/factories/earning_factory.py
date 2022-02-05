@@ -11,11 +11,8 @@ class EarningFactory(factory.django.DjangoModelFactory):
 
     value_usd = factory.Faker('pyfloat')
     network = 'mainnet'
-
     source = factory.SubFactory(GrantFactory)
     source_id = factory.Faker('pyint')
     source_type = factory.LazyAttribute(
         lambda obj: ContentType.objects.get_for_model(obj.source)
     )
-    
-    

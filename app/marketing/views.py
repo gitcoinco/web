@@ -23,8 +23,6 @@ import csv
 import json
 import logging
 
-from celery.result import ResultBase
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -32,7 +30,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.db.models import Avg, Max
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse

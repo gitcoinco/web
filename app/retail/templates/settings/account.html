@@ -3,7 +3,7 @@
 {% block settings_content %}
 <style type="text/css">
   body {
-    font-family: "Multi", sans-serif;
+    font-family: "Muli", sans-serif;
   }
 
   h4, h5 {
@@ -87,16 +87,16 @@
     padding-right: 40px;
   }
 
-  #export-modal-label {
+  #exportModalLabel {
     padding-bottom: 10px;
   }
 
-  #export-modal-body {
+  #exportModalBody {
     font-size: 18px;
     line-height: 1.5;
   }
 
-  #close-modal-button {
+  #closeModalButton {
     width: 145px;
     height: 45px;
     margin: 10px;
@@ -107,7 +107,7 @@
     text-align: center;
   }
 
-  @media screen and (min-width: 768px) { 
+  @media only screen and (min-width: 768px) { 
     .modal:before {
       display: inline-block;
       vertical-align: middle;
@@ -131,7 +131,7 @@
       text-align: center;
     }
 
-    #close-modal-button {
+    #closeModalButton {
       margin-bottom: 48px;
       min-width: 100%;
     }
@@ -260,16 +260,16 @@
             <div class="col-md-8 m-auto">
               <div class="modal-text-container">
                 <div>
-                  <h3 class="modal-title" id="export-modal-label">{% trans "Download in progress" %}</h3>
+                  <h3 class="modal-title" id="exportModalLabel">{% trans "Download in progress" %}</h3>
                 </div>
                 <div class="text-wrap">
-                  <p class="font-body" id="export-modal-body">
+                  <p class="font-body" id="exportModalBody">
                    {% blocktrans %} It may take a minute to download the export. We'll send it to your email when it's ready.
                     You can close the window now. {% endblocktrans %}
                   </p>
                 </div>
                 <div>
-                  <button type="button" class="btn btn-primary ml-auto" id="close-modal-button" data-dismiss="modal">{% trans "Close" %}</button>
+                  <button type="button" class="btn btn-primary ml-auto" id="closeModalButton" data-dismiss="modal">{% trans "Close" %}</button>
                 </div>
               </div>
             </div>
@@ -343,7 +343,7 @@
 
       $(`#${this.id}`).addClass('bound')
     });
-    $("#close-modal-button").on('click', function() {
+    $("#closeModalButton").on('click', function() {
       $('.bound').unbind('click').trigger('click');
     }).removeClass('bound');
   });
