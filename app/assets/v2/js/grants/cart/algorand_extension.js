@@ -36,9 +36,16 @@ const initAlgorandConnectionMyAlgo = async (grant, vm) => {
     return;
   }
   // 1. get connected accounts
-  const myAlgoConnect = new MyAlgoConnect();
-  const accountsSharedByUser = await myAlgoConnect.connect();
-  const addresses = accountsSharedByUser.map((el) => ({ address: el.address }));
+  let addresses;
+  const address = localStorage.getItem('addr');
+  if (address) {
+    addresses = [{ address }]
+  } else {
+    const myAlgoConnect = new MyAlgoConnect();
+    const accountsSharedByUser = await myAlgoConnect.connect();
+    addresses = accountsSharedByUser.map((el) => ({ address: el.address }));
+    localStorage.setItem("addr", addresses[0].address);
+  }
   vm.updatePaymentStatus(grant.grant_id, "waiting-on-user-input", null, {
     addresses,
   });
@@ -328,8 +335,9 @@ const contributeWithAlgorandExtensionMyAlgo = async (
 
   try {
     const myAlgoConnect = new MyAlgoConnect();
-    myAlgoConnect
-      .connect()
+    //myAlgoConnect
+    //  .connect()
+    new Promise((resolve) => resolve())
       .then(async () => {
         // step3: check if enough balance is present
         const balance = await AlgoSigner.algod({
