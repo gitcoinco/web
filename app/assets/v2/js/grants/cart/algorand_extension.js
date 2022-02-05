@@ -38,7 +38,7 @@ const initAlgorandConnectionMyAlgo = async (grant, vm) => {
   // 1. get connected accounts
   const myAlgoConnect = new MyAlgoConnect();
   const accountsSharedByUser = await myAlgoConnect.connect();
-  const addresses = accountsSharedByUser.map((el) => el.address);
+  const addresses = accountsSharedByUser.map((el) => ({ address: el.address }));
   vm.updatePaymentStatus(grant.grant_id, "waiting-on-user-input", null, {
     addresses,
   });
@@ -57,6 +57,15 @@ const initAlgorandConnectionWalletConnect = async (grant, vm) => {
     bridge: "https://bridge.walletconnect.org",
     qrcodeModal: WalletConnectQRCodeModal.default,
   });
+
+  if (connector.connected) {
+    const addresses = connector.accounts.map((el) => ({ address: el }));
+    console.log(addresses);
+    vm.updatePaymentStatus(grant.grant_id, "waiting-on-user-input", null, {
+      addresses,
+    });
+  }
+
   // Check if connection is already established
   if (!connector.connected) {
     // create new session
@@ -69,7 +78,9 @@ const initAlgorandConnectionWalletConnect = async (grant, vm) => {
       throw error;
     }
     // Get provided accounts and chainId
-    const { accounts, chainId } = payload.params[0];
+    const { accounts /*, chainId*/ } = payload.params[0]; // [1,2,...] 4160
+    const addresses = accounts.map((el) => ({ address: el }));
+    console.log(addresses);
     vm.updatePaymentStatus(grant.grant_id, "waiting-on-user-input", null, {
       addresses,
     });
@@ -81,7 +92,8 @@ const initAlgorandConnectionWalletConnect = async (grant, vm) => {
     }
 
     // Get updated accounts and chainId
-    const { accounts, chainId } = payload.params[0];
+    const { accounts /*, chainId*/ } = payload.params[0]; // [1,2,...] 4160
+    const addresses = accounts.map((el) => ({ address: el }));
     vm.updatePaymentStatus(grant.grant_id, "waiting-on-user-input", null, {
       addresses,
     });
@@ -140,7 +152,7 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
 
         if (token_name == "ALGO") {
           // ALGO token
-          if (Number(balance.amount) <= amount * 10 ** token.decimals) {
+          if (Number(balance.amount) <= amount * 10 ** 6) {
             _alert(
               { message: `Insufficent balance in address ${from_address}` },
               "danger"
@@ -191,6 +203,7 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
 
         // step5: get txnParams
 
+        console.log("Setting up params ...");
         const txParams = await AlgoSigner.algod({
           ledger: NETWORK,
           path: "/v2/transactions/params",
@@ -198,7 +211,7 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
         // Create an Algod client to get suggested transaction params
         const algodClient = new algosdk.Algodv2(
           "",
-          "https://api.testnt.algoexplorer.io",
+          "https://api.algoexplorer.io",
           ""
         );
         const params = await algodClient.getTransactionParams().do();
@@ -214,7 +227,7 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
             to: to_address.toUpperCase(),
             fee: txParams["fee"],
             type: "pay",
-            amount: amount * 10 ** token.decimals,
+            amount: amount * 10 ** 6,
             firstRound: txParams["last-round"],
             lastRound: txParams["last-round"] + 1000,
             genesisID: txParams["genesis-id"],
@@ -255,9 +268,10 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
               .then((tx) => {
                 contributeWithAlgorandExtensionCallback(
                   null,
-                  from_address,
                   tx.txId,
-                  grant
+                  grant,
+                  vm,
+                  from_address
                 );
               })
               .catch((e) => {
@@ -322,10 +336,9 @@ const contributeWithAlgorandExtensionMyAlgo = async (
           ledger: NETWORK,
           path: `/v2/accounts/${from_address}`,
         });
-
         if (token_name == "ALGO") {
           // ALGO token
-          if (Number(balance.amount) <= amount * 10 ** token.decimals) {
+          if (Number(balance.amount) <= amount * 10 ** 6) {
             _alert(
               { message: `Insufficent balance in address ${from_address}` },
               "danger"
@@ -394,7 +407,7 @@ const contributeWithAlgorandExtensionMyAlgo = async (
             },
             from: from_address.toUpperCase(),
             to: to_address.toUpperCase(),
-            amount: amount * 10 ** token.decimals,
+            amount: amount * 10 ** 6,
             note: enc.encode("contributing to gitcoin grant"),
             type: "pay",
           };
@@ -423,13 +436,14 @@ const contributeWithAlgorandExtensionMyAlgo = async (
             // step7: broadcast txn
             algodClient
               .sendRawTransaction(stx.blob)
-              .do() // ***
+              .do()
               .then((tx) => {
                 contributeWithAlgorandExtensionCallback(
                   null,
-                  from_address,
                   tx.txId,
-                  grant
+                  grant,
+                  vm,
+                  from_address
                 );
               })
               .catch((e) => {
@@ -507,7 +521,7 @@ const contributeWithAlgorandExtensionWalletConnect = async (
 
         if (token_name == "ALGO") {
           // ALGO token
-          if (Number(balance.amount) <= amount * 10 ** token.decimals) {
+          if (Number(balance.amount) <= amount * 10 ** 6) {
             _alert(
               { message: `Insufficent balance in address ${from_address}` },
               "danger"
@@ -576,7 +590,7 @@ const contributeWithAlgorandExtensionWalletConnect = async (
             },
             from: from_address.toUpperCase(),
             to: to_address.toUpperCase(),
-            amount: amount * 10 ** token.decimals,
+            amount: amount * 10 ** 6,
             note: enc.encode("contributing to gitcoin grant"),
           });
         } else {
@@ -630,9 +644,10 @@ const contributeWithAlgorandExtensionWalletConnect = async (
           .then((tx) => {
             contributeWithAlgorandExtensionCallback(
               null,
-              from_address,
               tx.txId,
-              grant
+              grant,
+              vm,
+              from_address
             );
           })
           .catch((e) => {
