@@ -1,6 +1,6 @@
 describe('Account settings', () => {
   before(() => {
-    cy.setupMetamask();
+    cy.setupWallet();
   });
   
   beforeEach(() => {
@@ -9,10 +9,6 @@ describe('Account settings', () => {
   
   afterEach(() => {
     cy.logout();
-  });
-  
-  after(() => {
-    cy.clearWindows();
   });
   
   it('can navigate to the account settings menu', () => {
