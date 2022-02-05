@@ -24,12 +24,9 @@ along with this program. If not, see
   <h1>{% trans "Your CSV download has failed" %}</h1>
 
   <p>
-    <a href="{{profile.url}}">@{{profile.handle}}</a>
-      <br><br>
-        <code style="word-wrap: break-word;">
-          {% trans "Unfortunately your CSV download has failed — sorry for the inconvenience!
-          Please retry your download or submit a <a href="https://support.gitcoin.co/new/">support ticket</a> if a retry has already failed." %}
-        </code>
+    <br><br>
+      {% blocktrans %} Unfortunately your CSV download has failed — sorry for the inconvenience!
+      Please retry your download or submit a <a href="https://support.gitcoin.co/new/">support ticket</a> if a retry has already failed. {% endblocktrans %}
     </p>
   <br>
 </div>

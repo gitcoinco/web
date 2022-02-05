@@ -98,7 +98,7 @@ def render_export_data_email(user_profile):
     params = {'profile': user_profile}
     response_html = premailer_transform(render_to_string("emails/export_data.html", params))
     response_txt = render_to_string("emails/export_data.txt", params)
-    subject = _("Your exported CSV is attached")
+    subject = _("Your Gitcoin CSV Download")
 
     return response_html, response_txt, subject
 
@@ -107,7 +107,7 @@ def render_export_data_email_failed(user_profile):
     params = {'profile': user_profile}
     response_html = premailer_transform(render_to_string("emails/export_data_failed.html", params))
     response_txt = render_to_string("emails/export_data_failed.txt", params)
-    subject = _("Your CSV download has failed")
+    subject = _("Your CSV Download Has Failed")
 
     return response_html, response_txt, subject
 

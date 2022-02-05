@@ -21,14 +21,12 @@ along with this program. If not, see
 {% block content %}
 <div id="content-body">
 
-  <h1>{% trans "Your Exported CSV Is Attached" %}</h1>
+  <h1>{% trans "Your Gitcoin CSV Download" %}</h1>
 
   <p>
-    <a href="{{profile.url}}">@{{profile.handle}}</a>
-      <br><br>
-        <code style="word-wrap: break-word;">
-          {% trans "Your Exported CSV Is Attached" %}
-        </code>
+    <br><br>
+      {% blocktrans %} The CSV file you requested from the Gitcoin platform is now ready for download. 
+      Please download the attached file to see your data. If you have any issues, feel free to submit a <a href="https://support.gitcoin.co/new/">support ticket</a>. {% endblocktrans %}
     </p>
   <br>
 </div>
