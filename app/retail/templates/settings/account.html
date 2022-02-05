@@ -3,7 +3,7 @@
 {% block settings_content %}
 <style type="text/css">
   body {
-    font-family: "Muli", sans-serif;
+    font-family: "Multi", sans-serif;
   }
 
   h4, h5 {
@@ -72,6 +72,8 @@
   }
 
   .modal-content {
+    font-family: 'Libre Franklin', sans-serif;
+
     max-width: 750px;
     min-height: 336px;
   }
@@ -101,9 +103,44 @@
     font-size: 16px;
   }
 
+  .modal {
+    text-align: center;
+  }
+
+  @media screen and (min-width: 768px) { 
+    .modal:before {
+      display: inline-block;
+      vertical-align: middle;
+      content: " ";
+      height: 100%;
+    }
+  }
+
+  .modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+  }
+
   @media only screen and (max-width: 767px) {
     .placeholder-image {
+      margin-top: 32px;
+      margin-bottom: 48px;
+      padding-left: 15px;
+      padding-right: 15px;
+      text-align: center;
+    }
+
+    #close-modal-button {
+      margin-bottom: 48px;
+      min-width: 100%;
+    }
+
+    .modal-text-container {
       padding-left: 0;
+      padding-right: 0;
+      margin-left: 18px;
+      margin-right: 18px; 
     }
   }
 </style>
@@ -216,24 +253,24 @@
     <div class="modal-content">
       <div class="modal-body d-flex align-items-center">
         <div class="container-fluid">
-          <div class="row text-md-left text-lg-left text-center">
+          <div class="row text-left">
             <div class="placeholder-image col-md-4">
               <img src="{% static 'v2/images/placeholder_modal.png' %}" width="220" height="240">
             </div>
             <div class="col-md-8 m-auto">
               <div class="modal-text-container">
-              <div>
-                <h3 class="modal-title" id="export-modal-label">Download in progress</h3>
-              </div>
-              <div class="text-wrap">
-                <p id="export-modal-body">
-                  It may take a minute to download the export. We'll send it to your email when it's ready.
-                  You can close the window now.
-                </p>
-              </div>
-              <div>
-                <button type="button" class="btn btn-primary ml-auto" id="close-modal-button" data-dismiss="modal">Close</button>
-              </div>
+                <div>
+                  <h3 class="modal-title" id="export-modal-label">{% trans "Download in progress" %}</h3>
+                </div>
+                <div class="text-wrap">
+                  <p class="font-body" id="export-modal-body">
+                    It may take a minute to download the export. We'll send it to your email when it's ready.
+                    You can close the window now.
+                  </p>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-primary ml-auto" id="close-modal-button" data-dismiss="modal">{% trans "Close" %}</button>
+                </div>
               </div>
             </div>
           </div>
