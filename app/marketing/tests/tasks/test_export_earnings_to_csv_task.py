@@ -104,23 +104,11 @@ class TestSendCSV:
             assert mock_send_mail.call_count == 1
             assert mock_send_mail.call_args[0][0] == settings.CONTACT_EMAIL
             assert mock_send_mail.call_args[0][1] == profile.user.email
-            assert mock_send_mail.call_args[0][2] == 'Your exported CSV is attached'
+            assert mock_send_mail.call_args[0][2] == 'Your Gitcoin CSV Download'
 
             assert mock_send_mail.call_args[1]['from_name'] == f'@{profile.handle}'
             assert mock_send_mail.call_args[1]['categories'] == ['transactional']
             assert mock_send_mail.call_args[1]['csv'] == path
-
-    def test_send_csv_email_failure(self, profile):
-        path = 'app/assets/tmp/test-file.csv'
-
-        with patch('marketing.tasks.send_mail') as mock_send_mail:
-            with pytest.raises(Exception):
-                send_csv(profile)
-
-            assert mock_send_mail.call_count == 1
-            assert mock_send_mail.call_args[0][0] == settings.CONTACT_EMAIL
-            assert mock_send_mail.call_args[0][1] == profile.user.email
-            assert mock_send_mail.call_args[0][2] == 'Your download failed'
 
 
 
