@@ -7301,3 +7301,7 @@ def mautic_profile_save(request):
         },
         status=200
     )
+
+@staff_member_required
+def export_grants_ethelo(request):
+    return TemplateResponse(request, 'export_grants_ethelo.html')

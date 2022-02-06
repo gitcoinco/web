@@ -740,6 +740,7 @@ urlpatterns = [
         retail.emails.grant_match_distribution_final_txn,
         name='clr_match_claim'
     ),
+    re_path(r'^_administration/export_grants_ethelo', dashboard.views.export_grants_ethelo, name='export_grants_ethelo'),
 
     # docs
     re_path(r'^_administration/docs/', include('django.contrib.admindocs.urls')),
