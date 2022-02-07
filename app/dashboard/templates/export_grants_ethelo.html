@@ -1,19 +1,5 @@
-<h1>Export Grants to Ethelo</h1>
-<span>
-    Enter the range of grant values you wish to export into the Ethelo tool. If you're unsure,
-    you can find the range of grant values in the "PK" column <a href="/_administrationgrants/grant">here</a>.
-</span>
-
-<ul>
-    <li>
-        <label for="start_grant">Start Grant (Inclusive)</label>
-        <input type="number" name="start_grant" id="start_grant" value="0" />
-    </li>
-
-    <li>
-        <label for="end_grant">End Grant (Inclusive)</label>
-        <input type="number" name="end_grant" id="end_grant" value="1" />
-    </li>
-</ul>
-
-<button>Export as JSON</button>
+<form action="#" method="get">
+    <input type="number" value="0" name="start_grant_number" size="1"/>
+    <input type="number" value="1" name="end_grant_number" size="1"/>
+    <input type="submit" class="btn" value="Click" name="download_json">
+</form>

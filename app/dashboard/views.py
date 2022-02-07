@@ -41,6 +41,7 @@ from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.serializers import serialize
 from django.db.models import Count, Q
 from django.db.utils import IntegrityError
 from django.forms import URLField
@@ -85,6 +86,7 @@ from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
 )
+from dashboard import ethelo
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
@@ -7304,4 +7306,15 @@ def mautic_profile_save(request):
 
 @staff_member_required
 def export_grants_ethelo(request):
+    if(request.GET.get('download_json')):
+        start_grant = int(request.GET.get('start_grant_number'))
+        end_grant = int(request.GET.get('end_grant_number'))
+        grants_dict = ethelo.get_grants_dict(start_grant, end_grant)
+        
+        json_str = serialize('json', grants_dict)
+        response = HttpResponse(json_str, content_type='application/json')
+        response['Content-Disposition'] = 'attachment; filename=grants_export_for_ethelo.json'
+
+        return response
+
     return TemplateResponse(request, 'export_grants_ethelo.html')
