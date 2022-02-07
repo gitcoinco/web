@@ -41,7 +41,6 @@ def _format_grant(grant: Grant) -> dict:
         "slug": f"grant_{grant.pk}",
         "title": grant.title,
         "info": info,
-        "optional_category_slug": "TODO:OPTION_CATEGORY_SLUG",
         "display_data": {
             "url": grant.url,
             "location": grant.region,
