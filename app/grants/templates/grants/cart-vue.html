@@ -190,6 +190,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           <i class="fa fa-times pr-1" aria-hidden="true"></i> Clear all carts
                         </li>
                       </div>
+                      <b-dropdown no-caret variant="outline-white" toggle-class="text-primary text-primary-hover mt-2" text="Share" menu-class="shadow-sm p-0 mt-1">
+                        <template v-slot:button-content>
+                          <span class="text-primary">
+                            Share
+                            <i class="fa fa-share-alt pl-1" aria-hidden="true"></i>
+                          </span>
+                        </template>
+                        <b-dropdown-item target="_blank" link-class="p-2" rel="noopener noreferrer" @click="twitterShareLink()">
+                          <i class="fab fa-twitter px-2" aria-hidden="true"></i>
+                          Twitter
+                        </b-dropdown-item>
+                        <b-dropdown-item link-class="p-2" @click="shareCart" >
+                          <i class="fal fa-link px-2" aria-hidden="true"></i>
+                          Copy Link
+                        </b-dropdown-item>
+                      </b-dropdown>
                     </template>
                   </b-tabs>
                 </div>

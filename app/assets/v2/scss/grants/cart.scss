@@ -204,16 +204,7 @@
     position: absolute;
     right: 1rem;
   }
-
-  .text-primary::before {
-    content: '\f86c';
-    font-family: "Font Awesome 5 Pro", sans-serif;
-    color: white;
-    position: absolute;
-    right: 2rem;
-    transform: rotate(90deg) scale(1.5);
-  }
-
+  
   .btn-primary {
     padding-top: 0.65rem;
     padding-bottom: 0.65rem;

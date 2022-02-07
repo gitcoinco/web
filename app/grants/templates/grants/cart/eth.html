@@ -1,7 +1,7 @@
 <!-- Ethereum flow. used zksync and bulk checkout -->
 {% load static i18n %}
 <b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16" style="padding-bottom: 2.5rem;"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
 
   <div class="row">
 
@@ -13,7 +13,7 @@
 
           <!-- Donation Token -->
           <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
-            <div class="my-auto mr-3">Choose currency</div>
+            <div class="my-auto mr-3">Amount/Currency</div>
             <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
               <template v-slot:option="option">
                 <span class="font-weight-semibold">[[ option.symbol ]]</span>
@@ -21,31 +21,11 @@
             </v-select>
           </div>
 
-          <div class="col-12 col-md-7 d-flex justify-content-between px-0">
+          <div class="col-12 col-md-7 d-flex justify-content-around px-0">
             <!-- Save Collection -->
             <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
               <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
-              Save Collection
-            </div>
-
-            <!-- Share Cart -->
-            <div class="text-primary my-auto cursor-pointer">
-              <b-dropdown no-caret variant="outline-white" toggle-class="text-primary text-primary-hover mt-2" text="Share" menu-class="shadow-sm p-0 mt-1">
-                <template v-slot:button-content>
-                  <span class="text-primary">
-                    Share
-                    <i class="fa fa-share-alt pl-1" aria-hidden="true"></i>
-                  </span>
-                </template>
-                <b-dropdown-item target="_blank" link-class="p-2" rel="noopener noreferrer" @click="twitterShareLink()">
-                  <i class="fab fa-twitter px-2" aria-hidden="true"></i>
-                  Twitter
-                </b-dropdown-item>
-                <b-dropdown-item link-class="p-2" @click="shareCart" >
-                  <i class="fal fa-link px-2" aria-hidden="true"></i>
-                  Copy Link
-                </b-dropdown-item>
-              </b-dropdown>
+              Save to Collection
             </div>
 
             <!-- Clear Cart -->
@@ -104,7 +84,7 @@
 
               <!-- ALL DEVICES: CLR match amount-->
               <div class="col col-md-3 d-block mt-3 mt-md-0 text-md-right">
-                <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div>
+                <!-- <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div> -->
                 <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
                 <div v-else>
                   <span class="text-success" v-if="grant.grant_donation_clr_match">

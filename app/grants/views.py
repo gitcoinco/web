@@ -2224,9 +2224,9 @@ def grants_cart_view(request):
         context['is_fully_verified'] = (is_brightid_verified and profile.sms_verification and \
                                         profile.is_poap_verified and profile.is_twitter_verified and \
                                         profile.is_google_verified and profile.is_poh_verified)
-        context['gas_prices'] = {
-            'polygon': JSONStore.objects.get(view='gas_prices', key='polygon').data['ProposeGasPrice']
-        }
+        # context['gas_prices'] = {
+        #     'polygon': JSONStore.objects.get(view='gas_prices', key='polygon').data['ProposeGasPrice']
+        # }
     else:
         return redirect('/login/github/?next=' + request.get_full_path())
 
