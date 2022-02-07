@@ -1,5 +1,18 @@
+<h1>Export Grants for Ethelo</h1>
+<p>You can find the grant numbers <a href="/_administrationgrants/grant/">here</a> using the "PK" column.</p>
+
 <form action="#" method="get">
-    <input type="number" value="0" name="start_grant_number" size="1"/>
-    <input type="number" value="1" name="end_grant_number" size="1"/>
-    <input type="submit" class="btn" value="Click" name="download_json">
+    <div>
+        <label>Start Grant Number (Inclusive)</label>
+        <input type="number" value="0" name="start_grant_number" size="1"/>
+    </div>
+
+    <div>
+        <label>End Grant Number (Inclusive)</label>
+        <input type="number" value="" name="end_grant_number" size="1"/>
+    </div>
+    
+    
+    <p>Note: if "End Grant Number" is empty, all grants following the start will be exported.</p>
+    <input type="submit" class="btn" value="Download Grants JSON" name="download_json">
 </form>
