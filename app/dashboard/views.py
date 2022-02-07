@@ -7314,7 +7314,7 @@ def export_grants_ethelo(request):
 
     end_grant = int(end_grant) if len(end_grant) > 0 else None
     grants_dict = ethelo.get_grants_dict(start_grant, end_grant)
-    json_str = serialize('json', grants_dict)
+    json_str = json.dumps(grants_dict)
     response = HttpResponse(json_str, content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename=grants_export_for_ethelo.json'
 
