@@ -481,10 +481,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     clr_calc_start_time = timezone.now()
 
     # We could add a field to GrantCLR to track the token symbol and token amount
-    # If we have USD value of ERC-20, total_pot = (ERC-20 amount * USD value)
-    # Prediction is ran every three hours so it should be somewhat close to actual value
-    # On each prediction save value and percentage of total_pot to CLRMatch
-    # On final payout use calculated percentage of total_pot to payout the percentage of the ERC-20 amount that was pledged
+    # If we fetch USD value of ERC-20, on this script we can get a value for total_pot = (ERC-20 amount * USD value)
+    # Prediction is ran every three hours so it should be updated regularly
+    # On each prediction save USD Value to prediction_curve
+    # When CLRMatch is created use (USD value from prediction curve) / total_pot(ERC-20 amount * USD value) to calculate percent of total_pot
+    # Use percent of total_pot to get # of ERC-20 tokens(UNI)
 
     total_pot = float(clr_round.total_pot)
     v_threshold = float(clr_round.verified_threshold)
