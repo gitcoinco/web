@@ -37,6 +37,11 @@ def _format_grant(grant: Grant) -> dict:
     else:
         info = grant.description
 
+    # twitter_handle_2 is an empty string if only 1 twitter
+    twitters = [grant.twitter_handle_1]
+    if grant.twitter_handle_2:
+        twitters.append(grant.twitter_handle_2)
+
     return {
         "slug": f"grant_{grant.pk}",
         "title": grant.title,
@@ -44,8 +49,8 @@ def _format_grant(grant: Grant) -> dict:
         "display_data": {
             "url": grant.url,
             "location": grant.region,
-            "wallet_address": "see grant URL",  # TODO: there are so many wallet addresses..... which one do we display?
-            "twitters": [grant.twitter_handle_1, grant.twitter_handle_2],
+            "payout_address": grant.admin_address,
+            "twitters": twitters,
             "grant_number": grant.pk,
         }
     }
