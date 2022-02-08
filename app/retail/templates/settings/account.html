@@ -66,7 +66,7 @@
     display: none;
   }
 
-  .modal-dialog {
+  /* .modal-dialog {
     max-width: 750px;
     min-height: 336px;
   }
@@ -105,9 +105,9 @@
 
   .modal {
     text-align: center;
-  }
+  } */
 
-  @media only screen and (min-width: 768px) { 
+  /* @media only screen and (min-width: 768px) { 
     .modal:before {
       display: inline-block;
       vertical-align: middle;
@@ -140,9 +140,9 @@
       padding-left: 0;
       padding-right: 0;
       margin-left: 18px;
-      margin-right: 18px; 
+      margin-right: 18px; c
     }
-  }
+  } */
 </style>
 <form id="settings" method="POST" action="{% url 'account_settings' %}" class="col-md-8 m-auto">
 
@@ -184,7 +184,7 @@
       <form id="exportEarnings" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="earnings">
-        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export" data-toggle="modal" data-target="#exportNotification">
+        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export">
       </form>
       <h5 class="font-subheader">{% trans "Export Earnings" %} ({{profile.earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your earnings for @" %}{{ github_handle }}</p>
@@ -195,7 +195,7 @@
       <form id="exportSpending" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="sent">
-        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export" data-toggle="modal" data-target="#exportNotification">
+        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export">
       </form>
       <h5 class="font-subheader">{% trans "Export Spending" %} ({{profile.sent_earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your spending for @" %}{{ github_handle }}</p>
@@ -248,7 +248,7 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="exportNotification" tabindex="-1" role="dialog" aria-labelledby="exportNotificationModalLabel" aria-hidden="true">
+<div class="modal" id="exportNotification" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body d-flex align-items-center">
@@ -338,14 +338,21 @@
         }
       });
     });
-    $("#exportEarningsButton, #exportSpendingButton").on('click', function(e) {
+   
+  
+  });
+  $("#exportEarnings").on('submit', function(e) {
       e.preventDefault();
-
-      $(`#${this.id}`).addClass('bound')
-    });
-    $("#closeModalButton").on('click', function() {
-      $('.bound').unbind('click').trigger('click');
-    }).removeClass('bound');
+      const data = $(this).serialize();
+    
+    $.ajax({
+      url:  '/settings/account',
+      type:  'POST',
+      data,
+    })
+      .done(function() {
+        $('#exportNotification').modal('show');
+      });
   });
   
   
