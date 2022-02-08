@@ -1165,8 +1165,8 @@ def users_fetch(request):
         if user.is_org:
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
-            sum_eth = profile_dict.get('as_dict').get('sum_eth_on_repos')
-            profile_json['sum_eth_on_repos'] = round(sum_eth if sum_eth is not None else 0, 2)
+            sum_eth = profile_dict.get('as_dict').get('sum_usd_on_repos')
+            profile_json['sum_usd_on_repos'] = round(sum_eth if sum_eth is not None else 0, 2)
             profile_json['tribe_description'] = user.tribe_description
             profile_json['rank_org'] = user.rank_org
         else:
@@ -3981,7 +3981,7 @@ def profile(request, handle, tab=None):
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
-            context['sum_eth_on_repos'] = profile.get_eth_sum(bounties=orgs_bounties)
+            context['sum_usd_on_repos'] = profile.get_sum(bounties=orgs_bounties, currency='usd')
             context['works_with_org'] = profile.as_dict.get('works_with_org', [])
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
             what = f'tribe:{profile.handle}'
