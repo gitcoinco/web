@@ -58,6 +58,8 @@ from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
 
+from .views import redirect_view
+
 urlpatterns = [
 
     # oauth2 provider
@@ -770,9 +772,9 @@ urlpatterns = [
     url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
     # quadratic lands
-    path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
-    re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
-    re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
+    path('quadraticlands/', redirect_view),
+    re_path(r'^quadraticlands/?', redirect_view),
+    re_path(r'^quadraticland/?', redirect_view),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
