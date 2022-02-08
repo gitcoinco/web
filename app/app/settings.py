@@ -150,8 +150,7 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
-    'passport',
-    'quadraticlands'
+    'passport'
 ]
 
 MIDDLEWARE = [
@@ -184,7 +183,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'quadraticlands/templates'],
+    'DIRS': ['retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
