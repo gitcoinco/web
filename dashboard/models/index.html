@@ -6772,20 +6772,21 @@ for a particular user
     token (str): The profile's slack token.
     channel (str): The profile's slack channel.
     repos (list of str): The profile's github repositories to track.</p>
-<h3 id="dashboard.models.Profile.get_eth_sum">get_eth_sum</h3>
+<h3 id="dashboard.models.Profile.get_sum">get_sum</h3>
 
-<pre><code class="python">Profile.get_eth_sum(self, sum_type='collected', network='mainnet', bounties=None)
+<pre><code class="python">Profile.get_sum(self, sum_type='collected', network='mainnet', bounties=None, currency='usd')
 </code></pre>
 
-<p>Get the sum of collected or funded ETH based on the provided type.</p>
+<p>Get the sum of collected or funded ETH or USD based on the provided type.</p>
 <p>Args:
     sum_type (str): The sum to lookup.  Defaults to: collected.
     network (str): The network to query results for.
         Defaults to: mainnet.
     bounties (dashboard.models.BountyQuerySet): Override the BountyQuerySet this function processes.
-        Defaults to: None.</p>
+        Defaults to: None.
+    currency (str): The currency to get sum in. Either ETH or USD</p>
 <p>Returns:
-    float: The total sum of all ETH of the provided type.</p>
+    float: The total sum of all ETH or USD of the provided type.</p>
 <h3 id="dashboard.models.Profile.get_all_tokens_sum">get_all_tokens_sum</h3>
 
 <pre><code class="python">Profile.get_all_tokens_sum(self, sum_type='collected', network='mainnet', bounties=None)
