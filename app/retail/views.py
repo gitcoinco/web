@@ -805,7 +805,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None, p
             activities = Activity.objects.filter(pk=what.replace('activity:', ''))
             filter_applied = True
         except ValueError:
-            # ValueError might be thrown if 'activity' is not a valid ok value (contains for example sting)
+            # ValueError might be thrown if 'activity' is not a valid pk value (contains for example a string)
             raise Http404
 
     # Defaults
