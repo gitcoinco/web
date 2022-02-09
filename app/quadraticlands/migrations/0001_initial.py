@@ -3,7 +3,7 @@
 import django.contrib.postgres.fields.jsonb
 from django.db import migrations, models
 import django.db.models.deletion
-import quadraticlands.models
+# import quadraticlands.models
 
 
 class Migration(migrations.Migration):
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_on', models.DateTimeField(auto_now=True)),
-                ('claim_total', quadraticlands.models.Uint256Field(default=0)),
+                ('claim_total', models.DateTimeField(auto_now=True)),
                 ('distribution', django.contrib.postgres.fields.jsonb.JSONField(default=dict)),
                 ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='initial_distribution', to='dashboard.Profile')),
             ],
