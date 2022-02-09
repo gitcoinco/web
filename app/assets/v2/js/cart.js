@@ -35,8 +35,10 @@ let grantData = []; // data for grants in cart, initialized in mounted hook
 Vue.component('eth-checkout-button', {
   delimiters: [ '[[', ']]' ],
   template: '#eth-checkout-template',
-  props: [ 'maxCartItems', 'network', 'isZkSyncDown', 'donationInputs', 'onPolygonUpdate', 'currentTokens', 'grantsByTenant',
-    'grantsUnderMinimalContribution', 'isCheckoutOngoing', 'standardCheckout', 'isPolygonDown', 'onZkSyncUpdate' ]
+  props: [
+    'maxCartItems', 'network', 'isZkSyncDown', 'isPolygonDown', 'onPolygonUpdate', 'onZkSyncUpdate', 'donationInputs',
+    'currentTokens', 'grantsByTenant', 'grantsUnderMinimalContribution', 'activeCheckout', 'standardCheckout'
+  ]
 });
 
 
@@ -73,7 +75,6 @@ Vue.component('grants-cart', {
       include_for_clr: false,
       windowWidth: window.innerWidth,
       userAddress: undefined,
-      isCheckoutOngoing: false, // true once user clicks "Standard checkout" button
       activeCheckout: undefined, // standard / polygon / zksync
       maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,

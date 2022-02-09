@@ -201,6 +201,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <!-- Sticky checkout for ETH -->
             <div v-if="grantsCountByTenant.ETH !== undefined" class="bg-white border-grey border-top-2 bottom-0 px-2 py-4 position-sticky text-center w-100 d-block d-md-none">
               <eth-checkout-button 
+                :active-checkout="activeCheckout"
+                :on-polygon-update="onPolygonUpdate"
+                :on-zk-sync-update="onZkSyncUpdate"
                 :standard-checkout="standardCheckout"
                 :is-zk-sync-down="isZkSyncDown"
                 :is-polygon-down="isPolygonDown"
@@ -238,7 +241,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <b-dropdown-item-button>
           <div>
             <button class="btn p-0 checkout-logo" id='js-fundGrants-button'
-              @click="standardCheckout" :disabled="isCheckoutOngoing || grantsUnderMinimalContribution.length > 0"
+              @click="standardCheckout" :disabled="activeCheckout === 'standard' || grantsUnderMinimalContribution.length > 0"
             >
     
               <svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -254,6 +257,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <b-dropdown-item-button v-if="!isPolygonDown">
           <grants-cart-ethereum-polygon
             inline-template
+            @polygon-data-updated="onPolygonUpdate"
             :current-tokens="currentTokens"
             :donation-inputs="donationInputs"
             :max-cart-items="100"
@@ -361,6 +365,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <b-dropdown-item-button v-if="!isZkSyncDown">
           <grants-cart-ethereum-zksync
             inline-template
+            @zksync-data-updated="onZkSyncUpdate"
             :current-tokens="currentTokens"
             :donation-inputs="donationInputs"
             :max-cart-items="maxCartItems"

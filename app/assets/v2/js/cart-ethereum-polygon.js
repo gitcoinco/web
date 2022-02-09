@@ -327,7 +327,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       let networkId = appCart.$refs.cart.networkId;
 
-      if (networkId !== POLYGON_TESTNET_NETWORK_ID && networkId !== POLYGON_MAINNET_NETWORK_ID && appCart.$refs.cart.isCheckoutOngoing == true) {
+      if (networkId !== POLYGON_TESTNET_NETWORK_ID && networkId !== POLYGON_MAINNET_NETWORK_ID && appCart.$refs.cart.activeCheckout === 'standard') {
         return;
       }
 
