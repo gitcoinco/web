@@ -965,7 +965,7 @@ Vue.component('grants-cart', {
     async initializeStandardCheckout() {
       // Prompt web3 login if not connected
       if (!provider) {
-        return await onConnect();
+        await await onConnect();
       }
 
       let networkId = String(Number(web3.eth.currentProvider.chainId));
