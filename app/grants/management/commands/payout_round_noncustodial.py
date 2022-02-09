@@ -54,7 +54,7 @@ class Command(BaseCommand):
         parser.add_argument('what',
             default='verify',
             type=str,
-            help="what do we do? (finalize, payout_test, prepare_final_payout, verify, set_payouts_test, set_payouts, notify_users)"
+            help="what do we do? (finalize, payout_test, prepare_final_payout, verify, set_payouts, notify_users)"
         )
 
         # Required if what != verify
@@ -85,7 +85,7 @@ class Command(BaseCommand):
         process_all = options['process_all']
         grant_payout_pk = options['grant_payout_pk']
 
-        valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts_test', 'set_payouts', 'notify_users']
+        valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts', 'notify_users']
         if what not in valid_whats:
             raise Exception(f"Invalid value {what} for 'what' arg")
         if not options['clr_round'] or not options['clr_pks']:
@@ -176,6 +176,7 @@ class Command(BaseCommand):
             payout_matches = scheduled_matches.filter(ready_for_payout=False)
             payout_matches_amount = sum(sm.amount for sm in payout_matches)
             print(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
+            print(f"All these are users would need KYC. Do not do this for mainnet")
             print('------------------------------')
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
@@ -186,32 +187,41 @@ class Command(BaseCommand):
             print('promoted')
 
         # Set payouts (round must be finalized first) ----------------------------------------------
-        if what in ['set_payouts_test', 'set_payouts']:
+        if what in ['set_payouts']:
             is_real_payout = what == 'set_payouts'
 
-            kwargs = {}
-            key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
-            kwargs[key] = False
-            not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
-            kwargs[key] = True
-            kwargs2 = {}
-            key2 = 'test_payout_tx' if not is_real_payout else 'payout_tx'
-            kwargs2[key2] = ''
-            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(**kwargs2)
-            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(**kwargs2)
-            total_not_ready_matches = sum(sm.amount for sm in not_ready_scheduled_matches)
-            total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
+            # matches which have already been paid manually
+            paid_scheduled_matches = scheduled_matches.filter(ready_for_payout=True).exclude(payout_tx='')
+
+            unpaid_scheduled_matches = scheduled_matches.filter(payout_tx='')
+
+            # matches which need KYC but still should be uploaded to contract
+            pending_kyc_unpaid_matches = unpaid_scheduled_matches.filter(ready_for_payout=False)
+
+            # matches which don't need KYC but need to be uploaded to contract
+            no_kyc_unpaid_matches = unpaid_scheduled_matches.filter(ready_for_payout=True)
+
             total_paid_matches = sum(sm.amount for sm in paid_scheduled_matches)
-            print(f"there are {not_ready_scheduled_matches.count()} NOT READY Match Payments already created worth ${round(total_not_ready_matches,2)} {network} {token_name}")
-            print(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments already created worth ${round(total_owed_matches,2)} {network} {token_name}")
-            print(f"there are {paid_scheduled_matches.count()} PAID Match Payments already created worth ${round(total_paid_matches,2)} {network} {token_name}")
-            print('------------------------------')
-            target_matches = unpaid_scheduled_matches if not process_all else scheduled_matches
+            total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
+            total_pending_kyc_matches = sum(sm.amount for sm in pending_kyc_unpaid_matches)
+            total_no_kyc_matches = sum(sm.amount for sm in no_kyc_unpaid_matches)
+
+
+            print('=============================')
+            print(f"there are {paid_scheduled_matches.count()} PAID Match (MADE MANUALLY/ALREADY UPLOADED) ${round(total_paid_matches,2)} {network} {token_name}")
+
+            print(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments worth ${round(total_owed_matches,2)} {network} {token_name} of which: ")
+            print(f"------> {pending_kyc_unpaid_matches.count()} UNPAID Matches PENDING KYC ${round(total_pending_kyc_matches,2)}")
+            print(f"------> {no_kyc_unpaid_matches.count()} UNPAID Matches SKIPPING KYC ${round(total_no_kyc_matches,2)}")
+
+            print('=============================')
+
+            target_matches = unpaid_scheduled_matches
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
 
-            print(f"continuing with {target_matches.count()} unpaid scheduled payouts")
+            print(f"continuing with {target_matches.count()} unpaid scheduled payouts (pending KYC + skipped KYC)")
 
             if is_real_payout:
                 user_input = input(f"THIS IS A REAL PAYOUT FOR {network} {token_name}. ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
