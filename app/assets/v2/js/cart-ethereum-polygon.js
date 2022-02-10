@@ -98,7 +98,7 @@ Vue.component('grantsCartEthereumPolygon', {
       } else {
         appCart.$refs.cart.networkId = POLYGON_TESTNET_NETWORK_ID;
         appCart.$refs.cart.network = 'testnet';
-        url = 'https://rpc-mumbai.maticvigil.com';
+        url = 'https://rpc-mumbai.matic.today';
       }
 
       return new Web3(url);
@@ -300,16 +300,20 @@ Vue.component('grantsCartEthereumPolygon', {
       });
 
       // Send transaction
-      appCart.$refs.cart.showConfirmationModal = true;
-
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.polygon.estimatedGasCost, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
+          appCart.$refs.cart.showConfirmationModal = true;
           indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
           await this.postToDatabase([txHash], bulkCheckoutAddressPolygon, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
+        })
+        .on('confirmation', (confirmationNumber) => {
+          if (confirmationNumber === 1) {
+            appCart.$refs.cart.showConfirmationModal = false;
+          }
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
@@ -437,6 +441,7 @@ Vue.component('grantsCartEthereumPolygon', {
         const tokenDetails = this.getTokenByName(tokenSymbol);
 
         const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
+
         const tokenIsMatic = tokenDetails && tokenDetails.name === 'MATIC';
 
         // Check user matic balance against required amount
@@ -477,6 +482,7 @@ Vue.component('grantsCartEthereumPolygon', {
             }
           }
         }
+
         if (tokenDetails) {
           // Check user token balance against required amount
           const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
