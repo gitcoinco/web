@@ -229,9 +229,15 @@
         }
       }
     }
+
+    &[aria-disabled="true"] {
+      &:hover {
+        background-color: transparent;
+      }
+    }
   }
 
-  .dropdown-item[disabled] .btn {
+  .dropdown-item[aria-disabled="true"] .btn {
     color: rgba(33, 37, 41, 0.25);
 
     .eth-logo path {

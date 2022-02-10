@@ -280,19 +280,19 @@ Vue.component('grants-cart', {
       const token = Object.keys(this['donationsTotal'])[0];
       let total = Number(this['donationsTotal'][token]);
       const match = Number(this.predictionTotal['total']);
-  
+
       if (match && token === 'DAI') {
         total += match;
-  
+
         return total.toFixed(2).toString() + ' ' + token;
       } else if (match) {
-        
+
         const match_str = this.predictionTotal['total_str'];
         const donation_total_str = total.toFixed(2).toString() + ' ' + token;
-        
+
         return donation_total_str + ' + ' + match_str;
       }
-  
+
       return total.toFixed(2).toString() + ' ' + token;
     },
 
@@ -1168,12 +1168,16 @@ Vue.component('grants-cart', {
 
     // Standard L1 checkout flow
     async standardCheckout() {
+      if (this?.isCheckoutOngoing || this.grantsUnderMinimalContribution.length > 0) {
+        return;
+      }
+
       try {
         // Setup -----------------------------------------------------------------------------------
         this.activeCheckout = 'standard';
         this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
-        
+
         // Token approvals and balance checks (just checks data, does not execute approavals)
         const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
@@ -1231,16 +1235,17 @@ Vue.component('grants-cart', {
 
       return donationInputsFiltered;
     },
-    
+
     async sendDonationTx(userAddress) {
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputsFiltered = this.getDonationInputs();
-      
+
       // Send transaction
       this.showConfirmationModal = true;
+
       indicateMetamaskPopup();
-      
+
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsNativeAmount })
@@ -1596,7 +1601,7 @@ Vue.component('grants-cart', {
         if (existingScript && callback)
           callback();
       });
-    }
+    },
   },
 
   watch: {
