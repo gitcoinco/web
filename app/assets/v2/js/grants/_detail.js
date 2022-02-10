@@ -128,7 +128,10 @@ Vue.mixin({
       const vm = this;
       const lgt = localStorage.getItem('last_grants_title') || 'Grants';
 
-      if (lgt) {
+      const lgi = (document.referrer.indexOf(location.host) != -1 && !document.referrer.includes('grants/new')) ? 'javascript:history.back()' : '/grants/explorer';
+
+      if (lgi && lgt) {
+        vm.$set(vm.backLink, 'url', lgi);
         vm.$set(vm.backLink, 'title', lgt);
       }
     },
@@ -165,7 +168,7 @@ if (document.getElementById('gc-grant-detail')) {
         tabSelected: 0,
         tab: null,
         backLink: {
-          url: '/grants/explorer',
+          url: '/grants',
           title: 'Grants'
         }
       };
