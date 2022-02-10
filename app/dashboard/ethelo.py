@@ -1,6 +1,9 @@
 from grants.models import GrantQuerySet, Grant
 
 
+EXPORT_FILENAME = "grants_export_for_ethelo.json"
+
+
 def get_grants_from_database(start_grant_number: int, end_grant_number: int=None) -> dict:
     """Query the grants database and return a JSONify-able dict that can be uploaded into ethelo.
 
