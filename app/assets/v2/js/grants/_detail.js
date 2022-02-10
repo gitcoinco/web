@@ -127,7 +127,8 @@ Vue.mixin({
     backNavigation: function() {
       const vm = this;
       const lgt = localStorage.getItem('last_grants_title') || 'Grants';
-      const lgi = document.referrer.indexOf(location.host) != -1 ? 'javascript:history.back()' : '/grants/explorer';
+
+      const lgi = (document.referrer.indexOf(location.host) != -1 && !document.referrer.includes('grants/new')) ? 'javascript:history.back()' : '/grants/explorer';
 
       if (lgi && lgt) {
         vm.$set(vm.backLink, 'url', lgi);
