@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from html import escape
+
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -24,7 +26,6 @@ from django.urls import reverse
 
 from app.utils import get_profiles_from_text
 from dashboard.models import Activity
-from html import escape
 from inbox.utils import (
     comment_notification, mentioned_users_notification, send_mention_notification_to_users, send_notification_to_user,
 )
