@@ -33,7 +33,7 @@ Vue.component('contribution-thanks-modal', {
       this.$bvModal.show('create-collection');
     },
     shareOnTwitter() {
-      window.open(this.tweetUrl, '_blank');
+      window.open(this.tweetUrl, '_blank', 'noopener,noreferrer');
     }
   }
 });
