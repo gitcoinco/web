@@ -241,7 +241,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <b-dropdown-item-button>
           <div>
             <button class="btn p-0 checkout-logo" id='js-fundGrants-button'
-              @click="standardCheckout" :disabled="activeCheckout === 'standard' || grantsUnderMinimalContribution.length > 0"
+              @click="standardCheckout" :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0"
             >
     
               <svg width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -269,7 +269,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <button
                 @click="checkoutWithPolygon()"
                 class="btn p-0 checkout-logo"
-                :disabled="grantsUnderMinimalContribution?.length > 0"
+                :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
                 id='js-polygonfundGrants-button'
               >
               <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -378,7 +378,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <button
                 @click="checkoutWithzkSync()"
                 class="btn p-0 checkout-logo"
-                :disabled="grantsUnderMinimalContribution?.length > 0"
+                :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
                 id='js-zkSyncfundGrants-button'
               >
                 <svg width="23" height="15" viewBox="0 0 23 15" fill="none" xmlns="http://www.w3.org/2000/svg">
