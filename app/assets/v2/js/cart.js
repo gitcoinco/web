@@ -1238,21 +1238,16 @@ Vue.component('grants-cart', {
       const donationInputsFiltered = this.getDonationInputs();
       
       // Send transaction
+      this.showConfirmationModal = true;
       indicateMetamaskPopup();
       
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
-          appCart.$refs.cart.showConfirmationModal = true;
           indicateMetamaskPopup(true);
           await this.postToDatabase([txHash], bulkCheckoutAddress, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
-        })
-        .on('confirmation', (confirmationNumber) => {
-          if (confirmationNumber === 1) {
-            appCart.$refs.cart.showConfirmationModal = false;
-          }
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.

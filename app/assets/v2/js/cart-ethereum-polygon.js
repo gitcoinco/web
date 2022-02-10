@@ -300,20 +300,16 @@ Vue.component('grantsCartEthereumPolygon', {
       });
 
       // Send transaction
+      appCart.$refs.cart.showConfirmationModal = true;
+
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.polygon.estimatedGasCost, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
-          appCart.$refs.cart.showConfirmationModal = true;
           indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
           await this.postToDatabase([txHash], bulkCheckoutAddressPolygon, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect
-        })
-        .on('confirmation', (confirmationNumber) => {
-          if (confirmationNumber === 1) {
-            appCart.$refs.cart.showConfirmationModal = false;
-          }
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
