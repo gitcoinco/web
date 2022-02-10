@@ -37,20 +37,15 @@ def _format_grant(grant: Grant) -> dict:
     else:
         info = grant.description
 
-    # twitter_handle_2 is an empty string if only 1 twitter
-    twitters = [grant.twitter_handle_1]
-    if grant.twitter_handle_2:
-        twitters.append(grant.twitter_handle_2)
-
     return {
         "slug": f"grant_{grant.pk}",
         "title": grant.title,
         "info": info,
         "display_data": {
-            "url": grant.url,
-            "location": grant.region,
-            "payout_address": grant.admin_address,
-            "twitters": twitters,
-            "grant_number": grant.pk,
+            "Url": f"https://gitcoin.co{grant.url}",  # grant.url begins with `/`
+            "Location": grant.region,
+            "Wallet Address": grant.admin_address,
+            "Twitter": "@" + grant.twitter_handle_1,
+            "Grant Database Number": grant.pk,
         }
     }
