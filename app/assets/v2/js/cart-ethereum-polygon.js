@@ -66,6 +66,21 @@ Vue.component('grantsCartEthereumPolygon', {
         }
       });
       return string;
+    },
+
+    skipGasCostEstimation() {
+      let networkId = appCart.$refs.cart.networkId;
+
+      return (
+        (
+          networkId != POLYGON_TESTNET_NETWORK_ID &&
+          networkId != POLYGON_MAINNET_NETWORK_ID &&
+          appCart.$refs.cart.activeCheckout !== 'polygon' &&
+          appCart.$refs.cart.activeCheckout !== undefined
+        ) ||
+        this.cart.unsupportedTokens.length > 0 ||
+        !ethereum.selectedAddress
+      );
     }
   },
 
@@ -324,24 +339,8 @@ Vue.component('grantsCartEthereumPolygon', {
        * transaction before the approval txs are confirmed, because if the approval txs
        * are not confirmed then estimateGas will fail.
        */
-
-      let networkId = appCart.$refs.cart.networkId;
-
-      if (
-        networkId !== POLYGON_TESTNET_NETWORK_ID &&
-        networkId !== POLYGON_MAINNET_NETWORK_ID &&
-        appCart.$refs.cart.activeCheckout !== 'polygon' &&
-        appCart.$refs.cart.activeCheckout !== undefined) {
+      if (this.skipGasCostEstimation)
         return;
-      }
-
-      if (this.cart.unsupportedTokens.length > 0) {
-        return;
-      }
-
-      if (!ethereum.selectedAddress) {
-        return;
-      }
 
       let gasLimit = 500000;
 
