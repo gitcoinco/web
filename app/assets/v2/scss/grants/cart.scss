@@ -172,6 +172,31 @@
 
 .dropdown-checkout {
 
+  &[aria-disabled="true"] {
+    background-color: rgba(111, 63, 245, 0.25);
+    border: none;
+
+    &.btn-primary:active {
+      background-color: rgba(111, 63, 245, 0.25);
+      border: none;
+    }
+
+    .dropdown-toggle {
+      background-color: inherit;
+      border-color: inherit;
+
+      &.btn.btn-primary:active {
+        background-color: inherit;
+        border-color: inherit;
+      }
+
+      &.btn.btn-primary:hover {
+        background-color: inherit;
+        border-color: inherit;
+      }
+    }
+  }
+
   .text-primary::after {
     content: '\f107';
     font-family: "Font Awesome 5 Pro", sans-serif;

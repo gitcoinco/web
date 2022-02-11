@@ -234,9 +234,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         toggle-class="text-decoration-none"
         class="rounded dropdown-checkout btn btn-primary p-0 w-100"
         text="I'm ready to checkout"
+        aria-labelledby="ready-to-checkout"
+        :aria-disabled="grantsUnderMinimalContribution.length > 0 ? 'true':'false'"
+        :disabled="grantsUnderMinimalContribution.length > 0"
       >
         <template v-slot:button-content>
-          <span class="text-primary">
+          <span class="text-primary" id="ready-to-checkout">
             I'm Ready to Checkout
           </span>
         </template>
