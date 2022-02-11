@@ -1239,14 +1239,12 @@ Vue.component('grants-cart', {
       
       // Send transaction
       this.showConfirmationModal = true;
-      
       indicateMetamaskPopup();
       
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsNativeAmount })
         .on('transactionHash', async(txHash) => {
-          console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
           await this.postToDatabase([txHash], bulkCheckoutAddress, userAddress); // Save contributions to database
           await this.finalizeCheckout(); // Update UI and redirect

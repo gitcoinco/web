@@ -113,7 +113,7 @@ Vue.component('grantsCartEthereumPolygon', {
       } else {
         appCart.$refs.cart.networkId = POLYGON_TESTNET_NETWORK_ID;
         appCart.$refs.cart.network = 'testnet';
-        url = 'https://rpc-mumbai.maticvigil.com';
+        url = 'https://rpc-mumbai.matic.today';
       }
 
       return new Web3(url);
@@ -339,8 +339,11 @@ Vue.component('grantsCartEthereumPolygon', {
        * transaction before the approval txs are confirmed, because if the approval txs
        * are not confirmed then estimateGas will fail.
        */
-      if (this.skipGasCostEstimation)
+      if (this.skipGasCostEstimation) {
         return;
+      }
+      
+
 
       let gasLimit = 500000;
 
@@ -436,6 +439,7 @@ Vue.component('grantsCartEthereumPolygon', {
         const tokenDetails = this.getTokenByName(tokenSymbol);
 
         const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
+
         const tokenIsMatic = tokenDetails && tokenDetails.name === 'MATIC';
 
         // Check user matic balance against required amount
@@ -476,6 +480,7 @@ Vue.component('grantsCartEthereumPolygon', {
             }
           }
         }
+
         if (tokenDetails) {
           // Check user token balance against required amount
           const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
