@@ -342,8 +342,6 @@ Vue.component('grantsCartEthereumPolygon', {
       if (this.skipGasCostEstimation) {
         return;
       }
-      
-
 
       let gasLimit = 500000;
 
