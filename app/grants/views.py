@@ -3966,16 +3966,14 @@ def clr_matches(request):
         if claim_tx is None:
             return Response({'message': 'claim_tx field is required!'}, status=400)
 
-        clr_matches = CLRMatch.objects.all()
-
-        clr_match = clr_matches.filter(pk=pk).first()
-
-        if not clr_match:
+        try:
+            clr_match = CLRMatch.objects.get(pk=pk)
+        except CLRMatch.DoesNotExist:
             return Response({'message': 'CLR Match not found!'}, status=404)
 
-        # update claim tx for all grant with grant.admin_address paid out by 
+        # update claim tx for all grant with grant.admin_address paid out by
         # the clr_match contract
-        clr_matches.filter(
+        CLRMatch.objects.filter(
             grant__admin_address=clr_match.grant.admin_address,
             grant_payout__pk=clr_match.grant_payout.pk
         ).update(claim_tx=claim_tx)
