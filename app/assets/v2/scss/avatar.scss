@@ -55,6 +55,8 @@
 #theme{
   width: 140%;
   margin-left: -20%;
+  max-height: 500px;
+  overflow-y: scroll;
 }
 @media (max-width: 1000px) {
   #theme{
