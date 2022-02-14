@@ -163,13 +163,11 @@ class Command(BaseCommand):
                     continue
                 needs_kyc = amount > KYC_THRESHOLD and not has_already_kyc
                 comments = "" if not needs_kyc else "Needs KYC"
-                ready_for_test_payout = not needs_kyc
                 match = CLRMatch.objects.create(
                     round_number=clr_round,
                     amount=amount,
                     grant=grant,
                     comments=comments,
-                    ready_for_test_payout=ready_for_test_payout,
                     grant_payout=grant_payout
                 )
                 clr_matches_created += 1
