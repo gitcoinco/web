@@ -87,10 +87,10 @@ def export_earnings_to_csv(self, user_pk, export_type):
     earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
     earnings = earnings.filter(network='mainnet').order_by('-created_on')
 
-    attachment = create_csv(export_type, profile, earnings)
-    if attachment:
+    try:
+        attachment = create_csv(export_type, profile, earnings)
         send_csv(attachment=attachment, user_profile=profile)
-    else:
+    except:
         send_download_failure_email(profile)
 
 
