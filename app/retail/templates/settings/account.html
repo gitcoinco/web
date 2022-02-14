@@ -195,7 +195,7 @@
       <form id="exportSpending" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="sent">
-        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Spending" %} ({{profile.sent_earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your spending for @" %}{{ github_handle }}</p>
