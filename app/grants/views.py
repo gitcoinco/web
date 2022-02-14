@@ -3976,6 +3976,8 @@ def clr_matches(request):
         return Response({'message': 'Claim transaction successfully ingested!'}, status=200)
 
 
+@csrf_exempt
+@require_POST
 def ingest_merkle_claim_to_clr_match(request):
 
     _token = request.headers['token']

@@ -918,6 +918,12 @@ with open(os.path.join(root, 'grants/match_payouts_abi.json'), 'r') as f:
     MATCH_PAYOUTS_ABI = f.read()
 MATCH_PAYOUTS_ADDRESS = '0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B'
 
+
+# Merkle Payouts contract
+with open(os.path.join(root, 'grants/abi/merkle_payout.json'), 'r') as f:
+    MERKLE_PAYOUTS_ABI = f.read()
+
+
 # BulkCheckout contract
 # BulkCheckout parameters
 BULK_CHECKOUT_ADDRESS = "0x7d655c57f71464B6f83811C55D84009Cd9f5221C" # same address on mainnet and rinkeby
