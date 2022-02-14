@@ -66,7 +66,7 @@
     display: none;
   }
 
-  /* .modal-dialog {
+  .modal-dialog {
     max-width: 750px;
     min-height: 336px;
   }
@@ -105,9 +105,9 @@
 
   .modal {
     text-align: center;
-  } */
+  } 
 
-  /* @media only screen and (min-width: 768px) { 
+  @media only screen and (min-width: 768px) { 
     .modal:before {
       display: inline-block;
       vertical-align: middle;
@@ -142,7 +142,7 @@
       margin-left: 18px;
       margin-right: 18px; c
     }
-  } */
+  } 
 </style>
 <form id="settings" method="POST" action="{% url 'account_settings' %}" class="col-md-8 m-auto">
 
@@ -184,7 +184,7 @@
       <form id="exportEarnings" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="earnings">
-        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Earnings" %} ({{profile.earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your earnings for @" %}{{ github_handle }}</p>
@@ -350,9 +350,6 @@
       type:  'POST',
       data,
     })
-      .done(function() {
-        $('#exportNotification').modal('show');
-      });
   });
   
   
