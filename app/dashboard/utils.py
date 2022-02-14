@@ -1270,3 +1270,18 @@ def tx_id_to_block_explorer_url(txid, network):
     if network == 'mainnet':
         return f"https://etherscan.io/tx/{txid}"
     return f"https://{network}.etherscan.io/tx/{txid}"
+
+
+def add_param_to_querySet(key, queryset, queryParams):
+    val = queryParams.get(key, '')
+    values = val.strip().split(',')
+    values = [value for value in values if value and val.strip()]
+    if values:
+        _queryset = queryset.none()
+        for value in values:
+            args = {}
+            args[f'{key}'] = value.strip().lower()
+            _queryset = _queryset | queryset.filter(**args)
+        queryset = _queryset
+
+    return queryset

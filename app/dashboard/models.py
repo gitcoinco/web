@@ -306,13 +306,13 @@ class Bounty(SuperModel):
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True)
-    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True)
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True)
     github_url = models.URLField(db_index=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
-    bounty_owner_address = models.CharField(max_length=100, blank=True, null=True)
+    bounty_owner_address = models.CharField(max_length=100, blank=True, null=True, db_index=True)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True, db_index=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
@@ -320,14 +320,14 @@ class Bounty(SuperModel):
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
     )
     bounty_reserved_for_user = models.ForeignKey(
-        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='reserved_bounties', blank=True, db_index=True
     )
     org = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='orgs_bounties', blank=True
     )
     reserved_for_user_from = models.DateTimeField(blank=True, null=True)
     reserved_for_user_expiration = models.DateTimeField(blank=True, null=True)
-    is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
+    is_open = models.BooleanField(db_index=True, help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField(blank=True)
     metadata = JSONField(default=dict, blank=True)
@@ -341,7 +341,7 @@ class Bounty(SuperModel):
     idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     issue_description = models.TextField(default='', blank=True)
     funding_organisation = models.CharField(max_length=255, default='', blank=True)
-    standard_bounties_id = models.IntegerField(default=0)
+    standard_bounties_id = models.IntegerField(default=0, db_index=True)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     accepted = models.BooleanField(default=False, help_text=_('Whether the bounty has been done'))
