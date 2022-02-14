@@ -3979,3 +3979,32 @@ def clr_matches(request):
         ).update(claim_tx=claim_tx)
 
         return Response({'message': 'Claim transaction successfully ingested!'}, status=200)
+
+
+def ingest_merkle_claim_to_clr_match(request):
+    _round = request.POST.get("round", None)
+    _claims = request.POST.get("claims", None)
+    _token = request.headers['token']
+
+    data = StaticJsonEnv.objects.get(key='MERKLE_CLAIM_UPLOAD').data
+
+    if _token or not data['token']:
+        return HttpResponseBadRequest("message: missing token")
+
+    if _token != data['token']:
+        return HttpResponseBadRequest("message: invalid token")
+
+    if not _round:
+        return HttpResponseBadRequest("message: round field is required")
+
+    if not _claims:
+        return HttpResponseBadRequest("message: claims field is required")
+
+    clr_matches = CLRMatch.objects.filter(round_num=_round)
+    if clr_matches.count() == 0:
+        return HttpResponseBadRequest("message: incorrect round field")
+
+    for claim in _claims:
+        clr_matches.filter(admin_address=claim['claimee']).update(merkle_claim=claim)
+
+    return Response({'message': 'Merkle Claim successfully ingested into CLRMatch!'}, status=200)
