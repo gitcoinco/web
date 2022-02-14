@@ -221,55 +221,41 @@ class Command(BaseCommand):
             if user_input != 'y':
                 return
 
-            print(f"continuing with {target_matches.count()} unpaid scheduled payouts (pending KYC + skipped KYC)")
-
-            if is_real_payout:
-                user_input = input(f"THIS IS A REAL PAYOUT FOR {network} {token_name}. ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
-                if user_input != 'y':
-                    return
+            print('=============================')
+            print(f"Generating input for merkle contract for {target_matches.count()} grants for payout (pending KYC + skipped KYC)")
+            print('=============================')
 
             # Generate dict of payout mapping that we'll use to set the contract's payout mapping
             full_payouts_mapping_dict = {}
             for match in target_matches.order_by('amount'):
 
                 try:
-                    # Amounts to set
-                    recipient = w3.toChecksumAddress(match.grant.admin_address)
-                    amount = Decimal(match.amount) * SCALE # convert to wei
+                    address = w3.toChecksumAddress(match.grant.admin_address)
 
                     # This ensures that even when multiple grants have the same receiving address,
                     # all match funds are accounted for
-                    if recipient in full_payouts_mapping_dict.keys():
-                        full_payouts_mapping_dict[recipient] += amount
+                    if address in full_payouts_mapping_dict.keys():
+                        full_payouts_mapping_dict[address] += match.amount
                     else:
-                        full_payouts_mapping_dict[recipient] = amount
+                        full_payouts_mapping_dict[address] = match.amount
                 except Exception as e:
                     print(f"could not payout grant:{match.grant.pk} bc exception{e}")
 
-            # Convert dict to array to use it as inputs to the contract
-            full_payouts_mapping = []
-            for key, value in full_payouts_mapping_dict.items():
-                full_payouts_mapping.append([key, str(int(value))])
 
-            # In tests, it took 68,080 gas to set 2 payout values. Let's be super conservative
-            # and say it's 50k gas per payout mapping. If we are ok using 6M gas per transaction,
-            # that means we can set 6M / 50k = 120 payouts per transaction. So we chunk the
-            # payout mapping into sub-arrays with max length of 120 each
-            # KO 12/21 - edited with Matt to make 2.1x that
-            def chunks(lst, n):
-                """Yield successive n-sized chunks from lst. https://stackoverflow.com/a/312464"""
-                for i in range(0, len(lst), n):
-                    yield lst[i:i + n]
-            chunk_size = 250 if not settings.DEBUG else 120
-            chunked_payouts_mapping = chunks(full_payouts_mapping, chunk_size)
-            # Set payouts
-            for payout_mapping in chunked_payouts_mapping:
+            merkle_input = []
+            for address, amount in full_payouts_mapping_dict.items():
+                payout = {
+                    'address': address,
+                    'amount': amount
+                }
+                merkle_input.append(payout)
 
-                #tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
+            print('=============================')
+            print(merkle_input)
+            print('=============================')
+            print("UPLOAD THE ABOVE OUTPUT TO https://github.com/thelostone-mc/merkle_payouts/blob/main/scripts/input.ts")
+            print('=============================')
 
-                print(f"#TODO: Send this txn view etherscan {match_payouts_address}")
-                print(json.dumps(payout_mapping))
-                print("UPLOAD THE ABOVE CHUNK TO ETHERSCAN")
 
         # Verify contract is set properly ----------------------------------------------------------
         if what == 'verify':
