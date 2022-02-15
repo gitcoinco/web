@@ -50,6 +50,7 @@ def _format_grant(grant: Grant) -> dict:
         "title": grant.title,
         "info": info,
         "display_data": {
+            "Status": _get_status(grant),
             "Grant Url": f'https://gitcoin.co{grant.url}',
             "Github Project Url": grant.github_project_url,
             "Location": grant.region,
@@ -57,7 +58,6 @@ def _format_grant(grant: Grant) -> dict:
             "Twitter": f'@{grant.twitter_handle_1}',
             "Creator Handle": grant.admin_profile.handle,
             "Database Number": grant.pk,
-            "Status": _get_status(grant),
         },
     }
 
