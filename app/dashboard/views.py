@@ -7312,8 +7312,9 @@ def export_grants_ethelo(request):
     start_grant = int(request.GET.get('start_grant_number'))
     end_grant = request.GET.get('end_grant_number')
     end_grant = int(end_grant) if len(end_grant) > 0 else None
+    inactive_only = bool(request.GET.get('inactive_only'))
     
-    grants_dict = ethelo.get_grants_from_database(start_grant, end_grant)
+    grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only)
 
     json_str = json.dumps(grants_dict)
     response = HttpResponse(json_str, content_type='application/json')

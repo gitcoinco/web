@@ -4,19 +4,24 @@ from grants.models import GrantQuerySet, Grant
 EXPORT_FILENAME = "grants_export_for_ethelo.json"
 
 
-def get_grants_from_database(start_grant_number: int, end_grant_number: int=None) -> dict:
+def get_grants_from_database(start_grant_number: int, end_grant_number: int=None, inactive_grants_only: bool=True) -> dict:
     """Query the grants database and return a JSONify-able dict that can be uploaded into ethelo.
 
     Args:
         start_grant_number (int): The index of the starting grant.
         end_grant_number (int, optional): The index of the ending grant. If None, all grants after `start_grant_number` 
             will be included. Defaults to None.
+        inactive_grants_only (bool): If True, only grants that have not been activated by admins yet will be exported.
 
     Returns:
         dict: The returned dict will be JSONify-able.
     """
 
     query = GrantQuerySet(Grant)
+
+    if inactive_grants_only:
+        query.inactive()
+
     if end_grant_number is None:
         end_grant_number = query.count()
     pk_list = list(range(start_grant_number, end_grant_number + 1))
@@ -45,10 +50,17 @@ def _format_grant(grant: Grant) -> dict:
         "title": grant.title,
         "info": info,
         "display_data": {
-            "Url": f"https://gitcoin.co{grant.url}",  # grant.url begins with `/`
+            "Grant Url": f'https://gitcoin.co{grant.url}',
+            "Github Project Url": grant.github_project_url,
             "Location": grant.region,
             "Wallet Address": grant.admin_address,
-            "Twitter": "@" + grant.twitter_handle_1,
-            "Grant Database Number": grant.pk,
-        }
+            "Twitter": f'@{grant.twitter_handle_1}',
+            "Creator Handle": grant.admin_profile.handle,
+            "Database Number": grant.pk,
+            "Status": _get_status(grant),
+        },
     }
+
+
+def _get_status(grant: Grant) -> str:
+    return "Approved" if grant.active else "Unapproved"
