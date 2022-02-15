@@ -1,3 +1,200 @@
+const FromBase64 = function (str) {
+  return atob(str)
+    .split("")
+    .map(function (c) {
+      return c.charCodeAt(0);
+    });
+};
+
+const buildTransactionASA = (token) => ({
+  assetIndex: Number(token.addr),
+  amount: amount * 10 ** token.decimals,
+  type: "axfer",
+});
+
+const buildTransactionALGO = (amount) => ({
+  amount: amount * 10 ** 6,
+  type: "pay",
+});
+
+const buildTransaction = async (
+  grant,
+  vm,
+  from_address,
+  to_address,
+  algodClient
+) => {
+  const token_name = grant.grant_donation_currency;
+  const amount = grant.grant_donation_amount;
+  const token = vm.getTokenByName(token_name);
+  const params = await algodClient.getTransactionParams().do();
+  const enc = new TextEncoder(); // always utf-8
+  const txn = ((txn) => {
+    switch (token_name) {
+      case "ALGO":
+        return {
+          ...txn,
+          ...buildTransactionALGO(amount),
+        };
+      default:
+        return {
+          ...txn,
+          ...buildTransactionASA(token),
+        };
+    }
+  })({
+    from: from_address.toUpperCase(),
+    to: to_address.toUpperCase(),
+    note: enc.encode("contributing to gitcoin grant"),
+    suggestedParams: {
+      ...params,
+    },
+  });
+  let binaryTx = ((tx) => {
+    tx.flatfee = true;
+    tx.fee = 1000;
+    return tx;
+  })(new algosdk.Transaction(txn).toByte());
+  return binaryTx;
+};
+
+const buildWalletConnectRequest = async (
+  grant,
+  vm,
+  from_address,
+  to_address,
+  algodClient
+) => {
+  const token_name = grant.grant_donation_currency;
+  const amount = grant.grant_donation_amount;
+  const token = vm.getTokenByName(token_name);
+  const params = await algodClient.getTransactionParams().do();
+  let txn = {
+    from: from_address.toUpperCase(),
+    to: to_address.toUpperCase(),
+    note: new TextEncoder().encode("contributing to gitcoin grant"),
+    suggestedParams: {
+      ...params,
+    },
+  };
+  if (token_name == "ALGO") {
+    // ALGO token
+    txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+      ...txn,
+      from: from_address.toUpperCase(),
+      to: to_address.toUpperCase(),
+      amount: amount * 10 ** 6,
+    });
+  } else {
+    // ALGO assets
+    txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+      ...txn,
+      assetIndex: Number(token.addr),
+      amount: amount * 10 ** token.decimals,
+    });
+  }
+  const txns = [txn];
+  const txnsToSign = txns.map((txn) => {
+    const encodedTxn = btoa(
+      String.fromCharCode.apply(null, algosdk.encodeUnsignedTransaction(txn))
+    );
+    return {
+      txn: encodedTxn,
+      message: "Contributing to gitcoin grant",
+      // Note: if the transaction does not need to be signed (because it's part of an atomic group
+      // that will be signed by another party), specify an empty singers array like so:
+      // signers: [],
+    };
+  });
+  const requestParams = [txnsToSign];
+  const FromBase64 = function (str) {
+    return atob(str)
+      .split("")
+      .map(function (c) {
+        return c.charCodeAt(0);
+      });
+  };
+  const request = formatJsonRpcRequest("algo_signTxn", requestParams);
+  return request;
+};
+
+const checkWalletAlgoBalance = (balance, from_address, amount) => {
+  // ALGO token
+  if (Number(balance.amount) <= amount * 10 ** 6) {
+    _alert(
+      { message: `Insufficent balance in address ${from_address}` },
+      "danger"
+    );
+    return false;
+  }
+  return true;
+};
+
+const checkWalletASABalanceAssetPresent = (balance, from_address, token) => {
+  let is_asset_present = false;
+  if (balance.assets && balance.assets.length > 0) {
+    balance.assets.map((asset) => {
+      if (asset["asset-id"] == token.addr) is_asset_present = true;
+    });
+  }
+  if (!is_asset_present) {
+    _alert(
+      {
+        message: `Asset ${token_name} is not present in ${from_address}`,
+      },
+      "danger"
+    );
+    return false;
+  }
+  return true;
+};
+
+const checkWalletASABalanceAssetHasEnough = (balance, from_address, token) => {
+  let has_enough_asset_balance = false;
+  balance.assets.map((asset) => {
+    if (
+      asset["asset-id"] == token.addr &&
+      asset["amount"] <= amount * 10 ** token.decimals
+    )
+      has_enough_asset_balance = true;
+  });
+  if (has_enough_asset_balance) {
+    _alert(
+      { message: `Insufficent balance in address ${from_address}` },
+      "danger"
+    );
+    return false;
+  }
+  return true;
+};
+
+const checkWalletASABalance = (balance, from_address, token) => {
+  return (
+    checkWalletASABalanceAssetPresent(balance, from_address, token) &&
+    checkWalletASABalanceAssetHasEnough(balance, from_address, token)
+  );
+};
+
+const checkWalletBalance = (grant, vm, from_address, balance) => {
+  const token_name = grant.grant_donation_currency;
+  const amount = grant.grant_donation_amount;
+  const token = vm.getTokenByName(token_name);
+  switch (token_name) {
+    case "ALGO":
+      return checkWalletAlgoBalance(balance, from_address, amount);
+    default:
+      return checkWalletASABalance(balance, from_address, token);
+  }
+};
+
+const getBalance = async (ledger, address) => {
+  const balance = await AlgoSigner.algod({
+    ledger,
+    path: `/v2/accounts/${address}`,
+  });
+  return balance;
+};
+
 const initAlgorandConnectionAlgoSigner = async (grant, vm) => {
   // 1. check if AlgoSigner is available
   if (!AlgoSigner) {
@@ -7,7 +204,6 @@ const initAlgorandConnectionAlgoSigner = async (grant, vm) => {
     );
     return;
   }
-
   //const NETWORK = 'TestNet';
   const NETWORK = "MainNet";
 
@@ -46,6 +242,7 @@ const initAlgorandConnectionMyAlgo = async (grant, vm) => {
   vm.updatePaymentStatus(grant.grant_id, "waiting-on-user-input", null, {
     addresses,
   });
+  true;
 };
 const initAlgorandConnectionWalletConnect = async (grant, vm) => {
   // 1. check if wallet is available
@@ -132,13 +329,9 @@ const initAlgorandConnection = async (grant, vm) => {
 const contributeWithAlgorandExtensionAlgoSigner = async (
   grant,
   vm,
-  from_address
+  from_address,
+  to_address
 ) => {
-  const token_name = grant.grant_donation_currency;
-  const amount = grant.grant_donation_amount;
-  const to_address = grant.algorand_payout_address;
-  const token = vm.getTokenByName(token_name);
-
   //const NETWORK = 'TestNet';
   const NETWORK = "MainNet";
 
@@ -146,57 +339,10 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
     AlgoSigner.connect()
       .then(async () => {
         // step3: check if enough balance is present
-        const balance = await AlgoSigner.algod({
-          ledger: NETWORK,
-          path: `/v2/accounts/${from_address}`,
-        });
+        const balance = await getBalance(NETWORK, from_address);
 
-        if (token_name == "ALGO") {
-          // ALGO token
-          if (Number(balance.amount) <= amount * 10 ** 6) {
-            _alert(
-              { message: `Insufficent balance in address ${from_address}` },
-              "danger"
-            );
-            return;
-          }
-        } else {
-          // ALGO assets
-          let is_asset_present = false;
-
-          if (balance.assets && balance.assets.length > 0) {
-            balance.assets.map((asset) => {
-              if (asset["asset-id"] == token.addr) is_asset_present = true;
-            });
-          }
-
-          if (!is_asset_present) {
-            _alert(
-              {
-                message: `Asset ${token_name} is not present in ${from_address}`,
-              },
-              "danger"
-            );
-            return;
-          }
-
-          let has_enough_asset_balance = false;
-
-          balance.assets.map((asset) => {
-            if (
-              asset["asset-id"] == token.addr &&
-              asset["amount"] <= amount * 10 ** token.decimals
-            )
-              has_enough_asset_balance = true;
-          });
-
-          if (has_enough_asset_balance) {
-            _alert(
-              { message: `Insufficent balance in address ${from_address}` },
-              "danger"
-            );
-            return;
-          }
+        if (!checkWalletBalance(grant, vm, from_address, balance)) {
+          return;
         }
 
         // step4: set modal to waiting state
@@ -205,57 +351,21 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
         // step5: get txnParams
 
         console.log("Setting up params ...");
-        const txParams = await AlgoSigner.algod({
-          ledger: NETWORK,
-          path: "/v2/transactions/params",
-        });
-        // Create an Algod client to get suggested transaction params
+
         const algodClient = new algosdk.Algodv2(
           "",
-          "https://api.algoexplorer.io",
+          "https://node.algoexplorerapi.io",
           ""
         );
-        const params = await algodClient.getTransactionParams().do();
 
-        const enc = new TextEncoder();
-        let txn;
-        // step5: sign transaction
+        const binaryTx = await buildTransaction(
+          grant,
+          vm,
+          from_address,
+          to_address,
+          algodClient
+        );
 
-        if (token_name == "ALGO") {
-          // ALGO token
-          txn = {
-            from: from_address.toUpperCase(),
-            to: to_address.toUpperCase(),
-            fee: txParams["fee"],
-            type: "pay",
-            amount: amount * 10 ** 6,
-            firstRound: txParams["last-round"],
-            lastRound: txParams["last-round"] + 1000,
-            genesisID: txParams["genesis-id"],
-            genesisHash: txParams["genesis-hash"],
-            note: enc.encode("contributing to gitcoin grant"),
-          };
-        } else {
-          // ALGO assets
-          txn = {
-            from: from_address.toUpperCase(),
-            to: to_address.toUpperCase(),
-            assetIndex: Number(token.addr),
-            amount: amount * 10 ** token.decimals,
-            type: "axfer",
-            firstRound: txParams["last-round"],
-            lastRound: txParams["last-round"] + 1000,
-            genesisID: txParams["genesis-id"],
-            genesisHash: txParams["genesis-hash"],
-            note: enc.encode("contributing to gitcoin grant"),
-          };
-        }
-        txn.suggestedParams = params;
-        let binaryTx = ((tx) => {
-          tx.flatfee = true;
-          tx.fee = 1000;
-          return tx;
-        })(new algosdk.Transaction(txn)).toByte();
         let base64Tx = AlgoSigner.encoding.msgpackToBase64(binaryTx);
         AlgoSigner.signTxn([{ txn: base64Tx }])
           .then((signedTxs) => {
@@ -317,117 +427,38 @@ const contributeWithAlgorandExtensionAlgoSigner = async (
 const contributeWithAlgorandExtensionMyAlgo = async (
   grant,
   vm,
-  from_address
+  from_address,
+  to_address
 ) => {
-  const token_name = grant.grant_donation_currency;
-  const amount = grant.grant_donation_amount;
-  const to_address = grant.algorand_payout_address;
-  const token = vm.getTokenByName(token_name);
-
   //const NETWORK = 'TestNet';
   const NETWORK = "MainNet";
 
   try {
     const myAlgoConnect = new MyAlgoConnect();
     // step3: check if enough balance is present
-    const balance = await AlgoSigner.algod({
-      ledger: NETWORK,
-      path: `/v2/accounts/${from_address}`,
-    });
+    const balance = await getBalance(NETWORK, from_address);
 
-    if (token_name == "ALGO") {
-      // ALGO token
-      if (Number(balance.amount) <= amount * 10 ** 6) {
-        _alert(
-          { message: `Insufficent balance in address ${from_address}` },
-          "danger"
-        );
-        return;
-      }
-    } else {
-      // ALGO assets
-      let is_asset_present = false;
-
-      if (balance.assets && balance.assets.length > 0) {
-        balance.assets.map((asset) => {
-          if (asset["asset-id"] == token.addr) is_asset_present = true;
-        });
-      }
-
-      if (!is_asset_present) {
-        _alert(
-          {
-            message: `Asset ${token_name} is not present in ${from_address}`,
-          },
-          "danger"
-        );
-        return;
-      }
-
-      let has_enough_asset_balance = false;
-
-      balance.assets.map((asset) => {
-        if (
-          asset["asset-id"] == token.addr &&
-          asset["amount"] <= amount * 10 ** token.decimals
-        )
-          has_enough_asset_balance = true;
-      });
-
-      if (has_enough_asset_balance) {
-        _alert(
-          { message: `Insufficent balance in address ${from_address}` },
-          "danger"
-        );
-        return;
-      }
+    if (!checkWalletBalance(grant, vm, from_address, balance)) {
+      return;
     }
 
     // step4: set modal to waiting state
     vm.updatePaymentStatus(grant.grant_id, "waiting");
 
-    // step5: get txnParams
     const algodClient = new algosdk.Algodv2(
       "",
       "https://node.algoexplorerapi.io",
       ""
     );
-    const params = await algodClient.getTransactionParams().do();
-    const enc = new TextEncoder(); // always utf-8
 
-    // step5: sign transaction
-    let txn;
-    if (token_name == "ALGO") {
-      // ALGO token
-      txn = {
-        suggestedParams: {
-          ...params,
-        },
-        from: from_address.toUpperCase(),
-        to: to_address.toUpperCase(),
-        amount: amount * 10 ** 6,
-        note: enc.encode("contributing to gitcoin grant"),
-        type: "pay",
-      };
-    } else {
-      // ALGO assets
-      txn = {
-        from: from_address.toUpperCase(),
-        to: to_address.toUpperCase(),
-        assetIndex: Number(token.addr),
-        note: enc.encode("contributing to gitcoin grant"),
-        amount: amount * 10 ** token.decimals,
-        type: "axfer",
-        suggestedParams: {
-          ...params,
-        },
-      };
-    }
-    let binaryTx = ((tx) => {
-      tx.flatfee = true;
-      tx.fee = 1000;
-      return tx;
-    })(new algosdk.Transaction(txn)).toByte();
+    const binaryTx = await buildTransaction(
+      grant,
+      vm,
+      from_address,
+      to_address,
+      algodClient
+    );
+
     myAlgoConnect
       .signTransaction(binaryTx)
       .then((stx) => {
@@ -473,13 +504,9 @@ const contributeWithAlgorandExtensionMyAlgo = async (
 const contributeWithAlgorandExtensionWalletConnect = async (
   grant,
   vm,
-  from_address
+  from_address,
+  to_address
 ) => {
-  const token_name = grant.grant_donation_currency;
-  const amount = grant.grant_donation_amount;
-  const to_address = grant.algorand_payout_address;
-  const token = vm.getTokenByName(token_name);
-
   //const NETWORK = 'TestNet';
   const NETWORK = "MainNet";
 
@@ -496,58 +523,10 @@ const contributeWithAlgorandExtensionWalletConnect = async (
     }
 
     // step3: check if enough balance is present
-    const balance = await AlgoSigner.algod({
-      ledger: NETWORK,
-      path: `/v2/accounts/${from_address}`,
-    });
-    console.log(balance);
+    const balance = await getBalance(NETWORK, from_address);
 
-    if (token_name == "ALGO") {
-      // ALGO token
-      if (Number(balance.amount) <= amount * 10 ** 6) {
-        _alert(
-          { message: `Insufficent balance in address ${from_address}` },
-          "danger"
-        );
-        return;
-      }
-    } else {
-      // ALGO assets
-      let is_asset_present = false;
-
-      if (balance.assets && balance.assets.length > 0) {
-        balance.assets.map((asset) => {
-          if (asset["asset-id"] == token.addr) is_asset_present = true;
-        });
-      }
-
-      if (!is_asset_present) {
-        _alert(
-          {
-            message: `Asset ${token_name} is not present in ${from_address}`,
-          },
-          "danger"
-        );
-        return;
-      }
-
-      let has_enough_asset_balance = false;
-
-      balance.assets.map((asset) => {
-        if (
-          asset["asset-id"] == token.addr &&
-          asset["amount"] <= amount * 10 ** token.decimals
-        )
-          has_enough_asset_balance = true;
-      });
-
-      if (has_enough_asset_balance) {
-        _alert(
-          { message: `Insufficent balance in address ${from_address}` },
-          "danger"
-        );
-        return;
-      }
+    if (!checkWalletBalance(grant, vm, from_address, balance)) {
+      return;
     }
 
     // step4: set modal to waiting state
@@ -559,61 +538,13 @@ const contributeWithAlgorandExtensionWalletConnect = async (
       "https://node.algoexplorerapi.io",
       ""
     );
-    const params = await algodClient.getTransactionParams().do();
-    var enc = new TextEncoder(); // always utf-8
-
-    let txn;
-    // step5: sign transaction
-
-    if (token_name == "ALGO") {
-      // ALGO token
-      txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-        suggestedParams: {
-          ...params,
-        },
-        from: from_address.toUpperCase(),
-        to: to_address.toUpperCase(),
-        amount: amount * 10 ** 6,
-        note: enc.encode("contributing to gitcoin grant"),
-      });
-    } else {
-      // ALGO assets
-      txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-        suggestedParams: {
-          ...params,
-        },
-        from: from_address.toUpperCase(),
-        to: to_address.toUpperCase(),
-        assetIndex: Number(token.addr),
-        note: enc.encode("contributing to gitcoin grant"),
-        amount: amount * 10 ** token.decimals,
-      });
-    }
-    const txns = [txn];
-    const txnsToSign = txns.map((txn) => {
-      const encodedTxn = btoa(
-        String.fromCharCode.apply(null, algosdk.encodeUnsignedTransaction(txn))
-      );
-      return {
-        txn: encodedTxn,
-        message: "Contributing to gitcoin grant",
-        // Note: if the transaction does not need to be signed (because it's part of an atomic group
-        // that will be signed by another party), specify an empty singers array like so:
-        // signers: [],
-      };
-    });
-    const requestParams = [txnsToSign];
-    const ToBase64 = function (u8) {
-      return btoa(String.fromCharCode.apply(null, u8));
-    };
-    const FromBase64 = function (str) {
-      return atob(str)
-        .split("")
-        .map(function (c) {
-          return c.charCodeAt(0);
-        });
-    };
-    const request = formatJsonRpcRequest("algo_signTxn", requestParams);
+    const request = await buildWalletConnectRequest(
+      grant,
+      vm,
+      from_address,
+      to_address,
+      algodClient
+    );
     const result = await connector.sendCustomRequest(request);
     const decodedResult = result.map((element) => {
       return element ? new Uint8Array(FromBase64(element)) : null;
@@ -644,18 +575,31 @@ const contributeWithAlgorandExtensionWalletConnect = async (
   }
 };
 const contributeWithAlgorandExtension = async (grant, vm, from_address) => {
+  const to_address = grant.algorand_payout_address;
+  if (from_address === to_address) {
+    _alert(
+      {
+        message:
+          "Grant payment to self detected! Please try again with a different account.",
+      },
+      "danger"
+    );
+    return;
+  }
+  let callback;
   switch (localStorage.getItem("algowallet") || "AlgoSigner") {
     default:
     case "AlgoSigner":
-      contributeWithAlgorandExtensionAlgoSigner(grant, vm, from_address);
+      callback = contributeWithAlgorandExtensionAlgoSigner;
       break;
     case "MyAlgoConnect":
-      contributeWithAlgorandExtensionMyAlgo(grant, vm, from_address);
+      callback = contributeWithAlgorandExtensionMyAlgo;
       break;
     case "WalletConnect":
-      contributeWithAlgorandExtensionWalletConnect(grant, vm, from_address);
+      callback = contributeWithAlgorandExtensionWalletConnect;
       break;
   }
+  callback(grant, vm, from_address, to_address);
 };
 function contributeWithAlgorandExtensionCallback(
   error,
@@ -703,7 +647,6 @@ function contributeWithAlgorandExtensionCallback(
               },
             ],
           });
-
           vm.updatePaymentStatus(grant.grant_id, "done", txn_id);
         } else {
           vm.updatePaymentStatus(grant.grant_id, "failed");
