@@ -131,7 +131,7 @@ class Command(BaseCommand):
             pks += gclr.grants.values_list('pk', flat=True)
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
         grants = Grant.objects.filter(active=True, network='mainnet', is_clr_eligible=True, link_to_new_grant__isnull=True, pk__in=pks)
-        print(f"got {grants.count()} grants")
+        self.stdout.write(f"got {grants.count()} grants")
 
         # Finalize rankings ------------------------------------------------------------------------
         if what == 'finalize':
@@ -143,15 +143,18 @@ class Command(BaseCommand):
                 except:
                     pass
             total_owed_matches = sum(sm.amount for sm in scheduled_matches)
-            print(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
-            print(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
+            self.stdout.write(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
+            self.stdout.write(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
             print('------------------------------')
+            
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
+
             for grant in grants:
                 amount = sum(ele.clr_prediction_curve[0][1] for ele in grant.clr_calculations.filter(grantclr__in=gclrs, latest=True))
                 has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
+                import pdb; pdb.set_trace()
                 if not amount:
                     continue
                 already_exists = scheduled_matches.filter(grant=grant).exists()
