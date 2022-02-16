@@ -126,7 +126,7 @@ jobs:
         id: compute
         with:
           script: |
-            "${{ github.sha }}".substr(-10)
+            return "${{ github.sha }}".substr(-10)
 
       - name: TEST Compute some values 🚀
         run: |
