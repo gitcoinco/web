@@ -131,6 +131,7 @@ jobs:
       - name: TEST Compute some values 🚀
         run: |
           echo ${{ steps.compute.outputs.result }}
+          echo ${{ steps.compute.outputs.result.docker_tag }}
 
       # - name: Deploy master to Docker Hub 🚀
       #   if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
