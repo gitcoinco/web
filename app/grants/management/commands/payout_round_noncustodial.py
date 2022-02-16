@@ -145,7 +145,7 @@ class Command(BaseCommand):
             total_owed_matches = sum(sm.amount for sm in scheduled_matches)
             self.stdout.write(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
             self.stdout.write(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
-            print('------------------------------')
+            self.stdout.write('------------------------------')
             
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
@@ -182,8 +182,8 @@ class Command(BaseCommand):
             payout_matches = scheduled_matches.filter(ready_for_payout=False)
             payout_matches_amount = sum(sm.amount for sm in payout_matches)
             self.stdout.write(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
-            print(f"All these are users would need KYC. Do not do this for mainnet")
-            print('------------------------------')
+            self.stdout.write(f"All these are users would need KYC. Do not do this for mainnet")
+            self.stdout.write('------------------------------')
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
@@ -213,20 +213,20 @@ class Command(BaseCommand):
             total_no_kyc_matches = sum(sm.amount for sm in no_kyc_unpaid_matches)
 
 
-            print('=============================')
+            self.stdout.write('=============================')
             self.stdout.write(f"there are {paid_scheduled_matches.count()} PAID Match (MADE MANUALLY/ALREADY UPLOADED) ${round(total_paid_matches,2)} {network} {token_name}")
             self.stdout.write(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments worth ${round(total_owed_matches,2)} {network} {token_name} of which: ")
             self.stdout.write(f"------> {pending_kyc_unpaid_matches.count()} UNPAID Matches PENDING KYC ${round(total_pending_kyc_matches,2)}")
             self.stdout.write(f"------> {no_kyc_unpaid_matches.count()} UNPAID Matches SKIPPING KYC ${round(total_no_kyc_matches,2)}")
 
-            print('=============================')
+            self.stdout.write('=============================')
 
             target_matches = unpaid_scheduled_matches
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
 
-            print(f"continuing with {target_matches.count()} unpaid scheduled payouts (pending KYC + skipped KYC)")
+            self.stdout.write(f"continuing with {target_matches.count()} unpaid scheduled payouts (pending KYC + skipped KYC)")
 
             if is_real_payout:
                 user_input = input(f"THIS IS A REAL PAYOUT FOR {network} {token_name}. ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
@@ -249,7 +249,7 @@ class Command(BaseCommand):
                     else:
                         full_payouts_mapping_dict[recipient] = amount
                 except Exception as e:
-                    print(f"could not payout grant:{match.grant.pk} bc exception{e}")
+                    self.stdout.write(f"could not payout grant:{match.grant.pk} bc exception{e}")
 
             # Convert dict to array to use it as inputs to the contract
             full_payouts_mapping = []
@@ -272,9 +272,9 @@ class Command(BaseCommand):
 
                 #tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
 
-                print(f"#TODO: Send this txn view etherscan {match_payouts_address}")
-                print(json.dumps(payout_mapping))
-                print("UPLOAD THE ABOVE CHUNK TO ETHERSCAN")
+                self.stdout.write(f"#TODO: Send this txn view etherscan {match_payouts_address}")
+                self.stdout.write(json.dumps(payout_mapping))
+                self.stdout.write("UPLOAD THE ABOVE CHUNK TO ETHERSCAN")
 
         # Verify contract is set properly ----------------------------------------------------------
         if what == 'verify':
@@ -335,38 +335,38 @@ class Command(BaseCommand):
 
             # Verify that total DAI required (from event logs) equals the expected amount
             if math.floor(expected_total_dai_amount) != math.floor(total_dai_required):
-                print('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
-                print('Total DAI payout amount in the contract does not equal the expected value!')
-                print('  Total expected amount:  ', expected_total_dai_amount)
-                print('  Total amount from logs: ', total_dai_required)
-                print('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
+                self.stdout.write('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
+                self.stdout.write('Total DAI payout amount in the contract does not equal the expected value!')
+                self.stdout.write('  Total expected amount:  ', expected_total_dai_amount)
+                self.stdout.write('  Total amount from logs: ', total_dai_required)
+                self.stdout.write('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
                 raise Exception('Total payout amount in the contract does not equal the expected value!')
-            print('Total payout amount in the contracts is the expected value')
+            self.stdout.write('Total payout amount in the contracts is the expected value')
 
             # Get contract DAI balance
             dai_balance = Decimal(dai.functions.balanceOf(match_payouts_address).call()) / SCALE
 
             # Verify that contract has sufficient DAI balance to cover all payouts
-            print('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
+            self.stdout.write('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
             if dai_balance == total_dai_required:
-                print(f'Contract balance of {dai_balance} DAI is exactly equal to the required amount')
+                self.stdout.write(f'Contract balance of {dai_balance} DAI is exactly equal to the required amount')
 
             elif dai_balance < total_dai_required:
                 shortage = total_dai_required - dai_balance
-                print('Contract DAI balance is insufficient')
-                print('  Required balance: ', total_dai_required)
-                print('  Current balance:  ', dai_balance)
-                print('  Extra DAI needed: ', shortage)
-                print(f'\n Contract needs another {shortage} DAI')
+                self.stdout.write('Contract DAI balance is insufficient')
+                self.stdout.write('  Required balance: ', total_dai_required)
+                self.stdout.write('  Current balance:  ', dai_balance)
+                self.stdout.write('  Extra DAI needed: ', shortage)
+                self.stdout.write(f'\n Contract needs another {shortage} DAI')
 
             elif dai_balance > total_dai_required:
                 excess = dai_balance - total_dai_required
-                print('Contract has excess DAI balance')
-                print('  Required balance:  ', total_dai_required)
-                print('  Current balance:   ', dai_balance)
-                print('  Excess DAI amount: ', excess)
-                print(f'\n Contract has an excess of {excess} DAI')
-            print('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
+                self.stdout.write('Contract has excess DAI balance')
+                self.stdout.write('  Required balance:  ', total_dai_required)
+                self.stdout.write('  Current balance:   ', dai_balance)
+                self.stdout.write('  Excess DAI amount: ', excess)
+                self.stdout.write(f'\n Contract has an excess of {excess} DAI')
+            self.stdout.write('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
 
 
         # Create Contributions and send emails ----------------------------------------------------------
@@ -421,7 +421,7 @@ class Command(BaseCommand):
                     validator_passed=True,
                     validator_comment=validator_comment,
                 )
-                print(f"ingested {subscription.pk} / {contrib.pk}")
+                self.stdout.write(f"ingested {subscription.pk} / {contrib.pk}")
 
                 match.payout_contribution = contrib
                 match.save()
