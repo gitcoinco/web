@@ -151,10 +151,11 @@ class Command(BaseCommand):
             if user_input != 'y':
                 return
 
+            clr_matches_created = 0
             for grant in grants:
                 amount = sum(ele.clr_prediction_curve[0][1] for ele in grant.clr_calculations.filter(grantclr__in=gclrs, latest=True))
                 has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
-                import pdb; pdb.set_trace()
+                
                 if not amount:
                     continue
                 already_exists = scheduled_matches.filter(grant=grant).exists()
@@ -171,8 +172,10 @@ class Command(BaseCommand):
                     ready_for_test_payout=ready_for_test_payout,
                     grant_payout=grant_payout
                 )
+                clr_matches_created += 1
                 if needs_kyc:
                     grant_match_distribution_kyc(match)
+            self.stdout.write(f"{clr_matches_created} matches were created")
 
         # Payout rankings (round must be finalized first) ------------------------------------------
         if what in ['prepare_final_payout']:

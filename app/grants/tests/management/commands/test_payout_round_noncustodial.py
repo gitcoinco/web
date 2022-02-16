@@ -5,6 +5,7 @@ from unittest import mock
 
 from dashboard.tests.factories import ProfileFactory
 from grants.tests.factories import ContributionFactory, CLRMatchFactory, GrantFactory, SubscriptionFactory, GrantPayoutFactory, GrantCLRFactory, GrantCLRCalculationFactory, GrantTypeFactory
+from grants.models import CLRMatch
 
 prediction_curve=[[0.0, 22051.853262470795, 0.0], [1.0, 22075.114561595507, 23.261299124711513], [10.0, 22112.83567215842, 60.98240968762548], [100.0, 22187.332229392225, 135.47896692142967], [1000.0, 22289.540553690527, 237.6872912197323], [10000.0, 22375.656575359033, 323.803312888238]]
 
@@ -36,11 +37,11 @@ def grant_clr_match_factory(grant_payout, grant_factory):
     return CLRMatchFactory(grant=grant_factory, grant_payout=grant_payout, round_number=13)
 
 @pytest.fixture
-def yes_continue():
-    return 'y'
+def user_input_no():
+    return 'n'
 
 @pytest.fixture
-def user_input():
+def user_input_yes():
     return 'y'
 
 
@@ -83,11 +84,11 @@ class TestPayoutRoundNoncustodial:
         assert error == "Invalid value verifies_payout for 'what' arg"
 
 
-    def test_finalize_sums_owed_matches(self, grant_payout, grant_clr_factory, grant_factory, grant_clr_match_factory, user_input):
+    def test_finalize_sums_owed_matches(self, grant_payout, grant_clr_factory, grant_factory, grant_clr_match_factory, user_input_no):
         out = StringIO()
 
         with mock.patch('grants.management.commands.payout_round_noncustodial.input') as input:
-            input.return_value = user_input
+            input.return_value = user_input_no
             call_command(
                 'payout_round_noncustodial',
                 'finalize', 
@@ -99,8 +100,7 @@ class TestPayoutRoundNoncustodial:
         result = out.getvalue()
         assert f'got 1 grants' in result
 
-
-    def test_prints_correct_finalize_and_existing_amounts(self, grant_payout, grant_clr_factory, grant_clr_match_factory, grant_factory, yes_continue):
+    def test_prints_correct_finalize_and_existing_amounts(self, grant_payout, grant_clr_factory, grant_clr_match_factory, grant_factory, user_input_no):
         GrantCLRCalculationFactory(
             grant=grant_factory,
             clr_prediction_curve=prediction_curve,
@@ -108,16 +108,10 @@ class TestPayoutRoundNoncustodial:
             latest=True
         )
         clr_match = CLRMatchFactory(grant=grant_factory, grant_payout=grant_payout, round_number=13)
-        GrantCLRCalculationFactory(
-            grant=grant_factory,
-            clr_prediction_curve=prediction_curve,
-            grantclr=grant_clr_factory,
-            latest=True
-        )
         out = StringIO()
 
         with mock.patch('grants.management.commands.payout_round_noncustodial.input') as input:
-            input.return_value = user_input
+            input.return_value = user_input_no
             call_command(
                 'payout_round_noncustodial',
                 'finalize', 
@@ -130,8 +124,52 @@ class TestPayoutRoundNoncustodial:
         scheduled_matches = [clr_match, grant_clr_match_factory]
         total = sum(sm.amount for sm in scheduled_matches)
 
-        assert f'there are 1 grants to finalize worth ${round((prediction_curve[0][1] * 2), 2)}' in result
+        assert f'there are 1 grants to finalize worth ${round((prediction_curve[0][1]), 2)}' in result
         assert f'there are {len(scheduled_matches)} Match Payments already created worth ${round(total, 2)}' in result
 
+    def test_if_clr_match_is_created_when_no_payout_is_zeros(self, grant_payout, grant_clr_factory, grant_clr_match_factory, user_input_yes, grant_type):
+        grant = GrantFactory(active=True, network='mainnet', grant_type=grant_type)
+        GrantCLRCalculationFactory(
+            grant=grant,
+            clr_prediction_curve=[[0, 0]],
+            grantclr=grant_clr_factory,
+            latest=True
+        )
 
-    # def test_tif_clr_match_is_created_when_no_amount_exists(self, grant_payout, grant_clr_factory, grant_clr_match_factory, grant_factory, yes_continue):
+        out = StringIO()
+        with mock.patch('grants.management.commands.payout_round_noncustodial.input') as input:
+            input.return_value = user_input_yes
+            call_command(
+                'payout_round_noncustodial',
+                'finalize', 
+                f'--clr_pks={grant_clr_factory.pk}',
+                f'--clr_round={grant_clr_match_factory.round_number}',
+                f'--grant_payout_pk={grant_payout.pk}',
+                stdout=out)
+        result = out.getvalue()
+        assert f'0 matches were created' in result
+
+    def test_that_clr_match_is_created(self, grant_payout, grant_clr_factory, grant_clr_match_factory, user_input_yes, grant_type):
+        profile = ProfileFactory()
+        grant = GrantFactory(active=True, network='mainnet', grant_type=grant_type, admin_profile=profile)
+        GrantCLRCalculationFactory(
+            grant=grant,
+            clr_prediction_curve=prediction_curve,
+            grantclr=grant_clr_factory,
+            latest=True
+        )
+
+        out = StringIO()
+        with mock.patch('grants.management.commands.payout_round_noncustodial.input') as input:
+            input.return_value = user_input_yes
+            call_command(
+                'payout_round_noncustodial',
+                'finalize', 
+                f'--clr_pks={grant_clr_factory.pk}',
+                f'--clr_round={grant_clr_match_factory.round_number}',
+                f'--grant_payout_pk={grant_payout.pk}',
+                stdout=out)
+        result = out.getvalue()
+        assert f'1 matches were created' in result
+            
+
