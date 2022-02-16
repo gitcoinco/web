@@ -3,10 +3,10 @@ name: CI
 on:
   # run it on push to master and stable branches
   push:
-    branches: [ master, stable ]
+    branches: [ infra_as_code ]
   # run it during pull request to master and stable branches
-  pull_request:
-    branches: [ master, stable ]
+  # pull_request:
+  #   branches: [ master, stable ]
 
 jobs:
   build-and-test:
@@ -74,62 +74,73 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      - name: Setup Env
-        run: |
-          echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
-          cp app/app/ci.env app/app/.env
-          pip install pip==20.0.2 setuptools wheel --upgrade
+      # - name: Setup Env
+      #   run: |
+      #     echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
+      #     cp app/app/ci.env app/app/.env
+      #     pip install pip==20.0.2 setuptools wheel --upgrade
 
-      - name: Fetch and Install GeoIP database files
-        run: |
-          sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
-          cp dist/*.gz ./
-          gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
-          tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
-          sudo mkdir -p /opt/GeoIP/
-          sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
-          sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
+      # - name: Fetch and Install GeoIP database files
+      #   run: |
+      #     sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
+      #     cp dist/*.gz ./
+      #     gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
+      #     tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
+      #     sudo mkdir -p /opt/GeoIP/
+      #     sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
+      #     sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
 
-      - name: Install libvips, Node, and Python dependencies
-        run: |
-          sudo apt-get install -y libvips libvips-dev
-          node --version
-          yarn install
-          pip install -r requirements/test.txt
-          yarn run eslint
-          yarn run stylelint
-          (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
+      # - name: Install libvips, Node, and Python dependencies
+      #   run: |
+      #     sudo apt-get install -y libvips libvips-dev
+      #     node --version
+      #     yarn install
+      #     pip install -r requirements/test.txt
+      #     yarn run eslint
+      #     yarn run stylelint
+      #     (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
 
-      - name: Run management commands
-        run: |
-          python app/manage.py migrate
-          python app/manage.py fetch_gas_prices
+      # - name: Run management commands
+      #   run: |
+      #     python app/manage.py migrate
+      #     python app/manage.py fetch_gas_prices
 
-      - name: Run Python and UI tests
-        run: |
-          pytest -p no:ethereum -p no:warnings
-          bin/ci/cypress-run
+      # - name: Run Python and UI tests
+      #   run: |
+      #     pytest -p no:ethereum -p no:warnings
+      #     bin/ci/cypress-run
 
-      - name: Generate Markdown documentation and static docs page
-        run: pydocmd build
+      # - name: Generate Markdown documentation and static docs page
+      #   run: pydocmd build
 
-      - name: Deploy to Github Pages 🚀
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/master'
+      # - name: Deploy to Github Pages 🚀
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   if: github.ref == 'refs/heads/master'
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: _build/site
+      #     cname: docs.gitcoin.co
+
+      - name: Compute some values 🚀
+        uses: actions/github-script@v6
+        id: compute
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/site
-          cname: docs.gitcoin.co
+          script: |
+            "${{ github.sha }}".substr(-10)
 
-      - name: Deploy master to Docker Hub 🚀
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+      - name: TEST Compute some values 🚀
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker pull python:3.6-slim-jessie
-          docker build -t gitcoin/web:${{ github.run_number }} .
-          docker push gitcoin/web:${{ github.run_number }}
-          docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:latest
-          docker push gitcoin/web:latest
+          echo ${{ steps.compute.outputs.result }}
+
+      # - name: Deploy master to Docker Hub 🚀
+      #   if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+      #   run: |
+      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #     docker pull python:3.6-slim-jessie
+      #     docker build -t gitcoin/web:${{ github.run_number }} .
+      #     docker push gitcoin/web:${{ github.run_number }}
+      #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:latest
+      #     docker push gitcoin/web:latest
 
       # - name: Deploy stable to Docker Hub 🚀
       #   if: github.ref == 'refs/heads/stable'
