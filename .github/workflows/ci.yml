@@ -121,27 +121,30 @@ jobs:
       #     publish_dir: _build/site
       #     cname: docs.gitcoin.co
 
-      - name: Compute some values 🚀
-        uses: actions/github-script@v6
+      # - name: Compute some values 🚀
+      #   uses: actions/github-script@v6
+      #   id: compute
+      #   with:
+      #     script: |
+      #       return { docker_tag: "${{ github.sha }}".substr(-10) }
+
+      - name: Compute some values
         id: compute
-        with:
-          script: |
-            return { docker_tag: "${{ github.sha }}".substr(-10) }
-
-      - name: TEST Compute some values 🚀
         run: |
-          echo ${{ steps.compute.outputs.result }}
-          echo ${{ steps.compute.outputs.result.docker_tag }}
+          echo "::set-output name=docker_tag::${GITHUB_SHA: -10}"
 
-      # - name: Deploy master to Docker Hub 🚀
-      #   if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
-      #   run: |
-      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      #     docker pull python:3.6-slim-jessie
-      #     docker build -t gitcoin/web:${{ github.run_number }} .
-      #     docker push gitcoin/web:${{ github.run_number }}
-      #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:latest
-      #     docker push gitcoin/web:latest
+      - name: TEST Compute some values
+        run: |
+          echo "Docker tag: ${{ steps.compute.outputs.docker_tag }}"
+
+      - name: Deploy master to Docker Hub 🚀
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker pull python:3.6-slim-jessie
+          docker build -t gitcoin/web:${{ steps.compute.outputs.docker_tag }} .
+          docker push gitcoin/web:${{ steps.compute.outputs.docker_tag }}
+          docker tag gitcoin/web:${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
+          docker push gitcoin/web:latest
 
       # - name: Deploy stable to Docker Hub 🚀
       #   if: github.ref == 'refs/heads/stable'
