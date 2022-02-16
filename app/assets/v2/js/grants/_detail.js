@@ -139,6 +139,12 @@ Vue.mixin({
       const container = this.$refs[element];
 
       container.scrollIntoViewIfNeeded({behavior: 'smooth', block: 'start'});
+    },
+    closeGrantCreatedNotification: function() {
+      let vm = this;
+
+      vm.modalShow = false;
+      delete localStorage['grant_state'];
     }
   }
 });
@@ -152,6 +158,7 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        modalShow: localStorage['grant_state'] == 'created',
         loading: false,
         loadingTx: false,
         loadingRelated: false,

@@ -237,6 +237,7 @@ Vue.mixin({
           });
           if (response.status == 200) {
             window.location = response.url;
+            localStorage['grant_state'] = 'created';
           } else {
             vm.submitted = false;
             _alert('Unable to create grant. Please try again', 'danger');
