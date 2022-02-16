@@ -5,8 +5,8 @@ from unittest import mock
 from django.core.management import CommandError, call_command
 
 import pytest
-from grants.tests.factories import CLRMatchFactory, GrantFactory, GrantPayoutFactory
 from economy.models import ConversionRate
+from grants.tests.factories import CLRMatchFactory, GrantFactory, GrantPayoutFactory
 
 
 @pytest.fixture
