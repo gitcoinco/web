@@ -8,12 +8,13 @@ from grants.tests.factories import ContributionFactory, CLRMatchFactory, GrantFa
 from grants.models import CLRMatch
 
 prediction_curve=[[0.0, 22051.853262470795, 0.0], [1.0, 22075.114561595507, 23.261299124711513], [10.0, 22112.83567215842, 60.98240968762548], [100.0, 22187.332229392225, 135.47896692142967], [1000.0, 22289.540553690527, 237.6872912197323], [10000.0, 22375.656575359033, 323.803312888238]]
+network='mainnet'
 
 @pytest.fixture
 def grant_payout():
     return GrantPayoutFactory(
         contract_address='0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B',
-        network='mainnet'
+        network=network
     )
 
 @pytest.fixture
@@ -29,7 +30,7 @@ def grant_clr_factory(grant_type):
 
 @pytest.fixture
 def grant_factory(grant_type):
-    return GrantFactory(active=True, network='mainnet', grant_type=grant_type)
+    return GrantFactory(active=True, network=network, grant_type=grant_type)
 
 
 @pytest.fixture
@@ -46,7 +47,7 @@ def user_input_yes():
 
 
 @pytest.mark.django_db
-class TestPayoutRoundNoncustodial:
+class TestPayoutRoundNoncustodialFinalize:
     def test_error_message_informs_to_pass_in_what(self):
         error = ''
         try:
@@ -171,5 +172,32 @@ class TestPayoutRoundNoncustodial:
                 stdout=out)
         result = out.getvalue()
         assert f'1 matches were created' in result
-            
+
+@pytest.mark.django_db
+class TestPayoutRoundNoncustodialFinalPayout:
+    def test_payout_warnings_showscorrect_count(self, grant_type, grant_clr_factory, grant_payout, grant_clr_match_factory, user_input_yes):
+        profile = ProfileFactory()
+        grant = GrantFactory(active=True, network='mainnet', grant_type=grant_type, admin_profile=profile)
+        GrantCLRCalculationFactory(
+            grant=grant,
+            clr_prediction_curve=prediction_curve,
+            grantclr=grant_clr_factory,
+            latest=True
+        )
+
+        out = StringIO()
+        with mock.patch('grants.management.commands.payout_round_noncustodial.input') as input:
+            input.return_value = user_input_yes
+            call_command(
+                'payout_round_noncustodial',
+                'prepare_final_payout', 
+                f'--clr_pks={grant_clr_factory.pk}',
+                f'--clr_round={grant_clr_match_factory.round_number}',
+                f'--grant_payout_pk={grant_payout.pk}',
+                stdout=out)
+
+        result = out.getvalue()
+        assert f'there are 1 UNPAID Match Payments already created worth ${round(grant_clr_match_factory.amount, 2)} {network} DAI' in result
+        assert f'promoted' in result
+
 

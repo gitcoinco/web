@@ -181,7 +181,7 @@ class Command(BaseCommand):
         if what in ['prepare_final_payout']:
             payout_matches = scheduled_matches.filter(ready_for_payout=False)
             payout_matches_amount = sum(sm.amount for sm in payout_matches)
-            print(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
+            self.stdout.write(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
             print(f"All these are users would need KYC. Do not do this for mainnet")
             print('------------------------------')
             user_input = input("continue? (y/n) ")
@@ -190,7 +190,7 @@ class Command(BaseCommand):
             for match in payout_matches:
                 match.ready_for_payout=True
                 match.save()
-            print('promoted')
+            self.stdout.write('promoted')
 
         # Set payouts (round must be finalized first) ----------------------------------------------
         if what in ['set_payouts']:
