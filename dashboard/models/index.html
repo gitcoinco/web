@@ -5677,17 +5677,6 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="dashboard.models.Profile.GTCSteward">GTCSteward</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.hackathon_registration">hackathon_registration</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -5769,17 +5758,6 @@ a many-to-many relation.</p>
 </code></pre>
 <p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
 instances.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="dashboard.models.Profile.initial_distribution">initial_distribution</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.interested">interested</h3>
@@ -6002,17 +5980,6 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Profile.mission_status">mission_status</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.num_repeated_relationships">num_repeated_relationships</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -6128,17 +6095,6 @@ object the first time, the query is executed.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
 <h3 id="dashboard.models.Profile.pins">pins</h3></p>
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="dashboard.models.Profile.players">players</h3>
-
 <p>Accessor to the related objects manager on the reverse side of a
 many-to-one relation.</p>
 <p>In the example::</p>
@@ -6402,17 +6358,6 @@ FieldFile when accessed so you can write code like::</p>
 <pre><code>&gt;&gt;&gt; with open('/path/to/hello.world', 'r') as f:
 ...     instance.file = File(f)
 </code></pre>
-<h3 id="dashboard.models.Profile.schwagcoupon_set">schwagcoupon_set</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.search_results_visible">search_results_visible</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -6644,17 +6589,6 @@ many-to-one relation.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.viewed_profiles">viewed_profiles</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="dashboard.models.Profile.vote_status">vote_status</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
 many-to-one relation.</p>
