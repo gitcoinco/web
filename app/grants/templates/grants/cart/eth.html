@@ -14,11 +14,18 @@
           <!-- Donation Token -->
           <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
             <div class="my-auto mr-3">Choose currency</div>
+            <input
+              v-model="preferredAmount"
+              class="col-auto form-control w-25" type="number" min="0" step="any"
+              :value="[[preferredAmount]]"
+              type="number"
+            />
             <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
               <template v-slot:option="option">
                 <span class="font-weight-semibold">[[ option.symbol ]]</span>
               </template>
             </v-select>
+            <b-button variant="link" @click="applyPreferredAmountAndTokenToAllGrants('ETH')">Apply to all</b-button>
           </div>
 
           <div class="col-12 col-md-7 d-flex justify-content-between px-0">
@@ -88,11 +95,6 @@
                         Minimum [[ grant.grant_donation_amount/grant.grant_donation_amount_usd || '' | formatNumberWithDecimal]] [[grant.grant_donation_currency]] required
                       </span>
                     </div>
-
-                    <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
-                      apply to all
-                    </small>
-
                   </div>
                 </div>
               </div>
