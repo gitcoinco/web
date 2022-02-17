@@ -281,12 +281,6 @@ def update_trust_bonus(self, pk):
         tb += 0.15
     # if profile.is_duniter_verified:
     #     tb *= 1.001
-    qd_tb = 0
-    for player in profile.players.all():
-        new_score = 0
-        if player.tokens_in:
-            new_score = min(player.tokens_in / 100, 0.20)
-        qd_tb = max(qd_tb, new_score)
 
     # cap the trust_bonus score at 1.5
     tb = min(1.5, tb)
