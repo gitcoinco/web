@@ -3890,11 +3890,6 @@ class GrantSubmissionView(View):
         grant.calc_clr_round()
         grant.save()
 
-        messages.success(
-            request,
-            _('Thank you for posting this Grant. Our team reviews each grant before it goes live on the website. This process takes 1-2 business days.')
-        )
-
         if grant.active:
             record_grant_activity_helper('new_grant', grant, profile)
 
