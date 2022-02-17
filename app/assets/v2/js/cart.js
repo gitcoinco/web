@@ -946,7 +946,7 @@ Vue.component('grants-cart', {
       const amount = parseFloat(this.preferredAmount);
       const fallbackAmount = await this.valueToEth(amount, this.selectedETHCartToken);
 
-      this.grantData.forEach((grant, index) => {
+      this.grantData.forEach((_, index) => {
         // Assume all tokens available on this chain are accepted by this grant. This gives us
         // an array of token symbols to compare against
         const acceptedCurrencies = this.filterByChainId.map((token) => token.symbol);
