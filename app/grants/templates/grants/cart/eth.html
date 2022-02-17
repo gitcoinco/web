@@ -16,7 +16,9 @@
             <div class="my-auto mr-3">Choose currency</div>
             <input
               v-model="preferredAmount"
-              class="col-auto form-control w-25" type="number" min="0" step="any"
+              class="col-auto form-control w-25"
+              min="0"
+              step="any"
               :value="[[preferredAmount]]"
               type="number"
             />
@@ -146,7 +148,7 @@
     </div>
 
     <!-- Right Section -->
-    <div class="col-12 col-lg-3 px-lg-0">
+    <div class="col-12 col-lg-3 px-lg-0 border border-light p-lg-4 rounded">
       <div class="sticky-top" style="z-index: 0;">
         <!-- Summary -->
         <div>
@@ -181,7 +183,7 @@
         </div>
 
         <!-- Gitcoin Matching Pool -->
-        <div class="d-flex justify-content-between align-items-center text-center position-relative">
+        <div class="d-flex justify-content-center align-items-center text-centers ml-2">
           <div class="d-flex suggested-donation-container">
             <div style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;" class="cursor-pointer border border-right-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
             <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
