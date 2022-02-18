@@ -30,19 +30,21 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-7 d-flex justify-content-around px-0">
+          <div class="col-12 col-md-7 d-flex justify-content-between px-0">
             <b-button variant="link" @click="applyPreferredAmountAndTokenToAllGrants('ETH')">Apply to all</b-button>
             <!-- Save Collection -->
-            <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
-              <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
-              Save to Collection
-            </div>
+            <div class="d-flex w-50 pl-2 pr-1 justify-content-between">
+              <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
+                <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
+                  Save to Collection
+              </div>
 
-            <!-- Clear Cart -->
-            <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4"
-              v-b-modal.clear-cart-modal>
-              <i class="far fa-times" aria-hidden="true" v-b-tooltip.hover.bottom="'Clear Cart'">
-              </i>
+              <!-- Clear Cart -->
+              <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4"
+                v-b-modal.clear-cart-modal>
+                <i class="far fa-times" aria-hidden="true" v-b-tooltip.hover.bottom="'Clear Cart'">
+                </i>
+              </div>
             </div>
           </div>
         </div>
