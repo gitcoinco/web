@@ -708,6 +708,7 @@
 
 .rounded-toggle .vs__dropdown-toggle {
   border-radius: 5rem;
+  border-color: #A7A2B6;
   max-width: 6rem;
   font-weight: 600;
   padding: 2px ​0 7px 0px;
@@ -734,6 +735,10 @@
   }
 }
 
+#cartButtonRow {
+  justify-content: space-between;
+}
+
 .vselect-clean .vs__clear,
 .vselect-clean .vs__open-indicator {
   transform: scale(0.8);
@@ -747,6 +752,12 @@
 .grant-round-selector-row:first-of-type {
   border-bottom: 1px solid rgb(226, 224, 231);
   border-right-width: 0px;
+}
+
+@media only screen and (max-width: 1286px) {
+  #cartButtonRow {
+    justify-content: end;
+  }
 }
 
 @media only screen and (min-width: 768px) {
