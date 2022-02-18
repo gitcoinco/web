@@ -314,9 +314,10 @@
 #gc-grants-cart {
 
   .vs__dropdown-toggle {
-    padding: 1px 0 6px 0px;
     min-width: 110px;
-    max-height: 30px;
+    height: calc(1.5em + 0.75rem + 2px);
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
   .v-select__selections input {

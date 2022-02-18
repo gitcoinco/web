@@ -18,20 +18,20 @@
             <input
               v-model="preferredAmount"
               class="col-auto form-control w-25"
-              min="0"
-              step="any"
               :value="[[preferredAmount]]"
-              type="number"
+              style="max-width: 7rem;border-radius: 5rem;"
             />
-            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
-              <template v-slot:option="option">
-                <span class="font-weight-semibold">[[ option.symbol ]]</span>
-              </template>
-            </v-select>
-            <b-button variant="link" @click="applyPreferredAmountAndTokenToAllGrants('ETH')">Apply to all</b-button>
+            <div>
+              <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
+                <template v-slot:option="option">
+                  <span class="font-weight-semibold">[[ option.symbol ]]</span>
+                </template>
+              </v-select>
+            </div>
           </div>
 
           <div class="col-12 col-md-7 d-flex justify-content-around px-0">
+            <b-button variant="link" @click="applyPreferredAmountAndTokenToAllGrants('ETH')">Apply to all</b-button>
             <!-- Save Collection -->
             <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
               <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
@@ -71,7 +71,8 @@
                     <div class="d-flex">
                       <input v-model="grant.grant_donation_amount"
                         :class="grant.grant_donation_amount_usd && grant.grant_donation_amount_usd < UsdMinimalContribution ? 'border-danger' : ''"
-                        class="col-auto form-control" type="number" min="0" step="any" placeholder="Amount"
+                        class="col-auto form-control"
+                        placeholder="Amount"
                         style="max-width: 7rem" />
                       <span class="my-auto mx-3">[[ selectedETHCartToken ]]</span>
                       <span class="font-smaller-3 text-danger my-auto"
