@@ -185,5 +185,15 @@ jobs:
           echo "::set-output name=S3BucketWebUrl::${{ steps.pulumi.outputs.bucketWebURL }}"
           echo "::set-output name=FrontendUrl::${{ steps.pulumi.outputs.frontendURL }}"
 
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            console.log("Context", context)
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Test your commit here: ${{ steps.pulumi.outputs.frontendURL }}`
+            })
       
       
