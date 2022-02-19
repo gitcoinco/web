@@ -15,6 +15,9 @@ jobs:
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
 
+   outputs:
+     dockerTag: ${{ steps.compute.outputs.docker_tag }}
+
     services:
       # Label used to access the service container
       postgres:
@@ -155,8 +158,6 @@ jobs:
       #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:stable
       #     docker push gitcoin/web:stable
 
-   output:
-     dockerTag: ${{ steps.compute.outputs.docker_tag }}
 
   deploy:
     name: Deploy
