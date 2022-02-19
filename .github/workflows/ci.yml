@@ -5,8 +5,8 @@ on:
   push:
     branches: [ infra_as_code ]
   # run it during pull request to master and stable branches
-  # pull_request:
-  #   branches: [ master, stable ]
+  pull_request:
+    branches: [ infra_as_code ]
 
 jobs:
   build-and-test:
@@ -158,6 +158,16 @@ jobs:
       #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:stable
       #     docker push gitcoin/web:stable
 
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            console.log("Context", context)
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Docker imaage has been pushed to: ${{ steps.compute.outputs.docker_tag }}`
+            })
 
   deploy:
     name: Deploy
