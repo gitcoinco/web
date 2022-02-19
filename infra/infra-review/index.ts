@@ -467,24 +467,24 @@ const service = new awsx.ecs.FargateService("app", {
                     ///////////////////////////////////////////////////////////////////////////////
                     {
                         name: "AWS_ACCESS_KEY_ID",
-                        value: "AKIAS3PAQRW7S2OFOCOW"
+                        value: usrLoggerKey
                     },
                     {
                         name: "AWS_SECRET_ACCESS_KEY",
-                        value: "fm56KphyXFezpwghV+lbvbV2Qvlt4bhHC2sLZ18+"
+                        value: usrLoggerSecret
                     },
                     {
                         name: "AWS_DEFAULT_REGION",
-                        value: "us-west-2"
+                        value: "us-west-2"          // TODO: configure this
                     },
 
                     {
                         name: "AWS_STORAGE_BUCKET_NAME",
-                        value: "bucket-2d361ed"
+                        value: "bucket-2d361ed"     // TODO: configure this
                     },
                     {
                         name: "STATIC_URL",
-                        value: "https://bucket-2d361ed.s3.us-west-2.amazonaws.com/static/"
+                        value: "https://bucket-2d361ed.s3.us-west-2.amazonaws.com/static/"  // TODO: configure this
                     }
                 ],
                 links: []
