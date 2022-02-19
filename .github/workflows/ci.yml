@@ -156,6 +156,23 @@ jobs:
       #     docker push gitcoin/web:stable
 
 
+  deploy:
+    name: Deploy
+    needs: build-and-test
+
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
       # Install pulumi dependencies
       - run: npm install
         working-directory: infra/infra-review
