@@ -15,6 +15,9 @@ let githubApiToken = `${process.env["POC_GITHUB_API_TOKEN"]}`;
 let githubClientId = `${process.env["POC_GITHUB_CLIENT_ID"]}`;
 let githubClientSecret = `${process.env["POC_GITHUB_CLIENT_SECRET"]}`;
 let githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
+let dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
+
+pulumi.log.info(`Docker image: ${dockerGtcWebImage}`)
 
 //////////////////////////////////////////////////////////////
 // Create permissions:
@@ -185,7 +188,7 @@ const service = new awsx.ecs.FargateService("app", {
     taskDefinitionArgs: {
         containers: {
             web: {
-                image: "nutrina/gitcoin_web:0.4",
+                image: dockerGtcWebImage,
                 memory: 512,
                 portMappings: [listener],
                 environment: [

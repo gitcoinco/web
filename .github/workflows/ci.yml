@@ -155,6 +155,8 @@ jobs:
       #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:stable
       #     docker push gitcoin/web:stable
 
+   outputs:
+     dockerTag: ${{ steps.compute.outputs.docker_tag }}
 
   deploy:
     name: Deploy
@@ -195,6 +197,7 @@ jobs:
           POC_DB_USER: ${{ secrets.POC_DB_USER }}
           POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
           POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
+          POC_DOCKER_GTC_WEB_IMAGE: $${{ needs.build-and-test.outputs.dockerTag }}
 
       - run: |
           echo "S3 Bucket web URL :  ${{ steps.pulumi.outputs.bucketWebURL }}"

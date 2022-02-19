@@ -11,3 +11,6 @@ export POC_GITHUB_API_TOKEN=
 export POC_GITHUB_CLIENT_ID=
 export POC_GITHUB_CLIENT_SECRET=
 export POC_GITHUB_APP_NAME=
+
+
+export dockerGtcWebImage=
