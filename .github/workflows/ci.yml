@@ -167,7 +167,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `The new docker imaage for has been pushed to: ${{ steps.compute.outputs.docker_tag }}`
+              body: `The new docker imaage for has been pushed to: \`${{ steps.compute.outputs.docker_tag }}\``
             })
 
   deploy:
@@ -225,7 +225,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Test your commit here: ${{ steps.pulumi.outputs.frontendURL }}`
+              body: `Test your commit here: [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }})`
             })
       
       
