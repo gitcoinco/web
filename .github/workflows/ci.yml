@@ -146,7 +146,7 @@ jobs:
           docker build -t ${{ steps.compute.outputs.docker_tag }} .
           docker push ${{ steps.compute.outputs.docker_tag }}
           docker tag ${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
-          docker push gitcoin/web:latest
+          docker push ${{ steps.compute.outputs.docker_tag }}
 
       # - name: Deploy stable to Docker Hub 🚀
       #   if: github.ref == 'refs/heads/stable'
