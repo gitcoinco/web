@@ -194,6 +194,8 @@ jobs:
           pulumi stack init ${{ github.event.number }}
           pulumi config -s ${{ github.event.number }} set aws:region us-west-2 --non-interactive
         working-directory: infra/infra-review
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       # Run pulumi actions
       - uses: pulumi/actions@v3
