@@ -1,19 +1,20 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
+import { Output, secret } from "@pulumi/pulumi";
 
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
 let publicKeyGr = `${process.env["POC_PUBLIC_KEY_GR"]}`;
 let publicKeyGe = `${process.env["POC_PUBLIC_KEY_GE"]}`;
 let dbUsername = `${process.env["POC_DB_USER"]}`;
-let dbPassword = `${process.env["POC_DB_PASSWORD"]}`;
+let dbPassword = secret(`${process.env["POC_DB_PASSWORD"]}`);
 let dbName = `${process.env["POC_DB_NAME"]}`;
 
 let githubApiUser = `${process.env["POC_GITHUB_API_USER"]}`;
-let githubApiToken = `${process.env["POC_GITHUB_API_TOKEN"]}`;
+let githubApiToken = secret(`${process.env["POC_GITHUB_API_TOKEN"]}`);
 let githubClientId = `${process.env["POC_GITHUB_CLIENT_ID"]}`;
-let githubClientSecret = `${process.env["POC_GITHUB_CLIENT_SECRET"]}`;
+let githubClientSecret = secret(`${process.env["POC_GITHUB_CLIENT_SECRET"]}`);
 let githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
 let dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
 

@@ -134,20 +134,19 @@ jobs:
       - name: Compute some values
         id: compute
         run: |
-          echo "::set-output name=docker_tag::gitcoin/web:4b44cc9a1c"
+          echo "::set-output name=docker_tag::gitcoin/web:${GITHUB_SHA: -10}"
 
-      # echo "::set-output name=docker_tag::gitcoin/web:${GITHUB_SHA: -10}"
       - name: TEST Compute some values
         run: |
           echo "Docker tag: ${{ steps.compute.outputs.docker_tag }}"
 
-      # - name: Deploy master to Docker Hub 🚀
-      #   run: |
-      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      #     docker build -t ${{ steps.compute.outputs.docker_tag }} .
-      #     docker push ${{ steps.compute.outputs.docker_tag }}
-      #     docker tag ${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
-      #     docker push ${{ steps.compute.outputs.docker_tag }}
+      - name: Deploy to Docker Hub 🚀
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker build -t ${{ steps.compute.outputs.docker_tag }} .
+          docker push ${{ steps.compute.outputs.docker_tag }}
+          docker tag ${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
+          docker push ${{ steps.compute.outputs.docker_tag }}
 
       # - name: Deploy stable to Docker Hub 🚀
       #   if: github.ref == 'refs/heads/stable'
