@@ -195,7 +195,9 @@ jobs:
         id: pulumi
         with:
           command: up
-          stack-name: gtc-review
+          # stack-name: gtc-review
+          stack-name: ${{ github.event.number }}
+          upsert: true
           work-dir: infra/infra-review
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

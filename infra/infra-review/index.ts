@@ -1,24 +1,23 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
-import { Output, secret } from "@pulumi/pulumi";
 
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
 let publicKeyGr = `${process.env["POC_PUBLIC_KEY_GR"]}`;
 let publicKeyGe = `${process.env["POC_PUBLIC_KEY_GE"]}`;
 let dbUsername = `${process.env["POC_DB_USER"]}`;
-let dbPassword = secret(`${process.env["POC_DB_PASSWORD"]}`);
+let dbPassword = pulumi.secret(`${process.env["POC_DB_PASSWORD"]}`);
 let dbName = `${process.env["POC_DB_NAME"]}`;
 
 let githubApiUser = `${process.env["POC_GITHUB_API_USER"]}`;
-let githubApiToken = secret(`${process.env["POC_GITHUB_API_TOKEN"]}`);
+let githubApiToken = pulumi.secret(`${process.env["POC_GITHUB_API_TOKEN"]}`);
 let githubClientId = `${process.env["POC_GITHUB_CLIENT_ID"]}`;
-let githubClientSecret = secret(`${process.env["POC_GITHUB_CLIENT_SECRET"]}`);
+let githubClientSecret = pulumi.secret(`${process.env["POC_GITHUB_CLIENT_SECRET"]}`);
 let githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
-let dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
 
-pulumi.log.info(`Docker image: ${dockerGtcWebImage}`)
+
+let dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
 
 //////////////////////////////////////////////////////////////
 // Create permissions:
@@ -175,13 +174,16 @@ export const redisPrimaryNode = redis.cacheNodes[0];
 export const redisConnectionUrl = pulumi.interpolate `rediscache://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0?client_class=django_redis.client.DefaultClient`
 export const redisCacheOpsConnectionUrl = pulumi.interpolate `redis://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0`
 
-
 //////////////////////////////////////////////////////////////
 // Set up ALB and ECS cluster
 //////////////////////////////////////////////////////////////
 
 const cluster = new awsx.ecs.Cluster("gitcoin", { vpc });
-const listener = new awsx.lb.ApplicationListener("app", { port: 80, vpc });
+export const clusterInstance = cluster;
+export const clusterId = cluster.id;
+
+
+export const listener = new awsx.lb.ApplicationListener("app", { port: 80, vpc: cluster.vpc });
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
@@ -497,7 +499,6 @@ const service = new awsx.ecs.FargateService("app", {
 // Export the URL so we can easily access it.
 export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
 export const frontend = listener.endpoint
-
 
 
 //////////////////////////////////////////////////////////////
