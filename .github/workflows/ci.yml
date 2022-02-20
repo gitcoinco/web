@@ -191,7 +191,7 @@ jobs:
       # Install pulumi dependencies
       - run: |
           npm install
-          pulumi stack init ${{ github.event.number }}
+          pulumi stack select -c ${{ github.event.number }}
           pulumi config -s ${{ github.event.number }} set aws:region us-west-2 --non-interactive
         working-directory: infra/infra-review
         env:
