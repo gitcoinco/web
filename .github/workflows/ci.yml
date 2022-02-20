@@ -191,7 +191,6 @@ jobs:
       # Install pulumi dependencies
       - run: |
           npm install
-          curl -fsSL https://get.pulumi.com | sh
           cd infra/infra-review
           pulumi stack init ${{ github.event.number }}
           pulumi config -s ${{ github.event.number }} set aws:region us-west-2 --non-interactive
