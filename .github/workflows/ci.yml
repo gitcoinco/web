@@ -190,6 +190,8 @@ jobs:
 
       # Install pulumi dependencies
       - run: |
+          pwd
+          ls
           npm install
           cd infra/infra-review
           pulumi stack init ${{ github.event.number }}
