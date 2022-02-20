@@ -134,19 +134,21 @@ jobs:
       - name: Compute some values
         id: compute
         run: |
-          echo "::set-output name=docker_tag::gitcoin/web:${GITHUB_SHA: -10}"
+          echo "::set-output name=docker_tag::gitcoin/web:66bbd64099"
+
+      # echo "::set-output name=docker_tag::gitcoin/web:${GITHUB_SHA: -10}"
 
       - name: TEST Compute some values
         run: |
           echo "Docker tag: ${{ steps.compute.outputs.docker_tag }}"
 
-      - name: Deploy to Docker Hub 🚀
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker build -t ${{ steps.compute.outputs.docker_tag }} .
-          docker push ${{ steps.compute.outputs.docker_tag }}
-          docker tag ${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
-          docker push ${{ steps.compute.outputs.docker_tag }}
+      # - name: Deploy to Docker Hub 🚀
+      #   run: |
+      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #     docker build -t ${{ steps.compute.outputs.docker_tag }} .
+      #     docker push ${{ steps.compute.outputs.docker_tag }}
+      #     docker tag ${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
+      #     docker push ${{ steps.compute.outputs.docker_tag }}
 
       # - name: Deploy stable to Docker Hub 🚀
       #   if: github.ref == 'refs/heads/stable'
@@ -187,7 +189,12 @@ jobs:
           cache: "yarn"
 
       # Install pulumi dependencies
-      - run: npm install
+      - run: |
+          npm install
+          curl -fsSL https://get.pulumi.com | sh
+          cd infra/infra-review
+          pulumi stack init ${{ github.event.number }}
+          pulumi config -s ${{ github.event.number }} set aws:region us-west-2 --non-interactive
         working-directory: infra/infra-review
 
       # Run pulumi actions
@@ -218,6 +225,10 @@ jobs:
           echo "::set-output name=S3BucketWebUrl::${{ steps.pulumi.outputs.bucketWebURL }}"
           echo "::set-output name=FrontendUrl::${{ steps.pulumi.outputs.frontendURL }}"
 
+
+      #  sudo docker run -it --env-file .env -v $(pwd)/static:/code/app/static nutrina/gitcoin_web:0.4 python3 manage.py collectstatic
+
+      
       - uses: actions/github-script@v6
         with:
           script: |
