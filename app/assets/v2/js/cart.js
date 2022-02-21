@@ -942,7 +942,7 @@ Vue.component('grants-cart', {
       return this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
     },
 
-    async applyPreferredAmountAndTokenToAllGrants(tenet) {
+    async applyPreferredAmountAndTokenToAllGrants(tenant) {
       const amount = parseFloat(this.preferredAmount);
       const fallbackAmount = await this.valueToEth(amount, this.selectedETHCartToken);
 
@@ -952,7 +952,7 @@ Vue.component('grants-cart', {
         const acceptedCurrencies = this.filterByChainId.map((token) => token.symbol);
 
         // Skip this loop if this grant is not the same tenant as the clicked grant
-        if (this.grantData[index].tenants[0] !== tenet)
+        if (this.grantData[index].tenants[0] !== tenant)
           return;
 
         // Update the values
