@@ -232,9 +232,6 @@ jobs:
           echo "::set-output name=S3BucketWebUrl::${{ steps.pulumi.outputs.bucketWebURL }}"
           echo "::set-output name=FrontendUrl::${{ steps.pulumi.outputs.frontendURL }}"
 
-
-      #  sudo docker run -it --env-file .env -v $(pwd)/static:/code/app/static nutrina/gitcoin_web:0.4 python3 manage.py collectstatic
-
       # - name: Apply migrations, running ECS task
       #   run: |
       #     aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
@@ -246,7 +243,8 @@ jobs:
           aws --version
           ls static_files_to_deploy
           echo "Syncing to bucket: ${{ steps.pulumi.outputs.bucketName }}"
-          aws s3 sync static_files_to_deploy s3://${{ steps.pulumi.outputs.bucketName }}/static --acl public-read
+          echo "Source folder: $(pwd)/static_files_to_deploy
+          aws s3 sync $(pwd)/static_files_to_deploy s3://${{ steps.pulumi.outputs.bucketName }}/static --acl public-read
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
