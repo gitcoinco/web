@@ -171,19 +171,331 @@ const redis = new aws.elasticache.Cluster("gitcoin-cache", {
 
 
 export const redisPrimaryNode = redis.cacheNodes[0];
-export const redisConnectionUrl = pulumi.interpolate `rediscache://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0?client_class=django_redis.client.DefaultClient`
-export const redisCacheOpsConnectionUrl = pulumi.interpolate `redis://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0`
+export const redisConnectionUrl = pulumi.interpolate`rediscache://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0?client_class=django_redis.client.DefaultClient`
+export const redisCacheOpsConnectionUrl = pulumi.interpolate`redis://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0`
 
 //////////////////////////////////////////////////////////////
 // Set up ALB and ECS cluster
 //////////////////////////////////////////////////////////////
 
 const cluster = new awsx.ecs.Cluster("gitcoin", { vpc });
-export const clusterInstance = cluster;
+// export const clusterInstance = cluster;
 export const clusterId = cluster.id;
+const listener = new awsx.lb.ApplicationListener("app", { port: 80, vpc: cluster.vpc });
 
 
-export const listener = new awsx.lb.ApplicationListener("app", { port: 80, vpc: cluster.vpc });
+const task = new awsx.ecs.FargateTaskDefinition("task", {
+    containers: {
+        web: {
+            image: dockerGtcWebImage,
+            command: ["python3", "manage.py", "migrate"],
+            memory: 4096,
+            cpu: 2000,
+            portMappings: [],
+            environment: [
+                {
+                    name: "ENV",
+                    value: "prod"
+                },
+                // read me to understand this file:
+                // https://github.com/gitcoinco/web/blob/master/docs/ENVIRONMENT_VARIABLES.md
+
+                ///////////////////////////////////////////////////////////////////////////////
+                // BASIC PARAMS
+                ///////////////////////////////////////////////////////////////////////////////
+                {
+                    name: "CACHE_URL",
+                    value: "dbcache://my_cache_table"
+                },
+                {
+                    name: "REDIS_URL",
+                    value: redisConnectionUrl
+                },
+                {
+                    name: "CACHEOPS_REDIS",
+                    value: redisCacheOpsConnectionUrl
+                },
+                {   // TODO: drop this
+                    name: "COLLECTFAST_CACHE_URL",
+                    value: "dbcache://collectfast"
+                },
+                {
+                    name: "DATABASE_URL",
+                    value: rdsConnectionUrl
+                },
+                {
+                    name: "READ_REPLICA_1_DATABASE_URL",
+                    value: rdsConnectionUrl
+                },
+                {
+                    name: "READ_REPLICA_2_DATABASE_URL",
+                    value: rdsConnectionUrl
+                },
+                {
+                    name: "READ_REPLICA_3_DATABASE_URL",
+                    value: rdsConnectionUrl
+                },
+                {
+                    name: "READ_REPLICA_4_DATABASE_URL",
+                    value: rdsConnectionUrl
+                },
+                {
+                    name: "DEBUG",
+                    value: "on"
+                },
+                {
+                    name: "BASE_URL",
+                    value: "http://127.0.0.1:8000/"
+                },
+
+                ///////////////////////////////////////////////////////////////////////////////
+                // DOCKER PROVISIONING PARAMS
+                ///////////////////////////////////////////////////////////////////////////////
+                // {
+                // name: "FORCE_PROVISION",
+                // value: "on"
+                // },
+                {
+                    name: "DISABLE_PROVISION",
+                    value: "on"
+                },
+                {
+                    name: "DISABLE_INITIAL_CACHETABLE",
+                    value: "on"
+                },
+                {
+                    name: "DISABLE_INITIAL_COLLECTSTATIC",
+                    value: "on"
+                },
+                {
+                    name: "DISABLE_INITIAL_LOADDATA",
+                    value: "off"
+                },
+                {
+                    name: "DISABLE_INITIAL_MIGRATE",
+                    value: "off"
+                },
+
+                ///////////////////////////////////////////////////////////////////////////////
+                // ADVANCED NOTIFICATION PARAMS
+                ///////////////////////////////////////////////////////////////////////////////
+                // Be VERY CAREFUL when changing this setting.  You don't want to accidentally
+                // spam a bunch of github notifications :)
+                {
+                    name: "ENABLE_NOTIFICATIONS_ON_NETWORK",
+                    value: "rinkeby"
+                },
+
+                // Please checkout [Integration Docs](https://github.com/gitcoinco/web/blob/master/docs/THIRD_PARTY_SETUP.md)
+                {
+                    name: "GITHUB_API_USER",
+                    value: githubApiUser
+                },
+                {
+                    name: "GITHUB_API_TOKEN",
+                    value: githubApiToken
+                },
+
+                // For Login integration with Github (login button in top right)
+                {
+                    name: "GITHUB_CLIENT_ID",
+                    value: githubClientId
+                },
+                {
+                    name: "GITHUB_CLIENT_SECRET",
+                    value: githubClientSecret
+                },
+                {
+                    name: "GITHUB_APP_NAME",
+                    value: githubAppName
+                },
+                {
+                    name: "CHAT_SERVER_URL",
+                    value: "chat"
+                },
+                {
+                    name: "CHAT_URL",
+                    value: "localhost"
+                },
+
+                // To enable Google verification(in profile's trust tab)
+                {
+                    name: "GOOGLE_CLIENT_ID",
+                    value: ""
+                },
+                {
+                    name: "GOOGLE_CLIENT_SECRET",
+                    value: ""
+                },
+
+                // For Facebook integration (in profile's trust tab)
+                {
+                    name: "FACEBOOK_CLIENT_ID",
+                    value: ""
+                },
+                {
+                    name: "FACEBOOK_CLIENT_SECRET",
+                    value: ""
+                },
+
+                // For notion integration (on grant creation)
+                {
+                    name: "NOTION_API_KEY",
+                    value: ""
+                },
+                {
+                    name: "NOTION_SYBIL_DB",
+                    value: ""
+                },
+
+                {
+                    name: "INFURA_USE_V3",
+                    value: "True"
+                },
+
+                {
+                    name: "SUPRESS_DEBUG_TOOLBAR",
+                    value: "1"
+                },
+
+                {
+                    name: "SENDGRID_API_KEY",
+                    value: ""
+                },
+                {
+                    name: "CONTACT_EMAIL",
+                    value: ""
+                },
+
+                {
+                    name: "FEE_ADDRESS",
+                    value: ""
+                },
+                {
+                    name: "FEE_ADDRESS_PRIVATE_KEY",
+                    value: ""
+                },
+                {
+                    name: "GIPHY_KEY",
+                    value: ""
+                },
+                {
+                    name: "YOUTUBE_API_KEY",
+                    value: ""
+                },
+                {
+                    name: "VIEW_BLOCK_API_KEY",
+                    value: ""
+                },
+                {
+                    name: "ETHERSCAN_API_KEY",
+                    value: ""
+                },
+                {
+                    name: "POLYGONSCAN_API_KEY",
+                    value: "K2FQK241WVVIQ66YJRK3NIMYPR8ZX3GM6D"
+                },
+                {
+                    name: "FORTMATIC_LIVE_KEY",
+                    value: ""
+                },
+                {
+                    name: "FORTMATIC_TEST_KEY",
+                    value: ""
+                },
+                {
+                    name: "XINFIN_API_KEY",
+                    value: ""
+                },
+                {
+                    name: "ALGORAND_API_KEY",
+                    value: ""
+                },
+
+                {
+                    name: "PYPL_CLIENT_ID",
+                    value: ""
+                },
+
+                {
+                    name: "BRIGHTID_PRIVATE_KEY",
+                    value: ""
+                },
+
+                {
+                    name: "PREMAILER_CACHE",
+                    value: "LRU"
+                },
+                {
+                    name: "PREMAILER_CACHE_MAXSIZE",
+                    value: "4096"
+                },
+
+                {
+                    name: "GTC_DIST_API_URL",
+                    value: ""
+                },
+                {
+                    name: "GTC_DIST_KEY",
+                    value: ""
+                },
+
+                // CYPRESS METAMASK VARIABLES
+                {
+                    name: "NETWORK_NAME",
+                    value: "localhost"
+                },
+                {
+                    name: "SECRET_WORDS",
+                    value: ""
+                },
+                {
+                    name: "PASSWORD",
+                    value: ""
+                },
+                {
+                    name: "CYPRESS_REMOTE_DEBUGGING_PORT",
+                    value: "9222"
+                },
+
+                {
+                    name: "TEST_MNEMONIC",
+                    value: "chief loud snack trend chief net field husband vote message decide replace"
+                },
+
+                ///////////////////////////////////////////////////////////////////////////////
+                // Specific for review env test
+                ///////////////////////////////////////////////////////////////////////////////
+                {
+                    name: "AWS_ACCESS_KEY_ID",
+                    value: usrLoggerKey
+                },
+                {
+                    name: "AWS_SECRET_ACCESS_KEY",
+                    value: usrLoggerSecret
+                },
+                {
+                    name: "AWS_DEFAULT_REGION",
+                    value: "us-west-2"          // TODO: configure this
+                },
+
+                {
+                    name: "AWS_STORAGE_BUCKET_NAME",
+                    value: "bucket-2d361ed"     // TODO: configure this
+                },
+                {
+                    name: "STATIC_URL",
+                    value: "https://bucket-2d361ed.s3.us-west-2.amazonaws.com/static/"  // TODO: configure this
+                }
+            ],
+            dependsOn: [],
+            links: []
+        },
+    },
+});
+
+
+export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
@@ -520,6 +832,8 @@ const secgrp = new aws.ec2.SecurityGroup("secgrp", {
         cidrBlocks: ["0.0.0.0/0"],
     }],
 });
+
+export const securityGroupsForEc2 = secgrp.id;
 
 const ubuntu = aws.ec2.getAmi({
     mostRecent: true,

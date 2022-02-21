@@ -168,7 +168,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `The new docker imaage for has been pushed to: \`${{ steps.compute.outputs.docker_tag }}\``
+              body: `The new docker image for has been pushed to: \`${{ steps.compute.outputs.docker_tag }}\``
             })
 
   deploy:
@@ -179,6 +179,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Following instructions here: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -228,7 +235,10 @@ jobs:
 
       #  sudo docker run -it --env-file .env -v $(pwd)/static:/code/app/static nutrina/gitcoin_web:0.4 python3 manage.py collectstatic
 
-      
+      - name: Apply migrations, running ECS task
+        run: |
+          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
+          
       - uses: actions/github-script@v6
         with:
           script: |
