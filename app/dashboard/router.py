@@ -370,7 +370,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
         # check for key in params and add to querySet via a case-insensitive contains
         for key in ['raw_data', 'bounty_owner_address', 'bounty_owner_github_username']:
             if key in param_keys:
-                queryset = add_param_to_querySet(request_key + '__icontains', queryset, self.request.query_params)
+                queryset = add_param_to_querySet(key + '__icontains', queryset, self.request.query_params)
 
         if 'reserved_for_user_handle' in param_keys:
             handle = self.request.query_params.get('reserved_for_user_handle', '')
