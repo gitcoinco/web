@@ -239,10 +239,12 @@ jobs:
       #   run: |
       #     aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
           
-      - name: Collect static files
+      - name: Copy static files to bucket
         run: |
           mkdir static_files_to_deploy
-          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -e DATABASE_URL=$${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py collectstatic
+          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py collectstatic
+          aws s3 sync static_files_to_deploy s3://${{ steps.pulumi.outputs.bucketName }}/static --acl public-read
+
 
       - uses: actions/github-script@v6
         with:
