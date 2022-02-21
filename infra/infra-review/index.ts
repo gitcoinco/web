@@ -206,7 +206,7 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
             command: ["python3", "manage.py", "migrate"],
             memory: 4096,
             cpu: 2000,
-            portMappings: [listener],
+            portMappings: [],
             environment: [
                 {
                     name: "ENV",
@@ -520,7 +520,7 @@ const service = new awsx.ecs.FargateService("app", {
             web: {
                 image: dockerGtcWebImage,
                 memory: 512,
-                portMappings: [],
+                portMappings: [listener],
                 environment: [
                     {
                         name: "ENV",

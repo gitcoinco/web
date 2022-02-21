@@ -239,6 +239,11 @@ jobs:
         run: |
           aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
           
+      - name: Collect static files
+        run: |
+          mkdir /static
+          docker run -it -v /static:/code/app/static -e DATABASE_URL=$${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py collectstatic
+
       - uses: actions/github-script@v6
         with:
           script: |
