@@ -26,7 +26,6 @@ from django.urls import reverse
 
 from app.utils import get_profiles_from_text
 from dashboard.models import Activity
-from html import escape
 from inbox.utils import (
     comment_notification, mentioned_users_notification, send_mention_notification_to_users, send_notification_to_user,
 )

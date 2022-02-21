@@ -1,10 +1,13 @@
-import pytest
-from django.core.management import CommandError, call_command
 from io import StringIO
 from unittest import mock
 
+from django.core.management import CommandError, call_command
+
+import pytest
 from dashboard.tests.factories import ProfileFactory
-from grants.tests.factories import CLRMatchFactory, GrantFactory, GrantPayoutFactory, GrantCLRFactory, GrantCLRCalculationFactory, GrantTypeFactory
+from grants.tests.factories import (
+    CLRMatchFactory, GrantCLRCalculationFactory, GrantCLRFactory, GrantFactory, GrantPayoutFactory, GrantTypeFactory,
+)
 
 prediction_curve=[[0.0, 22051.853262470795, 0.0], [1.0, 22075.114561595507, 23.261299124711513], [10.0, 22112.83567215842, 60.98240968762548], [100.0, 22187.332229392225, 135.47896692142967], [1000.0, 22289.540553690527, 237.6872912197323], [10000.0, 22375.656575359033, 323.803312888238]]
 network='mainnet'
@@ -253,7 +256,3 @@ class TestPayoutRoundNoncustodialSetPayouts:
         assert f"there are {len(unpaid)} UNPAID Match Payments worth ${round(sum(sm.amount for sm in unpaid), 2)} {network} DAI of which: " in result
         assert f"------> {len([unpaid_pending_kyc, grant_clr_match_factory])} UNPAID Matches PENDING KYC ${round(sum(sm.amount for sm in [unpaid_pending_kyc, grant_clr_match_factory]), 2)}" in result
         assert f"------> {len(unpaid_ready)} UNPAID Matches SKIPPING KYC ${round(sum(sm.amount for sm in unpaid_ready),2)}"
-
-
-
-
