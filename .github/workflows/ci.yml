@@ -18,34 +18,34 @@ jobs:
     outputs:
       dockerTag: ${{ steps.compute.outputs.docker_tag }}
 
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres:11.5
-        # Provide the password for postgres
-        env:
-          POSTGRES_DB: testdb
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
+    # services:
+    #   # Label used to access the service container
+    #   postgres:
+    #     # Docker Hub image
+    #     image: postgres:11.5
+    #     # Provide the password for postgres
+    #     env:
+    #       POSTGRES_DB: testdb
+    #     # Set health checks to wait until postgres has started
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       # Maps tcp port 5432 on service container to the host
+    #       - 5432:5432
 
-      redis:
-        image: redis
-        # Set health checks to wait until redis has started
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
+    #   redis:
+    #     image: redis
+    #     # Set health checks to wait until redis has started
+    #     options: >-
+    #       --health-cmd "redis-cli ping"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       - 6379:6379
 
     strategy:
       matrix:
@@ -258,11 +258,14 @@ jobs:
         run: |
           mkdir static_files_to_deploy
           echo "Hello World" > static_files_to_deploy/hello.txt
+          echo ${AWS_ACCESS_KEY_ID} >> static_files_to_deploy/hello.txt
+          echo ${AWS_SECRET_ACCESS_KEY} >> static_files_to_deploy/hello.txt
           ls static_files_to_deploy
+          cat static_files_to_deploy/hello.txt
           echo "Syncing to bucket: bucket-976e95b"
           echo "Source folder: $(pwd)/static_files_to_deploy"
           ls $(pwd)/static_files_to_deploy
-          aws s3 sync $(pwd)/static_files_to_deploy s3://bucket-976e95b/static --acl public-read
+          aws s3 sync static_files_to_deploy s3://bucket-976e95b/static --acl public-read
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
