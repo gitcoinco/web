@@ -244,6 +244,7 @@ jobs:
           ls static_files_to_deploy
           echo "Syncing to bucket: ${{ steps.pulumi.outputs.bucketName }}"
           echo "Source folder: $(pwd)/static_files_to_deploy"
+          ls $(pwd)/static_files_to_deploy
           aws s3 sync $(pwd)/static_files_to_deploy s3://${{ steps.pulumi.outputs.bucketName }}/static --acl public-read
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
