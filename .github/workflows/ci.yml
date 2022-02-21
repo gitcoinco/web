@@ -180,11 +180,11 @@ jobs:
 
     steps:
       # Following instructions here: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+      # - name: Install AWS CLI
+      #   run: |
+      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #     unzip awscliv2.zip
+      #     sudo ./aws/install
 
       - name: Checkout code
         uses: actions/checkout@v2
