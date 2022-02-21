@@ -258,8 +258,6 @@ jobs:
         run: |
           mkdir static_files_to_deploy
           echo "Hello World" > static_files_to_deploy/hello.txt
-          echo ${AWS_ACCESS_KEY_ID} >> static_files_to_deploy/hello.txt
-          echo ${AWS_SECRET_ACCESS_KEY} >> static_files_to_deploy/hello.txt
           ls static_files_to_deploy
           cat static_files_to_deploy/hello.txt
           echo "Syncing to bucket: bucket-976e95b"
@@ -267,6 +265,8 @@ jobs:
           ls $(pwd)/static_files_to_deploy
           aws s3 sync static_files_to_deploy s3://bucket-976e95b/static --acl public-read
         env:
+          # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
+          AWS_EC2_METADATA_DISABLED: true
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
