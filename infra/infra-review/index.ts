@@ -160,6 +160,20 @@ const redisSubnetGroup = new aws.elasticache.SubnetGroup("gitcoin-cache-subnet-g
     subnetIds: vpcPrivateSubnetIds
 });
 
+const secgrp_redis = new aws.ec2.SecurityGroup("secgrp_redis", {
+    description: "gitcoin",
+    vpcId: vpc.id,
+    ingress: [
+        { protocol: "tcp", fromPort: 6379, toPort: 6379, cidrBlocks: ["0.0.0.0/0"] },
+    ],
+    egress: [{
+        protocol: "-1",
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["0.0.0.0/0"],
+    }],
+});
+
 const redis = new aws.elasticache.Cluster("gitcoin-cache", {
     engine: "redis",
     engineVersion: "3.2.10",
@@ -167,6 +181,7 @@ const redis = new aws.elasticache.Cluster("gitcoin-cache", {
     numCacheNodes: 1,
     port: 6379,
     subnetGroupName: redisSubnetGroup.name,
+    securityGroupIds: [secgrp_redis.id]
 });
 
 
@@ -505,7 +520,7 @@ const service = new awsx.ecs.FargateService("app", {
             web: {
                 image: dockerGtcWebImage,
                 memory: 512,
-                portMappings: [listener],
+                portMappings: [],
                 environment: [
                     {
                         name: "ENV",
