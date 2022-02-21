@@ -206,7 +206,7 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
             command: ["python3", "manage.py", "migrate"],
             memory: 4096,
             cpu: 2000,
-            portMappings: [],
+            portMappings: [listener],
             environment: [
                 {
                     name: "ENV",
