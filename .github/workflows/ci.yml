@@ -241,8 +241,8 @@ jobs:
           
       - name: Collect static files
         run: |
-          mkdir /static
-          docker run -it -v /static:/code/app/static -e DATABASE_URL=$${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py collectstatic
+          mkdir static_files_to_deploy
+          docker run -it -v $(pwd)/static_files_to_deploy:/code/app/static -e DATABASE_URL=$${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py collectstatic
 
       - uses: actions/github-script@v6
         with:
