@@ -2,8 +2,6 @@ on:
   push:
     branches:
       - infra_as_code
-    types:
-      - closed
       
 jobs:
   info:
