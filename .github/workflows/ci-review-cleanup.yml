@@ -1,9 +1,10 @@
+# only trigger on pull request closed events
 on:
-  push:
-    branches:
-      - infra_as_code
+  pull_request:
+    types: [ closed ]
       
 jobs:
+
   merge_job:
     # this job will only run if the PR has been merged
     if: github.event.pull_request.merged == true
