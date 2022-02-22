@@ -232,18 +232,18 @@ jobs:
       - name: Copy static files to bucket
         run: |
           mkdir static_files_to_deploy
-          mkdir bin
+          mkdir docker_bin
 
-          cat <<EOT >> bin/static_files.sh
+          cat <<EOT >> docker_bin/static_files.sh
           #!/bin/bash
           python3 manage.py bundle
           python3 manage.py collectstatic
           EOT
 
           echo "===================="
-          cat bin/static_files.sh
+          cat docker_bin/static_files.sh
           echo "===================="
-          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
+          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
 
           echo "--------------------"
           ls static_files_to_deploy
