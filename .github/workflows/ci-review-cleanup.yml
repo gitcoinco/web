@@ -2,8 +2,6 @@ on:
   pull_request:
     branches:
       - infra_as_code
-    types:
-      - closed
       
 jobs:
   info:
