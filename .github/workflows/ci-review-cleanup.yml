@@ -8,9 +8,7 @@ jobs:
   cleanup:
     if: github.event.pull_request.merged == true
     name: Delete review env
-    steps:
 
-    # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
 
     steps:
