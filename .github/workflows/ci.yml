@@ -232,6 +232,7 @@ jobs:
       - name: Copy static files to bucket
         run: |
           mkdir static_files_to_deploy
+          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py bundle
           docker run -v $(pwd)/static_files_to_deploy:/code/app/static -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py collectstatic
           aws --version
           ls static_files_to_deploy
