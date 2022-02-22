@@ -1,8 +1,10 @@
 on:
-  push:
+  pull_request:
     branches:
       - infra_as_code
-
+    types:
+      - closed
+      
 jobs:
   info:
     name: Info
