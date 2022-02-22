@@ -4,6 +4,15 @@ on:
       - infra_as_code
 
 jobs:
+  info:
+    if: github.event.pull_request.merged == true
+    name: Info
+
+    steps:
+      - name: Checkout code
+        run: |
+          echo "${{ github.event.pull_request.merged }}"
+
   cleanup:
     if: github.event.pull_request.merged == true
     name: Delete review env
