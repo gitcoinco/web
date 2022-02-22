@@ -234,8 +234,22 @@ jobs:
           mkdir static_files_to_deploy
           docker run -v $(pwd)/static_files_to_deploy:/code/app/static -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py bundle
           docker run -v $(pwd)/static_files_to_deploy:/code/app/static -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} python3 manage.py collectstatic
-          aws --version
+
+          cat <<EOT >> static_files.sh
+          #!/bin/bash
+          python3 manage.py bundle
+          python3 manage.py collectstatic
+          EOT
+
+          echo "===================="
+          cat static_files.sh
+          echo "===================="
+          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
+
+          echo "--------------------"
           ls static_files_to_deploy
+          echo "--------------------"
+
           echo "Syncing to bucket: ${{ steps.pulumi.outputs.bucketName }}"
           echo "Source folder: $(pwd)/static_files_to_deploy"
           ls $(pwd)/static_files_to_deploy
