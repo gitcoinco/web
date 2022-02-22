@@ -251,7 +251,7 @@ def render(block, kind, mode, name='asset', forced=False):
             print('- Generated: %s' % outputFile)
 
     # in production and not forced we will just return the static bundle
-    return get_tag(ext, static('v2/%s/%s/%s.%s.%s' % (bundled, ext, name, blockHash[0:6], ext)))
+    return get_tag(ext, static('v2/%s/%s/%s.%s' % (bundled, ext, name, ext)))
 
 
 class CompressorNode(template.Node):
