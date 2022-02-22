@@ -488,12 +488,24 @@ let environment = [
 
     {
         name: "AWS_STORAGE_BUCKET_NAME",
-        value: "bucket-2d361ed"     // TODO: configure this
+        value: pulumi.interpolate`http://${bucketWebURL}/`     // TODO: configure this
+    },
+    {
+        name: "STATIC_HOST",
+        value: pulumi.interpolate`http://${bucketWebURL}/`
     },
     {
         name: "STATIC_URL",
-        value: pulumi.interpolate`http://${bucketWebURL}/static/`
-    }
+        value: "static/"
+    },
+    // This is used for prod: STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
+    // STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
+    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage 
+    {
+        name: "STATICFILES_STORAGE",
+        value: "django.contrib.staticfiles.storage.StaticFilesStorage"
+    },
+
 ];
 
 const task = new awsx.ecs.FargateTaskDefinition("task", {
