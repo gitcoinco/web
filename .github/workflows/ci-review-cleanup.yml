@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: Checkout code
         run: |
-          echo "${{ github.event.pull_request.merged }}"
+          echo "github.event_name: ${{ github.event_name }}"
+          echo "github.event.pull_request.merged: ${{ github.event.pull_request.merged }}"
+          echo "github.event.action: ${{ github.event.action }}"
 
   cleanup:
     if: github.event.pull_request.merged == true
