@@ -230,7 +230,7 @@ def render(block, kind, mode, name='asset', forced=False):
         elems = js_elems(block) if ext == 'js' else css_elems(block)
         attr = 'src' if ext == 'js' else 'href'
         # output disk location (hard-coding assets/v2 -- this could be a setting?)
-        outputFile = ('%s/assets/v2/%s/%s/%s.%s.%s' % (settings.BASE_DIR, bundles, ext, name, blockHash[0:6], ext)).replace('/', os.sep)
+        outputFile = ('%s/assets/v2/%s/%s/%s.%s' % (settings.BASE_DIR, bundles, ext, name, ext)).replace('/', os.sep)
         # check if content was altered since last op
         changed = check_for_changes(elems, attr, kind, outputFile)
 
