@@ -2,7 +2,8 @@
 on:
   pull_request:
     types: [ closed ]
-      
+    branches: [ infra_as_code ]
+
 jobs:
 
   merge_job:
