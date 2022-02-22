@@ -1,3 +1,6 @@
+
+name: Cleanup review environment
+
 # only trigger on pull request closed events
 on:
   pull_request:
@@ -5,38 +8,10 @@ on:
     branches: [ infra_as_code ]
 
 jobs:
-
-  merge_job:
-    # this job will only run if the PR has been merged
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    steps:
-    - run: |
-        echo PR #${{ github.event.number }} has been merged
-
-  close_job:
-    # this job will only run if the PR has been closed without being merged
-    if: github.event.pull_request.merged == false
-    runs-on: ubuntu-latest
-    steps:
-    - run: |
-        echo PR #${{ github.event.number }} has been closed without being merged
-
-  info:
-    name: Info
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        run: |
-          echo "github.event_name: ${{ github.event_name }}"
-          echo "github.event.pull_request.merged: ${{ github.event.pull_request.merged }}"
-          echo "github.event.action: ${{ github.event.action }}"
-
   cleanup:
-    if: github.event.pull_request.merged == true
-    name: Delete review env
+    # https://shipit.dev/posts/trigger-github-actions-on-pr-close.html
+    # We want to delete the stack regardless if it has been merged or not
+    name: Delete review stack
 
     runs-on: ubuntu-latest
 
@@ -51,7 +26,8 @@ jobs:
           cache: "yarn"
 
       # Run pulumi actions
-      - uses: pulumi/actions@v3
+      - name: Delete the pulumi stack
+        uses: pulumi/actions@v3
         id: pulumi
         with:
           command: preview
