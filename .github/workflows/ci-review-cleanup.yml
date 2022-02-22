@@ -1,8 +1,7 @@
 on:
   pull_request:
     branches:
-      - deploy
-    types: [closed]
+      - infra_as_code
 
 jobs:
   cleanup:
