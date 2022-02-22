@@ -1,0 +1,45 @@
+on:
+  pull_request:
+    branches:
+      - deploy
+    types: [closed]
+
+jobs:
+  cleanup:
+    if: github.event.pull_request.merged == true
+    name: Delete review env
+    steps:
+
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      # Run pulumi actions
+      - uses: pulumi/actions@v3
+        id: pulumi
+        with:
+          command: preview
+          stack-name: ${{ github.event.number }}
+          work-dir: infra/infra-review
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: 
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          POC_DB_NAME: ${{ secrets.POC_DB_NAME }}
+          POC_DB_PASSWORD: ${{ secrets.POC_DB_PASSWORD }}
+          POC_DB_USER: ${{ secrets.POC_DB_USER }}
+          POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
+          POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
+          POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+

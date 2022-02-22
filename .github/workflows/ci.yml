@@ -3,10 +3,10 @@ name: CI
 on:
   # run it on push to master and stable branches
   push:
-    branches: [ infra_as_code ]
+    branches: [ do_not_run_infra_as_code ]
   # run it during pull request to master and stable branches
   pull_request:
-    branches: [ infra_as_code ]
+    branches: [ do_not_run_infra_as_code ]
 
 jobs:
   build-and-test:
