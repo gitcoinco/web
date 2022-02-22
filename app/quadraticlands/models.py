@@ -30,4 +30,3 @@ from app.utils import get_upload_filename
 from dashboard.models import Profile
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
-

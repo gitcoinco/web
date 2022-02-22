@@ -708,12 +708,13 @@
 
 .rounded-toggle .vs__dropdown-toggle {
   border-radius: 5rem;
+  border-color: #A7A2B6;
   max-width: 6rem;
   font-weight: 600;
   padding: 2px ​0 7px 0px;
 
   .vs__actions {
-    padding: 0.45rem 0.5rem 0 0;
+    padding: 0.45rem 1rem 0.35rem 0;
   }
 
   .v-select, .v-select * {
@@ -725,13 +726,17 @@
 .rounded-toggle  {
   .vs__dropdown-toggle .vs__selected {
     margin: 0;
-    padding-left: 10px;
+    padding: 0 0 0 15px;
   }
 
   svg {
     transform: scale(0.7);
     fill: black;
   }
+}
+
+#cartButtonRow {
+  justify-content: space-between;
 }
 
 .vselect-clean .vs__clear,
@@ -747,6 +752,12 @@
 .grant-round-selector-row:first-of-type {
   border-bottom: 1px solid rgb(226, 224, 231);
   border-right-width: 0px;
+}
+
+@media only screen and (max-width: 1286px) {
+  #cartButtonRow {
+    justify-content: end;
+  }
 }
 
 @media only screen and (min-width: 768px) {
