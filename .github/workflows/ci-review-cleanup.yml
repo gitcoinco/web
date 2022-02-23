@@ -31,7 +31,7 @@ jobs:
         id: pulumi
         with:
           command: preview
-          stack-name: ${{ github.event.number }}
+          stack-name: review_${{ github.event.number }}
           work-dir: infra/infra-review
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
