@@ -109,25 +109,25 @@ polkadot_utils.transferViaExtension = async(amount, to_address, from_address) =>
 
       from_address = accounts && accounts[0].address;
     }
-  
+
     if (!from_address) {
       reject('transferViaExtension: missing param from_address');
     }
-  
+
     const account_balance = await polkadot_utils.getAddressBalance(from_address);
 
     if (Number(account_balance) < amount) {
-      reject(`transferViaExtension: insufficent balance in address ${from_address}`);
+      reject(`transferViaExtension: insufficient balance in address ${from_address}`);
     }
-  
+
     const injector = await polkadot_extension_dapp.web3FromAddress(from_address);
-  
+
     polkadot_substrate.setSigner(injector.signer);
-  
+
     const tx = await polkadot_substrate.tx.balances.transfer(to_address, amount);
-  
+
     const unsub = tx.signAndSend(from_address, result => {
-  
+
       if (result.status.isInBlock) {
         console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
       } else if (result.status.isFinalized) {

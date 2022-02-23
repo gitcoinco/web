@@ -123,7 +123,7 @@ const checkWalletAlgoBalance = (balance, from_address, amount) => {
   // ALGO token
   if (Number(balance.amount) <= amount * 10 ** 6) {
     _alert(
-      { message: `Insufficent balance in address ${from_address}` },
+      { message: `Insufficient balance in address ${from_address}` },
       'danger'
     );
     return false;
@@ -164,7 +164,7 @@ const checkWalletASABalanceAssetHasEnough = (balance, from_address, token) => {
   });
   if (has_enough_asset_balance) {
     _alert(
-      { message: `Insufficent balance in address ${from_address}` },
+      { message: `Insufficient balance in address ${from_address}` },
       'danger'
     );
     return false;
