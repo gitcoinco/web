@@ -596,7 +596,7 @@ const ec2KeyPairGr = new aws.ec2.KeyPair('Grahams Key', {
 
 const web = new aws.ec2.Instance("WebGe", {
     ami: ubuntu.then(ubuntu => ubuntu.id),
-    associatePublicIpAddress: false,
+    associatePublicIpAddress: true,
     instanceType: "t3.micro",
     subnetId: vpcPublicSubnet1.then(),
 
