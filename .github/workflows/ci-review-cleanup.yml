@@ -12,7 +12,6 @@ jobs:
     # https://shipit.dev/posts/trigger-github-actions-on-pr-close.html
     # We want to delete the stack regardless if it has been merged or not
     name: Delete review stack
-
     runs-on: ubuntu-latest
 
     steps:
