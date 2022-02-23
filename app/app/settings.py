@@ -89,7 +89,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
     'livereload',
     'cacheops',
@@ -311,7 +310,9 @@ AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 # Sentry
 SENTRY_DSN = env.str('SENTRY_DSN', default='')
 SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
-RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+# TODO: geri: drop raven ???  
+# RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+RELEASE = env.str('GITHUB_SHA', default=' - dev build - ')
 RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='6.8.0')
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -542,8 +543,6 @@ if DEBUG:
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
-COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
-COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
 REDIS_URL = env('REDIS_URL', default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient')
 SEMAPHORE_REDIS_URL = env('SEMAPHORE_REDIS_URL', default=REDIS_URL)
 
@@ -552,10 +551,8 @@ CACHES = {
         'REDIS_URL',
         default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient'
     ),
-    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL', default='dbcache://collectfast'),
     'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
 }
-CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 CACHES['default']['TIMEOUT'] = 60 * 60 * 3
 
 # HTTPS Handling

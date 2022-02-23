@@ -1,0 +1,300 @@
+name: Setup review environment
+
+on:
+  # run it during pull request
+  pull_request:
+    branches: [ infra_as_code ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+
+    outputs:
+      dockerTag: ${{ steps.compute.outputs.docker_tag }}
+
+    # services:
+    #   # Label used to access the service container
+    #   postgres:
+    #     # Docker Hub image
+    #     image: postgres:11.5
+    #     # Provide the password for postgres
+    #     env:
+    #       POSTGRES_DB: testdb
+    #     # Set health checks to wait until postgres has started
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       # Maps tcp port 5432 on service container to the host
+    #       - 5432:5432
+
+    #   redis:
+    #     image: redis
+    #     # Set health checks to wait until redis has started
+    #     options: >-
+    #       --health-cmd "redis-cli ping"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       - 6379:6379
+
+    # strategy:
+    #   matrix:
+    #     # Run in all these versions of Python and Node
+    #     python-version: [3.7]
+    #     node-version: [14]
+
+    env:
+      DJANGO_SETTINGS_MODULE: app.settings
+      SUPRESS_DEBUG_TOOLBAR: 1
+      GITCOIN_API_USER: ${{ secrets.GITCOIN_API_USER }}
+      GITHUB_API_TOKEN: ${{ secrets.GITCOIN_API_TOKEN }}
+      POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
+
+    # steps to perform in job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # - name: Use Node.js ${{ matrix.node-version }}
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
+      #     cache: "yarn"
+
+      # - name: Use Python ${{ matrix.python-version }}
+      #   uses: "actions/setup-python@v2"
+      #   with:
+      #     python-version: ${{ matrix.python-version }}
+      #     cache: "pip"
+
+      # # - name: Setup Env
+      # #   run: |
+      # #     echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
+      # #     cp app/app/ci.env app/app/.env
+      # #     pip install pip==20.0.2 setuptools wheel --upgrade
+
+      # # - name: Fetch and Install GeoIP database files
+      # #   run: |
+      # #     sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
+      # #     cp dist/*.gz ./
+      # #     gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
+      # #     tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
+      # #     sudo mkdir -p /opt/GeoIP/
+      # #     sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
+      # #     sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
+
+      # # - name: Install libvips, Node, and Python dependencies
+      # #   run: |
+      # #     sudo apt-get install -y libvips libvips-dev
+      # #     node --version
+      # #     yarn install
+      # #     pip install -r requirements/test.txt
+      # #     yarn run eslint
+      # #     yarn run stylelint
+      # #     (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
+
+      # # - name: Run management commands
+      # #   run: |
+      # #     python app/manage.py migrate
+      # #     python app/manage.py fetch_gas_prices
+
+      # # - name: Run Python and UI tests
+      # #   run: |
+      # #     pytest -p no:ethereum -p no:warnings
+      # #     bin/ci/cypress-run
+
+      # # - name: Generate Markdown documentation and static docs page
+      # #   run: pydocmd build
+
+      # # - name: Deploy to Github Pages 🚀
+      # #   uses: peaceiris/actions-gh-pages@v3
+      # #   if: github.ref == 'refs/heads/master'
+      # #   with:
+      # #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      # #     publish_dir: _build/site
+      # #     cname: docs.gitcoin.coind
+
+      - name: Compute some values
+        id: compute
+        run: |
+          echo "::set-output name=docker_tag::gitcoin/web:${GITHUB_SHA: -10}"
+
+      # echo "::set-output name=docker_tag::gitcoin/web:66bbd64099"
+
+      - name: TEST Compute some values
+        run: |
+          echo "Docker tag: ${{ steps.compute.outputs.docker_tag }}"
+
+      # - name: Deploy to Docker Hub 🚀
+      #   run: |
+      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #     docker build -t ${{ steps.compute.outputs.docker_tag }} .
+      #     docker push ${{ steps.compute.outputs.docker_tag }}
+      #     docker tag ${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
+      #     docker push ${{ steps.compute.outputs.docker_tag }}
+
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Deploy to Docker Hub 🚀
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          # tags: ${{ secrets.DOCKER_HUB_USERNAME }}/simplewhale:latest
+          tags: ${{ steps.compute.outputs.docker_tag }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache,mode=max
+
+
+      # - name: Deploy stable to Docker Hub 🚀
+      #   if: github.ref == 'refs/heads/stable'
+      #   run: |
+      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #     docker pull python:3.6-slim-jessie
+      #     docker build -t gitcoin/web:${{ github.run_number }} .
+      #     docker push gitcoin/web:${{ github.run_number }}
+      #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:stable
+      #     docker push gitcoin/web:stable
+
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            console.log("Context", context)
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `The new docker image for has been pushed to: \`${{ steps.compute.outputs.docker_tag }}\``
+            })
+
+  deploy:
+    name: Deploy
+    needs: build-and-test
+    environment: review
+
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+
+    steps:
+      # Following instructions here: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+      # - name: Install AWS CLI
+      #   run: |
+      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #     unzip awscliv2.zip
+      #     sudo ./aws/install
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: infra/infra-review/package-lock.json
+
+      - name: Compute some values
+        id: compute
+        run: |
+          echo "::set-output name=pulumi_stack::review_${{ github.event.number }}"
+
+      # Install pulumi dependencies
+      # Select the new pulumi stack 
+      - run: |
+          npm install
+          pulumi stack select -c ${{ steps.compute.outputs.pulumi_stack }}
+          pulumi config -s ${{ steps.compute.outputs.pulumi_stack }} set aws:region us-west-2 --non-interactive
+        working-directory: infra/infra-review
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      # Run pulumi actions
+      - uses: pulumi/actions@v3
+        id: pulumi
+        with:
+          command: up
+          stack-name: ${{ steps.compute.outputs.pulumi_stack }}
+          upsert: true
+          work-dir: infra/infra-review
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: 
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          POC_DB_NAME: ${{ secrets.POC_DB_NAME }}
+          POC_DB_PASSWORD: ${{ secrets.POC_DB_PASSWORD }}
+          POC_DB_USER: ${{ secrets.POC_DB_USER }}
+          POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
+          POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
+          POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+
+      - run: |
+          echo "S3 Bucket web URL :  ${{ steps.pulumi.outputs.bucketWebURL }}"
+          echo "Frontend URL      :  ${{ steps.pulumi.outputs.frontendURL }}"
+          echo "::set-output name=S3BucketWebUrl::${{ steps.pulumi.outputs.bucketWebURL }}"
+          echo "::set-output name=FrontendUrl::${{ steps.pulumi.outputs.frontendURL }}"
+
+      # - name: Apply migrations, running ECS task
+      #   run: |
+      #     aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
+          
+      - name: Copy static files to bucket
+        run: |
+          mkdir static_files_to_deploy
+          mkdir docker_bin
+
+          cat <<EOT >> docker_bin/static_files.sh
+          #!/bin/bash
+          python3 manage.py bundle
+          python3 manage.py collectstatic
+          EOT
+
+          echo "===================="
+          cat docker_bin/static_files.sh
+          echo "===================="
+          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
+
+          echo "--------------------"
+          ls static_files_to_deploy
+          echo "--------------------"
+
+          echo "Syncing to bucket: ${{ steps.pulumi.outputs.bucketName }}"
+          echo "Source folder: $(pwd)/static_files_to_deploy"
+          ls $(pwd)/static_files_to_deploy
+          aws s3 sync $(pwd)/static_files_to_deploy s3://${{ steps.pulumi.outputs.bucketName }}/static --acl public-read --delete
+        env:
+          # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
+          AWS_EC2_METADATA_DISABLED: true
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Test your commit here: [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }})`
+            })
+      
+      
