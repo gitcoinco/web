@@ -44,11 +44,11 @@ jobs:
     #     ports:
     #       - 6379:6379
 
-    strategy:
-      matrix:
-        # Run in all these versions of Python and Node
-        python-version: [3.7]
-        node-version: [14]
+    # strategy:
+    #   matrix:
+    #     # Run in all these versions of Python and Node
+    #     python-version: [3.7]
+    #     node-version: [14]
 
     env:
       DJANGO_SETTINGS_MODULE: app.settings
