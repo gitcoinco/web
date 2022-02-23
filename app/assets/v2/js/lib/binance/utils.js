@@ -31,6 +31,10 @@ async function jsonRpcRequest(method, params) {
  * @param {String} address
  */
 binance_utils.getAddressBalance = async address => {
+
+  if (typeof BinanceChain === "undefined")
+    throw new Error('Please ensure your Binance Chain Extension wallet is installed and enabled');
+
   const isConnected = await BinanceChain.isConnected();
 
   if (!isConnected || !address)
@@ -50,6 +54,10 @@ binance_utils.getAddressBalance = async address => {
  * @param {String} tokenContractAddress
  */
 binance_utils.getAddressTokenBalance = async (address, tokenContractAddress) => {
+
+  if (typeof BinanceChain === "undefined")
+    throw new Error('Please ensure your Binance Chain Extension wallet is installed and enabled');
+
   const isConnected = await BinanceChain.isConnected();
 
   if (!isConnected || !address || !tokenContractAddress)
@@ -78,6 +86,10 @@ binance_utils.getAddressTokenBalance = async (address, tokenContractAddress) => 
  * Get accounts connected in extension
  */
 binance_utils.getExtensionConnectedAccounts = async () => {
+
+  if (typeof BinanceChain === "undefined")
+    throw new Error('Please ensure your Binance Chain Extension wallet is installed and enabled');
+
   const isConnected = await BinanceChain.isConnected();
 
   if (!isConnected)
@@ -93,10 +105,19 @@ binance_utils.getExtensionConnectedAccounts = async () => {
  * Get selected account connected in extension
  */
 binance_utils.getSelectedAccount = async () => {
-  const chainVerbose = binance_utils.getChainVerbose(BinanceChain.chainId);
-  const accounts = await binance_utils.getExtensionConnectedAccounts();
-  address = accounts && accounts[0]['addresses'].find(address => address.type === chainVerbose.addressType).address;
-  return address
+
+  return new Promise(async (resolve, reject) => {
+
+    if (typeof BinanceChain === "undefined") {
+      reject('Please ensure you are connected to your wallet via the <a target="_blank" class="underline" rel="noopener noreferrer" href="https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp">Binance Wallet extension</a>');
+    }
+
+    const chainVerbose = binance_utils.getChainVerbose(BinanceChain.chainId);
+    const accounts = await binance_utils.getExtensionConnectedAccounts();
+    address = accounts && accounts[0]['addresses'].find(address => address.type === chainVerbose.addressType).address;
+
+    resolve(address)
+  });
 }
 
 
@@ -110,6 +131,10 @@ binance_utils.getSelectedAccount = async () => {
 binance_utils.transferViaExtension = async (amount, to_address, from_address, token_name) => {
 
   return new Promise(async (resolve, reject) => {
+
+    if (typeof BinanceChain === "undefined") {
+      reject('Please ensure you are connected to your wallet via the <a target="_blank" class="underline" rel="noopener noreferrer" href="https://chrome.google.com/webstore/detail/binance-wallet/fhbohimaelbohpjbbldcngcnapndodjp">Binance Wallet extension</a>');
+    }
 
     const isConnected = await BinanceChain.isConnected();
 
@@ -140,7 +165,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
       const account_balance = await binance_utils.getAddressBalance(from_address);
 
       if (Number(account_balance) < amount) {
-        reject(`transferViaExtension: insufficent balance in address ${from_address}`);
+        reject(`transferViaExtension: insufficient balance in address ${from_address}`);
       }
 
       if (chainVerbose.addressType === 'eth') {
@@ -167,7 +192,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
       const account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
 
       if (Number(account_balance) < amount ) {
-        reject(`transferViaExtension: insufficent balance in address ${from_address}`);
+        reject(`transferViaExtension: insufficient balance in address ${from_address}`);
       }
 
       if (chainVerbose.addressType === 'eth') {
