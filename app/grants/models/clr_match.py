@@ -21,13 +21,15 @@ class CLRMatch(SuperModel):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
+        help_text=_('Token in which amount should be paid out')
+    )
+    token_amount = models.FloatField(
+        null=True,
+        blank=True,
+        help_text=_('CLR Amount in Token')
     )
     amount = models.FloatField(
-        help_text='Token Amount'
-    )
-    usd_amount = models.PositiveIntegerField(
-        null=True,
-        blank=True
+        help_text=_('CLR Amount in USD')
     )
     has_passed_kyc = models.BooleanField(default=False, help_text=_('Has this grant gone through KYC?'))
     ready_for_payout = models.BooleanField(default=False, help_text=_('Ready for regular payout or not'))
