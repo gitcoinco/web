@@ -1,12 +1,23 @@
 <progress-bar inline-template>
   <template>
-    <div>
-      <div v-for="(signal, index) in signals" class="d-flex flex-column">
-        <div class="signal">
-          [[ index + 1 ]]
+    <div class="progress-wrapper">
+      <div class="d-flex">
+        <div
+          v-for="(signal, index) in signals"
+          :style="{ width: `${(100 / signals.length)}%` }"
+        >
+          <div
+            class="d-flex flex-column signal"
+            :class="{ 'active': signal.active }"
+          >
+            <div class="number">
+              [[ index + 1 ]]
+            </div>
+            <p>[[ signal.text ]]</p>
+          </div>
         </div>
-        <h3>[[ signal.text ]]</h3>
       </div>
+      <hr class="progress-line" />
     </div>
   </template>
 </progress-bar>

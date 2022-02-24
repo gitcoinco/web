@@ -4,10 +4,17 @@ Vue.component('progress-bar', {
     return {
       signals: [
         {
-          text: 'Eligibility & Discovery'
+          text: 'Eligibility & Discovery',
+          active: true
         },
         {
           text: 'Grant Details'
+        },
+        {
+          text: 'Eligibility & Discovery'
+        },
+        {
+          text: 'Eligibility & Discovery'
         }
       ]
     };
