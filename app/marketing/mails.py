@@ -1113,7 +1113,7 @@ def grant_match_distribution_final_txn(match, needs_claimed=False):
         setup_lang(to_email)
         subject = f"🎉 Your Match Distribution of {rounded_amount} DAI has been sent! 🎉"
         if needs_claimed:
-            subject = f"💰ACTION REQUIRED - Your Grants Round {match.round_number} Distribution of {rounded_amount} DAI"
+            subject = f"💰ACTION REQUIRED - Your Grants Round {match.round_number} Distribution of {rounded_amount} {match.token_symbol}"
 
         html, text = render_grant_match_distribution_final_txn(match)
 

@@ -309,10 +309,10 @@ class Command(BaseCommand):
 
             elif token_balance > total_token_amount:
                 excess = token_balance - total_token_amount
-                self.stdout.write('Contract has excess {token_symbol} balance')
-                self.stdout.write('Required balance:  {total_token_amount}')
-                self.stdout.write('Current balance:   {token_balance}')
-                self.stdout.write('Excess {token_symbol} amount: {excess}')
+                self.stdout.write(f'Contract has excess {token_symbol} balance')
+                self.stdout.write(f'Required balance:  {total_token_amount}')
+                self.stdout.write(f'Current balance:   {token_balance}')
+                self.stdout.write(f'Excess {token_symbol} amount: {excess}')
                 self.stdout.write(f'\n Contract has an excess of {excess} {token_symbol}')
             self.stdout.write('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
 
@@ -333,6 +333,7 @@ class Command(BaseCommand):
                 # make save state to DB
                 match.payout_tx = tx_id
                 match.payout_tx_date = timezone.now()
+                match.token_symbol = token_symbol
                 grant_match_distribution_final_txn(match, True)
                 match.save()
 
