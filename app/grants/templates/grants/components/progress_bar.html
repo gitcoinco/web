@@ -1,0 +1,12 @@
+<progress-bar inline-template>
+  <template>
+    <div>
+      <div v-for="(signal, index) in signals" class="d-flex flex-column">
+        <div class="signal">
+          [[ index + 1 ]]
+        </div>
+        <h3>[[ signal.text ]]</h3>
+      </div>
+    </div>
+  </template>
+</progress-bar>
