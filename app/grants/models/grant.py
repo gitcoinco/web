@@ -60,20 +60,22 @@ class GrantPayout(SuperModel):
         default='DAI',
         help_text=_('Currency in which funds would be paid')
     )
-    conversion_rate = models.PositiveIntegerField(
+    token = models.ForeignKey(
+        'economy.Token',
         null=True,
-        blank=True
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Token in which amount should be paid out')
+    )
+    conversion_rate = models.FloatField(
+        default=1.0,
+        help_text=_('token to USD conversion rate')
     )
     conversion_date = models.DateTimeField(
         null=True,
-        blank=True
+        blank=True,
+        help_text=_('date on which conversion_rate was set')
     )
-    # payout_token_address = models.CharField(
-    #     max_length=255,
-    #     null=True,
-    #     blank=True,
-    #     help_text=_('Address of the payout_token')
-    # )
     status = models.CharField(
         max_length=20,
         choices=PAYOUT_STATUS,
