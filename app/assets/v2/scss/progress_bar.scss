@@ -3,6 +3,10 @@
   .signal {
     align-items: center;
     color: $gc-violet-200;
+    p {
+      font-weight: 600;
+      margin-top: 16px;
+    }
     .number {
       background: $gc-violet-200;
       color: white;
