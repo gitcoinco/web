@@ -28,7 +28,6 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/progress_bar.scss" %} />
     {% endbundle %}
   </head>
 
@@ -52,7 +51,6 @@
                   <p class="font-bigger-1 font-weight-light mb-0">
                     We're excited to learn about your project.
                   </p>
-                  {% include 'grants/components/progress_bar.html' %}
                   <p class="text-center">
                     <button @click="showQuickStart()" type="button" class="font-weight-light font-bigger-1 btn btn-link">
                       Open Grant Guide
@@ -487,7 +485,6 @@
       <script src="{% static "v2/js/user-search.js" %}"></script>
       <script src="{% static "v2/js/grants/shared.js" %}"></script>
 
-      <script src="{% static "v2/js/grants/progress_bar.js" %}"></script>
       <script src="{% static "v2/js/grants/_new.js" %}"></script>
     </div>
   </body>
