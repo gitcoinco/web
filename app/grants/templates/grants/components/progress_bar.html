@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <hr class="progress-line" />
+      <hr class="progress-line" :style="{ width: `${lineWidth}%`, margin: `0 0 0 ${((100 - lineWidth) / 2)}%` }" />
     </div>
   </template>
 </progress-bar>
