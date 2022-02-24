@@ -29,13 +29,15 @@ Vue.mixin({
       vm.loading = true;
 
       // fetch owned grants with clr matches
-      const url = '/grants/v1/api/clr-matches/';
+      const url = '/grants/v1/api/clr-matches?expand=token';
 
       try {
-        let result = await (await fetch(url)).json();
+        let grants = await (await fetch(url)).json();
 
+        // fetch only ETH grants
+        grants = grants.filter(grant => grant.admin_address != '0x0')
         // update claim status + format date fields
-        await Promise.all(result.map(async grant => {
+        await Promise.all(grants.map(async grant => {
           await Promise.all(grant.clr_matches.map(async m => {
             if (m.grant_payout) {
               m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
@@ -46,8 +48,9 @@ Vue.mixin({
                 e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
                 e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
               });
-              const claimData = await vm.checkClaimStatus(m, grant.admin_address);
 
+              // TODO: HAS TO BE UPDATED
+              const claimData = await vm.checkClaimStatus(m, grant.admin_address);
               m.status = claimData.status;
 
               // check to ensure we don't allow users to claim if balance is 0
@@ -62,7 +65,7 @@ Vue.mixin({
           }));
         }));
 
-        vm.grants = result;
+        vm.grants = grants;
 
         vm.loading = false;
 
@@ -189,7 +192,7 @@ Vue.mixin({
         });
     },
     async postToDatabase(matchPk, claimTx) {
-      const url = '/grants/v1/api/clr-matches/';
+      const url = '/grants/v1/api/clr-matches/?expand=token';
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
       try {

@@ -2082,7 +2082,7 @@
 		"name": "GR12",
 		"contract_address": "0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B",
 		"network": "mainnet",
-		"payout_token": "DAI",
+		"token": 1,
 		"status": "ready",
 		"funding_withdrawal_date": null
 	}

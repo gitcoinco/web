@@ -55,11 +55,6 @@ class GrantPayout(SuperModel):
         choices=NETWORKS,
         help_text=_('Network where contract is deployed')
     )
-    payout_token = models.CharField(
-        max_length=10,
-        default='DAI',
-        help_text=_('Currency in which funds would be paid')
-    )
     token = models.ForeignKey(
         'economy.Token',
         null=True,
