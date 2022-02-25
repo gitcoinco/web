@@ -164,6 +164,12 @@ jobs:
     environment: review
     runs-on: ubuntu-latest
 
+    env:
+      # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
+      AWS_EC2_METADATA_DISABLED: true
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
     steps:
 
       - name: Checkout code
@@ -233,11 +239,6 @@ jobs:
           echo "Source folder: $(pwd)/static_files_to_deploy"
 
           aws s3 sync $(pwd)/static_files_to_deploy s3://${{ steps.pulumi.outputs.bucketName }}/static --acl public-read --delete
-        env:
-          # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
-          AWS_EC2_METADATA_DISABLED: true
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - uses: actions/github-script@v6
         with:
