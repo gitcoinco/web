@@ -94,8 +94,7 @@ const staticAssetsBucketPolicy = new aws.s3.BucketPolicy("staticAssetsBucketPoli
 
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
-// export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websiteEndpoint}/`;
-export const bucketWebURL = ""
+export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websiteEndpoint}/`;
 
 //////////////////////////////////////////////////////////////
 // Set up VPC
@@ -532,22 +531,22 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
 
 export const taskDefinition = task.taskDefinition.id;
 
-// const service = new awsx.ecs.FargateService("app", {
-//     cluster,
-//     desiredCount: 1,
-//     assignPublicIp: false,
-//     taskDefinitionArgs: {
-//         containers: {
-//             web: {
-//                 image: dockerGtcWebImage,
-//                 memory: 512,
-//                 portMappings: [listener],
-//                 environment: environment,
-//                 links: []
-//             },
-//         },
-//     },
-// });
+const service = new awsx.ecs.FargateService("app", {
+    cluster,
+    desiredCount: 1,
+    assignPublicIp: false,
+    taskDefinitionArgs: {
+        containers: {
+            web: {
+                image: dockerGtcWebImage,
+                memory: 512,
+                portMappings: [listener],
+                environment: environment,
+                links: []
+            },
+        },
+    },
+});
 
 // Export the URL so we can easily access it.
 export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
