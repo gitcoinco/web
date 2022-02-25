@@ -199,10 +199,10 @@ const listener = new awsx.lb.ApplicationListener("app", { port: 80, vpc: cluster
 
 
 let environment = [
-    // {
-    //     name: "ENV",
-    //     value: "prod"
-    // },
+    {
+        name: "ENV",
+        value: "test"
+    },
     // read me to understand this file:
     // https://github.com/gitcoinco/web/blob/master/docs/ENVIRONMENT_VARIABLES.md
 
