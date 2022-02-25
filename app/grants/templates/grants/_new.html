@@ -27,6 +27,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/form_wrapper.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
     {% endbundle %}
   </head>
@@ -67,7 +68,12 @@
                   </div>
                 {% endif %}
 
-                <grant-creation-wrapper>
+                <form-wrapper
+                  :heading="'Owner Information'"
+                  :current-step="1"
+                  :total-steps="5"
+                  @update-navigation="console.log('update')"
+                >
                   <!-- Title -->
                   <div class="col-12 mb-4">
                     <label class="font-subheader font-weight-light letter-spacing" for="title">Title</label>
@@ -132,7 +138,7 @@
                       [[errors.reference_url]]
                     </div>
                   </div>
-                </grant-creation-wrapper>
+                </form-wrapper>
 
                 <!-- Title -->
                 <div class="col-12 mb-4">
@@ -546,7 +552,7 @@
       <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
 
 
-      <script src="{% static "v2/js/grants/grant_creation_wrapper.js" %}"></script>
+      <script src="{% static "v2/js/grants/form_wrapper.js" %}"></script>
       <script src="{% static "v2/js/pages/tabs.js" %}"></script>
       <script src="{% static "v2/js/tokens.js" %}"></script>
       <script src="{% static "v2/js/user-search.js" %}"></script>
