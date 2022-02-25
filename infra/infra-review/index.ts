@@ -1,10 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
-import { remote, types } from "@pulumi/command";
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
 let dbUsername = `${process.env["POC_DB_USER"]}`;
@@ -637,28 +633,4 @@ const web = new aws.ec2.Instance("Web", {
 });
 
 export const ec2PublicIp = web.publicIp;
-
-// const connection: types.input.remote.ConnectionArgs = {
-//     host: web.publicIp,
-//     user: "ubuntu",
-//     privateKey: privateKey,
-// };
-
-// export const cmd = pulumi.interpolate`sudo docker run \
-//     -e DATABASE_URL=${rdsConnectionUrl} \
-//     -e CACHEOPS_REDIS=${redisCacheOpsConnectionUrl} \
-//     -e AWS_ACCESS_KEY_ID=${usrLoggerKey} \
-//     -e AWS_SECRET_ACCESS_KEY=${usrLoggerSecret} \
-//     -e REDIS_URL=${redisConnectionUrl} \
-//     -e STATIC_HOST=${bucketWebURL} \
-//     -e STATIC_URL=static/ \
-//     -e STATICFILES_STORAGE=django.contrib.staticfiles.storage.StaticFilesStorage \
-//     ${dockerGtcWebImage} python3 manage.py migrate`
-
-// export const command = new remote.Command("remote command", {
-//     connection,
-//     create: cmd,
-// }, { deleteBeforeReplace: true });
-
-// export const commandOutput = command.stdout;
 
