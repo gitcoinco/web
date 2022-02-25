@@ -25,7 +25,6 @@ export const dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
 //////////////////////////////////////////////////////////////
 // Create permissions:
 //  - user for logging
-//  - user to maintain static assets
 //////////////////////////////////////////////////////////////
 
 const usrLogger = new aws.iam.User("usrLogger", {
