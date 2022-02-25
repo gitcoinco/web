@@ -2,21 +2,7 @@ Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 
 Vue.mixin({
-  data() {
-    return {
-      step: 1,
-      totalSteps: 5
-    };
-  },
   methods: {
-    updateNav: function(direction) {
-      if (direction === 'back') {
-        this.step -= 1;
-      }
-      if (direction === 'next') {
-        this.step += 1;
-      }
-    },
     showQuickStart: function() {
 
       fetch('/grants/quickstart')

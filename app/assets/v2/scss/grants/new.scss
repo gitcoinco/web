@@ -99,19 +99,3 @@
   display: none;
 }
 
-.create-wrapper {
-  width: 100%;
-  .new-border {
-    border: solid 1px $gc-grey-200;
-    border-radius: 8px;
-    padding: 1.5em;
-  }
-  
-  .navigation {
-    margin-top: 15px;
-    color: $gc-violet-400;
-    div {
-      margin: 0 5px;
-    }
-  }
-}

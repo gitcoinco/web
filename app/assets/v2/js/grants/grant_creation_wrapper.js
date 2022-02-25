@@ -1,7 +1,15 @@
 Vue.component('grant-creation-wrapper', {
   delimiters: [ '[[', ']]' ],
-  template: '#grant-creation-wrapper',
-  mounted() {
-    console.log('hereeeeee');
-  }
+  props: {
+    heading: {
+      type: String
+    },
+    'current-step': {
+      type: Number, required: true
+    },
+    'total-steps': {
+      type: Number, required: true
+    }
+  },
+  template: '#grant-creation-wrapper'
 });

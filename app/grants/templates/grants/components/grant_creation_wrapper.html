@@ -1,15 +1,25 @@
 <script type="text/x-template" id="grant-creation-wrapper">
   <div class="create-wrapper">
     <div class="new-border">
+      <p>Step [[currentStep]] of [[totalSteps]]</p>
+      <h4>[[heading]]</h4>
       <slot></slot>
     </div>
     <div class="d-flex justify-content-center navigation">
-      <div>
+      <button
+        :aria-disabled="currentStep === 1"
+        :disabled="currentStep === 1"
+        @click="$emit('update-navigation', 'back')"
+      >
         <i class="text-primary pr-2 fa fa-arrow-left"></i> Back
-      </div>
-      <div>
+      </button>
+      <button
+        :aria-disabled="currentStep >= totalSteps"
+        :disabled="currentStep >= totalSteps"
+        @click="$emit('update-navigation', 'next')"
+      >
         Next <i class="text-primary pl-2 fa fa-arrow-right"></i>
-      </div>
+      </button>
     </div>
   </div>
 </script>
