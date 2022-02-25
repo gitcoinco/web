@@ -1,4 +1,4 @@
-Vue.component('grant-creation-wrapper', {
+Vue.component('form-wrapper', {
   delimiters: [ '[[', ']]' ],
   props: {
     heading: {
@@ -11,5 +11,5 @@ Vue.component('grant-creation-wrapper', {
       type: Number, required: true
     }
   },
-  template: '#grant-creation-wrapper'
+  template: '#form-wrapper'
 });
