@@ -7,8 +7,6 @@ import * as os from "os";
 import * as path from "path";
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
-let publicKeyGr = `${process.env["POC_PUBLIC_KEY_GR"]}`;
-let publicKeyGe = `${process.env["POC_PUBLIC_KEY_GE"]}`;
 let dbUsername = `${process.env["POC_DB_USER"]}`;
 let dbPassword = pulumi.secret(`${process.env["POC_DB_PASSWORD"]}`);
 let dbName = `${process.env["POC_DB_NAME"]}`;
@@ -21,6 +19,7 @@ let githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
 
 
 export const dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
+
 
 //////////////////////////////////////////////////////////////
 // Create permissions:
@@ -589,13 +588,6 @@ const ubuntu = aws.ec2.getAmi({
     owners: ["099720109477"],
 });
 
-const ec2KeyPair = new aws.ec2.KeyPair('Geralds Key', {
-    publicKey: publicKeyGe
-});
-
-const ec2KeyPairGr = new aws.ec2.KeyPair('Grahams Key', {
-    publicKey: publicKeyGr
-});
 
 const ec2InitScript = `#!/bin/bash
 
@@ -627,14 +619,13 @@ echo $(date) "Finished installation of docker" >> /var/log/gitcoin/init.log
 
 `
 
-const web = new aws.ec2.Instance("WebGe", {
+const web = new aws.ec2.Instance("Web", {
     ami: ubuntu.then(ubuntu => ubuntu.id),
     associatePublicIpAddress: true,
     instanceType: "t3.micro",
     subnetId: vpcPublicSubnet1.then(),
 
     vpcSecurityGroupIds: [secgrp.id],
-    keyName: ec2KeyPair.keyName,
     rootBlockDevice: {
         volumeSize: 50
     },
@@ -646,43 +637,27 @@ const web = new aws.ec2.Instance("WebGe", {
 
 export const ec2PublicIp = web.publicIp;
 
-// const privateKey = fs.readFileSync(path.join(os.homedir(), ".ssh", "id_rsa")).toString("utf8");
-const privateKey = pulumi.secret(fs.readFileSync(path.join(os.homedir(), ".ssh", "id_rsa.mba")).toString("utf8"))
+// const connection: types.input.remote.ConnectionArgs = {
+//     host: web.publicIp,
+//     user: "ubuntu",
+//     privateKey: privateKey,
+// };
 
-const connection: types.input.remote.ConnectionArgs = {
-    host: web.publicIp,
-    user: "ubuntu",
-    privateKey: privateKey,
-};
+// export const cmd = pulumi.interpolate`sudo docker run \
+//     -e DATABASE_URL=${rdsConnectionUrl} \
+//     -e CACHEOPS_REDIS=${redisCacheOpsConnectionUrl} \
+//     -e AWS_ACCESS_KEY_ID=${usrLoggerKey} \
+//     -e AWS_SECRET_ACCESS_KEY=${usrLoggerSecret} \
+//     -e REDIS_URL=${redisConnectionUrl} \
+//     -e STATIC_HOST=${bucketWebURL} \
+//     -e STATIC_URL=static/ \
+//     -e STATICFILES_STORAGE=django.contrib.staticfiles.storage.StaticFilesStorage \
+//     ${dockerGtcWebImage} python3 manage.py migrate`
 
-export const cmd = pulumi.interpolate`sudo docker run \
-    -e DATABASE_URL=${rdsConnectionUrl} \
-    -e CACHEOPS_REDIS=${redisCacheOpsConnectionUrl} \
-    -e AWS_ACCESS_KEY_ID=${usrLoggerKey} \
-    -e AWS_SECRET_ACCESS_KEY=${usrLoggerSecret} \
-    -e REDIS_URL=${redisConnectionUrl} \
-    -e STATIC_HOST=${bucketWebURL} \
-    -e STATIC_URL=static/ \
-    -e STATICFILES_STORAGE=django.contrib.staticfiles.storage.StaticFilesStorage \
-    ${dockerGtcWebImage} python3 manage.py migrate`
+// export const command = new remote.Command("remote command", {
+//     connection,
+//     create: cmd,
+// }, { deleteBeforeReplace: true });
 
-export const command = new remote.Command("remote command", {
-    connection,
-    create: cmd,
-}, { deleteBeforeReplace: true });
+// export const commandOutput = command.stdout;
 
-export const commandOutput = command.stdout;
-
-const webGr = new aws.ec2.Instance("WebGr", {
-    ami: ubuntu.then(ubuntu => ubuntu.id),
-    associatePublicIpAddress: false,
-    instanceType: "t3.micro",
-    subnetId: vpcPublicSubnet1.then(),
-    vpcSecurityGroupIds: [secgrp.id],
-    keyName: ec2KeyPairGr.keyName,
-    tags: {
-        Name: "Grahams test instance",
-    },
-});
-
-export const ec2PublicIpGr = webGr.publicIp;
