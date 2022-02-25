@@ -552,7 +552,8 @@ export const frontend = listener.endpoint
 
 
 //////////////////////////////////////////////////////////////
-// Set up EC2 instance - should be temporary only
+// Set up EC2 instance 
+//      - it is intended to be used for troubleshooting
 //////////////////////////////////////////////////////////////
 
 // Create a new security group that permits SSH and web access.
@@ -588,7 +589,7 @@ const ubuntu = aws.ec2.getAmi({
     owners: ["099720109477"],
 });
 
-
+// Script to install docker in ec2 instance
 const ec2InitScript = `#!/bin/bash
 
 # Installing docker in ubuntu
@@ -630,7 +631,7 @@ const web = new aws.ec2.Instance("Web", {
         volumeSize: 50
     },
     tags: {
-        Name: "Geralds test instance",
+        Name: "Troubleshooting instance",
     },
     userData: ec2InitScript,
 });

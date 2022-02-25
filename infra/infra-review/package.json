@@ -6,7 +6,6 @@
     "dependencies": {
         "@pulumi/aws": "^4.0.0",
         "@pulumi/awsx": "^0.30.0",
-        "@pulumi/command": "0.0.3",
         "@pulumi/pulumi": "^3.0.0",
         "@types/mime": "^2.0.3",
         "path": "^0.12.7"

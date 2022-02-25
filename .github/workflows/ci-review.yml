@@ -212,16 +212,10 @@ jobs:
           POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
           POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
 
-      - run: |
-          echo "S3 Bucket web URL :  ${{ steps.pulumi.outputs.bucketWebURL }}"
-          echo "Frontend URL      :  ${{ steps.pulumi.outputs.frontendURL }}"
-          echo "::set-output name=S3BucketWebUrl::${{ steps.pulumi.outputs.bucketWebURL }}"
-          echo "::set-output name=FrontendUrl::${{ steps.pulumi.outputs.frontendURL }}"
+      - name: Start migration task
+        run: |
+          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId}} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
 
-      # - name: Apply migrations, running ECS task
-      #   run: |
-      #     aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
-          
       - name: Copy static files to bucket
         run: |
           mkdir static_files_to_deploy
