@@ -212,14 +212,15 @@ jobs:
           POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
           POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
 
-      # - name: Start migration task
-      #   run: |
-      #     aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId}} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
-      #   env:
-      #     # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
-      #     AWS_EC2_METADATA_DISABLED: true
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Start migration task
+        run: |
+          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId}} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
+        env:
+          # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
+          AWS_EC2_METADATA_DISABLED: true
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-west-2
 
       - name: Copy static files to bucket
         run: |
