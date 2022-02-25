@@ -27,6 +27,8 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/form_wrapper.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/progress_bar.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
     {% endbundle %}
   </head>
@@ -41,22 +43,12 @@
 
       {% if user.is_authenticated %}
         <div class="container-fluid pb-5 pt-5" id="gc-new-grant">
+          <div class="col-lg-9 mx-auto mb-5">
+            {% include 'grants/components/progress_bar.html' %}
+          </div>
           <form action="" @submit="checkForm" ref="formNewGrant" :class="`${Object.keys(errors).length ? 'invalid' : ''}`" v-cloak>
             <div class="container mt-3 mb-3  position-relative col-lg-7 mx-auto">
-
               <div class="row p-4 p-md-5">
-
-                <div class="col-12 text-center">
-                  <h1 class="font-title-xl mb-4">Create a Grant</h1>
-                  <p class="font-bigger-1 font-weight-light mb-0">
-                    We're excited to learn about your project.
-                  </p>
-                  <p class="text-center">
-                    <button @click="showQuickStart()" type="button" class="font-weight-light font-bigger-1 btn btn-link">
-                      Open Grant Guide
-                    </button>
-                  </p>
-                </div>
 
                 {% csrf_token %}
 
@@ -66,6 +58,78 @@
                     <v-select :options="['mainnet', 'rinkeby']" label="label" v-model="form.network" value="mainnet" />
                   </div>
                 {% endif %}
+
+                <form-wrapper
+                  :heading="'Owner Information'"
+                  :current-step="step"
+                  :total-steps="5"
+                  @update-navigation="updateNav"
+                >
+                  <!-- Title -->
+                  <div class="col-12 mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="title">Title</label>
+                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                    <input id="title" name="title" v-model="form.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="My Grant Title" required />
+
+                    <div class="text-danger" v-if="errors.title">
+                      [[errors.title]]
+                    </div>
+                  </div>
+
+                    <!-- Description -->
+                  <div class="col-12 mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="description">Description</label>
+                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                    <quill-editor
+                      ref="quillEditorDesc"
+                      v-model="form.description_rich"
+                      :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
+                      :options="editorOptionPrio"
+                    ></quill-editor>
+
+                    <div class="text-danger" v-if="errors.description">
+                      [[errors.description]]
+                    </div>
+                  </div>
+
+                  <!-- Logo -->
+                  <div class="col-12 mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="logo">
+                      Project Logo
+                    </label>
+
+                    <div class="form__drop mt-0" id="js-drop">
+                      <span class="text-center">
+                        Drag and Drop or Browse File
+                        </br>
+                        Recommended: 348x200 px in jpg or png
+                      </span>
+                      <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
+                      <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
+                    </div>
+
+                  </div>
+
+                  <!-- Github -->
+                  <div class="col-12 mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="github_project_url">Github URL</label>
+                    <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/mygrant"/>
+                  </div>
+
+                  <!-- URL -->
+                  <div class="col-12 mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="reference_url">Project Website</label>
+                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                    <input id="reference_url" v-model="form.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
+
+                    <div class="text-danger" v-if="errors.reference_url">
+                      [[errors.reference_url]]
+                    </div>
+                  </div>
+                </form-wrapper>
 
                 <!-- Title -->
                 <div class="col-12 mb-4">
@@ -79,7 +143,7 @@
                   </div>
                 </div>
 
-                  <!-- Description -->
+                <!-- Description -->
                 <div class="col-12 mb-4">
                   <label class="font-subheader font-weight-light letter-spacing" for="description">Description</label>
                   <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
@@ -516,6 +580,7 @@
             </div>
           </form>
         </div>
+        
       {% else %}
         <div class="container">
           <h1 class="h2 mx-auto text-center">
@@ -534,6 +599,7 @@
       {% include 'shared/current_profile.html' %}
       {% include 'grants/shared/shared_scripts.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
+      {% include 'grants/components/form_wrapper.html' %}
       <script>
         document.grant_tags = {{grant_tags|safe}};
       </script>
@@ -543,11 +609,12 @@
       <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
 
 
+      <script src="{% static "v2/js/grants/form_wrapper.js" %}"></script>
+      <script src="{% static "v2/js/grants/progress_bar.js" %}"></script>
       <script src="{% static "v2/js/pages/tabs.js" %}"></script>
       <script src="{% static "v2/js/tokens.js" %}"></script>
       <script src="{% static "v2/js/user-search.js" %}"></script>
       <script src="{% static "v2/js/grants/shared.js" %}"></script>
-
       <script src="{% static "v2/js/grants/_new.js" %}"></script>
     </div>
   </body>

@@ -2,7 +2,38 @@ Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 
 Vue.mixin({
+  data() {
+    return {
+      step: 1,
+      currentSteps: [
+        {
+          text: 'Eligibility & Discovery',
+          active: true
+        },
+        {
+          text: 'Grant Details',
+          active: false
+        },
+        {
+          text: 'Owner Information',
+          active: false
+        },
+        {
+          text: 'Review Grant',
+          active: false
+        }
+      ]
+    };
+  },
   methods: {
+    updateNav: function(direction) {
+      if (direction === 'back') {
+        this.step -= 1;
+      }
+      if (direction === 'next') {
+        this.step += 1;
+      }
+    },
     showQuickStart: function() {
 
       fetch('/grants/quickstart')
