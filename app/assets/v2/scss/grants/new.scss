@@ -98,3 +98,18 @@
 .grant-edit-disable-select .vs__deselect {
   display: none;
 }
+
+.new-border {
+  border: solid 1px $gc-grey-200;
+  border-radius: 8px;
+  width: 100%;
+  padding: 1.5em;
+}
+
+.navigation {
+  margin-top: 15px;
+  color: $gc-violet-400;
+  div {
+    margin: 0 5px;
+  }
+}
