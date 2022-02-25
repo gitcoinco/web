@@ -27,7 +27,6 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/new.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/form_wrapper.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tabs.scss" %} />
     {% endbundle %}
   </head>
@@ -68,77 +67,70 @@
                   </div>
                 {% endif %}
 
-                <form-wrapper
-                  :heading="'Owner Information'"
-                  :current-step="1"
-                  :total-steps="5"
-                  @update-navigation="console.log('update')"
-                >
-                  <!-- Title -->
-                  <div class="col-12 mb-4">
-                    <label class="font-subheader font-weight-light letter-spacing" for="title">Title</label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                <!-- Title -->
+                <div class="col-12 mb-4">
+                  <label class="font-subheader font-weight-light letter-spacing" for="title">Title</label>
+                  <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <input id="title" name="title" v-model="form.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="My Grant Title" required />
+                  <input id="title" name="title" v-model="form.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="My Grant Title" required />
 
-                    <div class="text-danger" v-if="errors.title">
-                      [[errors.title]]
-                    </div>
+                  <div class="text-danger" v-if="errors.title">
+                    [[errors.title]]
+                  </div>
+                </div>
+
+                  <!-- Description -->
+                <div class="col-12 mb-4">
+                  <label class="font-subheader font-weight-light letter-spacing" for="description">Description</label>
+                  <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                  <quill-editor
+                    ref="quillEditorDesc"
+                    v-model="form.description_rich"
+                    :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
+                    :options="editorOptionPrio"
+                  ></quill-editor>
+
+                  <div class="text-danger" v-if="errors.description">
+                    [[errors.description]]
+                  </div>
+                </div>
+
+                <!-- Logo -->
+                <div class="col-12 mb-4">
+                  <label class="font-subheader font-weight-light letter-spacing" for="logo">
+                    Project Logo
+                  </label>
+
+                  <div class="form__drop mt-0" id="js-drop">
+                    <span class="text-center">
+                      Drag and Drop or Browse File
+                      </br>
+                      Recommended: 348x200 px in jpg or png
+                    </span>
+                    <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
+                    <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
                   </div>
 
-                    <!-- Description -->
-                  <div class="col-12 mb-4">
-                    <label class="font-subheader font-weight-light letter-spacing" for="description">Description</label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                </div>
 
-                    <quill-editor
-                      ref="quillEditorDesc"
-                      v-model="form.description_rich"
-                      :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
-                      :options="editorOptionPrio"
-                    ></quill-editor>
+                <!-- Github -->
+                <div class="col-12 mb-4">
+                  <label class="font-subheader font-weight-light letter-spacing" for="github_project_url">Github URL</label>
+                  <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/mygrant"/>
+                </div>
 
-                    <div class="text-danger" v-if="errors.description">
-                      [[errors.description]]
-                    </div>
+                <!-- URL -->
+                <div class="col-12 mb-4">
+                  <label class="font-subheader font-weight-light letter-spacing" for="reference_url">Project Website</label>
+                  <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                  <input id="reference_url" v-model="form.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
+
+                  <div class="text-danger" v-if="errors.reference_url">
+                    [[errors.reference_url]]
                   </div>
-
-                  <!-- Logo -->
-                  <div class="col-12 mb-4">
-                    <label class="font-subheader font-weight-light letter-spacing" for="logo">
-                      Project Logo
-                    </label>
-
-                    <div class="form__drop mt-0" id="js-drop">
-                      <span class="text-center">
-                        Drag and Drop or Browse File
-                        </br>
-                        Recommended: 348x200 px in jpg or png
-                      </span>
-                      <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
-                      <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
-                    </div>
-
-                  </div>
-
-                  <!-- Github -->
-                  <div class="col-12 mb-4">
-                    <label class="font-subheader font-weight-light letter-spacing" for="github_project_url">Github URL</label>
-                    <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/mygrant"/>
-                  </div>
-
-                  <!-- URL -->
-                  <div class="col-12 mb-4">
-                    <label class="font-subheader font-weight-light letter-spacing" for="reference_url">Project Website</label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
-
-                    <input id="reference_url" v-model="form.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
-
-                    <div class="text-danger" v-if="errors.reference_url">
-                      [[errors.reference_url]]
-                    </div>
-                  </div>
-                </form-wrapper>
+                </div>
 
                 <!-- Title -->
                 <div class="col-12 mb-4">
@@ -544,7 +536,6 @@
       {% include 'shared/current_profile.html' %}
       {% include 'grants/shared/shared_scripts.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
-      {% include 'grants/components/form_wrapper.html' %}
       <script>
         document.grant_tags = {{grant_tags|safe}};
       </script>
@@ -554,7 +545,6 @@
       <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.6/dist/compressor.min.js"></script>
 
 
-      <script src="{% static "v2/js/grants/form_wrapper.js" %}"></script>
       <script src="{% static "v2/js/pages/tabs.js" %}"></script>
       <script src="{% static "v2/js/tokens.js" %}"></script>
       <script src="{% static "v2/js/user-search.js" %}"></script>
