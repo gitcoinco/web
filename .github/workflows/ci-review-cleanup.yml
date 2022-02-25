@@ -18,11 +18,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
           cache: "yarn"
+
+      - name: Empty bucket
+        run: |
+          aws s3 rm s3://${{ steps.pulumi.outputs.bucketName }}
+        env:
+          # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
+          AWS_EC2_METADATA_DISABLED: true
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # Run pulumi actions
       - name: Delete the pulumi stack

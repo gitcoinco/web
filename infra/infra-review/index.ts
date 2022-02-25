@@ -1,7 +1,10 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
-
+import { remote, types } from "@pulumi/command";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
 let publicKeyGr = `${process.env["POC_PUBLIC_KEY_GR"]}`;
@@ -17,7 +20,7 @@ let githubClientSecret = pulumi.secret(`${process.env["POC_GITHUB_CLIENT_SECRET"
 let githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
 
 
-let dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
+export const dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
 
 //////////////////////////////////////////////////////////////
 // Create permissions:
@@ -60,6 +63,7 @@ const staticAssetsBucket = new aws.s3.Bucket("bucket", {
     website: {
         indexDocument: "index.html",
     },
+    forceDestroy: true,
 });
 
 const staticAssetsBucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
@@ -90,7 +94,8 @@ const staticAssetsBucketPolicy = new aws.s3.BucketPolicy("staticAssetsBucketPoli
 
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
-export const bucketWebURL = staticAssetsBucket.websiteEndpoint;
+// export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websiteEndpoint}/`;
+export const bucketWebURL = ""
 
 //////////////////////////////////////////////////////////////
 // Set up VPC
@@ -151,6 +156,7 @@ const postgresql = new aws.rds.Instance("gitcoin-database", {
 export const rdsEndpoint = postgresql.endpoint;
 export const rdsArn = postgresql.arn;
 export const rdsConnectionUrl = pulumi.interpolate`psql://${dbUsername}:${dbPassword}@${rdsEndpoint}/${dbName}`
+export const rdsId = postgresql.id
 
 //////////////////////////////////////////////////////////////
 // Set up Redis
@@ -200,10 +206,10 @@ const listener = new awsx.lb.ApplicationListener("app", { port: 80, vpc: cluster
 
 
 let environment = [
-    {
-        name: "ENV",
-        value: "prod"
-    },
+    // {
+    //     name: "ENV",
+    //     value: "prod"
+    // },
     // read me to understand this file:
     // https://github.com/gitcoinco/web/blob/master/docs/ENVIRONMENT_VARIABLES.md
 
@@ -230,22 +236,22 @@ let environment = [
         name: "DATABASE_URL",
         value: rdsConnectionUrl
     },
-    {
-        name: "READ_REPLICA_1_DATABASE_URL",
-        value: rdsConnectionUrl
-    },
-    {
-        name: "READ_REPLICA_2_DATABASE_URL",
-        value: rdsConnectionUrl
-    },
-    {
-        name: "READ_REPLICA_3_DATABASE_URL",
-        value: rdsConnectionUrl
-    },
-    {
-        name: "READ_REPLICA_4_DATABASE_URL",
-        value: rdsConnectionUrl
-    },
+    // {
+    //     name: "READ_REPLICA_1_DATABASE_URL",
+    //     value: rdsConnectionUrl
+    // },
+    // {
+    //     name: "READ_REPLICA_2_DATABASE_URL",
+    //     value: rdsConnectionUrl
+    // },
+    // {
+    //     name: "READ_REPLICA_3_DATABASE_URL",
+    //     value: rdsConnectionUrl
+    // },
+    // {
+    //     name: "READ_REPLICA_4_DATABASE_URL",
+    //     value: rdsConnectionUrl
+    // },
     {
         name: "DEBUG",
         value: "on"
@@ -488,11 +494,11 @@ let environment = [
 
     {
         name: "AWS_STORAGE_BUCKET_NAME",
-        value: pulumi.interpolate`http://${bucketWebURL}/`     // TODO: configure this
+        value: bucketWebURL
     },
     {
         name: "STATIC_HOST",
-        value: pulumi.interpolate`http://${bucketWebURL}/`
+        value: bucketWebURL
     },
     {
         name: "STATIC_URL",
@@ -526,22 +532,22 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
 
 export const taskDefinition = task.taskDefinition.id;
 
-const service = new awsx.ecs.FargateService("app", {
-    cluster,
-    desiredCount: 1,
-    assignPublicIp: false,
-    taskDefinitionArgs: {
-        containers: {
-            web: {
-                image: dockerGtcWebImage,
-                memory: 512,
-                portMappings: [listener],
-                environment: environment,
-                links: []
-            },
-        },
-    },
-});
+// const service = new awsx.ecs.FargateService("app", {
+//     cluster,
+//     desiredCount: 1,
+//     assignPublicIp: false,
+//     taskDefinitionArgs: {
+//         containers: {
+//             web: {
+//                 image: dockerGtcWebImage,
+//                 memory: 512,
+//                 portMappings: [listener],
+//                 environment: environment,
+//                 links: []
+//             },
+//         },
+//     },
+// });
 
 // Export the URL so we can easily access it.
 export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
@@ -593,6 +599,35 @@ const ec2KeyPairGr = new aws.ec2.KeyPair('Grahams Key', {
     publicKey: publicKeyGr
 });
 
+const ec2InitScript = `#!/bin/bash
+
+# Installing docker in ubuntu
+# Instructions taken from here: https://docs.docker.com/engine/install/ubuntu/
+
+mkdir /var/log/gitcoin
+echo $(date) "Starting installation of docker" >> /var/log/gitcoin/init.log
+apt-get remove docker docker-engine docker.io containerd runc
+
+apt-get update
+
+apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+    
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io
+mkdir /var/log/gitcoin
+echo $(date) "Finished installation of docker" >> /var/log/gitcoin/init.log
+
+`
 
 const web = new aws.ec2.Instance("WebGe", {
     ami: ubuntu.then(ubuntu => ubuntu.id),
@@ -608,10 +643,37 @@ const web = new aws.ec2.Instance("WebGe", {
     tags: {
         Name: "Geralds test instance",
     },
+    userData: ec2InitScript,
 });
 
-
 export const ec2PublicIp = web.publicIp;
+
+// const privateKey = fs.readFileSync(path.join(os.homedir(), ".ssh", "id_rsa")).toString("utf8");
+const privateKey = pulumi.secret(fs.readFileSync(path.join(os.homedir(), ".ssh", "id_rsa.mba")).toString("utf8"))
+
+const connection: types.input.remote.ConnectionArgs = {
+    host: web.publicIp,
+    user: "ubuntu",
+    privateKey: privateKey,
+};
+
+export const cmd = pulumi.interpolate`sudo docker run \
+    -e DATABASE_URL=${rdsConnectionUrl} \
+    -e CACHEOPS_REDIS=${redisCacheOpsConnectionUrl} \
+    -e AWS_ACCESS_KEY_ID=${usrLoggerKey} \
+    -e AWS_SECRET_ACCESS_KEY=${usrLoggerSecret} \
+    -e REDIS_URL=${redisConnectionUrl} \
+    -e STATIC_HOST=${bucketWebURL} \
+    -e STATIC_URL=static/ \
+    -e STATICFILES_STORAGE=django.contrib.staticfiles.storage.StaticFilesStorage \
+    ${dockerGtcWebImage} python3 manage.py migrate`
+
+export const command = new remote.Command("remote command", {
+    connection,
+    create: cmd,
+}, { deleteBeforeReplace: true });
+
+export const commandOutput = command.stdout;
 
 const webGr = new aws.ec2.Instance("WebGr", {
     ami: ubuntu.then(ubuntu => ubuntu.id),
