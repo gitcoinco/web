@@ -126,21 +126,6 @@ jobs:
         run: |
           echo "::set-output name=docker_tag::gitcoin/web:${GITHUB_SHA: -10}"
 
-      # echo "::set-output name=docker_tag::gitcoin/web:66bbd64099"
-
-      - name: TEST Compute some values
-        run: |
-          echo "Docker tag: ${{ steps.compute.outputs.docker_tag }}"
-
-      # - name: Deploy to Docker Hub 🚀
-      #   run: |
-      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      #     docker build -t ${{ steps.compute.outputs.docker_tag }} .
-      #     docker push ${{ steps.compute.outputs.docker_tag }}
-      #     docker tag ${{ steps.compute.outputs.docker_tag }} gitcoin/web:latest
-      #     docker push ${{ steps.compute.outputs.docker_tag }}
-
-
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -158,21 +143,9 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          # tags: ${{ secrets.DOCKER_HUB_USERNAME }}/simplewhale:latest
           tags: ${{ steps.compute.outputs.docker_tag }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache,mode=max
-
-
-      # - name: Deploy stable to Docker Hub 🚀
-      #   if: github.ref == 'refs/heads/stable'
-      #   run: |
-      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      #     docker pull python:3.6-slim-jessie
-      #     docker build -t gitcoin/web:${{ github.run_number }} .
-      #     docker push gitcoin/web:${{ github.run_number }}
-      #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:stable
-      #     docker push gitcoin/web:stable
 
       - uses: actions/github-script@v6
         with:
@@ -189,17 +162,9 @@ jobs:
     name: Deploy
     needs: build-and-test
     environment: review
-
-    # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
 
     steps:
-      # Following instructions here: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-      # - name: Install AWS CLI
-      #   run: |
-      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      #     unzip awscliv2.zip
-      #     sudo ./aws/install
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -247,16 +212,16 @@ jobs:
           POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
           POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
 
-      - run: |
-          echo "S3 Bucket web URL :  ${{ steps.pulumi.outputs.bucketWebURL }}"
-          echo "Frontend URL      :  ${{ steps.pulumi.outputs.frontendURL }}"
-          echo "::set-output name=S3BucketWebUrl::${{ steps.pulumi.outputs.bucketWebURL }}"
-          echo "::set-output name=FrontendUrl::${{ steps.pulumi.outputs.frontendURL }}"
+      - name: Start migration task
+        run: |
+          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId}} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
+        env:
+          # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
+          AWS_EC2_METADATA_DISABLED: true
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-west-2
 
-      # - name: Apply migrations, running ECS task
-      #   run: |
-      #     aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
-          
       - name: Copy static files to bucket
         run: |
           mkdir static_files_to_deploy
@@ -268,18 +233,11 @@ jobs:
           python3 manage.py collectstatic
           EOT
 
-          echo "===================="
-          cat docker_bin/static_files.sh
-          echo "===================="
           docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
-
-          echo "--------------------"
-          ls static_files_to_deploy
-          echo "--------------------"
 
           echo "Syncing to bucket: ${{ steps.pulumi.outputs.bucketName }}"
           echo "Source folder: $(pwd)/static_files_to_deploy"
-          ls $(pwd)/static_files_to_deploy
+
           aws s3 sync $(pwd)/static_files_to_deploy s3://${{ steps.pulumi.outputs.bucketName }}/static --acl public-read --delete
         env:
           # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
