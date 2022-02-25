@@ -197,6 +197,11 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
+      // Prompt web3 login if not connected
+      if (!provider) {
+        await onConnect();
+      }
+
       const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
 
       try {
