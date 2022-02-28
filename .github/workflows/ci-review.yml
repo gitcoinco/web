@@ -227,7 +227,7 @@ jobs:
           python3 manage.py collectstatic --disable-collectfast
           EOT
 
-          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
+          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} -e BUNDLE_USE_CHECKSUM=${BUNDLE_USE_CHECKSUM} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
 
           echo "Syncing to bucket: ${{ steps.pulumi.outputs.bucketName }}"
           echo "Source folder: $(pwd)/static_files_to_deploy"
