@@ -4,11 +4,14 @@
     border: solid 1px $gc-grey-200;
     border-radius: 8px;
     padding: 1.5em;
-    p {
+    > p {
       margin: 0 0 12px 15px;
     }
-    h4 {
+    > h4 {
       padding: 0 0 24px 15px;
+    }
+    > div {
+      padding: 0 0 0 15px;
     }
   }
   
