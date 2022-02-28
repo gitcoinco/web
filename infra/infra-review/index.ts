@@ -504,6 +504,10 @@ let environment = [
         name: "STATICFILES_STORAGE",
         value: "django.contrib.staticfiles.storage.StaticFilesStorage"
     },
+    {
+        name: "BUNDLE_USE_CHECKSUM",
+        value: "false",
+    }
 
 ];
 
