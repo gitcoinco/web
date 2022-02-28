@@ -4,9 +4,6 @@ on:
   # run it on push to master and stable branches
   push:
     branches: [ master, stable ]
-  # run it during pull request to master and stable branches
-  pull_request:
-    branches: [ master, stable ]
 
 jobs:
   build-and-test:

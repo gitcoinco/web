@@ -1,0 +1,54 @@
+
+name: Cleanup review environment
+
+# only trigger on pull request closed events
+on:
+  pull_request:
+    types: [ closed ]
+    branches: [ master ]
+
+jobs:
+  cleanup:
+    # https://shipit.dev/posts/trigger-github-actions-on-pr-close.html
+    # We want to delete the stack regardless if it has been merged or not
+    name: Delete review stack
+    environment: review
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          # node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: infra/infra-review/package-lock.json
+
+      # Install pulumi dependencies
+      # Select the new pulumi stack 
+      - run: |
+          npm install
+        working-directory: infra/infra-review
+
+      # Run pulumi actions
+      - name: Delete the pulumi stack
+        uses: pulumi/actions@v3
+        id: pulumi
+        with:
+          command: destroy
+          stack-name: review_${{ github.event.number }}
+          work-dir: infra/infra-review
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: 
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          POC_DB_NAME: ${{ secrets.POC_DB_NAME }}
+          POC_DB_PASSWORD: ${{ secrets.POC_DB_PASSWORD }}
+          POC_DB_USER: ${{ secrets.POC_DB_USER }}
+          POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
+          POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
+          POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
