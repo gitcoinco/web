@@ -124,10 +124,12 @@ def get_clr_rounds_metadata():
         'banner_round_name': banner_round_name
     }
 
+
 def get_upload_filename(instance, filename):
     salt = token_hex(16)
     file_path = os.path.basename(filename)
     return f"grants/{getattr(instance, '_path', '')}/{salt}/{file_path}"
+
 
 def is_grant_team_member(grant, profile):
     """Checks to see if profile is a grant team member
@@ -148,6 +150,7 @@ def is_grant_team_member(grant, profile):
                 is_team_member = True
                 break
     return is_team_member
+
 
 def amount_in_wei(tokenAddress, amount):
     from dashboard.tokens import addr_to_token

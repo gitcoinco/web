@@ -657,17 +657,17 @@ SOCIAL_AUTH_GH_CUSTOM_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_GH_CUSTOM_SCOPE = ['read:org', 'public_repo']
 
 SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details', 
+    'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed', 
+    'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username', 
-    'social_core.pipeline.user.create_user', 
-    'social_core.pipeline.social_auth.associate_user', 
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 # This should be executed after the '...user_details' step, as the user_details step will
-# update the username (aka github handle) which is then used in `save_profile`. This 
+# update the username (aka github handle) which is then used in `save_profile`. This
 # is relevant when the github username / handle changes.
     'app.pipeline.save_profile',
 )
@@ -914,7 +914,8 @@ IDENA_TOKEN_EXPIRY = 60 * 60 # 1 Hours
 IDENA_NONCE_EXPIRY = 60 * 2 # 2 Min
 
 # Match Payouts contract
-MATCH_PAYOUTS_ABI = '[ { "inputs": [ { "internalType": "address", "name": "_owner", "type": "address" }, { "internalType": "address", "name": "_funder", "type": "address" }, { "internalType": "contract IERC20", "name": "_dai", "type": "address" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [], "name": "Finalized", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Funded", "type": "event" }, { "anonymous": false, "inputs": [], "name": "FundingWithdrawn", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutAdded", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "recipient", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "PayoutClaimed", "type": "event" }, { "inputs": [ { "internalType": "address", "name": "_recipient", "type": "address" } ], "name": "claimMatchPayout", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "dai", "outputs": [ { "internalType": "contract IERC20", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "enablePayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "finalize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "funder", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "", "type": "address" } ], "name": "payouts", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "components": [ { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" } ], "internalType": "struct MatchPayouts.PayoutFields[]", "name": "_payouts", "type": "tuple[]" } ], "name": "setPayouts", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "state", "outputs": [ { "internalType": "enum MatchPayouts.State", "name": "", "type": "uint8" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "withdrawFunding", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]'
+with open(os.path.join(root, 'grants/match_payouts_abi.json'), 'r') as f:
+    MATCH_PAYOUTS_ABI = f.read()
 MATCH_PAYOUTS_ADDRESS = '0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B'
 
 # BulkCheckout contract

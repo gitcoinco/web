@@ -49,6 +49,7 @@ from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK,
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
+from marketing.tasks import export_earnings_to_csv
 from retail.emails import render_new_bounty
 from retail.helpers import get_ip
 from townsquare.models import Announcement
@@ -508,30 +509,6 @@ def token_settings(request):
     }
     return TemplateResponse(request, 'settings/tokens.html', context)
 
-
-def export_earnings_csv(earnings, export_type):
-    response = HttpResponse(content_type='text/csv')
-    name = f"gitcoin_{export_type}_{timezone.now().strftime('%Y_%m_%dT%H_00_00')}"
-    response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
-    writer = csv.writer(response)
-    writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'txid', 'token_name', 'token_value', 'url'])
-    for earning in earnings:
-        writer.writerow([earning.pk,
-            earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
-            earning.from_profile.handle if earning.from_profile else '*',
-            earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
-            earning.to_profile.handle if earning.to_profile else '*',
-            earning.to_profile.data.get('location', 'Unknown') if earning.to_profile else 'Unknown',
-            earning.source_type_human,
-            earning.value_usd,
-            earning.txid,
-            earning.token_name,
-            earning.token_value,
-            earning.url,
-            ])
-
-    return response
-
 def account_settings(request):
     """Display and save user's Account settings.
 
@@ -559,13 +536,15 @@ def account_settings(request):
             profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
+            
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
+            user_pk = request.user.pk
+            export_earnings_to_csv.delay(user_pk, export_type)
+            reponse = HttpResponse(status="200")
 
-            profile = request.user.profile
-            earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
-            earnings = earnings.filter(network='mainnet').order_by('-created_on')
-            return export_earnings_csv(earnings, export_type)
+            return response
+
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile = record_form_submission(request, profile, 'account-disconnect')
@@ -577,6 +556,7 @@ def account_settings(request):
             logout_redirect = redirect(redirect_url)
             logout_redirect['Cache-Control'] = 'max-age=0 no-cache no-store must-revalidate'
             return logout_redirect
+
         elif request.POST.get('delete', False):
 
             email = profile.email
@@ -612,6 +592,7 @@ def account_settings(request):
             messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
+            
         else:
             msg = _('Error: did not understand your request')
 

@@ -296,9 +296,12 @@ def mesh_network_viz(request, ):
             'bounty': ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
         }
         earnings = earnings.filter(source_type=mapping[_type])
-    earnings = earnings.values_list('from_profile', 'to_profile')
-    if trim_pct:
-        earnings = earnings.extra(where=[f'MOD(id, 100) > {trim_pct}'])
+    if int(show_labels):
+        earnings = earnings.values_list('from_profile__handle', 'to_profile__handle')
+    else:
+        earnings = earnings.values_list('from_profile', 'to_profile')
+    if trim_pct and int(trim_pct) > 0:
+        earnings = earnings.extra(where=[f'MOD(dashboard_earning.id, 100) > {trim_pct}'])
     for obj in earnings:
         handle1 = obj[0]
         handle2 = obj[1]

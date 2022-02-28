@@ -775,7 +775,8 @@ def get_avatar_attrs(theme, key):
         'SSShiine', 'avrilapril', 'eknobl', 'lkh', 'nanshulot', 'wahyu243', 'zak102', 'artipedia', 'azizyano',
         'hasssan04', 'maystro4', 'riyasoganii', 'writeprovidence', 'petushka1', 'merit-tech', 'hamzaghz',
         'bruno-tandon', 'KayZou', 'the-hack-god', 'old-monger', 'virtual-face', 'art-maniac', 'vinhbhn', 'masket-bask',
-        'panigale120'
+        'panigale120', 'greenpill_Amaxist','greenpill_IamJvck','greenpill_KushMd','greenpill_L-KH','greenpill_Merit-Tech','greenpill_Nefuski','greenpill_artipedia','greenpill_avrilapril','greenpill_developer-piyush','greenpill_hamzaghz','greenpill_hasssan04','greenpill_illustrator2','greenpill_joshuaartman','greenpill_lukerhoads','greenpill_masket-bask','greenpill_maystro4','greenpill_mibvase','greenpill_muratgozel','greenpill_nerd257','greenpill_shockingblack','greenpill_tharindusathis','greenpill_the-hack-god','greenpill_ts-lang','greenpill_Virtual-Face','greenpill_wahyu243','greenpill_writeprovidence',
+        'greenpill_Code-emm', 'greenpill_Deosaju', 'greenpill_giorgiothegood', 'greenpill_godideas', 'greenpill_matimaone1', 'greenpill_AvrilApril', 'greenpill_JoshuaArtman',
     ]
     for _key in new_avatars:
         avatar_attrs[_key] = {

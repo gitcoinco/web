@@ -105,8 +105,14 @@ along with this program. If not, see
   <h1>{% trans "New Grant Created" %}</h1>
 
   <p style="margin-bottom:0.25rem;">{% trans "You've created a new grant!" %}</p>
-  <p style="margin-bottom:1em;">{% trans "It will take us 1-2 business days to review and approve your grant." %}</p>
-  <p style="margin-top:0.25rem;">{% trans "Get ready to buidl and push forward open source!" %}</p>
+  <p style="margin-bottom:1em;">
+    {% blocktrans with link="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77" %}
+      We are reviewing grants as we get closer to each grant round.
+      You can check the status of your grant on this <a href="{{ link }}">Notion board</a>.
+      Please be patient while we review your grant."
+    {% endblocktrans %}
+  </p>
+  <p style="margin-top:0.25rem;">{% trans "In the mean time, get ready to buidl and push forward open source!" %}</p>
   <hr style="margin-left: 0;">
   <img id="grant-logo"
     src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}"

@@ -34,6 +34,7 @@ from .models import (
     ProfileSerializer, SearchHistory, TribeMember, UserDirectory,
 )
 from .tasks import increment_view_count
+from .utils import add_param_to_querySet
 
 logger = logging.getLogger(__name__)
 
@@ -247,7 +248,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
 
             if sponsor:
                 queryset = queryset.filter(
-                    Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
+                    Q(bounty__github_url__contains=sponsor.lower()) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle=sponsor.lower()) | Q(
@@ -359,23 +360,17 @@ class BountiesViewSet(viewsets.ModelViewSet):
         # else:
         #     queryset = queryset.filter(event=None)
 
-        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_categories',
-                    'bounty_owner_address', 'idx_status', 'network', 'bounty_owner_github_username',
-                    'standard_bounties_id', 'permission_type', 'project_type', 'pk']:
+        # check for key in params and add to querySet
+        for key in ['idx_status', 'network', 'experience_level', 'project_length',
+            'bounty_type', 'bounty_categories', 'pk', 'standard_bounties_id',
+            'permission_type', 'project_type']:
             if key in param_keys:
-                # special hack just for looking up bounties posted by a certain person
-                request_key = key if key != 'bounty_owner_address' else 'coinbase'
-                val = self.request.query_params.get(request_key, '')
+                queryset = add_param_to_querySet(key, queryset, self.request.query_params)
 
-                values = val.strip().split(',')
-                values = [value for value in values if value and val.strip()]
-                if values:
-                    _queryset = queryset.none()
-                    for value in values:
-                        args = {}
-                        args[f'{key}__icontains'] = value.strip()
-                        _queryset = _queryset | queryset.filter(**args)
-                    queryset = _queryset
+        # check for key in params and add to querySet via a case-insensitive contains
+        for key in ['raw_data', 'bounty_owner_address', 'bounty_owner_github_username']:
+            if key in param_keys:
+                queryset = add_param_to_querySet(request_key + '__icontains', queryset, self.request.query_params)
 
         if 'reserved_for_user_handle' in param_keys:
             handle = self.request.query_params.get('reserved_for_user_handle', '')
@@ -441,7 +436,7 @@ class BountiesViewSet(viewsets.ModelViewSet):
                 _queryset = queryset.none()
                 for value in values:
                     org = value.strip()
-                    _queryset = _queryset | queryset.filter(github_url__icontains=f'https://github.com/{org}')
+                    _queryset = _queryset | queryset.filter(github_url__contains=f'https://github.com/{org.lower()}')
                 queryset = _queryset
 
         # Retrieve all fullfilled bounties by fulfiller_username

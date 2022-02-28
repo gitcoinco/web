@@ -172,6 +172,31 @@
 
 .dropdown-checkout {
 
+  &[aria-disabled="true"] {
+    background-color: rgba(111, 63, 245, 0.25);
+    border: none;
+
+    &.btn-primary:active {
+      background-color: rgba(111, 63, 245, 0.25);
+      border: none;
+    }
+
+    .dropdown-toggle {
+      background-color: inherit;
+      border-color: inherit;
+
+      &.btn.btn-primary:active {
+        background-color: inherit;
+        border-color: inherit;
+      }
+
+      &.btn.btn-primary:hover {
+        background-color: inherit;
+        border-color: inherit;
+      }
+    }
+  }
+
   .text-primary::after {
     content: '\f107';
     font-family: "Font Awesome 5 Pro", sans-serif;
@@ -179,16 +204,7 @@
     position: absolute;
     right: 1rem;
   }
-
-  .text-primary::before {
-    content: '\f86c';
-    font-family: "Font Awesome 5 Pro", sans-serif;
-    color: white;
-    position: absolute;
-    right: 2rem;
-    transform: rotate(90deg) scale(1.5);
-  }
-
+  
   .btn-primary {
     padding-top: 0.65rem;
     padding-bottom: 0.65rem;
@@ -217,26 +233,54 @@
   .dropdown-item {
     padding-top: 0.45rem;
     padding-bottom: 0.45rem;
-  }
 
-  .dropdown-item:hover {
-    background-color: var(--gc-blue);
-    color: $white;
-
-    .checkout-logo {
+    &:hover {
+      background-color: var(--gc-blue);
       color: $white;
-      svg path {
-        fill: $white;
+
+      .checkout-logo {
+        color: $white;
+        svg path {
+          fill: $white;
+        }
+      }
+    }
+
+    &[aria-disabled="true"] {
+      &:hover {
+        background-color: transparent;
       }
     }
   }
+
+  .dropdown-item[aria-disabled="true"] .btn {
+    color: rgba(33, 37, 41, 0.25);
+
+    .eth-logo path {
+      fill: rgba(14, 3, 51, 0.25);
+    }
+
+    .polygon-logo path {
+      fill: rgba(111, 63, 245, 0.25);
+    }
+
+    .zksync-logo path:first-child {
+      fill: rgba(139, 141, 252, 0.25);
+    }
+
+    .zksync-logo path:last-child {
+      fill: rgba(78, 82, 155, 0.25);
+    }
+  }
+
+
 }
 
 .donation-amount-container {
   &::after {
     content: "%";
     position: absolute;
-    top: 1rem;
+    top: 0.5rem;
     right: 0.5rem;
   }
 }
@@ -270,9 +314,10 @@
 #gc-grants-cart {
 
   .vs__dropdown-toggle {
-    padding: 1px 0 6px 0px;
     min-width: 110px;
-    max-height: 30px;
+    height: calc(1.5em + 0.75rem + 2px);
+    font-size: 1rem;
+    line-height: 1.5;
   }
 
   .v-select__selections input {

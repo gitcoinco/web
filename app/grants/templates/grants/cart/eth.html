@@ -1,65 +1,49 @@
 <!-- Ethereum flow. used zksync and bulk checkout -->
 {% load static i18n %}
 <b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
-
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"
+      style="padding-bottom: 2.5rem;"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
   <div class="row">
-
     <!-- Left Section -->
-    <div class="col-12 col-lg-9">
+    <div class="col-12 col-lg-8 pr-0">
       <div class="row left-section">
         <!-- TOP BAR -->
         <div class="row col-12 pr-0">
-
           <!-- Donation Token -->
           <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
-            <div class="my-auto mr-3">Choose currency</div>
-            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens" placeholder="Select token" label="symbol" v-model="selectedETHCartToken" @input="updateDonationCurrency('ETH')" class="rounded-toggle">
-              <template v-slot:option="option">
-                <span class="font-weight-semibold">[[ option.symbol ]]</span>
-              </template>
-            </v-select>
-          </div>
-
-          <div class="col-12 col-md-7 d-flex justify-content-between px-0">
-            <!-- Save Collection -->
-            <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
-              <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
-              Save Collection
-            </div>
-
-            <!-- Share Cart -->
-            <div class="text-primary my-auto cursor-pointer">
-              <b-dropdown no-caret variant="outline-white" toggle-class="text-primary text-primary-hover mt-2" text="Share" menu-class="shadow-sm p-0 mt-1">
-                <template v-slot:button-content>
-                  <span class="text-primary">
-                    Share
-                    <i class="fa fa-share-alt pl-1" aria-hidden="true"></i>
-                  </span>
+            <div class="my-auto mr-3">Amount/Currency</div>
+            <input v-model="preferredAmount" class="col-auto form-control w-25" :value="[[preferredAmount]]"
+              style="max-width: 7rem;border-radius: 5rem;font-weight: 600;border-color: #A7A2B6;" />
+            <div>
+              <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens"
+                placeholder="Select token" label="symbol" v-model="selectedETHCartToken"
+                @input="updateDonationCurrency('ETH')" class="rounded-toggle">
+                <template v-slot:option="option">
+                  <span class="font-weight-semibold">[[ option.symbol ]]</span>
                 </template>
-                <b-dropdown-item target="_blank" link-class="p-2" rel="noopener noreferrer" @click="twitterShareLink()">
-                  <i class="fab fa-twitter px-2" aria-hidden="true"></i>
-                  Twitter
-                </b-dropdown-item>
-                <b-dropdown-item link-class="p-2" @click="shareCart" >
-                  <i class="fal fa-link px-2" aria-hidden="true"></i>
-                  Copy Link
-                </b-dropdown-item>
-              </b-dropdown>
+              </v-select>
             </div>
-
-            <!-- Clear Cart -->
-            <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4" v-b-modal.clear-cart-modal>
-              <i class="far fa-times" aria-hidden="true"  v-b-tooltip.hover.bottom="'Clear Cart'">
-              </i>
+          </div>
+          <div class="col-12 col-md-7 d-flex px-0" id="cartButtonRow">
+            <b-button variant="link" @click="applyPreferredAmountAndTokenToAllGrants('ETH')">Apply to all</b-button>
+            <!-- Save Collection -->
+            <div class="d-flex w-50 pl-2 pr-1 justify-content-between">
+              <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
+                <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
+                Save to Collection
+              </div>
+              <!-- Clear Cart -->
+              <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4"
+                v-b-modal.clear-cart-modal>
+                <i class="far fa-times" aria-hidden="true" v-b-tooltip.hover.bottom="'Clear Cart'">
+                </i>
+              </div>
             </div>
           </div>
         </div>
-
         <div class="col-12">
           <hr class="my-3">
         </div>
-
         <!-- GRANT LIST -->
         <div class="col-12 mt-3">
           <div v-for="(grant, index) in grantsByTenant" :key="grant.grant_id">
@@ -75,37 +59,29 @@
                     <p class="mb-2">
                       <a :href="grant.grant_url" target="_blank" class="text-dark">[[grant.grant_title]]</a>
                     </p>
-
                     <!-- ALL DEVICES: Contribution amount and currency-->
                     <div class="d-flex">
                       <input v-model="grant.grant_donation_amount"
                         :class="grant.grant_donation_amount_usd && grant.grant_donation_amount_usd < UsdMinimalContribution ? 'border-danger' : ''"
-                        class="col-auto form-control" type="number" min="0" step="any"
-                        placeholder="Amount" style="max-width: 7rem"
-                      />
+                        class="col-auto form-control" placeholder="Amount" style="max-width: 7rem" />
                       <span class="my-auto mx-3">[[ selectedETHCartToken ]]</span>
-                      <span class="font-smaller-3 text-danger my-auto" v-if="grant.grant_donation_amount_usd < UsdMinimalContribution">
-                        Minimum [[ grant.grant_donation_amount/grant.grant_donation_amount_usd || '' | formatNumberWithDecimal]] [[grant.grant_donation_currency]] required
+                      <span class="font-smaller-3 text-danger my-auto"
+                        v-if="grant.grant_donation_amount_usd < UsdMinimalContribution">
+                        Minimum [[ grant.grant_donation_amount/grant.grant_donation_amount_usd || '' |
+                        formatNumberWithDecimal]] [[grant.grant_donation_currency]] required
                       </span>
                     </div>
-
-                    <small v-if="index === 0" class="col-12 text-left text-primary cursor-pointer pl-0 mt-1" @click="applyAmountToAllGrants(grant)">
-                      apply to all
-                    </small>
-
                   </div>
                 </div>
               </div>
-
               <!-- MOBILE: Delete icon -->
               <div class="col-1 d-none d-block d-md-none px-1">
                 <i @click="removeGrantFromCart(grant.grant_id)" class="far fa-times cursor-pointer text-muted"></i>
               </div>
-
               <!-- ALL DEVICES: CLR match amount-->
               <div class="col col-md-3 d-block mt-3 mt-md-0 text-md-right">
-                <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div>
-                <div v-else-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
+                <!-- <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div> -->
+                <div v-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
                 <div v-else>
                   <span class="text-success" v-if="grant.grant_donation_clr_match">
                     + [[grant.grant_donation_clr_match]] DAI
@@ -116,118 +92,100 @@
                   <span class="text-muted">
                     <template v-if="grant.grant_donation_clr_match < 1000">estd. match</template>
                     <template v-else>estd. match</template>
-                    <i v-if="grant.has_reached_cap" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer" :id="'grant-tooltip-matching' + grant.grant_id"></i>
-                    <b-tooltip v-if="grant.has_reached_cap" :target="'grant-tooltip-matching' + grant.grant_id" triggers="hover">
+                    <i v-if="grant.has_reached_cap" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                      :id="'grant-tooltip-matching' + grant.grant_id"></i>
+                    <b-tooltip v-if="grant.has_reached_cap" :target="'grant-tooltip-matching' + grant.grant_id"
+                      triggers="hover">
                       <div class="text-left p-2" style="min-width: 150px;">
-                        This grant can still receive contributions, but will not receive additional matching funds this round because it has reached the maximum matching cap.
-                        <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
+                        This grant can still receive contributions, but will not receive additional matching funds this
+                        round because it has reached the maximum matching cap.
+                        <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn
+                          more</a>
                       </div>
                     </b-tooltip>
                   </span>
                 </div>
               </div>
-
               <!-- DESKTOP: Delete icon -->
               <div class="col-auto d-none d-md-flex align-self-center inputs-height clear-cart">
-                <i @click="removeGrantFromCart(grant.grant_id)" class="far fa-times cursor-pointer text-muted pr-lg-4 my-auto"></i>
+                <i @click="removeGrantFromCart(grant.grant_id)"
+                  class="far fa-times cursor-pointer text-muted pr-lg-4 my-auto"></i>
               </div>
-
             </div>
-
             <hr class="my-4">
-
           </div>
         </div>
-
       </div>
-
     </div>
-
     <!-- Right Section -->
-    <div class="col-12 col-lg-3 px-lg-0">
+    <div class="col-lg-4 px-lg-0 border border-light p-lg-4 rounded">
       <div class="sticky-top" style="z-index: 0;">
         <!-- Summary -->
         <div>
           <h4 class="col gc-font-base text-dark px-0 pt-2 my-3">Summary</h4>
-
           <div class="d-flex justify-content-between">
             <p class="mb-1">Grant Contributions</p>
             <p class="mb-1">[[ donationsToGrantsString ]]</p>
           </div>
-
           <div class="d-flex justify-content-between text-success">
             <p>
               Estimated Match
-              <i
-                class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer my-auto"
-                v-b-tooltip.hover.bottom="'Your estimated match towards the quadratic funding pool at this moment in time.'"
-              ></i>
+              <i class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer my-auto"
+                v-b-tooltip.hover.bottom="'Your estimated match towards the quadratic funding pool at this moment in time.'"></i>
             </p>
             <p>[[ predictionTotalString ]]</p>
           </div>
         </div>
-
         <!-- Optional contribution to Gitcon -->
         <div class="mt-3 text-muted d-flex">
           <div>
             Give back to the Gitcoin match pool
           </div>
-          <i
-            class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer my-auto"
-            v-b-tooltip.hover.bottom="'Contribute towards the Gitcoin Match Pool! Funds are used for current and future Grant rounds. The selected amount will be added on top of your grant contributions.'"
-          ></i>
+          <i class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer my-auto"
+            v-b-tooltip.hover.bottom="'Contribute towards the Gitcoin Match Pool! Funds are used for current and future Grant rounds. The selected amount will be added on top of your grant contributions.'"></i>
         </div>
-
         <!-- Gitcoin Matching Pool -->
-        <div class="d-flex justify-content-between align-items-center text-center position-relative">
+        <div class="d-flex justify-content-center align-items-center text-centers ml-2">
           <div class="d-flex suggested-donation-container">
-            <div style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;" class="cursor-pointer border border-right-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
-            <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
-            <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
-            <div style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" class="cursor-pointer border border-left-0 px-2 py-2 my-2" :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
+            <div style="border-top-left-radius: 4px; border-bottom-left-radius: 4px;"
+              class="cursor-pointer border border-right-0 px-2 py-2 my-2"
+              :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 5 }" @click="gitcoinFactorRaw=5">5%</div>
+            <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2"
+              :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 10 }" @click="gitcoinFactorRaw=10">10%</div>
+            <div class="cursor-pointer border border-right-0 border-left-0 px-2 py-2 my-2"
+              :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 15 }" @click="gitcoinFactorRaw=15">15%</div>
+            <div style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;"
+              class="cursor-pointer border border-left-0 px-2 py-2 my-2"
+              :class="{ 'bg-violet-400 text-white': gitcoinFactorRaw == 0 }" @click="gitcoinFactorRaw=0">0%</div>
           </div>
-
           <!-- Custom Tip -->
-          <div class="d-flex justify-content-end donation-amount-container">
+          <div class="input-group d-flex justify-content-end text-center donation-amount-container">
             <input v-model="gitcoinFactorRaw"
-            class="font-smaller-1 border cursor-pointer d-inline-block form-control mr-0 pr-0 rounded"
-              placeholder="custom %"
-              type="number"
-              min="0" max="99" step="any" id="gitcoin-grant-input-amount"
-              name="gitcoin-grant-input-amount"
-            />
+              class="font-smaller-1 border cursor-pointer d-inline-block form-control mr-0 pr-0 rounded"
+              placeholder="custom %" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
+              name="gitcoin-grant-input-amount" />
           </div>
         </div>
-
         <!-- Donation Amount -->
         <div class="d-flex justify-content-between mt-2 mb-4 font-smaller-2">
           <p class="mb-1">Donation</p>
           <p class="mb-1">[[ donationsToGitcoinString ]]</p>
         </div>
-
         <hr>
-
         <!-- Total -->
         <div class="d-flex justify-content-between my-3">
           <p class="mb-1">Total</p>
           <p class="mb-1">[[ totalString ]]</p>
         </div>
-
         <hr style="border-top-width: 2px;">
-
         <!-- Amount Due -->
         <div class="d-flex justify-content-between mt-3 font-weight-semibold">
           <p class="mb-1">Amount Due</p>
           <p class="mb-1">[[ donationsTotalString ]]</p>
         </div>
-
         <div class="text-center text-muted mx-auto mt-5">
           Which option is best for me?
-          <i
-            class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
-            id="tooltip-best-option"
-          ></i>
-
+          <i class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer" id="tooltip-best-option"></i>
           <b-tooltip target="tooltip-best-option" triggers="hover">
             <div>
               <p>Checkout Options</p>
@@ -237,40 +195,33 @@
                 <li>easiest checkout option</li>
                 <li>gas cost may be higher</li>
               </ul>
-
               <p class="mb-2">Advanced Checkout: zkSync or Polygon</p>
               <ul>
                 <li>for larger cart sizes (up to 50 for zkSync, no min/max on Polygon) </li>
                 <li>lower gas cost than standard checkout</li>
                 <li>requires funds added to a Polygon or zkSync account.</li>
               </ul>
-
               <p class="mt-3">
                 The checkout flow will depend on the prefered payment method.
-                <a rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/133-how-does-one-decide-between-the-grant-contribution-checkout-options/" target="_blank">
+                <a rel="noopener noreferrer"
+                  href="https://support.gitcoin.co/kb/article/133-how-does-one-decide-between-the-grant-contribution-checkout-options/"
+                  target="_blank">
                   Learn more
                 </a>
               </p>
             </div>
           </b-tooltip>
         </div>
-
         <!-- Checkout -->
         <div class="text-center mt-3 mb-4 mx-auto">
-          <eth-checkout-button class="d-none d-md-block"
-            :standard-checkout="standardCheckout"
-            :is-zk-sync-down="isZkSyncDown"
-            :is-polygon-down="isPolygonDown"
-            :current-tokens="currentTokens"
-            :donation-inputs="donationInputs"
-            :max-cart-items="maxCartItems"
-            :grants-by-tenant="grantsByTenant"
-            :grants-under-minimal-contribution="grantsUnderMinimalContribution"
-            :network="network"
-            >
+          <eth-checkout-button class="d-none d-md-block" :active-checkout="activeCheckout"
+            :on-polygon-update="onPolygonUpdate" :on-zk-sync-update="onZkSyncUpdate"
+            :standard-checkout="standardCheckout" :is-zk-sync-down="isZkSyncDown" :is-polygon-down="isPolygonDown"
+            :current-tokens="currentTokens" :donation-inputs="donationInputs" :max-cart-items="maxCartItems"
+            :grants-by-tenant="grantsByTenant" :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+            :network="network">
           </eth-checkout-button>
         </div>
-
         <!-- Checkout recommendation -->
         <div class="text-center mt-2" v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
           <div class="font-smaller-3 bg-lightpurple p-3 rounded w-100">
@@ -280,7 +231,6 @@
             </template>
           </div>
         </div>
-
         <!-- CLR matching -->
         <!-- <div class="row justify-content-start align-items-center ml-1 mt-3">
           <input v-model="include_for_clr" type="checkbox" id="include_for_clr" name="include_for_clr" class="mr-2" />
@@ -291,13 +241,9 @@
           <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2" />
           <label class="mb-0" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
         </div> -->
-
       </div>
-
     </div>
-
   </div>
-
   <!-- Add some empty space before the footer -->
   <div class="m-5"></div>
 </b-tab>

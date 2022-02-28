@@ -127,7 +127,8 @@ Vue.mixin({
     backNavigation: function() {
       const vm = this;
       const lgt = localStorage.getItem('last_grants_title') || 'Grants';
-      const lgi = document.referrer.indexOf(location.host) != -1 ? 'javascript:history.back()' : '/grants/explorer';
+
+      const lgi = (document.referrer.indexOf(location.host) != -1 && !document.referrer.includes('grants/new')) ? 'javascript:history.back()' : '/grants/explorer';
 
       if (lgi && lgt) {
         vm.$set(vm.backLink, 'url', lgi);
@@ -138,6 +139,12 @@ Vue.mixin({
       const container = this.$refs[element];
 
       container.scrollIntoViewIfNeeded({behavior: 'smooth', block: 'start'});
+    },
+    closeGrantCreatedNotification: function() {
+      let vm = this;
+
+      vm.modalShow = false;
+      delete localStorage['grant_state'];
     }
   }
 });
@@ -151,6 +158,7 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        modalShow: localStorage['grant_state'] == 'created',
         loading: false,
         loadingTx: false,
         loadingRelated: false,

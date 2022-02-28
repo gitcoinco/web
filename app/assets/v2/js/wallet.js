@@ -234,8 +234,8 @@ function displayProvider() {
 async function setupPolygon(network = networkName) {
   // Connect to Polygon network with MetaMask
   let chainId = network === 'mainnet' ? '0x89' : '0x13881';
-  let rpcUrl = network === 'mainnet' ? 'https://rpc-mainnet.maticvigil.com'
-    : 'https://rpc-mumbai.maticvigil.com';
+  let rpcUrl = network === 'mainnet' ? 'https://polygon-rpc.com'
+    : 'https://rpc-mumbai.matic.today';
 
   try {
     await ethereum.request({

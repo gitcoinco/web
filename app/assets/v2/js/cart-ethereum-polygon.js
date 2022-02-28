@@ -66,6 +66,21 @@ Vue.component('grantsCartEthereumPolygon', {
         }
       });
       return string;
+    },
+
+    skipGasCostEstimation() {
+      let networkId = appCart.$refs.cart.networkId;
+
+      return (
+        (
+          networkId != POLYGON_TESTNET_NETWORK_ID &&
+          networkId != POLYGON_MAINNET_NETWORK_ID &&
+          appCart.$refs.cart.activeCheckout !== 'polygon' &&
+          appCart.$refs.cart.activeCheckout !== undefined
+        ) ||
+        this.cart.unsupportedTokens.length > 0 ||
+        !ethereum.selectedAddress
+      );
     }
   },
 
@@ -98,7 +113,7 @@ Vue.component('grantsCartEthereumPolygon', {
       } else {
         appCart.$refs.cart.networkId = POLYGON_TESTNET_NETWORK_ID;
         appCart.$refs.cart.network = 'testnet';
-        url = 'https://rpc-mumbai.maticvigil.com';
+        url = 'https://rpc-mumbai.matic.today';
       }
 
       return new Web3(url);
@@ -182,6 +197,11 @@ Vue.component('grantsCartEthereumPolygon', {
 
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
+      // Prompt web3 login if not connected
+      if (!provider) {
+        await onConnect();
+      }
+
       const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
 
       try {
@@ -324,18 +344,7 @@ Vue.component('grantsCartEthereumPolygon', {
        * transaction before the approval txs are confirmed, because if the approval txs
        * are not confirmed then estimateGas will fail.
        */
-
-      let networkId = appCart.$refs.cart.networkId;
-
-      if (networkId !== POLYGON_TESTNET_NETWORK_ID && networkId !== POLYGON_MAINNET_NETWORK_ID && appCart.$refs.cart.isCheckoutOngoing == true) {
-        return;
-      }
-
-      if (this.cart.unsupportedTokens.length > 0) {
-        return;
-      }
-
-      if (!ethereum.selectedAddress) {
+      if (this.skipGasCostEstimation) {
         return;
       }
 
@@ -433,6 +442,7 @@ Vue.component('grantsCartEthereumPolygon', {
         const tokenDetails = this.getTokenByName(tokenSymbol);
 
         const userMaticBalance = toBigNumber(await web3.eth.getBalance(userAddress));
+
         const tokenIsMatic = tokenDetails && tokenDetails.name === 'MATIC';
 
         // Check user matic balance against required amount
@@ -473,6 +483,7 @@ Vue.component('grantsCartEthereumPolygon', {
             }
           }
         }
+
         if (tokenDetails) {
           // Check user token balance against required amount
           const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);

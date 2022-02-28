@@ -2915,19 +2915,6 @@ def get_profile_tab(request, profile, tab, prev_context):
                 'match_percent': 50,
                 'is_verified': profile.is_poh_verified
             }, {
-                'ref': 'qd',
-                'name': 'Quadratic Diplomacy',
-                'icon_path': static('v2/images/quadraticlands/mission/diplomacy.svg'),
-                'desc': 'Stake your GTC on your frens, and earn sybil resistence by doing so!',
-                'match_percent': 20,
-                'is_verified': profile.players.exists(),
-                'disable_disconnect': True,
-                'alt_is_verified_btn': {
-                    'text': 'Explore',
-                    'type': 'btn-outline-primary',
-                    'location': reverse('quadraticlands:mission_diplomacy')
-                }
-            }, {
                 'ref': 'brightid',
                 'name': 'BrightID',
                 'icon_path': static('v2/images/project_logos/brightid.png'),

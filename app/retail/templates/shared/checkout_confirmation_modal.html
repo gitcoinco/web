@@ -19,10 +19,10 @@
 
 <b-modal id="confirmation-modal" :visible="showConfirmationModal" size="lg" center hide-header hide-footer>
     <div class="mx-3 mx-md-5 my-5 my-md-5 text-black">
-        <h4 class="d-flex-inline">Confirming transaction...</h4>
+        <h4 class="d-flex-inline">Waiting for transaction</h4>
         <p class="font-body pb-4">
-            Please don't close this tab until your transaction is confirmed! This ensures that your 
-            contribution will count towards each grant's matching funds.
+            Please don't close this tab until your transaction is recorded! This allows us to take your 
+            contribution into account for each grant's matching funds.
         </p>
         <div class="d-flex flex-column text-center w-100 pb-4">
         <div class="align-self-center d-flex-inline mb-5 mb-md-0 col-12 col-lg-6">
@@ -182,7 +182,7 @@
                 <path d="M143.876 90.538V89.9313C143.876 89.6736 144.148 89.5122 144.365 89.641L144.876 89.9443L145.388 90.2477C145.605 90.3765 145.605 90.6985 145.388 90.8274L144.876 91.1307L144.365 91.4341C144.148 91.5629 143.876 91.4024 143.876 91.1447V90.538Z" fill="#6F3FF5"/>
                 <path d="M148.261 94.3068V107.847L149.161 107.052V94.3068C149.161 94.051 148.96 93.8447 148.711 93.8447C148.462 93.8447 148.261 94.0519 148.261 94.3068Z" fill="#6F3FF5"/>
                 <path d="M148.711 87.23C148.463 87.23 148.261 87.0237 148.261 86.768V85.3995C148.261 85.1447 148.462 84.9375 148.711 84.9375C148.96 84.9375 149.161 85.1438 149.161 85.3995V86.7689C149.16 87.0237 148.959 87.23 148.711 87.23Z" fill="#6F3FF5"/>
-            </svg>                
+            </svg>
         </div>
         </div>
         <div class="mt-5 px-3 px-md-5 py-5" style="background-color: #F0EBFF;">
@@ -194,10 +194,11 @@
                 </a>
             </template>
             <template v-else>
-                <p class="font-body text-primary">How long should I expect?</p>
-                <p>It depends on how busy the network is, but in most cases should be less than 30 mins. Please don't close this tab until the confirmation window appears.</p>
+                <p class="font-body text-primary">How long does it take for the grant's matching estimate to be updated?</p>
+                <p>We only include confirmed transactions in matching estimates, so it depends on how long it takes for your transaction to be confirmed by the network.
+                    The speed (or success) of your transaction will depend on gas fees.</p>
                 <a href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172" target="_blank" class="text-black">
-                    <u>Learn more about gas fees and the transaction process (Metamask)</u>
+                    <u>Learn more about gas fees and the transaction process (MetaMask)</u>
                 </a>
             </template>
         </div>
