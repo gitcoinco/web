@@ -37,10 +37,10 @@ Vue.component('eth-checkout-button', {
   template: '#eth-checkout-template',
   props: [
     'maxCartItems', 'network', 'isZkSyncDown', 'isPolygonDown', 'onPolygonUpdate', 'onZkSyncUpdate', 'donationInputs',
-    'currentTokens', 'grantsByTenant', 'grantsUnderMinimalContribution', 'activeCheckout', 'standardCheckout', 'multisigGrants'
+    'currentTokens', 'grantsByTenant', 'grantsUnderMinimalContribution', 'activeCheckout', 'standardCheckout', 'multisigGrants',
+    'tabSelected'
   ]
 });
-
 
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
@@ -453,7 +453,7 @@ Vue.component('grants-cart', {
     computeDonationInputs(destGitcoinAddress) {
       let isPolygon = destGitcoinAddress == gitcoinAddressPolygon;
 
-      if (!this.grantsByTenant || this.tabSelected !== 'ETH') {
+      if (!this.grantsByTenant || (this.tabSelected !== 'ETH' && this.tabSelected !== 'ETH_POLYGON')) {
         return undefined;
       }
 

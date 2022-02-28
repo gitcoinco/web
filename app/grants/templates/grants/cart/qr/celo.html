@@ -1,6 +1,6 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="CELO" v-if="grantsCountByTenant.CELO !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" height="16"> Celo ([[grantsCountByTenant.CELO || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" height="16"> <b>Celo ([[grantsCountByTenant.CELO || 0]])</b></template>
 
   <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
     <div class="flex-fill">

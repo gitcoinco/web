@@ -1,0 +1,112 @@
+{% comment %}
+Copyright (C) 2022 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load static i18n %}
+<!-- Modal shown when clicking button -->
+<b-modal
+  id="polygon-modal" :visible="polygon.showModal"
+  @hide="polygon.showModal=false;"
+  class="modal-dialog modal-lg pt-0" header-border-variant="transparent"
+  center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+>
+  <!-- Modal close button -->
+  <template v-slot:modal-header="{ close }">
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      @click="close()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </template>
+
+  <!-- Main content -->
+  <template v-if="multisigGrants.length < grantsByTenant.length" v-slot:default="{ hide }">
+    <div class="px-4 text-left">
+      <h3 class="mb-3 text-black">Only some of these Grants can receive funds on Polygon</h3>
+      <p class="text-grey-400 font-body">
+        Clicking on "Continue with Polygon" will allow you to continue to Polygon checkout with the Grants that are eligible. The rest of the cart will be split into a new tab that will need to be checked out through either Standard Checkout or zkSync Checkout.
+        <br><br>
+        If you wish to check all Grants in cart at once, click the “Back” button and then select Standard Checkout or zkSync Checkout.
+      </p>
+      <div class="d-flex justify-content-between float-right">
+        <b-button class="rounded mt-2 mr-2 btn btn-lg" variant="outline-primary"
+          @click="closePolygonModal()"
+        >Back</b-button>
+        <b-button class="rounded mt-2 btn btn-lg" variant="primary"
+          @click="splitPolygonGrants()">Continue with Polygon</b-button>
+      </div>
+    </div>
+  </template>
+  <template v-else v-slot:default="{ hide }">
+    <div class="px-4 pb-4 mb-5">
+      <!-- If checkout not started -->
+      <div v-if="polygon.checkoutStatus === 'not-started'">
+        <div class="mx-2 mb-4 pb-2 text-center">
+          <!-- Header -->
+          <img class="mb-4" src="{% static 'v2/images/grants/polygon.svg' %}" alt="Polygon Logo" width="150">
+          <h2 class="mt-2 text-left">Pay with Polygon (Matic)</h2>
+
+          <div class="text-left mt-2">
+            <h3 class="font-subheader">What is Polygon (Matic)?</h3>
+            <p>
+              Polygon (Matic) is an Ethereum sidechain solution, which means you can contribute to
+              your favorite grants with much lower transaction fees and much faster confirmation time.
+            </p>
+            <h3 class="font-subheader">How do I pay with Polygon (Matic)?</h3>
+            <p>
+              To proceed, you'll need to make a minimum deposit of
+              <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network. Upon clicking Deposit Funds,
+              a new browser tab will be opened for you to deposit funds to Polygon (Matic) network.
+            </p>
+          </div>
+        </div>
+        <button @click="openBridgeUrl()" class="btn btn-lg btn-gc-blue shadow-none float-right">
+          Deposit Funds
+        </button>
+      </div>
+
+      <!-- If user should deposit -->
+      <div v-if="polygon.checkoutStatus === 'depositing'">
+        <div class="px-4">
+          <div class="text-left">
+            <h2 class="mb-3">Complete fund deposit on Polygon (Matic) Web Wallet</h2>
+            <h3 class="font-subheader">How much do I have to deposit?</h3>
+            <p>
+              To proceed, you'll need to make a minimum deposit of
+              <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network.
+            </p>
+            <p>
+              You can close this modal and click Checkout with Polygon again once your deposit is completed.
+            </p>
+            <h3 class="font-subheader">Having issues with depositing funds to Polygon (Matic)?</h3>
+            <p>
+              Please contact <a href="https://support.polygon.technology/support/home" target="_blank">Polygon Support</a> if you experience any issues or errors
+              with depositing funds to Polygon (Matic).
+            </p>
+          </div>
+          <button @click="closePolygonModal()" class="mt-2 btn btn-lg btn-gc-blue shadow-none float-right">
+            Close
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </template>
+</b-modal>

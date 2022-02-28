@@ -54,6 +54,9 @@ Vue.component('grantsCartEthereumPolygon', {
 
     requiredAmountsString() {
       let string = '';
+      
+      if (this.polygon.showModal === false)
+        return string;
 
       requiredAmounts = this.user.requiredAmounts;
       Object.keys(requiredAmounts).forEach(key => {
@@ -203,18 +206,15 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     splitPolygonGrants() {
+      this.closePolygonModal();
+      
       // change tenant of multisig grants in grantData array
       appCart.$refs.cart.grantData.map(grant => {
-        console.log(this.multisigGrants);
-        if (this.multisigGrants.map(grant => grant.id).includes(grant.id)) {
-          grant.tenants = grant.tenants.map(tenant => {
-            return tenant == 'ETH' ? 'ETH_POLYGON' : tenant;
-          });
+        if (!this.multisigGrants.map(grant => grant.grant_id).includes(grant.grant_id)) {
+          grant.tenants = grant.tenants.map(tenant => tenant == 'ETH' ? 'ETH_POLYGON' : tenant);
         }
         return grant.tenants;
       });
-      console.log(appCart.$refs.cart.grantData);
-      this.closePolygonModal();
     },
 
     // Send a batch transfer based on donation inputs

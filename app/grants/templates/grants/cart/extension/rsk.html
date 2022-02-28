@@ -1,9 +1,9 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="RSK" v-if="grantsCountByTenant.RSK !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" height="16"> Rsk ([[grantsCountByTenant.RSK || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" height="16"> <b>Rsk ([[grantsCountByTenant.RSK || 0]])</b></template>
 
   <p v-if="!isRskExtInstalled" class="gc-alert-yellow p-3 font-smaller-2">
-    You’ll need a Rsk wallet to contribute to Rsk grants. We recommend
+    You'll need a Rsk wallet to contribute to Rsk grants. We recommend
     <a href="https://chrome.google.com/webstore/detail/nifty-wallet/jbdaocneiiinmjbjlgalhcelgbejmnid?hl=en" target="_blank">Nifty Wallet.</a>
   </p>
 
