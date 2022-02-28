@@ -19,15 +19,19 @@ def get_grants_from_database(start_grant_number: int, end_grant_number: int=None
 
     query = GrantQuerySet(Grant)
 
-    if inactive_grants_only:
-        query.inactive()
-
     if end_grant_number is None:
         end_grant_number = query.count()
+
     pk_list = list(range(start_grant_number, end_grant_number + 1))
     query.filter(pk__in=pk_list)
 
-    return {"options": [_format_grant(grant) for grant in query]}
+    grants = [
+        _format_grant(grant)
+        for grant in query
+        if not inactive_grants_only or not grant.active
+    ]
+
+    return {"options": grants}
 
 
 def _format_grant(grant: Grant) -> dict:
