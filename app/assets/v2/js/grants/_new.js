@@ -1,6 +1,11 @@
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 
+const step1Errors = [ 'grant_tags', 'has_external_funding' ];
+const step2Errors = [ 'title', 'description', 'reference_url', 'twitter_handle_1' ];
+const step3Errors = ['chainId'];
+const errorsByStep = [ step1Errors, step2Errors, step3Errors ];
+
 Vue.mixin({
   data() {
     return {
@@ -154,12 +159,21 @@ Vue.mixin({
       if (!vm.form.has_external_funding) {
         vm.$set(vm.errors, 'has_external_funding', 'Please select if grant has external funding');
       }
+      const errorKeys = Object.keys(vm.errors);
 
-      if (Object.keys(vm.errors).length) {
+      if (errorKeys.length) {
+        // find the the first step that has errors and redirect to it
+        const errorsByPage = errorsByStep.map((stepErrors, i) => {
+          // if current errors are found in this step return step
+          return errorKeys.filter((error) => stepErrors.includes(error)).length ? (i + 1) : 100;
+        });
+
+        // set step to the first step that has an error
+        vm.step = Math.min(...errorsByPage);
         return false; // there are errors the user must correct
       }
-      vm.submitted = false;
-      return true; // no errors, continue to create grant
+
+      return;
     },
     submitForm: async function(event) {
       event.preventDefault();
