@@ -40,6 +40,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       integrity="sha384-3IaxTgktbWGiqPkr5oZQMM4H99ziYzoEUb6sznk03coGR2Cdf1r0I1GWPUL37iu8" crossorigin="anonymous"></script>
     <script src="https://temptemp3.github.io/dist/all.js"
       integrity="sha384-sOpwfoIDOqHhOe9+9CULn5hJ/bTRMXJyBxfgYeMwe45Mg5eLXqMqrKiH2yQkb/RM" crossorigin="anonymous"></script>
+
+    <style>
+      .modal-body {
+        padding-top: 0;
+        padding-bottom: 48px;
+      }
+    </style>
     </head>
 
   <body class="interior {{ active }} grant grant-detail g-font-muli">
@@ -153,6 +160,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <!-- Checkout for ETH Grants -->
                     {% include 'grants/cart/eth.html' %}
 
+                    <!-- Checkout for ETH / Polygon Grants -->
+                    {% include 'grants/cart/eth_polygon.html' %}
+
                     <!-- Checkout for ZCASH Grants -->
                     {% include 'grants/cart/qr/zcash.html' %}
 
@@ -233,6 +243,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 :grants-by-tenant="grantsByTenant"
                 :grants-under-minimal-contribution="grantsUnderMinimalContribution"
                 :network="network"
+                :multisig-grants="multisigGrants"
                 >
               </eth-checkout-button>
             </div>
@@ -297,13 +308,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             :max-cart-items="100"
             :grants-by-tenant="grantsByTenant"
             :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+            :active-checkout="activeCheckout"
+            :multisig-grants="multisigGrants"
           >
             <div>
               <!-- Checkout with Polygon button -->
               <button
                 class="btn p-0 checkout-logo"
-                :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
-                id='js-polygonfundGrants-button'
+                :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || (multisigGrants.length === grantsByTenant.length)"
+                id="js-polygonfundGrants-button"
                 @click="checkoutWithPolygon"
               >
               <svg class="polygon-logo" width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -316,7 +329,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <b-modal
                 id="polygon-modal" :visible="polygon.showModal"
                 @hide="polygon.showModal=false;"
-                class="modal-dialog modal-lg" header-border-variant="transparent"
+                class="modal-dialog modal-lg pt-0" header-border-variant="transparent"
                 center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
               >
                 <!-- Modal close button -->
@@ -333,7 +346,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </template>
 
                 <!-- Main content -->
-                <template v-slot:default="{ hide }">
+                <template v-if="multisigGrants.length < grantsByTenant.length" v-slot:default="{ hide }">
+                  <div class="px-4 text-left">
+                    <h3 class="mb-3 text-black">Only some of these Grants can receive funds on Polygon</h3>
+                    <p class="text-grey-400 font-body">
+                      Clicking on "Continue with Polygon" will allow you to continue to Polygon checkout with the Grants that are eligible. The rest of the cart will be split into a new tab that will need to be checked out through either Standard Checkout or zkSync Checkout.
+                      <br><br>
+                      If you wish to check all Grants in cart at once, click the “Back” button and then select Standard Checkout or zkSync Checkout.
+                    </p>
+                    <div class="d-flex justify-content-between float-right">
+                      <b-button class="mt-2 mr-2 btn btn-lg" variant="outline-primary"
+                        @click="closePolygonModal()"
+                      >Back</b-button>
+                      <b-button class="mt-2 btn btn-lg" variant="primary"
+                        @click="splitPolygonGrants()">Continue with Polygon</b-button>
+                    </div>
+                  </div>
+                </template>
+                <template v-else v-slot:default="{ hide }">
                   <div class="px-4 pb-4 mb-5">
                     <!-- If checkout not started -->
                     <div v-if="polygon.checkoutStatus === 'not-started'">
@@ -350,7 +380,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           </p>
                           <h3 class="font-subheader">How do I pay with Polygon (Matic)?</h3>
                           <p>
-                            To proceed, you’ll need to make a minimum deposit of
+                            To proceed, you'll need to make a minimum deposit of
                             <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network. Upon clicking Deposit Funds,
                             a new browser tab will be opened for you to deposit funds to Polygon (Matic) network.
                           </p>
@@ -368,7 +398,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           <h2 class="mb-3">Complete fund deposit on Polygon (Matic) Web Wallet</h2>
                           <h3 class="font-subheader">How much do I have to deposit?</h3>
                           <p>
-                            To proceed, you’ll need to make a minimum deposit of
+                            To proceed, you'll need to make a minimum deposit of
                             <b>[[ requiredAmountsString ]]</b> to the Polygon (Matic) network.
                           </p>
                           <p>
@@ -385,8 +415,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         </button>
                       </div>
                     </div>
-
-                    <!-- If checkout is pending -->
 
                   </div>
                 </template>
@@ -410,6 +438,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             :grants-by-tenant="grantsByTenant"
             :grants-under-minimal-contribution="grantsUnderMinimalContribution"
             :network="network"
+            :active-checkout="activeCheckout"
           >
             <div id="zksync-tooltip">
               <!-- Checkout with zkSync button -->
@@ -518,7 +547,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script>
-      document.authenticated = {{ authenticated | yesno:"true,false" }};
+      document.authenticated = '{{ authenticated | yesno:"true,false" }}';
       document.isFullyVerified = '{{is_fully_verified}}' === 'True';
       document.polygonGasPrice = "{{ gas_prices|get_item:'polygon' }}";
 
