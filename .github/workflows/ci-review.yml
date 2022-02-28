@@ -224,7 +224,7 @@ jobs:
           cat <<EOT >> docker_bin/static_files.sh
           #!/bin/bash
           python3 manage.py bundle
-          python3 manage.py collectstatic
+          python3 manage.py collectstatic --disable-collectfast
           EOT
 
           docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
@@ -238,6 +238,7 @@ jobs:
           AWS_EC2_METADATA_DISABLED: true
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUNDLE_USE_CHECKSUM: 'false'
 
       - uses: actions/github-script@v6
         with:
