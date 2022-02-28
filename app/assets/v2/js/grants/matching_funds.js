@@ -255,7 +255,7 @@ Vue.mixin({
       return grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length;
     },
     canClaimMatch(grant) {
-      return grant.clr_matches.length && grant.clr_matches.filter(a => !a.claim_tx).length;
+      return grant.clr_matches.length && grant.clr_matches.filter(a => !a.claim_tx && a.round_number > 7).length;
     },
     filterMatchingPayout(matches) {
       return matches.filter(match => match.grant_payout);
