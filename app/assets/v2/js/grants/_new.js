@@ -4,35 +4,12 @@ Vue.use(VueQuillEditor);
 Vue.mixin({
   data() {
     return {
-      step: 1,
-      currentSteps: [
-        {
-          text: 'Eligibility & Discovery',
-          active: true
-        },
-        {
-          text: 'Grant Details',
-          active: false
-        },
-        {
-          text: 'Owner Information',
-          active: false
-        },
-        {
-          text: 'Review Grant',
-          active: false
-        }
-      ]
+      step: 1
     };
   },
   methods: {
     updateNav: function(direction) {
-      if (direction === 'back') {
-        this.step -= 1;
-      }
-      if (direction === 'next') {
-        this.step += 1;
-      }
+      this.step += direction;
     },
     showQuickStart: function() {
 
@@ -485,6 +462,29 @@ if (document.getElementById('gc-new-grant')) {
           }
           return value;
         };
+      },
+      currentSteps() {
+        const steps = [
+          {
+            text: 'Eligibility & Discovery',
+            active: false
+          },
+          {
+            text: 'Grant Details',
+            active: false
+          },
+          {
+            text: 'Owner Information',
+            active: false
+          },
+          {
+            text: 'Review Grant',
+            active: false
+          }
+        ];
+
+        steps[this.step - 1].active = true;
+        return steps;
       }
     },
     mounted() {
