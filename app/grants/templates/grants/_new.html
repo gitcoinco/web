@@ -60,6 +60,7 @@
                 {% endif %}
 
                 <form-wrapper
+                  v-if="step === 1"
                   :heading="'Eligibility & Discovery setup'"
                   :current-step="step"
                   :total-steps="currentSteps.length"
@@ -119,73 +120,65 @@
                       </template>
                     </v-select>
                   </div>
-                </div>
                 </form-wrapper>
 
-                <!-- Title -->
-                <div class="col-12 mb-4">
-                  <label class="font-subheader font-weight-light letter-spacing" for="title">Title</label>
-                  <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                <form-wrapper
+                  v-if="step === 2"
+                  :heading="'Grant Details'"
+                  :current-step="step"
+                  :total-steps="currentSteps.length"
+                  @update-navigation="updateNav"
+                >
+                  <!-- Title -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="title">Title</label>
+                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                  <input id="title" name="title" v-model="form.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="My Grant Title" required />
+                    <input id="title" name="title" v-model="form.title" class="form__input form__input-lg" maxlength="150" type="text" placeholder="My Grant Title" required />
 
-                  <div class="text-danger" v-if="errors.title">
-                    [[errors.title]]
-                  </div>
-                </div>
-
-                <!-- Description -->
-                <div class="col-12 mb-4">
-                  <label class="font-subheader font-weight-light letter-spacing" for="description">Description</label>
-                  <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
-
-                  <quill-editor
-                    ref="quillEditorDesc"
-                    v-model="form.description_rich"
-                    :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
-                    :options="editorOptionPrio"
-                  ></quill-editor>
-
-                  <div class="text-danger" v-if="errors.description">
-                    [[errors.description]]
-                  </div>
-                </div>
-
-                <!-- Logo -->
-                <div class="col-12 mb-4">
-                  <label class="font-subheader font-weight-light letter-spacing" for="logo">
-                    Project Logo
-                  </label>
-
-                  <div class="form__drop mt-0" id="js-drop">
-                    <span class="text-center">
-                      Drag and Drop or Browse File
-                      </br>
-                      Recommended: 348x200 px in jpg or png
-                    </span>
-                    <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
-                    <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
+                    <div class="text-danger" v-if="errors.title">
+                      [[errors.title]]
+                    </div>
                   </div>
 
-                </div>
+                  <!-- Description -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="description">Description</label>
+                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                <!-- Github -->
-                <div class="col-12 mb-4">
-                  <label class="font-subheader font-weight-light letter-spacing" for="github_project_url">Github URL</label>
-                  <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/mygrant"/>
-                </div>
+                    <quill-editor
+                      ref="quillEditorDesc"
+                      v-model="form.description_rich"
+                      :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
+                      :options="editorOptionPrio"
+                    ></quill-editor>
 
-                <!-- URL -->
-                <div class="col-12 mb-4">
-                  <label class="font-subheader font-weight-light letter-spacing" for="reference_url">Project Website</label>
-                  <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
-
-                  <input id="reference_url" v-model="form.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
-
-                  <div class="text-danger" v-if="errors.reference_url">
-                    [[errors.reference_url]]
+                    <div class="text-danger" v-if="errors.description">
+                      [[errors.description]]
+                    </div>
                   </div>
-                </div>
+                  <!-- Logo -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="logo">
+                      Project Logo
+                    </label>
+
+                    <div class="form__drop mt-0" id="js-drop">
+                      <span class="text-center">
+                        Drag and Drop or Browse File
+                        </br>
+                        Recommended: 348x200 px in jpg or png
+                      </span>
+                      <b-form-file id="img-project" v-model="logo" @change="onFileChange($event)" :state="Boolean(logo)" plain accept="image/*"></b-form-file>
+                      <b-img-lazy v-if="logoPreview" id="preview" style="width:100%;" :src="logoPreview"></b-img-lazy>
+                    </div>
+
+                  </div>
+                  <!-- Github -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="github_project_url">Github URL</label>
+                    <input id="github_project_url" v-model="form.github_project_url" name="github_project_url" class="form__input form__input-lg" type="url" placeholder="https://github.com/mygrant"/>
+                  </div>
 
                 <!-- Title -->
                 <div class="col-12 mb-4">
@@ -257,249 +250,260 @@
                   <label class="font-subheader font-weight-light letter-spacing" for="twitter_handle_1">Project Twitter Handle</label>
                   <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                  <input id="twitter_handle_1" v-model="form.twitter_handle_1" @blur.prevent="handleTwitterUsername" name="twitter_handle_1" class="form__input form__input-lg" type="text" placeholder="mygrant" required/>
+                    <input id="reference_url" v-model="form.reference_url" name="reference_url" class="form__input form__input-lg" type="url" placeholder="https://human.fund/" required />
 
-                  <div class="text-danger" v-if="errors.twitter_handle_1">
-                    [[errors.twitter_handle_1]]
+                    <div class="text-danger" v-if="errors.reference_url">
+                      [[errors.reference_url]]
+                    </div>
                   </div>
-                </div>
 
-                <!-- Owner twitter -->
-                <div class="col-12 mb-4">
-                  <label class="font-subheader font-weight-light letter-spacing" for="twitter_handle_2">Your Twitter Handle</label>
+                  <!-- Project twitter -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="twitter_handle_1">Project Twitter Handle</label>
+                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                  <input id="twitter_handle_2" v-model="form.twitter_handle_2" @blur.prevent="handleTwitterUsername" name="twitter_handle_2" class="form__input form__input-lg" type="text" placeholder="myusername"/>
+                    <input id="twitter_handle_1" v-model="form.twitter_handle_1" @blur.prevent="handleTwitterUsername" name="twitter_handle_1" class="form__input form__input-lg" type="text" placeholder="mygrant" required/>
 
-                  <div class="text-danger" v-if="errors.twitter_handle_2">
-                    [[errors.twitter_handle_2]]
+                    <div class="text-danger" v-if="errors.twitter_handle_1">
+                      [[errors.twitter_handle_1]]
+                    </div>
                   </div>
-                </div>
+                </form-wrapper>
 
-                <!-- Team -->
-                <div class="col-12 mb-4">
-                  <label class="font-subheader font-weight-light letter-spacing" for="team_members">Team Members</label>
-                  <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch" :options="usersOptions" placeholder="Add your team members" v-model="teamMembers" multiple>
-                    <template slot="no-options">
-                      type to search Users..
-                    </template>
 
-                    <template slot="option" slot-scope="option">
-                      <div class="d-flex align-items-baseline">
-                        <div class="mr-2">
-                          <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
+                <form-wrapper
+                  v-if="step === 3"
+                  :heading="'Owner information'"
+                  :current-step="step"
+                  :total-steps="currentSteps.length"
+                  @update-navigation="updateNav"
+                >
+                  <!-- Owner twitter -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="twitter_handle_2">Your Twitter Handle</label>
+
+                    <input id="twitter_handle_2" v-model="form.twitter_handle_2" @blur.prevent="handleTwitterUsername" name="twitter_handle_2" class="form__input form__input-lg" type="text" placeholder="myusername"/>
+
+                    <div class="text-danger" v-if="errors.twitter_handle_2">
+                      [[errors.twitter_handle_2]]
+                    </div>
+                  </div>
+
+                  <!-- Team -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="team_members">Team Members</label>
+                    <v-select id="team_members" label="text" :close-on-select="false" @search="userSearch" :options="usersOptions" placeholder="Add your team members" v-model="teamMembers" multiple>
+                      <template slot="no-options">
+                        type to search Users..
+                      </template>
+
+                      <template slot="option" slot-scope="option">
+                        <div class="d-flex align-items-baseline">
+                          <div class="mr-2">
+                            <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
+                          </div>
+                          <div>[[ option.text ]]</div>
                         </div>
-                        <div>[[ option.text ]]</div>
-                      </div>
-                    </template>
+                      </template>
 
-                    <template slot="selected-option" slot-scope="option">
-                      <div class="d-flex align-items-center">
-                        <img class="rounded-circle mr-2" :src="option.avatar_url" width="20" height="20"/>
-                        <div>[[ option.text ]]</div>
-                      </div>
-                    </template>
-                  </v-select>
-                </div>
-
-
-                <!-- Discover Grant -->
-                <div class="col-12 mb-4">
-                  <hr>
-                  <h5 class="mt-5 mb-4 font-weight-normal">Help contributors discover your grant</h5>
-                </div>
-
-                <!-- Chain -->
-                <div class="mb-4 col-12">
-                  <hr>
-                  <h5 class="mt-5 mb-4 font-weight-normal">Funding Details</h5>
-
-                  <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select a blockchain</label>
-                  <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
-
-                  <v-select @input="resetAddress()" placeholder="Select a blockchain to receive funding" :options="grant_chains" label="label" v-model="chainId" :reduce="state => state.name">
-                    <template v-slot:option="option">
-                      <span class="font-weight-semibold">[[ option.label ]]</span>
-                    </template>
-                  </v-select>
-
-                  <div class="text-danger" v-if="errors.chainId && !chainId">
-                    [[errors.chainId]]
+                      <template slot="selected-option" slot-scope="option">
+                        <div class="d-flex align-items-center">
+                          <img class="rounded-circle mr-2" :src="option.avatar_url" width="20" height="20"/>
+                          <div>[[ option.text ]]</div>
+                        </div>
+                      </template>
+                    </v-select>
                   </div>
-                </div>
-
-                <!-- Wallet Address -->
-                <div class="mb-3 col-12">
-                  <template v-if="chainId == 'eth'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="eth_payout_address">
-                      ETH Recipient Wallet Address
-                    </label>
+                  <!-- Chain -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select a blockchain</label>
                     <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                    <v-select @input="resetAddress()" placeholder="Select a blockchain to receive funding" :options="grant_chains" label="label" v-model="chainId" :reduce="state => state.name">
+                      <template v-slot:option="option">
+                        <span class="font-weight-semibold">[[ option.label ]]</span>
+                      </template>
+                    </v-select>
 
-                    <input id="eth_payout_address" v-model="form.eth_payout_address" name="eth_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
-
-                    <div class="text-danger" v-if="errors.eth_payout_address">
-                      [[errors.eth_payout_address]]
+                    <div class="text-danger" v-if="errors.chainId && !chainId">
+                      [[errors.chainId]]
                     </div>
-                  </template>
+                  </div>
 
-                  <template v-else-if="chainId == 'zcash'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="zcash_payout_address">
-                      Transparent Zcash Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                  <!-- Wallet Address -->
+                  <div class="mb-3">
+                    <template v-if="chainId == 'eth'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="eth_payout_address">
+                        ETH Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">This is where funds from contributors to this grant will be sent.</br>
-                      For Zcash grants, <span class="text-black-70 font-weight-bold">only t-addresses (transparent) are supported.</span>
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="zcash_payout_address" v-model="form.zcash_payout_address" name="zcash_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="t-" required/>
+                      <input id="eth_payout_address" v-model="form.eth_payout_address" name="eth_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.zcash_payout_address">
-                      [[errors.zcash_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.eth_payout_address">
+                        [[errors.eth_payout_address]]
+                      </div>
+                    </template>
 
-                  <template v-if="chainId == 'celo'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="celo_payout_address">
-                      CELO Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <template v-else-if="chainId == 'zcash'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="zcash_payout_address">
+                        Transparent Zcash Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">This is where funds from contributors to this grant will be sent.</br>
+                        For Zcash grants, <span class="text-black-70 font-weight-bold">only t-addresses (transparent) are supported.</span>
+                      </p>
 
-                    <input id="celo_payout_address" v-model="form.celo_payout_address" name="celo_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+                      <input id="zcash_payout_address" v-model="form.zcash_payout_address" name="zcash_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="t-" required/>
 
-                    <div class="text-danger" v-if="errors.celo_payout_address">
-                      [[errors.celo_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.zcash_payout_address">
+                        [[errors.zcash_payout_address]]
+                      </div>
+                    </template>
 
-                  <template v-if="chainId == 'zilliqa'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="zil_payout_address">
-                      Zilliqa Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <template v-if="chainId == 'celo'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="celo_payout_address">
+                        CELO Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="zil_payout_address" v-model="form.zil_payout_address" name="zil_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+                      <input id="celo_payout_address" v-model="form.celo_payout_address" name="celo_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.zil_payout_address">
-                      [[errors.zil_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.celo_payout_address">
+                        [[errors.celo_payout_address]]
+                      </div>
+                    </template>
 
-                  <template v-if="chainId == 'harmony'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="harmony_payout_address">
-                      Harmony Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <template v-if="chainId == 'zilliqa'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="zil_payout_address">
+                        Zilliqa Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="harmony_payout_address" v-model="form.harmony_payout_address" name="harmony_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+                      <input id="zil_payout_address" v-model="form.zil_payout_address" name="zil_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.harmony_payout_address">
-                      [[errors.harmony_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.zil_payout_address">
+                        [[errors.zil_payout_address]]
+                      </div>
+                    </template>
 
-                  <template v-if="chainId == 'binance'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="binance_payout_address">
-                      Binance Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <template v-if="chainId == 'harmony'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="harmony_payout_address">
+                        Harmony Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="binance_payout_address" v-model="form.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+                      <input id="harmony_payout_address" v-model="form.harmony_payout_address" name="harmony_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.binance_payout_address">
-                      [[errors.binance_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.harmony_payout_address">
+                        [[errors.harmony_payout_address]]
+                      </div>
+                    </template>
 
-                  <template v-if="chainId == 'polkadot'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="polkadot_payout_address">
-                      Polkadot Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <template v-if="chainId == 'binance'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="binance_payout_address">
+                        Binance Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="polkadot_payout_address" v-model="form.polkadot_payout_address" name="polkadot_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+                      <input id="binance_payout_address" v-model="form.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.polkadot_payout_address">
-                      [[errors.polkadot_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.binance_payout_address">
+                        [[errors.binance_payout_address]]
+                      </div>
+                    </template>
 
-                  <template v-if="chainId == 'kusama'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="kusama_payout_address">
-                      Kusama Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <template v-if="chainId == 'polkadot'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="polkadot_payout_address">
+                        Polkadot Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="kusama_payout_address" v-model="form.kusama_payout_address" name="kusama_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+                      <input id="polkadot_payout_address" v-model="form.polkadot_payout_address" name="polkadot_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.kusama_payout_address">
-                      [[errors.kusama_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.polkadot_payout_address">
+                        [[errors.polkadot_payout_address]]
+                      </div>
+                    </template>
 
-                  <template v-if="chainId == 'rsk'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="rsk_payout_address">
-                      RSK Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <template v-if="chainId == 'kusama'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="kusama_payout_address">
+                        Kusama Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="rsk_payout_address" v-model="form.rsk_payout_address" name="rsk_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+                      <input id="kusama_payout_address" v-model="form.kusama_payout_address" name="kusama_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.rsk_payout_address">
-                      [[errors.rsk_payout_address]]
-                    </div>
-                  </template>
+                      <div class="text-danger" v-if="errors.kusama_payout_address">
+                        [[errors.kusama_payout_address]]
+                      </div>
+                    </template>
+
+                    <template v-if="chainId == 'rsk'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="rsk_payout_address">
+                        RSK Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
+
+                      <input id="rsk_payout_address" v-model="form.rsk_payout_address" name="rsk_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+
+                      <div class="text-danger" v-if="errors.rsk_payout_address">
+                        [[errors.rsk_payout_address]]
+                      </div>
+                    </template>
 
 
-                  <template v-if="chainId == 'algorand'">
-                    <label class="font-subheader font-weight-light letter-spacing" for="algorand_payout_address">
-                      Algorand Recipient Wallet Address
-                    </label>
-                    <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">required</span>
+                    <template v-if="chainId == 'algorand'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="algorand_payout_address">
+                        Algorand Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">required</span>
 
-                    <p class="text-black-60 font-caption mb-2">
-                      This is where funds from contributors to this grant will be sent
-                    </p>
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
 
-                    <input id="algorand_payout_address" v-model="form.algorand_payout_address" name="algorand_payout_address" class="form__input form__input-lg" maxlength="58" placeholder="0x0" required/>
+                      <input id="algorand_payout_address" v-model="form.algorand_payout_address" name="algorand_payout_address" class="form__input form__input-lg" maxlength="58" placeholder="0x0" required/>
 
-                    <div class="text-danger" v-if="errors.algorand_payout_address">
-                      [[errors.algorand_payout_address]]
-                    </div>
-                  </template>
-                </div>
+                      <div class="text-danger" v-if="errors.algorand_payout_address">
+                        [[errors.algorand_payout_address]]
+                      </div>
+                    </template>
+                  </div>
+                </form-wrapper>
 
               </div>
 

@@ -9,6 +9,7 @@
       <button
         :aria-disabled="currentStep === 1"
         :disabled="currentStep === 1"
+        type="button"
         @click="$emit('update-navigation', -1)"
       >
         <i class="text-primary pr-2 fa fa-arrow-left"></i> Back
@@ -16,6 +17,7 @@
       <button
         :aria-disabled="currentStep >= totalSteps"
         :disabled="currentStep >= totalSteps"
+        type="button"
         @click="$emit('update-navigation', 1)"
       >
         Next <i class="text-primary pl-2 fa fa-arrow-right"></i>
