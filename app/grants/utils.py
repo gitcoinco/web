@@ -113,6 +113,7 @@ def get_clr_rounds_metadata():
         claim_end_date = None
         round_status = 'done'
         banner_round_name = ''
+        approval_start_date = timezone.now() + timezone.timedelta(days=10)
 
     return {
         'clr_round': clr_round,
