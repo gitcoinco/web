@@ -479,6 +479,9 @@ Vue.component('grant-details', {
     grant: {
       type: Object
     },
+    approvalStartDate: {
+      type: String
+    },
     fullview: {
       type: Boolean,
       'default': true

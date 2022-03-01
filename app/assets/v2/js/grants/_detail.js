@@ -21,6 +21,7 @@ Vue.mixin({
         fetch(url).then(function(res) {
           return res.json();
         }).then(function(json) {
+          vm.approvalStartDate = json.approval_start_date ? moment(json.approval_start_date).format('d/M/Y') : null;
           vm.grant = json.grants;
           vm.loading = false;
 
@@ -172,6 +173,7 @@ if (document.getElementById('gc-grant-detail')) {
         },
         isStaff: isStaff,
         grant: {},
+        approvalStartDate: null,
         tabSelected: 0,
         tab: null,
         backLink: {
