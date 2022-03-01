@@ -9,7 +9,7 @@ const contributeWithBinanceExtension = async(grant, vm) => {
   let account_balance;
 
   await binance_utils.getSelectedAccount().then((address) => {
-    from_address = address
+    from_address = address;
   }).catch(() => {
     _alert({ message: 'Please ensure your Binance Chain Extension wallet is installed and enabled'}, 'danger');
 
