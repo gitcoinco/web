@@ -79,7 +79,7 @@
                   </div>
                 </div>
 
-                <!-- Description -->
+                  <!-- Description -->
                 <div class="col-12 mb-4">
                   <label class="font-subheader font-weight-light letter-spacing" for="description">Description</label>
                   <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
@@ -449,7 +449,6 @@
                 </div>
               </div>
             </div>
-
           </form>
         </div>
       {% else %}
@@ -470,7 +469,6 @@
       {% include 'shared/current_profile.html' %}
       {% include 'grants/shared/shared_scripts.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 ignore_inject_web3=1 %}
-
       <script>
         document.grant_tags = {{grant_tags|safe}};
       </script>

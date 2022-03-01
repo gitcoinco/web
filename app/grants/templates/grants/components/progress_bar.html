@@ -1,0 +1,23 @@
+<progress-bar inline-template :steps="steps" >
+  <template>
+    <div v-if="steps.length" class="progress-wrapper">
+      <div class="d-flex">
+        <div
+          v-for="(signal, index) in steps"
+          :style="{ width: `${(100 / steps.length)}%` }"
+        >
+          <div
+            class="d-flex flex-column signal"
+            :class="{ 'active': signal.active }"
+          >
+            <div class="number">
+              [[ index + 1 ]]
+            </div>
+            <p>[[ signal.text ]]</p>
+          </div>
+        </div>
+      </div>
+      <hr class="progress-line" :style="{ width: `${lineWidth}%`, margin: `0 0 0 ${((100 - lineWidth) / 2)}%` }" />
+    </div>
+  </template>
+</progress-bar>

@@ -1,0 +1,32 @@
+.progress-wrapper {
+  position: relative;
+  .signal {
+    align-items: center;
+    color: $gc-violet-200;
+    p {
+      font-weight: 600;
+      margin-top: 16px;
+    }
+    .number {
+      background: $gc-violet-200;
+      color: white;
+      height: 40px;
+      width: 40px;
+      padding: 10px;
+    }
+  }
+  .active.signal {
+    color: $gc-violet-500;
+    .number {
+      background: $gc-violet-500;
+    }
+  }
+  .progress-line {
+    height: 2px;
+    background-color: $gc-violet-200;
+    border: none;
+    position: absolute;
+    top: 20px;
+    z-index: -1;
+  }
+}
