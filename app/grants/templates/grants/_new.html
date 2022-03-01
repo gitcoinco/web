@@ -148,7 +148,7 @@
 
                     <quill-editor
                       ref="quillEditorDesc"
-                      v-model="form.description_rich"
+                      @change="quilUpdated($event)"
                       :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
                       :options="editorOptionPrio"
                     ></quill-editor>
@@ -504,18 +504,10 @@
                     </template>
                   </div>
                 </form-wrapper>
-
-              </div>
-
-              <div class="container">
-                <div class="row">
-                  <div class="col-12 text-center">
-                    <button class="btn btn-primary btn-lg mb-3 px-5 btn-lg-padding" :disabled="submitted" type="submit" @click="submitForm($event)">Create Grant</button>
-                  </div>
-                  <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
-                    Please verify forms errors and try again
-                  </div>
+                <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
+                  Please verify forms errors and try again
                 </div>
+
               </div>
             </div>
           </form>
