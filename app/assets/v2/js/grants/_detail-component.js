@@ -1,5 +1,3 @@
-const { web } = require("webpack");
-
 const isStaff = document.contxt.is_staff || false;
 
 const userCode = typeof user_code !== 'undefined' ? user_code : undefined;
