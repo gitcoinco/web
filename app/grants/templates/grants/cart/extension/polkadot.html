@@ -1,9 +1,9 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="POLKADOT" v-if="grantsCountByTenant.POLKADOT !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" height="16"> Polkadot ([[grantsCountByTenant.POLKADOT || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" height="16"> <b>Polkadot ([[grantsCountByTenant.POLKADOT || 0]])</b></template>
 
   <p v-if="!isPolkadotExtInstalled" class="gc-alert-yellow p-3 font-smaller-2">
-    You’ll need a Polkadot wallet to contribute to Polkadot grants. We recommend
+    You'll need a Polkadot wallet to contribute to Polkadot grants. We recommend
     <a href="https://github.com/polkadot-js/extension" target="_blank">Polkadot{.js} extension.</a>
   </p>
 
@@ -115,7 +115,7 @@
                     <span class="font-weight-semibold">Balance:</span>
                     <span class="clr-match-box py-1 font-smaller-7 px-2">
                       ([[ address_info.balance ]] [[ address_info.token_symbol ]])
-                      <template v-if="!address_info.sufficent_balance">Insufficent Balance</template>
+                      <template v-if="!address_info.sufficent_balance">Insufficient Balance</template>
                     </span>
                   </p>
                 </button>

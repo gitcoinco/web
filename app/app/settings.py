@@ -317,7 +317,7 @@ if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
         integrations=[DjangoIntegration(), CeleryIntegration()],
-        traces_sample_rate=0.35
+        traces_sample_rate=0.25
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,

@@ -1,8 +1,8 @@
-<!-- Ethereum flow. used zksync and bulk checkout -->
+<!-- Polygon L2 flow. -->
 {% load static i18n %}
-<b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
+<b-tab title-link-class="nav-line" id="ETH_POLYGON" v-if="grantsCountByTenant.ETH_POLYGON !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"
-      style="padding-bottom: 2.5rem;"> <b>Ethereum ([[grantsCountByTenant.ETH || 0]])</b></template>
+      style="padding-bottom: 2.5rem;"> <b>Ethereum / Polygon ([[grantsCountByTenant.ETH || 0]])</b></template>
   <div class="row">
     <!-- Left Section -->
     <div class="col-12 col-lg-8 pr-0">
@@ -219,7 +219,7 @@
             :standard-checkout="standardCheckout" :is-zk-sync-down="isZkSyncDown" :is-polygon-down="isPolygonDown"
             :current-tokens="currentTokens" :donation-inputs="donationInputs" :max-cart-items="maxCartItems"
             :grants-by-tenant="grantsByTenant" :grants-under-minimal-contribution="grantsUnderMinimalContribution"
-            :network="network" :multisig-grants="multisigGrants" :tab-selected="tabSelected">
+            :network="network" :multisig-grants="multisigGrants">
           </eth-checkout-button>
         </div>
         <!-- Checkout recommendation -->

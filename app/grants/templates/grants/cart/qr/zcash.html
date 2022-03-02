@@ -1,6 +1,6 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="ZCASH" v-if="grantsCountByTenant.ZCASH !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> Zcash ([[grantsCountByTenant.ZCASH || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" height="16"> <b>Zcash ([[grantsCountByTenant.ZCASH || 0]])</b></template>
 
   <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
     <div class="flex-fill">

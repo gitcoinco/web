@@ -5,6 +5,27 @@
     <slot></slot>
     <div class="container grid grid-template-sidebar">
       <div class="grant-data">
+        <!-- Inactive Grant -->
+        <div v-if="!grant.active && !grant.verified">
+          <b-alert show dismissible variant="primary" class="border border-primary">
+            <div class="row">
+              <div class="col-auto col-md-10">
+                <i class="fas fa-info-circle mr-2"></i>
+                <span class="text-black">
+                  <b>Your grant is currently inactive.</b> We review grants more often around grants rounds. Check your review status 
+                  <a 
+                    href="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77" 
+                    rel="noopener noreferrer" 
+                    target="_blank"
+                    class="text-black"
+                  >
+                    <u>here.</u>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </b-alert>
+        </div>
         <div class="mt-3 border-bottom">
           <!-- Title -->
           <h2>[[grant.title]]</h2>
@@ -309,25 +330,6 @@
               [[grant.admin_message]]
             </b-card-text>
             <hr class="my-4">
-          </template>
-
-          <!-- Inactive Grant -->
-          <template v-if="!grant.active && !grant.verified">
-            <b-card-text>
-              <p class="font-weight-semibold mb-2">
-                <i class="fal fa-exclamation-circle mr-1"></i>
-                Your grant is inactive
-              </p>
-              Our team reviews each grant before it goes live on the website.
-              This process usually takes 1-2 days.
-            </b-card-text>
-
-            <a class="btn btn-block btn-primary" href="https://support.gitcoin.co/kb/article/79-why-isn-t-my-grant-active/" rel="noopener noreferrer">
-              Read Grant Approval Process
-            </a>
-
-            <hr class="my-4">
-
           </template>
 
           <!-- Verify Grant -->

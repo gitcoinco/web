@@ -1,15 +1,17 @@
-from django.conf import settings
-
 import csv
 import os
+
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.utils import timezone
+
 import marketing.stats as stats
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
-from django.contrib.auth.models import User
-from django.utils import timezone
 from marketing.mails import new_bounty_daily as new_bounty_daily_email
-from marketing.mails import weekly_roundup as weekly_roundup_email, send_mail
+from marketing.mails import send_mail
+from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
 from marketing.utils import allowed_to_send_email
 from retail.emails import render_export_data_email, render_export_data_email_failed

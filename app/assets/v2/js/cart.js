@@ -37,10 +37,10 @@ Vue.component('eth-checkout-button', {
   template: '#eth-checkout-template',
   props: [
     'maxCartItems', 'network', 'isZkSyncDown', 'isPolygonDown', 'onPolygonUpdate', 'onZkSyncUpdate', 'donationInputs',
-    'currentTokens', 'grantsByTenant', 'grantsUnderMinimalContribution', 'activeCheckout', 'standardCheckout'
+    'currentTokens', 'grantsByTenant', 'grantsUnderMinimalContribution', 'activeCheckout', 'standardCheckout', 'multisigGrants',
+    'tabSelected'
   ]
 });
-
 
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
@@ -79,6 +79,7 @@ Vue.component('grants-cart', {
       activeCheckout: undefined, // standard / polygon / zksync
       maxCartItems: 50, // Max supported items in cart at once
       UsdMinimalContribution: 1,
+      multisigGrants: [], // array of multisig grants in cart
       // Checkout, zkSync
       zkSyncSupportedTokens: [], // Used to inform user which tokens in their cart are on zkSync
       zkSyncEstimatedGasCost: undefined, // Used to tell user which checkout method is cheaper
@@ -452,7 +453,7 @@ Vue.component('grants-cart', {
     computeDonationInputs(destGitcoinAddress) {
       let isPolygon = destGitcoinAddress == gitcoinAddressPolygon;
 
-      if (!this.grantsByTenant || this.tabSelected !== 'ETH') {
+      if (!this.grantsByTenant || (this.tabSelected !== 'ETH' && this.tabSelected !== 'ETH_POLYGON')) {
         return undefined;
       }
 
@@ -529,6 +530,8 @@ Vue.component('grants-cart', {
       // check each of the grants for an address starting with 0x
       const grants = this.grantsByTenant.filter(grant => !!grant.grant_admin_address && grant.grant_admin_address.length === 42 && grant.grant_admin_address.startsWith('0x'));
 
+      // TODO: optimize the following code with multicall
+
       // check each of the grants in the cart to see if it points to a contract
       await Promise.all(grants.map((grant) => new Promise((resolve) => {
         // check for contract on Polygon
@@ -543,8 +546,8 @@ Vue.component('grants-cart', {
         });
       })));
 
-      // return any grants which cannot be contributed to
-      return unsafeGrants;
+      // return multisig grants
+      this.multisigGrants = unsafeGrants;
     },
     setChainScripts: function() {
       let vm = this;
@@ -614,6 +617,7 @@ Vue.component('grants-cart', {
       switch (vm.tabSelected) {
         default:
         case 'ETH':
+        case 'ETH_POLYGON':
           vm.chainId = '1';
           break;
         case 'ZCASH':

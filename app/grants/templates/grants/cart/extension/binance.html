@@ -1,6 +1,6 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="BINANCE" v-if="grantsCountByTenant.BINANCE !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" height="16"> Binance ([[grantsCountByTenant.BINANCE || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" height="16"> <b>Binance ([[grantsCountByTenant.BINANCE || 0]])</b></template>
 
   <p v-if="!isBinanceExtInstalled" class="gc-alert-yellow p-3 font-smaller-2">
     You’ll need a Binance wallet to contribute to Binance grants. We recommend
