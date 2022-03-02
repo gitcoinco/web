@@ -112,7 +112,11 @@ along with this program. If not, see
       Please be patient while we review your grant."
     {% endblocktrans %}
   </p>
-  <p style="margin-top:0.25rem;">{% trans "In the mean time, get ready to buidl and push forward open source!" %}</p>
+  <p style="margin-top:0.25rem;">
+    {% blocktrans with link="https://academy.binance.com/en/glossary/buidl" %}
+    In the mean time, get ready to <a href="{{ link }}">buidl</a> and push forward open source!
+    {% endblocktrans %}
+  </p>
   <hr style="margin-left: 0;">
   <img id="grant-logo"
     src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}"
@@ -126,7 +130,7 @@ along with this program. If not, see
     <br>
     <a class="button" style="background-color: #00D373; color: white; display: block;"
       href="https://gitcoin.co/blog/how-to-maximize-your-matching-with-gitcoin-grants/?{{ utm_tracking }}">
-      {% trans "Learn How to Maximize your Matching" %}
+      {% trans "Learn how to maximize your matching" %}
     </a>
   </div>
   <hr style="margin-left: 0; margin-top: 2em;">
