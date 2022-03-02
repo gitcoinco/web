@@ -375,7 +375,7 @@
                           [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
                         </p>
 
-                        <modal :id="`payoutModal${fulfillment.pk}`" :ref="`payout-modal${fulfillment.pk}`">
+                        <modal :id="`payoutModal${fulfillment.pk}`" :ref="`payout-modal${fulfillment.pk}`" v-if="isOwner">
                           <div slot="body">
 
                             <!-- PAYPAL FLOW -->
