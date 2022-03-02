@@ -22,7 +22,7 @@ const payWithXinfinExtension = async(fulfillment_id, to_address, vm, modal) => {
         const xdcBalance = await xdc3Client.eth.getBalance(web3.eth.defaultAccount);
 
         if (Number(xdcBalance) < Number(amount * 10 ** 18)) {
-          _alert({ message: `insufficient balance in address ${web3.eth.defaultAccount}` }, 'danger');
+          _alert({ message: `Insufficient balance in address ${web3.eth.defaultAccount}` }, 'danger');
           return;
         }
 

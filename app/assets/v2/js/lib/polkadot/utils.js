@@ -117,7 +117,7 @@ polkadot_utils.transferViaExtension = async(amount, to_address, from_address) =>
     const account_balance = await polkadot_utils.getAddressBalance(from_address);
 
     if (Number(account_balance) < amount) {
-      reject(`transferViaExtension: insufficient balance in address ${from_address}`);
+      reject(`transferViaExtension: Insufficient balance in address ${from_address}`);
     }
 
     const injector = await polkadot_extension_dapp.web3FromAddress(from_address);

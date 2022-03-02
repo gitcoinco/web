@@ -165,7 +165,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
       const account_balance = await binance_utils.getAddressBalance(from_address);
 
       if (Number(account_balance) < amount) {
-        reject(`transferViaExtension: insufficient balance in address ${from_address}`);
+        reject(`transferViaExtension: Insufficient balance in address ${from_address}`);
       }
 
       if (chainVerbose.addressType === 'eth') {
@@ -192,7 +192,7 @@ binance_utils.transferViaExtension = async (amount, to_address, from_address, to
       const account_balance = await binance_utils.getAddressTokenBalance(from_address, busd_contract_address);
 
       if (Number(account_balance) < amount ) {
-        reject(`transferViaExtension: insufficient balance in address ${from_address}`);
+        reject(`transferViaExtension: Insufficient balance in address ${from_address}`);
       }
 
       if (chainVerbose.addressType === 'eth') {
