@@ -1,9 +1,9 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="HARMONY" v-if="grantsCountByTenant.HARMONY !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" height="16"> Harmony ([[grantsCountByTenant.HARMONY || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" height="16"> <b>Harmony ([[grantsCountByTenant.HARMONY || 0]])</b></template>
 
   <p v-if="!isHarmonyExtInstalled" class="gc-alert-yellow p-3 font-smaller-2">
-    You’ll need a Harmony wallet to contribute to Harmony grants. We recommend
+    You'll need a Harmony wallet to contribute to Harmony grants. We recommend
     <a href="https://docs.harmony.one/home/network/wallets/browser-extensions-wallets/one-wallet" target="_blank">Harmony ONE Wallet.</a>
   </p>
 

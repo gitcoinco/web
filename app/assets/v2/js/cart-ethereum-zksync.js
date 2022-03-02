@@ -10,11 +10,12 @@ const toBigNumber = (value) => {
 Vue.component('grantsCartEthereumZksync', {
   props: {
     currentTokens: { type: Array, required: true }, // Array of available tokens for the selected web3 network
-    donationInputs: { type: Array, required: true }, // donationInputs computed property from cart.js
+    donationInputs: { type: Array, required: false }, // donationInputs computed property from cart.js
     grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     maxCartItems: { type: Number, required: true }, // max number of items in cart
     network: { type: String, required: true }, // web3 network to use
-    grantsUnderMinimalContribution: { type: Array, required: true } // Array of grants under min contribution
+    grantsUnderMinimalContribution: { type: Array, required: true }, // Array of grants under min contribution
+    activeCheckout: { type: String, required: false } // active checkout option
   },
 
   data: function() {
