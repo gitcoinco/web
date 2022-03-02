@@ -184,6 +184,7 @@
       <form id="exportEarnings" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="earnings">
+        <input type="hidden" name="export" value="export">
         <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Earnings" %} ({{profile.earnings.count}})</h5>
@@ -195,6 +196,7 @@
       <form id="exportSpending" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="sent">
+        <input type="hidden" name="export" value="export">
         <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Spending" %} ({{profile.sent_earnings.count}})</h5>

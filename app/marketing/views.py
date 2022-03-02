@@ -541,9 +541,7 @@ def account_settings(request):
             export_type = request.POST.get('export_type', False)
             user_pk = request.user.pk
             export_earnings_to_csv.delay(user_pk, export_type)
-            reponse = HttpResponse(status="200")
-
-            return response
+            return HttpResponse(status="200")
 
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
