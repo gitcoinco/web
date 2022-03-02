@@ -48,8 +48,8 @@ from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
-from marketing.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
 from marketing.tasks import export_earnings_to_csv
+from marketing.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
 from retail.emails import render_new_bounty
 from retail.helpers import get_ip
 from townsquare.models import Announcement

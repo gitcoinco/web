@@ -1,9 +1,9 @@
-import factory
-
 from django.contrib.contenttypes.models import ContentType
 
+import factory
 from dashboard.models import Earning
 from grants.tests.factories import GrantFactory
+
 
 class EarningFactory(factory.django.DjangoModelFactory):
     class Meta:
