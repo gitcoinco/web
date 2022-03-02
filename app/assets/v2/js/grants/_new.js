@@ -1,8 +1,24 @@
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 
+const step1Errors = [ 'grant_tags', 'has_external_funding' ];
+const step2Errors = [ 'title', 'description', 'reference_url', 'twitter_handle_1' ];
+const step3Errors = ['chainId'];
+const errorsByStep = [ step1Errors, step2Errors, step3Errors ];
+
 Vue.mixin({
+  data() {
+    return {
+      step: 1,
+      description: '',
+      richDescription: ''
+    };
+  },
   methods: {
+    quilUpdated({ quill, text }) {
+      this.description = text;
+      this.richDescription = JSON.stringify(quill.getContents());
+    },
     showQuickStart: function() {
 
       fetch('/grants/quickstart')
@@ -140,26 +156,39 @@ Vue.mixin({
       if (!vm.form.grant_tags.length > 0) {
         vm.$set(vm.errors, 'grant_tags', 'Please select one or more grant tag');
       }
-      if (vm.form.description_rich.length < 10) {
+      if (vm.richDescription.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
       }
       if (!vm.form.has_external_funding) {
         vm.$set(vm.errors, 'has_external_funding', 'Please select if grant has external funding');
       }
+      const errorKeys = Object.keys(vm.errors);
 
-      if (Object.keys(vm.errors).length) {
+
+      if (errorKeys.length) {
+        // find the the first step that has errors and redirect to it
+        const errorsByPage = errorsByStep.map((stepErrors, i) => {
+          // if current errors are found in this step return step
+          return errorKeys.filter((error) => stepErrors.includes(error)).length ? (i + 1) : 100;
+        });
+        // only redirect if on confirm step
+
+        if (vm.step === vm.currentSteps.length) {
+          // set step to the first step that has an error
+          vm.step = Math.min(...errorsByPage);
+        }
+
         return false; // there are errors the user must correct
       }
-      vm.submitted = false;
-      return true; // no errors, continue to create grant
+
+      return true;
     },
-    submitForm: async function(event) {
-      event.preventDefault();
+    submitForm: async function() {
       let vm = this;
       let form = vm.form;
 
       // Exit if form is not valid
-      if (!vm.checkForm(event))
+      if (!vm.checkForm())
         return;
 
       if (form.reference_url.startsWith('www.')) {
@@ -170,8 +199,8 @@ Vue.mixin({
         'title': form.title,
         'reference_url': form.reference_url,
         'logo': vm.logo,
-        'description': vm.$refs.quillEditorDesc.quill.getText(),
-        'description_rich': JSON.stringify(vm.$refs.quillEditorDesc.quill.getContents()),
+        'description': vm.description,
+        'description_rich': vm.richDescription,
         'team_members[]': form.team_members,
         'handle1': form.twitter_handle_1,
         'handle2': form.twitter_handle_2,
@@ -302,6 +331,13 @@ Vue.mixin({
       const extracted = matchResult ? `@${matchResult[1]}` : inputField.value;
 
       this.$set(this.form, inputField.id, extracted);
+    },
+    updateNav: function(direction) {
+      if (this.step === this.currentSteps.length) {
+        this.submitForm();
+        return;
+      }
+      this.step += direction;
     }
   },
   watch: {
@@ -454,6 +490,30 @@ if (document.getElementById('gc-new-grant')) {
           }
           return value;
         };
+      },
+      currentSteps() {
+        const steps = [
+          {
+            text: 'Eligibility & Discovery',
+            active: false
+          },
+          {
+            text: 'Grant Details',
+            active: false
+          },
+          {
+            text: 'Owner Information',
+            active: false
+          }
+          // commented out until preview step is created
+          // {
+          //   text: 'Review Grant',
+          //   active: false
+          // }
+        ];
+
+        steps[this.step - 1].active = true;
+        return steps;
       }
     },
     mounted() {

@@ -3,17 +3,17 @@
   .new-border {
     border: solid 1px $gc-grey-200;
     border-radius: 8px;
-    padding: 1.5em;
-    p {
-      margin: 0 0 12px 15px;
+    padding: 2.5rem;
+    > p {
+      margin: 0 0 12px 0;
     }
-    h4 {
-      padding: 0 0 24px 15px;
+    > h4 {
+      padding: 0 0 24px 0;
     }
   }
   
   .navigation {
-    margin-top: 15px;
+    margin-top: 30px;
     color: $gc-violet-400;
     button {
       margin: 0 5px;
