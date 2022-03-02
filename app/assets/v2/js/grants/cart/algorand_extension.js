@@ -433,7 +433,7 @@ const contributeWithAlgorandExtensionAlgoSigner = async(
         vm.updatePaymentStatus(grant.grant_id, 'failed');
         return;
       });
-  } catch (e) {
+  } catch (err) {
     contributeWithAlgorandExtensionCallback(err);
     return;
   }
