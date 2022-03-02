@@ -1,4 +1,3 @@
-
 const isStaff = document.contxt.is_staff || false;
 
 const userCode = typeof user_code !== 'undefined' ? user_code : undefined;
@@ -479,6 +478,9 @@ Vue.component('grant-details', {
     grant: {
       type: Object
     },
+    approvalStartDate: {
+      type: String
+    },
     fullview: {
       type: Boolean,
       'default': true
@@ -569,7 +571,7 @@ Vue.component('grant-details', {
     async grantIsContract() {
       const { admin_address } = this.grant;
 
-      if (admin_address) {
+      if (admin_address && web3 && web3.eth) {
         const code = await web3.eth.getCode(admin_address);
 
         return code !== '0x';

@@ -65,6 +65,8 @@ TRANSACTIONAL_EMAILS = [
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
         _('Only after you posted a bounty which is going to expire')
     ),
+    ('export_data', _('Export Data Emails'), _('Only when you have exported contribution or spending data')),
+    ('export_data_failed', _('Export Data Failed Emails'), _('Only when you have tried to export contribution or spending data but the process has failed.')),
     ('featured_funded_bounty', _('Featured Funded Bounty Emails'), _('Only when you\'ve paid for a bounty to be featured')),
     ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
     ('wall_post', _('Wall Post Emails'), _('Only when someone writes on your wall')),
@@ -90,6 +92,24 @@ def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
     return p.transform()
+
+
+def render_export_data_email(user_profile):
+    params = {'profile': user_profile}
+    response_html = premailer_transform(render_to_string("emails/export_data.html", params))
+    response_txt = render_to_string("emails/export_data.txt", params)
+    subject = _("Your Gitcoin CSV Download")
+
+    return response_html, response_txt, subject
+
+
+def render_export_data_email_failed(user_profile):
+    params = {'profile': user_profile}
+    response_html = premailer_transform(render_to_string("emails/export_data_failed.html", params))
+    response_txt = render_to_string("emails/export_data_failed.txt", params)
+    subject = _("Your CSV Download Has Failed")
+
+    return response_html, response_txt, subject
 
 
 def render_featured_funded_bounty(bounty):
@@ -1434,6 +1454,25 @@ def render_new_bounty_roundup(to_email):
 
 
 # DJANGO REQUESTS
+
+@staff_member_required
+def export_data(request):
+    from dashboard.models import Profile
+    
+    handle = request.GET.get('handle')
+    profile = Profile.objects.filter(handle=handle).first()
+    
+    response_html, _, _ = render_export_data_email(profile)
+    return HttpResponse(response_html)
+
+def export_data_failed(request):
+    from dashboard.models import Profile
+    
+    handle = request.GET.get('handle')
+    profile = Profile.objects.filter(handle=handle).first()
+    
+    response_html, _, _ = render_export_data_email_failed(profile)
+    return HttpResponse(response_html)
 
 
 @staff_member_required

@@ -59,6 +59,7 @@ Vue.component('grants-cart', {
         { text: 'Transaction Hash', value: 'txid' }
       ],
       selectedETHCartToken: 'DAI',
+      preferredAmount: 25,
       chainId: '',
       networkId: '',
       network: 'mainnet',
@@ -280,19 +281,19 @@ Vue.component('grants-cart', {
       const token = Object.keys(this['donationsTotal'])[0];
       let total = Number(this['donationsTotal'][token]);
       const match = Number(this.predictionTotal['total']);
-  
+
       if (match && token === 'DAI') {
         total += match;
-  
+
         return total.toFixed(2).toString() + ' ' + token;
       } else if (match) {
-        
+
         const match_str = this.predictionTotal['total_str'];
         const donation_total_str = total.toFixed(2).toString() + ' ' + token;
-        
+
         return donation_total_str + ' + ' + match_str;
       }
-  
+
       return total.toFixed(2).toString() + ' ' + token;
     },
 
@@ -601,7 +602,7 @@ Vue.component('grants-cart', {
       this.polygonEstimatedGasCost = data.polygonEstimatedGasCost;
     },
 
-    tabChange: async function(input, promptModal = true) {
+    tabChange: async function(input) {
       let vm = this;
 
       vm.tabSelected = vm.$refs.tabs.tabs[input].id;
@@ -614,13 +615,6 @@ Vue.component('grants-cart', {
         default:
         case 'ETH':
           vm.chainId = '1';
-          if (promptModal) {
-            if (!web3Modal) {
-              needWalletConnection();
-            } else if (!provider) {
-              await onConnect();
-            }
-          }
           break;
         case 'ZCASH':
           vm.chainId = '123123';
@@ -792,7 +786,7 @@ Vue.component('grants-cart', {
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
       update_cart_title();
-      this.tabChange(this.tabIndex, promptModal = false);
+      this.tabChange(this.tabIndex);
     },
 
     updatePaymentStatus(grant_id, step = 'waiting', txnid, additionalAttributes) {
@@ -941,13 +935,11 @@ Vue.component('grants-cart', {
       return this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
     },
 
-    async applyAmountToAllGrants(grant) {
-      const preferredAmount = grant.grant_donation_amount;
-      const preferredTokenName = grant.grant_donation_currency;
-      const fallbackAmount = await this.valueToEth(preferredAmount, preferredTokenName);
-      const tenant = grant.tenants[0];
+    async applyPreferredAmountAndTokenToAllGrants(tenant) {
+      const amount = parseFloat(this.preferredAmount);
+      const fallbackAmount = await this.valueToEth(amount, this.selectedETHCartToken);
 
-      this.grantData.forEach((grant, index) => {
+      this.grantData.forEach((_, index) => {
         // Assume all tokens available on this chain are accepted by this grant. This gives us
         // an array of token symbols to compare against
         const acceptedCurrencies = this.filterByChainId.map((token) => token.symbol);
@@ -957,14 +949,14 @@ Vue.component('grants-cart', {
           return;
 
         // Update the values
-        if (!acceptedCurrencies.includes(preferredTokenName)) {
+        if (!acceptedCurrencies.includes(this.selectedETHCartToken)) {
           // If the selected token is not available, fallback to ETH
           this.grantData[index].grant_donation_amount = fallbackAmount;
           this.grantData[index].grant_donation_currency = 'ETH';
         } else {
           // Otherwise use the user selected option
-          this.grantData[index].grant_donation_amount = preferredAmount;
-          this.grantData[index].grant_donation_currency = preferredTokenName;
+          this.grantData[index].grant_donation_amount = amount;
+          this.grantData[index].grant_donation_currency = this.selectedETHCartToken;
         }
       });
     },
@@ -973,7 +965,7 @@ Vue.component('grants-cart', {
     async initializeStandardCheckout() {
       // Prompt web3 login if not connected
       if (!provider) {
-        return await onConnect();
+        await await onConnect();
       }
 
       let networkId = String(Number(web3.eth.currentProvider.chainId));
@@ -1173,7 +1165,7 @@ Vue.component('grants-cart', {
         this.activeCheckout = 'standard';
         this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
-        
+
         // Token approvals and balance checks (just checks data, does not execute approavals)
         const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
@@ -1231,16 +1223,16 @@ Vue.component('grants-cart', {
 
       return donationInputsFiltered;
     },
-    
+
     async sendDonationTx(userAddress) {
       // Get our donation inputs
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputsFiltered = this.getDonationInputs();
-      
+
       // Send transaction
       this.showConfirmationModal = true;
       indicateMetamaskPopup();
-      
+
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimitL1, value: this.donationInputsNativeAmount })

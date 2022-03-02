@@ -57,6 +57,7 @@ from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
+from .views import redirect_view
 
 urlpatterns = [
 
@@ -697,6 +698,8 @@ urlpatterns = [
         retail.emails.tribe_hackathon_prizes,
         name='tribe_hackathon_prizes'
     ),
+    path('_administration/email/export_data', retail.emails.export_data, name='export_data'),
+    path('_administration/email/export_data_failed', retail.emails.export_data_failed, name='export_data_failed'),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
@@ -770,9 +773,9 @@ urlpatterns = [
     url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
     # quadratic lands
-    path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
-    re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
-    re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
+    path('quadraticlands/', redirect_view),
+    re_path(r'^quadraticlands/?', redirect_view),
+    re_path(r'^quadraticland/?', redirect_view),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),

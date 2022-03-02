@@ -1393,6 +1393,10 @@ def grant_details_api(request, grant_id):
         'status': 200,
         'grants': grant_json
     }
+
+    if not grant.twitter_verified and not grant.active:
+        response['approval_start_date'] = clr_rounds_metadata['approval_start_date']
+
     return JsonResponse(response)
 
 

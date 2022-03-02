@@ -59,9 +59,9 @@
           size="lg"
           class="modal-dialog" header-border-variant="transparent"
           center hide-footer no-close-on-backdrop no-close-on-esc
-          hide-header-close
+          hide-header
         >
-          <div class="mx-5">
+          <div class="m-5">
             <h1 class="font-bigger-4 text-highlight-gc-blue">
               Congratulations on your grant creation!
             </h1>
@@ -87,11 +87,11 @@
             </p>
             <p class="font-smaller-1 mb-5">
               For more information, visit
-              <a hred="https://support.gitcoin.co/kb/article/79-why-isn-t-my-grant-active/">Grants Round FAQs</a> or
+              <a href="https://support.gitcoin.co/kb/section/3/">Grants Round FAQs</a> or
               <a href="https://discord.com/invite/gitcoin">Gitcoin Discord</a>
             </p>
 
-            <div class="text-center py-5">
+            <div class="text-center">
               <b-button
                 variant="primary"
                 size="md"
@@ -134,7 +134,7 @@
           </template>
         </b-skeleton-wrapper>
         <div v-if="grant">
-          <grant-details :grant="grant" v-if="grant?.id">
+          <grant-details :grant="grant" :approval-start-date="approvalStartDate" v-if="grant?.id">
             <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
             <div class="container mb-3">
               <a :href="backLink.url" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>

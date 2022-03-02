@@ -194,6 +194,11 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
+      // Prompt web3 login if not connected
+      if (!provider) {
+        await onConnect();
+      }
+
       try {
         // Ensure wallet is connected
         if (!web3) {
@@ -346,7 +351,12 @@ Vue.component('grantsCartEthereumZksync', {
     },
 
     // Checkout With zkSync
-    checkoutWithzkSync() {
+    async checkoutWithzkSync() {
+      // Prompt web3 login if not connected
+      if (!provider) {
+        await onConnect();
+      }
+
       const selectedETHCartToken = appCart.$refs.cart.selectedETHCartToken;
       const unsuportedCheckoutZkSync = !appCart.$refs.cart.zkSyncSupportedTokens.includes(selectedETHCartToken);
 

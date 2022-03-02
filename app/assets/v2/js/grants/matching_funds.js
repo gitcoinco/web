@@ -86,6 +86,7 @@ Vue.mixin({
         JSON.parse(document.contxt.match_payouts_abi),
         contractAddress
       );
+      // After payouts are claimed, this will return 0 which updates value of claim_tx
       const amount = await payout_contract.methods.payouts(recipientAddress).call();
 
       if (amount == 0) {
@@ -255,7 +256,9 @@ Vue.mixin({
       return grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length;
     },
     canClaimMatch(grant) {
-      return grant.clr_matches.length && grant.clr_matches.filter(a => !a.claim_tx).length;
+      return grant.clr_matches.length && grant.clr_matches.filter(
+        a => a.claim_tx === null &&
+        a.grant_payout).length;
     },
     filterMatchingPayout(matches) {
       return matches.filter(match => match.grant_payout);

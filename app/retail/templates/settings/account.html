@@ -65,6 +65,84 @@
   .profile-header__sync img.loading {
     display: none;
   }
+
+  .modal-dialog {
+    max-width: 750px;
+    min-height: 336px;
+  }
+
+  .modal-content {
+    font-family: 'Libre Franklin', sans-serif;
+
+    max-width: 750px;
+    min-height: 336px;
+  }
+
+  .placeholder-image {
+    padding-left: 40px;
+  }
+
+  .modal-text-container {
+    padding-left: 50px;
+    padding-right: 40px;
+  }
+
+  #exportModalLabel {
+    padding-bottom: 10px;
+  }
+
+  #exportModalBody {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  #closeModalButton {
+    width: 145px;
+    height: 45px;
+    margin: 10px;
+    font-size: 16px;
+  }
+
+  .modal {
+    text-align: center;
+  } 
+
+  @media only screen and (min-width: 768px) { 
+    .modal:before {
+      display: inline-block;
+      vertical-align: middle;
+      content: " ";
+      height: 100%;
+    }
+  }
+
+  .modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  @media only screen and (max-width: 767px) {
+    .placeholder-image {
+      margin-top: 32px;
+      margin-bottom: 48px;
+      padding-left: 15px;
+      padding-right: 15px;
+      text-align: center;
+    }
+
+    #closeModalButton {
+      margin-bottom: 48px;
+      min-width: 100%;
+    }
+
+    .modal-text-container {
+      padding-left: 0;
+      padding-right: 0;
+      margin-left: 18px;
+      margin-right: 18px; c
+    }
+  } 
 </style>
 <form id="settings" method="POST" action="{% url 'account_settings' %}" class="col-md-8 m-auto">
 
@@ -103,10 +181,10 @@
   </div>
   <div class="form-group mb-4">
     <div class="major_button_container">
-      <form id="export" method="POST" action="{% url 'account_settings' %}">
+      <form id="exportEarnings" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="earnings">
-        <input type="submit" class="btn btn-primary" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Earnings" %} ({{profile.earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your earnings for @" %}{{ github_handle }}</p>
@@ -114,10 +192,10 @@
   </div>
   <div class="form-group mb-4">
     <div class="major_button_container">
-      <form id="export" method="POST" action="{% url 'account_settings' %}">
+      <form id="exportSpending" method="POST" action="{% url 'account_settings' %}">
         {% csrf_token %}
         <input type="hidden" name="export_type" value="sent">
-        <input type="submit" class="btn btn-primary" name="export" value="Export">
+        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Spending" %} ({{profile.sent_earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your spending for @" %}{{ github_handle }}</p>
@@ -167,6 +245,37 @@
       </form>
       <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
       <p class="font-body">{% trans "This action deletes all of your data" %}</p>
+    </div>
+  </div>
+</div>
+<div class="modal" id="exportNotification" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body d-flex align-items-center">
+        <div class="container-fluid">
+          <div class="row text-left">
+            <div class="placeholder-image col-md-4">
+              <img src="{% static 'v2/images/placeholder_modal.png' %}" width="220" height="240">
+            </div>
+            <div class="col-md-8 m-auto">
+              <div class="modal-text-container">
+                <div>
+                  <h3 class="modal-title" id="exportModalLabel">{% trans "Download in progress" %}</h3>
+                </div>
+                <div class="text-wrap">
+                  <p class="font-body" id="exportModalBody">
+                   {% blocktrans %} It may take a minute to download the export. We'll send it to your email when it's ready.
+                    You can close the window now. {% endblocktrans %}
+                  </p>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-primary ml-auto" id="closeModalButton" data-dismiss="modal">{% trans "Close" %}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -229,7 +338,22 @@
         }
       });
     });
+   
+  
   });
+  $("#exportEarnings, #exportSpending").on('submit', function(e) {
+      e.preventDefault();
+      const data = $(this).serialize();
+    
+    $.ajax({
+      url:  '/settings/account',
+      type:  'POST',
+      data,
+    })
+  });
+  
+  
+  
 </script>
 <script src="{% static "v2/js/3box-sync.js" %}"></script>
 <script src="{% static "v2/js/pages/profile-backup.js" %}"></script>

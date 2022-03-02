@@ -1,5 +1,5 @@
 bs4
-ccxt
+ccxt==1.72.98
 cryptocompare==0.6
 cryptography==2.3
 celery==4.4.0
