@@ -37,7 +37,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </template>
 
   <!-- Main content -->
-  <template v-if="multisigGrants.length < grantsByTenant.length" v-slot:default="{ hide }">
+  <template v-if="multisigGrants.length > 0 && multisigGrants.length < grantsByTenant.length" v-slot:default="{ hide }">
     <div class="px-4 text-left">
       <h3 class="mb-3 text-black">Only some of these Grants can receive funds on Polygon</h3>
       <p class="text-grey-400 font-body">
