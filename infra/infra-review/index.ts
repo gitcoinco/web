@@ -175,7 +175,7 @@ const secgrp_redis = new aws.ec2.SecurityGroup("secgrp_redis", {
 
 const redis = new aws.elasticache.Cluster("gitcoin-cache", {
     engine: "redis",
-    engineVersion: "3.2.10",
+    engineVersion: "4.0.10",
     nodeType: "cache.t2.micro",
     numCacheNodes: 1,
     port: 6379,
@@ -515,7 +515,7 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
     containers: {
         web: {
             image: dockerGtcWebImage,
-            command: ["python3", "manage.py", "migrate"],
+            command: ["/bin/review-env-initial-data.bash"],
             memory: 4096,
             cpu: 2000,
             portMappings: [],
