@@ -30,6 +30,19 @@ Vue.mixin({
       const response = await fetchData(grantCartPayloadURL, 'GET');
 
       vm.$set(vm.grant, 'isInCart', true);
+      const { grant } = response;
+
+      ga('require', 'ec');
+
+      ga('ec:addProduct', {
+        'id': vm.grant.id,
+        'name': vm.grant.title,
+        'category': vm.grant.active_round_names.toString(),
+        'brand': vm.grant.admin_profile?.handle
+      });
+
+      ga('ec:setAction', 'add');
+      ga('send', 'event', 'UX', 'click', 'add to cart');
       CartData.addToCart(response.grant);
     },
     removeFromCart: function() {

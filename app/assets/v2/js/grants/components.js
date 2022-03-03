@@ -79,6 +79,17 @@ Vue.component('grant-card', {
       return true;
     },
     addToCart: async function(grant) {
+      ga('require', 'ec');
+
+      ga('ec:addProduct', {
+        'id': grant.id,
+        'name': grant.title,
+        'category': grant.active_round_names.toString(),
+        'brand': grant.admin_profile?.handle
+      });
+
+      ga('ec:setAction', 'add');
+      ga('send', 'event', 'UX', 'click', 'add to cart');
       let vm = this;
       const grantCartPayloadURL = `/grants/v1/api/${grant.id}/cart_payload`;
       const response = await fetchData(grantCartPayloadURL, 'GET');
