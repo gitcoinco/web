@@ -36,12 +36,12 @@
             <div class="col-12 col-md-auto">
 
               <!-- Grant Type -->
-              <a :href="`/grants/explorer/?grant_types=${item.fields.name}`"
+              <!-- <a :href="`/grants/explorer/?grant_types=${item.fields.name}`"
                 v-for="item in grant.grant_type"
                 v-b-tooltip.hover.bottom title="Discovery Tag"
                 class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2 text-capitalize">
                 [[item.fields.label]]
-              </a>
+              </a> -->
 
               <!-- Grant Tags -->
               <template v-for="item in grant.grant_tags">
