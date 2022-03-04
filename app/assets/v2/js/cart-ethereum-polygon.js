@@ -216,6 +216,26 @@ Vue.component('grantsCartEthereumPolygon', {
         return grant.tenants;
       });
     },
+    sendCheckoutAnalytics(grantData) {
+      ga('create', 'UA-102304388-1');
+      ga('require', 'ec');
+
+      grantData.forEach(grant => {
+        const checkoutValue = {
+          'id': grant.grant.grant_id,
+          'price': grant.amount,
+          'name': grant.grant.grant_title
+        };
+
+        ga('ec:addProduct', checkoutValue);
+      });
+      
+      ga('ec:setAction', 'checkout', {
+        'step': 2,
+        'option': 'polygon'
+      });
+      ga('send', 'pageview');
+    },
 
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
@@ -225,6 +245,8 @@ Vue.component('grantsCartEthereumPolygon', {
       }
 
       const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
+
+      this.sendCheckoutAnalytics(this.donationInputs);
 
       try {
         const selectedETHCartToken = appCart.$refs.cart.selectedETHCartToken;

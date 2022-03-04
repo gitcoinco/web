@@ -449,6 +449,27 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    sendCheckoutAnalytics(grantData, step, network) {
+      ga('create', 'UA-102304388-1');
+      ga('require', 'ec');
+
+      grantData.forEach(grant => {
+        const checkoutValue = {
+          'id': grant.grant_id,
+          'price': grant.grant_donation_amount,
+          'name': grant.grant_title,
+          'checkout_option': network
+        };
+
+        ga('ec:addProduct', checkoutValue);
+      });
+      
+      ga('ec:setAction', 'checkout', {
+        step,
+        'option': network
+      });
+      ga('send', 'pageview');
+    },
     // Array of objects containing all donations and associated data
     computeDonationInputs(destGitcoinAddress) {
       let isPolygon = destGitcoinAddress == gitcoinAddressPolygon;
@@ -992,7 +1013,7 @@ Vue.component('grants-cart', {
           }
         }
       }
-
+      this.sendCheckoutAnalytics(grantData, 2, network);
       if (typeof ga !== 'undefined') {
         ga('send', 'event', 'Grant Checkout', 'click', 'Person');
       }
@@ -1689,6 +1710,8 @@ Vue.component('grants-cart', {
 
     // Read array of grants in cart from localStorage
     let grantData = CartData.loadCart();
+
+    this.sendCheckoutAnalytics(grantData, 1);
 
     this.selectedETHCartToken = grantData.length > 0 && grantData[0].grant_donation_currency;
 
