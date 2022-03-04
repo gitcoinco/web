@@ -105,9 +105,14 @@
 
   .modal {
     text-align: center;
-  } 
+  }
 
-  @media only screen and (min-width: 768px) { 
+  .modal.delete_account {
+    height: auto;
+    max-width: 815px;
+  }
+
+  @media only screen and (min-width: 768px) {
     .modal:before {
       display: inline-block;
       vertical-align: middle;
@@ -123,6 +128,10 @@
   }
 
   @media only screen and (max-width: 767px) {
+    .jquery-modal.blocker:before {
+      vertical-align: top;
+    }
+
     .placeholder-image {
       margin-top: 32px;
       margin-bottom: 48px;
@@ -140,9 +149,9 @@
       padding-left: 0;
       padding-right: 0;
       margin-left: 18px;
-      margin-right: 18px; c
+      margin-right: 18px;
     }
-  } 
+  }
 </style>
 <form id="settings" method="POST" action="{% url 'account_settings' %}" class="col-md-8 m-auto">
 
@@ -185,7 +194,7 @@
         {% csrf_token %}
         <input type="hidden" name="export_type" value="earnings">
         <input type="hidden" name="export" value="export">
-        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
+        <input type="submit" class="btn btn-primary" id="exportEarningsButton" name="export" value="Export" data-toggle="modal" data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Earnings" %} ({{profile.earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your earnings for @" %}{{ github_handle }}</p>
@@ -197,7 +206,7 @@
         {% csrf_token %}
         <input type="hidden" name="export_type" value="sent">
         <input type="hidden" name="export" value="export">
-        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export" data-toggle="modal", data-target="#exportNotification">
+        <input type="submit" class="btn btn-primary" id="exportSpendingButton" name="export" value="Export" data-toggle="modal" data-target="#exportNotification">
       </form>
       <h5 class="font-subheader">{% trans "Export Spending" %} ({{profile.sent_earnings.count}})</h5>
       <p class="font-body">{% trans "Export all of your spending for @" %}{{ github_handle }}</p>
@@ -309,13 +318,13 @@
             '</div>' +
             '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
               '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="btn btn-primary-o mr-3">Cancel</a>' +
-              '<button class="modal-delete btn btn-warning">Delete</button>' +
+              '<button class="modal-delete btn btn-danger">Delete</button>' +
             '</div>' +
           '</div>' +
         '</div>'
       );
       var modal = $(content).appendTo('#delete').modal({
-        modalClass: 'modal delete_account'
+        modalClass: 'modal show delete_account pt-0'
       });
 
       $(".modal-delete").on('click', function(e) {
@@ -340,22 +349,22 @@
         }
       });
     });
-   
-  
+
+
   });
   $("#exportEarnings, #exportSpending").on('submit', function(e) {
       e.preventDefault();
       const data = $(this).serialize();
-    
+
     $.ajax({
       url:  '/settings/account',
       type:  'POST',
       data,
     })
   });
-  
-  
-  
+
+
+
 </script>
 <script src="{% static "v2/js/3box-sync.js" %}"></script>
 <script src="{% static "v2/js/pages/profile-backup.js" %}"></script>
