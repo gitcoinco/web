@@ -3916,7 +3916,8 @@ class GrantSubmissionView(View):
         for g_tag in GrantTag.objects.all().cache().order_by(Lower("name")):
             _grant_tag = {
                 'id': g_tag.pk,
-                'name': g_tag.name
+                'name': g_tag.name,
+                'is_eligibility_tag': g_tag.is_eligibility_tag
             }
             grant_tags.append(_grant_tag)
 
