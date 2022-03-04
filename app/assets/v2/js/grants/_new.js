@@ -464,6 +464,23 @@ if (document.getElementById('gc-new-grant')) {
       };
     },
     computed: {
+      grantTagOptions() {
+        const all_tags = this.grant_tags.sort((a, b) => b.is_eligibility_tag - a.is_eligibility_tag);
+        const first_discovery = (tag) => tag.is_eligibility_tag === 0;
+
+        all_tags.unshift({
+          id: 0,
+          name: 'eligibility tags'.toUpperCase(),
+          is_eligibility_tag: 'label'
+        });
+        
+        all_tags.splice(all_tags.findIndex(first_discovery), 0, {
+          id: all_tags.length + 1,
+          name: 'discovery tags'.toUpperCase(),
+          is_eligibility_tag: 'label'
+        });
+        return all_tags;
+      },
       queryParams() {
         return new URLSearchParams(window.location.search);
       },
