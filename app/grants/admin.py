@@ -469,7 +469,7 @@ class GrantTypeAdmin(admin.ModelAdmin):
 
 
 class GrantTagAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name']
+    list_display = ['pk', 'name', 'is_eligibility_tag']
     readonly_fields = ['pk']
 
 class GrantCLRAdmin(admin.ModelAdmin):
