@@ -74,7 +74,7 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
-    GrantCollection, GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription,
+    GrantCollection, GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription, GrantPayout,
 )
 from grants.serializers import GrantSerializer
 from grants.tasks import (
@@ -3974,3 +3974,43 @@ def clr_matches(request):
         ).update(claim_tx=claim_tx)
 
         return Response({'message': 'Claim transaction successfully ingested!'}, status=200)
+
+
+@csrf_exempt
+@require_POST
+def ingest_merkle_claim_to_clr_match(request):
+
+    _token = request.headers['token']
+
+    data = StaticJsonEnv.objects.get(key='MERKLE_CLAIM_UPLOAD').data
+
+    if not _token or not data['token']:
+        return HttpResponseBadRequest("message: missing token")
+
+    if _token != data['token']:
+        return HttpResponseBadRequest("message: invalid token")
+
+    _grant_payout_pk = None
+
+    try:
+        body = json.loads(request.body)
+        _grant_payout_pk = body["grant_payout_pk"]
+        _claims = body["claims"]
+
+        if not _grant_payout_pk:
+            return HttpResponseBadRequest("message: grant_payout_pk field is required")
+
+        if not _claims:
+            return HttpResponseBadRequest("message: claims field is required")
+    except Exception:
+        return HttpResponseBadRequest("message: missing mandatory parameters")
+
+
+    clr_matches = CLRMatch.objects.filter(grant_payout=_grant_payout_pk)
+    if clr_matches.count() == 0:
+        return HttpResponseBadRequest("message: incorrect round field")
+
+    for claim in _claims:
+        clr_matches.filter(grant__admin_address=claim['claimee']).update(merkle_claim=claim)
+
+    return HttpResponse('message: Merkle Claim successfully ingested into CLRMatch!')

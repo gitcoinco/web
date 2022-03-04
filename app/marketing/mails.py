@@ -1103,61 +1103,6 @@ Gitcoin Grant Team
         translation.activate(cur_language)
 
 
-def grant_match_distribution_test_txn(match):
-    raise Exception("no longer supported since we moved to non custodial payouts/email copy needs updated")
-    to_email = match.grant.admin_profile.email
-    cc_emails = [profile.email for profile in match.grant.team_members.all()]
-    from_email = 'kyc@gitcoin.co'
-    cur_language = translation.get_language()
-    rounded_amount = round(match.amount, 2)
-    token_name = f"CLR{match.round_number}"
-    coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 25% off with coupon code {settings.GRANTS_COUPON_25_OFF}"
-    if match.amount > 500:
-        coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 50% off with coupon code {settings.GRANTS_COUPON_50_OFF}"
-    if match.amount > 3000:
-        coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 100% off with coupon code {settings.GRANTS_COUPON_100_OFF}"
-    # NOTE: IF YOURE A CLEVER BISCUT AND FOUND THIS BY READING OUR CODEBASE,
-    # THEN GOOD FOR YOU!  HERE IS A 100% OFF COUPON CODE U CAN USE (LIMIT OF 1 FOR THE FIRST PERSON
-    # TO FIND THIS EASTER EGG) : GRANTS-ROUND-5-HAXXOR
-    try:
-        setup_lang(to_email)
-        subject = f"💰 Grants Round {match.round_number} Match Distribution: {rounded_amount} DAI (Email 1 of 2)"
-        body = f"""
-<pre>
-Hello @{match.grant.admin_profile.handle},
-
-This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
-
-We have sent a test transaction of {rounded_amount} {token_name} tokens to the address on file at {match.grant.admin_address}.  THESE TOKENS ARE NOT WORTH *ANYTHING*, AND THIS TEST TRANSACTION WAS MADE AS A REMINDER TO MAKE SURE YOU HAVE ACCESS TO YOUR GRANTS WALLET.
-
-The txid of this test transaction is {match.test_payout_tx}.
-
-We will be issuing a final payout transaction in DAI within 24-72 hours of this email.  No action is needed on your part, we will issue the final payout transaction automatically.
-
-If you're looking to kill time before your payout is administered....
-1. Please take a moment to comment on this thread to let us know what you thought of this grants round [https://github.com/gitcoinco/web/issues/8000]. We'd love to hear how the round went for you.
-2. {coupon}
-
-Thanks,
-Kevin, Scott, Vivek & the Gitcoin Community
-"Our mission is to Grow Open Source & provide economic opportunities to software developers" https://gitcoin.co/mission
-</pre>
-
-        """
-        send_mail(
-            from_email,
-            to_email,
-            subject,
-            '',
-            body,
-            from_name=_("Gitcoin Grants"),
-            cc_emails=cc_emails,
-            categories=['admin', func_name()],
-        )
-    finally:
-        translation.activate(cur_language)
-
-
 def grant_match_distribution_final_txn(match, needs_claimed=False):
     to_email = match.grant.admin_profile.email
     cc_emails = [profile.email for profile in match.grant.team_members.all()]

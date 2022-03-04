@@ -311,7 +311,14 @@ AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 # Sentry
 SENTRY_DSN = env.str('SENTRY_DSN', default='')
 SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default=SENTRY_DSN)
-RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+
+# In case we are running / deploying from within a git repo, we want to use the git repo SHA
+# In case we are not in a github repo, we rely on an environment variable
+try:
+    RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if ENV == 'prod' else ''
+except:
+    RELEASE = env.str('GITHUB_SHA', default=' - dev build - ')
+
 RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='6.8.0')
 if SENTRY_DSN:
     sentry_sdk.init(
@@ -918,6 +925,12 @@ with open(os.path.join(root, 'grants/match_payouts_abi.json'), 'r') as f:
     MATCH_PAYOUTS_ABI = f.read()
 MATCH_PAYOUTS_ADDRESS = '0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B'
 
+
+# Merkle Payouts contract
+with open(os.path.join(root, 'grants/abi/merkle_payout.json'), 'r') as f:
+    MERKLE_PAYOUTS_ABI = f.read()
+
+
 # BulkCheckout contract
 # BulkCheckout parameters
 BULK_CHECKOUT_ADDRESS = "0x7d655c57f71464B6f83811C55D84009Cd9f5221C" # same address on mainnet and rinkeby
@@ -930,3 +943,8 @@ CELERY_NODE = env.bool('CELERY_NODE', default=False)
 # GTC Token Distribution
 GTC_DIST_API_URL = env('GTC_DIST_API_URL', default='http://localhost:8000/not-valid-url')
 GTC_DIST_KEY = env('GTC_DIST_KEY', default='')
+
+# BUNDLE settings
+# Generating a checksun is optional. When egenerating the static files for a container build
+# we do not want to add a checksum
+BUNDLE_USE_CHECKSUM = env('BUNDLE_USE_CHECKSUM', default=True)
