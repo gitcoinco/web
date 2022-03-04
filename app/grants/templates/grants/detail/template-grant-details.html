@@ -1,7 +1,7 @@
 {% load static humanize i18n grants_extra %}
 <script type="text/x-template" id="template-grant-details">
   <div>
-  
+
     <slot></slot>
     <div class="container grid grid-template-sidebar">
       <div class="grant-data">
@@ -12,10 +12,10 @@
               <div class="col-auto col-md-10">
                 <i class="fas fa-info-circle mr-2"></i>
                 <span class="text-black">
-                  <b>Your grant is currently inactive.</b> We review grants more often around grants rounds. Check your review status 
-                  <a 
-                    href="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77" 
-                    rel="noopener noreferrer" 
+                  <b>Your grant is currently inactive.</b> We review grants more often around grants rounds. Check your review status
+                  <a
+                    href="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77"
+                    rel="noopener noreferrer"
                     target="_blank"
                     class="text-black"
                   >
@@ -34,19 +34,31 @@
           <div class="row my-4">
 
             <div class="col-12 col-md-auto">
+
               <!-- Grant Type -->
               <a :href="`/grants/explorer/?grant_types=${item.fields.name}`"
                 v-for="item in grant.grant_type"
+                v-b-tooltip.hover.bottom title="Discovery Tag"
                 class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2 text-capitalize">
                 [[item.fields.label]]
               </a>
 
               <!-- Grant Tags -->
-              <a :href="`/grants/explorer/?grant_tags=${item.fields.name}`"
-                v-for="item in grant.grant_tags"
-                class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2">
-                [[item.fields.name]]
-              </a>
+              <template v-for="item in grant.grant_tags">
+                <a v-if="item.fields.is_eligibility_tag"
+                  v-b-tooltip.hover.bottom title="Eligibility Tag"
+                  class="badge badge-pill bg-tags text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
+                >
+                  [[item.fields.name]]
+                </a>
+
+                <a v-else
+                  v-b-tooltip.hover.bottom title="Discovery Tag"
+                  class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
+                >
+                  [[item.fields.name]]
+                </a>
+              </template>
 
             </div>
 
@@ -791,7 +803,7 @@
           <h5 class="mt-5 mb-4 font-weight-normal">Funding Details</h5>
 
           <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select a blockchain</label>
-          
+
           <v-select id="grant-details-edit-funding-details" class="grant-edit-disable-select" placeholder="Select a blockchain to receive funding" :options="grantChains" label="label" v-model="chainId" :reduce="state => state.name" disabled>
             <template v-slot:option="option">
               <span class="font-weight-semibold">[[ option.label ]]</span>
@@ -800,7 +812,7 @@
 
           <b-tooltip custom-class="grant-edit-tooltip" target="grant-details-edit-funding-details" triggers="hover" placement="bottomright">
             To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
-          </b-tooltip> 
+          </b-tooltip>
         </div>
 
         <!-- Wallet Address -->
@@ -809,7 +821,7 @@
             <label class="font-subheader font-weight-light letter-spacing" for="eth_payout_address">
               ETH Recipient Wallet Address
             </label>
-            
+
             <div id="eth_payout_address_wrapper">
               <input id="eth_payout_address" v-model="grant.admin_address" name="eth_payout_address" class="form__input form__input-lg vs--disabled" maxlength="50" placeholder="0x0" required disabled/>
             </div>
@@ -1095,6 +1107,10 @@
     grid-template-areas: "grant-data";
   }
 
+  .bg-tags {
+    background-color: #D0E2FF;
+  }
+
   @media only screen and (max-width: 600px) {
     #sidebar-grant-edit {
       padding: 10px 0px;
@@ -1115,6 +1131,6 @@
     .grid-template-sidebar-row {
       grid-auto-columns: 1fr 1fr 1fr 1.2fr;
     }
-  } 
+  }
 
 </style>
