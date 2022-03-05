@@ -968,7 +968,7 @@ def grants_landing(request):
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
-            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants12.png')),
+            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants13.png')),
             'card_type': 'summary_large_image',
             'avatar_height': 675,
             'avatar_width': 1200,
