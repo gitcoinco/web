@@ -427,7 +427,7 @@ Vue.component('grants-cart', {
     },
 
     isAlgorandExtInstalled() {
-      return window.AlgoSigner || false;
+      return window.WalletConnect || window.MyAlgoConnect || window.AlgoSigner || false;
     },
 
     isRskExtInstalled() {

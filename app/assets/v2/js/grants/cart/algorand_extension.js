@@ -237,21 +237,15 @@ const initAlgorandConnectionMyAlgo = async(grant, vm) => {
   }
   // 1. get connected accounts
   let addresses;
-  const address = localStorage.getItem('addr');
 
-  if (address) {
-    addresses = [{ address }];
-  } else {
-    const myAlgoConnect = new MyAlgoConnect();
-    const accountsSharedByUser = await myAlgoConnect.connect();
+  const myAlgoConnect = new MyAlgoConnect();
+  const accountsSharedByUser = await myAlgoConnect.connect();
 
-    addresses = accountsSharedByUser.map((el) => ({ address: el.address }));
-    localStorage.setItem('addr', addresses[0].address);
-  }
+  addresses = accountsSharedByUser.map((el) => ({ address: el.address }));
+
   vm.updatePaymentStatus(grant.grant_id, 'waiting-on-user-input', null, {
     addresses
   });
-  true;
 };
 const initAlgorandConnectionWalletConnect = async(grant, vm) => {
   // 1. check if wallet is available
@@ -324,7 +318,7 @@ const initAlgorandConnectionWalletConnect = async(grant, vm) => {
 const initAlgorandConnection = async(grant, vm) => {
   let callback;
 
-  switch (localStorage.getItem('algowallet') || 'AlgoSigner') {
+  switch (localStorage.getItem('algowallet') || 'MyAlgoConnect') {
     default:
     case 'AlgoSigner':
       callback = initAlgorandConnectionAlgoSigner;
@@ -449,14 +443,9 @@ const contributeWithAlgorandExtensionMyAlgo = async(
 
   try {
     const myAlgoConnect = new MyAlgoConnect();
-    // step3: check if enough balance is present
-    const balance = await getBalance(NETWORK, from_address);
+    // TODO: check if enough balance is present
 
-    if (!checkWalletBalance(grant, vm, from_address, balance)) {
-      return;
-    }
-
-    // step4: set modal to waiting state
+    // set modal to waiting state
     vm.updatePaymentStatus(grant.grant_id, 'waiting');
 
     const algodClient = new algosdk.Algodv2(
@@ -476,7 +465,7 @@ const contributeWithAlgorandExtensionMyAlgo = async(
     myAlgoConnect
       .signTransaction(binaryTx)
       .then((stx) => {
-        // step7: broadcast txn
+        // broadcast txn
         algodClient
           .sendRawTransaction(stx.blob)
           .do()
@@ -491,12 +480,14 @@ const contributeWithAlgorandExtensionMyAlgo = async(
           })
           .catch((e) => {
             console.log(e);
-            _alert(
-              {
-                message: 'Unable to broadcast transaction. Please try again'
-              },
-              'danger'
-            );
+
+            let message = 'Unable to broadcast transaction. Please try again';
+
+            if (e.message.includes('overspend')) {
+              message = `Insufficient balance in address ${from_address}`;
+            }
+
+            _alert({ message }, 'danger');
             vm.updatePaymentStatus(grant.grant_id, 'failed');
             return;
           });
@@ -604,7 +595,7 @@ const contributeWithAlgorandExtension = async(grant, vm, from_address) => {
   }
   let callback;
 
-  switch (localStorage.getItem('algowallet') || 'AlgoSigner') {
+  switch (localStorage.getItem('algowallet') || 'MyAlgoConnect') {
     default:
     case 'AlgoSigner':
       callback = contributeWithAlgorandExtensionAlgoSigner;
