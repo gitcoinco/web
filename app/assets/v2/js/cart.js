@@ -189,7 +189,7 @@ Vue.component('grants-cart', {
         });
       } else {
         result = vm.sortByPriority.filter((item) => {
-          return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
+          return item.network.toLowerCase().indexOf(network.toLowerCase()) >= 0;
         });
       }
 
@@ -220,12 +220,20 @@ Vue.component('grants-cart', {
     filterByNetworkId: function() {
       const vm = this;
       let result;
+      let networkId;
+
+      networkId = vm.tokenListOptions.networkId || vm.networkId;
 
       if (vm.networkId == '') {
         result = vm.filterByChainId;
+      } else if (vm.tokenListOptions.strict) {
+        result = vm.sortByPriority.filter((item) => {
+          return String(item.networkId) == networkId;
+        });
+        return result;
       } else {
         result = vm.filterByChainId.filter((item) => {
-          return String(item.networkId) === vm.networkId;
+          return String(item.networkId) === networkId;
         });
       }
       return result;
