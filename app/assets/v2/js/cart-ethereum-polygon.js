@@ -269,8 +269,8 @@ Vue.component('grantsCartEthereumPolygon', {
           return;
         }
 
-        // Some grants are multisig, so we display modal to prompt the split of the cart
-        if (this.multisigGrants.length < this.grantsByTenant.length) {
+        // If some grants are multisig, we display modal to prompt the split of the cart
+        if (this.multisigGrants.length > 0 && this.multisigGrants.length < this.grantsByTenant.length) {
           this.polygon.showModal = true;
           return;
         }
