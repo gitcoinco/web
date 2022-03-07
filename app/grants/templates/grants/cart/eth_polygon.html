@@ -1,8 +1,9 @@
 <!-- Polygon L2 flow. -->
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="ETH_POLYGON" v-if="grantsCountByTenant.ETH_POLYGON !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"
-      style="padding-bottom: 2.5rem;"> <b>Ethereum / Polygon ([[grantsCountByTenant.ETH || 0]])</b></template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16">
+     <b>Ethereum / Polygon ([[grantsCountByTenant.ETH || 0]])</b>
+  </template>
   <div class="row">
     <!-- Left Section -->
     <div class="col-12 col-lg-8 pr-0">
