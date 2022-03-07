@@ -450,25 +450,56 @@ Vue.component('grants-cart', {
 
   methods: {
     sendCheckoutAnalytics(grantData, step, network) {
-      ga('create', 'UA-102304388-1');
-      ga('require', 'ec');
 
-      grantData.forEach(grant => {
-        const checkoutValue = {
-          'id': grant.grant_id,
-          'price': grant.grant_donation_amount,
-          'name': grant.grant_title,
-          'checkout_option': network
-        };
-
-        ga('ec:addProduct', checkoutValue);
+      gtag('event', 'view_item_list', {
+        item_list_id: 'related_products',
+        item_list_name: 'Related products',
+        items: [
+          {
+            item_id: 'SKU_12345',
+            item_name: 'Stan and Friends Tee',
+            affiliation: 'Google Merchandise Store',
+            coupon: 'SUMMER_FUN',
+            currency: 'USD',
+            discount: 2.22,
+            index: 0,
+            item_brand: 'Google',
+            item_category: 'Apparel',
+            item_category2: 'Adult',
+            item_category3: 'Shirts',
+            item_category4: 'Crew',
+            item_category5: 'Short sleeve',
+            item_list_id: 'related_products',
+            item_list_name: 'Related Products',
+            item_variant: 'green',
+            location_id: 'L_12345',
+            price: 9.99,
+            quantity: 1
+          }
+        ]
       });
+
+      console.log('should have been sent');
+
+
+      // ga('require', 'ec');
+
+      // grantData.forEach(grant => {
+      //   const checkoutValue = {
+      //     'id': grant.grant_id,
+      //     'price': grant.grant_donation_amount,
+      //     'name': grant.grant_title,
+      //     'checkout_option': network
+      //   };
+
+      //   ga('ec:addProduct', checkoutValue);
+      // });
       
-      ga('ec:setAction', 'checkout', {
-        step,
-        'option': network
-      });
-      ga('send', 'pageview');
+      // ga('ec:setAction', 'checkout', {
+      //   step,
+      //   'option': network
+      // });
+      // ga('send', 'pageview');
     },
     // Array of objects containing all donations and associated data
     computeDonationInputs(destGitcoinAddress) {
