@@ -130,6 +130,11 @@ class GrantCLR(SuperModel):
         null=True, blank=True,
         help_text="Grants allowed in this CLR round"
     )
+    grant_exclude = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grants excluded in this CLR round"
+    )
     subscription_filters = JSONField(
         default=dict,
         null=True, blank=True,

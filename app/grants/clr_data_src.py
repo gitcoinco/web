@@ -1,6 +1,6 @@
 from django.db import connection
 
-from grants.models import Contribution, Grant, GrantCollection
+from grants.models import Contribution, GrantCollection
 from townsquare.models import SquelchProfile
 
 
@@ -17,6 +17,7 @@ def fetch_grants(clr_round, network='mainnet'):
     '''
 
     grant_filters = clr_round.grant_filters
+    grant_excludes = clr_round.grant_exclude
     collection_filters = clr_round.collection_filters
 
     grants = clr_round.grants.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
@@ -28,6 +29,9 @@ def fetch_grants(clr_round, network='mainnet'):
         # Collection Filters
         grant_ids = GrantCollection.objects.filter(**collection_filters).values_list('grants', flat=True)
         grants = grants.filter(pk__in=grant_ids)
+
+    if grant_exclude:
+        grants = grants.exclude(**grant_excludes)
 
     return grants
 
