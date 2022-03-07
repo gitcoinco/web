@@ -3981,7 +3981,7 @@ def clr_matches(request):
 @require_POST
 def ingest_merkle_claim_to_clr_match(request):
 
-    _token = request.headers['token']
+    _token = request.headers.get('token')
 
     data = StaticJsonEnv.objects.get(key='MERKLE_CLAIM_UPLOAD').data
 
