@@ -60,6 +60,11 @@ Vue.component('grants-cart', {
       ],
       selectedETHCartToken: 'DAI',
       preferredAmount: 25,
+      tokenListOptions: {
+        strict: false,
+        chainId: '',
+        network: ''
+      },
       chainId: '',
       networkId: '',
       network: 'mainnet',
@@ -171,36 +176,64 @@ Vue.component('grants-cart', {
     },
     filterByNetwork: function() {
       const vm = this;
+      let result;
+      let network;
+
+      network = vm.tokenListOptions.network || vm.network;
 
       if (vm.network == '') {
-        return vm.sortByPriority;
+        result = vm.sortByPriority;
+      } else if (vm.tokenListOptions.strict) {
+        result = vm.sortByPriority.filter((item) => {
+          return item.network === network;
+        });
+      } else {
+        result = vm.sortByPriority.filter((item) => {
+          return item.network.toLowerCase().indexOf(network.toLowerCase()) >= 0;
+        });
       }
-      return vm.sortByPriority.filter((item)=>{
-        return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
-      });
+
+      return result;
     },
     filterByChainId: function() {
       const vm = this;
       let result;
+      let chainId;
 
-      if (vm.chainId == '') {
+      chainId = vm.tokenListOptions.chainId || vm.chainId;
+
+      if (chainId == '') {
         result = vm.filterByNetwork;
+      } else if (vm.tokenListOptions.strict) {
+        result = vm.sortByPriority.filter((item) => {
+          return item.chainId == chainId;
+        });
+        return result;
       } else {
         result = vm.filterByNetwork.filter((item) => {
-          return String(item.chainId) === vm.chainId;
+          return String(item.chainId) === chainId;
         });
       }
+
       return result;
     },
     filterByNetworkId: function() {
       const vm = this;
       let result;
+      let networkId;
+
+      networkId = vm.tokenListOptions.networkId || vm.networkId;
 
       if (vm.networkId == '') {
         result = vm.filterByChainId;
+      } else if (vm.tokenListOptions.strict) {
+        result = vm.sortByPriority.filter((item) => {
+          return String(item.networkId) == networkId;
+        });
+        return result;
       } else {
         result = vm.filterByChainId.filter((item) => {
-          return String(item.networkId) === vm.networkId;
+          return String(item.networkId) === networkId;
         });
       }
       return result;
@@ -608,6 +641,8 @@ Vue.component('grants-cart', {
     tabChange: async function(input) {
       let vm = this;
 
+      vm.tokenListOptions = { strict: false, chainId: '', network: '' };
+
       vm.tabSelected = vm.$refs.tabs.tabs[input].id;
       if (!vm.grantsCountByTenant[vm.tabSelected]) {
         vm.tabIndex += 1;
@@ -646,6 +681,8 @@ Vue.component('grants-cart', {
           break;
         case 'ALGORAND':
           vm.chainId = '1001';
+          vm.tokenListOptions.chainId = '1001';
+          vm.tokenListOptions.strict = true;
           break;
       }
     },
