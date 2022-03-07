@@ -58,7 +58,7 @@
     </div>
     <div class="col-4 col-md-2">
       <b-button :disabled="!isAlgorandExtInstalled" variant="primary" class="btn btn-primary px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'ALGORAND')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
-        Payout
+        Checkout
       </b-button>
     </div>
     <div class="col-1">
@@ -101,7 +101,7 @@
             <a :href="'https://explorer.harmony.one/#/tx/' + grant.txnid" target="_blank">here.</a>
           </p>
 
-          <a href="#" @click="removeGrantFromCart(grant.grant_id);" class="btn btn-primary btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Payout your next Grant</a>
+          <a href="#" @click="removeGrantFromCart(grant.grant_id);" class="btn btn-primary btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Checkout your next Grant</a>
         </div>
       </div>
     </modal>
