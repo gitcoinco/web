@@ -1755,6 +1755,29 @@ Vue.component('grants-cart', {
       this.grantData = [];
     }
 
+    if (grantData.length) {
+      const currency = grantData[0].grant_donation_currency;
+      let cartTotal = 0;
+
+      grantData.forEach((grant) => {
+        cartTotal += grant.grant_donation_amount;
+      });
+
+      const items = grantData.map((grant) => ({
+        item_id: grant.grant_id,
+        item_name: grant.grant_title,
+        item_category: grant.clr_round_num,
+        item_brand: grant.grant_admin_address
+      }));
+
+      gtag('event', 'begin_checkout', {
+        currency,
+        value: cartTotal,
+        items
+      });
+    }
+    
+
     // Load needed scripts based on tenants
     this.setChainScripts();
 
