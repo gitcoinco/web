@@ -75,7 +75,7 @@
                       <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" rel="noopener noreferrer">Learn more about matching rounds.</a>
                     </p>
 
-                    <v-select placeholder="Add tags to help others discover your grant" :options="grant_tags" label="name" v-model="form.grant_tags" :reduce="state => state.id" multiple>
+                    <v-select placeholder="Select tag(s) for your grant’s discoverability and eligibility for matching rounds" :options="grantTagOptions" label="name" v-model="form.grant_tags" :selectable="(option) => option.is_eligibility_tag !== 'label'" :reduce="state => state.id" multiple>
                       <template #search="{attributes, events}">
                         <input
                           class="vs__search"

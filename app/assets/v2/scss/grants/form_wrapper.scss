@@ -27,4 +27,10 @@
       color: $gc-grey-300;
     }
   }
+  .vs__dropdown-option--disabled {
+    border-bottom: 1px solid $border-color;
+    font-size: 9px;
+    padding-bottom: 12px;
+    margin: 20px 0 10px 0;
+  }
 }

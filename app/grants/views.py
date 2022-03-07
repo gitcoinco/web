@@ -3917,7 +3917,7 @@ class GrantSubmissionView(View):
             _grant_tag = {
                 'id': g_tag.pk,
                 'name': g_tag.name,
-                'is_eligibility_tag': g_tag.is_eligibility_tag
+                'is_eligibility_tag': 1 if g_tag.is_eligibility_tag else 0
             }
             grant_tags.append(_grant_tag)
 
