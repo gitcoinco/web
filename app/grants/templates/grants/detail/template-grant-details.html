@@ -452,7 +452,7 @@
                 You’ve received L2 contributions
               </p>
               Some of your grant funds may be in L2 (zkSync or Polygon).
-              <span v-if="grantIsContract">
+              <span v-if="grant.is_contract_address">
                 Polygon contributions are not supported
                 for your grant since it is using a contract address (e.g. Gnosis Safe, multi-sig wallet).
               </span>

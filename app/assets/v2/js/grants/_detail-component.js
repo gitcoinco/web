@@ -564,10 +564,8 @@ Vue.component('grant-details', {
       ]
     };
   },
-  computed: {
-    async grantIsContract() {
-      const { admin_address } = this.grant;
-
+  methods: {
+    grantIsContract: async function (admin_address) {
       if (admin_address && web3 && web3.eth) {
         const code = await web3.eth.getCode(admin_address);
 
@@ -576,8 +574,10 @@ Vue.component('grant-details', {
       return false;
     }
   },
-  mounted: function() {
+  mounted: async function() {
     const vm = this;
+
+    vm.grant.is_contract_address = await vm.grantIsContract(this.grant.admin_address);
 
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
