@@ -565,7 +565,7 @@ Vue.component('grant-details', {
     };
   },
   methods: {
-    grantIsContract: async function (admin_address) {
+    grantIsContract: async function(admin_address) {
       if (admin_address && web3 && web3.eth) {
         const code = await web3.eth.getCode(admin_address);
 
