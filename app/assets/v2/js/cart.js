@@ -48,6 +48,9 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       // Checkout, shared
+      grantAnalyticsItems: [],
+      cartTotal: 0,
+      analyticsHash: null,
       selectedZcashPayment: 'taddress',
       optionsZcashPayment: [
         { text: 'Wallet t-address', value: 'taddress' },
@@ -482,6 +485,22 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    formatAnalyticsItems(grants) {
+      return grants.map((grant) => ({
+        item_id: grant.grant_id,
+        item_name: grant.grant_title,
+        item_category: grant.clr_round_num,
+        item_brand: grant.grant_admin_address
+      }));
+    },
+    setCartTotal(grants) {
+      let cartTotal = 0;
+
+      grants.forEach((grant) => {
+        cartTotal += grant.grant_donation_amount;
+      });
+      this.cartTotal = cartTotal;
+    },
     // Array of objects containing all donations and associated data
     computeDonationInputs(destGitcoinAddress) {
       let isPolygon = destGitcoinAddress == gitcoinAddressPolygon;
@@ -625,6 +644,18 @@ Vue.component('grants-cart', {
         vm.isPolkadotExtInstalled = result;
         return vm.isPolkadotExtInstalled;
       });
+    },
+    sendPaymentInfoEvent(payment_type) {
+      if (this.grantData.length) {
+        const currency = this.grantData[0].grant_donation_currency;
+
+        gtag('event', 'add_payment_info', {
+          currency,
+          value: this.cartTotal,
+          payment_type,
+          items: this.grantAnalyticsItems
+        });
+      }
     },
     // When the cart-ethereum-zksync component is updated, it emits an event with new data as the
     // payload. This component listens for that event and uses the data to show the user details
@@ -821,9 +852,28 @@ Vue.component('grants-cart', {
     updateCartData(e) {
       this.grantData = (e && e.detail && e.detail.list && e.detail.list) || [];
       update_cart_title();
+      this.grantAnalyticsItems = this.formatAnalyticsItems(this.grantData);
     },
 
     removeGrantFromCart(id) {
+      const removal = this.grantData.find(grant => grant.grant_id === id);
+
+      if (removal) {
+        gtag('event', 'remove_from_cart', {
+          currency: this.selectedETHCartToken,
+          value: removal.grant_donation_amount,
+          items: [
+            {
+              item_id: id,
+              item_name: removal.grant_title,
+              quantity: 1,
+              item_category: removal.clr_round_num,
+              item_brand: removal.grant_admin_address
+            }
+          ]
+        });
+      }
+
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
       update_cart_title();
@@ -1004,6 +1054,7 @@ Vue.component('grants-cart', {
 
     // Must be called at the beginning of the standard L1 bulk checkout flow
     async initializeStandardCheckout() {
+      this.sendPaymentInfoEvent('eth');
       // Prompt web3 login if not connected
       if (!provider) {
         await await onConnect();
@@ -1301,6 +1352,10 @@ Vue.component('grants-cart', {
         // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
         const txHashes = checkout_type === 'eth_zksync' ? this.formatZkSyncTx(txHash) : new Array(donations.length).fill(txHash[0]);
 
+        if (txHashes) {
+          this.analyticsHash = txHashes[0];
+        }
+
         // Configure template payload
         const saveSubscriptionPayload = {
           // Values that are constant for all donations
@@ -1498,6 +1553,13 @@ Vue.component('grants-cart', {
       // Clear cart, redirect back to grants page, and show success alert
 
       CartData.setCheckedOut(this.grantsByTenant);
+
+      gtag('event', 'purchase', {
+        currency: this.selectedETHCartToken,
+        transaction_id: this.analyticsHash,
+        value: this.cartTotal,
+        items: this.grantAnalyticsItems
+      });
 
       // Remove each grant from the cart which has just been checkout
       this.grantsByTenant.forEach((grant) => {
@@ -1754,6 +1816,7 @@ Vue.component('grants-cart', {
     } else {
       this.grantData = [];
     }
+    
 
     // Load needed scripts based on tenants
     this.setChainScripts();
@@ -1766,6 +1829,19 @@ Vue.component('grants-cart', {
 
     // Show user cart now
     this.isLoading = false;
+    if (grantData.length) {
+      const currency = grantData[0].grant_donation_currency;
+
+      const cartTotal = this.setCartTotal(grantData);
+      const items = this.formatAnalyticsItems(grantData);
+      
+      vm.grantAnalyticsItems;
+      gtag('event', 'begin_checkout', {
+        currency,
+        value: cartTotal,
+        items
+      });
+    }
   },
 
   beforeDestroy() {

@@ -324,6 +324,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async sendDonationTx(userAddress) {
+      appCart.$refs.cart.sendPaymentInfoEvent('polygon');
       const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
 
       // Get our donation inputs
