@@ -50,6 +50,7 @@ Vue.component('grants-cart', {
       // Checkout, shared
       grantAnalyticsItems: [],
       cartTotal: 0,
+      analyticsHash: null,
       selectedZcashPayment: 'taddress',
       optionsZcashPayment: [
         { text: 'Wallet t-address', value: 'taddress' },
@@ -645,16 +646,9 @@ Vue.component('grants-cart', {
       });
     },
     sendPaymentInfoEvent(payment_type) {
-      console.log({ payment_type });
       const currency = this.grantData[0].grant_donation_currency;
 
       gtag('event', 'add_payment_info', {
-        currency,
-        value: this.cartTotal,
-        payment_type,
-        items: this.grantAnalyticsItems
-      });
-      console.log({
         currency,
         value: this.cartTotal,
         payment_type,
@@ -1338,6 +1332,10 @@ Vue.component('grants-cart', {
         // If standard checkout, stretch it so there's one hash for each donation (required for `for` loop below)
         const txHashes = checkout_type === 'eth_zksync' ? this.formatZkSyncTx(txHash) : new Array(donations.length).fill(txHash[0]);
 
+        if (txHashes) {
+          this.analyticsHash = txHashes[0];
+        }
+
         // Configure template payload
         const saveSubscriptionPayload = {
           // Values that are constant for all donations
@@ -1535,6 +1533,13 @@ Vue.component('grants-cart', {
       // Clear cart, redirect back to grants page, and show success alert
 
       CartData.setCheckedOut(this.grantsByTenant);
+
+      gtag('event', 'purchase', {
+        currency: this.selectedETHCartToken,
+        transaction_id: this.analyticsHash,
+        value: this.cartTotal,
+        items: this.grantAnalyticsItems
+      });
 
       // Remove each grant from the cart which has just been checkout
       this.grantsByTenant.forEach((grant) => {
