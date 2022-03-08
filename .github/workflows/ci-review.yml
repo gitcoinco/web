@@ -163,25 +163,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          # node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: infra/infra-review/package-lock.json
-
       - name: Compute some values
         id: compute
         run: |
           echo "::set-output name=pulumi_stack::review_${{ github.event.number }}"
 
+      #########################################################################
+      # Provision the shared ressources for the review environment
+      #########################################################################
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          cache: "npm"
+          cache-dependency-path: infra/review-env/package-lock.json
+
       # Install pulumi dependencies
       # Select the new pulumi stack 
       - run: |
           npm install
-          pulumi stack select -c ${{ steps.compute.outputs.pulumi_stack }}
-          pulumi config -s ${{ steps.compute.outputs.pulumi_stack }} set aws:region us-west-2 --non-interactive
-        working-directory: infra/infra-review
+          pulumi stack select -c review
+          pulumi config -s review set aws:region us-west-2 --non-interactive
+        working-directory: infra/review-env
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
@@ -206,6 +208,26 @@ jobs:
           POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
           POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
           POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+
+
+      #########################################################################
+      # Provision the PR specific ressources for the review environment
+      #########################################################################
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          cache: "npm"
+          cache-dependency-path: infra/review-pr/package-lock.json
+
+      # Install pulumi dependencies
+      # Select the new pulumi stack 
+      - run: |
+          npm install
+          pulumi stack select -c ${{ steps.compute.outputs.pulumi_stack }}
+          pulumi config -s ${{ steps.compute.outputs.pulumi_stack }} set aws:region us-west-2 --non-interactive
+        working-directory: infra/review-pr
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       # Run pulumi actions
       - uses: pulumi/actions@v3
@@ -237,8 +259,9 @@ jobs:
           REVIEW_ENV_PUBLIC_SUBNET_1: ${{ steps.pulumi-env.outputs.vpcPublicSubnetId1 }}
           REVIEW_ENV_PUBLIC_SUBNET_2: ${{ steps.pulumi-env.outputs.vpcPublicSubnetId2 }}
 
-          REVIEW_ENV_ROUTE53_ZONE_ID: ${{ secrets.REVIEW_ENV_ROUTE53_ZONE_ID }}
-          REVIEW_ENV_DOMAIN: review_123.gtc.iakobinyi.com
+          REVIEW_ENV_ROUTE53_ZONE_ID: ${{ secrets.ROUTE53_ZONE_ID }}
+          REVIEW_ENV_DOMAIN:  ${{ steps.compute.outputs.pulumi_stack }}.gtc.iakobinyi.com
+
 
       - name: Start migration task
         run: |
