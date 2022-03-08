@@ -195,6 +195,7 @@ Vue.component('grantsCartEthereumZksync', {
 
     // Send a batch transfer based on donation inputs
     async checkoutWithZksync() {
+      appCart.$refs.cart.sendPaymentInfoEvent('zksync');
       // Prompt web3 login if not connected
       if (!provider) {
         await onConnect();
