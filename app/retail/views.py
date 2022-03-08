@@ -1153,10 +1153,11 @@ def presskit(request):
 def handler403(request, exception=None):
     return error(request, 403)
 
+def csrf_failure(request, reason=""):
+    return error(request, 403)
 
 def handler404(request, exception=None):
     return error(request, 404)
-
 
 def handler500(request, exception=None):
     return error(request, 500)
