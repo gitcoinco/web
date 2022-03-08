@@ -646,14 +646,16 @@ Vue.component('grants-cart', {
       });
     },
     sendPaymentInfoEvent(payment_type) {
-      const currency = this.grantData[0].grant_donation_currency;
+      if (this.grantData.length) {
+        const currency = this.grantData[0].grant_donation_currency;
 
-      gtag('event', 'add_payment_info', {
-        currency,
-        value: this.cartTotal,
-        payment_type,
-        items: this.grantAnalyticsItems
-      });
+        gtag('event', 'add_payment_info', {
+          currency,
+          value: this.cartTotal,
+          payment_type,
+          items: this.grantAnalyticsItems
+        });
+      }
     },
     // When the cart-ethereum-zksync component is updated, it emits an event with new data as the
     // payload. This component listens for that event and uses the data to show the user details

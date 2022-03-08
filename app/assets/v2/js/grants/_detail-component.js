@@ -40,7 +40,7 @@ Vue.mixin({
           {
             item_id: vm.grant.id,
             item_name: vm.grant.title,
-            item_category: vm.grant.active_round_names.toString(),
+            item_category: vm.grant?.active_round_names?.toString(),
             item_brand: vm.grant?.admin_profile?.handle,
             quantity: 1
           }
@@ -49,6 +49,21 @@ Vue.mixin({
     },
     removeFromCart: function() {
       const vm = this;
+
+      gtag('event', 'remove_from_cart', {
+        // value, currency are set when checking out, but required
+        value: 0,
+        currency: 'USD',
+        items: [
+          {
+            item_id: vm.grant.id,
+            item_name: vm.grant.title,
+            item_category: vm.grant?.active_round_names?.toString(),
+            item_brand: vm.grant?.admin_profile?.handle,
+            quantity: 1
+          }
+        ]
+      });
 
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
