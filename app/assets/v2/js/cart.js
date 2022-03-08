@@ -854,6 +854,24 @@ Vue.component('grants-cart', {
     },
 
     removeGrantFromCart(id) {
+      const removal = this.grantData.find(grant => grant.grant_id === id);
+
+      if (removal) {
+        gtag('event', 'remove_from_cart', {
+          currency: this.selectedETHCartToken,
+          value: removal.grant_donation_amount,
+          items: [
+            {
+              item_id: id,
+              item_name: removal.grant_title,
+              quantity: 1,
+              item_category: removal.clr_round_num,
+              item_brand: removal.grant_admin_address
+            }
+          ]
+        });
+      }
+
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
       update_cart_title();
