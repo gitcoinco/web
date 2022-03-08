@@ -193,7 +193,7 @@ jobs:
         name: Ensure the pulumi review environment shared ressources
         with:
           command: up
-          stack-name: review
+          stack-name: gitcoin/review-env/review
           upsert: true
           work-dir: infra/review-env
         env:
@@ -235,7 +235,7 @@ jobs:
         name: Create the environment specific for this PR
         with:
           command: up
-          stack-name: ${{ steps.compute.outputs.pulumi_stack }}
+          stack-name: gitcoin/review/${{ steps.compute.outputs.pulumi_stack }}
           upsert: true
           work-dir: infra/review-pr
         env:
