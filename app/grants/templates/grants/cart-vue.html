@@ -233,7 +233,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <!-- Sticky checkout for ETH -->
-            <div v-if="grantsCountByTenant.ETH !== undefined" class="bg-white border-grey border-top-2 bottom-0 px-2 py-4 position-sticky text-center w-100 d-block d-md-none">
+            <div v-if="tabSelected === 'ETH' || tabSelected === 'ETH_POLYGON'" class="bg-white border-grey border-top-2 bottom-0 px-2 py-4 position-sticky text-center w-100 d-block d-md-none">
               <eth-checkout-button
                 :active-checkout="activeCheckout"
                 :on-polygon-update="onPolygonUpdate"
