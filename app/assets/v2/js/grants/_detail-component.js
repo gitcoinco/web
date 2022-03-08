@@ -606,6 +606,20 @@ Vue.component('grant-details', {
 
     // watch for cartUpdates
     window.addEventListener('cartDataUpdated', vm.updateCartData);
+
+    gtag('event', 'view_item', {
+      // currency and value are required items but value is not known until cart
+      currency: 'USD',
+      value: 0,
+      items: [
+        {
+          item_id: vm.grant.id,
+          item_name: vm.grant.title,
+          item_category: vm.grant.clr_round_num,
+          item_brand: vm.grant.admin_address
+        }
+      ]
+    });
   },
   beforeDestroy() {
     const vm = this;
