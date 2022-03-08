@@ -190,7 +190,7 @@ jobs:
       # Run pulumi actions
       - uses: pulumi/actions@v3
         id: pulumi-env
-        name: Ensure the pulumi generic environment exist 
+        name: Ensure the pulumi review environment shared ressources
         with:
           command: up
           stack-name: review
@@ -237,7 +237,7 @@ jobs:
           command: up
           stack-name: ${{ steps.compute.outputs.pulumi_stack }}
           upsert: true
-          work-dir: infra/infra-pr
+          work-dir: infra/review-pr
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           PULUMI_CONFIG_PASSPHRASE: 
