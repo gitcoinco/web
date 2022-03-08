@@ -193,7 +193,7 @@ jobs:
         name: Ensure the pulumi generic environment exist 
         with:
           command: up
-          stack-name: review-env
+          stack-name: review
           upsert: true
           work-dir: infra/review-env
         env:
