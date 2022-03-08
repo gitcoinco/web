@@ -532,6 +532,24 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
 
 export const taskDefinition = task.taskDefinition.id;
 
+const secgrp = new aws.ec2.SecurityGroup("secgrp", {
+    description: "gitcoin-ecs-task",
+    vpcId: vpc.id,
+    ingress: [
+        { protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: ["0.0.0.0/0"] },
+        { protocol: "tcp", fromPort: 80, toPort: 80, cidrBlocks: ["0.0.0.0/0"] },
+    ],
+    egress: [{
+        protocol: "-1",
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["0.0.0.0/0"],
+    }],
+});
+
+export const securityGroupForTaskDefinition = secgrp.id;
+
+
 const service = new awsx.ecs.FargateService("app", {
     cluster,
     desiredCount: 1,

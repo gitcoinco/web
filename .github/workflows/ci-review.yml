@@ -265,7 +265,7 @@ jobs:
 
       - name: Start migration task
         run: |
-          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId}} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
+          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi-env.outputs.vpcPublicSubnetId1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupForTaskDefinition }}],assignPublicIp=ENABLED}" 
         env:
           # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
           AWS_EC2_METADATA_DISABLED: true
