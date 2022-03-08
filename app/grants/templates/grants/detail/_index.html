@@ -34,7 +34,7 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gc-utilities.scss" %} />
     {% endbundle %}
     <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
-
+    {% include '../analytics_manager.html' %}
   </head>
 
   <body class="interior {{ active }} grant g-font-muli">
