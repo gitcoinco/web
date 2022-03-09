@@ -13,3 +13,84 @@
     max-width: 100%;
   }
 }
+
+.home-carousel {
+  .carousel-inner {
+    min-height: 500px;
+  }
+  .grants {
+    display: flex;
+    h3 {
+      margin-top: 2rem;
+    }
+    .dates {
+      font-weight: normal;
+      font-family: 'Miriam Libre';
+      font-size: 32px;
+      color: $gc-teal-400;
+      text-align: center;
+    }
+    img {
+      width: 40%;
+      margin: 0 auto;
+    }
+    a {
+      width: 20%;
+      margin-left: 40%;
+    }
+    background-image: url(static('v2/images/home/GR13_desktopBanner_bg.png'));
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    min-height: 450px;
+    text-align: center;
+  }
+  li {
+    background-color: $gc-violet-400;
+  }
+  .carousel-caption {
+    h5 {
+      color: $gray-900;
+    }
+  }
+  .carousel-indicator {
+    z-index: auto;
+  }
+}
+.header-image {
+  img {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 768px) {
+  .home-carousel {
+    .carousel-inner {
+      min-height: 525px;
+    }
+    .grants {
+      margin-top: 40px;
+      .dates {
+        margin-top: 0;
+      }
+      min-height: 425px;
+      img {
+        width: 60%;
+        margin: 0 auto;
+      }
+      a {
+        width: 50%;
+        margin-left: 25%;
+      }
+    }
+    
+  }
+  .build-slide {
+    h1 {
+      font-size: 24px;
+    }
+    p {
+      font-size: 20px;
+      margin-bottom: 0;
+    }
+  }
+  
+}
