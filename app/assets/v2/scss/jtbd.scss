@@ -32,7 +32,11 @@
     }
     img {
       width: 40%;
-      margin-left: 30%;
+      margin: 0 auto;
+    }
+    a {
+      width: 20%;
+      margin-left: 40%;
     }
     background-image: url(static('v2/images/home/GR13_desktopBanner_bg.png'));
     background-size: 100% auto;
@@ -70,7 +74,11 @@
       min-height: 425px;
       img {
         width: 60%;
-        margin-left: 20%;
+        margin: 0 auto;
+      }
+      a {
+        width: 50%;
+        margin-left: 25%;
       }
     }
     
