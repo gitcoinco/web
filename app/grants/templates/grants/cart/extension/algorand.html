@@ -1,134 +1,128 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="ALGORAND" v-if="grantsCountByTenant.ALGORAND !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" height="16"> Algorand ([[grantsCountByTenant.ALGORAND || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" height="16"> <b>Algorand ([[grantsCountByTenant.ALGORAND || 0]])</b></template>
 
   <p v-if="!isAlgorandExtInstalled" class="gc-alert-yellow p-3 font-smaller-2">
-    You’ll need an Algorand extension to contribute to Algorand grants. We recommend
+    You'll need an Algorand extension to contribute to Algorand grants. We recommend
     <a href="https://chrome.google.com/webstore/detail/algosigner/kmmolakhbgdlpkjkcjkebenjheonagdm" target="_blank">AlgoSigner Wallet.</a>
   </p>
 
-  <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
-    <div class="flex-fill">
+  <div class="row font-smaller-2 grant-header-row d-none d-md-flex">
+    <div class="col-4">
       Grant
     </div>
-    <div class="flex-fill text-center">
+    <div class="col-3">
       Amount
     </div>
-    <div class="flex-fill text-center">
+    <div class="col-3">
       Total CLR Match Amount
     </div>
   </div>
-  <div v-for="(grant, index) in grantsByTenant" class="grant-row" :key="grant.grant_id">
-    <div class="grant-row-style">
-      <div class="d-flex align-items-center justify-content-between flex-wrap">
-        {% comment %} Title and logo {% endcomment %}
-        <div class="col-lg-6 col-xl-5 d-flex flex-fill">
-          <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
-          <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
-        </div>
-        {% comment %} Grant amount and currency {% endcomment %}
-        <div class="d-flex flex-column order-md-0 order-1">
-          <div class="d-flex align-items-center">
-            <input class=" form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
-              placeholder="Amount" style="margin-right: 1rem">
-            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol"
-              v-model="grant.grant_donation_currency" class="flex-shrink-0" style="width: 160px;">
-              <template v-slot:option="option">
-                <span class="font-weight-semibold">[[ option.symbol ]]</span>
-              </template>
-            </v-select>
-
+  <div v-for="(grant, index) in grantsByTenant" class="row grant-row-style align-items-center" :key="grant.grant_id">
+    <div class="col-12 col-md-4 p-0 mb-2 mb-md-0">
+      <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
+      <span class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></span>
+    </div>
+    <div class="col-12 col-md-3 p-0 mb-2 mb-md-0">
+      <div class="row">
+        <div class="col-4 pr-1">
+          <input class=" form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
+          placeholder="Amount">
           </div>
-
-        </div>
-
-        {% comment %} CLR Match Amount {% endcomment %}
-
-        <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <div v-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-            Not in an active round
-          </div>
-          <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-            Cannot match own grant
-          </div>
-          <div v-else-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
-            <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
-            <img src="{% static 'v2/images/chains/algorand.svg' %}" alt="Diamonds high-fiving"
-            width="20">
-          </div>
-          <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-            Not Eligible for matching
-          </div>
-        </div>
-        <div class="align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button :disabled="!isAlgorandExtInstalled" variant="primary" class="btn btn-primary px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'ALGORAND')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
-            Payout
-          </b-button>
-        </div>
-        {% comment %} Delete Icon {% endcomment %}
-        <div class="d-flex">
-          <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
-            @click="removeGrantFromCart(grant.grant_id)">
-          </i>
+        <div class="col-4 pl-1">
+          <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol"
+            v-model="grant.grant_donation_currency">
+            <template v-slot:option="option">
+              <span class="font-weight-semibold p-0">[[ option.symbol ]]</span>
+            </template>
+          </v-select>
         </div>
       </div>
-
-      <modal :id="'payoutModal' + grant.grant_id" ref="payout-modal">
-        <div slot="body" class="text-center px-3">
-          <div v-if="grant.payment_status == 'waiting'">
-            <i class="fas fa-spinner fa-pulse d-block" style="font-size: 7rem;"></i>
-            <p class="font-bigger-1 mt-5">
-              Waiting for confirmation
-              <br>
-              from the wallet...
-            </p>
-          </div>
-          <div v-else-if="grant.payment_status == 'failed'">
-            <p class="font-header font-weight-semibold">
-              Signing Transaction Failed.
-            </p>
-            <p>
-              <i class="fas fa-times" style="font-size: 7rem;"></i>
-              <a href="#" class="btn btn-danger btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Try again in some time</a>
-            </p>
-          </div>
-          <div v-else-if="grant.payment_status == 'waiting-on-user-input'">
-            <p class="font-header font-weight-semibold">
-              Select the account you want to pay from
-            </p>
-
-            <ul class="pl-0 pt-3" v-if="grant.additionalAttributes && grant.additionalAttributes.addresses">
-              <li class="notifications__list" v-for="address_info in grant.additionalAttributes.addresses" :key="address_info.address">
-                <button class="p-2 font-caption text-left btn btn-block btn-outline-dark d-block mb-3 cursor-pointer`"
-                  @click="contributeWithExtension(grant, 'ALGORAND', address_info.address)"
-                >
-                  <p class="mb-1">
-                    <span>[[ address_info.address ]] </span>
-                  </p>
-                </button>
-              </li>
-            </ul>
-
-          </div>
-          <div v-else>
-            <p class="font-header font-weight-semibold mb-4">
-              Transaction Submitted!
-            </p>
-
-            <img :src="grant.grant_logo" alt="Grant logo"  class="cart-grant-thumbnail">
-            <p class="mt-3 mb-1 font-weight-bold">[[grant.grant_title]] ([[grant.grant_donation_amount]] [[grant.grant_donation_currency]]) </p>
-
-            <p class="font-body text-black-70 mb-4">[[ grant.algorand_payout_address ]]</p>
-
-            <p class="font-smaller-1">
-              You can view the status of your transaction on
-              <a :href="'https://algoexplorer.io/tx/' + grant.txnid" target="_blank">here.</a>
-            </p>
-
-            <a href="#" @click="removeGrantFromCart(grant.grant_id);" class="btn btn-primary btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Payout your next Grant</a>
-          </div>
-        </div>
-      </modal>
     </div>
+    <div class="col-6 col-md-2 p-0 text-center">
+      {% comment %} CLR Match Amount {% endcomment %}
+      <div v-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold pl-2">
+        Not in an active round
+      </div>
+      <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold pl-2">
+        Cannot match own grant
+      </div>
+      <div v-else-if="grant.is_clr_eligible == true" class="clr-match-box">
+        <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
+        <img src="{% static 'v2/images/chains/algorand.svg' %}" alt="Diamonds high-fiving"
+        width="20">
+      </div>
+      <div v-else class="clr-match-box font-caption font-weight-semibold pl-2">
+        Not Eligible for matching
+      </div>
+    </div>
+    <div class="col-4 col-md-2">
+      <b-button :disabled="!isAlgorandExtInstalled" variant="primary" class="btn btn-primary px-4 font-body" @click="updatePaymentStatus(grant.grant_id, 'waiting');contributeWithExtension(grant, 'ALGORAND')" data-toggle="modal" :data-target="'#payoutModal' + grant.grant_id">
+        Checkout
+      </b-button>
+    </div>
+    <div class="col-1">
+      {% comment %} Delete Icon {% endcomment %}
+      <i class="fas fa-trash-alt text-right" style="cursor: pointer; opacity: 40%"
+        @click="removeGrantFromCart(grant.grant_id)">
+      </i>
+    </div>
+
+    <modal :id="'payoutModal' + grant.grant_id" ref="payout-modal">
+      <div slot="body" class="text-center px-3">
+        <div v-if="grant.payment_status == 'waiting'">
+          <i class="fas fa-spinner fa-pulse d-block" style="font-size: 7rem;"></i>
+          <p class="font-bigger-1 mt-5">
+            Waiting for confirmation
+            <br>
+            from the wallet...
+          </p>
+        </div>
+        <div v-else-if="grant.payment_status == 'failed'">
+          <p class="font-header font-weight-semibold">
+            Signing Transaction Failed.
+          </p>
+          <p>
+            <i class="fas fa-times" style="font-size: 7rem;"></i>
+            <a href="#" class="btn btn-danger btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Try again in some time</a>
+          </p>
+        </div>
+        <div v-else-if="grant.payment_status == 'waiting-on-user-input'">
+          <p class="font-header font-weight-semibold">
+            Select the account you want to pay from
+          </p>
+
+          <ul class="pl-0 pt-3" v-if="grant.additionalAttributes && grant.additionalAttributes.addresses">
+            <li class="notifications__list" v-for="address_info in grant.additionalAttributes.addresses" :key="address_info.address">
+              <button class="p-2 font-caption text-left btn btn-block btn-outline-dark d-block mb-3 cursor-pointer`"
+                @click="contributeWithExtension(grant, 'ALGORAND', address_info.address)"
+              >
+                <p class="mb-1">
+                  <span>[[ address_info.address ]] </span>
+                </p>
+              </button>
+            </li>
+          </ul>
+
+        </div>
+        <div v-else>
+          <p class="font-header font-weight-semibold mb-4">
+            Transaction Submitted!
+          </p>
+
+          <img :src="grant.grant_logo" alt="Grant logo"  class="cart-grant-thumbnail">
+          <p class="mt-3 mb-1 font-weight-bold">[[grant.grant_title]] ([[grant.grant_donation_amount]] [[grant.grant_donation_currency]]) </p>
+
+          <p class="font-body text-black-70 mb-4">[[ grant.algorand_payout_address ]]</p>
+
+          <p class="font-smaller-1">
+            You can view the status of your transaction on
+            <a :href="'https://algoexplorer.io/tx/' + grant.txnid" target="_blank">here.</a>
+          </p>
+
+          <a href="#" @click="removeGrantFromCart(grant.grant_id);" class="btn btn-primary btn-block py-3 font-smaller-1 mt-4" data-dismiss="modal" class="btn btn-primary font-smaller-2 py-2 px-4">Checkout your next Grant</a>
+        </div>
+      </div>
+    </modal>
   </div>
 </b-tab>

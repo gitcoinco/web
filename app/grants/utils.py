@@ -82,7 +82,6 @@ def get_clr_rounds_metadata():
         claim_start_date = CLR_ROUND_DATA.get('claim_start_date')
         claim_end_date = CLR_ROUND_DATA.get('claim_end_date')
         banner_round_name = CLR_ROUND_DATA.get('banner_round_name')
-        approval_start_date = datetime.strptime(CLR_ROUND_DATA.get('approval_start_date'), '%Y-%m-%d:%H.%M.%S')
 
         # timezones are in UTC (format example: 2021-06-16:15.00.00)
         round_start_date = datetime.strptime(start_date, '%Y-%m-%d:%H.%M.%S')
@@ -113,7 +112,6 @@ def get_clr_rounds_metadata():
         claim_end_date = None
         round_status = 'done'
         banner_round_name = ''
-        approval_start_date = timezone.now() + timezone.timedelta(days=10)
 
     return {
         'clr_round': clr_round,
@@ -123,8 +121,7 @@ def get_clr_rounds_metadata():
         'claim_start_date': claim_start_date,
         'claim_end_date': claim_end_date,
         'round_status': round_status,
-        'banner_round_name': banner_round_name,
-        'approval_start_date': approval_start_date
+        'banner_round_name': banner_round_name
     }
 
 

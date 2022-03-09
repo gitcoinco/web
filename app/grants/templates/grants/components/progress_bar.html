@@ -1,4 +1,4 @@
-<progress-bar inline-template :steps="steps" >
+<progress-bar inline-template :steps="currentSteps" >
   <template>
     <div v-if="steps.length" class="progress-wrapper">
       <div class="d-flex">
@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <hr class="progress-line" :style="{ width: `${lineWidth}%`, margin: `0 0 0 ${((100 - lineWidth) / 2)}%` }" />
+      <hr class="progress-line" :style="{ width: `${lineWidth}%`, margin: `0 0 0 ${margin}%` }" />
     </div>
   </template>
 </progress-bar>

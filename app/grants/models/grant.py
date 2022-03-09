@@ -130,6 +130,11 @@ class GrantCLR(SuperModel):
         null=True, blank=True,
         help_text="Grants allowed in this CLR round"
     )
+    grant_excludes = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grants excluded in this CLR round"
+    )
     subscription_filters = JSONField(
         default=dict,
         null=True, blank=True,
@@ -933,7 +938,7 @@ class Grant(SuperModel):
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
 
-        grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name'])
+        grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
 
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 

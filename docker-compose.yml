@@ -77,6 +77,8 @@ services:
           memory: 1024M
         reservations:
           memory: 512M
+    working_dir: /code
+    command: ["bash", "/bin/docker-command.bash"]
 
   testrpc:
     image: trufflesuite/ganache-cli
@@ -124,6 +126,7 @@ services:
     depends_on:
       - db
       - redis
+    working_dir: /code
     command: ["bash","./bin/celery/worker/run.sh"]
   scheduler:
     <<: *worker

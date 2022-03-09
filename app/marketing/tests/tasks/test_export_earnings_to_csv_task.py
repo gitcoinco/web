@@ -19,17 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import shutil
-
-from celery.exceptions import MaxRetriesExceededError
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 from django.core import mail
 
+import pytest
 from app import settings
-from dashboard.tests.factories import ProfileFactory, EarningFactory
+from celery.exceptions import MaxRetriesExceededError
+from dashboard.tests.factories import EarningFactory, ProfileFactory
 from grants.tests.factories import GrantFactory
 from marketing.tasks import export_earnings_to_csv, send_csv
 
@@ -108,6 +106,3 @@ class TestSendCSV:
             assert mock_send_mail.call_args[1]['from_name'] == f'@{profile.handle}'
             assert mock_send_mail.call_args[1]['categories'] == ['transactional']
             assert mock_send_mail.call_args[1]['csv'] == path
-
-
-

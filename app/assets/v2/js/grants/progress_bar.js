@@ -5,10 +5,10 @@ Vue.component('progress-bar', {
   delimiters: [ '[[', ']]' ],
   computed: {
     lineWidth() {
-      if (this.steps.length >= 4) {
-        return 80;
-      }
-      return this.steps.length * 20 + 10;
+      return (100 / this.steps.length) * (this.steps.length - 1);
+    },
+    margin() {
+      return (100 / this.steps.length) / 2;
     }
   }
 });
