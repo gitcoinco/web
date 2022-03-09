@@ -166,7 +166,7 @@ jobs:
       - name: Compute some values
         id: compute
         run: |
-          echo "::set-output name=pulumi_stack::review-${{ github.event.number }}"
+          echo "::set-output name=pulumi_stack::gitcoin/review/review-${{ github.event.number }}"
 
       #########################################################################
       # Provision the shared ressources for the review environment
@@ -181,8 +181,8 @@ jobs:
       # Select the new pulumi stack 
       - run: |
           npm install
-          pulumi stack select -c review
-          pulumi config -s review set aws:region us-west-2 --non-interactive
+          pulumi stack select -c gitcoin/review-env/review
+          pulumi config -s gitcoin/review-env/review set aws:region us-west-2 --non-interactive
         working-directory: infra/review-env
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -235,7 +235,7 @@ jobs:
         name: Create the environment specific for this PR
         with:
           command: up
-          stack-name: gitcoin/review/${{ steps.compute.outputs.pulumi_stack }}
+          stack-name: ${{ steps.compute.outputs.pulumi_stack }}
           upsert: true
           work-dir: infra/review-pr
         env:
