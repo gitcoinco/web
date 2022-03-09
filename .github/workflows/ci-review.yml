@@ -166,7 +166,7 @@ jobs:
       - name: Compute some values
         id: compute
         run: |
-          echo "::set-output name=pulumi_stack::review_${{ github.event.number }}"
+          echo "::set-output name=pulumi_stack::review-${{ github.event.number }}"
 
       #########################################################################
       # Provision the shared ressources for the review environment
@@ -304,7 +304,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Test your commit here: [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }})`
+              body: `Test your commit here: \
+              - [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }}) \
+              - [http://${{ steps.compute.outputs.pulumi_stack }}.review.gitcoin.co](http://${{ steps.compute.outputs.pulumi_stack }}.review.gitcoin.co) \
+              `
             })
-      
-      
+          

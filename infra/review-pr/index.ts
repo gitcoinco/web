@@ -23,8 +23,8 @@ const privateSubnet2ID = `${process.env["REVIEW_ENV_PRIVATE_SUBNET_2"]}`;
 const publicSubnet1ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_1"]}`;
 const publicSubnet2ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_2"]}`;
 
-const route53ZoneID =  `${process.env["REVIEW_ENV_ROUTE53_ZONE_ID"]}`; 
-const domain =  `${process.env["REVIEW_ENV_DOMAIN"]}`; 
+const route53ZoneID = `${process.env["REVIEW_ENV_ROUTE53_ZONE_ID"]}`;
+const domain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
 
 
 //////////////////////////////////////////////////////////////
@@ -105,12 +105,12 @@ export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websi
 //////////////////////////////////////////////////////////////
 
 const vpc = awsx.ec2.Vpc.fromExistingIds("gitcoin", {
-    vpcId: vpcID,                                            
-    privateSubnetIds: [privateSubnet1ID, privateSubnet2ID],  
-    publicSubnetIds: [publicSubnet1ID, publicSubnet2ID]          
+    vpcId: vpcID,
+    privateSubnetIds: [privateSubnet1ID, privateSubnet2ID],
+    publicSubnetIds: [publicSubnet1ID, publicSubnet2ID]
 });
 
-export const vpc_id  = vpc.id;
+export const vpc_id = vpc.id;
 export const vpcPrivateSubnetIds = vpc.privateSubnetIds;
 
 
@@ -573,8 +573,8 @@ export const frontend = listener.endpoint
 
 
 const www = new aws.route53.Record("www", {
-    zoneId: route53ZoneID,    // TODO: hardcoded
-    name: domain,     // TODO: hardcoded
+    zoneId: route53ZoneID,
+    name: domain,
     type: "CNAME",
     ttl: 300,
     records: [listener.endpoint.hostname],
