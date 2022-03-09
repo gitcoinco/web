@@ -9,6 +9,10 @@ Vue.component('form-wrapper', {
     },
     'total-steps': {
       type: Number, required: true
+    },
+    disableConfirm: {
+      type: Boolean,
+      'default': false
     }
   },
   template: '#form-wrapper'

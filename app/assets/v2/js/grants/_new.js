@@ -98,7 +98,6 @@ Vue.mixin({
     checkForm: function(e) {
       let vm = this;
 
-      vm.submitted = true;
       vm.errors = {};
       if (!vm.form.title.length) {
         vm.$set(vm.errors, 'title', 'Please enter the title');
@@ -464,6 +463,9 @@ if (document.getElementById('gc-new-grant')) {
       };
     },
     computed: {
+      disableConfirm() {
+        return this.submitted && this.step === this.currentSteps.length && Object.keys(this.errors).length === 0;
+      },
       grantTagOptions() {
         const all_tags = this.grant_tags.sort((a, b) => b.is_eligibility_tag - a.is_eligibility_tag);
         const first_discovery = (tag) => tag.is_eligibility_tag === 0;
