@@ -231,7 +231,7 @@ const initAlgorandConnectionAlgoSigner = async(grant, vm) => {
 };
 const initAlgorandConnectionMyAlgo = async(grant, vm) => {
   // 1. check if wallet is available
-  if (MyAlgoConnect) {
+  if (!MyAlgoConnect) {
     _alert({ message: 'Unable to initialize MyAlgo Connect' }, 'danger');
     return;
   }
@@ -332,11 +332,11 @@ const initAlgorandConnection = async(grant, vm) => {
       // initialize wallet through chain of fallbacks
       // MyAlgo Connect -> Wallet Connect -> AlgoSigner
 
-      if (!MyAlgoConnect) {
+      if (MyAlgoConnect) {
         callback = initAlgorandConnectionMyAlgo;
-      } else if (!WalletConnect) {
+      } else if (WalletConnect) {
         callback = initAlgorandConnectionWalletConnect;
-      } else if (!AlgoSigner) {
+      } else if (AlgoSigner) {
         callback = initAlgorandConnectionAlgoSigner;
       } else {
         _alert(
