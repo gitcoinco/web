@@ -138,8 +138,8 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ steps.compute.outputs.docker_tag }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ github.event.number }}/web:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ github.event.number }}/web:buildcache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:buildcache,mode=max
 
       - uses: actions/github-script@v6
         with:
