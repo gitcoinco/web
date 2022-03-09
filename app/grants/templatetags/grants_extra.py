@@ -85,7 +85,7 @@ def humanize_short(number):
     try:
         number = float(number)
         if number > 1000000:
-            number = str(round(number / 1000000)) + 'M'
+            number = str(round(number / 100000) / 10) + 'M'
         elif number > 1000:
             number = str(round(number / 1000)) + 'K'
     except:
