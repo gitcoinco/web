@@ -56,71 +56,64 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js 14
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-          cache: "yarn"
+      # - name: Use Node.js 14
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: 14
+      #     cache: "yarn"
 
-      - name: Use Python 3.7
-        uses: "actions/setup-python@v2"
-        with:
-          python-version: 3.7
-          cache: "pip"
+      # - name: Use Python 3.7
+      #   uses: "actions/setup-python@v2"
+      #   with:
+      #     python-version: 3.7
+      #     cache: "pip"
 
-      - name: Debug
-        run: |
-          echo "Issu enumber:" ${{ github.event.issue.number }}
-          echo "github.ref": ${{ github.ref }}
-          echo "github.ref_name": ${{ github.ref_name }}
-          now_break ... 
+      # - name: Setup Env
+      #   run: |
+      #     echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
+      #     cp app/app/ci.env app/app/.env
+      #     pip install pip==20.0.2 setuptools wheel --upgrade
 
-      - name: Setup Env
-        run: |
-          echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
-          cp app/app/ci.env app/app/.env
-          pip install pip==20.0.2 setuptools wheel --upgrade
+      # - name: Fetch and Install GeoIP database files
+      #   run: |
+      #     sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
+      #     cp dist/*.gz ./
+      #     gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
+      #     tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
+      #     sudo mkdir -p /opt/GeoIP/
+      #     sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
+      #     sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
 
-      - name: Fetch and Install GeoIP database files
-        run: |
-          sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
-          cp dist/*.gz ./
-          gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
-          tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
-          sudo mkdir -p /opt/GeoIP/
-          sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
-          sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
+      # - name: Install libvips, Node, and Python dependencies
+      #   run: |
+      #     sudo apt-get install -y libvips libvips-dev
+      #     node --version
+      #     yarn install
+      #     pip install -r requirements/test.txt
+      #     yarn run eslint
+      #     yarn run stylelint
+      #     (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
 
-      - name: Install libvips, Node, and Python dependencies
-        run: |
-          sudo apt-get install -y libvips libvips-dev
-          node --version
-          yarn install
-          pip install -r requirements/test.txt
-          yarn run eslint
-          yarn run stylelint
-          (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
+      # - name: Run management commands
+      #   run: |
+      #     python app/manage.py migrate
+      #     python app/manage.py fetch_gas_prices
 
-      - name: Run management commands
-        run: |
-          python app/manage.py migrate
-          python app/manage.py fetch_gas_prices
+      # - name: Run Python and UI tests
+      #   run: |
+      #     pytest -p no:ethereum -p no:warnings
+      #     bin/ci/cypress-run
 
-      - name: Run Python and UI tests
-        run: |
-          pytest -p no:ethereum -p no:warnings
-          bin/ci/cypress-run
+      # - name: Generate Markdown documentation and static docs page
+      #   run: pydocmd build
 
-      - name: Generate Markdown documentation and static docs page
-        run: pydocmd build
-
-      - name: Deploy to Github Pages 🚀
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/master'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/site
-          cname: docs.gitcoin.coind
+      # - name: Deploy to Github Pages 🚀
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   if: github.ref == 'refs/heads/master'
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: _build/site
+      #     cname: docs.gitcoin.coind
 
       - name: Compute some values
         id: compute
