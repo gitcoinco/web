@@ -162,7 +162,7 @@ if (document.getElementById('gc-grant-detail')) {
         isStaff: isStaff,
         grant: {},
         tabSelected: 0,
-        tab: null,
+        tab: null
       };
     },
     mounted: function() {
