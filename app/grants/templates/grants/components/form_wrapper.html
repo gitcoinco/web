@@ -16,6 +16,8 @@
       </button>
       <button
         type="button"
+        :aria-disabled="disableConfirm"
+        :disabled="disableConfirm"
         @click="$emit('update-navigation', 1)"
       >
         [[ currentStep === totalSteps ? 'Confirm' : 'Next']] <i class="text-primary pl-2 fa fa-arrow-right"></i>
