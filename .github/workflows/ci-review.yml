@@ -68,6 +68,13 @@ jobs:
           python-version: 3.7
           cache: "pip"
 
+      - name: Debug
+        run: |
+          echo "Issu enumber:" ${{ github.event.issue.number }}
+          echo "github.ref": ${{ github.ref }}
+          echo "github.ref_name": ${{ github.ref_name }}
+          now_break ... 
+
       # - name: Setup Env
       #   run: |
       #     echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
@@ -138,8 +145,8 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ steps.compute.outputs.docker_tag }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}_${{ github.event.issue.number }}/web:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}_${{ github.event.issue.number }}/web:buildcache,mode=max
 
       - uses: actions/github-script@v6
         with:
