@@ -56,17 +56,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js 14
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-          cache: "yarn"
+      # - name: Use Node.js 14
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: 14
+      #     cache: "yarn"
 
-      - name: Use Python 3.7
-        uses: "actions/setup-python@v2"
+      # - name: Use Python 3.7
+      #   uses: "actions/setup-python@v2"
+      #   with:
+      #     python-version: 3.7
+      #     cache: "pip"
+
+      - uses: actions/github-script@v6
         with:
-          python-version: 3.7
-          cache: "pip"
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Debug this: \n    - line 1\n    - line 2\n    - line 3`
+            })
+          
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Debug this: \n\
+                  - line 1\n\
+                  - line 2\n\
+                  - line 3`
+            })
+
 
       - name: Debug
         run: |
