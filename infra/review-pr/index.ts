@@ -24,7 +24,9 @@ const publicSubnet1ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_1"]}`;
 const publicSubnet2ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_2"]}`;
 
 const route53ZoneID = `${process.env["REVIEW_ENV_ROUTE53_ZONE_ID"]}`;
-const domain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
+const parentDomain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
+const environmentName = `${process.env["REVIEW_ENV_NAME"]}`;
+const domain = `review-${environmentName}.${parentDomain}`;
 
 
 //////////////////////////////////////////////////////////////
@@ -32,24 +34,18 @@ const domain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
 //  - user for logging
 //////////////////////////////////////////////////////////////
 
-const usrLogger = new aws.iam.User("usrLogger", {
+const usrLogger = new aws.iam.User(`gitcoin-review-${environmentName}-usrLogger`, {
     path: "/review/",
 });
-// const usrStatic = new aws.iam.User("usrStatic", {
-//     path: "/review/",
-// });
 
-const usrLoggerAccessKey = new aws.iam.AccessKey("usrLoggerAccessKey", { user: usrLogger.name });
-// const usrStaticAccessKey = new aws.iam.AccessKey("usrStaticAccessKey", {user: usrStatic.name});
+const usrLoggerAccessKey = new aws.iam.AccessKey(`gitcoin-review-${environmentName}-usrLoggerAccessKey`, { user: usrLogger.name });
 
 export const usrLoggerKey = usrLoggerAccessKey.id;
 export const usrLoggerSecret = usrLoggerAccessKey.secret;
-// export const usrStaticKey = usrStaticAccessKey.id;
-// export const usrStaticSecret = usrStaticAccessKey.secret;
 
 
 // See https://pypi.org/project/watchtower/ for the polciy required
-const test_attach = new aws.iam.PolicyAttachment("CloudWatchPolicyAttach", {
+const test_attach = new aws.iam.PolicyAttachment(`gitcoin-review-${environmentName}-CloudWatchPolicy`, {
     users: [usrLogger.name],
     roles: [],
     groups: [],
@@ -62,7 +58,7 @@ const test_attach = new aws.iam.PolicyAttachment("CloudWatchPolicyAttach", {
 // Check policy recomendation here: https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#iam-policy
 //////////////////////////////////////////////////////////////
 
-const staticAssetsBucket = new aws.s3.Bucket("bucket", {
+const staticAssetsBucket = new aws.s3.Bucket(`gitcoin-review-${environmentName}`, {
     acl: "public-read",
     website: {
         indexDocument: "index.html",
@@ -91,7 +87,7 @@ const staticAssetsBucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
     }],
 });
 
-const staticAssetsBucketPolicy = new aws.s3.BucketPolicy("staticAssetsBucketPolicy", {
+const staticAssetsBucketPolicy = new aws.s3.BucketPolicy(`gitcoin-review-${environmentName}`, {
     bucket: staticAssetsBucket.id,
     policy: staticAssetsBucketPolicyDocument.apply(staticAssetsBucketPolicyDocument => staticAssetsBucketPolicyDocument.json),
 });
@@ -101,10 +97,10 @@ export const bucketArn = staticAssetsBucket.arn;
 export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websiteEndpoint}/`;
 
 //////////////////////////////////////////////////////////////
-// Set up VPC
+// Load VPC for review environments
 //////////////////////////////////////////////////////////////
 
-const vpc = awsx.ec2.Vpc.fromExistingIds("gitcoin", {
+const vpc = awsx.ec2.Vpc.fromExistingIds(`gitcoin-review`, {
     vpcId: vpcID,
     privateSubnetIds: [privateSubnet1ID, privateSubnet2ID],
     publicSubnetIds: [publicSubnet1ID, publicSubnet2ID]
@@ -117,11 +113,11 @@ export const vpcPrivateSubnetIds = vpc.privateSubnetIds;
 //////////////////////////////////////////////////////////////
 // Set up RDS instance
 //////////////////////////////////////////////////////////////
-let dbSubnetGroup = new aws.rds.SubnetGroup("rds-subnet-group", {
+let dbSubnetGroup = new aws.rds.SubnetGroup(`gitcoin-review-${environmentName}`, {
     subnetIds: vpcPrivateSubnetIds
 });
 
-const db_secgrp = new aws.ec2.SecurityGroup("db_secgrp", {
+const db_secgrp = new aws.ec2.SecurityGroup(`gitcoin-review-${environmentName}`, {
     description: "Security Group for DB",
     vpcId: vpc.id,
     ingress: [
@@ -136,7 +132,7 @@ const db_secgrp = new aws.ec2.SecurityGroup("db_secgrp", {
 });
 
 // TODO: enable delete protection for the DB
-const postgresql = new aws.rds.Instance("gitcoin-database", {
+const postgresql = new aws.rds.Instance(`gitcoin-review-${environmentName}`, {
     allocatedStorage: 10,
     engine: "postgres",
     // engineVersion: "5.7",
@@ -158,7 +154,7 @@ export const rdsId = postgresql.id
 // Set up Redis
 //////////////////////////////////////////////////////////////
 
-const redisSubnetGroup = new aws.elasticache.SubnetGroup("gitcoin-cache-subnet-group", {
+const redisSubnetGroup = new aws.elasticache.SubnetGroup(`gitcoin-review-${environmentName}`, {
     subnetIds: vpcPrivateSubnetIds
 });
 
@@ -176,7 +172,7 @@ const secgrp_redis = new aws.ec2.SecurityGroup("secgrp_redis", {
     }],
 });
 
-const redis = new aws.elasticache.Cluster("gitcoin-cache", {
+const redis = new aws.elasticache.Cluster(`gitcoin-review-${environmentName}`, {
     engine: "redis",
     engineVersion: "4.0.10",
     nodeType: "cache.t2.micro",
@@ -195,10 +191,10 @@ export const redisCacheOpsConnectionUrl = pulumi.interpolate`redis://${redisPrim
 // // Set up ALB and ECS cluster
 // //////////////////////////////////////////////////////////////
 
-const cluster = new awsx.ecs.Cluster("gitcoin", { vpc });
+const cluster = new awsx.ecs.Cluster(`gitcoin-review-${environmentName}`, { vpc });
 // export const clusterInstance = cluster;
 export const clusterId = cluster.id;
-const listener = new awsx.lb.ApplicationListener("app", { port: 80, vpc: cluster.vpc });
+const listener = new awsx.lb.ApplicationListener(`gitcoin-review-${environmentName}`, { port: 80, vpc: cluster.vpc });
 
 
 let environment = [
@@ -514,7 +510,7 @@ let environment = [
 
 ];
 
-const task = new awsx.ecs.FargateTaskDefinition("task", {
+const task = new awsx.ecs.FargateTaskDefinition(`gitcoin-review-${environmentName}`, {
     containers: {
         web: {
             image: dockerGtcWebImage,
@@ -532,7 +528,7 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
 
 export const taskDefinition = task.taskDefinition.id;
 
-const secgrp = new aws.ec2.SecurityGroup("secgrp", {
+const secgrp = new aws.ec2.SecurityGroup(`gitcoin-review-${environmentName}-task`, {
     description: "gitcoin-ecs-task",
     vpcId: vpc.id,
     ingress: [
@@ -550,7 +546,7 @@ const secgrp = new aws.ec2.SecurityGroup("secgrp", {
 export const securityGroupForTaskDefinition = secgrp.id;
 
 
-const service = new awsx.ecs.FargateService("app", {
+const service = new awsx.ecs.FargateService(`gitcoin-review-${environmentName}-app`, {
     cluster,
     desiredCount: 1,
     assignPublicIp: false,

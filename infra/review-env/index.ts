@@ -7,7 +7,7 @@ import * as awsx from "@pulumi/awsx";
 // Set up VPC
 //////////////////////////////////////////////////////////////
 
-const vpc = new awsx.ec2.Vpc("gitcoin", {
+const vpc = new awsx.ec2.Vpc("gitcoin-review", {
     subnets: [
         { type: "public", },
         { type: "private", mapPublicIpOnLaunch: true },

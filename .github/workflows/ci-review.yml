@@ -202,12 +202,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          POC_DB_NAME: ${{ secrets.POC_DB_NAME }}
-          POC_DB_PASSWORD: ${{ secrets.POC_DB_PASSWORD }}
-          POC_DB_USER: ${{ secrets.POC_DB_USER }}
-          POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
-          POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
-          POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
 
 
       #########################################################################
@@ -240,16 +234,14 @@ jobs:
           work-dir: infra/review-pr
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_CONFIG_PASSPHRASE: 
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          POC_DB_NAME: ${{ secrets.POC_DB_NAME }}
-          POC_DB_PASSWORD: ${{ secrets.POC_DB_PASSWORD }}
-          POC_DB_USER: ${{ secrets.POC_DB_USER }}
-          POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
-          POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
-          POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
 
           # Pass in the outputs from the generic environment, we will deploy our ressources in the VPC
           # and subnet that where created there
