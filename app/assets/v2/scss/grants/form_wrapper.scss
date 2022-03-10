@@ -34,3 +34,11 @@
     margin: 20px 0 10px 0;
   }
 }
+
+@media (max-width: 991.98px) {
+  .create-wrapper {
+    .new-border {
+      border: none;
+    }
+  }
+}
