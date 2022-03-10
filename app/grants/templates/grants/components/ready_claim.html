@@ -1,12 +1,12 @@
-<matching-claim inline-template :match="match">
+<matching-claim inline-template :match="match" :grant="grant">
     <b-row class="row mt-4 align-items-center">
       <b-col lg="4" sm="12">
         <span class="font-bigger-1 text-grey-500" id="grant-clrs">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
       </b-col>
       <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.token.symbol ]]</h4>
-        <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals:3 | formatNumber ]] [[ match.grant_payout.token.symbol ]]</span>
-        <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals:3 | formatNumber ]]</span>
+        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals | formatNumber ]] [[ match.grant_payout.token.symbol ]]</h4>
+        <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals | formatNumber ]] [[ match.grant_payout.token.symbol ]]</span>
+        <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals | formatNumber ]]</span>
         <span v-if="match.grant_payout.status === 'pending'">(pending review)</span>
       </b-col>
 
@@ -27,7 +27,7 @@
           <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">No Action</span>
         </template>
       </b-col>
-  
+
       <b-col class="text-lg-right mt-3 mt-lg-0">
         <template v-if="['pending', 'ready'].includes(match.grant_payout.status)">
           <a href="javascript:;" id="claim-match"

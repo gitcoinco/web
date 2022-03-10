@@ -23,6 +23,7 @@ Vue.mixin({
       }
       window.history.replaceState({}, document.title, `${window.location.pathname}`);
     },
+
     async fetchGrants() {
       let vm = this;
 
@@ -49,8 +50,7 @@ Vue.mixin({
                 e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
               });
 
-              // TODO: HAS TO BE UPDATED
-              const claimData = await vm.checkClaimStatus(m, grant.admin_address);
+              const claimData = await vm.checkClaimStatus(m);
               m.status = claimData.status;
 
               // check to ensure we don't allow users to claim if balance is 0
@@ -66,7 +66,6 @@ Vue.mixin({
         }));
 
         vm.grants = grants;
-
         vm.loading = false;
 
       } catch (e) {
@@ -74,60 +73,51 @@ Vue.mixin({
         _alert('Something went wrong. Please try again later', 'danger');
       }
     },
-    async checkClaimStatus(match, admin_address) {
-      const recipientAddress = admin_address;
+
+    async checkClaimStatus(match, adminAddress) {
       const contractAddress = match.grant_payout.contract_address;
       const txHash = match.claim_tx;
 
       let status = 'not-found';
       let timestamp = null;
 
-      web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
+      web3 = new Web3(`wss://rinkeby.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
 
-      // check if contract has funds for recipientAddress
-      const payout_contract = await new web3.eth.Contract(
+      const payoutContract = await new web3.eth.Contract(
         JSON.parse(document.contxt.match_payouts_abi),
-        contractAddress
+        contractAddress,
       );
-      // After payouts are claimed, this will return 0 which updates value of claim_tx
-      const amount = await payout_contract.methods.payouts(recipientAddress).call();
 
-      if (amount == 0) {
-        status = 'no-balance-to-claim';
-        return { status, timestamp };
+      const hexAmount = match.merkle_claim?.amount || "0x00";
+      const index = match.merkle_claim?.index;
+      const amount = web3.utils.toBN(hexAmount);
+
+      if (index === undefined || amount.toString() === "0") {
+        return {
+          status: 'no-balance-to-claim',
+          timestamp,
+        };
       }
 
       if (!txHash) {
         return { status, timestamp };
       }
 
-
-      let tx = await web3.eth.getTransaction(txHash);
-
-      if (tx && tx.to == contractAddress) {
-        status = 'pending'; // claim transaction is pending
-
-        addressWithout0x = recipientAddress.replace('0x', '').toLowerCase();
-
-        // check if user attempted to claim match payout
-        // 0x8658b34 is the method id of the claimMatchPayout(address _recipient) function
-        userClaimedMatchPayout = tx.input.startsWith('0x8658b34') && tx.input.endsWith(addressWithout0x);
-
-        if (userClaimedMatchPayout) {
-          let receipt = await web3.eth.getTransactionReceipt(txHash);
-
-          if (receipt && receipt.status) {
-            status = 'claimed';
-            timestamp = (await web3.eth.getBlock(receipt.blockNumber)).timestamp; // fetch claim date
-          }
+      const claimed = await payoutContract.methods.hasClaimed(index).call();
+      if (claimed) {
+        return {
+          status: "claimed",
+          timestamp,
         }
       }
 
-      return { status, timestamp };
+      return {
+        status: "pending",
+        timestamp,
+      }
     },
-    async claimMatch(match, admin_address) {
-      const vm = this;
 
+    async claimMatch(match, adminAddress) {
       // Helper method to manage state
       const waitingState = (state) => {
         if (state === true) {
@@ -175,14 +165,25 @@ Vue.mixin({
         match.grant_payout.contract_address
       );
 
+      const hexAmount = match.merkle_claim?.amount || "0x00";
+      const index = match.merkle_claim?.index;
+      const merkleProof = match.merkle_claim?.merkleProof || [];
+
       // Claim payout
-      matchPayouts.methods.claimMatchPayout(admin_address)
+      const claimArgs = {
+        index: index,
+        claimee: adminAddress,
+        amount: hexAmount,
+        merkleProof: merkleProof,
+      };
+
+      matchPayouts.methods.claim(claimArgs)
         .send({from: user})
-        .on('transactionHash', async function(txHash) {
-          await vm.postToDatabase(match.pk, txHash);
-          await vm.fetchGrants();
-          vm.$forceUpdate();
-          vm.tabSelected = 1;
+        .on('transactionHash', async txHash => {
+          await this.postToDatabase(match.pk, txHash);
+          await this.fetchGrants();
+          this.$forceUpdate();
+          this.tabSelected = 1;
           waitingState(false);
           _alert('Your matching funds claim is being processed', 'success');
         })
@@ -270,6 +271,7 @@ Vue.mixin({
 });
 
 if (document.getElementById('gc-matching-funds')) {
+  props: ['grant'],
   appGrantDetails = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-matching-funds',
