@@ -44,12 +44,12 @@ class SearchResult(SuperModel):
         res = es.index(index="search-index", id=self.pk, body=doc)
 
 
-def search(query, num_results=500):
+def search(query, page=0, num_results=500):
     if not settings.ELASTIC_SEARCH_URL:
         return {}
     es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
     res = es.search(index="search-index", body={
-      "from" : 0, "size" : num_results,
+      "from" : page, "size" : num_results,
       "query": {
         "wildcard": {
           "full_search": f"*{query}*",

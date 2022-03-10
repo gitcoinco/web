@@ -67,10 +67,16 @@
                   </div>
                 </a>
               </li>
+
             </template>
             <template v-else>
               <li class="gc-search-result__content pt-3 gc-search-result__description font-smaller-2 text-center mb-3">
-                No matches found
+                No matches found<template v-if="hasMoreResults"> yet...</template>
+              </li>
+            </template>
+            <template v-if="hasMoreResults">
+              <li class="bg-white border-grey border-top-1 bottom-0 font-smaller-2 pb-3 position-sticky pt-3 text-center">
+                <a href="#" @click="search">Load more results (showing [[ page * perPage ]] of [[ total ]])...</a>
               </li>
             </template>
           </ul>
