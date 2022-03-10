@@ -50,9 +50,7 @@ def fetch_contributions(clr_round, network='mainnet'):
 
     clr_start_date = clr_round.start_date
     clr_end_date = clr_round.end_date
-    grant_filters = clr_round.grant_filters
     subscription_filters = clr_round.subscription_filters
-    collection_filters = clr_round.collection_filters
 
     contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(
         match=True,

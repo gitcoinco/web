@@ -711,6 +711,10 @@ def get_grants_by_filters(
         # apply the grant_filters
         _grants = _grants.filter(grant_filters)
 
+        # apply the grant_exludes
+        if clr_round.grant_excludes:
+            _grants = _grants.exclude(**clr_round.grant_excludes)
+
     if profile:
         if my_grants:
             # 3. Filter grants created by user
@@ -767,7 +771,6 @@ def get_grants_by_filters(
                 tenant_filter = tenant + '_payout_address' if tenant != 'eth' else 'admin_address'
                 tenant_query = ~Q(('%s' % tenant_filter, '0x0'))
 
-            # _grants = _grants.exclude(Q(**{tenant_filter: '0x0'}))
         _grants = _grants.filter(tenant_query)
 
     if grant_regions:

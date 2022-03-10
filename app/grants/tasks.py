@@ -369,16 +369,6 @@ def process_predict_clr(self, save_to_db, from_date, clr_round, network, what) -
 
     print(f"finished CLR estimates for {clr_round.round_num} {clr_round.sub_round_slug}")
 
-    # TOTAL GRANT
-    # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)
-    # grants = grants.filter(**clr_round.grant_filters)
-
-    # total_clr_distributed = 0
-    # for grant in grants:
-    #     total_clr_distributed += grant.clr_prediction_curve[0][1]
-
-    # print(f'Total CLR allocated for {clr_round.round_num} - {total_clr_distributed}')
-
 
 @app.shared_task(bind=True, max_retries=3)
 def process_grant_creation_email(self, grant_id, profile_id):

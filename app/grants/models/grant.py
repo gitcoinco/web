@@ -245,6 +245,8 @@ class GrantCLR(SuperModel):
             grants = grants.filter(pk__in=grant_ids)
         if self.grant_filters:
             grants = grants.filter(**self.grant_filters)
+        if self.grant_excludes:
+            grants = grants.exclude(**self.grant_excludes)
         if self.subscription_filters:
             grants = grants.filter(**self.subscription_filters)
 
