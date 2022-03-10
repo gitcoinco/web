@@ -34,3 +34,13 @@
     margin: 20px 0 10px 0;
   }
 }
+
+@media (max-width: 991.98px) {
+  .create-wrapper {
+    .new-border {
+      border: none;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
