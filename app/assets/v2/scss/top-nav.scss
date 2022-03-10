@@ -1,8 +1,8 @@
 
 // SVGs for mobile nav
 html {
-  --navbar-toggle-open: url("data:image/svg+xml,%3csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 8V6H21V8H3ZM3 13H21V11H3V13ZM3 18H21V16H3V18Z' fill='black'/%3e%3c/svg%3e");
-  --navbar-toggle-close: url("data:image/svg+xml,%3csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z' fill='black'/%3e%3c/svg%3e");
+  --navbar-toggle-open: url("data:image/svg+xml,%3csvg%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M3%208V6H21V8H3ZM3%2013H21V11H3V13ZM3%2018H21V16H3V18Z'%20fill='black'/%3e%3c/svg%3e");
+  --navbar-toggle-close: url("data:image/svg+xml,%3csvg%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M19%206.41L17.59%205L12%2010.59L6.41%205L5%206.41L10.59%2012L5%2017.59L6.41%2019L12%2013.41L17.59%2019L19%2017.59L13.41%2012L19%206.41Z'%20fill='black'/%3e%3c/svg%3e");
 }
 
 .top-nav {
