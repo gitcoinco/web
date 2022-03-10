@@ -889,6 +889,30 @@ Vue.mixin({
       if (hasError) {
         vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${token_name} address`);
       }
+    },
+
+    validatePayoutAddress: function(token_name) {
+      let vm = this;
+      let hasError = false;
+
+      vm.errors = {};
+
+      switch (token_name) {
+        case 'CKB': {
+          const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
+          const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
+    
+          if (!isNervosValid && !vm.bounty.bounty_owner_address.toLowerCase().startsWith('0x')) {
+            hasError = true;
+          }
+        }
+
+        // include validation for other tokens here
+      }
+
+      if (hasError) {
+        vm.$set(vm.errors, 'funderAddress', `Please enter a valid ${token_name} address`);
+      }
     }
   },
   computed: {
