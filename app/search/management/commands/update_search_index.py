@@ -34,9 +34,15 @@ class Command(BaseCommand):
         if sync_type == 'create':
             for sr in SearchResult.objects.all():
                 print(sr.pk)
-                sr.put_on_elasticsearch()
+                try:
+                    sr.put_on_elasticsearch()
+                except Exception as e:
+                    print('failed:', e)
         elif sync_type == 'update':
             then = timezone.now() - timezone.timedelta(hours=1)
             for sr in SearchResult.objects.filter(modified_on__gt=then):
                 print(sr.pk)
-                sr.put_on_elasticsearch()
+                try:
+                    sr.put_on_elasticsearch()
+                except Exception as e:
+                    print('failed:', e)
