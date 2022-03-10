@@ -51,8 +51,8 @@ def search(query, num_results=500):
     res = es.search(index="search-index", body={
       "from" : 0, "size" : num_results,
       "query": {
-        "match": {
-          "full_search": query,
+        "wildcard": {
+          "full_search": f"*{query}*",
         }
       }
     })
