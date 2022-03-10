@@ -242,6 +242,9 @@ Vue.component('grant-collection', {
     },
     getGrantTitle(index) {
       return `${this.collection.cache?.grants[index]?.title}`;
+    },
+    getGrantUrl(index) {
+      return `${this.collection.cache?.grants[index]?.url}`;
     }
   }
 });
