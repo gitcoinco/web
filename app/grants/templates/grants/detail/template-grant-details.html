@@ -4,7 +4,7 @@
 
     <slot></slot>
     <div class="container grid grid-template-sidebar">
-      <div class="grant-data">
+      <div class="grant-data overflow-auto">
         <!-- Inactive Grant -->
         <div v-if="!grant.active && !grant.verified">
           <b-alert show dismissible variant="primary" class="border border-primary">
