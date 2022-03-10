@@ -39,7 +39,7 @@ if (document.getElementById('gc-search')) {
     },
     computed: {
       hasMoreResults () {
-        return this.page !== false && this.total && (this.page + 1) * this.perPage < this.total
+        return this.page !== false && this.total && this.page * this.perPage < this.total
       },
     },
     methods: {
