@@ -191,6 +191,9 @@ Vue.component('grants-cart', {
           return item.network === network;
         });
       } else {
+        if (network === 'testnet') {
+          network = 'mainnet';
+        }
         result = vm.sortByPriority.filter((item) => {
           return item.network.toLowerCase().indexOf(network.toLowerCase()) >= 0;
         });
@@ -1025,10 +1028,11 @@ Vue.component('grants-cart', {
       let tempId = this.networkId;
 
       if (tempChainId) {
-        tempId = tempChainId;
+        tempId = String(tempChainId);
+        vm.chainId = String(tempChainId);
       }
 
-      return this.filterByChainId.filter(token => token.name === name && token.networkId == tempId)[0];
+      return this.filterByChainId.filter(token => token.name === name && token.networkId == String(tempId))[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
@@ -1408,7 +1412,7 @@ Vue.component('grants-cart', {
 
           let tempChainId = this.networkId;
 
-          if (this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId).length === 0) {
+          if (this.filterByChainId.filter(token => token.name === tokenName && token.networkId == this.networkId).length === 0) {
             tempChainId = '1';
           }
 
