@@ -1011,7 +1011,7 @@ Vue.component('grants-cart', {
      * response to facilitate backward compatibility
      * @param {String} name Token name, e.g. ETH or DAI
      */
-    getTokenByName(name, isPolygon = false) {
+    getTokenByName(name, isPolygon = false, tempChainId) {
       if (name === 'ETH' && !isPolygon) {
         return {
           addr: ETH_ADDRESS,
@@ -1022,8 +1022,13 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
+      let tempId = this.networkId;
 
-      return this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
+      if (tempChainId) {
+        tempId = tempChainId;
+      }
+
+      return this.filterByChainId.filter(token => token.name === name && token.networkId == tempId)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
@@ -1400,7 +1405,14 @@ Vue.component('grants-cart', {
 
           // Get token information
           const tokenName = donation.grant.grant_donation_currency;
-          const tokenDetails = this.getTokenByName(tokenName);
+
+          let tempChainId = this.networkId;
+
+          if (this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId).length === 0) {
+            tempChainId = '1';
+          }
+
+          const tokenDetails = this.getTokenByName(tokenName, false, tempChainId);
 
           // Gitcoin uses special addresses to represent native chain currencies, but the contract does not.
           // Therefore we get the value of denomination and token_address using the below logic instead of
