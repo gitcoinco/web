@@ -183,7 +183,6 @@ Vue.component('grants-cart', {
       let network;
 
       network = vm.tokenListOptions.network || vm.network;
-
       if (vm.network == '') {
         result = vm.sortByPriority;
       } else if (vm.tokenListOptions.strict) {
@@ -1023,7 +1022,7 @@ Vue.component('grants-cart', {
         };
       }
 
-      return this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
+      return this.filterByChainId.filter(token => token.name === name && token.network == this.network)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
