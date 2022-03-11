@@ -253,7 +253,7 @@ jobs:
 
           REVIEW_ENV_ROUTE53_ZONE_ID: ${{ secrets.ROUTE53_ZONE_ID }}
           REVIEW_ENV_DOMAIN: review.gitcoin.co
-          REVIEW_ENV_NAME: ${{ steps.compute.outputs.pulumi_stack }}
+          REVIEW_ENV_NAME: ${{ github.event.number }}
 
 
       - name: Start migration task
