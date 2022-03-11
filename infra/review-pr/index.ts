@@ -3,30 +3,30 @@ import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
-const dbUsername = `${process.env["POC_DB_USER"]}`;
-const dbPassword = pulumi.secret(`${process.env["POC_DB_PASSWORD"]}`);
-const dbName = `${process.env["POC_DB_NAME"]}`;
+export const dbUsername = `${process.env["POC_DB_USER"]}`;
+export const dbPassword = pulumi.secret(`${process.env["POC_DB_PASSWORD"]}`);
+export const dbName = `${process.env["POC_DB_NAME"]}`;
 
-const githubApiUser = `${process.env["POC_GITHUB_API_USER"]}`;
-const githubApiToken = pulumi.secret(`${process.env["POC_GITHUB_API_TOKEN"]}`);
-const githubClientId = `${process.env["POC_GITHUB_CLIENT_ID"]}`;
-const githubClientSecret = pulumi.secret(`${process.env["POC_GITHUB_CLIENT_SECRET"]}`);
-const githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
+export const githubApiUser = `${process.env["POC_GITHUB_API_USER"]}`;
+export const githubApiToken = pulumi.secret(`${process.env["POC_GITHUB_API_TOKEN"]}`);
+export const githubClientId = `${process.env["POC_GITHUB_CLIENT_ID"]}`;
+export const githubClientSecret = pulumi.secret(`${process.env["POC_GITHUB_CLIENT_SECRET"]}`);
+export const githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
 
 
 export const dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
 
 
-const vpcID = `${process.env["REVIEW_ENV_VPC_ID"]}`;
-const privateSubnet1ID = `${process.env["REVIEW_ENV_PRIVATE_SUBNET_1"]}`;
-const privateSubnet2ID = `${process.env["REVIEW_ENV_PRIVATE_SUBNET_2"]}`;
-const publicSubnet1ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_1"]}`;
-const publicSubnet2ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_2"]}`;
+export const vpcID = `${process.env["REVIEW_ENV_VPC_ID"]}`;
+export const privateSubnet1ID = `${process.env["REVIEW_ENV_PRIVATE_SUBNET_1"]}`;
+export const privateSubnet2ID = `${process.env["REVIEW_ENV_PRIVATE_SUBNET_2"]}`;
+export const publicSubnet1ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_1"]}`;
+export const publicSubnet2ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_2"]}`;
 
-const route53ZoneID = `${process.env["REVIEW_ENV_ROUTE53_ZONE_ID"]}`;
-const parentDomain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
-const environmentName = `${process.env["REVIEW_ENV_NAME"]}`;
-const domain = `review-${environmentName}.${parentDomain}`;
+export const route53ZoneID = `${process.env["REVIEW_ENV_ROUTE53_ZONE_ID"]}`;
+export const parentDomain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
+export const environmentName = `${process.env["REVIEW_ENV_NAME"]}`;
+export const domain = `review-${environmentName}.${parentDomain}`;
 
 
 //////////////////////////////////////////////////////////////
