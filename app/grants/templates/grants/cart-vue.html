@@ -59,6 +59,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
 
+      <!-- ETH checkout button template-->
+      {% include 'grants/cart/eth_checkout_button.html' %}
 
       <div id="gc-grants-cart" class="container-lg" v-cloak>
         <grants-cart ref="cart" inline-template>
@@ -194,6 +196,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <!-- Checkout for Algorand Grants -->
                     {% include 'grants/cart/extension/algorand.html' %}
 
+                    <!-- Sticky checkout for ETH -->
+                    <div v-if="tabSelected === 'ETH' || tabSelected === 'ETH_POLYGON'" class="bg-white border-grey border-top-2 bottom-0 px-2 py-4 position-sticky text-center w-100 d-block d-md-none">
+                      <eth-checkout-button
+                        :active-checkout="activeCheckout"
+                        :on-polygon-update="onPolygonUpdate"
+                        :on-zk-sync-update="onZkSyncUpdate"
+                        :standard-checkout="standardCheckout"
+                        :is-zk-sync-down="isZkSyncDown"
+                        :is-polygon-down="isPolygonDown"
+                        :current-tokens="currentTokens"
+                        :donation-inputs="donationInputs"
+                        :max-cart-items="maxCartItems"
+                        :grants-by-tenant="grantsByTenant"
+                        :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+                        :network="network"
+                        :multisig-grants="multisigGrants"
+                        :tab-selected="tabSelected"
+                        >
+                      </eth-checkout-button>
+                    </div>
+
                     <!-- Show for non ETH tabs -->
                     <template #tabs-end>
                       <div role="presentation" class="nav nav-item ml-auto mt-2">
@@ -232,26 +255,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% include 'shared/checkout_confirmation_modal.html' %}
             </div>
 
-            <!-- Sticky checkout for ETH -->
-            <div v-if="tabSelected === 'ETH' || tabSelected === 'ETH_POLYGON'" class="bg-white border-grey border-top-2 bottom-0 px-2 py-4 position-sticky text-center w-100 d-block d-md-none">
-              <eth-checkout-button
-                :active-checkout="activeCheckout"
-                :on-polygon-update="onPolygonUpdate"
-                :on-zk-sync-update="onZkSyncUpdate"
-                :standard-checkout="standardCheckout"
-                :is-zk-sync-down="isZkSyncDown"
-                :is-polygon-down="isPolygonDown"
-                :current-tokens="currentTokens"
-                :donation-inputs="donationInputs"
-                :max-cart-items="maxCartItems"
-                :grants-by-tenant="grantsByTenant"
-                :grants-under-minimal-contribution="grantsUnderMinimalContribution"
-                :network="network"
-                :multisig-grants="multisigGrants"
-                :tab-selected="tabSelected"
-                >
-              </eth-checkout-button>
-            </div>
+
           </div>
         </grants-cart>
       </div>
@@ -261,9 +265,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/current_profile.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/fingerprintjs.html' %}
-
-    <!-- ETH checkout button template-->
-    {% include 'grants/cart/eth_checkout_button.html' %}
 
     {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>

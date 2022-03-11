@@ -1816,7 +1816,7 @@ Vue.component('grants-cart', {
     } else {
       this.grantData = [];
     }
-    
+
 
     // Load needed scripts based on tenants
     this.setChainScripts();
@@ -1834,7 +1834,7 @@ Vue.component('grants-cart', {
 
       const cartTotal = this.setCartTotal(grantData);
       const items = this.formatAnalyticsItems(grantData);
-      
+
       vm.grantAnalyticsItems;
       gtag('event', 'begin_checkout', {
         currency,
