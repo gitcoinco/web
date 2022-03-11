@@ -245,12 +245,6 @@
         }
       }
     }
-
-    &[aria-disabled="true"] {
-      &:hover {
-        background-color: transparent;
-      }
-    }
   }
 
   .dropdown-item[aria-disabled="true"] .btn {

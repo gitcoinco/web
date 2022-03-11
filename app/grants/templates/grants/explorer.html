@@ -804,7 +804,7 @@ along with this program. If not, see
     document.active_rounds = JSON.parse(document.getElementById('active_rounds').textContent);
     document.current_type = JSON.parse(document.getElementById('current_type').textContent);
     document.selected_category = "{{ selected_category }}";
-    document.network = "{{ network}}";
+    document.network = 'mainnet';
     document.keyword = "{{ keyword }}";
     document.following = {{ following|yesno:'true,false' }};
     document.idle_grants = {{ idle_grants|yesno:'true,false' }};

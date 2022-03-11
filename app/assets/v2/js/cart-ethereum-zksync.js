@@ -125,7 +125,8 @@ Vue.component('grantsCartEthereumZksync', {
 
       // If currently selected fee token is still in the cart, don't change it. Otherwise, set
       // fee token to the token used for the first item in the cart
-      if (!this.cart.tokenList.includes(this.zksync.feeTokenSymbol)) {
+      console.log(donations[0], 'donations[0], ');
+      if (!this.cart.tokenList.includes(this.zksync.feeTokenSymbol) && donations[0]) {
         this.zksync.feeTokenSymbol = donations[0].name;
       }
 

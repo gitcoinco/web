@@ -28639,6 +28639,7 @@ var LocalStore = module.exports = {
             // set
             // use try to prevent warnings from low cache storages
             try {
+                console.log(key, value, 'key, valuekey, value')
                 localStorage.setItem(key, value);
             } catch(e) {
 

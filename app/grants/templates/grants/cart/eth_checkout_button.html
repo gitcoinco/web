@@ -59,7 +59,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <b-dropdown-item-button
         v-if="!isPolygonDown"
         aria-labelledby="js-polygonfundGrants-button"
-        :aria-disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0 ? 'true' : 'false'"
+        :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || multisigGrants.length > 0"
+        :aria-disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || multisigGrants.length > 0"
       >
         <grants-cart-ethereum-polygon
           inline-template
@@ -76,7 +77,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <!-- Checkout with Polygon button -->
             <button
               class="btn p-0 checkout-logo"
-              :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || (multisigGrants.length === grantsByTenant.length)"
+              :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || multisigGrants.length > 0"
+              :aria-disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || multisigGrants.length > 0"
               id="js-polygonfundGrants-button"
               @click="checkoutWithPolygon"
             >
