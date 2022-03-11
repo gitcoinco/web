@@ -23,12 +23,27 @@
               <div class="col-auto rounded-circle pr-4" >
                 <img :src="`${collection.profile.avatar_url || '/dynamic/avatar/' + collection.profile.handle}`" class="rounded-circle" style="width: 64px;height: 64px;" />
               </div>
-              <div class="col-8 my-auto px-0" >
-                <h5 class="gc-font-base">[[ collection.profile.name || 'anonymous' ]]</h5>
+              <div class="col-auto my-auto px-0" >
+                <h5 class="gc-font-base text-grey-500">[[ collection.profile.name || 'anonymous' ]]</h5>
                 <a :href="collection.profile.url || ''" class="mr-2" target="_blank" rel="noopener noreferrer">@[[ collection.profile.handle || 'anon' ]]</a>
               </div>
             </div>
-
+          </div>
+          <div class="mx-3 py-3 px-3 border-bottom-1 border-grey font-smaller-4 text-grey-500">
+            <div class="row">
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.followers ]]</span><span class="pr-3">Followers</span>
+              </div>
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.following ]]</span><span class="pr-3">Following</span>
+              </div>
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.grants_owned ]]</span><span class="pr-3">Grant Owned</span>
+              </div>
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.grants_contributed ]]</span><span class="pr-3">Grant Contributed</span>
+              </div>
+            </div>
           </div>
           <div class="collection-item__content mx-3 pt-4 m-0 text-black">
             <h4>
