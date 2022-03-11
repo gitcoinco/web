@@ -3,18 +3,18 @@ import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
 // The following vars ar not alloed to be undefined, hence the `${...}` magic
-export const dbUsername = `${process.env["POC_DB_USER"]}`;
-export const dbPassword = pulumi.secret(`${process.env["POC_DB_PASSWORD"]}`);
-export const dbName = `${process.env["POC_DB_NAME"]}`;
+export const dbUsername = `${process.env["DB_USER"]}`;
+export const dbPassword = pulumi.secret(`${process.env["DB_PASSWORD"]}`);
+export const dbName = `${process.env["DB_NAME"]}`;
 
-export const githubApiUser = `${process.env["POC_GITHUB_API_USER"]}`;
-export const githubApiToken = pulumi.secret(`${process.env["POC_GITHUB_API_TOKEN"]}`);
-export const githubClientId = `${process.env["POC_GITHUB_CLIENT_ID"]}`;
-export const githubClientSecret = pulumi.secret(`${process.env["POC_GITHUB_CLIENT_SECRET"]}`);
-export const githubAppName = `${process.env["POC_GITHUB_APP_NAME"]}`;
+export const githubApiUser = `${process.env["GITHUB_API_USER"]}`;
+export const githubApiToken = pulumi.secret(`${process.env["GITHUB_API_TOKEN"]}`);
+export const githubClientId = `${process.env["GITHUB_CLIENT_ID"]}`;
+export const githubClientSecret = pulumi.secret(`${process.env["GITHUB_CLIENT_SECRET"]}`);
+export const githubAppName = `${process.env["GITHUB_APP_NAME"]}`;
 
 
-export const dockerGtcWebImage = `${process.env["POC_DOCKER_GTC_WEB_IMAGE"]}`;
+export const dockerGtcWebImage = `${process.env["DOCKER_GTC_WEB_IMAGE"]}`;
 
 
 export const vpcID = `${process.env["REVIEW_ENV_VPC_ID"]}`;
