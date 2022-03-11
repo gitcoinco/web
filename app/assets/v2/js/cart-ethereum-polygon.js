@@ -54,7 +54,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
     requiredAmountsString() {
       let string = '';
-      
+
       if (this.polygon.showModal === false)
         return string;
 
@@ -85,8 +85,7 @@ Vue.component('grantsCartEthereumPolygon', {
         (
           networkId != POLYGON_TESTNET_NETWORK_ID &&
           networkId != POLYGON_MAINNET_NETWORK_ID &&
-          appCart.$refs.cart.activeCheckout !== 'polygon' &&
-          appCart.$refs.cart.activeCheckout !== undefined
+          appCart.$refs.cart.activeCheckout !== 'polygon'
         ) ||
         this.cart.unsupportedTokens.length > 0 ||
         !ethereum.selectedAddress
@@ -116,7 +115,6 @@ Vue.component('grantsCartEthereumPolygon', {
   methods: {
     initWeb3() {
       let url;
-
       if (appCart.$refs.cart.network === 'mainnet') {
         appCart.$refs.cart.networkId = POLYGON_MAINNET_NETWORK_ID;
         url = 'https://polygon-rpc.com';
@@ -125,6 +123,7 @@ Vue.component('grantsCartEthereumPolygon', {
         appCart.$refs.cart.network = 'testnet';
         url = 'https://rpc-mumbai.matic.today';
       }
+
 
       return new Web3(url);
     },
@@ -207,7 +206,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
     splitPolygonGrants() {
       this.closePolygonModal();
-      
+
       // change tenant of multisig grants in grantData array
       appCart.$refs.cart.grantData.map(grant => {
         if (!this.multisigGrants.map(grant => grant.grant_id).includes(grant.grant_id)) {
