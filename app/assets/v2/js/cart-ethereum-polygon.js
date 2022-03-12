@@ -18,8 +18,6 @@ Vue.component('grantsCartEthereumPolygon', {
 
   data: function() {
     return {
-      // default to mainnet
-      networkId: POLYGON_MAINNET_NETWORK_ID,
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
@@ -81,7 +79,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     skipGasCostEstimation() {
-      let networkId = this.networkId;
+      let networkId = appCart.$refs.cart.networkId;
 
       return (
         (
@@ -119,10 +117,8 @@ Vue.component('grantsCartEthereumPolygon', {
     initWeb3() {
       let url;
       if (appCart.$refs.cart.network === 'mainnet') {
-        this.networkId = POLYGON_MAINNET_NETWORK_ID;
         url = 'https://polygon-rpc.com';
       } else {
-        this.networkId = POLYGON_TESTNET_NETWORK_ID;
         url = 'https://rpc-mumbai.matic.today';
       }
 
