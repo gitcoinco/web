@@ -219,15 +219,7 @@ Vue.component('grants-cart', {
 
       return result;
     },
-    fetchTokens() {
-      // removes duplicates from the tokens array of objects
-      let vm = this;
-      let uniq = {};
 
-      return vm.filterByChainId.filter(
-        obj => !uniq[obj['name']] && (uniq[obj['name']] = true)
-      );
-    },
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
       return document.contxt.github_handle;
@@ -985,7 +977,10 @@ Vue.component('grants-cart', {
     /**
      * @notice Returns all tokens available on the selected network allowing for isPolygon override
      */
-    getTokens(isPolygon = false, _filter = false) {
+    getTokens(_filter = false, isPolygon = false) {
+      // return a list of uniq (by name) tokens
+      const uniq = {};
+
       // get the networkId
       const networkId = (
         isPolygon ? (
@@ -997,7 +992,12 @@ Vue.component('grants-cart', {
       );
 
       // filter to the selected token on the discovered network
-      return this.filterByChainId.filter(token => token.networkId == networkId && (_filter ? _filter(token) : true));
+      return this.filterByChainId.filter(token =>
+        // check that it hasn't already been seen and record that we've now seen it
+        !uniq[token['name']] && (uniq[token['name']] = true) &&
+        // check for discovered networkId and process any additional filters
+        token.networkId == networkId && (_filter ? _filter(token) : true)
+      );
     },
 
     /**
@@ -1022,7 +1022,7 @@ Vue.component('grants-cart', {
       }
 
       // filter to the selected token on the discovered network
-      return this.getTokens(isPolygon, token => token.name === name)[0];
+      return this.getTokens(token => token.name === name, isPolygon)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
