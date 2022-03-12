@@ -18,8 +18,8 @@ Vue.component('grantsCartEthereumPolygon', {
 
   data: function() {
     return {
-      network: '',
-      networkId: 1,
+      // default to mainnet
+      networkId: POLYGON_MAINNET_NETWORK_ID,
       polygon: {
         showModal: false, // true to show modal to user, false to hide
         checkoutStatus: 'not-started', // options are 'not-started', 'pending', and 'complete'
