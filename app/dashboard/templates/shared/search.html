@@ -74,14 +74,14 @@
                 No matches found<template v-if="hasMoreResults"> yet...</template>
               </li>
             </template>
-            <template v-if="hasMoreResults">
-              <li class="bg-white border-grey border-top-1 bottom-0 font-smaller-2 pb-3 position-sticky pt-3 text-center">
-                <a class="link cursor-pointer" @click="search">Load more results (showing [[ page * perPage ]] of [[ total ]])...</a>
-              </li>
-            </template>
           </ul>
         </div>
       </div>
+      <template v-if="hasMoreResults">
+        <div class="gc-search-more-results bg-white border-grey border-top-1 bottom-0 font-smaller-2 pb-3 position-sticky pt-3 text-center">
+          <a class="link cursor-pointer" @click="search">Load more results (showing [[ page * perPage ]] of [[ total ]])...</a>
+        </div>
+      </template>
     </template>
 
     <template v-else-if="isLoading">
