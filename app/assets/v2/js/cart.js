@@ -219,27 +219,6 @@ Vue.component('grants-cart', {
 
       return result;
     },
-    filterByNetworkId: function() {
-      const vm = this;
-      let result;
-      let networkId;
-
-      networkId = vm.tokenListOptions.networkId || vm.networkId;
-
-      if (vm.networkId == '') {
-        result = vm.filterByChainId;
-      } else if (vm.tokenListOptions.strict) {
-        result = vm.sortByPriority.filter((item) => {
-          return String(item.networkId) == networkId;
-        });
-        return result;
-      } else {
-        result = vm.filterByChainId.filter((item) => {
-          return String(item.networkId) === networkId;
-        });
-      }
-      return result;
-    },
     fetchTokens() {
       // removes duplicates from the tokens array of objects
       let vm = this;
@@ -1002,6 +981,25 @@ Vue.component('grants-cart', {
       indicateMetamaskPopup(true);
     },
 
+
+    /**
+     * @notice Returns all tokens available on the selected network allowing for isPolygon override
+     */
+    getTokens(isPolygon = false) {
+      // get the networkId
+      const networkId = (
+        isPolygon ? (
+          this.network === 'mainnet' ? POLYGON_MAINNET_NETWORK_ID : POLYGON_TESTNET_NETWORK_ID
+        ) : (
+          // rinkeby is stored as networkId==1 in the db
+          this.network === 'rinkeby' ? 1 : this.networkId
+        )
+      );
+
+      // filter to the selected token on the discovered network
+      return this.filterByChainId.filter(token => token.networkId == networkId);
+    },
+
     /**
      * @notice Get token address and decimals using data fetched from the API endpoint in the
      * mounted hook
@@ -1023,18 +1021,8 @@ Vue.component('grants-cart', {
         };
       }
 
-      // get the networkId
-      const networkId = (
-        isPolygon ? (
-          this.network === 'mainnet' ? POLYGON_MAINNET_NETWORK_ID : POLYGON_TESTNET_NETWORK_ID
-        ) : (
-          // rinkeby is stored as networkId==1 in the db
-          this.network === 'rinkeby' ? 1 : this.networkId
-        )
-      );
-
       // filter to the selected token on the discovered network
-      return this.filterByChainId.filter(token => token.name === name && token.networkId == networkId)[0];
+      return this.getTokens(isPolygon).filter(token => token.name === name)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
