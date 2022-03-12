@@ -15,6 +15,9 @@
 }
 
 .home-carousel {
+  .carousel-indicators {
+    z-index: 1;
+  }
   .carousel-inner {
     min-height: 500px;
   }
