@@ -985,7 +985,7 @@ Vue.component('grants-cart', {
     /**
      * @notice Returns all tokens available on the selected network allowing for isPolygon override
      */
-    getTokens(isPolygon = false) {
+    getTokens(isPolygon = false, _filter = false) {
       // get the networkId
       const networkId = (
         isPolygon ? (
@@ -997,7 +997,7 @@ Vue.component('grants-cart', {
       );
 
       // filter to the selected token on the discovered network
-      return this.filterByChainId.filter(token => token.networkId == networkId);
+      return this.filterByChainId.filter(token => token.networkId == networkId && (_filter ? _filter(token) : true));
     },
 
     /**
@@ -1022,7 +1022,7 @@ Vue.component('grants-cart', {
       }
 
       // filter to the selected token on the discovered network
-      return this.getTokens(isPolygon).filter(token => token.name === name)[0];
+      return this.getTokens(isPolygon, token => token.name === name)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
