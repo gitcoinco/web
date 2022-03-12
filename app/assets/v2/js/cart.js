@@ -1011,6 +1011,7 @@ Vue.component('grants-cart', {
      * @param {String} name Token name, e.g. ETH or DAI
      */
     getTokenByName(name, isPolygon = false) {
+      // hardcoded ETH response
       if (name === 'ETH' && !isPolygon) {
         return {
           addr: ETH_ADDRESS,
@@ -1022,7 +1023,18 @@ Vue.component('grants-cart', {
         };
       }
 
-      return this.filterByChainId.filter(token => token.name === name && token.network == this.network)[0];
+      // get the networkId
+      const networkId = (
+        isPolygon ? (
+          this.network === 'mainnet' ? POLYGON_MAINNET_NETWORK_ID : POLYGON_TESTNET_NETWORK_ID
+        ) : (
+          // rinkeby is stored as networkId==1 in the db
+          this.network === 'rinkeby' ? 1 : this.networkId
+        )
+      );
+
+      // filter to the selected token on the discovered network
+      return this.filterByChainId.filter(token => token.name === name && token.networkId == networkId)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
@@ -1242,19 +1254,11 @@ Vue.component('grants-cart', {
       }
     },
 
-    resetNetwork() {
-      if (this.nativeCurrency == 'MATIC') {
-        this.network = this.network == 'testnet' ? 'rinkeby' : 'mainnet';
-        this.networkId = this.networkId == '80001' ? '4' : '1';
-      }
-    },
-
     // Standard L1 checkout flow
     async standardCheckout() {
       try {
         // Setup -----------------------------------------------------------------------------------
         this.activeCheckout = 'standard';
-        this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)
