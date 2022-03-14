@@ -167,6 +167,7 @@ jobs:
         id: compute
         run: |
           echo "::set-output name=pulumi_stack::gitcoin/review/review-${{ github.event.number }}"
+          echo "::set-output name=review_domain::${{ github.event.number }}"
 
       #########################################################################
       # Provision the shared ressources for the review environment
@@ -252,7 +253,7 @@ jobs:
           REVIEW_ENV_PUBLIC_SUBNET_2: ${{ steps.pulumi-env.outputs.vpcPublicSubnetId2 }}
 
           REVIEW_ENV_ROUTE53_ZONE_ID: ${{ secrets.ROUTE53_ZONE_ID }}
-          REVIEW_ENV_DOMAIN: review.gitcoin.co
+          REVIEW_ENV_DOMAIN: $${{ steps.compute.outputs.review_domain }}
           REVIEW_ENV_NAME: ${{ github.event.number }}
 
 
@@ -299,7 +300,7 @@ jobs:
               repo: context.repo.repo,
               body: `Test your commit here: \n\
               - [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }}) \n\
-              - [http://${{ steps.compute.outputs.pulumi_stack }}.review.gitcoin.co](http://${{ steps.compute.outputs.pulumi_stack }}.review.gitcoin.co) \n\
+              - [http://${{ steps.compute.outputs.review_domain }}.review.gitcoin.co](http://${{ steps.compute.outputs.review_domain }}.review.gitcoin.co) \n\
               `
             })
           

@@ -24,9 +24,8 @@ export const publicSubnet1ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_1"]}`;
 export const publicSubnet2ID = `${process.env["REVIEW_ENV_PUBLIC_SUBNET_2"]}`;
 
 export const route53ZoneID = `${process.env["REVIEW_ENV_ROUTE53_ZONE_ID"]}`;
-export const parentDomain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
+export const domain = `${process.env["REVIEW_ENV_DOMAIN"]}`;
 export const environmentName = `${process.env["REVIEW_ENV_NAME"]}`;
-export const domain = `review-${environmentName}.${parentDomain}`;
 
 
 //////////////////////////////////////////////////////////////
