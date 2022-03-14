@@ -1,0 +1,119 @@
+FROM ubuntu:18.04 as build
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Define packages to be installed
+ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3-dev libsecp256k1-dev libsodium-dev python3-pip"
+ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
+
+# Install general dependencies.
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository universe
+RUN apt-get update
+RUN apt-get install -y $PACKAGES
+RUN apt-get update --fix-missing
+RUN apt-get install -y $BUILD_DEPS --fix-missing
+
+# Move to /code dir and copy in working dir content
+WORKDIR /code
+COPY dist/* ./
+
+# GeoIP2 Data Files
+RUN mkdir -p /usr/share/GeoIP/ && \
+    gunzip GeoLite2-City.mmdb.tar.gz && \
+    gunzip GeoLite2-Country.mmdb.tar.gz && \
+    tar -xvf GeoLite2-City.mmdb.tar && \
+    tar -xvf GeoLite2-Country.mmdb.tar && \
+    mv GeoLite2-City_20200128/*.mmdb /usr/share/GeoIP/ && \
+    mv GeoLite2-Country_20200128/*.mmdb /usr/share/GeoIP/
+
+# Upgrade package essentials.
+RUN pip3 install --upgrade pip==20.0.2 setuptools wheel dumb-init pipenv
+
+# Install pip packages
+COPY requirements/ /code/
+RUN pip3 install --upgrade -r test.txt
+
+# Copy over docker-command (start-up script)
+COPY bin/docker-command.bash /bin/docker-command.bash
+RUN dos2unix /bin/docker-command.bash
+
+# Copy over code directory
+COPY app/ /code/app/
+
+# Install yarn and set node version
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update
+RUN apt-get install -y yarn
+RUN yarn global add n
+RUN n stable
+
+COPY package.json /code/
+RUN cd /code && yarn install
+
+COPY app/app/ci.env /code/app/app/.env
+WORKDIR /code/app
+RUN BUNDLE_USE_CHECKSUM=false python3 manage.py bundle
+RUN python3 manage.py collectstatic --disable-collectfast
+
+###################################################################################
+# Creating the final container
+###################################################################################
+
+FROM ubuntu:18.04
+
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Define packages to be installed
+# ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3-dev libsecp256k1-dev libsodium-dev python3-pip"
+ARG PACKAGES="git python3-pip libvips"
+# ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
+
+# Install general dependencies.
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository universe
+RUN apt-get update
+RUN apt-get install -y $PACKAGES
+# RUN apt-get update --fix-missing
+# RUN apt-get install -y $BUILD_DEPS --fix-missing
+
+# Move to /code dir and copy in working dir content
+WORKDIR /code
+
+# Upgrade package essentials.
+RUN pip3 install --upgrade pip==20.0.2 setuptools wheel dumb-init pipenv
+
+# Install pip packages
+COPY requirements/ /code/
+RUN pip3 install --upgrade -r test.txt
+
+WORKDIR /code/app
+
+# Init
+EXPOSE 9222
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests=200"]
+
+# Copy over code directory
+COPY app/ /code/app/
+COPY --from=build /code/app/static /code/app/static
+COPY --from=build /usr/share/GeoIP /usr/share/GeoIP
+
+# Tag
+ARG BUILD_DATETIME
+ARG SHA1
+LABEL co.gitcoin.description="Gitcoin web application image" \
+    co.gitcoin.documentation="https://github.com/gitcoinco/web/blob/master/docs/RUNNING_LOCALLY_DOCKER.md" \
+    co.gitcoin.licenses="AGPL-3.0" \
+    co.gitcoin.image.revision=$SHA1 \
+    co.gitcoin.image.vendor="Gitcoin" \
+    co.gitcoin.image.source="https://github.com/gitcoinco/web" \
+    co.gitcoin.image.title="Gitcoin Web" \
+    co.gitcoin.image.created=$BUILD_DATETIME
