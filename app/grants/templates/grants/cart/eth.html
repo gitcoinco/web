@@ -1,8 +1,9 @@
 <!-- Ethereum flow. used zksync and bulk checkout -->
 {% load static i18n %}
 <b-tab ref="eth" title-link-class="nav-line" id="ETH" v-if="grantsCountByTenant.ETH !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16"
-      style="padding-bottom: 2.5rem;"> Ethereum ([[grantsCountByTenant.ETH || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" height="16">
+     <b>Ethereum ([[grantsCountByTenant.ETH || 0]])</b>
+  </template>
   <div class="row">
     <!-- Left Section -->
     <div class="col-12 col-lg-8 pr-0">
@@ -12,7 +13,7 @@
           <!-- Donation Token -->
           <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
             <div class="my-auto mr-3">Amount/Currency</div>
-            <input v-model="preferredAmount" class="col-auto form-control w-25" :value="[[preferredAmount]]"
+            <input v-model="preferredAmount" class="col-auto form-control w-25"
               style="max-width: 7rem;border-radius: 5rem;font-weight: 600;border-color: #A7A2B6;" />
             <div>
               <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens"
@@ -219,7 +220,7 @@
             :standard-checkout="standardCheckout" :is-zk-sync-down="isZkSyncDown" :is-polygon-down="isPolygonDown"
             :current-tokens="currentTokens" :donation-inputs="donationInputs" :max-cart-items="maxCartItems"
             :grants-by-tenant="grantsByTenant" :grants-under-minimal-contribution="grantsUnderMinimalContribution"
-            :network="network">
+            :network="network" :multisig-grants="multisigGrants" :tab-selected="tabSelected">
           </eth-checkout-button>
         </div>
         <!-- Checkout recommendation -->

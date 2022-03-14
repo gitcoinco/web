@@ -76,6 +76,7 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from cacheops import invalidate_obj
+from dashboard import ethelo
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
@@ -2991,11 +2992,6 @@ def get_profile_tab(request, profile, tab, prev_context):
                 'is_verified': profile.is_facebook_verified
             }
         ]
-
-        # TODO: REMOVE
-        is_staff = request.user.is_staff if request.user else False
-        if not is_staff:
-            del services[1]
 
         # pass as JSON in the context
         context['services'] = json.dumps(services)

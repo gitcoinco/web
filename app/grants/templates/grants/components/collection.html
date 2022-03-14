@@ -17,47 +17,64 @@
   <script type="text/x-template" id="grant-collection">
     <div v-if="collection">
       <template>
-        <div class="collection-item">
-          <div class="collection-item__header p-3 border-bottom-1 border-grey" style="background-color:rgba(226, 224, 231, 0.05);">
+        <div class="collection-item p-4">
+          <div class="collection-item__header mx-3 py-4 border-bottom-1 border-grey">
             <div class="row">
-              <div class="col-auto rounded-circle" >
+              <div class="col-auto rounded-circle pr-4" >
                 <img :src="`${collection.profile.avatar_url || '/dynamic/avatar/' + collection.profile.handle}`" class="rounded-circle" style="width: 64px;height: 64px;" />
               </div>
-              <div class="col-8 my-auto px-0" >
-                <h5 class="gc-font-base">[[ collection.profile.name || 'anonymous' ]]</h5>
+              <div class="col-auto my-auto px-0" >
+                <h5 class="gc-font-base text-grey-500">[[ collection.profile.name || 'anonymous' ]]</h5>
                 <a :href="collection.profile.url || ''" class="mr-2" target="_blank" rel="noopener noreferrer">@[[ collection.profile.handle || 'anon' ]]</a>
               </div>
             </div>
-
           </div>
-          <div class="collection-item__content px-3 pt-4 m-0">
-            <h2 class="h5 gc-font-base">
+          <div class="mx-3 py-3 px-3 border-bottom-1 border-grey font-smaller-4 text-grey-500">
+            <div class="row">
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.followers || 0 ]]</span><span class="pr-3">Followers</span>
+              </div>
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.following || 0 ]]</span><span class="pr-3">Following</span>
+              </div>
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.grants_owned || 0 ]]</span><span class="pr-3">Grant Owned</span>
+              </div>
+              <div class="col-auto p-0">
+                <span class="font-weight-bold pr-2">[[ collection.profile.grants_contributed || 0 ]]</span><span class="pr-3">Grant Contributed</span>
+              </div>
+            </div>
+          </div>
+          <div class="collection-item__content mx-3 pt-4 m-0 text-black">
+            <h4>
               [[ collection.title.slice(0,60) ]][[ collection.title.length > 60 ? '...' : '']]
-            </h2>
+            </h4>
 
-            <p v-if="!collection.hideButtons" class="collection-item__pitch font-smaller-4 text-muted mb-2">[[ collection.description.slice(0, 140) ]][[ collection.description.length > 145 ? '...' : '']]</p>
+            <p v-if="!collection.hideButtons" class="collection-item__pitch font-body mb-2">[[ collection.description.slice(0, 140) ]][[ collection.description.length > 145 ? '...' : '']]</p>
 
             <div class="d-flex my-4">
               <template v-for="index in [0,1,2,3]">
-                <div
+                <a
                   class="d-flex align-items-center justify-content-center overflow-hidden rounded"
                   style="height:84px; width:110px; border:1px solid rgba(226, 224, 231, 0.4); margin:2px;"
                   :style="`background-size: cover; background-position: center; background-image:url(${ getGrantLogo(index) });`"
                   v-if="collection.grants.length >= index+1"
                   :title="getGrantTitle(index)"
-                ></div>
+                  :href="getGrantUrl(index) || '#'"
+                ></a>
               </template>
               <div class="d-inline-flex overflow-hidden" style="height:84px; width:50px;" v-if="collection.grants.length > 4">
                 <div :class="`d-flex m-auto p-1`">
-                  <p class="text-muted font-smaller-3 mb-0">+[[ (collection.cache.count - 4) ]]</p>
+                  <a class="text-muted font-smaller-3 mb-0" :href="`/grants/explorer/?collection_id=${collection.id}`" v-if="$parent.isLandingPage">+[[ (collection.cache.count - 4) ]]</a>
+                  <p class="text-muted font-smaller-3 mb-0" @click="$emit('collection:show', collection.id)" role="button" v-else>+[[ (collection.cache.count - 4) ]]</p>
                 </div>
               </div>
             </div>
           </div>
-          <div v-if="!collection.hideButtons" class="collection-item__footer">
-            <div class="col pb-4 px-4 d-flex justify-content-between">
+          <div v-if="!collection.hideButtons" class="collection-item__footer mx-3">
+            <div class="col pb-4 px-0 d-flex justify-content-between">
 
-              <b-dropdown ref="collectionShareDropdown" menu-class="shadow-sm p-0 mt-1" variant="outline-white" toggle-class="text-primary text-primary-hover mt-2" no-caret no-flip>
+              <b-dropdown ref="collectionShareDropdown" menu-class="shadow-sm p-0 mt-1" variant="outline-white" toggle-class="text-primary text-primary-hover mt-2 pl-0" no-caret no-flip>
                 <template #button-content>
                   Share <i class="fa fa-fw fa-share-alt" aria-hidden="true"></i>
                 </template>

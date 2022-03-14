@@ -30,7 +30,7 @@ class SearchResult(SuperModel):
 
         es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
         source_type  = str(str(self.source_type).replace('token', 'kudos')).title()
-        full_search = f"{self.title}{self.description}{source_type}"
+        full_search = f"{self.title} {self.description} {source_type}"
         doc = {
             'title': self.title,
             'description': self.description,

@@ -1,0 +1,46 @@
+.create-wrapper {
+  width: 100%;
+  .new-border {
+    border: solid 1px $gc-grey-200;
+    border-radius: 8px;
+    padding: 2.5rem;
+    > p {
+      margin: 0 0 12px 0;
+    }
+    > h4 {
+      padding: 0 0 24px 0;
+    }
+  }
+  
+  .navigation {
+    margin-top: 30px;
+    color: $gc-violet-400;
+    button {
+      margin: 0 5px;
+      border: 0;
+      background: transparent;
+    }
+    button[aria-disabled="true"] {
+      i.text-primary {
+        color: $gc-grey-300 !important;  
+      }
+      color: $gc-grey-300;
+    }
+  }
+  .vs__dropdown-option--disabled {
+    border-bottom: 1px solid $border-color;
+    font-size: 9px;
+    padding-bottom: 12px;
+    margin: 20px 0 10px 0;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .create-wrapper {
+    .new-border {
+      border: none;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

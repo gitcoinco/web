@@ -4331,9 +4331,12 @@ class Profile(SuperModel):
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
             'organizations': instance.get_who_works_with(network=None),
-            'total_earned': instance.get_sum(network=None, currency='eth')
+            'total_earned': instance.get_sum(network=None, currency='eth'),
+            'followers': instance.follower_count,
+            'following': instance.following_count,
+            'grants_owned': instance.grants.count(),
+            'grants_contributed': instance.grant_contributor.filter(subscription_contribution__success=True).distinct('grant').values_list('subscription_contribution').count() + instance.grant_phantom_funding.distinct('grant').count()
         }
-
 
     def to_es(self):
         return json.dumps(self.to_dict())
@@ -4501,8 +4504,6 @@ class Profile(SuperModel):
 
         return context
 
-
-
     @property
     def reassemble_profile_dict(self):
         params = self.as_dict
@@ -4538,7 +4539,6 @@ class Profile(SuperModel):
         if len(ips) > 0:
             return ips[0]
         return ''
-
 
     @property
     def locations(self):
@@ -4749,7 +4749,6 @@ class ProfileSerializer(serializers.BaseSerializer):
         if not has_representation or not instance.as_representation.get('name'):
             instance.calculate_all()
             instance.save()
-
 
         return instance.as_representation
 

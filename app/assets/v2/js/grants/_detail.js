@@ -124,17 +124,6 @@ Vue.mixin({
 
       }).catch(console.error);
     },
-    backNavigation: function() {
-      const vm = this;
-      const lgt = localStorage.getItem('last_grants_title') || 'Grants';
-
-      const lgi = (document.referrer.indexOf(location.host) != -1 && !document.referrer.includes('grants/new')) ? 'javascript:history.back()' : '/grants/explorer';
-
-      if (lgi && lgt) {
-        vm.$set(vm.backLink, 'url', lgi);
-        vm.$set(vm.backLink, 'title', lgt);
-      }
-    },
     scrollToElement(element) {
       const container = this.$refs[element];
 
@@ -173,16 +162,11 @@ if (document.getElementById('gc-grant-detail')) {
         isStaff: isStaff,
         grant: {},
         tabSelected: 0,
-        tab: null,
-        backLink: {
-          url: '/grants',
-          title: 'Grants'
-        }
+        tab: null
       };
     },
     mounted: function() {
       this.enableTab();
-      this.backNavigation();
       this.fetchGrantDetails();
     }
   });

@@ -184,6 +184,7 @@
     .dropdown-toggle {
       background-color: inherit;
       border-color: inherit;
+      cursor: not-allowed;
 
       &.btn.btn-primary:active {
         background-color: inherit;
@@ -193,6 +194,7 @@
       &.btn.btn-primary:hover {
         background-color: inherit;
         border-color: inherit;
+        cursor: not-allowed;
       }
     }
   }
@@ -229,7 +231,13 @@
     width: 100%;
     text-align: center;
   }
-
+  .dropdown-item:disabled {
+    cursor: not-allowed;
+    pointer-events: initial;
+    button {
+      cursor: not-allowed;
+    }
+  }
   .dropdown-item {
     padding-top: 0.45rem;
     padding-bottom: 0.45rem;
@@ -272,8 +280,10 @@
       fill: rgba(78, 82, 155, 0.25);
     }
   }
+}
 
-
+.checkout-logo.btn:disabled {
+  cursor: not-allowed;
 }
 
 .donation-amount-container {

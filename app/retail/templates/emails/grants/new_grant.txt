@@ -8,7 +8,9 @@
   You can check the status of your grant on this Notion board ({{ link }}).
   Please be patient while we review your grant."
 {% endblocktrans %}
-{% trans "In the mean time, get ready to buidl and push forward open source!" %}
+{% blocktrans with link="https://academy.binance.com/en/glossary/buidl" %}
+  In the mean time, get ready to buidl ({{link}}) and push forward open source!
+{% endblocktrans %}
 
 {% trans "Title" %} : {{ grant.title }}
 

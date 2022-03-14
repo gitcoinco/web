@@ -99,7 +99,7 @@ class CLRMatchAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     list_display =['pk', 'grant', 'round_number', 'amount', 'grant_payout']
-    raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution']
+    raw_id_fields = ['grant', 'payout_contribution']
 
 
 class GrantAdmin(GeneralAdmin):
@@ -469,7 +469,7 @@ class GrantTypeAdmin(admin.ModelAdmin):
 
 
 class GrantTagAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name']
+    list_display = ['pk', 'name', 'is_eligibility_tag']
     readonly_fields = ['pk']
 
 class GrantCLRAdmin(admin.ModelAdmin):

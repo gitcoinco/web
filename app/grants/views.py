@@ -74,7 +74,7 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
-    GrantCollection, GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription,
+    GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, MatchPledge, Subscription,
 )
 from grants.serializers import GrantSerializer
 from grants.tasks import (
@@ -711,6 +711,10 @@ def get_grants_by_filters(
         # apply the grant_filters
         _grants = _grants.filter(grant_filters)
 
+        # apply the grant_exludes
+        if clr_round.grant_excludes:
+            _grants = _grants.exclude(**clr_round.grant_excludes)
+
     if profile:
         if my_grants:
             # 3. Filter grants created by user
@@ -767,7 +771,6 @@ def get_grants_by_filters(
                 tenant_filter = tenant + '_payout_address' if tenant != 'eth' else 'admin_address'
                 tenant_query = ~Q(('%s' % tenant_filter, '0x0'))
 
-            # _grants = _grants.exclude(Q(**{tenant_filter: '0x0'}))
         _grants = _grants.filter(tenant_query)
 
     if grant_regions:
@@ -968,7 +971,7 @@ def grants_landing(request):
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
-            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants12.png')),
+            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants13-1.png')),
             'card_type': 'summary_large_image',
             'avatar_height': 675,
             'avatar_width': 1200,
@@ -2346,7 +2349,7 @@ def hall_of_fame(request):
     params = {
         'active': 'hall_of_fame',
         'title': _('Hall of Fame'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants10.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants13-1.png')),
 
         'total_donations': hall_of_fame.total_donations,
         'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
@@ -3916,7 +3919,8 @@ class GrantSubmissionView(View):
         for g_tag in GrantTag.objects.all().cache().order_by(Lower("name")):
             _grant_tag = {
                 'id': g_tag.pk,
-                'name': g_tag.name
+                'name': g_tag.name,
+                'is_eligibility_tag': 1 if g_tag.is_eligibility_tag else 0
             }
             grant_tags.append(_grant_tag)
 
@@ -3974,3 +3978,43 @@ def clr_matches(request):
         ).update(claim_tx=claim_tx)
 
         return Response({'message': 'Claim transaction successfully ingested!'}, status=200)
+
+
+@csrf_exempt
+@require_POST
+def ingest_merkle_claim_to_clr_match(request):
+
+    _token = request.headers.get('token')
+
+    data = StaticJsonEnv.objects.get(key='MERKLE_CLAIM_UPLOAD').data
+
+    if not _token or not data['token']:
+        return HttpResponseBadRequest("message: missing token")
+
+    if _token != data['token']:
+        return HttpResponseBadRequest("message: invalid token")
+
+    _grant_payout_pk = None
+
+    try:
+        body = json.loads(request.body)
+        _grant_payout_pk = body["grant_payout_pk"]
+        _claims = body["claims"]
+
+        if not _grant_payout_pk:
+            return HttpResponseBadRequest("message: grant_payout_pk field is required")
+
+        if not _claims:
+            return HttpResponseBadRequest("message: claims field is required")
+    except Exception:
+        return HttpResponseBadRequest("message: missing mandatory parameters")
+
+
+    clr_matches = CLRMatch.objects.filter(grant_payout=_grant_payout_pk)
+    if clr_matches.count() == 0:
+        return HttpResponseBadRequest("message: incorrect round field")
+
+    for claim in _claims:
+        clr_matches.filter(grant__admin_address=claim['claimee']).update(merkle_claim=claim)
+
+    return HttpResponse('message: Merkle Claim successfully ingested into CLRMatch!')

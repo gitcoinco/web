@@ -59,6 +59,8 @@ along with this program. If not, see
   <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
   </style>
+  {% include './analytics_manager.html' %}
+
 
 </head>
 
@@ -713,7 +715,7 @@ along with this program. If not, see
             <div class="text-center">
               <img src="{% static "v2/images/grants/empty-collection.svg" %}">
               <p class="font-subheader text text-grey-400 pt-5">
-                {% trans "Your collection is empty. Let’s add grants to your collection! " %}
+                {% trans "Your collection is empty. Let's add grants to your collection! " %}
               </p>
             </div>
             <div class="col-12 pt-4 pb-2 mx-auto text-center">
@@ -726,7 +728,7 @@ along with this program. If not, see
           <template v-else>
             <div class="col-12 mb-3 mx-auto col-md-6 text-center">
               <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-              <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
+              <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you're looking for." %}</h1>
               <p class="font-subheader text">
                 {% trans "We couldn't match with any grants on Gitcoin." %}</br>
                 {% trans "Please try another search term or browse for a grant." %}

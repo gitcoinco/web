@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 from grants.models import GrantQuerySet, Grant
 
+=======
+from grants.models import Grant, GrantQuerySet
+>>>>>>> master
 
 EXPORT_FILENAME = "grants_export_for_ethelo.json"
 
@@ -44,15 +48,12 @@ def _format_grant(grant: Grant) -> dict:
         dict: JSONify-able grant dictionary.
     """
 
-    if len(grant.description_rich) > 0:
-        info = grant.description_rich
-    else:
-        info = grant.description
+    tags = list(grant.tags.all().values_list("name", flat=True))
 
     return {
         "slug": f"grant_{grant.pk}",
         "title": grant.title,
-        "info": info,
+        "info": grant.description_rich,  # NOTE: grant.description is just a weird stringified JSON of the rich description
         "display_data": {
             "Status": _get_status(grant),
             "Grant Url": f'https://gitcoin.co{grant.url}',
@@ -62,6 +63,7 @@ def _format_grant(grant: Grant) -> dict:
             "Twitter": f'@{grant.twitter_handle_1}',
             "Creator Handle": grant.admin_profile.handle,
             "Database Number": grant.pk,
+            "Tags": tags,
         },
     }
 

@@ -8,10 +8,12 @@ function objectMap(object, mapFn) {
 Vue.component('grantsCartEthereumPolygon', {
   props: {
     currentTokens: { type: Array, required: true }, // Array of available tokens for the selected web3 network
-    donationInputs: { type: Array, required: true }, // donationInputs computed property from cart.js
+    donationInputs: { type: Array, required: false }, // donationInputs computed property from cart.js
     grantsByTenant: { type: Array, required: true }, // Array of grants in cart
     maxCartItems: { type: Number, required: true }, // max number of items in cart
-    grantsUnderMinimalContribution: { type: Array, required: true } // Array of grants under min contribution
+    grantsUnderMinimalContribution: { type: Array, required: true }, // Array of grants under min contribution
+    activeCheckout: { type: String, required: false }, // active checkout option
+    multisigGrants: { type: Array, required: true } // Array of multisig grants in cart
   },
 
   data: function() {
@@ -33,11 +35,16 @@ Vue.component('grantsCartEthereumPolygon', {
     };
   },
 
-  mounted() {
+  async mounted() {
     // Update Polygon checkout connection, state, and data frontend needs when wallet connection changes
     window.addEventListener('dataWalletReady', async(e) => {
       await this.onChangeHandler(this.donationInputs);
     });
+
+    // Check for contracts/gnosis safes - we cannot send funds if the contract isn't deployed on Polygon
+    if (this.multisigGrants.length === 0) {
+      await appCart.$refs.cart.checkForGnosisSafes();
+    }
   },
 
   computed: {
@@ -47,6 +54,9 @@ Vue.component('grantsCartEthereumPolygon', {
 
     requiredAmountsString() {
       let string = '';
+      
+      if (this.polygon.showModal === false)
+        return string;
 
       requiredAmounts = this.user.requiredAmounts;
       Object.keys(requiredAmounts).forEach(key => {
@@ -195,6 +205,18 @@ Vue.component('grantsCartEthereumPolygon', {
       this.polygon.showModal = false;
     },
 
+    splitPolygonGrants() {
+      this.closePolygonModal();
+      
+      // change tenant of multisig grants in grantData array
+      appCart.$refs.cart.grantData.map(grant => {
+        if (!this.multisigGrants.map(grant => grant.grant_id).includes(grant.grant_id)) {
+          grant.tenants = grant.tenants.map(tenant => tenant == 'ETH' ? 'ETH_POLYGON' : tenant);
+        }
+        return grant.tenants;
+      });
+    },
+
     // Send a batch transfer based on donation inputs
     async checkoutWithPolygon() {
       // Prompt web3 login if not connected
@@ -223,17 +245,8 @@ Vue.component('grantsCartEthereumPolygon', {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
         }
 
-        // Check for contracts/gnosis safes - we cannot send funds if the contract isnt deployed on Polygon
-        const unsafeGrants = await appCart.$refs.cart.checkForGnosisSafes();
-
         if (web3.currentProvider && !web3.currentProvider.isMetaMask) {
           _alert('Polygon Checkout is not supported on this wallet. Select another checkout option or switch to MetaMask.', 'danger');
-          return;
-        }
-
-        // Check if we can checkout using polygon
-        if (unsafeGrants.length > 0) {
-          _alert(`Contributions cannot be sent to the following Grants (with a multisig payout address) on Polygon: <ul class="mt-3 font-caption font-weight-normal">${unsafeGrants.map((grant) => `<li style="mb-1">'${sanitizeHTML(grant.grant_title)}'</li>`).join('')}</ul>Select another checkout option or remove these grants from the cart to proceed.`, 'danger');
           return;
         }
 
@@ -253,6 +266,12 @@ Vue.component('grantsCartEthereumPolygon', {
 
         if (!ethereum.selectedAddress) {
           _alert('Please unlock MetaMask to proceed with Polygon checkout', 'danger');
+          return;
+        }
+
+        // If some grants are multisig, we display modal to prompt the split of the cart
+        if (this.multisigGrants.length > 0 && this.multisigGrants.length < this.grantsByTenant.length) {
+          this.polygon.showModal = true;
           return;
         }
 
@@ -305,6 +324,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     async sendDonationTx(userAddress) {
+      appCart.$refs.cart.sendPaymentInfoEvent('polygon');
       const bulkCheckoutAddressPolygon = this.getBulkCheckoutAddress();
 
       // Get our donation inputs
