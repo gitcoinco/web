@@ -74,7 +74,7 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
-    GrantCollection, GrantHallOfFame, GrantTag, GrantType, MatchPledge, Subscription, GrantPayout,
+    GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, MatchPledge, Subscription,
 )
 from grants.serializers import GrantSerializer
 from grants.tasks import (
