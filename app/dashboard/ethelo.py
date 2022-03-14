@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-from grants.models import GrantQuerySet, Grant
-
-=======
 from grants.models import Grant, GrantQuerySet
->>>>>>> master
 
 EXPORT_FILENAME = "grants_export_for_ethelo.json"
 
