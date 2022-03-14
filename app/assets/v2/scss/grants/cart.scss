@@ -193,6 +193,7 @@
       &.btn.btn-primary:hover {
         background-color: inherit;
         border-color: inherit;
+        cursor: not-allowed;
       }
     }
   }
@@ -272,8 +273,10 @@
       fill: rgba(78, 82, 155, 0.25);
     }
   }
+}
 
-
+.checkout-logo.btn:disabled {
+  cursor: not-allowed;
 }
 
 .donation-amount-container {

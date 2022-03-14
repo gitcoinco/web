@@ -28,7 +28,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       text="I'm ready to checkout"
       aria-labelledby="ready-to-checkout"
       :aria-disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0 ? 'true':'false'"
-      :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0"
     >
       <template v-slot:button-content>
         <span class="text-primary" id="ready-to-checkout">
@@ -146,7 +145,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div>
         <!-- Checkout with Polygon button -->
         <button
-          class="rounded btn btn-primary p-2 w-100"
+          class="rounded btn btn-primary checkout-logo p-2 w-100"
           :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
           @click="checkoutWithPolygon"
         >
