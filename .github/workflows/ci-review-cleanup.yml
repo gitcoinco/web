@@ -35,7 +35,7 @@ jobs:
         id: compute
         run: |
           echo "::set-output name=pulumi_stack::gitcoin/review/review-${{ github.event.number }}"
-          echo "::set-output name=review_domain::${{ github.event.number }}"
+          echo "::set-output name=review_domain::review-${{ github.event.number }}.review.gitcoin.co"
 
       # Run pulumi actions
       - name: Delete the pulumi stack
