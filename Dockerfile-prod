@@ -58,7 +58,7 @@ RUN cd /code && yarn install
 COPY app/app/ci.env /code/app/app/.env
 WORKDIR /code/app
 RUN BUNDLE_USE_CHECKSUM=false python3 manage.py bundle
-RUN python3 manage.py collectstatic --disable-collectfast
+RUN python3 manage.py collectstatic --disable-collectfast --noinput
 
 ###################################################################################
 # Creating the final container
