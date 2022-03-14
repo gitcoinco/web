@@ -56,64 +56,64 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js 14
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-          cache: "yarn"
+      # - name: Use Node.js 14
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: 14
+      #     cache: "yarn"
 
-      - name: Use Python 3.7
-        uses: "actions/setup-python@v2"
-        with:
-          python-version: 3.7
-          cache: "pip"
+      # - name: Use Python 3.7
+      #   uses: "actions/setup-python@v2"
+      #   with:
+      #     python-version: 3.7
+      #     cache: "pip"
 
-      - name: Setup Env
-        run: |
-          echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
-          cp app/app/ci.env app/app/.env
-          pip install pip==20.0.2 setuptools wheel --upgrade
+      # - name: Setup Env
+      #   run: |
+      #     echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
+      #     cp app/app/ci.env app/app/.env
+      #     pip install pip==20.0.2 setuptools wheel --upgrade
 
-      - name: Fetch and Install GeoIP database files
-        run: |
-          sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
-          cp dist/*.gz ./
-          gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
-          tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
-          sudo mkdir -p /opt/GeoIP/
-          sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
-          sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
+      # - name: Fetch and Install GeoIP database files
+      #   run: |
+      #     sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
+      #     cp dist/*.gz ./
+      #     gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
+      #     tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
+      #     sudo mkdir -p /opt/GeoIP/
+      #     sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
+      #     sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
 
-      - name: Install libvips, Node, and Python dependencies
-        run: |
-          sudo apt-get install -y libvips libvips-dev
-          node --version
-          yarn install
-          pip install -r requirements/test.txt
-          yarn run eslint
-          yarn run stylelint
-          (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
+      # - name: Install libvips, Node, and Python dependencies
+      #   run: |
+      #     sudo apt-get install -y libvips libvips-dev
+      #     node --version
+      #     yarn install
+      #     pip install -r requirements/test.txt
+      #     yarn run eslint
+      #     yarn run stylelint
+      #     (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
 
-      - name: Run management commands
-        run: |
-          python app/manage.py migrate
-          python app/manage.py fetch_gas_prices
+      # - name: Run management commands
+      #   run: |
+      #     python app/manage.py migrate
+      #     python app/manage.py fetch_gas_prices
 
-      - name: Run Python and UI tests
-        run: |
-          pytest -p no:ethereum -p no:warnings
-          bin/ci/cypress-run
+      # - name: Run Python and UI tests
+      #   run: |
+      #     pytest -p no:ethereum -p no:warnings
+      #     bin/ci/cypress-run
 
-      - name: Generate Markdown documentation and static docs page
-        run: pydocmd build
+      # - name: Generate Markdown documentation and static docs page
+      #   run: pydocmd build
 
-      - name: Deploy to Github Pages 🚀
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/master'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/site
-          cname: docs.gitcoin.coind
+      # - name: Deploy to Github Pages 🚀
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   if: github.ref == 'refs/heads/master'
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: _build/site
+      #     cname: docs.gitcoin.coind
 
       - name: Compute some values
         id: compute
@@ -138,8 +138,8 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: ${{ steps.compute.outputs.docker_tag }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/simplewhale:buildcache,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:buildcache,mode=max
 
       - uses: actions/github-script@v6
         with:
@@ -163,17 +163,56 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          # node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: infra/infra-review/package-lock.json
-
       - name: Compute some values
         id: compute
         run: |
-          echo "::set-output name=pulumi_stack::review_${{ github.event.number }}"
+          echo "::set-output name=pulumi_stack::gitcoin/review/review-${{ github.event.number }}"
+          echo "::set-output name=review_domain::review-${{ github.event.number }}.review.gitcoin.co"
+
+      #########################################################################
+      # Provision the shared ressources for the review environment
+      #########################################################################
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          cache: "npm"
+          cache-dependency-path: infra/review-env/package-lock.json
+
+      # Install pulumi dependencies
+      # Select the new pulumi stack 
+      - run: |
+          npm install
+          pulumi stack select -c gitcoin/review-env/review
+          pulumi config -s gitcoin/review-env/review set aws:region us-west-2 --non-interactive
+        working-directory: infra/review-env
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+      # Run pulumi actions
+      - uses: pulumi/actions@v3
+        id: pulumi-env
+        name: Ensure the pulumi review environment shared ressources
+        with:
+          command: up
+          stack-name: gitcoin/review-env/review
+          upsert: true
+          work-dir: infra/review-env
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: 
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+
+      #########################################################################
+      # Provision the PR specific ressources for the review environment
+      #########################################################################
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          cache: "npm"
+          cache-dependency-path: infra/review-pr/package-lock.json
 
       # Install pulumi dependencies
       # Select the new pulumi stack 
@@ -181,34 +220,46 @@ jobs:
           npm install
           pulumi stack select -c ${{ steps.compute.outputs.pulumi_stack }}
           pulumi config -s ${{ steps.compute.outputs.pulumi_stack }} set aws:region us-west-2 --non-interactive
-        working-directory: infra/infra-review
+        working-directory: infra/review-pr
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       # Run pulumi actions
       - uses: pulumi/actions@v3
         id: pulumi
+        name: Create the environment specific for this PR
         with:
           command: up
           stack-name: ${{ steps.compute.outputs.pulumi_stack }}
           upsert: true
-          work-dir: infra/infra-review
+          work-dir: infra/review-pr
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_CONFIG_PASSPHRASE: 
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          POC_DB_NAME: ${{ secrets.POC_DB_NAME }}
-          POC_DB_PASSWORD: ${{ secrets.POC_DB_PASSWORD }}
-          POC_DB_USER: ${{ secrets.POC_DB_USER }}
-          POC_PUBLIC_KEY_GE: ${{ secrets.POC_PUBLIC_KEY_GE }}
-          POC_PUBLIC_KEY_GR: ${{ secrets.POC_PUBLIC_KEY_GR }}
-          POC_DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+
+          # Pass in the outputs from the generic environment, we will deploy our ressources in the VPC
+          # and subnet that where created there
+          REVIEW_ENV_VPC_ID: ${{ steps.pulumi-env.outputs.vpcID }}
+          REVIEW_ENV_PRIVATE_SUBNET_1: ${{ steps.pulumi-env.outputs.vpcPrivateSubnetId1 }}
+          REVIEW_ENV_PRIVATE_SUBNET_2: ${{ steps.pulumi-env.outputs.vpcPrivateSubnetId2 }}
+          REVIEW_ENV_PUBLIC_SUBNET_1: ${{ steps.pulumi-env.outputs.vpcPublicSubnetId1 }}
+          REVIEW_ENV_PUBLIC_SUBNET_2: ${{ steps.pulumi-env.outputs.vpcPublicSubnetId2 }}
+
+          REVIEW_ENV_ROUTE53_ZONE_ID: ${{ secrets.ROUTE53_ZONE_ID }}
+          REVIEW_ENV_DOMAIN: ${{ steps.compute.outputs.review_domain }}
+          REVIEW_ENV_NAME: ${{ github.event.number }}
+
 
       - name: Start migration task
         run: |
-          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId}} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi.outputs.vpcPublicSubnet1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupsForEc2 }}],assignPublicIp=ENABLED}" 
+          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi-env.outputs.vpcPrivateSubnetId1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupForTaskDefinition }}],assignPublicIp=ENABLED}" 
         env:
           # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
           AWS_EC2_METADATA_DISABLED: true
@@ -247,7 +298,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Test your commit here: [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }})`
+              body: `Test your commit here: \n\
+              - [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }}) \n\
+              - [http://${{ steps.compute.outputs.review_domain }}](http://${{ steps.compute.outputs.review_domain }}) \n\
+              `
             })
-      
-      
+          
