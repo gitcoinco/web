@@ -105,7 +105,6 @@ const vpc = awsx.ec2.Vpc.fromExistingIds(`gitcoin-review`, {
     publicSubnetIds: [publicSubnet1ID, publicSubnet2ID]
 });
 
-export const vpc_id = vpc.id;
 export const vpcPrivateSubnetIds = vpc.privateSubnetIds;
 
 

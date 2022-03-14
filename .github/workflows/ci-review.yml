@@ -253,7 +253,7 @@ jobs:
           REVIEW_ENV_PUBLIC_SUBNET_2: ${{ steps.pulumi-env.outputs.vpcPublicSubnetId2 }}
 
           REVIEW_ENV_ROUTE53_ZONE_ID: ${{ secrets.ROUTE53_ZONE_ID }}
-          REVIEW_ENV_DOMAIN: $${{ steps.compute.outputs.review_domain }}
+          REVIEW_ENV_DOMAIN: ${{ steps.compute.outputs.review_domain }}
           REVIEW_ENV_NAME: ${{ github.event.number }}
 
 
