@@ -19,3 +19,21 @@ def drop_accept_language(get_response):
         return response
 
     return middleware
+
+def drop_recaptcha_post(get_response):
+    """Define middleware to alter the request to act as a GET if the post data contains g-recaptcha-response
+
+    This middleware allows us to ignore subsequent recaptcha submissions if the user has already passed
+    the recaptcha in a different window.
+
+    """
+
+    def middleware(request):
+        """Define middleware to set method to GET if g-recaptcha-response is present in POST dict."""
+        if request.method == "POST" and "g-recaptcha-response" in request.POST:
+            request.method = "GET"
+            request.POST = {}
+
+        return get_response(request)
+
+    return middleware

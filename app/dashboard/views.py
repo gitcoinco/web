@@ -87,6 +87,7 @@ from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
 )
+from dashboard import ethelo
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
@@ -7295,7 +7296,7 @@ def export_grants_ethelo(request):
     end_grant = request.GET.get('end_grant_number')
     end_grant = int(end_grant) if len(end_grant) > 0 else None
     inactive_only = bool(request.GET.get('inactive_only'))
-    
+
     grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only)
 
     json_str = json.dumps(grants_dict)

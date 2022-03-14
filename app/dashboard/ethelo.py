@@ -8,7 +8,7 @@ def get_grants_from_database(start_grant_number: int, end_grant_number: int=None
 
     Args:
         start_grant_number (int): The index of the starting grant.
-        end_grant_number (int, optional): The index of the ending grant. If None, all grants after `start_grant_number` 
+        end_grant_number (int, optional): The index of the ending grant. If None, all grants after `start_grant_number`
             will be included. Defaults to None.
         inactive_grants_only (bool): If True, only grants that have not been activated by admins yet will be exported.
 
@@ -51,11 +51,7 @@ def _format_grant(grant: Grant) -> dict:
         "info": grant.description_rich,  # NOTE: grant.description is just a weird stringified JSON of the rich description
         "display_data": {
             "Status": _get_status(grant),
-            "Grant Url": f'https://gitcoin.co{grant.url}',
             "Github Project Url": grant.github_project_url,
-            "Location": grant.region,
-            "Wallet Address": grant.admin_address,
-            "Twitter": f'@{grant.twitter_handle_1}',
             "Creator Handle": grant.admin_profile.handle,
             "Database Number": grant.pk,
             "Tags": tags,
