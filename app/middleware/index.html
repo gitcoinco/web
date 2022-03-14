@@ -1840,6 +1840,14 @@
 <p>This middleware is essentially a hack to allow us to continue to use the
 standard Django LocaleMiddleware without modification, but simply disable
 the autodetection aspect based on the Accept-Language header.</p>
+<h2 id="app.middleware.drop_recaptcha_post">drop_recaptcha_post</h2>
+
+<pre><code class="python">drop_recaptcha_post(get_response)
+</code></pre>
+
+<p>Define middleware to alter the request to act as a GET if the post data contains g-recaptcha-response</p>
+<p>This middleware allows us to ignore subsequent recaptcha submissions if the user has already passed
+the recaptcha in a different window.</p>
                 
                   
                 
