@@ -37,7 +37,7 @@ def search_helper(request, keyword='', page=0, per_page=100):
     results_total = 0
     next_page = 0
     try:
-        # collect the results from elasticache instance
+        # collect the results from elasticsearch instance
         all_result_sets = search(keyword, page, per_page)
         # get the total number of available records
         results_total = all_result_sets.get('hits', {}).get('total', {}).get('value', 0)
