@@ -46,13 +46,13 @@ if (document.getElementById('gc-cart')) {
         e.stopPropagation();
 
         const el = $(e.currentTarget);
-        const visible = el.parent().hasClass("show");
+        const visible = el.parent().hasClass('show');
         if (visible) {
           return;
         }
 
         this.$refs.navCart.init()
-        el.trigger("click");
+        el.trigger('click');
       },
 
       onLinkClick: function(e) {
@@ -64,11 +64,11 @@ if (document.getElementById('gc-cart')) {
         e.preventDefault();
         e.stopPropagation();
 
-        window.location.href = $(e.currentTarget).attr("href");
+        window.location.href = $(e.currentTarget).attr('href');
       },
 
       isMobile: function() {
-        return "ontouchstart" in window;
+        return 'ontouchstart' in window;
       },
     },
 
