@@ -76,6 +76,7 @@ from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
 from bleach import clean
 from cacheops import invalidate_obj
+from dashboard import ethelo
 from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
@@ -86,7 +87,6 @@ from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
 )
-from dashboard import ethelo
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
@@ -6838,6 +6838,8 @@ def validate_verification(request, handle):
             pv.success = True
             pv.save()
 
+            update_trust_bonus(profile.pk)
+
             return JsonResponse({
                     'success': True,
                     'msg': 'Verification completed'
@@ -7295,7 +7297,7 @@ def export_grants_ethelo(request):
     end_grant = request.GET.get('end_grant_number')
     end_grant = int(end_grant) if len(end_grant) > 0 else None
     inactive_only = bool(request.GET.get('inactive_only'))
-    
+
     grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only)
 
     json_str = json.dumps(grants_dict)
