@@ -132,6 +132,7 @@ Vue.mixin({
     },
     validateFunderAddress: function() {
       let vm = this;
+
       return validateWalletAddress(vm.chainId, vm.form.funderAddress);
     },
     checkForm: async function(e) {
