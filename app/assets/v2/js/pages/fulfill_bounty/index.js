@@ -35,7 +35,20 @@ window.onload = function() {
     $('input[name=issueURL]').val(getParam('source'));
   }
 
+  jQuery.validator.addMethod("cryptoAddress", function(value, element, params) {
+    let chainId = params[0];
+    let ret = validateWalletAddress(chainId, value);
+    return ret;
+  }, jQuery.validator.format("Please enter a valid {1} wallet address."));
+
+  
   $('#submitBounty').validate({
+    rules: {
+      payoutAddress: {
+        required: true,
+        cryptoAddress: [bountyChainId, tokenName]
+      }
+    },
     submitHandler: function(form) {
       loading_button($('.js-submit'));
       let data = {};

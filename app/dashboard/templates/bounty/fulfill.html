@@ -120,16 +120,17 @@
                       </div>
                     {% else %}
 
+                      <!-- Address field that requires validation -->
                       <div id="payoutAddress-container" class="mt-2">
                         <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
-                        {% if is_bounties_network or bounty.web3_type == 'web3_modal' %}
+                        <div id="passwordHelpBlock" class="form-text form__input-help mb-1 mt-0">
+                          Enter your {{ bounty.token_name }} wallet address. Bounty payout will be sent to this address upon acceptance.
+                        </div>
+                      {% if is_bounties_network or bounty.web3_type == 'web3_modal' %}
                           <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
                             [ sync with web3 wallet ]
                           </span>
                         {% endif %}
-                        <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
-                          title="Address to which bounty will be sent upon being accepted">
-                        </i>
                         <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="Enter {{ bounty.token_name }}{% if bounty.web3_type == 'nervos_ext' %} or ETH {% endif %} Wallet Address"/>
                         <div class="text-danger hidden">
                           Enter a valid {{ bounty.token_name }} address
@@ -214,6 +215,7 @@
         eventTag = '{{ bounty.event.slug }}';
       {% endif %}
       bountyChainId = '{{bounty.metadata.chain_id}}'
+      let tokenName = '{{bounty.token_name}}'
 
       $(document).ready(function() {
         $('.js-select2').each(function() {
@@ -241,6 +243,7 @@
     <script src="{% static "v2/js/pages/fulfill_bounty/token.js" %}"></script>
   {% endif %}
   <script src="{% static "v2/js/rating.js" %}"></script>
+  <script src="{% static "v2/js/pages/wallet_address_validation.js" %}"></script>
   <script src="{% static "v2/js/pages/fulfill_bounty/index.js" %}"></script>
 </body>
 
