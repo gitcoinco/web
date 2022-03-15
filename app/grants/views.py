@@ -709,7 +709,7 @@ def get_grants_by_filters(
         if len(grant_ids):
             _grants = _grants.filter(pk__in=grant_ids)
         # apply the grant_filters
-        _grants = _grants.filter(grant_filters)
+        _grants = _grants.filter(grant_filters).distinct()
 
         # apply the grant_exludes
         if clr_round.grant_excludes:
