@@ -540,6 +540,16 @@ const service = new awsx.ecs.FargateService("app", {
     },
 });
 
+const autoScalingGroup = cluster.createAutoScalingGroup("gitcoin", {
+    templateParameters: { minSize: 2 },
+    launchConfigurationArgs: { instanceType: "t2.medium" },
+});
+
+autoScalingGroup.scaleToTrackMetric("keepAround70Percent", {
+    metric: awsx.ecs.metrics.memoryUtilization({ service, statistic: "Average", unit: "Percent" }),
+    targetValue: 70,
+});
+
 // Export the URL so we can easily access it.
 export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
 export const frontend = listener.endpoint
