@@ -38,9 +38,9 @@ if (document.getElementById('gc-search')) {
       this.search();
     },
     computed: {
-      hasMoreResults () {
-        return this.page !== false && this.total && this.page * this.perPage < this.total
-      },
+      hasMoreResults() {
+        return this.page !== false && this.total && this.page * this.perPage < this.total;
+      }
     },
     methods: {
       init: function() {
@@ -77,6 +77,7 @@ if (document.getElementById('gc-search')) {
             `/api/v0.1/search/?term=${vm.term}&page=${vm.page}`,
             'GET'
           );
+
           if (document.current_search == thisDate) {
             vm.results = groupBySource(response.results, vm.term !== vm.searchTerm ? {} : vm.results);
             vm.searchTerm = vm.term;

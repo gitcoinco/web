@@ -116,6 +116,7 @@ Vue.component('grantsCartEthereumPolygon', {
   methods: {
     initWeb3() {
       let url;
+
       if (appCart.$refs.cart.network === 'mainnet') {
         url = 'https://polygon-rpc.com';
       } else {
