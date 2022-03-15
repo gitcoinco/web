@@ -72,6 +72,7 @@ Vue.component('grant-card', {
 
       if (response.action === 'follow') {
         this.grant.favorite = true;
+        this.$emit('dismiss-favorite-alert');
       } else {
         this.grant.favorite = false;
       }

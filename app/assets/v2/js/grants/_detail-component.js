@@ -526,6 +526,7 @@ Vue.component('grant-details', {
       logo: null,
       logoPreview: null,
       logoBackground: null,
+      dismissFavoriteAlert: 0,
       rows: 0,
       perPage: 4,
       currentPage: 1,

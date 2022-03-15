@@ -55,6 +55,15 @@ along with this program. If not, see
       background: none !important;
     }
 
+    .alert-fixed-top {
+      position: fixed;
+      top: 80px;
+      right: 0;
+      z-index: 1030;
+      width: 450px;
+      max-width: 95%;
+    }
+
   </style>
   <style class="page-styles">
     {% if grant_bg.inline_css %}{{grant_bg.inline_css}}{% endif %}
@@ -366,6 +375,23 @@ along with this program. If not, see
                       <a class="text-decoration-none" :href="grant.details_url">
                         {% include 'grants/components/card.html' %}
                       </a>
+                      <b-alert
+                        :show="dismissFavoriteAlert"
+                        dismissible
+                        variant="primary"
+                        @dismissed="dismissFavoriteAlert = 0"
+                        class="border border-primary alert-fixed-top mr-md-4 mr-0"
+                      >
+                        <div class="row">
+                          <div class="col-auto col-md-7">
+                            <i class="fas fa-star mr-2"></i>
+                            <span class="text-black">Added to Favorites</span>
+                          </div>
+                          <div class="col-auto col-md-5 text-nowrap text-right">
+                            <a href="{% url 'grants:grants_explorer' %}?following=true&idle=true">View Favorites</a>
+                          </div>
+                        </div>
+                      </b-alert>
                     </div>
                   </div>
 

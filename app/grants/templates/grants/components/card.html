@@ -18,6 +18,7 @@
 <grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
             :contributions='contributions' :show_contributions="show_contributions" :collection="activeCollection"
             :editing_collection.sync='editingCollection' :collection_grant_ids.sync="collection_grant_ids"
+            @dismiss-favorite-alert="dismissFavoriteAlert = 10"
             v-on:collection:create='openCreateCollectionModal'
             v-on:collection:remove='removeCollection'>
   <template>
