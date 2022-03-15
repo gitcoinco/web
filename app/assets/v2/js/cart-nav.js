@@ -29,7 +29,7 @@ if (document.getElementById('gc-cart')) {
     el: '#gc-cart',
 
     data: {
-      cart_data_count: CartData.length(),
+      cart_data_count: CartData.length()
     },
 
     methods: {
@@ -47,17 +47,18 @@ if (document.getElementById('gc-cart')) {
 
         const el = $(e.currentTarget);
         const visible = el.parent().hasClass('show');
+
         if (visible) {
           return;
         }
 
-        this.$refs.navCart.init()
+        this.$refs.navCart.init();
         el.trigger('click');
       },
 
       onLinkClick: function(e) {
         if (this.isMobile()) {
-          this.$refs.navCart.init()
+          this.$refs.navCart.init();
           return;
         }
 
@@ -69,7 +70,7 @@ if (document.getElementById('gc-cart')) {
 
       isMobile: function() {
         return 'ontouchstart' in window;
-      },
+      }
     },
 
     mounted() {
