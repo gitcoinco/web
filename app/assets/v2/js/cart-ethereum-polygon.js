@@ -54,7 +54,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
     requiredAmountsString() {
       let string = '';
-      
+
       if (this.polygon.showModal === false)
         return string;
 
@@ -116,13 +116,9 @@ Vue.component('grantsCartEthereumPolygon', {
   methods: {
     initWeb3() {
       let url;
-
       if (appCart.$refs.cart.network === 'mainnet') {
-        appCart.$refs.cart.networkId = POLYGON_MAINNET_NETWORK_ID;
         url = 'https://polygon-rpc.com';
       } else {
-        appCart.$refs.cart.networkId = POLYGON_TESTNET_NETWORK_ID;
-        appCart.$refs.cart.network = 'testnet';
         url = 'https://rpc-mumbai.matic.today';
       }
 
@@ -207,7 +203,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
     splitPolygonGrants() {
       this.closePolygonModal();
-      
+
       // change tenant of multisig grants in grantData array
       appCart.$refs.cart.grantData.map(grant => {
         if (!this.multisigGrants.map(grant => grant.grant_id).includes(grant.grant_id)) {
