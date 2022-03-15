@@ -20,6 +20,9 @@
   }
   .carousel-inner {
     min-height: 500px;
+    .carousel-item[data-carousel-item-href] {
+      cursor: pointer;
+    }
   }
   .grants {
     display: flex;
