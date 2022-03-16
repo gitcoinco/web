@@ -197,6 +197,7 @@ Vue.mixin({
 
       if (response.action === 'follow') {
         vm.grant.favorite = true;
+        vm.dismissFavoriteAlertCountDown = 10;
       } else {
         vm.grant.favorite = false;
       }
@@ -526,7 +527,7 @@ Vue.component('grant-details', {
       logo: null,
       logoPreview: null,
       logoBackground: null,
-      dismissFavoriteAlert: 0,
+      dismissFavoriteAlertCountDown: 0,
       rows: 0,
       perPage: 4,
       currentPage: 1,

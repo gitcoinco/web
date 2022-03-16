@@ -80,7 +80,7 @@ if (document.getElementById('grants-showcase')) {
       grantTenants: grantTenants,
       grant_tags: [],
       grant: {},
-      dismissFavoriteAlert: 0,
+      dismissFavoriteAlertCountDown: 0,
       collectionsPage: null,
       cart_data_count: CartData.length(),
       network: document.network,

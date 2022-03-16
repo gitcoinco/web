@@ -540,10 +540,10 @@
               Add to Favorites
             </button>
             <b-alert
-              :show="dismissFavoriteAlert"
+              :show="dismissFavoriteAlertCountDown"
               dismissible
               variant="primary"
-              @dismissed="dismissFavoriteAlert = 0"
+              @dismissed="dismissFavoriteAlertCountDown = 0"
               class="border border-primary alert-fixed-top mr-md-4 mr-0"
             >
               <div class="row">
