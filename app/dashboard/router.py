@@ -301,7 +301,12 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
 
 
 class BountySerializerSlim(BountySerializer):
+    interested_count = serializers.SerializerMethodField()
 
+    def get_interested_count(self, obj):
+        # It is expected that slim_interested_count will be an annotated fielf coming from the query
+        # it is not part of model
+        return obj.slim_interested_count
 
     class Meta:
         """Define the bounty serializer metadata."""
@@ -406,12 +411,16 @@ class BountiesViewSet(viewsets.ModelViewSet):
         applicants = self.request.query_params.get('applicants')
         if applicants == '0':
             queryset = queryset.annotate(
-                interested_count=Count("interested")
-            ).filter(interested_count=0)
+                slim_interested_count=Count("interested")
+            ).filter(slim_interested_count=0)
         elif applicants == '1-5':
             queryset = queryset.annotate(
-                interested_count=Count("interested")
-            ).filter(interested_count__gte=1).filter(interested_count__lte=5)
+                slim_interested_count=Count("interested")
+            ).filter(slim_interested_count__gte=1).filter(slim_interested_count__lte=5)
+        else:
+            queryset = queryset.annotate(
+                slim_interested_count=Count("interested")
+            ).filter(slim_interested_count__gte=1).filter(slim_interested_count__gt=5)
 
         # filter by who is interested
         if 'started' in param_keys:
