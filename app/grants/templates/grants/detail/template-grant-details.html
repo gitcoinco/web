@@ -270,7 +270,7 @@
           <div class="row mt-2">
             <div class="col mb-5">
               <h3>Lifetime funding received</h3>
-              <h2>$[[grant.amount_received || 0 | round | formatNumber ]]</h2>
+              <h2>$[[grant.amount_received ]]</h2>
               <span>raised from all contributors</span>
             </div>
           </div>
@@ -286,7 +286,7 @@
 
           <div class="row mt-2" v-if="grant.clr_round_num && grant.is_clr_eligible">
             <div class="col col-4">
-              <h2>$[[ grant.amount_received_in_round || 0 | round | formatNumber ]]</h2>
+              <h2>$[[ grant.amount_received_in_round  ]]</h2>
               <span>
                 raised from [[ grant.positive_round_contributor_count ]] contributors
               </span>
