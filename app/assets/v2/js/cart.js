@@ -36,7 +36,7 @@ Vue.component('eth-checkout-button', {
   delimiters: [ '[[', ']]' ],
   template: '#eth-checkout-template',
   props: [
-    'maxCartItems', 'network', 'isZkSyncDown', 'isPolygonDown', 'onPolygonUpdate', 'onZkSyncUpdate', 'donationInputs',
+    'maxCartItems', 'network', 'isZkSyncDown', 'isPolygonDown', 'onPolygonUpdate', 'onZkSyncUpdate', 'donationInputs', 'donationInputsPolygon',
     'currentTokens', 'grantsByTenant', 'grantsUnderMinimalContribution', 'activeCheckout', 'standardCheckout', 'multisigGrants',
     'tabSelected'
   ]
@@ -129,6 +129,9 @@ Vue.component('grants-cart', {
   },
 
   computed: {
+    polygonTokens() {
+      return this.sortByPriority.filter((token) => token.networkId === 137);
+    },
     grantsByTenant() {
       let vm = this;
       let result;
@@ -484,7 +487,14 @@ Vue.component('grants-cart', {
 
       // Generate array of objects containing donation info from cart
       const donations = this.grantsByTenant.map((grant) => {
-        const tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
+        let tokenDetails;
+
+        if (isPolygon) {
+          tokenDetails = this.getPolygonTokenByName(grant.grant_donation_currency);
+        } else {
+          tokenDetails = this.getTokenByName(grant.grant_donation_currency, isPolygon);
+        }
+
         let amount;
 
         try {
@@ -1023,22 +1033,6 @@ Vue.component('grants-cart', {
         token.networkId == networkId && (_filter ? _filter(token) : true)
       );
     },
-    getTokenByNamePolygon(name, isPolygon = false) {
-      if (name === 'ETH' && !isPolygon) {
-        return {
-          addr: ETH_ADDRESS,
-          address: ETH_ADDRESS,
-          name: 'ETH',
-          symbol: 'ETH',
-          decimals: 18,
-          priority: 1
-        };
-      }
-      console.log('getting tokens', { isPolygon });
-      if (isPolygon) {
-        return this.getTokensForETHPolygonDropdown(token => token.name === name, isPolygon)[0];
-      }
-    },
 
     /**
      * @notice Get token address and decimals using data fetched from the API endpoint in the
@@ -1060,13 +1054,13 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
-      console.log('getting tokens', { isPolygon });
-      if (isPolygon) {
-        return this.getTokensForETHPolygonDropdown(token => token.name === name, isPolygon)[0];
-      }
       // filter to the selected token on the discovered network
       return this.getTokens(token => token.name === name, isPolygon)[0];
       
+    },
+
+    getPolygonTokenByName(name) {
+      return this.getTokensForETHPolygonDropdown(token => token.name === name)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
@@ -1173,10 +1167,12 @@ Vue.component('grants-cart', {
       for (let i = 0; i < selectedTokens.length; i += 1) {
         const tokenName = selectedTokens[i];
 
+        let tokenDetails;
+
         if (isPolygon) {
-          const tokenDetails = this.getTokenByName(tokenName, isPolygon);
+          tokenDetails = this.polygonTokens.filter((token) => token.name === tokenName)[0];
         } else {
-          const tokenDetails = this.getTokenByName(tokenName, isPolygon);
+          tokenDetails = this.getTokenByName(tokenName, isPolygon);
         }
 
         // If native currency donation no approval is necessary, just check balance

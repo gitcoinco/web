@@ -38,7 +38,9 @@ Vue.component('grantsCartEthereumPolygon', {
   async mounted() {
     // Update Polygon checkout connection, state, and data frontend needs when wallet connection changes
     window.addEventListener('dataWalletReady', async(e) => {
-      await this.onChangeHandler(this.donationInputs);
+      if (this.donationInputs) {
+        await this.onChangeHandler(this.donationInputs);
+      }
     });
 
     // Check for contracts/gnosis safes - we cannot send funds if the contract isn't deployed on Polygon
@@ -146,6 +148,18 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     getDonationInputs() {
+      const donations = this.donationInputs;
+
+      donations.map(token => {
+        const polyToken = appCart.$refs.cart.polygonTokens.filter((polytoken) => {
+          return polytoken.name === token.name;
+        });
+
+        token.token = polyToken[0].address;
+        // token.donor = ethereum.selectedAddress;
+        return token;
+      });
+
       return appCart.$refs.cart.getFilteredDonationInputs(this.donationInputs);
     },
 
@@ -339,9 +353,11 @@ Vue.component('grantsCartEthereumPolygon', {
       // Send transaction
       appCart.$refs.cart.showConfirmationModal = true;
 
+      console.log({ from: userAddress, gas: this.polygon.estimatedGasCost, value: donationInputsFiltered });
+
       bulkTransaction.methods
         .donate(donationInputsFiltered)
-        .send({ from: userAddress, gas: this.polygon.estimatedGasCost, value: this.donationInputsNativeAmount })
+        .send({ from: userAddress, gas: this.polygon.estimatedGasCost, value: donationInputsFiltered })
         .on('transactionHash', async(txHash) => {
           indicateMetamaskPopup(true);
           console.log('Donation transaction hash: ', txHash);
