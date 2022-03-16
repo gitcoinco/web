@@ -436,26 +436,26 @@ this.objectifySerialized = function(data) {
 };
 
 
-window.onscroll = function () {
+window.onscroll = function() {
   scrollFunction();
 };
 
 const backToTop = () => {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
-}
+};
 
 const scrollFunction = () => {
-  let scrollBackToTop = document.getElementById("btn-back-to-top");
+  let scrollBackToTop = document.getElementById('btn-back-to-top');
 
   if (
     document.body.scrollTop > 20 ||
     document.documentElement.scrollTop > 20
   ) {
-    scrollBackToTop.style.display = "block";
+    scrollBackToTop.style.display = 'block';
   } else {
-    scrollBackToTop.style.display = "none";
+    scrollBackToTop.style.display = 'none';
   }
-}
+};
 
-document.getElementById("btn-back-to-top").addEventListener("click", backToTop);
+document.getElementById('btn-back-to-top').addEventListener('click', backToTop);
