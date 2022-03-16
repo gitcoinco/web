@@ -130,6 +130,7 @@ Vue.component('grants-cart', {
 
   computed: {
     polygonTokens() {
+      console.log(this.sortByPriority, 'this.sortByPriority', this.sortByPriority.filter((token) => token.networkId === 137));
       return this.sortByPriority.filter((token) => token.networkId === 137);
     },
     grantsByTenant() {
@@ -461,6 +462,15 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    async getTokenId() {
+      if (document.web3networkId) {
+        this.chainId = document.web3networkId;
+        return;
+      }
+      const web3 = Web3 ? new Web3(provider || 'ws://localhost:8546') : null;
+
+      this.chainId = web3.eth.currentProvider.chainId;
+    },
     formatAnalyticsItems(grants) {
       return grants.map((grant) => ({
         item_id: grant.grant_id,
@@ -1170,10 +1180,17 @@ Vue.component('grants-cart', {
         let tokenDetails;
 
         if (isPolygon) {
-          tokenDetails = this.polygonTokens.filter((token) => token.name === tokenName)[0];
+          const tempTokenName = tokenName === 'ETH' ? 'WETH' : tokenName;
+
+          tokenDetails = this.polygonTokens.filter((token) => {
+            console.log(token.name, 'token.name');
+            return token.name === tokenName;
+            
+          })[0];
         } else {
           tokenDetails = this.getTokenByName(tokenName, isPolygon);
         }
+        console.log({ tokenDetails, isPolygon, tokenName }, this.polygonTokens, 'this.polygonTokensthis.polygonTokens');
 
         // If native currency donation no approval is necessary, just check balance
         if (tokenDetails.name === this.nativeCurrency) {
@@ -1806,13 +1823,16 @@ Vue.component('grants-cart', {
   async mounted() {
     // Show loading dialog
     this.isLoading = true;
+    this.getTokenId();
 
+    console.log(this.chainId, 'networkIdnetworkId');
     // Load list of all tokens
     const tokensResponse = await fetch('/api/v1/tokens');
     const allTokens = await tokensResponse.json();
 
+    // I don;t think the request from web3 js to get network is always returned here
     // Only keep the ones for the current network
-    this.currentTokens = allTokens.filter((token) => token.network === document.web3network || 'mainnet');
+    this.currentTokens = allTokens.filter((token) => token.networkId === document.web3networkId);
     this.currentTokens.forEach((token) => {
       // Add addr and name fields for backwards compatibility with existing code in this file
       token.addr = token.address;

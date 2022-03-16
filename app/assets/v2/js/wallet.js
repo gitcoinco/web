@@ -97,6 +97,7 @@ async function fetchAccountData(provider) {
     networkId = id;
     networkName = getDataChains(id, 'chainId')[0] && getDataChains(id, 'chainId')[0].network;
   });
+  console.log({ networkId });
   // web3.currentProvider.chainId
   // networkName = await web3.eth.net.getNetworkType();
 
@@ -109,6 +110,7 @@ async function fetchAccountData(provider) {
   // }
   console.log(networkName);
   document.web3network = networkName;
+  document.web3networkId = networkId;
   // Load chain information over an HTTP API
   // const chainData = await EvmChains.getChain(chainId);
 
