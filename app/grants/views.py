@@ -1507,6 +1507,8 @@ def grant_details(request, grant_id, grant_slug):
         }
         grant_tags.append(_grant_tag)
 
+    has_recent_l2_contributions = grant.contributions.recent(14).layer2().exists()
+
     params = {
         'active': 'grant_details',
         'grant': grant,
@@ -1518,6 +1520,7 @@ def grant_details(request, grant_id, grant_slug):
         'subscriptions': subscriptions,
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
+        'has_recent_l2_contributions': has_recent_l2_contributions,
         'user_subscription': user_subscription,
         'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
@@ -1538,7 +1541,7 @@ def grant_details(request, grant_id, grant_slug):
                                    emoji_codes) if request.user.is_authenticated else '',
         'verification_tweet': get_grant_verification_text(grant),
         # 'tenants': grant.tenants,
-        'grant_tags': grant_tags
+        'grant_tags': grant_tags,
     }
     # Stats
     if tab == 'stats':

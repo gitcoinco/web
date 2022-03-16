@@ -7,14 +7,35 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import requests
+from datetime import timedelta
+
 from economy.models import SuperModel, Token
 from economy.tx import check_for_replaced_tx
 from townsquare.models import Comment
 from web3 import Web3
 
 
+class ContributionQuerySet(models.QuerySet):
+    """Define the Contribution default queryset and manager."""
+
+    def recent(self, days):
+        """Filter results down to recent contributions modified in the last days."""
+        return self.filter(modified_on__gt=timezone.now() - timedelta(days=days))
+
+    def layer2(self):
+        """Filter results down to zksync and polygon contributions."""
+        return self.filter(checkout_type__in=["eth_zksync", "eth_polygon"])
+
+
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
+
+    class Meta:
+        """Define the metadata for Contribution."""
+
+        index_together = [
+            ["modified_on", "checkout_type"]
+        ]
 
     CHECKOUT_TYPES = [
         ('eth_std', 'eth_std'),
@@ -105,6 +126,8 @@ class Contribution(SuperModel):
         choices=CHECKOUT_TYPES
     )
     anonymous = models.BooleanField(default=False, help_text=_('Whether users can view the profile for this project or not'))
+
+    objects = ContributionQuerySet.as_manager()
 
     @property
     def blockexplorer_url(self):
