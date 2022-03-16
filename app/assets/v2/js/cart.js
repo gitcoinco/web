@@ -183,6 +183,7 @@ Vue.component('grants-cart', {
       let network;
 
       network = vm.tokenListOptions.network || vm.network;
+
       if (vm.network == '') {
         result = vm.sortByPriority;
       } else if (vm.tokenListOptions.strict) {
@@ -219,7 +220,36 @@ Vue.component('grants-cart', {
 
       return result;
     },
+    filterByNetworkId: function() {
+      const vm = this;
+      let result;
+      let networkId;
 
+      networkId = vm.tokenListOptions.networkId || vm.networkId;
+
+      if (vm.networkId == '') {
+        result = vm.filterByChainId;
+      } else if (vm.tokenListOptions.strict) {
+        result = vm.sortByPriority.filter((item) => {
+          return String(item.networkId) == networkId;
+        });
+        return result;
+      } else {
+        result = vm.filterByChainId.filter((item) => {
+          return String(item.networkId) === networkId;
+        });
+      }
+      return result;
+    },
+    fetchTokens() {
+      // removes duplicates from the tokens array of objects
+      let vm = this;
+      let uniq = {};
+
+      return vm.filterByChainId.filter(
+        obj => !uniq[obj['name']] && (uniq[obj['name']] = true)
+      );
+    },
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
       return document.contxt.github_handle;
@@ -973,33 +1003,6 @@ Vue.component('grants-cart', {
       indicateMetamaskPopup(true);
     },
 
-
-    /**
-     * @notice Returns all tokens available on the selected network allowing for isPolygon override
-     */
-    getTokens(_filter = false, isPolygon = false) {
-      // return a list of uniq (by name) tokens
-      const uniq = {};
-
-      // get the networkId
-      const networkId = (
-        isPolygon ? (
-          this.network === 'mainnet' ? POLYGON_MAINNET_NETWORK_ID : POLYGON_TESTNET_NETWORK_ID
-        ) : (
-          // rinkeby is stored as networkId==1 in the db
-          this.network === 'rinkeby' ? 1 : this.networkId
-        )
-      );
-
-      // filter to the selected token on the discovered network
-      return this.filterByChainId.filter(token =>
-        // check that it hasn't already been seen and record that we've now seen it
-        !uniq[token['name']] && (uniq[token['name']] = true) &&
-        // check for discovered networkId and process any additional filters
-        token.networkId == networkId && (_filter ? _filter(token) : true)
-      );
-    },
-
     /**
      * @notice Get token address and decimals using data fetched from the API endpoint in the
      * mounted hook
@@ -1009,7 +1012,6 @@ Vue.component('grants-cart', {
      * @param {String} name Token name, e.g. ETH or DAI
      */
     getTokenByName(name, isPolygon = false) {
-      // hardcoded ETH response
       if (name === 'ETH' && !isPolygon) {
         return {
           addr: ETH_ADDRESS,
@@ -1021,8 +1023,7 @@ Vue.component('grants-cart', {
         };
       }
 
-      // filter to the selected token on the discovered network
-      return this.getTokens(token => token.name === name, isPolygon)[0];
+      return this.filterByChainId.filter(token => token.name === name && token.networkId == this.networkId)[0];
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
@@ -1242,11 +1243,19 @@ Vue.component('grants-cart', {
       }
     },
 
+    resetNetwork() {
+      if (this.nativeCurrency == 'MATIC') {
+        this.network = this.network == 'testnet' ? 'rinkeby' : 'mainnet';
+        this.networkId = this.networkId == '80001' ? '4' : '1';
+      }
+    },
+
     // Standard L1 checkout flow
     async standardCheckout() {
       try {
         // Setup -----------------------------------------------------------------------------------
         this.activeCheckout = 'standard';
+        this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)
