@@ -170,6 +170,7 @@ Vue.component('grants-cart', {
         return result;
       }, {});
 
+      console.log({ grantsTentantsCount });
       return grantsTentantsCount;
     },
     sortByPriority: function() {
@@ -182,6 +183,7 @@ Vue.component('grants-cart', {
       let result;
       let network;
 
+      console.log(vm.network, 'vm.networkvm.network');
       network = vm.tokenListOptions.network || vm.network;
       if (vm.network == '') {
         result = vm.sortByPriority;
@@ -203,6 +205,7 @@ Vue.component('grants-cart', {
       let chainId;
 
       chainId = vm.tokenListOptions.chainId || vm.chainId;
+      console.log({ chainId }, vm.tokenListOptions, 'vm.tokenListOptions', vm.chainId, 'vm.chainId');
 
       if (chainId == '') {
         result = vm.filterByNetwork;
@@ -653,8 +656,10 @@ Vue.component('grants-cart', {
       switch (vm.tabSelected) {
         default:
         case 'ETH':
-        case 'ETH_POLYGON':
           vm.chainId = '1';
+          break;
+        case 'ETH_POLYGON':
+          vm.chainId = '137';
           break;
         case 'ZCASH':
           vm.chainId = '123123';
@@ -973,6 +978,23 @@ Vue.component('grants-cart', {
       indicateMetamaskPopup(true);
     },
 
+    /**
+     * @notice Returns all tokens available on the selected network allowing for isPolygon override
+     */
+    getTokensForETHPolygonDropdown(_filter = false, isPolygon = false) {
+      // return a list of uniq (by name) tokens
+      const uniq = {};
+
+      console.log(this.filterByChainId, 'this.filterByChainIdthis.filterByChainId');
+
+      // filter to the selected token on the discovered network
+      return this.filterByChainId.filter(token =>
+        // check that it hasn't already been seen and record that we've now seen it
+        !uniq[token['name']] && (uniq[token['name']] = true) &&
+        // process additional filters
+        (_filter ? _filter(token) : true)
+      );
+    },
 
     /**
      * @notice Returns all tokens available on the selected network allowing for isPolygon override
@@ -980,6 +1002,8 @@ Vue.component('grants-cart', {
     getTokens(_filter = false, isPolygon = false) {
       // return a list of uniq (by name) tokens
       const uniq = {};
+
+      console.log({ _filter, isPolygon });
 
       // get the networkId
       const networkId = (
@@ -998,6 +1022,22 @@ Vue.component('grants-cart', {
         // check for discovered networkId and process any additional filters
         token.networkId == networkId && (_filter ? _filter(token) : true)
       );
+    },
+    getTokenByNamePolygon(name, isPolygon = false) {
+      if (name === 'ETH' && !isPolygon) {
+        return {
+          addr: ETH_ADDRESS,
+          address: ETH_ADDRESS,
+          name: 'ETH',
+          symbol: 'ETH',
+          decimals: 18,
+          priority: 1
+        };
+      }
+      console.log('getting tokens', { isPolygon });
+      if (isPolygon) {
+        return this.getTokensForETHPolygonDropdown(token => token.name === name, isPolygon)[0];
+      }
     },
 
     /**
@@ -1020,9 +1060,13 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
-
+      console.log('getting tokens', { isPolygon });
+      if (isPolygon) {
+        return this.getTokensForETHPolygonDropdown(token => token.name === name, isPolygon)[0];
+      }
       // filter to the selected token on the discovered network
       return this.getTokens(token => token.name === name, isPolygon)[0];
+      
     },
 
     async applyPreferredAmountAndTokenToAllGrants(tenant) {
@@ -1128,7 +1172,12 @@ Vue.component('grants-cart', {
       // Loop over each token in the cart and check allowance
       for (let i = 0; i < selectedTokens.length; i += 1) {
         const tokenName = selectedTokens[i];
-        const tokenDetails = this.getTokenByName(tokenName, isPolygon);
+
+        if (isPolygon) {
+          const tokenDetails = this.getTokenByName(tokenName, isPolygon);
+        } else {
+          const tokenDetails = this.getTokenByName(tokenName, isPolygon);
+        }
 
         // If native currency donation no approval is necessary, just check balance
         if (tokenDetails.name === this.nativeCurrency) {
