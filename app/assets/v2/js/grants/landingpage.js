@@ -63,7 +63,7 @@ if (document.getElementById('grants-showcase')) {
 
         // vm.updateUrlParams();
 
-        let url = '/api/v0.1/grants_collections/?featured=true';
+        let url = '/api/v0.1/grants_collections/?featured=true&page_size=4';
 
         if (vm.collectionsPage) {
           url = vm.collectionsPage;
