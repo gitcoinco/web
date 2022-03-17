@@ -121,6 +121,10 @@
 }
 
 // hover effects
+.disable-hover-underline:hover {
+  text-decoration: none!important
+}
+
 .hover-underline:not(:disabled):not(.disabled):not(.active):hover {
   text-decoration: underline!important
 }

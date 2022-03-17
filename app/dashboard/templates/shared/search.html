@@ -26,7 +26,7 @@
     <div class="has-search p-3">
       <form v-on:submit.prevent="search">
         <input type="text" class="form-control font-caption" v-model="term" @input="dirty" placeholder="Search Gitcoin">
-        <input type="submit" class="form-control font-caption mx-2" @click="search" value="Go">
+        <input type="submit" class="form-control font-caption mx-2" value="Go">
       </form>
     </div>
     <template v-if="term.length < 4">
@@ -79,7 +79,15 @@
       </div>
       <template v-if="hasMoreResults">
         <div class="gc-search-more-results bg-white border-grey border-top-1 bottom-0 font-smaller-2 pb-3 position-sticky pt-3 text-center">
-          <a class="link cursor-pointer" @click="search">Load more results (showing [[ page * perPage ]] of [[ total ]])...</a>
+          <template v-if="isLoading">
+            <a class="text-muted cursor-none disable-hover-underline" @click.prevent="false">
+              <i class="font-smaller-1 fas fa-spinner fa-pulse mr-1"></i>
+              Fetching result
+            </a>
+          </template>
+          <template v-else>
+            <a class="cursor-pointer" @click="search">Load more results (showing [[ page * perPage ]] of [[ total ]])...</a>
+          </template>
         </div>
       </template>
     </template>
