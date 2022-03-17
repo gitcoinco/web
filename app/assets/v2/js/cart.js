@@ -164,9 +164,11 @@ Vue.component('grants-cart', {
       let vm = this;
 
       var grantsTentantsCount = vm.grantData.reduce(function(result, grant) {
-        var currentCount = result[grant.tenants] || 0;
+        grant.tenants.forEach((tenant) => {
+          var currentCount = result[tenant] || 0;
 
-        result[grant.tenants] = currentCount + 1;
+          result[tenant] = currentCount + 1;
+        });
         return result;
       }, {});
 
