@@ -6838,6 +6838,8 @@ def validate_verification(request, handle):
             pv.success = True
             pv.save()
 
+            update_trust_bonus(profile.pk)
+
             return JsonResponse({
                     'success': True,
                     'msg': 'Verification completed'
