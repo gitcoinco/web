@@ -444,28 +444,6 @@
             <hr class="my-4">
           </template>
 
-          <!-- L2 contributions -->
-          <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
-            <b-card-text>
-              <p class="font-weight-semibold mb-2">
-                <i class="fal fa-wallet mr-1"></i>
-                You’ve received L2 contributions
-              </p>
-              Some of your grant funds may be in L2 (zkSync or Polygon).
-              <span v-if="grant.is_contract_address">
-                Polygon contributions are not supported
-                for your grant since it is using a contract address (e.g. Gnosis Safe, multi-sig wallet).
-              </span>
-              <span v-else>
-                Read more on how to withdraw from L2 wallets.
-              </span>
-            </b-card-text>
-            <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/75-how-do-i-withdraw-my-funds-from-an-l2-layer-zksync-and-or-polygon-matic/" target="_blank">
-              Read L2 Withdrawal guide
-            </a>
-            <hr class="my-4">
-          </template>
-
 
           <!-- Edit Grant Button -->
           <template v-if="!grant.is_idle && (grant.is_on_team || isStaff)">
@@ -478,7 +456,32 @@
             </b-card-text>
             <button class="btn btn-block btn-primary" @click="editGrantModal()" v-if="fullview">Edit Grant</button>
             <a class="btn btn-block btn-primary" :href="grant.details_url" target="_blank" v-else>Edit Grant</a>
+            <hr class="my-4">
           </template>
+
+
+          <!-- L2 contributions -->
+          {% if has_recent_l2_contributions %}
+            <template v-if="grant.active && (grant.is_on_team || isStaff) && grant.tenants.includes('ETH')">
+              <b-card-text>
+                <p class="font-weight-semibold mb-2">
+                  <i class="fal fa-wallet mr-1"></i>
+                  You’ve received L2 contributions
+                </p>
+                Some of your grant funds may be in L2 (zkSync or Polygon).
+                <span v-if="grant.is_contract_address">
+                  Polygon contributions are not supported
+                  for your grant since it is using a contract address (e.g. Gnosis Safe, multi-sig wallet).
+                </span>
+                <span v-else>
+                  Read more on how to withdraw from L2 wallets.
+                </span>
+              </b-card-text>
+              <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/75-how-do-i-withdraw-my-funds-from-an-l2-layer-zksync-and-or-polygon-matic/" target="_blank">
+                Read L2 Withdrawal guide
+              </a>
+            </template>
+          {% endif %}
 
         </b-card>
 
