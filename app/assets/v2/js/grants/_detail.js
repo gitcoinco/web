@@ -6,6 +6,15 @@ Quill.register('modules/ImageExtend', ImageExtend);
 
 Vue.mixin({
   methods: {
+    formatDonationAmounts(grant) {
+      const amountReceived = Vue.filter('round')(grant.amount_received || 0);
+      const amountRecievedInRound = Vue.filter('round')(grant.amount_received_in_round || 0);
+
+      grant.amount_received = Vue.filter('formatNumber')(amountReceived);
+      grant.amount_received_in_round = Vue.filter('formatNumber')(amountRecievedInRound);
+
+      return grant;
+    },
     fetchGrantDetails: function(id) {
       const vm = this;
 
@@ -21,7 +30,7 @@ Vue.mixin({
         fetch(url).then(function(res) {
           return res.json();
         }).then(function(json) {
-          vm.grant = json.grants;
+          vm.grant = vm.formatDonationAmounts(json.grants);
           vm.loading = false;
 
           // pick up the curve from the grants model
