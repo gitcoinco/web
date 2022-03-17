@@ -434,3 +434,28 @@ this.objectifySerialized = function(data) {
 
   return objectData;
 };
+
+
+window.onscroll = function() {
+  scrollFunction();
+};
+
+const backToTop = () => {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+};
+
+const scrollFunction = () => {
+  let scrollBackToTop = document.getElementById('btn-back-to-top');
+
+  if (
+    document.body.scrollTop > 20 ||
+    document.documentElement.scrollTop > 20
+  ) {
+    scrollBackToTop.style.display = 'block';
+  } else {
+    scrollBackToTop.style.display = 'none';
+  }
+};
+
+document.getElementById('btn-back-to-top').addEventListener('click', backToTop);
