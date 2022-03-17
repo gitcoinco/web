@@ -10,9 +10,15 @@ Vue.mixin({
       const amountReceived = Vue.filter('round')(grant.amount_received || 0);
       const amountRecievedInRound = Vue.filter('round')(grant.amount_received_in_round || 0);
 
+      grant.clr_prediction_curve = grant.clr_prediction_curve.map((prediction) => {
+        prediction[0] = Vue.filter('round')(prediction[0] || 0);
+        prediction[1] = Vue.filter('round')(prediction[1] || 0);
+        prediction[2] = Vue.filter('round')(prediction[2] || 0);
+        return prediction;
+      });
+      grant.last_update = Vue.filter('moment')(grant.last_update);
       grant.amount_received = Vue.filter('formatNumber')(amountReceived);
       grant.amount_received_in_round = Vue.filter('formatNumber')(amountRecievedInRound);
-
       return grant;
     },
     fetchGrantDetails: function(id) {
