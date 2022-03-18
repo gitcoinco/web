@@ -332,16 +332,14 @@ Vue.mixin({
       this.$set(this.form, inputField.id, extracted);
     },
     updateNav: function(direction) {
-      if(direction === 1) {
+      if (direction === 1) {
         if (this.step === this.currentSteps.length) {
           this.submitForm();
           return;
         }
         this.step += direction;
-      } else {
-        if(this.step > 1){ 
-          this.step += direction;
-        }
+      } else if (this.step > 1) {
+        this.step += direction;
       }
     }
   },
