@@ -151,10 +151,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
           @click="checkoutWithPolygon"
         >
-        Polygon Checkout
-      </button>
+          Polygon Checkout
+        </button>
 
-      {% include 'grants/cart/polygon_modal.html' %}
+        {% include 'grants/cart/polygon_modal.html' %}
 
       </div>
     </grants-cart-ethereum-polygon>
