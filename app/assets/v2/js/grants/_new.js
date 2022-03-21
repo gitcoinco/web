@@ -535,6 +535,10 @@ if (document.getElementById('gc-new-grant')) {
           // }
         ];
 
+        if (this.step == 100) {
+          this.step = steps.length;
+        }
+
         steps[this.step - 1].active = true;
         return steps;
       }
