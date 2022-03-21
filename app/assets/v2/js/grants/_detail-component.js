@@ -1,4 +1,3 @@
-
 const isStaff = document.contxt.is_staff || false;
 
 const userCode = typeof user_code !== 'undefined' ? user_code : undefined;
@@ -32,9 +31,39 @@ Vue.mixin({
 
       vm.$set(vm.grant, 'isInCart', true);
       CartData.addToCart(response.grant);
+
+      gtag('event', 'add_to_cart', {
+        // value, currency are set when checking out, but required
+        value: 0,
+        currency: 'USD',
+        items: [
+          {
+            item_id: vm.grant.id,
+            item_name: vm.grant.title,
+            item_category: vm.grant?.active_round_names?.toString(),
+            item_brand: vm.grant?.admin_profile?.handle,
+            quantity: 1
+          }
+        ]
+      });
     },
     removeFromCart: function() {
       const vm = this;
+
+      gtag('event', 'remove_from_cart', {
+        // value, currency are set when checking out, but required
+        value: 0,
+        currency: 'USD',
+        items: [
+          {
+            item_id: vm.grant.id,
+            item_name: vm.grant.title,
+            item_category: vm.grant?.active_round_names?.toString(),
+            item_brand: vm.grant?.admin_profile?.handle,
+            quantity: 1
+          }
+        ]
+      });
 
       vm.$set(vm.grant, 'isInCart', false);
       CartData.removeIdFromCart(vm.grant.id);
@@ -113,6 +142,7 @@ Vue.mixin({
               vm.grant.verified = false;
             }
             vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
+            vm.grant.is_idle = false;
             vm.$root.$emit('bv::toggle::collapse', 'sidebar-grant-edit');
             _alert('Updated grant.', 'success');
 
@@ -167,6 +197,7 @@ Vue.mixin({
 
       if (response.action === 'follow') {
         vm.grant.favorite = true;
+        vm.dismissFavoriteAlertCountDown = 10;
       } else {
         vm.grant.favorite = false;
       }
@@ -368,44 +399,6 @@ Vue.mixin({
       }
       vm.submitted = false;
       return true; // no errors, continue to create grant
-    },
-    claimMatch: async function(recipient) {
-      // Helper method to manage state
-      const waitingState = (state) => {
-        indicateMetamaskPopup(!state);
-        $('#claim-match').prop('disabled', state);
-      };
-
-      // Connect wallet
-      if (!provider) {
-        await onConnect();
-      }
-
-      // Confirm wallet was connected (user may have closed wallet connection prompt)
-      if (!provider) {
-        return;
-      }
-      waitingState(true);
-      const user = (await web3.eth.getAccounts())[0];
-
-      // Get contract instance
-      const matchPayouts = await new web3.eth.Contract(
-        JSON.parse(document.contxt.match_payouts_abi),
-        document.contxt.match_payouts_address
-      );
-
-      // Claim payout
-      matchPayouts.methods.claimMatchPayout(recipient)
-        .send({from: user})
-        .on('transactionHash', async function(txHash) {
-          waitingState(false);
-          $('#claim-payout-banner').hide();
-          _alert("Match payout claimed! Funds will be sent to your grant's address", 'success');
-        })
-        .on('error', function(error) {
-          waitingState(false);
-          _alert(error, 'danger');
-        });
     }
   },
   computed: {
@@ -425,7 +418,16 @@ Vue.mixin({
 
       },
       set(value) {
-        this.grant.team_members = value;
+        this.grant.team_members = value.map((user) => {
+
+          return {
+            fields: {
+              handle: user.text
+            },
+            model: 'dashboard.profile',
+            pk: user.id
+          };
+        });
       }
     },
     grantTagsFormatted: {
@@ -443,7 +445,15 @@ Vue.mixin({
 
       },
       set(value) {
-        this.grant.grant_tags = value;
+        this.grant.grant_tags = value.map((tag) => {
+
+          return {
+            fields: {
+              name: tag.name
+            },
+            pk: tag.id
+          };
+        });
       }
     },
     editor() {
@@ -488,7 +498,7 @@ Vue.mixin({
       }
     }
   }
-  
+
 });
 
 
@@ -507,6 +517,7 @@ Vue.component('grant-details', {
   template: '#template-grant-details',
   data() {
     return {
+      chainId: '',
       dirty: false,
       submitted: false,
       user_code: userCode,
@@ -516,6 +527,7 @@ Vue.component('grant-details', {
       logo: null,
       logoPreview: null,
       logoBackground: null,
+      dismissFavoriteAlertCountDown: 0,
       rows: 0,
       perPage: 4,
       currentPage: 1,
@@ -552,7 +564,7 @@ Vue.component('grant-details', {
           }
         },
         theme: 'snow',
-        placeholder: 'Give a detailed desciription about your Grant'
+        placeholder: 'Describe what your project is about. What would you like to build? How will you use the funding?'
       },
       grantRegions: [
         { 'name': 'north_america', 'label': 'North America'},
@@ -565,18 +577,45 @@ Vue.component('grant-details', {
         { 'name': 'east_asia', 'label': 'East Asia'},
         { 'name': 'southeast_asia', 'label': 'Southeast Asia'}
       ],
+      grantChains: [
+        { 'name': 'eth', 'label': 'Ethereum'},
+        { 'name': 'zcash', 'label': 'ZCash'},
+        { 'name': 'celo', 'label': 'Celo'},
+        { 'name': 'zilliqa', 'label': 'Zilliqa'},
+        { 'name': 'harmony', 'label': 'Harmony'},
+        { 'name': 'binance', 'label': 'Binance'},
+        { 'name': 'polkadot', 'label': 'Polkadot'},
+        { 'name': 'kusama', 'label': 'Kusama'},
+        { 'name': 'algorand', 'label': 'Algorand'}
+      ],
       grant_tags: document.grant_tags,
+      grant_salected_tags: [],
       externalFundingOptions: [
         {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
         {'key': 'no', 'value': 'No, this project has not raised external funding.'}
       ]
     };
   },
-  mounted: function() {
+  methods: {
+    grantIsContract: async function(admin_address) {
+      if (admin_address && web3 && web3.eth) {
+        const code = await web3.eth.getCode(admin_address);
+
+        return code !== '0x';
+      }
+      return false;
+    }
+  },
+  mounted: async function() {
     const vm = this;
+
+    vm.grant.is_contract_address = await vm.grantIsContract(this.grant.admin_address);
 
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
+    vm.grant_salected_tags = vm.grant.grant_tags.map(tag => tag.pk);
+    vm.chainId = vm.grant.tenants.length > 0 ? vm.grant.tenants[0].toLowerCase() : '';
+
     if (vm.grant.description_rich_edited) {
       vm.editor.updateContents(JSON.parse(vm.grant.description_rich));
     }
@@ -584,6 +623,20 @@ Vue.component('grant-details', {
 
     // watch for cartUpdates
     window.addEventListener('cartDataUpdated', vm.updateCartData);
+
+    gtag('event', 'view_item', {
+      // currency and value are required items but value is not known until cart
+      currency: 'USD',
+      value: 0,
+      items: [
+        {
+          item_id: vm.grant.id,
+          item_name: vm.grant.title,
+          item_category: vm.grant.clr_round_num,
+          item_brand: vm.grant.admin_address
+        }
+      ]
+    });
   },
   beforeDestroy() {
     const vm = this;

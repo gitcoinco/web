@@ -21,7 +21,7 @@
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
   <span class="navbar-toggler-icon"></span>
 </button>
-<div class="collapse navbar-collapse gc-navbar-collapse order-1 pb-5 pb-md-0" id="navbarSupportedContent">
+<div class="collapse navbar-collapse gc-navbar-collapse order-1 spacer-pb-6 spacer-pb-md-0" id="navbarSupportedContent">
 
   <nav class="navbar-nav m-auto gc-navbar-nav">
     <div class="nav-item gc-nav-item dropdown px-md-2 px-lg-3 interior my-auto">
@@ -272,7 +272,7 @@
                   <b class="gc-menu-submenu-title d-none d-md-block px-3 pt-3 pb-2">{% trans "Grants" %}</b>
                   <ul class="list-unstyled">
                     <li>
-                      <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants' %}">{% trans "Explore Grants" %}</a>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'grants:grants_explorer' %}">{% trans "Explore Grants" %}</a>
                     </li>
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'grants:new' %}">{% trans "Create Grant" %}</a>
@@ -280,6 +280,9 @@
                     <li>
                       <a class="dropdown-item dropdown-item-small" href="{% url 'grants:quickstart' %}">{% trans "About Grants" %}</a>
                     </li>
+                    <!-- <li>
+                      <a class="dropdown-item dropdown-item-small" href="{% url 'grants:hall_of_fame' %}">{% trans "Hall of Fame" %}</a>
+                    </li> -->
                   </ul>
                 </div>
                 <div class="gc-products-submenu gc-menu-submenu gc-menu-submenu-quests position-absolute {% if '/quests' in request.path %}active{% endif %}">
@@ -467,9 +470,9 @@
   <nav class="navbar-nav navbar-icons d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}
       {% include 'shared/notifications.html' %}
-      {% include 'shared/search.html' %}
-      {% include 'shared/cart_nav.html' %}
     {% endif %}
+    {% include 'shared/search.html' %}
+    {% include 'shared/cart_nav.html' %}
   </nav>
 
   <nav class="navbar-nav gc-navbar-nav d-flex align-items-md-center gc-navbar-auth">

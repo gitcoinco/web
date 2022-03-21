@@ -52,6 +52,7 @@ def do_post(text, comment=None):
         'title': text,
     }
     activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
+    activity.populate_activity_index()
     if comment:
         Comment.objects.create(
             profile=profile,
@@ -74,7 +75,7 @@ def quest():
         }
     }
     activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
-
+    activity.populate_activity_index()
 def kudos():
     from marketing.views import kudos_of_the_day
     kudos = kudos_of_the_day()
@@ -91,7 +92,7 @@ def kudos():
         }
     }
     activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
-
+    activity.populate_activity_index()
 def quote():
     quotes = [
     [ ('Open source software has become a relevant part of the software industry and a number of software ecosystems. It has become an alternative to commercial software in various areas and is already included in many commercial software products.'), 'March 2017 Report by the EU' ],
@@ -280,7 +281,7 @@ def earners(days, cadence):
 
 def grants():
 
-    clr_round, _, _, _, _, _, _, _ = get_clr_rounds_metadata()
+    clr_round = get_clr_rounds_metadata()['clr_round']
     active_clr_rounds = GrantCLR.objects.filter(is_active=True, customer_name='ethereum', start_date__lt=timezone.now(), end_date__gt=timezone.now())
     if not active_clr_rounds.exists():
         return

@@ -43,7 +43,7 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
     rbtcBalance = rskClient.utils.fromWei(balanceInWei, 'ether');
 
     if (Number(rbtcBalance) < amount) {
-      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'danger');
+      _alert({ message: `Insufficient balance in address ${ethereum.selectedAddress}` }, 'danger');
       return;
     }
 
@@ -68,7 +68,7 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
     amountInWei = amount * 1.0 * Math.pow(10, token.decimals);
 
     if (Number(balance) < amountInWei) {
-      _alert({ message: `Insufficent balance in address ${ethereum.selectedAddress}` }, 'danger');
+      _alert({ message: `Insufficient balance in address ${ethereum.selectedAddress}` }, 'danger');
       return;
     }
 
@@ -108,7 +108,6 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
           'tx_id': txn,
           'token_symbol': grant.grant_donation_currency,
           'tenant': 'RSK',
-          'comment': grant.grant_comments,
           'amount_per_period': grant.grant_donation_amount
         }]
       };

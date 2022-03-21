@@ -19,15 +19,21 @@
 
 
 <!--- Top Row Notification -->
-<div class="row bottom_notification font-caption d-none" style="text-align: center;">
-  <script>
-    document.nav_salt = {{ nav_salt|safe }};
-  </script>
-  <span style="text-align: center; margin: auto;">
-    {{ header_msg|safe }}
-  </span>
-  <span style="cursor: pointer;" id="top_nav_notification">
-      &times;
-  </span>
+<div class="bottom_notification d-none">
+  <div class="row p-0 container-lg m-auto">
+    <script>
+      document.nav_salt = {{ nav_salt|safe }};
+    </script>
+    <span class="col m-auto text-center">
+      {{ header_msg|safe }}
+    </span>
+    <span class="cursor-pointer col-auto text-right" id="top_nav_notification">
+        &times;
+    </span>
+  </div>
 </div>
 
+<!-- Back to top button -->
+<button type="button" class="rounded-circle btn btn-danger btn-floating btn-lg" id="btn-back-to-top">
+  <i class="fas fa-arrow-up"></i>
+</button>

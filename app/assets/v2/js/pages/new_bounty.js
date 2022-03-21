@@ -132,58 +132,8 @@ Vue.mixin({
     },
     validateFunderAddress: function() {
       let vm = this;
-      let isValid = true;
 
-      switch (vm.chainId) {
-        case '1995': {
-          // nervos
-          const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
-          const isNervosValid = ADDRESS_REGEX.test(vm.form.funderAddress);
-
-          if (!isNervosValid && !vm.form.funderAddress.toLowerCase().startsWith('0x')) {
-            isValid = false;
-          }
-          break;
-        }
-
-        case '50797': {
-          // tezos
-          const ADDRESS_REGEX = new RegExp('^(tz1|tz2|tz3)[0-9a-zA-Z]{33}$');
-          const isTezosValid = ADDRESS_REGEX.test(vm.form.funderAddress);
-
-          if (!isTezosValid) {
-            isValid = false;
-          }
-          break;
-        }
-
-        case '0': {
-          // btc
-          const ADDRESS_REGEX = new RegExp('^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$');
-          const BECH32_REGEX = new RegExp('^bc1[ac-hj-np-zAC-HJ-NP-Z02-9]{11,71}$');
-          const valid_legacy = ADDRESS_REGEX.test(vm.form.funderAddress);
-          const valid_segwit = BECH32_REGEX.test(vm.form.funderAddress);
-
-          if (!valid_legacy && !valid_segwit) {
-            isValid = false;
-          }
-          break;
-        }
-
-        case '270895': {
-          // casper
-          let addr = vm.form.funderAddress;
-
-          if (!addr.toLowerCase().startsWith('01') && !addr.toLowerCase().startsWith('02')) {
-            isValid = false;
-          }
-          break;
-        }
-
-        // include validation for other chains here
-      }
-
-      return isValid;
+      return validateWalletAddress(vm.chainId, vm.form.funderAddress);
     },
     checkForm: async function(e) {
       let vm = this;
@@ -528,7 +478,21 @@ Vue.mixin({
 
         }
       });
+    },
+    /**
+     * Filters tokens by vm.networkId
+     * @param {*} tokens
+     * @returns {*} tokens
+     */
+    filterByNetworkId: function(tokens) {
+      let vm = this;
 
+      if (vm.networkId) {
+        tokens = tokens.filter((token) => {
+          return String(token.networkId) === vm.networkId;
+        });
+      }
+      return tokens;
     },
     submitForm: async function(event) {
       event.preventDefault();
@@ -730,6 +694,12 @@ Vue.mixin({
         result = vm.filterByNetwork.filter((item) => {
           return String(item.chainId) === vm.chainId;
         });
+
+        if (vm.chainId == '1') {
+          // allow only mainnet tokens in ETH chain
+          vm.networkId = '1';
+          result = vm.filterByNetworkId(result);
+        }
       }
       return result;
     }

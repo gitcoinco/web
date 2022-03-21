@@ -27,13 +27,17 @@ from django.templatetags.static import static
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-import requests
 from mailchimp3 import MailChimp
-from marketing.models import AccountDeletionRequest, EmailSupressionList, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSubscriber, EmailSupressionList, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
 logger = logging.getLogger(__name__)
+
+
+def delete_email_subscription(email):
+    EmailSupressionList.objects.filter(email=email).delete()
+    EmailSubscriber.objects.filter(email=email).delete()
 
 
 def is_deleted_account(handle):
@@ -113,13 +117,13 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
     return result
 
 
-def should_suppress_notification_email(email, email_type):
+def allowed_to_send_email(email, email_type):
     from marketing.models import EmailSubscriber
-    queryset = EmailSubscriber.objects.filter(email__iexact=email)
+    queryset = EmailSubscriber.objects.filter(email_index=email.lower())
     if queryset.exists():
         es = queryset.first()
-        return not es.should_send_email_type_to(email_type)
-    return False
+        return es.should_send_email_type_to(email_type)
+    return True
 
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
@@ -143,16 +147,16 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
     try:
         es = EmailSubscriber.objects.filter(email=email).first()
         if not es:
-            es = EmailSubscriber.objects.filter(email__iexact=email).first()
+            es = EmailSubscriber.objects.filter(email_index=email.lower()).first()
         if not es:
-            es, created = EmailSubscriber.objects.update_or_create(email__iexact=email, defaults=defaults)
+            es, created = EmailSubscriber.objects.update_or_create(email=email, defaults=defaults)
         # print("EmailSubscriber:", es, "- created" if created else "- updated")
     except EmailSubscriber.MultipleObjectsReturned:
-        email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
+        email_subscriber_ids = EmailSubscriber.objects.filter(email_index=email.lower()) \
             .values_list('id', flat=True) \
             .order_by('-created_on')[1:]
         EmailSubscriber.objects.filter(pk__in=list(email_subscriber_ids)).delete()
-        es = EmailSubscriber.objects.get(email__iexact=email)
+        es = EmailSubscriber.objects.get(email_index=email.lower())
         created = False
     except EmailSubscriber.DoesNotExist:
         es = EmailSubscriber.objects.create(**defaults)

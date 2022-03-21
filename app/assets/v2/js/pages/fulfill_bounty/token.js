@@ -96,6 +96,7 @@ const is_valid_address = (address) => {
       }
       return true;
 
+    case 'sia_ext':
     case 'polkadot_ext':
       if (address.toLowerCase().startsWith('0x')) {
         return false;

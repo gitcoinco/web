@@ -31,9 +31,10 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
+      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gc-utilities.scss" %} />
     {% endbundle %}
     <link rel="prefetch" href="/grants/v1/api/grant/{{grant.id}}/" />
-
+    {% include '../analytics_manager.html' %}
   </head>
 
   <body class="interior {{ active }} grant g-font-muli">
@@ -49,7 +50,60 @@
           <a style="color:white;" href="{{grant.admin_url}}">{% trans "View Admin" %}</a>
         </div>
       {% endif %}
-      <div id="gc-grant-detail"  v-cloak>
+      <div id="gc-grant-detail" v-cloak>
+
+        <!-- Grant Create Notification -->
+        <b-modal
+          id="clear-cart-modal"
+          v-model="modalShow"
+          size="lg"
+          class="modal-dialog" header-border-variant="transparent"
+          center hide-footer no-close-on-backdrop no-close-on-esc
+          hide-header
+        >
+          <div class="m-5">
+            <h1 class="font-bigger-4 text-highlight-gc-blue">
+              Congratulations on your grant creation!
+            </h1>
+            <div class="text-center my-5">
+              <img style="max-width: 15rem;" src="{% static "v2/images/grants/empty-grants.svg" %}">
+            </div>
+            <h2 class="font-bigger-1 font-weight-bold mb-3">
+              What happens next?
+            </h2>
+            <p class="font-smaller-1">
+              The Gitcoin team reviews each grant before it goes live on the website.
+              Grants are reviewed more regularly in periods around active grant rounds.
+              A list of all the grants, their approval stage, and comments from reviewers
+              can be found here: <a href="https://www.notion.so/gitcoin/Public-Grant-Approval-Oversight-Page-af7e9caa25b5478b901df5ac78349c4b">Public Grant Approval Oversight</a>
+            </p>
+            <p class="font-smaller-1">
+              The <a href="https://gov.gitcoin.co/t/workstream-fraud-detection-and-defense-working-group-assemble/158/11">
+                Anti-Fraud & Collusion workstream
+              </a>
+              of GitcoinDAO has a sub-stream called Grant Verifications.
+              The community members & stewards review each grant,
+              then approve or deny it based on the policy outlined below.
+            </p>
+            <p class="font-smaller-1 mb-5">
+              For more information, visit
+              <a href="https://support.gitcoin.co/kb/section/3/">Grants Round FAQs</a> or
+              <a href="https://discord.com/invite/gitcoin">Gitcoin Discord</a>
+            </p>
+
+            <div class="text-center">
+              <b-button
+                variant="primary"
+                size="md"
+                class="text-center px-5 btn-lg-padding"
+                @click="closeGrantCreatedNotification"
+              >
+                Close
+              </b-button>
+            </div>
+          </div>
+        </b-modal>
+
 
         <b-skeleton-wrapper :loading="loading">
           <template #loading>
@@ -83,7 +137,7 @@
           <grant-details :grant="grant" v-if="grant?.id">
             <img :src="grant.logo_url" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="grant.image_css">
             <div class="container mb-3">
-              <a :href="backLink.url" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to [[backLink.title]] </a>
+              <a href="/grants/explorer" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to Grants </a>
             </div>
           </grant-details>
 
@@ -112,7 +166,7 @@
                     {% trans "Latest Contributions" %}
                   </h3>
                   <h5 class="mb-5 text-muted" v-if="!transactions.grantTransactions?.length && !loadingTx">{% trans "No Activity for this Grant!" %}</h5>
-                  <div class="px-0" v-if="transactions.grantTransactions?.length && !loadingTx">
+                  <div class="px-0" v-if="transactions.grantTransactions?.length">
                     <div class="mb-5 pb-2 px-0 mx-sm-0">
                       <div class="col-12 px-0">
                         <div id="contributions">

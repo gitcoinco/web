@@ -1,8 +1,7 @@
 import pytest
 from dashboard.models import Profile
 from grants.models.grant_api_key import GrantAPIKey
-
-from .factories.grant_api_key_factory import GrantAPIKeyFactory
+from grants.tests.factories import GrantAPIKeyFactory
 
 
 @pytest.mark.django_db

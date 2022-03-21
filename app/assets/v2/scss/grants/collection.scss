@@ -6,6 +6,11 @@
   background-color: var(--bg-shade-0);
 }
 
+.collection-item__header h5 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .collection-item__content {
   margin-top: 1.0625rem;
 }
@@ -23,8 +28,8 @@
 }
 
 .collection-item__pitch {
-  color: #666666;
-  height: 3.8rem;
+  color: #000000;
+  height: 24px;
   overflow: hidden;
   line-height: 22px;
   text-overflow: ellipsis;
@@ -109,6 +114,7 @@
 
 .collection-item__owner-image img, .collection-item__owner-image--cover img, .collection-item__owner-image--large img {
   width: 100%;
+  height: 100%;
   border-radius: 50%;
 }
 
@@ -123,9 +129,13 @@
   text-decoration: underline;
 }
 
-
 .vertical-scroll {
   flex-direction: row;
   overflow-x: auto;
   flex-wrap: nowrap;
+}
+
+.submenu-option:hover {
+  color: #5932C4;
+  background-color: rgba(140, 101, 247, 0.1);
 }

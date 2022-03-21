@@ -13,7 +13,7 @@ repos:
     language: system
     entry: sh -c 'npm run stylelint:fix'
     files: .css$
-- repo: git://github.com/pre-commit/mirrors-isort
+- repo: https://github.com/pre-commit/mirrors-isort.git
   sha: 'v4.3.4'
   hooks:
   - id: isort

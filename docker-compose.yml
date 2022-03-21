@@ -77,12 +77,14 @@ services:
           memory: 1024M
         reservations:
           memory: 512M
+    working_dir: /code
+    command: ["bash", "/bin/docker-command.bash"]
 
   testrpc:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}" --defaultBalanceEther 1000000000'
     deploy:
       replicas: 1
       resources:
@@ -124,10 +126,11 @@ services:
     depends_on:
       - db
       - redis
+    working_dir: /code
     command: ["bash","./bin/celery/worker/run.sh"]
-#  scheduler:
-#    <<: *worker
-#    command: ["bash","./bin/celery/scheduler/run.sh"]
+  scheduler:
+    <<: *worker
+    command: ["bash","./bin/celery/scheduler/run.sh"]
 
 volumes:
   pgdata:

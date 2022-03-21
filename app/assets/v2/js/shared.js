@@ -82,6 +82,13 @@ this.unloading_button = function(button) {
   button.find('img').remove();
 };
 
+this.sanitizeHTML = function(str) {
+  const temp = document.createElement('div');
+
+  temp.textContent = str;
+  return temp.innerHTML;
+};
+
 this.sanitizeDict = function(d, keyToIgnore) {
   if (typeof d != 'object') {
     return d;
@@ -1390,6 +1397,17 @@ this.getVideoMetadata = (videoURL) => {
     'id': null,
     'url': videoURL
   };
+};
+
+/**
+ * decode html encoded string
+ */
+const textArea = document.createElement('textarea');
+
+this.htmlDecode = (value) => {
+  textArea.innerHTML = value || '';
+
+  return textArea.textContent;
 };
 
 /**

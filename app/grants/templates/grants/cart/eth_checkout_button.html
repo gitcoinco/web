@@ -1,0 +1,162 @@
+{% comment %}
+Copyright (C) 2022 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+<script id="eth-checkout-template" type="text/x-template">
+  <div>
+    <b-dropdown
+      v-if="tabSelected === 'ETH'"
+      id="checkout-dropdown"
+      variant="primary"
+      block
+      no-caret
+      toggle-class="text-decoration-none"
+      class="rounded dropdown-checkout btn btn-primary p-0 w-100"
+      text="I'm ready to checkout"
+      aria-labelledby="ready-to-checkout"
+      :aria-disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0 ? 'true':'false'"
+    >
+      <template v-slot:button-content>
+        <span class="text-primary" id="ready-to-checkout">
+          I'm Ready to Checkout
+        </span>
+      </template>
+      <b-dropdown-item-button
+        aria-labelledby="js-fundGrants-button"
+        :aria-disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0 ? 'true' : 'false'"
+      >
+        <div>
+          <button
+            class="btn p-0 checkout-logo standard-checkout"
+            id='js-fundGrants-button'
+            @click="standardCheckout"
+            :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0"
+          >
+            <svg class="eth-logo" width="13" height="20" viewBox="0 0 13 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.7231 10.1875L6.36364 13.8125L0 10.1875L6.36364 0L12.7231 10.1875ZM6.36364 14.9766L0 11.3516L6.36364 20L12.7273 11.3516L6.36364 14.9766Z" fill="#0E0333"/>
+            </svg>
+
+            Standard Checkout
+          </button>
+        </div>
+      </b-dropdown-item-button>
+
+      <!-- CHECKOUT WITH POLYGON -->
+      <b-dropdown-item-button
+        v-if="!isPolygonDown"
+        aria-labelledby="js-polygonfundGrants-button"
+        :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || multisigGrants.length > 0"
+        :aria-disabled="(activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0 || multisigGrants.length > 0) ? 'true' : 'false'"
+      >
+        <grants-cart-ethereum-polygon
+          inline-template
+          @polygon-data-updated="onPolygonUpdate"
+          :current-tokens="currentTokens"
+          :donation-inputs="donationInputs"
+          :max-cart-items="100"
+          :grants-by-tenant="grantsByTenant"
+          :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+          :active-checkout="activeCheckout"
+          :multisig-grants="multisigGrants"
+        >
+          <div>
+            <!-- Checkout with Polygon button -->
+            <button
+              class="btn p-0 checkout-logo"
+              :disabled="multisigGrants.length > 0"
+              :aria-disabled="multisigGrants.length > 0"
+              id="js-polygonfundGrants-button"
+              @click="checkoutWithPolygon"
+            >
+            <svg class="polygon-logo" width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13.5937 4.56702C13.2656 4.38791 12.8437 4.38791 12.4687 4.56702L9.84375 6.04463L8.0625 6.98493L5.48437 8.46254C5.15625 8.64164 4.73438 8.64164 4.35938 8.46254L2.34375 7.29836C2.01562 7.11926 1.78125 6.76105 1.78125 6.35806V4.11926C1.78125 3.76105 1.96875 3.40284 2.34375 3.17896L4.35938 2.05956C4.6875 1.88045 5.10937 1.88045 5.48437 2.05956L7.5 3.22373C7.82812 3.40284 8.0625 3.76105 8.0625 4.16403V5.64164L9.84375 4.65657V3.13418C9.84375 2.77597 9.65625 2.41776 9.28125 2.19388L5.53125 0.0894065C5.20312 -0.089698 4.78125 -0.089698 4.40625 0.0894065L0.5625 2.23866C0.1875 2.41776 0 2.77597 0 3.13418V7.34314C0 7.70135 0.1875 8.05956 0.5625 8.28344L4.35938 10.3879C4.6875 10.567 5.10937 10.567 5.48437 10.3879L8.0625 8.95508L9.84375 7.97L12.4219 6.53717C12.75 6.35806 13.1719 6.35806 13.5469 6.53717L15.5625 7.65657C15.8906 7.83567 16.125 8.19388 16.125 8.59687V10.8357C16.125 11.1939 15.9375 11.5521 15.5625 11.776L13.5937 12.8954C13.2656 13.0745 12.8437 13.0745 12.4687 12.8954L10.4531 11.776C10.125 11.5969 9.89062 11.2387 9.89062 10.8357V9.40284L8.10937 10.3879V11.8655C8.10937 12.2237 8.29687 12.5819 8.67187 12.8058L12.4687 14.9103C12.7969 15.0894 13.2187 15.0894 13.5937 14.9103L17.3906 12.8058C17.7187 12.6267 17.9531 12.2685 17.9531 11.8655V7.61179C17.9531 7.25358 17.7656 6.89538 17.3906 6.6715L13.5937 4.56702Z" fill="#6F3FF5"/>
+            </svg>
+            Polygon Checkout
+          </button>
+
+          {% include 'grants/cart/polygon_modal.html' %}
+
+          </div>
+        </grants-cart-ethereum-polygon>
+      </b-dropdown-item-button>
+
+      <!-- CHECKOUT WITH ZKSYNC -->
+      <b-dropdown-item-button
+        v-if="!isZkSyncDown"
+        aria-labelledby="js-zkSyncfundGrants-button"
+        :aria-disabled="activeCheckout !== undefined || grantsUnderMinimalContribution.length > 0 ? 'true' : 'false'"
+      >
+        <grants-cart-ethereum-zksync
+          inline-template
+          @zksync-data-updated="onZkSyncUpdate"
+          :current-tokens="currentTokens"
+          :donation-inputs="donationInputs"
+          :max-cart-items="maxCartItems"
+          :grants-by-tenant="grantsByTenant"
+          :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+          :network="network"
+          :active-checkout="activeCheckout"
+        >
+          <div id="zksync-tooltip">
+            <!-- Checkout with zkSync button -->
+            <button
+              class="btn p-0 checkout-logo"
+              :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
+              id='js-zkSyncfundGrants-button'
+              @click="checkoutWithzkSync"
+            >
+              <svg class="zksync-logo" width="23" height="15" viewBox="0 0 23 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.65492 0V4.03846H12.7979L6.65492 9.80769V15L0 7.5L6.65492 0Z" fill="#8B8DFC"/>
+                <path d="M16.1986 15L16.1986 10.9615L10.0556 10.9615L16.1986 5.19231L16.1986 1.27091e-06L22.8535 7.5L16.1986 15Z" fill="#4E529B"/>
+              </svg>
+              zkSync Checkout
+            </button>
+
+            {% include 'grants/cart/zksync_modal.html' %}
+
+            </template>
+          </div>
+        </grants-cart-ethereum-zksync>
+      </b-dropdown-item-button>
+    </b-dropdown>
+    <grants-cart-ethereum-polygon
+      v-else
+      inline-template
+      @polygon-data-updated="onPolygonUpdate"
+      :current-tokens="currentTokens"
+      :donation-inputs="donationInputs"
+      :max-cart-items="100"
+      :grants-by-tenant="grantsByTenant"
+      :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+      :active-checkout="activeCheckout"
+      :multisig-grants="multisigGrants"
+    >
+      <div>
+        <!-- Checkout with Polygon button -->
+        <button
+          class="rounded btn btn-primary checkout-logo p-2 w-100"
+          :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
+          @click="checkoutWithPolygon"
+        >
+        Polygon Checkout
+      </button>
+
+      {% include 'grants/cart/polygon_modal.html' %}
+
+      </div>
+    </grants-cart-ethereum-polygon>
+  </div>
+</script>

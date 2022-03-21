@@ -13,7 +13,7 @@ from rest_framework.response import Response
 
 from .models import CLRMatch, Contribution, Grant, GrantCLR, GrantCollection, GrantTag, GrantType, Subscription
 from .serializers import (
-    CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantCollectionSerializer, GrantSerializer,
+    CLRMatch, CLRPayoutsSerializer, DonorSerializer, GrantCLRSerializer, GrantCollectionSerializer, GrantSerializer,
     GrantTagSerializer, GrantTypeSerializer, SubscriptionSerializer, TransactionsSerializer,
 )
 
@@ -37,7 +37,7 @@ class GrantCollectionPagination(PageNumberPagination):
 
 
 class GrantCollectionViewSet(viewsets.ModelViewSet):
-    queryset = GrantCollection.objects.order_by('id')
+    queryset = GrantCollection.objects.order_by('-shuffle_rank')
     serializer_class = GrantCollectionSerializer
     pagination_class = GrantCollectionPagination
     filterset_fields = ['featured', 'profile']
@@ -62,7 +62,6 @@ class GrantTagViewSet(viewsets.ModelViewSet):
     queryset = GrantTag.objects.order_by('id')
     serializer_class = GrantTagSerializer
     filterset_class = GranTagFilter
-
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):

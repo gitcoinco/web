@@ -31,6 +31,11 @@
   line-height: 22px;
   text-overflow: ellipsis;
 }
+.idle-or-hidden {
+  img, .font-subheader {
+    opacity: 50%;
+  }
+}
 
 .grant-item__img img {
   width: 100%;
@@ -208,4 +213,21 @@
 
 .star-action:hover {
   color: var(--gc-blue-hover) !important;
+}
+
+// adding to collection modal overrides
+#add-to-collection {
+  font-size: 16px;
+
+  .modal-content {
+    border-radius: 0;
+  }
+
+  .modal-header {
+    border: none;
+  }
+
+  #grant-collection-select {
+    margin-top: 0 !important;
+  }
 }

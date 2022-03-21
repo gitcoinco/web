@@ -60,7 +60,7 @@
                 <div v-if="bounty.event" class="font-subheader hackathon-alt text-center text-lg-left" id="event_name">
                   Hackathon: [[bounty.event.name]]
                 </div>
-                <h4 id="title" class="font-title p-0 text-center text-lg-left" v-html="bounty.title"></h4>
+                <h4 id="title" class="font-title p-0 text-center text-lg-left">[[ bounty.title ]]</h4>
                 <div class="text-center text-lg-left">
                   <div class="tags font-caption d-inline-flex d-md-flex">
                     <div class="tag token" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">${bounty.value_true} ${bounty.token_name} in funding from original funder.</div>`'>
@@ -375,7 +375,7 @@
                           [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
                         </p>
 
-                        <modal :id="`payoutModal${fulfillment.pk}`" :ref="`payout-modal${fulfillment.pk}`">
+                        <modal :id="`payoutModal${fulfillment.pk}`" :ref="`payout-modal${fulfillment.pk}`" v-if="isOwner">
                           <div slot="body">
 
                             <!-- PAYPAL FLOW -->
@@ -932,7 +932,7 @@
                         >
                           [[ activity.metadata.to ]]
                         </a>
-                        <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
+                        <span class="tag token">[[ activity.metadata.payout_amount ]] [[ activity.metadata.token_name ]]</span>
                       </template>
                       <template v-if="activity.activity_type === 'increased_bounty'">
                         to <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>

@@ -12,6 +12,7 @@ GC_WEB_WORKER=${GC_WEB_WORKER_TYPE:-runserver_plus}
 
 # General / Overrides
 FORCE_PROVISION=${FORCE_PROVISION:-'off'}
+DISABLE_PROVISION=${DISABLE_PROVISION:-'off'}
 FORCE_GET_PRICES=${FORCE_GET_PRICES:-'off'}
 
 cd app || exit 1
@@ -40,7 +41,7 @@ if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
 fi
 
 # Provision the Django test environment.
-if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ];
+if [ "$DISABLE_PROVISION" != "on" ] && [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ];
 then
     echo "First run - Provisioning the local development environment..."
     if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
@@ -79,13 +80,15 @@ then
         python3 manage.py loaddata app/fixtures/dashboard.json
         python3 manage.py loaddata app/fixtures/avatar.json
         python3 manage.py loaddata app/fixtures/marketing.json
+        python3 manage.py loaddata app/grants/fixtures/grant_types.json
+
 
     fi
     date >> /provisioned
     echo "Provisioning complete!"
 else
     # Build assets using bundle and webpack
-    if [ "$DISABLE_WEBPACK_ASSETS" != "on" && "$ENV" != "prod" ]; then
+    if [ "$DISABLE_WEBPACK_ASSETS" != "on" ] && [ "$ENV" != "prod" ]; then
         python3 manage.py bundle && yarn run webpack &
     fi
 fi

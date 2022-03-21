@@ -113,12 +113,23 @@ def get_clr_rounds_metadata():
         round_status = 'done'
         banner_round_name = ''
 
-    return clr_round, round_start_date, round_end_date, show_round_banner, claim_start_date, claim_end_date, round_status, banner_round_name
+    return {
+        'clr_round': clr_round,
+        'round_start_date': round_start_date,
+        'round_end_date': round_end_date,
+        'show_round_banner': show_round_banner,
+        'claim_start_date': claim_start_date,
+        'claim_end_date': claim_end_date,
+        'round_status': round_status,
+        'banner_round_name': banner_round_name
+    }
+
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)
     file_path = os.path.basename(filename)
     return f"grants/{getattr(instance, '_path', '')}/{salt}/{file_path}"
+
 
 def is_grant_team_member(grant, profile):
     """Checks to see if profile is a grant team member
@@ -139,6 +150,7 @@ def is_grant_team_member(grant, profile):
                 is_team_member = True
                 break
     return is_team_member
+
 
 def amount_in_wei(tokenAddress, amount):
     from dashboard.tokens import addr_to_token
@@ -353,7 +365,7 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
                     label = user.get('label')
                     comment = user.get('comment')
 
-                    if comment and isNaN(comment):
+                    if not comment or comment and isNaN(comment):
                         comment = 'added by bsci'
 
                     # check if user has entry in SquelchProfile
@@ -368,9 +380,9 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
                             comments=comment
                         )
                 else:
-                    print(f"error: profile not found for ${user.get('handle')} as sybil.")
+                    print(f"error: profile not found for {user.get('handle')} as sybil.")
             except Exception as e:
-                print(f"error: unable to mark user ${user.get('handle')} as sybil. {e}")
+                print(f"error: unable to mark user {user.get('handle')} as sybil. {e}")
 
     if non_sybil_users:
         # exclude squelches added by manual
@@ -378,93 +390,76 @@ def toggle_user_sybil(sybil_users, non_sybil_users):
         # iterate and remove sybil from user
         for user in non_sybil_users:
             try:
-                profile = Profile.objects.get(pk=user.get('id'))
+                profile = Profile.objects.filter(handle=user.get('handle')).first()
                 squelched_profiles.filter(profile=profile).delete()
             except Exception as e:
-                print(f"error: unable to mark ${user.get('id')} as non sybil. {e}")
+                print(f"error: unable to mark {user.get('handle')} as non sybil. {e}")
 
 
+def bsci_script(csv: str) -> tuple:
+    """
+    Generate records of sybil / non-sybil users based
+    on the CSV output as provided by BSci detection pipeline.
+    """
 
-def bsci_script(csv):
+    # Assumptions
+    RENAME_MAP = {'notes': 'comment'}
+    ML_THRESHOLD = 0.8
+    EVAL_THRESHOLD = 0.8
+    HEURISTIC_THRESHOLD = 0.5
+
+def bsci_script(csv: str) -> tuple:
+    """
+    Generate records of sybil / non-sybil users based
+    on the CSV output as provided by BSci detection pipeline.
+    """
+
+    # Assumptions
+    RENAME_MAP = {'notes': 'comment'}
+    ML_THRESHOLD = 0.8
+    EVAL_THRESHOLD = 0.8
+    HEURISTIC_THRESHOLD = 0.5
+
+    # Read CSV
+
     try:
-        # choose the specific csv you want to use
-        endpoint_df = pd.read_csv(csv)
+        df = (pd.read_csv(csv)
+                .assign(is_sybil=None)
+                .assign(label=None)
+                .rename(columns=RENAME_MAP))
 
-        sybil_df = pd.DataFrame()
-        non_sybil_df = pd.DataFrame()
-        '''
-        filters human labeled sybils ('reviewer_is_certain (0/1)' and 'is_sybil_y' values can be adjusted)
-        human_sybil_score could also be used as a filter is wanted
-        '''
-        human_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] >= 0.99)  & (endpoint_df['is_sybil_y'] >= 0.99)]
-        endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_sybil.handle)]
-        human_sybil = human_sybil[['handle', 'flag_type_y', 'notes']]
-        human_sybil = human_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
-        sybil_df = sybil_df.append(human_sybil)
+        # Get label domains
+        rows_with_evaluation = ~pd.isnull(df.evaluation_score)
+        rows_with_heuristic = ~pd.isnull(df.heuristic_score)
+        rows_with_prediction = ~pd.isnull(df.prediction_score)
 
-        '''
-        filters heuristic labeled sybils, nothing can be adjusted here
-        '''
-        heuristic_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] >= 0.99)]
-        endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_sybil.handle)]
-        heuristic_sybil = heuristic_sybil[['handle', 'flag_type_x', 'notes']]
-        hueristic_sybil = heuristic_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
-        sybil_df = sybil_df.append(heuristic_sybil)
+        labels_by_evaluation = rows_with_evaluation
+        labels_by_heuristic = (rows_with_heuristic & (rows_with_heuristic
+                                                    ^ labels_by_evaluation))
+        labels_by_prediction = (rows_with_prediction & (rows_with_prediction
+                                                        ^ (labels_by_heuristic |
+                                                        labels_by_evaluation)))
 
-        '''
-        filters ml predicted sybils, ml_score can be adjusted to be either higher or lower
-        higher ml_score means less people are likely to appeal, but potentially some sybils slip through
-        lower ml_score means more people are likely to appeal, but more sybils are potentially caught
-        '''
-        ml_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Prediction') & (endpoint_df['ml_score'] >= 0.9)]
-        endpoint_df = endpoint_df[~endpoint_df.handle.isin(ml_sybil.handle)]
-        ml_sybil = ml_sybil[['handle', 'flag_type_x', 'notes']]
-        ml_sybil = ml_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
-        sybil_df = sybil_df.append(ml_sybil)
+        # Assign final `is_sybil` markings according to a priorization criteria
+        df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score
+        df.loc[labels_by_evaluation, 'label'] = "Human Evaluation"
 
-        '''
-        filters human labeled non-sybil users
-        nothing here should be changed as these are just the remaining users that were marked by humans not included in the sybil filtering
-        '''
-        human_non_sybil = endpoint_df[(endpoint_df['flag_type_y'] == 'Human') & (endpoint_df['reviewer_is_certain (0/1)_y'] != np.nan)]
-        endpoint_df = endpoint_df[~endpoint_df.handle.isin(human_non_sybil.handle)]
-        human_non_sybil = human_non_sybil[['handle', 'flag_type_y', 'notes']]
-        human_non_sybil = human_non_sybil.rename({'handle': 'handle', 'flag_type_y': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
-        non_sybil_df = non_sybil_df.append(human_non_sybil)
+        df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score
+        df.loc[labels_by_heuristic, 'label'] = "Heuristics"
 
-        '''
-        filters heuristic non sybils, nothing here needs to be adjusted
-        '''
-        heuristic_non_sybil = endpoint_df[(endpoint_df['flag_type_x'] == 'Heuristic') & (endpoint_df['ml_score'] <= 0.01)]
-        endpoint_df = endpoint_df[~endpoint_df.handle.isin(heuristic_non_sybil.handle)]
-        heuristic_non_sybil = heuristic_non_sybil[['handle', 'flag_type_x', 'notes']]
-        hueristic_non_sybil = heuristic_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
-        non_sybil_df = non_sybil_df.append(heuristic_non_sybil)
+        df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score
+        df.loc[labels_by_prediction, 'label'] = "ML Prediction"
 
-        '''
-        This just filters out the remaining users that were not filtered in the previous sections, nothing can be adjusted here
-        '''
-        ml_non_sybil = endpoint_df
-        ml_non_sybil = ml_non_sybil[['handle', 'flag_type_x', 'notes']]
-        ml_non_sybil = ml_non_sybil.rename({'handle': 'handle', 'flag_type_x': 'label', 'notes': 'comment'}, axis = 1, inplace = True)
-        non_sybil_df = non_sybil_df.append(ml_non_sybil)
+        # Generate dict records
+        sybil_records = df.query('is_sybil == True').to_dict('records')
+        non_sybil_records = df.query('is_sybil == False').to_dict('records')
 
-        '''
-        conversion of all the data so that it can be pushed to the toggle_user_sybil endpoint
-        '''
-        #sybil_df = ml_df[ml_df['ml_score'] >= 0.9 and ml_df['flag_type'] != 'Human']
-        sybil_users = sybil_df.to_dict('records')
-        non_sybil_users = non_sybil_df.to_dict('records')
-
-        # print('=================SYBIL=================')
-        # print(sybil_users)
-        # print('=================NON SYBIL=================')
-        # print(non_sybil_users)
-
-        toggle_user_sybil(sybil_users, non_sybil_users)
-
+        # Output
+        return (sybil_records, non_sybil_records)
     except Exception as e:
         logger.error(f'error: bsci_sybil_script - {e}')
+        return None
+
 
 def isNaN(string):
     return string != string

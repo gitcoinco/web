@@ -17,18 +17,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.messages import constants as messages
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 import twitter
+from django_svg_image_form_field import SvgAndImageFormField
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantStat, GrantTag, GrantType, MatchPledge, PhantomFunding, Subscription,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType, MatchPledge,
+    PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
@@ -85,14 +89,17 @@ class GrantCLRCalculationAdmin(admin.ModelAdmin):
         'grant','grantclr','clr_prediction_curve'
     ]
     search_fields = [
-        'grantclr'
+        'grant__title',
+        'grantclr__round_num',
+        'grantclr__pk'
     ]
 
 class CLRMatchAdmin(admin.ModelAdmin):
     """Define the CLRMatch administration layout."""
 
     ordering = ['-id']
-    raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution']
+    list_display =['pk', 'grant', 'round_number', 'amount', 'grant_payout']
+    raw_id_fields = ['grant', 'payout_contribution']
 
 
 class GrantAdmin(GeneralAdmin):
@@ -100,7 +107,7 @@ class GrantAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'title',
+        'title', 'is_grant_idle',
         'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
         'grant_type', 'tags', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
@@ -120,11 +127,14 @@ class GrantAdmin(GeneralAdmin):
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
-        'emails'
+        'emails', 'is_grant_idle'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile', 'twitter_verified_by']
     search_fields = ['description', 'admin_profile__handle']
+
+    def is_grant_idle(self, instance):
+        return instance.is_idle
 
     def get_queryset(self, request):
         qs = super(GrantAdmin, self).get_queryset(request)
@@ -201,8 +211,8 @@ class GrantAdmin(GeneralAdmin):
             self.message_user(request, "Marked Grant as Fraudulent. Consider blocking the grant admin next?")
         if "_calc_clr" in request.POST:
             from grants.tasks import recalc_clr
-            recalc_clr.delay(obj.pk)
-            self.message_user(request, "recaclulation of clr queued")
+            recalc_clr.delay(obj.pk, False)
+            self.message_user(request, "recalculation of clr queued")
         if "_request_more_info" in request.POST:
             more_info = request.POST.get('more_info')
             grant_more_info_required(obj, more_info)
@@ -459,7 +469,7 @@ class GrantTypeAdmin(admin.ModelAdmin):
 
 
 class GrantTagAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name']
+    list_display = ['pk', 'name', 'is_eligibility_tag']
     readonly_fields = ['pk']
 
 class GrantCLRAdmin(admin.ModelAdmin):
@@ -489,26 +499,26 @@ class GrantCLRAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         if "_recalculate_clr" in request.POST:
             from grants.tasks import recalc_clr
-            for grant in obj.grants:
-                recalc_clr.delay(grant.pk)
-            self.message_user(request, "submitted recaclulation to queue")
+            # enqueue this round to be recalculated
+            recalc_clr.delay(False, int(obj.pk))
+            self.message_user(request, f"submitted recalculation of GrantCLR:{ obj.pk } to queue")
 
         if "_set_current_grant_clr_calculations_to_false" in request.POST:
-            latest_calculations = GrantCLRCalculation.objects.filter(grantclr=obj, latest=True)
+            active_calculations = GrantCLRCalculation.objects.filter(grantclr=obj, active=True)
 
-            if latest_calculations.count() == 0:
-                self.message_user(request, "Latest Flag is already false. No action taken")
+            if active_calculations.count() == 0:
+                self.message_user(request, "Active Flag is already false. No action taken")
             else:
-                latest_calculations.update(latest=False)
-                self.message_user(request, "Current Grant CLR Calculations's latest flag is set to false")
+                active_calculations.update(active=False)
+                self.message_user(request, "Current Grant CLR Calculations's active flag is set to false")
 
         if "_set_all_grant_clr_calculations_to_false" in request.POST:
-            latest_calculations = GrantCLRCalculation.objects.filter(latest=True)
-            if latest_calculations.count() == 0:
-                self.message_user(request, "Latest Flag is already false for all CLRs. No action taken")
+            active_calculations = GrantCLRCalculation.objects.filter(active=True)
+            if active_calculations.count() == 0:
+                self.message_user(request, "Active Flag is already false for all CLRs. No action taken")
             else:
-                latest_calculations.update(latest=False)
-                self.message_user(request, "All Grant CLR Calculations's latest flag is set to false")
+                active_calculations.update(active=False)
+                self.message_user(request, "All Grant CLR Calculations's active flag is set to false")
 
         return redirect(obj.admin_url)
 
@@ -536,6 +546,49 @@ class GrantCollectionAdmin(admin.ModelAdmin):
 class GrantBrandingRoutingPolicyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'policy_name', 'url_pattern', 'priority' ]
 
+class GrantHallOfFameGranteeInline(admin.StackedInline):
+    model = GrantHallOfFameGrantee
+    fields = ['grantee', 'name', 'funded_by', 'amount', 'description', 'accomplishment_1', 'accomplishment_2']
+    raw_id_fields = ['grantee']
+    extra = 1
+
+
+class GrantHallOfFameForm(forms.ModelForm):
+    class Meta:
+        model = GrantHallOfFame
+        exclude = []
+        field_classes = {
+            'top_matching_partners': SvgAndImageFormField,
+            'top_matching_partners_mobile': SvgAndImageFormField,
+            'top_individual_donors': SvgAndImageFormField,
+            'top_individual_donors_mobile': SvgAndImageFormField,
+        }
+
+class GrantHallOfFameAdmin(admin.ModelAdmin):
+    form = GrantHallOfFameForm
+    inlines = (GrantHallOfFameGranteeInline, )
+    list_display = ['pk', 'total_donations', 'is_published' ]
+    readonly_fields = ['is_published', ]
+
+    actions = ['hall_of_fame_publish']
+
+    def hall_of_fame_publish(self, request, queryset):
+        object_list = list(queryset)
+        if len(object_list) == 1:
+            obj = object_list[0]
+            obj.publish()
+            self.message_user(request, f"The object '{obj}'' successfully marked as published.")
+        else:
+            self.message_user(request, f"Only 1 object can be published mode. Please select exactly 1 object to set it in published state.", level=messages.WARNING)
+
+    hall_of_fame_publish.short_description = "Publish"
+
+
+class GrantPayoutAdmin(admin.ModelAdmin):
+    """Define the GrantPayout administration layout."""
+
+    list_display =['pk', 'name', 'contract_address']
+
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
@@ -552,3 +605,5 @@ admin.site.register(GrantCollection, GrantCollectionAdmin)
 admin.site.register(GrantStat, GeneralAdmin)
 admin.site.register(GrantBrandingRoutingPolicy, GrantBrandingRoutingPolicyAdmin)
 admin.site.register(GrantCLRCalculation, GrantCLRCalculationAdmin)
+admin.site.register(GrantPayout, GrantPayoutAdmin)
+admin.site.register(GrantHallOfFame, GrantHallOfFameAdmin)

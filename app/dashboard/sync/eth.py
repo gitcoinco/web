@@ -26,14 +26,22 @@ def get_eth_txn_status(fulfillment):
     response = {
         'status': 'pending'
     }
-
+    raw_data = None
     try:
         if network == 'mainnet':
             etherscan_url = f'https://api.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash={txnid}&apikey={API_KEY}'
         else:
             etherscan_url = f'https://api-rinkeby.etherscan.io/api?module=transaction&action=gettxreceiptstatus&txhash={txnid}&apikey={API_KEY}'
 
-        etherscan_response = requests.get(etherscan_url, headers=headers).json()
+        # Make request
+        etherscan_response = requests.get(etherscan_url, headers=headers)
+        # Raise exception if status != 200
+        etherscan_response.raise_for_status()
+        # retaining raw data for the purpose of logging it in case of error
+        raw_data = etherscan_response.text
+        # Parse JSON response
+        etherscan_response = etherscan_response.json()
+
         result = etherscan_response['result']
 
         response = {
@@ -41,7 +49,6 @@ def get_eth_txn_status(fulfillment):
         }
 
         if result:
-
             if result.get('status') == '1':
                 response = {
                     'status': 'done'
@@ -57,8 +64,10 @@ def get_eth_txn_status(fulfillment):
                     fulfillment.save()
                     response = get_eth_txn_status(fulfillment)
 
+    except requests.HTTPError as e:
+        logger.error(f'HTTP error: get_eth_txn_status - {fulfillment} - {e.response.text}', exc_info=True)
     except Exception as e:
-        logger.error(f'error: get_eth_txn_status - {e}')
+        logger.error(f'Error: get_eth_txn_status - {fulfillment} - raw data: {raw_data}', exc_info=True)
     finally:
         return response
 

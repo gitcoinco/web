@@ -49,6 +49,7 @@ class EmailSubscriber(SuperModel):
 
     email = models.EmailField(max_length=255, unique=True)
     source = models.CharField(max_length=50)
+    email_index = models.CharField(max_length=255, default='', db_index=True)
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
     preferences = JSONField(default=dict)
@@ -71,11 +72,13 @@ class EmailSubscriber(SuperModel):
 
     def should_send_email_type_to(self, email_type):
         is_on_global_suppression_list = EmailSupressionList.objects.filter(email__iexact=self.email).exists()
+        
         if is_on_global_suppression_list:
+            # User has been added to global EmailSupressionList, so no emails should be sent
             return False
 
-        should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
-        return not should_suppress
+        should_not_send_email = self.preferences.get('suppression_preferences', {}).get(email_type, False)
+        return not should_not_send_email
 
     def set_should_send_email_type_to(self, key, should_send):
         suppression_preferences = self.preferences.get('suppression_preferences', {})
@@ -141,6 +144,7 @@ class EmailSubscriber(SuperModel):
 @receiver(pre_save, sender=EmailSubscriber, dispatch_uid="psave_es")
 def psave_es(sender, instance, **kwargs):
     instance.build_email_preferences()
+    instance.email_index = instance.email.lower()
 
 
 class ManualStat(SuperModel):
@@ -220,6 +224,9 @@ class LeaderboardRank(SuperModel):
 
         index_together = [
             ["leaderboard", "active"],
+            ["leaderboard", "active", "product"],
+            ["leaderboard", "active", "product", "amount"],
+            ["leaderboard", "active", "product", "amount", 'github_username'],
         ]
 
 

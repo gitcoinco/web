@@ -57,6 +57,7 @@ from grants.views import cart_thumbnail
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
+from .views import redirect_view
 
 urlpatterns = [
 
@@ -366,7 +367,6 @@ urlpatterns = [
         name='hackathon_project_page'
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
-
     url(r'^hackathon/<str:hackathon>/?$/?', dashboard.views.hackathon, name='hackathon'),
     url(r'^hackathon/<str:hackathon>/<str:panel>/?$/?', dashboard.views.hackathon, name='hackathon'),
 
@@ -374,7 +374,6 @@ urlpatterns = [
     re_path(r'^hackathon-list/?$', dashboard.views.get_hackathons, name='get_hackathons'),
     re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons'),
     re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons'),
-
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
@@ -699,6 +698,8 @@ urlpatterns = [
         retail.emails.tribe_hackathon_prizes,
         name='tribe_hackathon_prizes'
     ),
+    path('_administration/email/export_data', retail.emails.export_data, name='export_data'),
+    path('_administration/email/export_data_failed', retail.emails.export_data_failed, name='export_data_failed'),
     re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
@@ -737,6 +738,12 @@ urlpatterns = [
         name='no_applicant_reminder'
     ),
     re_path(r'^_administration/email/match_distribution$', retail.emails.match_distribution, name='match_distribution'),
+    re_path(
+        r'^_administration/email/clr_match_claim$',
+        retail.emails.grant_match_distribution_final_txn,
+        name='clr_match_claim'
+    ),
+    re_path(r'^_administration/export_grants_ethelo', dashboard.views.export_grants_ethelo, name='export_grants_ethelo'),
 
     # docs
     re_path(r'^_administration/docs/', include('django.contrib.admindocs.urls')),
@@ -763,31 +770,24 @@ urlpatterns = [
     re_path(r'^_administration/stats/$', dataviz.views.stats, name='stats'),
     re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
     re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
-    re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
     re_path(r'^_administration/mesh/?$', dataviz.d3_views.mesh_network_viz, name='mesh_network_viz'),
-    re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
-    re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
-    re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),
-    re_path(r'^_administration/viz/circles/(.*)?$', dataviz.d3_views.viz_circles, name='viz_circles'),
-    re_path(r'^_administration/viz/sankey/(.*)?$', dataviz.d3_views.viz_sankey, name='viz_sankey'),
-    re_path(r'^_administration/viz/spiral/(.*)?$', dataviz.d3_views.viz_spiral, name='viz_spiral'),
-    re_path(r'^_administration/viz/heatmap/(.*)?$', dataviz.d3_views.viz_heatmap, name='viz_heatmap'),
-    re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
-    re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
-    re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
     url(r'^blocknative', perftools.views.blocknative, name='blocknative'),
 
     # quadratic lands
-    path('quadraticlands/', include('quadraticlands.urls', namespace='quadraticlands')),
-    re_path(r'^quadraticlands/?', include('quadraticlands.urls', namespace='ql_catchall_')),
-    re_path(r'^quadraticland/?', include('quadraticlands.urls', namespace='ql_catchall')),
+    path('quadraticlands/', redirect_view),
+    re_path(r'^quadraticlands/?', redirect_view),
+    re_path(r'^quadraticland/?', redirect_view),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
+    path(
+        'sitemap.xml',
+        cache_page(604800)(sitemap_index), {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.index'
+    ),
     path(
         'sitemap-<section>.xml',
-        cache_page(86400)(sitemap), {'sitemaps': sitemaps},
+        cache_page(604800)(sitemap), {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'
     ),
     # Interests
@@ -805,6 +805,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
     re_path(r'^login/github$', dashboard.views.gh_login, name='gh_login_'),
+    re_path(r'^complete/?$', retail.views.index, name='gh_complete_redirect'),
     path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
@@ -833,7 +834,7 @@ urlpatterns += [
         name='profile_min'
     ),
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+[-]?)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),

@@ -6,6 +6,21 @@ Quill.register('modules/ImageExtend', ImageExtend);
 
 Vue.mixin({
   methods: {
+    formatDonationAmounts(grant) {
+      const amountReceived = Vue.filter('round')(grant.amount_received || 0);
+      const amountRecievedInRound = Vue.filter('round')(grant.amount_received_in_round || 0);
+
+      grant.clr_prediction_curve = grant.clr_prediction_curve.map((prediction) => {
+        prediction[0] = Vue.filter('round')(prediction[0] || 0);
+        prediction[1] = Vue.filter('round')(prediction[1] || 0);
+        prediction[2] = Vue.filter('round')(prediction[2] || 0);
+        return prediction;
+      });
+      grant.last_update = Vue.filter('moment')(grant.last_update);
+      grant.amount_received = Vue.filter('formatNumber')(amountReceived);
+      grant.amount_received_in_round = Vue.filter('formatNumber')(amountRecievedInRound);
+      return grant;
+    },
     fetchGrantDetails: function(id) {
       const vm = this;
 
@@ -21,13 +36,16 @@ Vue.mixin({
         fetch(url).then(function(res) {
           return res.json();
         }).then(function(json) {
-          vm.grant = json.grants;
+          vm.grant = vm.formatDonationAmounts(json.grants);
           vm.loading = false;
-          // if (vm.tab) {
-          //   setTimeout(function() {
-          //     vm.scrollToElement('grant-tabs');
-          //   }, 1000);
-          // }
+
+          // pick up the curve from the grants model
+          const clr_curve = vm.grant.clr_prediction_curve;
+
+          // check if this grant has reached the cap for its respective clrs
+          vm.grant.__has_reached_cap = clr_curve && (
+            clr_curve[0][1] !== 0 && clr_curve[1][2] == 0 && clr_curve[2][2] == 0 && clr_curve[3][2] == 0 && clr_curve[4][2] == 0 && clr_curve[5][2] == 0
+          );
 
           resolve();
         }).catch(console.error);
@@ -121,20 +139,16 @@ Vue.mixin({
 
       }).catch(console.error);
     },
-    backNavigation: function() {
-      const vm = this;
-      const lgt = localStorage.getItem('last_grants_title') || 'Grants';
-      const lgi = document.referrer.indexOf(location.host) != -1 ? 'javascript:history.back()' : '/grants/explorer';
-
-      if (lgi && lgt) {
-        vm.$set(vm.backLink, 'url', lgi);
-        vm.$set(vm.backLink, 'title', lgt);
-      }
-    },
     scrollToElement(element) {
       const container = this.$refs[element];
 
       container.scrollIntoViewIfNeeded({behavior: 'smooth', block: 'start'});
+    },
+    closeGrantCreatedNotification: function() {
+      let vm = this;
+
+      vm.modalShow = false;
+      delete localStorage['grant_state'];
     }
   }
 });
@@ -148,6 +162,7 @@ if (document.getElementById('gc-grant-detail')) {
     },
     data() {
       return {
+        modalShow: localStorage['grant_state'] == 'created',
         loading: false,
         loadingTx: false,
         loadingRelated: false,
@@ -162,16 +177,11 @@ if (document.getElementById('gc-grant-detail')) {
         isStaff: isStaff,
         grant: {},
         tabSelected: 0,
-        tab: null,
-        backLink: {
-          url: '/grants',
-          title: 'Grants'
-        }
+        tab: null
       };
     },
     mounted: function() {
       this.enableTab();
-      this.backNavigation();
       this.fetchGrantDetails();
     }
   });

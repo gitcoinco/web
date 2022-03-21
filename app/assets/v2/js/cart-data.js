@@ -141,18 +141,11 @@ this.CartData = class CartData {
       if (!grantData.grant_donation_currency) {
         grantData.grant_donation_currency = 'RBTC';
       }
-    } else if (acceptsAllTokens || 'DAI' == accptedTokenName) {
-      if (!grantData.grant_donation_amount) {
-        grantData.grant_donation_amount = 5;
-      }
-      if (!grantData.grant_donation_currency) {
-        grantData.grant_donation_currency = 'DAI';
-      }
     } else {
       if (!grantData.grant_donation_amount) {
-        grantData.grant_donation_amount = 0.01;
+        grantData.grant_donation_amount = 25;
       }
-      grantData.grant_donation_currency = 'ETH';
+      grantData.grant_donation_currency = 'DAI';
     }
 
     grantData.payment_status = 'waiting';

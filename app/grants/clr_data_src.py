@@ -1,6 +1,6 @@
 from django.db import connection
 
-from grants.models import Contribution, Grant, GrantCollection
+from grants.models import Contribution, GrantCollection
 from townsquare.models import SquelchProfile
 
 
@@ -17,6 +17,7 @@ def fetch_grants(clr_round, network='mainnet'):
     '''
 
     grant_filters = clr_round.grant_filters
+    grant_excludes = clr_round.grant_excludes
     collection_filters = clr_round.collection_filters
 
     grants = clr_round.grants.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
@@ -28,6 +29,9 @@ def fetch_grants(clr_round, network='mainnet'):
         # Collection Filters
         grant_ids = GrantCollection.objects.filter(**collection_filters).values_list('grants', flat=True)
         grants = grants.filter(pk__in=grant_ids)
+
+    if grant_excludes:
+        grants = grants.exclude(**grant_excludes)
 
     return grants
 
@@ -46,9 +50,7 @@ def fetch_contributions(clr_round, network='mainnet'):
 
     clr_start_date = clr_round.start_date
     clr_end_date = clr_round.end_date
-    grant_filters = clr_round.grant_filters
     subscription_filters = clr_round.subscription_filters
-    collection_filters = clr_round.collection_filters
 
     contributions = Contribution.objects.prefetch_related('subscription', 'profile_for_clr').filter(
         match=True,
@@ -102,8 +104,8 @@ def fetch_summed_contributions(grants, clr_round, network='mainnet'):
         SELECT
             grants.use_grant_id as grant_id,
             grants_contribution.profile_for_clr_id as user_id,
-            SUM((grants_contribution.normalized_data ->> 'amount_per_period_usdt')::FLOAT * {float(multiplier)}),
-            MAX(dashboard_profile.as_dict ->> 'trust_bonus')::FLOAT as trust_bonus
+            SUM(grants_contribution.amount_per_period_usdt * {float(multiplier)}),
+            MAX(dashboard_profile.trust_bonus)::FLOAT as trust_bonus
         FROM grants_contribution
         INNER JOIN dashboard_profile ON (grants_contribution.profile_for_clr_id = dashboard_profile.id)
         INNER JOIN grants_subscription ON (grants_contribution.subscription_id = grants_subscription.id)
@@ -117,15 +119,15 @@ def fetch_summed_contributions(grants, clr_round, network='mainnet'):
                     END
                 ) as use_grant_id
             FROM grants_grant
-        ) grants ON ((grants_contribution.normalized_data ->> 'id')::FLOAT = grants.grant_id)
+        ) grants ON (grants_contribution.grant_id = grants.grant_id)
         WHERE (
-            grants_contribution.normalized_data ->> 'id' IN ({grantIds}) AND
+            grants_contribution.grant_id IN ({grantIds}) AND
             grants_contribution.created_on >= '{clr_start_date}' AND
             grants_contribution.created_on <= '{clr_end_date}' AND
             grants_contribution.match = True AND
             grants_subscription.network = '{network}' AND
             grants_contribution.success = True AND
-            (grants_contribution.normalized_data ->> 'amount_per_period_usdt')::FLOAT >= 0 AND
+            grants_contribution.amount_per_period_usdt >= 0 AND
             NOT (
                 grants_contribution.profile_for_clr_id IN (
                     SELECT squelched.profile_id FROM townsquare_squelchprofile squelched WHERE squelched.active = True

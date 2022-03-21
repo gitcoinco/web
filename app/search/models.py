@@ -30,7 +30,7 @@ class SearchResult(SuperModel):
 
         es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
         source_type  = str(str(self.source_type).replace('token', 'kudos')).title()
-        full_search = f"{self.title}{self.description}{source_type}"
+        full_search = f"{self.title} {self.description} {source_type}"
         doc = {
             'title': self.title,
             'description': self.description,
@@ -44,15 +44,32 @@ class SearchResult(SuperModel):
         res = es.index(index="search-index", id=self.pk, body=doc)
 
 
-def search(query, num_results=500):
+def search(query, page=0, num_results=500):
     if not settings.ELASTIC_SEARCH_URL:
         return {}
     es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
+    # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
     res = es.search(index="search-index", body={
-      "from" : 0, "size" : num_results,
+      "from" : page, "size" : num_results,
       "query": {
-        "match": {
-          "full_search": query,
+        "bool": {
+          "should": [
+            {
+              "query_string": {
+                "query": f"*{query}*",
+                "fields": ["title^10", "description", "source_type"],
+              }
+            },
+            {
+              "match": {
+                "source_type": {
+                  "query": "grant",
+                  "boost": "2"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": "1"
         }
       }
     })

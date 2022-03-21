@@ -149,6 +149,9 @@ $(document).ready(function() {
     }
   });
   setTimeout(function() {
+    $('#grants_results').html('  <iframe    src="https://metabase.gitcoin.co/public/question/437a0ed4-bcb7-41eb-af63-e67c0965d200"    frameborder="0"    width="100%"    height="600"    allowtransparency></iframe>');
+  }, 2000);
+  setTimeout(function() {
     $('#leaderboard_nav .nav-link:first-child').click();
 
     $('#tweets').html(`
@@ -160,7 +163,7 @@ $(document).ready(function() {
         </div>
         <div class="row py-1">
           <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <blockquote class="twitter-tweet"><p lang="en" dir="ltr">I&#39;m genuinely amazed by the projects in the <a href="https://twitter.com/ArweaveTeam?ref_src=twsrc%5Etfw">@ArweaveTeam</a> <a href="https://twitter.com/gitcoin?ref_src=twsrc%5Etfw">@gitcoin</a> incubator, these are incredible. Wow.</p>&mdash; Lasse Clausen (@lalleclausen) <a href="https://twitter.com/lalleclausen/status/1294320204470722560?ref_src=twsrc%5Etfw">August 14, 2020</a></blockquote> 
+            <blockquote class="twitter-tweet"><p lang="en" dir="ltr">I&#39;m genuinely amazed by the projects in the <a href="https://twitter.com/ArweaveTeam?ref_src=twsrc%5Etfw">@ArweaveTeam</a> <a href="https://twitter.com/gitcoin?ref_src=twsrc%5Etfw">@gitcoin</a> incubator, these are incredible. Wow.</p>&mdash; Lasse Clausen (@lalleclausen) <a href="https://twitter.com/lalleclausen/status/1294320204470722560?ref_src=twsrc%5Etfw">August 14, 2020</a></blockquote>
             <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
           </div>
         </div>

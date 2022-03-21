@@ -23,13 +23,13 @@ $(document).ready(() => {
 
 });
 
-
 if (document.getElementById('grants-showcase')) {
   const baseParams = {
     page: 1,
-    limit: 6,
+    limit: 12,
     me: false,
     sort_option: 'weighted_shuffle',
+    collection_id: false,
     network: 'mainnet',
     state: 'active',
     profile: false,
@@ -39,7 +39,9 @@ if (document.getElementById('grants-showcase')) {
     grant_types: [],
     grant_tags: [],
     tenants: [],
-    idle: true
+    idle: false,
+    featured: true,
+    round_type: false
   };
 
   const grantRegions = [
@@ -67,7 +69,6 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'ALGORAND', 'label': 'Algorand'}
   ];
 
-
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
@@ -79,15 +80,16 @@ if (document.getElementById('grants-showcase')) {
       grantTenants: grantTenants,
       grant_tags: [],
       grant: {},
+      dismissFavoriteAlertCountDown: 0,
       collectionsPage: null,
       cart_data_count: CartData.length(),
-      show_active_clrs: window.localStorage.getItem('show_active_clrs') != 'false',
       network: document.network,
       keyword: document.keyword,
+      active_rounds: document.active_rounds,
+      round_types: document.round_types,
       current_type: document.current_type,
       idle_grants: document.idle_grants,
       following: document.following,
-      featured: document.featured,
       state: 'active',
       category: document.selected_category,
       credentials: false,
@@ -102,6 +104,12 @@ if (document.getElementById('grants-showcase')) {
       sub_round_slug: false,
       cart_lock: false,
       collection_id: document.collection_id,
+      collection_title: document.collection_title,
+      collection_description: document.collection_description,
+      collection_owner: document.collection_owner,
+      collection_owner_url: document.collection_owner_url,
+      collection_owner_avatar: document.collection_owner_avatar,
+      collection_grant_ids: document.collection_grant_ids,
       activeCollection: null,
       grantsNumPages,
       grantsHasNext,
@@ -117,9 +125,46 @@ if (document.getElementById('grants-showcase')) {
       observer: null,
       observed: null,
       sticky_active: false,
-      fetchedPages: []
+      fetchedPages: [],
+      handle: document.contxt.github_handle,
+      editingCollection: false,
+      createCollectionRedirect: false,
+      activeTimeout: null,
+      scrollTriggered: false,
+      previouslyLoadedGrants: {},
+      closed: true,
+      selectOptions: [
+        {group: 'Discover', label: null},
+        {label: 'Most Relevant', value: ''},
+        {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
+        {label: 'Trending', value: '-metadata__upcoming'},
+        {label: 'Undiscovered Gems', value: '-metadata__gem'},
+        {label: 'Recently Updated', value: '-last_update'},
+        {label: 'Newest', value: '-created_on'},
+        {label: 'Oldest', value: 'created_on'},
+        {label: 'A to Z', value: 'title'},
+        {label: 'Z to A', value: '-title'},
+        {group: 'Current Round', label: null},
+        {label: 'Highest Match Amount', value: '-clr_prediction_curve__0__1'},
+        {label: 'Highest Amount Raised', value: '-amount_received_in_round'},
+        {label: 'Highest Contributor Count', value: '-positive_round_contributor_count'},
+        {group: 'All-Time', label: null},
+        {label: 'Highest Amount Raised', value: '-amount_received'},
+        {label: 'Highest Contributor Count', value: '-contributor_count'}
+      ],
+      adminOptions: [
+        {group: 'Misc', label: null},
+        {label: 'ADMIN: Risk Score', value: '-weighted_risk_score'},
+        {label: 'ADMIN: Sybil Score', value: '-sybil_score'}
+      ]
     },
     methods: {
+      isSelectedRoundType: function(round_type, key) {
+        return (this.params.round_type && this.params.round_type == round_type) || (!this.params.round_type && key == 0);
+      },
+      isSelectedCLR: function(current_clr_sub_round_slug, current_clr_round_num, clr) {
+        return (current_clr_sub_round_slug == clr.sub_round_slug && current_clr_round_num == clr.round_num);
+      },
       toggleStyle: function(style) {
 
         if (!style) {
@@ -132,10 +177,6 @@ if (document.getElementById('grants-showcase')) {
           $('.page-styles').last().text('');
         }
       },
-      toggleActiveCLRs() {
-        this.show_active_clrs = !this.show_active_clrs;
-        window.localStorage.setItem('show_active_clrs', this.show_active_clrs);
-      },
       setView: function(mode, event) {
         event.preventDefault();
         localStorage.setItem('grants_view', mode);
@@ -143,13 +184,12 @@ if (document.getElementById('grants-showcase')) {
       },
       fetchClrGrants: async function() {
         let vm = this;
-        let url = '/api/v0.1/grants_clr/';
+        let url = '/api/v0.1/grants_clr/?page_size=25';
         let getClr = await fetch(url);
         let clrJson = await getClr.json();
 
         vm.clrData = clrJson;
       },
-
       changeBanner: function() {
         this.regex_style = document.all_routing_policies &&
           document.all_routing_policies.find(policy => {
@@ -175,16 +215,58 @@ if (document.getElementById('grants-showcase')) {
           vm.fetchGrants();
         } else {
           vm.updateUrlParams();
-
         }
       },
-      filterCollection: function(collectionId) {
+      delayedChangeQuery: function() {
+        if (this.params.keyword === '' && this.params.sort_option !== 'weighted_shuffle') {
+          this.params.sort_option = 'weighted_shuffle';
+        }
+
+        if (this.activeTimeout) {
+          window.clearTimeout(this.activeTimeout);
+        }
+        this.activeTimeout = setTimeout(() => {
+          this.changeQuery({page: 1});
+          this.activeTimeout = null;
+        }, 500);
+      },
+      filterCollection: async function(collectionId) {
         let vm = this;
 
-        vm.params = Object.assign({}, baseParams);
+        // clear previous state
+        vm.grants = [];
+        vm.fetchedPages = [];
+        vm.collection_id = '';
+        vm.collection_title = '';
+        vm.collection_description = '';
+        vm.collection_owner = '';
+        vm.collection_owner_avatar = '';
 
-        vm.changeQuery({collection_id: collectionId});
+        // reset the params and set collection_id
+        vm.params = Object.assign({}, baseParams);
+        vm.$set(vm, 'params', {...vm.params, ...{page: 1, collection_id: collectionId }});
+
+        // fetch the collections details
+        const collectionDetailsURL = `/grants/v1/api/collections/${collectionId}`;
+        const collection = await fetchData(collectionDetailsURL, 'GET');
+
+        // update the stored state
+        vm.$set(vm, 'collection_id', collectionId);
+        vm.$set(vm, 'collection_title', collection.title);
+        vm.$set(vm, 'collection_description', collection.description);
+        vm.$set(vm, 'collection_owner', collection.owner.handle);
+        vm.$set(vm, 'collection_owner_url', collection.owner.url);
+        vm.$set(vm, 'collection_owner_avatar', collection.owner.avatar_url);
+        vm.$set(vm, 'collection_grant_ids', JSON.parse(collection.grant_ids));
+
+        // move to the grants tab
         vm.tabIndex = 0;
+
+        // update the grants
+        vm.fetchGrants();
+
+        // move to the top
+        window.scrollTo(0, 0);
       },
       getUrlParams: function() {
         let vm = this;
@@ -217,6 +299,12 @@ if (document.getElementById('grants-showcase')) {
       updateUrlParams: function(replaceHistory) {
         let vm = this;
 
+        // ignore idle/featured if collection_id is set - always show everything
+        if (vm.params.collection_id) {
+          vm.params.idle = true;
+          vm.params.featured = false;
+        }
+
         vm.searchParams = new URLSearchParams(vm.params);
 
         if (replaceHistory) {
@@ -241,6 +329,7 @@ if (document.getElementById('grants-showcase')) {
 
 
       },
+      idleOrHiddenGrants: (grant) => grant.is_hidden || grant.is_idle,
       fetchGrants: async function(page, append_mode, replaceHistory) {
         let vm = this;
 
@@ -253,11 +342,14 @@ if (document.getElementById('grants-showcase')) {
         if (vm.lock)
           return;
 
+        vm.scrollTriggered = append_mode;
         vm.lock = true;
+        console.log(vm.searchParams.toString());
         const requestGrants = await fetch(`/grants/cards_info?${vm.searchParams.toString()}`);
 
         if (!requestGrants.ok) {
           vm.lock = false;
+          vm.scrollTriggered = false;
           vm.grantsHasNext = true;
           return;
         }
@@ -265,9 +357,14 @@ if (document.getElementById('grants-showcase')) {
 
         if (!append_mode) {
           vm.grants = [];
+          vm.prevouslyLoadedGrants = {};
         }
+
         getGrants.grants.forEach(function(item) {
-          vm.grants.push(item);
+          if (!vm.prevouslyLoadedGrants[item.id]) {
+            vm.grants.push(item);
+            vm.previouslyLoadedGrants[item.id] = item;
+          }
         });
 
         vm.fetchedPages = [ ...vm.fetchedPages, Number(vm.params.page) ];
@@ -296,8 +393,8 @@ if (document.getElementById('grants-showcase')) {
             list: CartData.loadCart()
           }
         });
-
         vm.lock = false;
+        vm.scrollTriggered = false;
 
         return vm.grants;
       },
@@ -305,7 +402,9 @@ if (document.getElementById('grants-showcase')) {
         let vm = this;
 
         vm.tabSelected = vm.$refs.grantstabs.tabs[input].id;
-        vm.changeQuery({tab: vm.tabSelected});
+        vm.fetchedPages = [];
+        vm.$set(vm, 'params', {...vm.params, ...{tab: vm.tabSelected}});
+
         vm.unobserveFilter();
         vm.params.profile = false;
 
@@ -316,39 +415,50 @@ if (document.getElementById('grants-showcase')) {
           setTimeout(() => vm.observeFilter());
         }
       },
-      loadTab: function() {
+      loadTab: function(replaceHistory) {
         let vm = this;
         let loadParams = new URLSearchParams(document.location.search);
         const tabStrings = [
           {'index': 0, 'string': 'grants'},
           {'index': 1, 'string': 'collections'}
         ];
+        // tabs are 0 key indexed by b-tabs
 
         if (loadParams.has('tab')) {
           vm.tabSelected = loadParams.get('tab');
           vm.tabIndex = tabStrings.filter(tab => tab.string === vm.tabSelected)[0].index;
         }
-
+        // *NOTE: collections are paginated by using the returned .next url (stored as collectionsPage)
         if (vm.tabSelected === 'collections') {
-          this.fetchCollections();
+          vm.params.page = 1;
+          vm.collections = [];
+          // move to the top on tabChange
+          vm.collectionsPage = false;
+          this.fetchCollections(false, replaceHistory);
         } else {
-          this.fetchGrants(undefined, undefined, true);
+          this.fetchGrants(undefined, undefined, replaceHistory);
         }
       },
-      fetchCollections: async function(append_mode) {
+      fetchCollections: async function(append_mode, replaceHistory) {
         let vm = this;
 
         if (vm.loadingCollections)
           return;
 
         vm.loadingCollections = true;
-        await vm.updateUrlParams();
 
-        let url = `/api/v0.1/grants_collections/?${(vm.params.profile ? 'profile=' + vm.params.profile : '')}`;
+        await vm.updateUrlParams(replaceHistory);
 
-        if (vm.collectionsPage) {
+        const profile = (vm.params.profile ? 'profile=' + vm.params.profile : '');
+        const featured = (vm.params.featured ? 'featured=' + vm.params.featured : '');
+        const pageSize = 'page_size=12';
+
+        let url = `/api/v0.1/grants_collections/?${profile}&${featured}&${pageSize}`;
+
+        if (vm.collectionsPage && append_mode) {
           url = vm.collectionsPage;
         }
+
         let getCollections = await fetch(url);
         let collectionsJson = await getCollections.json();
 
@@ -357,7 +467,6 @@ if (document.getElementById('grants-showcase')) {
         } else {
           vm.collections = collectionsJson.results;
         }
-
         vm.collectionsPage = collectionsJson.next;
         vm.loadingCollections = false;
       },
@@ -366,16 +475,16 @@ if (document.getElementById('grants-showcase')) {
 
         const scrollY = window.scrollY;
         const visible = document.documentElement.clientHeight;
-        const pageHeight = document.documentElement.scrollHeight - 500;
+        const pageHeight = document.documentElement.scrollHeight - 1600;
         const bottomOfPage = visible + scrollY >= pageHeight;
         const topOfPage = visible + scrollY <= pageHeight;
 
+
         if (bottomOfPage || pageHeight < visible) {
           if (vm.params.tab === 'collections' && vm.collectionsPage) {
-            vm.fetchCollections(true);
-          } else if (vm.grantsHasNext && !vm.pageIsFetched(vm.params.page + 1)) {
-            vm.fetchGrants(vm.params.page, true, true);
-            vm.grantsHasNext = false;
+            await vm.fetchCollections(true);
+          } else if (vm.grantsHasNext) {
+            await vm.fetchGrants(vm.params.page, true, true);
           }
         }
       },
@@ -386,7 +495,7 @@ if (document.getElementById('grants-showcase')) {
 
         this.grants = getGrants.grants;
       },
-      tagSearch(search, loading) {
+      tagSearch: function(search, loading) {
         const vm = this;
 
         // if (search.length < 3) {
@@ -441,14 +550,14 @@ if (document.getElementById('grants-showcase')) {
           this.$set(grant, 'isInCart', (grant_ids_in_cart.indexOf(String(grant.id)) !== -1));
         });
       },
-      scrollBottom: function() {
-        this.bottom = this.scrollEnd();
+      scrollBottom: async function() {
+        this.bottom = await this.scrollEnd();
       },
-      closeDropdown(ref) {
+      closeDropdown: function(ref) {
         // Close the menu and (by passing true) return focus to the toggle button
         this.$refs[ref].hide(true);
       },
-      observeFilter() {
+      observeFilter: function() {
         // ensure the ref is in the dom before observing
         if (this.$refs.filterNav) {
           this.observed = this.$refs.filterNav;
@@ -463,20 +572,118 @@ if (document.getElementById('grants-showcase')) {
           this.observer.observe(this.observed);
         }
       },
-      unobserveFilter() {
+      unobserveFilter: function() {
         if (this.observed) {
           this.observer.unobserve(this.observed);
         }
       },
-      watchHistory(event) {
+      watchHistory: function(event) {
         this.getUrlParams();
-        this.fetchGrants(1, undefined, true);
+        // set tab selected
+        this.$set(this, 'tabSelected', this.params.tab);
+        // load the correct tab
+        this.loadTab(true);
       },
-      pageIsFetched(page) {
+      showFilter: function() {
         let vm = this;
+        let show_filter = false;
 
-        return vm.fetchedPages.includes(page);
+        const keys = [
+          'limit',
+          'me',
+          'sort_option',
+          'network',
+          'state',
+          'profile',
+          'round_type',
+          'sub_round_slug',
+          'collections_page',
+          'grant_regions',
+          'grant_types',
+          'grant_tags',
+          'tenants',
+          'idle'
+        ];
 
+        keys.forEach(key => {
+          if (vm.params[key].toString() != baseParams[key].toString()) {
+            show_filter = true;
+          }
+        });
+
+        return show_filter;
+      },
+      openCreateCollectionModal: function(doRedirect = false) {
+        // set the redirect ref on <create-collection-modal>
+        this.createCollectionRedirect = doRedirect;
+        // show the createCollection modal
+        this.$refs.createNewCollection.show();
+      },
+      shareCollection: function() {
+        _alert('Collections URL copied to clipboard', 'success', 3000);
+        const share_url = `${location.host}/grants/explorer?collection_id=${this.params.collection_id}`;
+
+        copyToClipboard(share_url);
+      },
+      tweetCollection: function() {
+        const share_url = `${location.host}/grants/explorer?collection_id=${this.params.collection_id}`;
+        const tweetUrl = `https://twitter.com/intent/tweet?text=Check out this Grant Collection on @gitcoin ${share_url}`;
+
+        window.open(tweetUrl, '_blank');
+      },
+      editCollection: function() {
+        this.$set(this, 'editingCollection', true);
+      },
+      saveEditCollection: async function() {
+        // pick up csrf token from dom
+        const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        // wrap the changes to pass to the endpoint
+        const body = {
+          collection: this.params.collection_id,
+          collectionTitle: this.collection_title,
+          collectionDescription: this.collection_description,
+          grants: this.collection_grant_ids,
+          grantsComplete: true
+        };
+
+        // attempt to post the update to the collections api
+        try {
+          // attempt to fetch the data
+          await fetchData('/grants/v1/api/collections/edit', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
+          // toast the success
+          _alert('Congratulations, your collection was updated successfully!', 'success');
+        } finally {
+          // find the collection in the document.collections obj
+          const collection = document.collections.find((collection) => this.params.collection_id == collection.id);
+
+          // update the title against the collection
+          if (collection) {
+            collection.title = body.collectionTitle;
+          }
+          // finish editing
+          this.$set(this, 'editingCollection', false);
+          // update the grant list by fetching again
+          this.fetchedPages = [];
+          this.fetchGrants();
+        }
+      },
+      deleteCollection: function() {
+        // deleteCollection exists as a component with selected_collection passed in as a prop
+        this.$refs.deleteCollection.show();
+      },
+      selectRoundType: function(roundType) {
+        // round_type_selected
+        this.params.round_type = roundType;
+        // open the dropdown menu on mobile
+        this.closed = false;
+        // clear selected round
+        this.params.sub_round_slug = false;
+        this.params.round_num = 0;
+        this.params.customer_name = false;
+        // save params to url
+        this.updateUrlParams(false);
+        // reset results
+        this.changeQuery({page: 1});
       }
     },
     computed: {
@@ -488,7 +695,7 @@ if (document.getElementById('grants-showcase')) {
       grantsHasPrev() {
         let vm = this;
 
-        return vm.lowestPage > 1;
+        return isFinite(vm.lowestPage) && vm.lowestPage > 1;
       },
       currentCLR() {
         let vm = this;
@@ -531,7 +738,7 @@ if (document.getElementById('grants-showcase')) {
           }
           // round has ended
           return 'ended';
-          
+
         }
 
         if (currentCLR) {
@@ -566,6 +773,12 @@ if (document.getElementById('grants-showcase')) {
         if (document.contxt.github_handle) {
           return true;
         }
+      },
+      showLoading() {
+        return this.lock && !this.scrollTriggered;
+      },
+      showLoadingCollections() {
+        return this.loadingCollections && !this.scrollTriggered;
       }
     },
     beforeMount() {

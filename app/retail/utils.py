@@ -535,11 +535,13 @@ def build_stat_results(keyword=None):
     context['audience'] = json.loads(context['members_history'])[-1][1]
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
-    total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
-    total_tips_usd = sum([
+    total_bounties_usd = float(sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True)))
+    total_bounties_usd += float(sum(ManualStat.objects.filter(key='bounty_gmv', date__lt=timezone.now()).values_list('val', flat=True)))
+    total_tips_usd = float(sum([
         tip.value_in_usdt
         for tip in Tip.objects.filter(network='mainnet').send_happy_path() if tip.value_in_usdt
-    ])
+    ]))
+    total_tips_usd += float(sum(ManualStat.objects.filter(key='tip_gmv', date__lt=timezone.now()).values_list('val', flat=True)))
     total_grants_usd = get_grants_history_at_date(timezone.now(), [])
     total_kudos_usd = get_kudos_history_at_date(timezone.now(), [])
     total_codefund_usd = get_codefund_history_at_date(timezone.now(), '')
@@ -637,7 +639,7 @@ def build_stat_results(keyword=None):
     context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
     context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
     from grants.utils import get_clr_rounds_metadata
-    clr_round, _, _, _, _, _, _, _ = get_clr_rounds_metadata()
+    clr_round = get_clr_rounds_metadata()['clr_round']
     context['num_matching_rounds'] = clr_round
     context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"
     context['privacy_violations'] = ManualStat.objects.filter(key='privacy_violations').order_by('-pk').first().val

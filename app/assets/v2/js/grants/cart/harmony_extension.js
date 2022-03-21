@@ -54,7 +54,6 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
           'tx_id': txn,
           'token_symbol': grant.grant_donation_currency,
           'tenant': 'HARMONY',
-          'comment': grant.grant_comments,
           'amount_per_period': grant.grant_donation_amount
         }]
       };

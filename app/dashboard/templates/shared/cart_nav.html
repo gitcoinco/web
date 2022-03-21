@@ -1,6 +1,7 @@
 <!-- nav cart icon/count + dropdown -->
 <div id="gc-cart" class="nav-item dropdown gc-cart order-md-first">
-  <a href="" class="gc-cart__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="cartDropdown" role="button" @click="$refs.navCart.init()"
+  <a href="{% url 'grants:cart' %}" class="gc-cart__icon nav-link dropdown-toggle dropdown-toggle-md-no-caret" id="cartDropdown" role="button"
+    @mouseover="onLinkMouseOver" @click="onLinkClick"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="far fa-shopping-cart fa-fw fa-lg"></i>
     <span class="pl-3 d-md-none">Cart</span>

@@ -93,7 +93,7 @@ def stat(request, key):
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def embed(request):
     # default response
-    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+    could_not_find = Image.new('RGB', (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 

@@ -75,13 +75,6 @@
           @modal-dismissed="hideModal()">
         </twitter-verify-modal>
 
-        <qd-modal
-          :service="serviceDict.qd"
-          :show-validation="visibleModal === 'qd-modal'"
-          validation-step="0"
-          @modal-dismissed="hideModal()">
-        </qd-modal>
-
         <poap-verify-modal
           :service="serviceDict.poap"
           :show-validation="visibleModal === 'poap-modal'"

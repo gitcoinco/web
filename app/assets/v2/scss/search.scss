@@ -28,6 +28,10 @@
   top: 2.3rem;
 }
 
+.gc-search-box.dropdown-menu.show {
+  display: table;
+}
+
 .gc-search-box input[type=text] {
   width: 78%;
   display: inline;
@@ -62,6 +66,10 @@
 
 .gc-search-result__description {
   color: #666666;
+}
+
+.gc-search-more-results {
+  z-index: 2;
 }
 
 .gc-search__avatar {

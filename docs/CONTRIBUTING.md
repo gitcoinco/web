@@ -136,8 +136,25 @@ To keep the style of the Javascript code consistent we have a basic linting conf
   * 1 tab = 4 spaces for everything else
 * Use `rem` for CSS when applicable
 * Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.  You can run tests via: `make pytest`
-* Gitcoin uses Cypress for system tests. To run those locally you will first need to launch the application, and then use the `make cypress-local` target
 * If you introduce new backend methods or classes, you must include docstrings that conform to PEP-257 and follow the existing patterns throughout the codebase.  See `app/avatar/(models|views|utils).py`  - If you introduce a new django module, like: `avatar` or `marketing`, you must update `pydocmd.yaml` to include relevant python modules from the newly introduced app.
+
+Running the Cypress Tests:
+
+Gitcoin is experimenting with the use of [Cypress](https://cypress.io) for end-to-end testing. To run the Cypress tests
+locally you must first ensure you have started the application with the `TEST_MNEMONIC` environment variable set. This
+should be set to the same value as the `SECRET_WORDS` variable found in `bin/cypress/vars.sh`.
+
+```shell
+$ export TEST_MNEMONIC="..."
+$ docker-compose up --build # the build flag is optional
+```
+
+Once the application is up and running you can use the `make cypress-local` command to kick off the tests. _Note_: This
+does assume Chrome is installed on your machine.
+
+When the tests are running they will open a new Chrome window and begin setting up MetaMask to handle the blockchain
+interactions. For testing purposes the Ganache-CLI is used and should be set up via the `docker-compose` command. No
+further actions should be needed unless you have altered those settings.
 
 ### Step 4: Commit
 

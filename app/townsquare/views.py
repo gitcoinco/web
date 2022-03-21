@@ -15,14 +15,11 @@ from django.views.decorators.http import require_http_methods
 import metadata_parser
 from app.services import RedisService
 from dashboard.helpers import load_files_in_directory
-from dashboard.models import (
-    Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
-)
+from dashboard.models import Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_count, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
-from retail.views import get_specific_activities
 
 from .models import (
     Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, PinnedPost,
@@ -116,71 +113,6 @@ def get_sidebar_tabs(request):
         'badge': get_amount_unread('everywhere', request),
     }]
     default_tab = 'everywhere'
-    if request.user.is_authenticated:
-        num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
-        if num_business_relationships:
-            key = 'my_tribes'
-            new_tab = {
-                'title': f"Relationships",
-                'slug': key,
-                'helper_text': f'Activity from the users who you\'ve done business with Gitcoin',
-                'badge': 0
-            }
-            tabs = [new_tab] + tabs
-            default_tab = 'my_tribes'
-
-        num_grants_relationships = (len(set(get_my_grants(request.user.profile))))
-        if num_grants_relationships:
-            key = 'grants'
-            new_tab = {
-                'title': f'Grants',
-                'slug': key,
-                'helper_text': f'Activity on the Grants you\'ve created or funded.',
-                'badge': 0,
-            }
-            tabs = [new_tab] + tabs
-            default_tab = 'grants'
-
-        num_favorites = request.user.favorites.filter(grant=None).all().count()
-        if num_favorites:
-            key = 'my_favorites'
-            activities = 0
-            new_tab = {
-                'title': f"My Favorites",
-                'slug': key,
-                'helper_text': f'Activity that you marked as favorite',
-                'badge': max_of_ten(activities) if request.GET.get(
-                    'tab') != key else 0
-            }
-            tabs = [new_tab] + tabs
-            default_tab = 'my_favorites'
-
-        threads_last_24_hours = max_of_ten(request.user.profile.subscribed_threads.filter(pk__gt=request.session.get('my_threads', 0)).count())  if request.GET.get('tab') != 'my_threads' else 0
-
-        threads = {
-            'title': f"My Threads",
-            'slug': f'my_threads',
-            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin since you last checked.',
-            'badge': threads_last_24_hours
-        }
-        tabs = [threads] + tabs
-
-    default_tab = 'connect'
-    connect = {
-        'title': f"Connect",
-        'slug': f'connect',
-        'helper_text': f'The announcements, requests for help, kudos jobs, mentorship, or other connective requests on Gitcoin.',
-        'badge': get_amount_unread('connect', request),
-    }
-    tabs = [connect] + tabs
-
-    connect = {
-        'title': f"Kudos",
-        'slug': f'kudos',
-        'helper_text': f'The Kudos that have been sent by Gitcoin community members, to show appreciation for one aother.',
-        'badge': get_amount_unread('kudos', request),
-    }
-    tabs = tabs + [connect]
 
     start_date = timezone.now() + timezone.timedelta(days=28)
     end_date = timezone.now() - timezone.timedelta(days=7)
@@ -206,15 +138,8 @@ def get_sidebar_tabs(request):
             default_tab = request.COOKIES.get('tab')
     tab = request.GET.get('tab', default_tab)
 
-    is_search = "activity:" in tab or "search-" in tab
-    if is_search:
-        tabs.append({
-            'title': "Search",
-            'slug': tab,
-        })
+    is_search = False
     search = ''
-    if "search-" in tab:
-        search = tab.split('-')[1]
 
     return tabs, tab, is_search, search, hackathon_tabs
 

@@ -1,16 +1,62 @@
+from django.templatetags.static import static
+from django.urls import reverse
+
 from dashboard.router import ProfileSerializer
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-from .models import Contribution, Grant, GrantCLR, GrantCollection, GrantTag, GrantType, Subscription
+from .models import (
+    CLRMatch, Contribution, Grant, GrantCLR, GrantCollection, GrantPayout, GrantTag, GrantType, Subscription,
+)
 from .utils import amount_in_wei, get_converted_amount
+
+
+class GrantCLRSerializer(FlexFieldsModelSerializer):
+    """Handle metadata of CLR rounds"""
+    class Meta:
+        """Define the GrantCLR serializer metadata."""
+        model = GrantCLR
+        fields = '__all__'
+        expandable_fields = {
+          'owner': (ProfileSerializer)
+        }
+
+
+class GrantPayoutSerializer(FlexFieldsModelSerializer):
+    grant_clrs = GrantCLRSerializer(
+        fields=['display_text', 'claim_start_date', 'claim_end_date', 'is_active'],
+        many=True
+    )
+
+    class Meta:
+        model = GrantPayout
+        fields = [
+            'status', 'contract_address', 'payout_token', 'funding_withdrawal_date',
+            'grant_clrs', 'network'
+        ]
+
+
+class CLRMatchSerializer(FlexFieldsModelSerializer):
+    grant_payout = GrantPayoutSerializer()
+
+    class Meta:
+        model = CLRMatch
+        fields = (
+            'pk', 'amount', 'round_number', 'claim_tx', 'grant_payout', 'ready_for_payout'
+        )
 
 
 class GrantSerializer(FlexFieldsModelSerializer):
     """Handle serializing the Grant object."""
 
+    logo_url = serializers.SerializerMethodField()
+    details_url = serializers.SerializerMethodField()
     admin_profile = ProfileSerializer()
     team_members = ProfileSerializer(many=True)
+    clr_matches = CLRMatchSerializer(
+        fields=['pk', 'amount', 'round_number', 'claim_tx', 'grant_payout', 'ready_for_payout'],
+        many=True
+    )
 
     class Meta:
         """Define the grant serializer metadata."""
@@ -21,14 +67,21 @@ class GrantSerializer(FlexFieldsModelSerializer):
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
             'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
             'clr_round_num', 'is_clr_active', 'amount_received_in_round', 'positive_round_contributor_count',
+            'clr_matches', 'logo_url', 'details_url',
         )
+
+    def get_logo_url(self, obj):
+        return obj.logo.url if obj.logo and obj.logo.url else self.context['request'].build_absolute_uri(static(f'v2/images/grants/logos/{obj.id % 3}.png')),
+
+    def get_details_url(self, obj):
+        return reverse('grants:details', args=(obj.id, obj.slug))
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     """Handle serializing the Subscription object."""
 
     contributor_profile = ProfileSerializer()
-    grant = GrantSerializer()
+    grant = GrantSerializer(omit=['clr_matches'])
 
     class Meta:
         """Define the subscription serializer metadata."""
@@ -139,17 +192,6 @@ class DonorSerializer(serializers.Serializer):
         fields = ('grant_name', 'asset', 'timestamp', 'grant_amount', 'gitcoin_maintenance_amount', 'grant_usd_value', 'gitcoin_usd_value')
 
 
-class GrantCLRSerializer(FlexFieldsModelSerializer):
-    """Handle metadata of CLR rounds"""
-    class Meta:
-        """Define the GrantCLR serializer metadata."""
-        model = GrantCLR
-        fields = '__all__'
-        expandable_fields = {
-          'owner': (ProfileSerializer)
-        }
-
-
 class GrantTypeSerializer(FlexFieldsModelSerializer):
     """Handle metadata of CLR rounds"""
     class Meta:
@@ -170,18 +212,14 @@ class GrantCollectionSerializer(FlexFieldsModelSerializer):
     """Handle metadata of CLR rounds"""
     profile = ProfileSerializer()
     curators = ProfileSerializer(many=True)
-    count = serializers.SerializerMethodField()
     class Meta:
         """Define the GrantCLR serializer metadata."""
         model = GrantCollection
-        fields = ('id', 'title', 'description', 'cover', 'featured', 'cache', 'curators', 'grants', 'profile', 'count')
+        fields = ('id', 'title', 'description', 'cover', 'featured', 'cache', 'curators', 'grants', 'profile')
 
         expandable_fields = {
             'grants': (
                 'grants.serializers.GrantSerializer',
                 {'many': True, 'fields': ['pk', 'title', 'logo']}
-
             )
-            }
-    def get_count(self, obj):
-        return obj.grants.count()
+        }

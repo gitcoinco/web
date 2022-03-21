@@ -8,7 +8,7 @@ node_modules/.bin/ganache-cli -m "${SECRET_WORDS}" -h 0.0.0.0 &
 
 # build assets
 mkdir -p app/assets/{static,media}
-export STATICFILES_DIRS="${TRAVIS_BUILD_DIR}/app/assets/"
+export STATICFILES_DIRS="${PWD}/app/assets/"
 python3 app/manage.py bundle
 yarn run build
 
@@ -16,9 +16,10 @@ python3 app/manage.py collectstatic --noinput --disable-collectfast
 
 # set up database
 python3 app/manage.py migrate
-python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/users.json"
-python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/profiles.json"
-python3 app/manage.py loaddata "${TRAVIS_BUILD_DIR}/app/app/fixtures/economy.json"
+python3 app/manage.py loaddata "${PWD}/app/app/fixtures/users.json"
+python3 app/manage.py loaddata "${PWD}/app/app/fixtures/profiles.json"
+python3 app/manage.py loaddata "${PWD}/app/app/fixtures/economy.json"
+python3 app/manage.py loaddata "${PWD}/app/grants/fixtures/grant_types.json"
 
 # run app server
 python3 app/manage.py runserver 0.0.0.0:8000 &
@@ -27,11 +28,13 @@ python3 app/manage.py runserver 0.0.0.0:8000 &
 export NETWORK_NAME=localhost
 export PASSWORD="g1tc01nc0" # used in readme for root user account
 export CYPRESS_REMOTE_DEBUGGING_PORT=9222
+export CYPRESS_SECRET_WORDS=$SECRET_WORDS
+export METAMASK_VERSION="9.8.0"
 export VERBOSE=1
 node_modules/.bin/cypress install
 node_modules/.bin/wait-on http://0.0.0.0:8000
 node_modules/.bin/cypress run \
   --browser chrome \
-  --headed \
   --record \
-  --key 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51
+  --key 23c824d9-b9eb-4aea-88fd-d0bb06a9eb51 \
+  --env grepTags="bounties platform"

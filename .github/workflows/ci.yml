@@ -1,0 +1,141 @@
+name: CI
+
+on:
+  # run it on push to master and stable branches
+  push:
+    branches: [ master, stable ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:11.5
+        # Provide the password for postgres
+        env:
+          POSTGRES_DB: testdb
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+      redis:
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    strategy:
+      matrix:
+        # Run in all these versions of Python and Node
+        python-version: [3.7]
+        node-version: [14]
+
+    env:
+      DJANGO_SETTINGS_MODULE: app.settings
+      SUPRESS_DEBUG_TOOLBAR: 1
+      GITCOIN_API_USER: ${{ secrets.GITCOIN_API_USER }}
+      GITHUB_API_TOKEN: ${{ secrets.GITCOIN_API_TOKEN }}
+      POLYGONSCAN_API_KEY: ${{ secrets.POLYGONSCAN_API_KEY }}
+
+    # steps to perform in job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Use Python ${{ matrix.python-version }}
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Setup Env
+        run: |
+          echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
+          cp app/app/ci.env app/app/.env
+          pip install pip==20.0.2 setuptools wheel --upgrade
+
+      - name: Fetch and Install GeoIP database files
+        run: |
+          sudo apt-get update && sudo apt-get install -y libmaxminddb-dev libsodium-dev libsecp256k1-dev
+          cp dist/*.gz ./
+          gunzip GeoLite2-City.mmdb.tar.gz && gunzip GeoLite2-Country.mmdb.tar.gz
+          tar -xvf GeoLite2-City.mmdb.tar && tar -xvf GeoLite2-Country.mmdb.tar
+          sudo mkdir -p /opt/GeoIP/
+          sudo mv GeoLite2-City_20200128/*.mmdb /opt/GeoIP/
+          sudo mv GeoLite2-Country_20200128/*.mmdb /opt/GeoIP/
+
+      - name: Install libvips, Node, and Python dependencies
+        run: |
+          sudo apt-get install -y libvips libvips-dev
+          node --version
+          yarn install
+          pip install -r requirements/test.txt
+          yarn run eslint
+          yarn run stylelint
+          (cd app; python ./manage.py collectstatic --noinput --disable-collectfast)
+
+      - name: Run management commands
+        run: |
+          python app/manage.py migrate
+          python app/manage.py fetch_gas_prices
+
+      - name: Run Python and UI tests
+        run: |
+          pytest -p no:ethereum -p no:warnings
+          bin/ci/cypress-run
+
+      - name: Generate Markdown documentation and static docs page
+        run: pydocmd build
+
+      - name: Deploy to Github Pages 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/site
+          cname: docs.gitcoin.co
+
+      - name: Deploy master to Docker Hub 🚀
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker pull python:3.6-slim-jessie
+          docker build -t gitcoin/web:${{ github.run_number }} .
+          docker push gitcoin/web:${{ github.run_number }}
+          docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:latest
+          docker push gitcoin/web:latest
+
+      # - name: Deploy stable to Docker Hub 🚀
+      #   if: github.ref == 'refs/heads/stable'
+      #   run: |
+      #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #     docker pull python:3.6-slim-jessie
+      #     docker build -t gitcoin/web:${{ github.run_number }} .
+      #     docker push gitcoin/web:${{ github.run_number }}
+      #     docker tag gitcoin/web:${{ github.run_number }} gitcoin/web:stable
+      #     docker push gitcoin/web:stable
+
+

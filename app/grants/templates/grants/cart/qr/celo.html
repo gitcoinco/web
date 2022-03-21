@@ -1,6 +1,6 @@
 {% load static i18n %}
 <b-tab title-link-class="nav-line" id="CELO" v-if="grantsCountByTenant.CELO !== undefined">
-  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" height="16"> Celo ([[grantsCountByTenant.CELO || 0]])</template>
+  <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" height="16"> <b>Celo ([[grantsCountByTenant.CELO || 0]])</b></template>
 
   <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
     <div class="flex-fill">
@@ -18,7 +18,7 @@
       <div class="d-flex align-items-center justify-content-between flex-wrap">
         {% comment %} Title and logo {% endcomment %}
         <div class="col-lg-6 d-flex flex-fill">
-            <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30" height="24">
+            <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" class="cart-grant-thumbnail">
             <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
         </div>
         {% comment %} Grant amount and currency {% endcomment %}
@@ -42,7 +42,7 @@
               </option>
             </select2> -->
           </div>
-          <!-- <div class="">
+          <!-- <div>
             <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
               Apply to all
             </div>
@@ -90,7 +90,7 @@
       <div>
         <b-collapse :id="`collapse-${grant.grant_id}`">
           <form action="" ref="form" @submit="confirmQRPayment($event, grant)">
-            {% include '../comment.html' %}
+
             <div class="d-flex">
               <div class="bg-white rounded col mr-2 py-3 d-flex flex-column mt-4">
                 <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner’s address below. Make sure you’re transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>
@@ -100,7 +100,7 @@
                   <div class="flex-fill font-smaller-1 ml-4">
                     <div class="d-flex align-items-center">
                       <span class="mr-2">To:</span>
-                      <div class="">
+                      <div>
                         <span class="font-weight-bold">[[grant.celo_payout_address]]</span>
                         <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.celo_payout_address"><i class="far fa-copy"></i></copy-clipboard>
                       </div>
@@ -123,14 +123,14 @@
 
                 <div class="form-row align-items-center mt-3">
                   <div class="col" v-show="selectedQRPayment === 'txid'">
-                    <div class="">
+                    <div>
                       <label :for="`celo_payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
                       <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`celo_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
                       <small class="form-text text-muted">Paste the transaction id</small>
                     </div>
                   </div>
                   <div class="col" v-show="selectedQRPayment === 'address'">
-                    <div class="">
+                    <div>
                       <label :for="`celo_contributor_address_${grant.grant_id}`" class="font-smaller-1">Your address:</label>
                       <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`celo_contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" :disabled="grant.success">
                     </div>

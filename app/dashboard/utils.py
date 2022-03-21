@@ -336,7 +336,7 @@ def get_graphql_client(uri):
     """Get a graphQL client attached to the given uri
 
     Returns:
-        GraphQLClient: an established GraphQLClient assoicated with the given uri
+        GraphQLClient: an established GraphQLClient associated with the given uri
     """
 
     # memoize
@@ -814,8 +814,8 @@ def record_funder_inaction_on_fulfillment(bounty_fulfillment):
             'needs_review': True
         }
     }
-    Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
-
+    activity = Activity.objects.create(activity_type='bounty_abandonment_escalation_to_mods', bounty=bounty_fulfillment.bounty, **payload)
+    activity.populate_activity_index()
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
     """Record User actions and activity for the associated Interest."""
@@ -832,7 +832,8 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
     if event_name in ['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning']:
         payload['needs_review'] = True
 
-    Activity.objects.create(activity_type=event_name, bounty=interest.bounty_set.last(), **payload)
+    activity = Activity.objects.create(activity_type=event_name, bounty=interest.bounty_set.last(), **payload)
+    activity.populate_activity_index()
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
@@ -1273,3 +1274,18 @@ def tx_id_to_block_explorer_url(txid, network):
     if network == 'mainnet':
         return f"https://etherscan.io/tx/{txid}"
     return f"https://{network}.etherscan.io/tx/{txid}"
+
+
+def add_param_to_querySet(key, queryset, queryParams):
+    val = queryParams.get(key, '')
+    values = val.strip().split(',')
+    values = [value for value in values if value and val.strip()]
+    if values:
+        _queryset = queryset.none()
+        for value in values:
+            args = {}
+            args[f'{key}'] = value.strip().lower()
+            _queryset = _queryset | queryset.filter(**args)
+        queryset = _queryset
+
+    return queryset

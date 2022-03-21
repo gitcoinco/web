@@ -17,17 +17,11 @@
 '''
 
 '''
-    Used to verify the match payouts that are set in the Grants Round 8 Payout contract. This 
+    Used to verify the match payouts that are set in the Grants Round 8 Payout contract. This
     contract is deployed on both mainnet and Rinkeby at 0xAf32BDf2e2720f6C6a2Fce8B50Ed66fd2b46d478
 '''
 
-# run me like this
-# deploy contract
-# ./manage.py payout_round set_payouts 131,121,120,119,118 9
-# ./manage.py payout_round_noncustodial set_payouts mainnet --clr_pks=131,121,120,119,118 --clr_round=9 --process_all
 
-import json
-import math
 from decimal import Decimal
 
 from django.conf import settings
@@ -36,15 +30,11 @@ from django.utils import timezone
 
 from dashboard.abi import erc20_abi
 from dashboard.models import Activity, Profile
-from grants.models import CLRMatch, Contribution, Grant, GrantCLR, Subscription
+from grants.models import CLRMatch, Contribution, Grant, GrantCLR, GrantPayout, Subscription
 from marketing.mails import grant_match_distribution_final_txn, grant_match_distribution_kyc
 from townsquare.models import Comment
 from web3 import Web3
 
-match_payouts_abi = settings.MATCH_PAYOUTS_ABI
-match_payouts_address = Web3.toChecksumAddress(settings.MATCH_PAYOUTS_ADDRESS)
-SCALE = Decimal(1e18) # scale factor for converting Dai units
-WAIT_TIME_BETWEEN_TXS = 15 # seconds
 
 class Command(BaseCommand):
 
@@ -55,12 +45,7 @@ class Command(BaseCommand):
         parser.add_argument('what',
             default='verify',
             type=str,
-            help="what do we do? (finalize, payout_test, prepare_final_payout, verify, set_payouts_test, set_payouts, notify_users)"
-        )
-        parser.add_argument('network',
-            default='rinkeby',
-            type=str,
-            help="Must be either 'mainnet' or 'rinkeby'"
+            help="what do we do? (finalize, payout_test, prepare_final_payout, verify, set_payouts, notify_users)"
         )
 
         # Required if what != verify
@@ -74,6 +59,13 @@ class Command(BaseCommand):
             type=int,
             help="what CLR round number is this? eg 7"
         )
+
+        parser.add_argument('--grant_payout_pk',
+            default=None,
+            type=int,
+            help="Payout Contract Record"
+        )
+
         parser.add_argument('--process_all', help='process_all, not just is_ready', action='store_true')
 
 
@@ -81,28 +73,35 @@ class Command(BaseCommand):
 
         # Parse inputs
         what = options['what']
-        network = options['network']
         process_all = options['process_all']
+        grant_payout_pk = options['grant_payout_pk']
 
-        valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts_test', 'set_payouts', 'notify_users']
+        valid_whats = ['finalize', 'payout_test', 'prepare_final_payout', 'verify', 'set_payouts', 'notify_users']
         if what not in valid_whats:
             raise Exception(f"Invalid value {what} for 'what' arg")
-        if network not in ['rinkeby', 'mainnet']:
-            raise Exception(f"Invalid value {network} for 'network' arg")
         if not options['clr_round'] or not options['clr_pks']:
             raise Exception('Must provide clr_round and clr_pks')
+        if not grant_payout_pk:
+            raise Exception('Must provide grant_payout_pk containing payout contract info')
 
-        # Define parameters that vary by network. The expected total DAI amount uses the value here
-        # if one is not available in the database
-        from_block = 11466409 if network == 'mainnet' else 7731622 # block contract was deployed at
+        # fetch GrantPayout contract
+        grant_payout = GrantPayout.objects.get(pk=grant_payout_pk)
+
+        # get deployed contract address
+        match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
+
+        # get network on which the contract is deployed
+        network = grant_payout.network
+
+        token_name = grant_payout.payout_token
+
+        # TODO: fetch token_address from grant_payout
         dai_address = '0x6B175474E89094C44Da98b954EedeAC495271d0F' if network == 'mainnet' else '0x2e055eEe18284513B993dB7568A592679aB13188'
-        expected_total_dai_amount = 100_000 if network == 'mainnet' else 5000 # in dollars, not wei, e.g. 500 = 500e18
-        
+
         # Get contract instances
         PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
         w3 = Web3(Web3.WebsocketProvider(PROVIDER))
 
-        match_payouts = w3.eth.contract(address=match_payouts_address, abi=match_payouts_abi)
         dai = w3.eth.contract(address=dai_address, abi=erc20_abi)
 
         # Setup
@@ -117,7 +116,7 @@ class Command(BaseCommand):
             pks += gclr.grants.values_list('pk', flat=True)
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
         grants = Grant.objects.filter(active=True, network='mainnet', is_clr_eligible=True, link_to_new_grant__isnull=True, pk__in=pks)
-        print(f"got {grants.count()} grants")
+        self.stdout.write(f"got {grants.count()} grants")
 
         # Finalize rankings ------------------------------------------------------------------------
         if what == 'finalize':
@@ -129,15 +128,19 @@ class Command(BaseCommand):
                 except:
                     pass
             total_owed_matches = sum(sm.amount for sm in scheduled_matches)
-            print(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
-            print(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
-            print('------------------------------')
+            self.stdout.write(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
+            self.stdout.write(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
+            self.stdout.write('------------------------------')
+            
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
+
+            clr_matches_created = 0
             for grant in grants:
                 amount = sum(ele.clr_prediction_curve[0][1] for ele in grant.clr_calculations.filter(grantclr__in=gclrs, latest=True))
                 has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
+                
                 if not amount:
                     continue
                 already_exists = scheduled_matches.filter(grant=grant).exists()
@@ -145,197 +148,144 @@ class Command(BaseCommand):
                     continue
                 needs_kyc = amount > KYC_THRESHOLD and not has_already_kyc
                 comments = "" if not needs_kyc else "Needs KYC"
-                ready_for_test_payout = not needs_kyc
                 match = CLRMatch.objects.create(
                     round_number=clr_round,
                     amount=amount,
                     grant=grant,
                     comments=comments,
-                    ready_for_test_payout=ready_for_test_payout,
+                    grant_payout=grant_payout
                 )
+                clr_matches_created += 1
                 if needs_kyc:
                     grant_match_distribution_kyc(match)
+            self.stdout.write(f"{clr_matches_created} matches were created")
 
         # Payout rankings (round must be finalized first) ------------------------------------------
         if what in ['prepare_final_payout']:
             payout_matches = scheduled_matches.filter(ready_for_payout=False)
             payout_matches_amount = sum(sm.amount for sm in payout_matches)
-            print(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
-            print('------------------------------')
+            self.stdout.write(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
+            self.stdout.write(f"All these are users would need KYC. Do not do this for mainnet")
+            self.stdout.write('------------------------------')
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
             for match in payout_matches:
                 match.ready_for_payout=True
                 match.save()
-            print('promoted')
+            self.stdout.write('promoted')
 
         # Set payouts (round must be finalized first) ----------------------------------------------
-        if what in ['set_payouts_test', 'set_payouts']:
-            is_real_payout = what == 'set_payouts'
+        if what in ['set_payouts']:
 
-            kwargs = {}
-            token_name = 'DAI'
-            key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
-            kwargs[key] = False
-            not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
-            kwargs[key] = True
-            kwargs2 = {}
-            key2 = 'test_payout_tx' if not is_real_payout else 'payout_tx'
-            kwargs2[key2] = ''
-            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(**kwargs2)
-            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(**kwargs2)
-            total_not_ready_matches = sum(sm.amount for sm in not_ready_scheduled_matches)
-            total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
+            # matches which have already been paid manually
+            paid_scheduled_matches = scheduled_matches.filter(ready_for_payout=True).exclude(payout_tx='')
+
+            unpaid_scheduled_matches = scheduled_matches.filter(payout_tx='')
+
+            # matches which need KYC but still should be uploaded to contract
+            pending_kyc_unpaid_matches = unpaid_scheduled_matches.filter(ready_for_payout=False)
+
+            # matches which don't need KYC but need to be uploaded to contract
+            no_kyc_unpaid_matches = unpaid_scheduled_matches.filter(ready_for_payout=True)
+
             total_paid_matches = sum(sm.amount for sm in paid_scheduled_matches)
-            print(f"there are {not_ready_scheduled_matches.count()} NOT READY Match Payments already created worth ${round(total_not_ready_matches,2)} {network} {token_name}")
-            print(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments already created worth ${round(total_owed_matches,2)} {network} {token_name}")
-            print(f"there are {paid_scheduled_matches.count()} PAID Match Payments already created worth ${round(total_paid_matches,2)} {network} {token_name}")
-            print('------------------------------')
-            target_matches = unpaid_scheduled_matches if not process_all else scheduled_matches
+            total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
+            total_pending_kyc_matches = sum(sm.amount for sm in pending_kyc_unpaid_matches)
+            total_no_kyc_matches = sum(sm.amount for sm in no_kyc_unpaid_matches)
+
+
+            self.stdout.write('=============================')
+            self.stdout.write(f"there are {paid_scheduled_matches.count()} PAID Match (MADE MANUALLY/ALREADY UPLOADED) ${round(total_paid_matches,2)} {network} {token_name}")
+            self.stdout.write(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments worth ${round(total_owed_matches,2)} {network} {token_name} of which: ")
+            self.stdout.write(f"------> {pending_kyc_unpaid_matches.count()} UNPAID Matches PENDING KYC ${round(total_pending_kyc_matches,2)}")
+            self.stdout.write(f"------> {no_kyc_unpaid_matches.count()} UNPAID Matches SKIPPING KYC ${round(total_no_kyc_matches,2)}")
+
+            self.stdout.write('=============================')
+
+            target_matches = unpaid_scheduled_matches
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
 
-            print(f"continuing with {target_matches.count()} unpaid scheduled payouts")
-
-            if is_real_payout:
-                user_input = input(F"THIS IS A REAL PAYOUT FOR {network} {token_name}.  ARE YOU DOUBLE SECRET SUPER SURE? (y/n) ")
-                if user_input != 'y':
-                    return
+            self.stdout.write('=============================')
+            self.stdout.write(f"Generating input for merkle contract for {target_matches.count()} grants for payout (pending KYC + skipped KYC)")
+            self.stdout.write('=============================')
 
             # Generate dict of payout mapping that we'll use to set the contract's payout mapping
-            full_payouts_mapping_dict = {} 
+            full_payouts_mapping_dict = {}
             for match in target_matches.order_by('amount'):
 
                 try:
-                    # Amounts to set
-                    recipient = w3.toChecksumAddress(match.grant.admin_address)
-                    amount = Decimal(match.amount) * SCALE # convert to wei
+                    address = w3.toChecksumAddress(match.grant.admin_address)
 
                     # This ensures that even when multiple grants have the same receiving address,
                     # all match funds are accounted for
-                    if recipient in full_payouts_mapping_dict.keys():
-                        full_payouts_mapping_dict[recipient] += amount
+                    if address in full_payouts_mapping_dict.keys():
+                        full_payouts_mapping_dict[address] += match.amount
                     else:
-                        full_payouts_mapping_dict[recipient] = amount
+                        full_payouts_mapping_dict[address] = match.amount
                 except Exception as e:
-                    print(f"could not payout grant:{match.grant.pk} bc exceptoin{e}")
+                    self.stdout.write(f"could not payout grant:{match.grant.pk} bc exception{e}")
 
-            # Convert dict to array to use it as inputs to the contract
-            full_payouts_mapping = []
-            for key, value in full_payouts_mapping_dict.items():
-                full_payouts_mapping.append([key, str(int(value))])
 
-            # In tests, it took 68,080 gas to set 2 payout values. Let's be super conservative
-            # and say it's 50k gas per payout mapping. If we are ok using 6M gas per transaction,
-            # that means we can set 6M / 50k = 120 payouts per transaction. So we chunk the
-            # payout mapping into sub-arrays with max length of 120 each
-            # KO 12/21 - edited with Matt to make 2.1x that
-            def chunks(lst, n):
-                """Yield successive n-sized chunks from lst. https://stackoverflow.com/a/312464"""
-                for i in range(0, len(lst), n):
-                    yield lst[i:i + n]
-            chunk_size = 250 if not settings.DEBUG else 120
-            chunked_payouts_mapping = chunks(full_payouts_mapping, chunk_size)
-            # Set payouts
-            for payout_mapping in chunked_payouts_mapping:
+            merkle_input = []
+            for address, amount in full_payouts_mapping_dict.items():
+                payout = {
+                    'address': address,
+                    'amount': amount
+                }
+                merkle_input.append(payout)
 
-                #tx = match_payouts.functions.setPayouts(payout_mapping).buildTransaction(tx_args)
+            self.stdout.write('=============================')
+            self.stdout.write(f'{merkle_input}')
+            self.stdout.write('=============================')
+            self.stdout.write("UPLOAD THE ABOVE OUTPUT TO https://github.com/thelostone-mc/merkle_payouts/blob/main/scripts/input.ts")
+            self.stdout.write('=============================')
 
-                print(f"#TODO: Send this txn view etherscan {match_payouts_address}")
-                print(json.dumps(payout_mapping))
-                print("UPLOAD THE ABOVE CHUNK TO ETHERSCAN")
 
         # Verify contract is set properly ----------------------------------------------------------
         if what == 'verify':
-            # Get expected total match amount
-            total_owed_grants = 0
-            for grant in grants:
-                try:
-                    for gclr in grant.clr_calculations.filter(grantclr__in=gclrs, latest=True):
-                        total_owed_grants += gclr.clr_prediction_curve[0][1]
-                except:
-                    pass
-            expected_total_dai_amount = sum(sm.amount for sm in scheduled_matches)
+            from web3.middleware import geth_poa_middleware
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
-            # Get PayoutAdded events
-            payout_added_filter = match_payouts.events.PayoutAdded.createFilter(fromBlock=from_block)
-            payout_added_logs = payout_added_filter.get_all_entries() # print these if you need to inspect them
 
-            # Sort payout logs by ascending block number, this way if a recipient appears in multiple blocks
-            # we use the value from the latest block
-            sorted_payout_added_logs = sorted(payout_added_logs, key=lambda log:log['blockNumber'], reverse=False)
+            # Get total token amount 
+            total_token_amount = Decimal(0)
+            clr_matches = CLRMatch.objects.filter(round_number=clr_round)
+            for clr_match in clr_matches:
+                total_token_amount += Decimal(clr_match.amount)
 
-            # Get total required DAI balance based on PayoutAdded events. Events will be sorted chronologically,
-            # so if a recipient is duplicated we only keep the latest entry. We do this by storing our own
-            # mapping from recipients to match amount and overwriting it as needed just like the contract would.
-            # We keep another dict that maps the recipient's addresses to the block it was found in. If we find
-            # two entries for the same user in the same block, we throw, since we don't know which is the
-            # correct one
-            payment_dict = {}
-            user_block_dict = {}
-
-            for log in sorted_payout_added_logs:
-                # Parse parameters from logs
-                recipient = log['args']['recipient']
-                amount = Decimal(log['args']['amount'])
-                block = log['blockNumber']
-
-                # Check if recipient's payout has already been set in this block
-                if recipient in user_block_dict and user_block_dict[recipient] == block:
-                    raise Exception(f'Recipient {recipient} payout was set twice in block {block}, so unclear which to use')
-
-                # Recipient not seen in this block, so save data
-                payment_dict[recipient] = amount
-                user_block_dict[recipient] = block
-
-            # Sum up each entry to get the total required amount
-            total_dai_required_wei = sum(payment_dict[recipient] for recipient in payment_dict.keys())
-
-            # Convert to human units
-            total_dai_required = total_dai_required_wei / SCALE 
-
-            # Verify that total DAI required (from event logs) equals the expected amount
-            if math.floor(expected_total_dai_amount) != math.floor(total_dai_required):
-                print('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
-                print('Total DAI payout amount in the contract does not equal the expected value!')
-                print('  Total expected amount:  ', expected_total_dai_amount)
-                print('  Total amount from logs: ', total_dai_required)
-                print('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
-                raise Exception('Total payout amount in the contract does not equal the expected value!')
-            print('Total payout amount in the contracts is the expected value')
-
-            # Get contract DAI balance
-            dai_balance = Decimal(dai.functions.balanceOf(match_payouts_address).call()) / SCALE
+            TOKEN_DECIMALS =  Decimal(1e18) # TODO: DO NOT HARDCODE
+            # Get contract token balance
+            token_balance = Decimal(dai.functions.balanceOf(match_payouts_address).call()) / TOKEN_DECIMALS
 
             # Verify that contract has sufficient DAI balance to cover all payouts
-            print('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
-            if dai_balance == total_dai_required:
-                print(f'Contract balance of {dai_balance} DAI is exactly equal to the required amount')
+            self.stdout.write('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
+            if token_balance == total_token_amount:
+                self.stdout.write(f'Contract balance of {token_balance} token is exactly equal to the required amount')
 
-            elif dai_balance < total_dai_required:
-                shortage = total_dai_required - dai_balance
-                print('Contract DAI balance is insufficient')
-                print('  Required balance: ', total_dai_required)
-                print('  Current balance:  ', dai_balance)
-                print('  Extra DAI needed: ', shortage)
-                print(f'\n Contract needs another {shortage} DAI')
+            elif token_balance < total_token_amount:
+                shortage = total_token_amount - token_balance
+                self.stdout.write(f'Contract DAI balance is insufficient')
+                self.stdout.write(f'Required balance: {total_token_amount}')
+                self.stdout.write(f'Current balance:  {token_balance}')
+                self.stdout.write(f'Extra DAI needed: {shortage}')
+                self.stdout.write(f'\n Contract needs another {shortage} tokens')
 
-            elif dai_balance > total_dai_required:
-                excess = dai_balance - total_dai_required
-                print('Contract has excess DAI balance')
-                print('  Required balance:  ', total_dai_required)
-                print('  Current balance:   ', dai_balance)
-                print('  Excess DAI amount: ', excess)
-                print(f'\n Contract has an excess of {excess} DAI')
-            print('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
+            elif token_balance > total_token_amount:
+                excess = token_balance - total_token_amount
+                self.stdout.write('Contract has excess DAI balance')
+                self.stdout.write('Required balance:  {total_token_amount}')
+                self.stdout.write('Current balance:   {token_balance}')
+                self.stdout.write('Excess DAI amount: {excess}')
+                self.stdout.write(f'\n Contract has an excess of {excess} tokens')
+            self.stdout.write('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
 
 
         # Create Contributions and send emails ----------------------------------------------------------
         if what == 'notify_users':
 
-            token_name = 'DAI'
             unpaid_scheduled_matches = scheduled_matches.filter(
                 ready_for_payout=True,
                 payout_tx=''
@@ -385,7 +335,7 @@ class Command(BaseCommand):
                     validator_passed=True,
                     validator_comment=validator_comment,
                 )
-                print(f"ingested {subscription.pk} / {contrib.pk}")
+                self.stdout.write(f"ingested {subscription.pk} / {contrib.pk}")
 
                 match.payout_contribution = contrib
                 match.save()
@@ -409,6 +359,7 @@ class Command(BaseCommand):
                 }
 
                 activity = Activity.objects.create(**kwargs)
+                activity.populate_activity_index()
 
                 comment = f"CLR Round {clr_round} Payout"
                 comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)

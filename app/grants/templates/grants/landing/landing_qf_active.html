@@ -1,0 +1,171 @@
+{% load humanize static i18n tz %}
+<div class="container bg-white">
+
+  <!-- Trust banner -->
+  <div v-if="{{trust_bonus}} && {{trust_bonus}} < 150" v-cloak class="alert alert-primary spacer-mt-4 border-1 border-primary">
+    <i :class="'far font-weight-bold mr-4 mt-1 position-absolute cursor-pointer' + (!bannerCollapsed ? ' fa-minus' : ' fa-plus')" @click="toggleBannerCollapse" style="right: 0px; z-index: 1;"></i>
+    <div class="row">
+      <div :class="(!bannerCollapsed ? 'col-12 col-md-auto text-center pb-3' : 'col-auto text-center my-auto my-md-0')" style="max-width: 90px;">
+        <object type="image/svg+xml" data="{% static 'v2/images/trust/64x64-green.svg' %}" height="65" :height="(!bannerCollapsed ? '65' : '35')"></object>
+      </div>
+      <div :class="(!bannerCollapsed ? 'col-12 col-md-8 col-lg-7 col-xl-9 mt-1' : 'col-8 col-lg-7 col-xl-9 mt-1')">
+        <h6 class="gc-font-base mt-1">Maximize Your Impact! Your current match is {{ trust_bonus }}%</h6>
+        <span v-if="!bannerCollapsed" class="font-smaller-1 line-height-2">Verified users have up to 150% of their donation amount count towards the match fund algorithm. Unverified users — only 50%. Maximize your match by verifying with identity partners.</span>
+        <div v-if="!bannerCollapsed" class="row spacer-mt-2 font-smaller-1 line-height-2">
+          {% if round_active %}
+            <div class="col-12 col-lg-6 spacer-mt-2">
+              {% timezone "US/Mountain" %}
+                <a><i class="far fa-calendar-alt spacer-pr-2 text-primary"></i> Verify during {{ round_start_date|localtime|date:"F j" }} - {{ round_end_date|localtime|date:"F j" }}</a>
+              {% endtimezone %}
+            </div>
+          {% endif %}
+          <div class="col-12 col-lg-6 spacer-mt-2">
+            <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2 text-primary"></i> Why this matters</span>
+          </div>
+        </div>
+      </div>
+      <div v-if="!bannerCollapsed" class="col-md-12 col-lg-3 col-xl-2 mt-4 m-lg-auto">
+        <a href="/profile/trust" class="btn btn-primary px-5 py-2 w-100 w-lg-auto">Verify</a>
+      </div>
+    </div>
+  </div>
+
+  <!--  Header section -->
+  <div class="row justify-content-between align-items-center my-5">
+    <div class="col-md">
+      <h1 class="mb-md-3 mt-md-0 mb-2 mt-4">
+        Discover and Fund <br>Extraordinary Public Goods
+      </h1>
+      <h4 class="text-wrap gc-font-base font-weight-normal mb-md-5 mb-4 pt-md-4 pt-1 text-grey-400">
+        Gitcoin Grants sustain web3 projects with
+        <span class="text-nowrap">
+          <a rel="noopener noreferrer" href="https://wtfisqf.com/?grant=&grant=&grant=&grant=&match=1000" target="_blank">Quadratic Funding</a>
+        </span>
+      </h3>
+      <div class="my-3">
+        <a class="btn btn-lg btn-primary d-block d-sm-inline" href="{% url 'grants:grants_explorer' %}">{% trans 'View All Grants' %}</a>
+        <a class="btn btn-lg btn-outline-primary ml-sm-3 d-block d-sm-inline mt-2 mt-sm-0" href="/grants/new">{% trans 'Create a Grant' %}</a>
+      </div>
+      <p>
+        <a href="{% url 'grants:new_matching_partner' %}">{% trans "Join the funder's league" %}</a>
+      </p>
+    </div>
+    <div class="col-md order-md-last order-first">
+      {% if show_main_round_banner %}
+        <img src="{% static 'v2/images/grants/gr13-banner-half-1.png' %}" class="d-block w-100"/>
+      {% else %}
+        <img src="{% static 'v2/images/grants/rocket.svg' %}" height="241" width="311" />
+      {% endif %}
+    </div>
+  </div>
+
+
+  <!-- This div is where the hero image goes-->
+
+  <section class="mb-5 banner-sponsors">
+    <div class="row">
+      <div class="col">
+        <img src="{{grant_bg.background_image }}" alt="" class="img-fluid">
+        {% comment %}
+        <div class="py-3" id="grant-hero-im" :style="`background: ${mainBanner.background_image} center center no-repeat; background-size: contain;`">
+          <!-- <img :src="mainBanner.banner_image" class="img-fluid" alt=""> -->
+          <div class="mb-3">
+            <h1>$500k Funding Pool, Now Live</h1>
+            <span class="text-muted">Sponsored by</span>
+          </div>
+          <div class="banner-sponsors-list d-flex">
+            {% for sponsor in sponsors %}
+              <a rel="noopener noreferrer" href="{% url 'profile' sponsor.profile %}" target="_blank" class="d-flex flex-column align-items-center">
+                <img class="rounded-circle img-thumbnail" width="90" height="90" src="/dynamic/avatar/{{sponsor.profile}}">
+                <span class="text-break text-black font-weight-semibold d-none d-md-block">@{{sponsor.profile}}</span>
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endcomment %}
+
+        {% if show_round_banner %}
+
+          {% if round_status == 'active' %}
+            <!-- ACTIVE ROUND  -->
+            <div class="d-flex justify-content-between flex-wrap countdown-color h5">
+                <countdown :startdate="{{round_start_date|date:'U' }}*1000" :enddate="{{round_end_date|date:'U' }}*1000" class="countdown gc-font-heading mb-2">
+                  <template v-slot="slotProps">
+                    {{ banner_round_name }} - Active - Ends in
+                    <span>[[slotProps.time.days]]d</span>
+                    <span>[[slotProps.time.hours]]h</span>
+                    <span>[[slotProps.time.minutes]]m</span>
+                    <span>[[slotProps.time.seconds]]s</span>
+                  </template>
+                </countdown>
+                <div>
+                  {% timezone "US/Mountain" %}
+                    {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
+                  {% endtimezone %}
+                </div>
+            </div>
+
+          {% elif round_status == 'claim' %}
+            <!-- CLAIM -->
+            <div class="d-flex justify-content-between  flex-wrap countdown-color h5">
+              <countdown :startdate="{{claim_start_date|date:'U' }}*1000" :enddate="{{claim_end_date|date:'U' }}*1000" class="countdown gc-font-heading mb-2">
+                <template v-slot="slotProps">
+                  {{ banner_round_name }} - Claim - Active - Ends in
+
+                  <span>[[slotProps.time.days]]d</span>
+                  <span>[[slotProps.time.hours]]h</span>
+                  <span>[[slotProps.time.minutes]]m</span>
+                  <span>[[slotProps.time.seconds]]s</span>
+                </template>
+              </countdown>
+              <div>
+                {% timezone "US/Mountain" %}
+                  {{ claim_start_date|localtime|date:"F j (gA e)" }} -  {{ claim_end_date|localtime|date:"F j (gA e)" }}
+                {% endtimezone %}
+              </div>
+            </div>
+          {% elif round_status == 'upcoming' %}
+            <!-- UPCOMING -->
+            <div class="d-flex justify-content-between  flex-wrap countdown-color h5">
+              {{ banner_round_name }} - Proposed Dates
+              <div>
+                {% timezone "US/Mountain" %}
+                  {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
+                {% endtimezone %}
+              </div>
+            </div>
+          {% elif round_status == 'done' %}
+            <!-- ROUND END -->
+            <div class="d-flex justify-content-between flex-wrap countdown-color h5">
+              {{ banner_round_name }} - Ended
+              <div>
+                {% timezone "US/Mountain" %}
+                  {{ round_start_date|localtime|date:"F j (gA e)" }} -  {{ round_end_date|localtime|date:"F j (gA e)" }}
+                {% endtimezone %}
+              </div>
+            </div>
+          {% endif %}
+
+        {% endif %}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Ongoing matching pools (CURRENTLY HIDDEN AND NOT IMPLEMENTED) -->
+  {% comment %}
+    <div class="my-5">
+      <div class="row justify-content-start align-items-center">
+        <div class="col-auto"><img height="30rem" src="{% static 'v2/images/ethereum.svg' %}" /></div>
+        <h4 class="col-auto font-weight-bold py-0 my-0 pl-0">Ongoing Matching Pools</h4>
+      </div>
+    </div>
+  {% endcomment %}
+
+
+  <why-this-matters-modal
+    :show-modal="visibleModal === 'why-this-matters-modal'"
+    @modal-dismissed="hideModal()">
+  </why-this-matters-modal>
+</div>
+

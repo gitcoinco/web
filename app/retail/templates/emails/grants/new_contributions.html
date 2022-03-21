@@ -87,6 +87,18 @@ along with this program. If not, see
       margin-top: 0 !important;
     }
   }
+  #transaction_history{
+    margin: 0px auto;
+  }
+  #transaction_history tr{
+    margin-left: 10px;
+  }
+  #transaction_history td{
+    padding: 10px;
+  }
+  #transaction_history tr.row td{
+    border-top:  1px solid #777;
+  }
 </style>
 <div id="content-body">
   <img class="center-img bounties-img" src="{% static 'v2/images/emails/grants.png' %}">
@@ -127,6 +139,29 @@ along with this program. If not, see
         Grants Page</a>
     </p>
   </div>
+  <hr style="margin-left: 0; margin-top: 40px;">
+  <h3>The {{contributions.count}} Contributions: </h3>
+  <table id=transaction_history>
+  {% for contribution in contributions %}
+  {% with subscription=contribution.subscription %}
+    <tr class="row">
+      <td>
+        {{contribution.created_on|naturaltime}}
+      </td>
+      <td>
+        <img style="height: 20px; width:20px; border-radius: 10px;" src="https://gitcoin.co/dynamic/avatar/{{subscription.contributor_profile.handle}}">
+        <a href="https://gitcoin.co/{{subscription.contributor_profile.handle}}">{{subscription.contributor_profile.handle}}</a>
+      </td>
+      <td>
+        {{subscription.amount_per_period|floatformat:4}} {{subscription.token_symbol}}
+      </td>
+      <td>
+        <a href="{{contribution.blockexplorer_url_split_txid}}">view &gt;&gt;</a>
+      </td>
+    </tr>
+  {% endwith %}
+  {% endfor %}
+  </table>
 </div>
 
 {% endblock %}

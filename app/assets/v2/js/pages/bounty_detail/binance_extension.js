@@ -17,7 +17,7 @@ const payWithBinanceExtension = (fulfillment_id, to_address, vm, modal) => {
 
   function callback(error, from_address, txn) {
     if (error) {
-      _alert({ message: gettext('Unable to payout bounty due to: ' + error) }, 'danger');
+      _alert({ message: gettext('Unable to payout bounty: ' + error) }, 'danger');
       console.log(error);
     } else {
 

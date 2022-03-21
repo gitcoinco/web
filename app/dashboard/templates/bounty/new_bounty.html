@@ -581,7 +581,7 @@
                     <div class="col-md-7">
                       <p class="featured-text">{% blocktrans %}Your bounty will be placed on a special ‘Featured Bounties’ section <b>at the top of the Issue Explorer</b> for 14 days.{% endblocktrans %}</p>
                       <div class="form__flex-group">
-                        <div class="">
+                        <div>
                           <div class="featured_container">
                             <small class="mb-3 d-block">Note: You will have to approve this transaction separately via your web3 wallet on submit.</small>
                             <div class="form__checkbox">
@@ -711,7 +711,7 @@
         </select>
       </script>
       <script type="text/x-template" id="date-range-template">
-        <div class="">
+        <div>
           <input class="form__input" type="text" v-model="pickDate" :disabled="disabled" placeholder="" />
         </div>
       </script>
@@ -758,6 +758,7 @@
         const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
       </script>
+      <script src="{% static "v2/js/pages/wallet_address_validation.js" %}"></script>
       <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
     </div>
   </body>

@@ -81,21 +81,10 @@ Vue.component('sms-verify-modal', {
                 href="https://twitter.com/owocki/status/1271088915982675974">Read more</a> about why we are asking for account verification, or how Gitcoin <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
                 href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy</a>.
               </p>
-              <div id='verify_offline_target' class="text-left" style="display:none;">
-                <strong>Verify Offline</strong>
-                <br />
-                <br />
-                <a href="mailto:support@gitcoin.co">Email Gitcoin</a>, and we will verify your information within 5-10 business days.
-                <br />
-                <br />
-                IMPORTANT: Be sure to include (1) your gitcoin username (2) proof of ownership of a SMS number.
-              </div>
               <div class="mb-1 float-right">
                 <b-button @click="forceStep='requestVerification'" variant="primary" class="btn-primary mt-5 mb-2">
                   Connect SMS
                 </b-button>
-                <br />
-                <b-button id="verify_offline" variant="link" class="py-0">Verify Offline</b-button><span id="verify_offline_or"> or </span><b-button @click="dismissVerification()" variant="link" class="py-0">Skip</b-button>
               </div>
             </div>
             <div class="mx-5 my-5 text-center" v-if="step == 'requestVerification'">
@@ -2076,76 +2065,6 @@ Vue.component('facebook-verify-modal', {
   }
 });
 
-Vue.component('qd-modal', {
-  delimiters: [ '[[', ']]' ],
-  data: function() {
-    return {
-      validationError: '',
-      forceStep: false,
-      awaitingResponse: false
-    };
-  },
-  props: {
-    showValidation: {
-      type: Boolean,
-      required: false,
-      'default': false
-    },
-    service: {
-      type: Object,
-      required: true
-    }
-  },
-  computed: {
-    step() {
-      return this.forceStep || this.validationStep;
-    }
-  },
-  template: `
-    <b-modal id="twitter-modal" @hide="dismissVerification()" :visible="showValidation" size="lg" body-class="p-0" center hide-header hide-footer>
-      <template v-slot:default="{ hide }">
-        <div class="modal-content p-0">
-          <div class="top rounded-top p-2 text-center" style="background: #0e0333;">
-            <div class="w-100">
-              <button @click="dismissVerification()" type="button" class="close position-absolute mt-2 text-white" style="right: 1rem" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="bg-white d-flex mt-4 mx-auto p-1 rounded-circle" style="width: 74px; height: 74px;">
-              <img class="m-auto w-100" src="/static/v2/images/quadraticlands/mission/diplomacy.svg" alt="QL Diplomacy Logo">
-            </div>
-            <h3 class="text-white my-4"> Verify with Quadratic Diplomacy </h3>
-          </div>
-          <div class="font-smaller-1 line-height-3 spacer-px-4 spacer-px-lg-6 spacer-py-5">
-            <div class="mb-4 text-left">
-              <p class="mb-4 font-subheader text-left">
-                Use your GTC to strengthen Gitcoin Grants!
-              </p>
-              <p class="mb-4 font-subheader text-left">
-                WHY: The Foundation of Gitcoin Grants is Quadratic Funding, which is itself dependant upon sybil & fraud resistence.
-              </p>
-
-              <button @click="goToVerification" role="button" class="btn btn-primary mb-2 mt-5 px-5 float-right">
-                Verify Now
-              </button>
-            </div>
-          </div>
-        </div>
-      </template>
-    </b-modal>`,
-  methods: {
-    dismissVerification() {
-      this.$emit('modal-dismissed');
-      setTimeout(() => {
-        this.forceStep = false;
-      }, 1000);
-    },
-    goToVerification() {
-      window.open('/quadraticlands/mission/diplomacy', '_blank');
-      this.dismissVerification();
-    }
-  }
-});
 
 if (document.getElementById('gc-trust-manager-app')) {
 

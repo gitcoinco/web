@@ -1,7 +1,7 @@
 from grants.models import Grant
 from grants.utils import get_clr_rounds_metadata
 
-clr_round, _, _, _, _, _, _, _ = get_clr_rounds_metadata()
+clr_round = get_clr_rounds_metadata()['clr_round']
 
 # total stats
 
