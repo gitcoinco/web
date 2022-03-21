@@ -488,7 +488,7 @@
       </div>
 
       <!-- CLR details and Add-to/remove-from cart -->
-      <div class="grant-checkout">
+      <div class="grant-checkout text-nowrap">
         <div class="rounded shadow-sm bg-white px-3 pt-3 pb-3 border">
           <div v-if="grant.clr_prediction_curve?.length" style="max-width: 250px;" :class="`mx-auto mb-3 mt-2 position-relative${grant.clr_round_num && grant.is_clr_eligible ? '' : ' clr-disabled'}`">
             <svg width="145" height="77" viewBox="0 0 145 77" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -540,32 +540,47 @@
               :data-grant="grant.id"
             >
               <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
-              Follow
+              Add to Favorites
             </button>
+            <b-alert
+              :show="dismissFavoriteAlertCountDown"
+              dismissible
+              variant="primary"
+              @dismissed="dismissFavoriteAlertCountDown = 0"
+              class="border border-primary alert-fixed-top mr-md-4 mr-0"
+            >
+              <div class="row">
+                <div class="col-auto col-md-7">
+                  <i class="fas fa-star mr-2"></i>
+                  <span class="text-black">Added to Favorites</span>
+                </div>
+                <div class="col-auto col-md-5 text-nowrap text-right">
+                  <a href="{% url 'grants:grants_explorer' %}?following=true&idle=true">View Favorites</a>
+                </div>
+              </div>
+            </b-alert>
           </div>
 
           <!-- Grants Rules-->
-          <div>
-            <div class="d-inline font-smaller-2 cursor-pointer" id="popover-target-1" style="width: 65px;">
-              <i class="fas fa-info-circle mr-2"></i>
-              Rules
-            </div>
-            <b-popover target="popover-target-1" triggers="hover" placement="left">
-              <template #title>Rules</template>
-              <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
-              <ul class="pl-3">
-                <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
-                <li><b>DO NOT</b> make up a new identity to contribute.</li>
-                <li><b>DO NOT</b> try to falsify a contribution.</li>
-              </ul>
-              If you see someone breaking the rules, please use 'Flag Grant' to report them.
-            </b-popover>
+          <div class="d-inline font-smaller-2 cursor-pointer my-auto" id="popover-target-1" style="width: 65px;">
+            <i class="fas fa-info-circle mr-2"></i>
+            Rules
+          </div>
+          <b-popover target="popover-target-1" triggers="hover" placement="left">
+            <template #title>Rules</template>
+            <p>Matching will not be applied if the rules are broken. Rules TLDR:</p>
+            <ul class="pl-3">
+              <li><b>DO NOT</b> offer anyone a quid-pro-quo for a contribution.</li>
+              <li><b>DO NOT</b> make up a new identity to contribute.</li>
+              <li><b>DO NOT</b> try to falsify a contribution.</li>
+            </ul>
+            If you see someone breaking the rules, please use 'Flag Grant' to report them.
+          </b-popover>
 
-            <!-- Grants Flag-->
-            <div class="ml-3 d-inline font-smaller-2 cursor-pointer" v-if="!grant.is_on_team" @click="flag">
-              <i class="text-grey-400 fas fa-flag mr-2"></i>
-              Flag
-            </div>
+          <!-- Grants Flag-->
+          <div class="ml-3 d-inline font-smaller-2 cursor-pointer my-auto" v-if="!grant.is_on_team" @click="flag">
+            <i class="text-grey-400 fas fa-flag mr-2"></i>
+            Flag
           </div>
 
         </div>

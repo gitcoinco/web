@@ -25,6 +25,7 @@ along with this program. If not, see
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/card.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/collection.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/gc-utilities.scss" %} />
   {% endbundle %}
   <style>
 
@@ -224,11 +225,11 @@ along with this program. If not, see
                           My Shortcuts
                         </b-dropdown-header>
                         <b-form-checkbox @input="fetchGrants(1)" id="only_contributions" v-model="params.only_contributions" name="only_contributions">My Contributions</b-form-checkbox>
-                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve contributed to</b-dropdown-text>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I've contributed to</b-dropdown-text>
                         <b-form-checkbox @input="fetchGrants(1)" id="me" v-model="params.me" name="me"> My Grants</b-form-checkbox>
-                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve created</b-dropdown-text>
-                        <b-form-checkbox @input="fetchGrants(1)" id="following" v-model="params.following" name="following"> Following</b-form-checkbox>
-                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I’ve followed</b-dropdown-text>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I've created</b-dropdown-text>
+                        <b-form-checkbox @input="fetchGrants(1)" id="following" v-model="params.following" name="following"> Favorite Grants</b-form-checkbox>
+                        <b-dropdown-text class="font-smaller-4 pb-2" style="width: 230px;">Grants I've starred</b-dropdown-text>
                       </div>
                     </b-dropdown-form>
                   </b-dropdown>
@@ -366,6 +367,23 @@ along with this program. If not, see
                       <a class="text-decoration-none" :href="grant.details_url">
                         {% include 'grants/components/card.html' %}
                       </a>
+                      <b-alert
+                        :show="dismissFavoriteAlertCountDown"
+                        dismissible
+                        variant="primary"
+                        @dismissed="dismissFavoriteAlertCountDown = 0"
+                        class="border border-primary alert-fixed-top mr-md-4 mr-0"
+                      >
+                        <div class="row">
+                          <div class="col-auto col-md-7">
+                            <i class="fas fa-star mr-2"></i>
+                            <span class="text-black">Added to Favorites</span>
+                          </div>
+                          <div class="col-auto col-md-5 text-nowrap text-right">
+                            <a href="{% url 'grants:grants_explorer' %}?following=true&idle=true">View Favorites</a>
+                          </div>
+                        </div>
+                      </b-alert>
                     </div>
                   </div>
 

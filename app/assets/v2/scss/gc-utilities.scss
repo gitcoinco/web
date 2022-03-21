@@ -326,3 +326,12 @@ div.hr {
 .tooltip-inner {
   background-color: $gc-grey-500;
 }
+
+.alert-fixed-top {
+  position: fixed;
+  top: 80px;
+  right: 0;
+  z-index: 1030;
+  width: 450px;
+  max-width: 95%;
+}
