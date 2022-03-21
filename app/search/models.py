@@ -48,11 +48,28 @@ def search(query, page=0, num_results=500):
     if not settings.ELASTIC_SEARCH_URL:
         return {}
     es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
+    # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
     res = es.search(index="search-index", body={
       "from" : page, "size" : num_results,
       "query": {
-        "wildcard": {
-          "full_search": f"*{query}*",
+        "bool": {
+          "should": [
+            {
+              "query_string": {
+                "query": f"*{query}*",
+                "fields": ["title^10", "description", "source_type"],
+              }
+            },
+            {
+              "match": {
+                "source_type": {
+                  "query": "grant",
+                  "boost": "2"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": "1"
         }
       }
     })
