@@ -150,8 +150,13 @@ along with this program. If not, see
         </div>
         {% csrf_token %}
 
-    {% include 'grants/components/collection.html' %}
+      {% include 'grants/components/collection.html' %}
 
+      <div class="text-center mt-5">
+        <a class="btn btn-outline-gc-blue" href="{% url 'grants:grants_explorer' %}?tab=collections">
+          {% trans "View More" %}
+        </a>
+      </div>
 
     </div>
 
