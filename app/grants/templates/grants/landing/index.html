@@ -153,7 +153,7 @@ along with this program. If not, see
       {% include 'grants/components/collection.html' %}
 
       <div class="text-center mt-5">
-        <a class="btn btn-outline-gc-blue" href="/grants/explorer/?tab=collections">
+        <a class="btn btn-outline-gc-blue" href="{% url 'grants:grants_explorer' %}?tab=collections">
           {% trans "View More" %}
         </a>
       </div>
