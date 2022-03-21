@@ -251,7 +251,7 @@
           <div class="col-12 col-md-5 col-md-auto mb-3 mb-md-1 text-grey-400">
             <i class="fas fa-stopwatch text-grey-400"></i>
             <span class="py-1 px-2 font-weight-normal mr-2">
-              Updated [[grant.last_update | moment]]
+              Updated [[grant.last_update]]
             </span>
           </div>
 
@@ -292,7 +292,7 @@
               </span>
             </div>
             <div v-if="grant?.clr_prediction_curve?.[0]?.[1] > 0" class="col col-4">
-              <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] || 0 | round | formatNumber ]]</h2>
+              <h2 class="text-secondary">+$[[ grant?.clr_prediction_curve?.[0]?.[1] | formatNumber ]]</h2>
               <span>estimated QF matching</span>
               <i
                 class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
@@ -511,7 +511,7 @@
                     </p>
                   </div>
                 </b-tooltip>
-                <span class="text-secondary"><b>$[[prediction[2] || 0 | round]] match</b></span>
+                <span class="text-secondary"><b>$[[ prediction[2] ]] match</b></span>
               </div>
             </div>
           </div>
