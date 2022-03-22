@@ -1,5 +1,6 @@
 import csv
 import os
+import io
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -23,33 +24,27 @@ redis = RedisService().redis
 rate_limit = '300000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
 
 def create_csv(export_type, profile, earnings):
-    path = f'app/assets/tmp/user-{export_type}/{profile}'
-    if not os.path.isdir(path):
-        os.makedirs(path)
-    name = f"{timezone.now().strftime('%Y_%m_%dT%H')}"
-    file_path = f'{path}/{name}.csv'
+    earnings_csv = io.StringIO()
+    writer = csv.writer(earnings_csv)
+    writer.writerow(['ID', 'Date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'TXID', 'Token Name', 'Token Value', 'URL'])
+    for earning in earnings:
+        writer.writerow([
+            earning.pk,
+            earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
+            earning.from_profile.handle if earning.from_profile else '*',
+            earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
+            earning.to_profile.handle,
+            earning.to_profile.data.get('location', 'Unknown'),
+            earning.source_type_human,
+            earning.value_usd,
+            earning.txid,
+            earning.token_name,
+            earning.token_value,
+            earning.url,
+        ])
 
-    with open(file_path, 'w', encoding='utf-8') as earnings_csv:
-        writer = csv.writer(earnings_csv)
-        writer.writerow(['ID', 'Date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'TXID', 'Token Name', 'Token Value', 'URL'])
-        for earning in earnings:
-            writer.writerow([
-                earning.pk,
-                earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
-                earning.from_profile.handle if earning.from_profile else '*',
-                earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
-                earning.to_profile.handle,
-                earning.to_profile.data.get('location', 'Unknown'),
-                earning.source_type_human,
-                earning.value_usd,
-                earning.txid,
-                earning.token_name,
-                earning.token_value,
-                earning.url,
-            ])
+    return earnings_csv
 
-    return file_path
-    
 
 def send_csv(attachment, user_profile):
     to_email = user_profile.user.email

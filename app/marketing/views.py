@@ -536,7 +536,7 @@ def account_settings(request):
             profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
-            
+
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
             user_pk = request.user.pk
@@ -590,7 +590,7 @@ def account_settings(request):
             messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
-            
+
         else:
             msg = _('Error: did not understand your request')
 

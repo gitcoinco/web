@@ -117,14 +117,12 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         mail.add_attachment(attachment)
 
     if csv is not None:
-        with open(csv, 'rb') as f:
-            data = f.read()
-            f.close()
+        data = csv.getvalue().encode('utf-8')
         encoded = base64.b64encode(data).decode()
         attachment = Attachment()
         attachment.content = encoded
         attachment.type = 'text/csv'
-        attachment.filename = csv.replace('/tmp/', '')
+        attachment.filename = f"{timezone.now().strftime('%Y_%m_%dT%H')}.csv"
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
     # debug logs
@@ -132,11 +130,11 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
-        logger.debug(
+        logger.error(
             f'-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials')
         logger.debug(e)
     except HTTPError as e:
-        logger.debug(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
+        logger.error(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
 
     return response
 
