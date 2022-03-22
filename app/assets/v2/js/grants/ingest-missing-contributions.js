@@ -79,7 +79,6 @@ Vue.component('grants-ingest-contributions', {
       return new Promise(function(resolve, reject) {
         web3.eth.getTransactionReceipt(txHash, (err, res) => {
           if (err) {
-            console.log({ err });
             return reject(err);
           }
           resolve(res);
@@ -140,7 +139,7 @@ Vue.component('grants-ingest-contributions', {
         if (!walletAddress) {
           throw new Error('Please connect a wallet');
         }
-        
+
         if (!window.ethereum) {
           throw new Error('Metamask is either not installed or blocked by a third party');
         }
