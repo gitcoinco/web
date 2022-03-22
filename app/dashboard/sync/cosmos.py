@@ -3,7 +3,7 @@ from django.utils import timezone
 import requests
 from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
-BASE_URL = 'https://lcd-cosmoshub.keplr.app'
+BASE_URL = 'https://api.cosmos.network'
 
 
 def get_cosmos_txn_status(fulfillment):
@@ -33,7 +33,7 @@ def get_cosmos_txn_status(fulfillment):
             and tx_response['to_address'] == payeeAddress
             and float([
                 token['amount'] for token in tx_response['amount'] if token['denom'] == 'uatom'
-            ][0]) == float(amount) * 10 ** 6
+            ][0]) == float(amount)
         ):
             if response['tx_response']['code'] == 0 and confirmations > 0:
                 return 'success'
