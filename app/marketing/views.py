@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
-import csv
 import json
 import logging
 
@@ -540,7 +539,7 @@ def account_settings(request):
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
             user_pk = request.user.pk
-            export_earnings_to_csv.delay(user_pk, export_type)
+            export_earnings_to_csv(user_pk, export_type)
             return HttpResponse(status="200")
 
         elif request.POST.get('disconnect', False):
