@@ -6603,6 +6603,9 @@ def reverse_proxy_rpc_v1(request, tenant):
     if tenant.upper() == 'CASPER':
         # casper
         url = 'http://3.142.224.108:7777/rpc'
+    elif tenant.upper() == 'COSMOS':
+        # cosmos
+        url = 'https://rpc.cosmos.network'
     else:
         return JsonResponse({'error': 'invalid tenant'}, status=400)
 

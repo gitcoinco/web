@@ -1,6 +1,7 @@
 const payWithCosmosExtension = async(fulfillment_id, to_address, vm, modal) => {
-  const amount = vm.fulfillment_context.amount;
+  const amount = vm.fulfillment_context.amount * 10 ** vm.decimals;
   const token_name = vm.bounty.token_name;
+  const tenant = vm.getTenant(token_name, vm.bounty.web3_type);
   const chainId = 'cosmoshub-4';
   
   if (!window.keplr) {
@@ -14,29 +15,32 @@ const payWithCosmosExtension = async(fulfillment_id, to_address, vm, modal) => {
     return;
   }
 
-  const offlineSigner = window.getOfflineSigner(chainId);
-  const selectedAddress = (await offlineSigner.getAccounts())[0].address;
-    
-  // Initialize the gaia api with the offline signer that is injected by Keplr extension.
-  // TODO: we need a js browser script from which to access SigningStargateClient
-  // stuff like say -> import { SigningStargateClient } from '@cosmjs/stargate';
-  const cosmJS = new SigningStargateClient(
-    'https://lcd-cosmoshub.keplr.app/rest',
-    selectedAddress,
-    offlineSigner
-  );
+  let client = await window.CosmWasmJS.setupWebKeplr({
+    chainId,
+    rpcEndpoint: `${window.location.origin}/api/v1/reverse-proxy/${tenant}`,
+    gasPrice: '0.0008uatom'
+  });
+
+  let atomBalance = (await client.getBalance(vm.bounty.bounty_owner_address, 'uatom')).amount;
+
+  if (Number(atomBalance) < amount) {
+    _alert({ message: gettext(`Insufficient balance in address ${vm.bounty.bounty_owner_address}`) }, 'danger');
+    return;
+  }
 
   try {
-    const result = await cosmJS.sendTokens(recipient, [{
-      denom: 'uatom',
-      amount: amount.toString()
-    }]);
+    const result = await client.sendTokens(
+      vm.bounty.bounty_owner_address,
+      to_address,
+      [{ amount: amount.toString(), denom: 'uatom' }],
+      'auto'
+    );
 
     if (result.code !== undefined && result.code !== 0) {
       throw new Error(result.log || result.rawLog);
     }
   
-    callback(null, selectedAddress, result.transactionHash);
+    callback(null, vm.bounty.bounty_owner_address, result.transactionHash);
   } catch (e) {
     modal.closeModal();
     callback(e);
