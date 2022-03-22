@@ -70,12 +70,14 @@
                     <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
                     <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
-                    <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching rounds.</p>
+                    <p class="text-muted mb-0">
+                      Tags are used for your grant's discoverability and eligibility for matching rounds. Eligibility tags are subject to review by the matching round owner and may be removed at any time for any reason.
+                    </p>
                     <p class="mt-0 mb-2">
                       <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" rel="noopener noreferrer">Learn more about matching rounds.</a>
                     </p>
 
-                    <v-select placeholder="Select tag(s) for your grant’s discoverability and eligibility for matching rounds" :options="grantTagOptions" label="name" v-model="form.grant_tags" :selectable="(option) => option.is_eligibility_tag !== 'label'" :reduce="state => state.id" multiple>
+                    <v-select placeholder="Select tag(s) for your grant's discoverability and eligibility for matching rounds" :options="grantTagOptions" label="name" v-model="form.grant_tags" :selectable="(option) => option.is_eligibility_tag !== 'label'" :reduce="state => state.id" multiple>
                       <template #search="{attributes, events}">
                         <input
                           class="vs__search"
