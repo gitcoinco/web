@@ -36,103 +36,6 @@ Vue.mixin({
         'Discord',
         'Telegram',
         'E-Mail'
-      ],
-      networkOptions: [
-        {
-          'id': '1',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/ethereum.512bdfc90974.svg',
-          'label': 'ETH'
-        },
-        {
-          'id': '0',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/bitcoin.a606afe92dc0.svg',
-          'label': 'BTC'
-        },
-        {
-          'id': '666',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/paypal.94a717ec583d.svg',
-          'label': 'PayPal'
-        },
-        {
-          'id': '56',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/binance.f29b8c5b883c.svg',
-          'label': 'Binance'
-        },
-        {
-          'id': '1000',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/harmony.94e314f87cb6.svg',
-          'label': 'Harmony'
-        },
-        {
-          'id': '58',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/polkadot.ab164a0162c0.svg',
-          'label': 'Polkadot'
-        },
-        {
-          'id': '59',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/kusama.79f72c4ef309.svg',
-          'label': 'Kusama'
-        },
-        {
-          'id': '61',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/ethereum-classic.5da22d66e88a.svg',
-          'label': 'ETC'
-        },
-        {
-          'id': '102',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/zilliqa.53f121329fe2.svg',
-          'label': 'Zilliqa'
-        },
-        {
-          'id': '600',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/filecoin.5b66dcda075a.svg',
-          'label': 'Filecoin'
-        },
-        {
-          'id': '42220',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/celo.92f6ddaad4cd.svg',
-          'label': 'Celo'
-        },
-        {
-          'id': '30',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/rsk.ad4762fa3b4b.svg',
-          'label': 'RSK'
-        },
-        {
-          'id': '50',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/xinfin.dfca06ac5f24.svg',
-          'label': 'Xinfin'
-        },
-        {
-          'id': '1001',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/algorand.25e6b9cd9ae9.svg',
-          'label': 'Algorand'
-        },
-        {
-          'id': '1935',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/sia.1aeab380df24.svg',
-          'label': 'Sia'
-        },
-        {
-          'id': '1995',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/nervos.e3e776d77e06.svg',
-          'label': 'Nervos'
-        },
-        {
-          'id': '50797',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/tezos.66a5e2b53980.svg',
-          'label': 'Tezos'
-        },
-        {
-          'id': '270895',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/casper.4718c7855050.svg',
-          'label': 'Casper'
-        },
-        {
-          'id': '717171',
-          'logo': null,
-          'label': 'Other'
-        }
       ]
     };
   },
@@ -310,10 +213,10 @@ Vue.mixin({
       if (!vm.form.termsPrivacy) {
         vm.$set(vm.errors, 'termsPrivacy', 'You need to accept the terms');
       }
-      return true; // TODO: geri hardcoded - remove this and uncomment the lines below
-      // if (Object.keys(vm.errors).length) {
-      //   return false;
-      // }
+      return true; // TODO geri hardcoded
+      if (Object.keys(vm.errors).length) {
+        return false;
+      }
     },
     web3Type() {
       let vm = this;
@@ -787,14 +690,14 @@ Vue.mixin({
 
     addContactDetails() {
       this.form.contactDetails.push({
-        type: '',
-        value: ''
+        type: 'discord',
+        value: 'dhandle'
       });
     },
 
     quilUpdated({ quill, text }) {
       this.form.description = text;
-      console.log('geri - content - ', JSON.stringify(quill.getContents()));
+      this.form.richDescription = JSON.stringify(quill.getContents());
     },
 
     popover(elementId) {
@@ -920,19 +823,6 @@ Vue.mixin({
 
       steps[this.step - 1].active = true;
       return steps;
-    },
-    // TODO geri: we could drop this an duse chain.id everywhere ....
-    chainId: function() {
-      if (this.chain) {
-        return this.chain.id;
-      }
-      return '';
-    },
-    isExpired: function() {
-      return moment(this.form.expirationTimeDelta).isBefore();
-    },
-    expiresAfterAYear: function() {
-      return moment().diff(this.form.expirationTimeDelta, 'years') < -1;
     }
   },
   watch: {
@@ -971,7 +861,6 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
     },
     data() {
       return {
-        status: 'OPEN',
         tokens: [],
         network: 'mainnet',
         chain: null,
@@ -1019,16 +908,17 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           bountyType: null,
           bountyInformationSource: null,
           contactDetails: [{
-            type: '',
-            value: ''
+            type: 'discord',
+            value: 'dhandle'
+          }, {
+            type: 'telegram',
+            value: '@thandle'
           }],
-          resources: '',
+          ressources: '',
           acceptanceCriteria: '',
           organisationUrl: '',
-          title: '',
           description: '',
-          richDescription: '',
-          owner: ''
+          richDescription: ''
         },
         editorOptionPrio: {
           modules: {
@@ -1041,8 +931,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
             ]
           },
           theme: 'snow',
-          placeholder: 'Describe what your bounty is about',
-          readOnly: true
+          placeholder: 'Describe what your bounty is about'
         }
       };
     },

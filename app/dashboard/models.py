@@ -409,23 +409,13 @@ class Bounty(SuperModel):
 
     # contact details shall be an array of structures like:
     #   {type: 'discord', value: 'dhandle'}, {type: 'telegram',value: '@thandle'}]
-    contact_details = JSONField(default=dict, blank=True, null=True)
+    contact_details = JSONField(default=dict, blank=True)
 
-    # The following fields are for custom bounties (bounties not imported from github)
-    # custom bounty: Text only from the Rich Text editor
-    custom_title = models.CharField(max_length=200, default='', blank=True, null=True, help_text=_('The title of the Bounty'))
+    # Text only from the Rich Text editor - for custom bounties, which do not get the bounty details from github
+    description = models.TextField(default='', blank=True, help_text=_('The description of the Bounty.'))
 
-    # Text only from the Rich Text editor
-    custom_description = models.TextField(default='', blank=True, null=True, help_text=_('The description of the Bounty'))
-
-    # Complete content from the Rich Text editor
-    custom_description_rich = models.TextField(default='', blank=True, null=True, help_text=_('HTML rich description'))
-
-    # acceptance criteria
-    acceptance_criteria = models.TextField(default='', blank=True, null=True, help_text=_('Acceptance criteria'))
-
-    # resources
-    resources = models.TextField(default='', blank=True, null=True, help_text=_('Resources'))
+    # Complete content from the Rich Text editor - for custom bounties, which do not get the bounty details from github
+    description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
 
     class Meta:
         """Define metadata associated with Bounty."""
