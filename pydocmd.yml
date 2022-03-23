@@ -154,8 +154,8 @@ generate:
     - marketing.models++
   - marketing/stats.md:
     - marketing.stats++
-  - marketing/utils.md:
-    - marketing.utils++
+  - marketing/common/utils.md:
+    - marketing.common.utils++
   - marketing/views.md:
     - marketing.views++
   - marketing/webbhookviews.md:

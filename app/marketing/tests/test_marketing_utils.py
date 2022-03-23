@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from marketing.models import EmailSubscriber, Stat
-from marketing.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber, get_stat
+from marketing.common.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber, get_stat
 from test_plus.test import TestCase
 
 

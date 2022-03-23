@@ -3914,7 +3914,7 @@ class Profile(SuperModel):
             user_active_in_last_quarter = True
             relevant_bounties = []
         else:
-            from marketing.utils import get_or_save_email_subscriber
+            from marketing.common.utils import get_or_save_email_subscriber
             user_coding_languages = get_or_save_email_subscriber(self.email, 'internal').keywords
             if user_coding_languages is not None:
                 potential_bounties = Bounty.objects.all()

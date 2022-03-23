@@ -37,7 +37,7 @@ import premailer
 from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
-from marketing.utils import get_or_save_email_subscriber
+from marketing.common.utils import get_or_save_email_subscriber
 from perftools.models import StaticJsonEnv
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 
@@ -1458,19 +1458,19 @@ def render_new_bounty_roundup(to_email):
 @staff_member_required
 def export_data(request):
     from dashboard.models import Profile
-    
+
     handle = request.GET.get('handle')
     profile = Profile.objects.filter(handle=handle).first()
-    
+
     response_html, _, _ = render_export_data_email(profile)
     return HttpResponse(response_html)
 
 def export_data_failed(request):
     from dashboard.models import Profile
-    
+
     handle = request.GET.get('handle')
     profile = Profile.objects.filter(handle=handle).first()
-    
+
     response_html, _, _ = render_export_data_email_failed(profile)
     return HttpResponse(response_html)
 
@@ -1636,7 +1636,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    from marketing.utils import handle_bounty_feedback
+    from marketing.common.utils import handle_bounty_feedback
 
     bounty = Bounty.objects.current().filter(idx_status='done').last()
 
@@ -1753,7 +1753,7 @@ def roundup(request):
 
 @staff_member_required
 def quarterly_roundup(request):
-    from marketing.utils import get_platform_wide_stats
+    from marketing.common.utils import get_platform_wide_stats
     from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
@@ -1836,7 +1836,7 @@ def start_work_applicant_expired(request):
 @staff_member_required
 def tribe_hackathon_prizes(request):
     from dashboard.models import HackathonEvent, Bounty
-    from marketing.utils import generate_hackathon_email_intro
+    from marketing.common.utils import generate_hackathon_email_intro
 
     hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
 

@@ -2,7 +2,7 @@ f = open("output.csv", "w")
 import time
 
 from marketing.models import EmailSubscriber
-from marketing.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber
+from marketing.common.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber
 
 queryset = EmailSubscriber.objects.all()
 count = queryset.count()

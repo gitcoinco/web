@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
-import csv
 import json
 import logging
 
@@ -48,8 +47,8 @@ from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
-from marketing.tasks import export_earnings_to_csv
-from marketing.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
+from marketing.tasks import send_earnings_csv
+from marketing.common.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
 from retail.emails import render_new_bounty
 from retail.helpers import get_ip
 from townsquare.models import Announcement
@@ -536,11 +535,11 @@ def account_settings(request):
             profile.preferred_payout_address = eth_address
             profile.save()
             msg = _('Updated your Address')
-            
+
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
             user_pk = request.user.pk
-            export_earnings_to_csv.delay(user_pk, export_type)
+            send_earnings_csv.delay(user_pk, export_type)
             return HttpResponse(status="200")
 
         elif request.POST.get('disconnect', False):
@@ -590,7 +589,7 @@ def account_settings(request):
             messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
-            
+
         else:
             msg = _('Error: did not understand your request')
 

@@ -28,7 +28,7 @@ from django.utils.translation import gettext_lazy as _
 
 import sendgrid
 from app.utils import get_profiles_from_text
-from marketing.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber
+from marketing.common.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
@@ -117,14 +117,12 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         mail.add_attachment(attachment)
 
     if csv is not None:
-        with open(csv, 'rb') as f:
-            data = f.read()
-            f.close()
+        data = csv.getvalue().encode('utf-8')
         encoded = base64.b64encode(data).decode()
         attachment = Attachment()
         attachment.content = encoded
         attachment.type = 'text/csv'
-        attachment.filename = csv.replace('/tmp/', '')
+        attachment.filename = f"{timezone.now().strftime('%Y_%m_%dT%H')}.csv"
         attachment.disposition = 'attachment'
         mail.add_attachment(attachment)
     # debug logs
@@ -132,11 +130,11 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
-        logger.debug(
+        logger.error(
             f'-- Sendgrid Mail failure - {_to_email} / {categories} - Unauthorized - Check sendgrid credentials')
         logger.debug(e)
     except HTTPError as e:
-        logger.debug(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
+        logger.error(f'-- Sendgrid Mail failure - {_to_email} / {categories} - {e}')
 
     return response
 
@@ -1888,7 +1886,7 @@ def remember_your_cart(profile, cart_query, grants, hours):
 
 def tribe_hackathon_prizes(hackathon):
     from dashboard.models import TribeMember, Sponsor
-    from marketing.utils import generate_hackathon_email_intro
+    from marketing.common.utils import generate_hackathon_email_intro
 
     sponsors = hackathon.sponsor_profiles.all()
     tribe_members_in_sponsors = TribeMember.objects.filter(org__in=[sponsor for sponsor in sponsors]).exclude(status='rejected').exclude(profile__user=None).only('profile')

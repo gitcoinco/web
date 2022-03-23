@@ -33,7 +33,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 from marketing.mails import send_mail, setup_lang
-from marketing.utils import invite_to_slack
+from marketing.common.utils import invite_to_slack
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from ratelimit.decorators import ratelimit
 from reportlab.lib.colors import Color

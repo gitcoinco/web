@@ -32,7 +32,7 @@ from dashboard.models import Activity, Tip, UserAction
 from dashboard.tasks import record_join, record_visit
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
-from marketing.utils import handle_marketing_callback
+from marketing.common.utils import handle_marketing_callback
 from perftools.models import JSONStore
 from retail.helpers import get_ip
 from townsquare.models import Announcement
