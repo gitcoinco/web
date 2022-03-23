@@ -140,8 +140,8 @@ Vue.component('grants-ingest-contributions', {
           throw new Error('Please connect a wallet');
         }
 
-        if (!ethereum) {
-          throw new Error('Please connect to MetaMask wallet!');
+        if (!window.ethereum) {
+          throw new Error('Metamask is either not installed or blocked by a third party');
         }
 
         // Parse out provided form inputs and verify them, but bypass address checks if user is staff
