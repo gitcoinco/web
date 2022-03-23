@@ -404,6 +404,19 @@ class Bounty(SuperModel):
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 
+    # Aray of strings, for example: ["HTMK", "CSS"]
+    tags = JSONField(default=list, blank=True)
+
+    # contact details shall be an array of structures like:
+    #   {type: 'discord', value: 'dhandle'}, {type: 'telegram',value: '@thandle'}]
+    contact_details = JSONField(default=dict, blank=True)
+
+    # Text only from the Rich Text editor - for custom bounties, which do not get the bounty details from github
+    description = models.TextField(default='', blank=True, help_text=_('The description of the Bounty.'))
+
+    # Complete content from the Rich Text editor - for custom bounties, which do not get the bounty details from github
+    description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
+
     class Meta:
         """Define metadata associated with Bounty."""
 

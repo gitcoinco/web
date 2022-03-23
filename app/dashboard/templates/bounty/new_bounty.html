@@ -1,761 +1,193 @@
 {% comment %}
-  Copyright (C) 2021 Gitcoin Core
+Copyright (C) 2021 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http: //www.gnu.org/licenses />.
 
 {% endcomment %}
 {% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
-    <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
-    <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    {% bundle css file new_bounty %}
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
-      <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
-    {% endbundle %}
-    <style>
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
+  <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
+  <meta name="description"
+    content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
+  {% bundle css file new_bounty %}
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/progress_bar.scss" %} />
+  <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/form_wrapper.scss" %} />
+  {% endbundle %}
+  <style>
+    .issue_description {
+      height: 400px;
+      padding: 1em;
+      overflow: auto;
+      resize: vertical;
+      background-color: #f9f9f9;
+    }
 
-      .issue_description {
-        height: 400px;
-        padding: 1em;
-        overflow: auto;
-        resize: vertical;
-        background-color: #f9f9f9;
-      }
+    .issue_description img {
+      max-width: 100%;
+    }
+  </style>
+</head>
 
-      .issue_description img {
-        max-width: 100%;
-      }
-
-    </style>
-  </head>
-
-  <body>
-    <div class="content__main min-vh-100 d-md-flex flex-column">
-      {% include 'shared/tag_manager_2.html' %}
-      <div class="container-fluid header dash px-0">
-        {% include 'shared/top_nav.html' with class='d-md-flex' %}
-        {% include 'shared/nav.html' %}
+<body>
+  <div class="content__main min-vh-100 d-md-flex flex-column">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash px-0">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid pb-5 pt-5" id="gc-hackathon-new-bounty" v-cloak>
+      <div class="col-lg-9 mx-auto mb-5">
+        {% include 'grants/components/progress_bar.html' %}
       </div>
-      <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-hackathon-new-bounty" v-cloak>
-        <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
-          <div class="container mt-3 mb-3 bg-white position-relative rounded">
-            <div class="row p-4 p-md-5">
-              <div class="col-12">
-                <h1 class="text-center">Fund Issue</h1>
-                <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers!</p>
-                <p class="text-center font-bigger-1 text-black-60"><button @click="showQuickStart(true)" type="button" class="btn btn-link">Open Funder Guide</button>
-                </p>
-                <div class="mb-3">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="bounty_chain">Bounty chain</label>
-                    <p class="font-body">Pick the chain you are funding the bounty with</p>
-
-                  <div :class="`btn-group-toggle d-flex flex-column flex-lg-row flex-wrap ${errors.chainId && !form.chainId ? 'invalid' : ''}`">
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1'}">
-                      <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="12"> ETH
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '0'}">
-                      <input type="radio" name="bounty_chain" id="0_chain" value="0" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/bitcoin.svg' %}" alt="" width="20"> BTC
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
-                      <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="16"> PayPal
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '56'}">
-                      <input type="radio" name="bounty_chain" id="56_chain" value="56" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="16"> Binance
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1666600000'}">
-                      <input type="radio" name="bounty_chain" id="1666600000_chain" value="1666600000" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="16"> Harmony
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '58'}">
-                      <input type="radio" name="bounty_chain" id="58_chain" value="58" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16"> Polkadot
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '59'}">
-                      <input type="radio" name="bounty_chain" id="59_chain" value="59" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/kusama.svg' %}" alt="" width="16"> Kusama
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '61'}">
-                      <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="12"> ETC
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
-                      <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="16"> Zilliqa
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '600'}">
-                      <input type="radio" name="bounty_chain" id="600_chain" value="600" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/filecoin.svg' %}" alt="" width="20"> Filecoin
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '42220'}">
-                      <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="16"> Celo
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '30'}">
-                      <input type="radio" name="bounty_chain" id="30_chain" value="30" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="16"> RSK
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '50'}">
-                      <input type="radio" name="bounty_chain" id="50_chain" value="50" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/xinfin.svg' %}" alt="" width="16"> Xinfin
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1001'}">
-                      <input type="radio" name="bounty_chain" id="1001_chain" value="1001" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16"> Algorand
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1935'}">
-                      <input type="radio" name="bounty_chain" id="1935_chain" value="1935" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/sia.svg' %}" alt="" width="16"> Sia
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1995'}">
-                      <input type="radio" name="bounty_chain" id="1995_chain" value="1995" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/nervos.svg' %}" alt="" width="16"> Nervos
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '50797'}">
-                      <input type="radio" name="bounty_chain" id="50797_chain" value="50797" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/tezos.svg' %}" alt="" width="16"> Tezos
-                    </label>
-
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '270895'}">
-                      <input type="radio" name="bounty_chain" id="270895_chain" value="270895" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/casper.svg' %}" alt="" width="16"> Casper
-                    </label>
-
-                    {% if is_staff %}
-                      <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
-                        <input type="radio" name="bounty_chain" id="717171_chain" value="717171" v-model="chainId"> Other
-                      </label>
-                    {% endif %}
-
-                  </div>
-                  <div class="text-danger" v-if="errors.chainId && !form.chainId">
-                    [[errors.chainId]]
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="issueURL">Github Issue Url <span class="badge badge-greylight text-capitalize">Required</span></label>
-                  <input class="form-control" name='issueURL' id="issueURL" v-model="form.issueUrl" type="url" placeholder="https://github.com/org/repo/issues/n" @input="getIssueDetails(form.issueUrl)" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
-                  <img v-if="filterOrgSelected" :src="filterOrgSelected" class="position-absolute" :alt="orgSelected" :title="orgSelected" height="32" style="margin-top: -35px; right: 18px;">
-
-                  <div class="text-danger" v-if="errors.issueDetails">
-                    [[errors.issueDetails]]
-                  </div>
-                </div>
-                <div v-if="form.issueDetails">
-                  <div class="font-caption letter-spacing text-black-60 text-uppercase mb-2">
-                    Issue Title
-                  </div>
-                  <div class="mb-3">
-                    [[form.issueDetails.title]]
-                  </div>
-
-                  <div class="font-caption letter-spacing text-black-60 text-uppercase mb-2">
-                    Issue Details
-                  </div>
-                  <div class="issue_description mb-3" :inner-html.prop="form.issueDetails.description | markdownit"></div>
-                  <a class="btn btn-primary" :href="form.issueUrl" target="_blank" rel="noopener noreferrer">
-                    Edit on Github <i class="fab fa-github ml-1"></i>
-                  </a>
-
-                  <div class="mt-4">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="keywords">{% trans "Keywords" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-                    <p class="font-body">Insert keywords relevant to your issue to make it easily discoverable by contributors </p>
-                    <div class="form__select2 g-multiselect flex-column">
-
-                      <select2 :options="form.issueDetails.keywords" v-model="form.keywords" data-placeholder="e.g. HTML, CSS" data-tags="true" data-token-separators="[',']" multiple class="form-control" required>
-                        <option disabled value="0">Select one</option>
-                      </select2>
-
-                    </div>
-                    <div id="keyword-suggestion-container" class="font-caption font-weight-semibold mt-1">
-                      <span>Add tags from your repo: </span>
-                      <ul id="keyword-suggestions" class="d-flex list-unstyled">
-                        <li class="select2-available__choice" v-for="keyword in form.issueDetails.keywords" @click="addKeyword(keyword)" :class="{'d-none': form.keywords.includes(keyword)}"><span class="text">[[keyword]]</span></li>
-                      </ul>
-                    </div>
-                    <div class="text-danger" v-if="errors.keywords && !form.keywords.length">
-                      [[errors.keywords]]
-                    </div>
-                  </div>
-                </div>
-                <div v-else>
-                  <div class="my-4">
-                    <img class="w-100" src="{% static "v2/images/bounty/no_issue.svg" %}">
-                  </div>
-                </div>
-
-                <div class="mt-4">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="issueURL">Bounty category <span class="badge badge-greylight text-capitalize">Required</span></label>
-                  <p class="font-body">Pick the most accurate categories for this bounty to get the right contributors</p>
-
-                  <div :class="`btn-group-toggle ${errors.bounty_categories && !form.bounty_categories.length ? 'invalid' : ''}`">
-                    <label class="btn btn-radio frontend mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('frontend')}">
-                      <input type="checkbox" id="frontend_cat" value="frontend" v-model="form.bounty_categories"><i class="fas fa-laptop-code mr-2"></i> Front End
-                    </label>
-                    <label class="btn btn-radio backend mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('backend')}">
-                      <input type="checkbox" id="backend_cat" value="backend" v-model="form.bounty_categories"><i class="fas fa-code mr-2"></i> Back End
-                    </label>
-                    <label class="btn btn-radio design mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('design')}">
-                      <input type="checkbox" id="design_cat" value="design" v-model="form.bounty_categories"><i class="fas fa-pencil-ruler mr-2"></i> Design
-                    </label>
-                    <label class="btn btn-radio doc mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('documentation')}">
-                      <input type="checkbox" id="doc_cat" value="documentation" v-model="form.bounty_categories"><i class="fas fa-file-alt mr-2"></i> Documentation
-                    </label>
-                    <label class="btn btn-radio other mb-2 font-weight-bold py-2 px-4" :class="{'active': form.bounty_categories.includes('other')}">
-                      <input type="checkbox" id="other_cat" value="other" v-model="form.bounty_categories"><i class="fas fa-briefcase mr-2"></i> Other
-                    </label>
-                  </div>
-                  <div class="text-danger" v-if="errors.bounty_categories && !form.bounty_categories.length">
-                    [[errors.bounty_categories]]
-                  </div>
-                </div>
-
-                <div class="mt-4">
-                  <div id="" class="">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="project_type">Project Type</label>
-                    <div class="d-flex row">
-                      <div :class="`col-12 col-md-4 btn-group-toggle ${errors.project_type && !form.project_type ? 'invalid' : ''}`">
-                        <label class="btn btn-block btn-radio traditional my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('traditional')}">
-                          <input type="radio" name="project_type" id="traditional" value="traditional" v-model="form.project_type" required>
-                          Traditional
-                          <span class="d-block font-weight-normal">
-                            <span class="fa-stack font-smaller-6">
-                              <i class="far fa-circle fa-stack-2x"></i>
-                              <i class="fas fa-user fa-stack-1x"></i>
-                            </span>
-                            One contributor
-                          </span>
-                          <span class="d-block font-weight-normal">
-                            <span class="fa-stack font-smaller-6">
-                              <i class="far fa-circle fa-stack-2x"></i>
-                              <i class="fas fa-user fa-stack-1x"></i>
-                            </span>
-                            One paid
-                          </span>
-                        </label>
-                      </div>
-                      <div class="col-12 col-md-4 btn-group-toggle">
-                        <label class="btn btn-block btn-radio contest my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('contest'), 'disabled': !subscriptionActive}">
-                          <input type="radio" name="project_type" id="contest" value="contest" v-model="form.project_type" required :disabled="!subscriptionActive">
-                          Contest
-                          <span class="d-block font-weight-normal">
-                            <span class="fa-stack font-smaller-6">
-                              <i class="far fa-circle fa-stack-2x"></i>
-                              <i class="fas fa-users fa-stack-1x"></i>
-                            </span>
-                            Multiple contributors
-                          </span>
-                          <span class="d-block font-weight-normal">
-                            <span class="fa-stack font-smaller-6">
-                              <i class="far fa-circle fa-stack-2x"></i>
-                              <i class="fas fa-users fa-stack-1x"></i>
-                            </span>
-                            One paid
-                          </span>
-                        </label>
-                      </div>
-                      <div class="col-12 col-md-4 btn-group-toggle">
-                        <label class="btn btn-block btn-radio cooperative my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('cooperative'), 'disabled': !subscriptionActive}">
-                          <input type="radio" name="project_type" id="cooperative" value="cooperative" v-model="form.project_type" required :disabled="!subscriptionActive">
-                          Cooperative
-                          <span class="d-block font-weight-normal">
-                            <span class="fa-stack font-smaller-6">
-                              <i class="far fa-circle fa-stack-2x"></i>
-                              <i class="fas fa-users fa-stack-1x"></i>
-                            </span>
-                            Multiple contributors
-                          </span>
-                          <span class="d-block font-weight-normal">
-                            <span class="fa-stack font-smaller-6">
-                              <i class="far fa-circle fa-stack-2x"></i>
-                              <i class="fas fa-users fa-stack-1x"></i>
-                            </span>
-                            Multiple paid
-                          </span>
-                        </label>
-                      </div>
-                      <div class="col-12" v-if="!subscriptionActive">
-                        <p class="text-highlight-gc-blue bg-lightpurple p-2 mt-2">
-                          For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:pro@gitcoin.co" target="_blank" class="font-weight-bold">pro@gitcoin.co</a>
-                        </p>
-
-                      </div>
-                    </div>
-                  </div>
-                  <div class="text-danger" v-if="errors.project_type && !form.project_type">
-                    [[errors.project_type]]
-                  </div>
-                </div>
-                <div class="mt-4">
-                  <div id="" class="">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">Permissions</label>
-                    <div class="d-flex row">
-                      <div :class="`col-12 col-md-6 btn-group-toggle ${errors.permission_type && !form.permission_type ? 'invalid' : ''}`">
-                        <label class="btn btn-block btn-radio approval my-2 font-weight-bold py-3 px-4 text-left" :class="{'active': form.permission_type.includes('approval')}">
-                          <input type="radio" name="permission_type" id="approval" value="approval" v-model="form.permission_type" required>
-                          Approval Required
-                          <span class="d-block font-weight-normal">
-                            <i class="fas fa-user-cog"></i>
-                            I will approve bounty hunters
-                          </span>
-                        </label>
-                      </div>
-                      <div :class="`col-12 col-md-6 btn-group-toggle ${errors.permission_type && !form.permission_type ? 'invalid' : ''}`">
-                        <label class="btn btn-block btn-radio permissionless my-2 font-weight-bold py-3 px-4 text-left" :class="{'active': form.permission_type.includes('permissionless')}">
-                          <input type="radio" name="permission_type" id="permissionless" value="permissionless" v-model="form.permission_type" required>
-                          Permissionless
-                          <span class="d-block font-weight-normal">
-                            <i class="fas fa-user-cog "></i>
-                            No approval required
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="mt-2" id="auto_approve_workers_container">
-                      <div class="form__checkbox">
-                        <input name="admin_override_suspend_auto_approval" id="admin_override_suspend_auto_approval" v-model="form.auto_approve_workers" type="checkbox" :disabled="form.permission_type.includes('permissionless')">
-                        <label class="form__label" for="admin_override_suspend_auto_approval" style="display: flex;">
-                          Worker will be auto-approved after 72 hours.
-                        </label>
-                      </div>
-                    </div>
-
-                  </div>
-                  <div class="text-danger" v-if="errors.permission_type && !form.permission_type">
-                    [[errors.permission_type]]
-                  </div>
-                </div>
-
-                <div class="mt-4">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase">{% trans "Details" %}</label>
-                  <div class="d-flex row mb-2">
-                    <div class="col-12 col-md-4">
-                      <label class="form__label" for="experience_level">{% trans "Experience Level" %}</label>
-                      <v-select id="experience_level" :options="['Beginner','Intermediate','Advanced']" placeholder="Experience Level" v-model="form.experience_level">
-                        <template #search="{attributes, events}">
-                          <input
-                            class="vs__search"
-                            :required="!form.experience_level"
-                            v-bind="attributes"
-                            v-on="events"
-                          />
-                        </template>
-                      </v-select>
-                    </div>
-                    <div class="col-12 col-md-4">
-                      <label class="form__label" for="project_length">{% trans "Time Commitment" %}</label>
-                      <v-select id="project_length" :options="['Hours','Days','Weeks', 'Months']" placeholder="Time Commitment" v-model="form.project_length">
-                        <template #search="{attributes, events}">
-                          <input
-                            class="vs__search"
-                            :required="!form.project_length"
-                            v-bind="attributes"
-                            v-on="events"
-                          />
-                        </template>
-                      </v-select>
-                    </div>
-                    <div class="col-12 col-md-4">
-                      <label class="form__label" for="bounty_type">{% trans "Bounty Type" %}</label>
-                      <v-select id="bounty_type" :options="['Bug','Feature','Improvement', 'Security', 'Documentation', 'Design', 'Code Review', 'Other']" placeholder="Bounty Type" v-model="form.bounty_type">
-                        <template #search="{attributes, events}">
-                          <input
-                            class="vs__search"
-                            :required="!form.bounty_type"
-                            v-bind="attributes"
-                            v-on="events"
-                          />
-                        </template>
-                      </v-select>
-                    </div>
-                    <div class="col-12 text-danger" v-if="errors.experience_level || errors.project_length || errors.bounty_type">
-                      [[errors.experience_level || errors.project_length || errors.bounty_type]]
-                    </div>
-                  </div>
-
-                </div>
-
-                <div id="pricing-section" class="mt-4" data-select2-id="pricing-section">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase">Pricing</label>
-                  <div class="d-flex row mb-2">
-                    <div class="col-12 col-md-3">
-                      <label class="form__label" for="token">Denomination</label>
-
-                      <v-select id="token" :options="filterByChainId" label="symbol" v-model="form.token" @input="getAmount(form.token ? form.token.symbol : null);">
-                        <template v-slot:option="option">
-                          <span class="font-weight-semibold">[[ option.symbol ]]</span>
-                        </template>
-                      </v-select>
-
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <label class="form__label" for="amount">Amount</label>
-                      <input name="amount" id="amount" class="form__input" :class="{'valid': form.amount, 'error': !form.amount}" type="number" step="any" min="0.001" v-model="form.amount" @input="calcValues('usd')">
-                    </div>
-                    <div class="col-12 col-md-3" id="usd-amount-wrapper">
-                      <label class="form__label" for="usd_amount">USD</label>
-                      <input name="usd_amount" id="usd_amount" class="form__input" :class="{'valid': form.amountusd, 'error': !form.amountusd}" type="number" step="any" min="0.00" v-model="form.amountusd" @input="calcValues('token')">
-                    </div>
-
-                    <div class="col-12 col-md-3" id="usd-amount-wrapper">
-                      <label class="form__label" for="hours">Est. Hours of Work</label>
-                      <input name="hours" id="hours"  pattern="[0-9]" class="form__input" type="number" step="1" min="1" v-model="form.hours" @input="estHoursValidator">
-                    </div>
-                  </div>
-                  <div>
-                    <small v-show="form.amountusd" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text">[[form.hours]] hrs at  $[[form.amountusd / form.hours | decimals(2)]]/hr leads to <b> [[ successRate]]% success rate</b>. Read our <a href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.</small>
-                    <small  v-show="chainId === '666'" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="fiat_text">
-                      USD payment is powered by <span class="font-weight-bold">PayPal</span>. Please note that there might be a small fee for payment to contributors in outside of the US.
-                    </small>
-                  </div>
-                </div>
-
-                <div class="funder-address-container mt-4" v-show="(chainId !== '1' && chainId !== '56') || funderAddressFallback === true">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="funderAddress">Funder Address</label>
-                  <p class="font-body" v-show="funderAddressFallback === true">Please enter your Binance Wallet address. We are unable to validate a Binance address. Please confirm that you are using the correct Binance address.</p>
-                  <input name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out" v-model="form.funderAddress">
-                  <div class="text-danger" v-if="errors.funderAddress">
-                    [[errors.funderAddress]]
-                  </div>
-                  <div class="text-danger" v-if="funderAddressFallback === true">
-                    Looks like you don't have the Binance Wallet Extension or the extension is disabled.
-                  </div>
-                </div>
-
-
-              </div>
-            </div>
-          </div>
-          <div class="container mt-5 bg-white position-relative rounded">
-            <div class="row">
-              <div class="col-12">
-
-                <div @click="toggleCollapse(1, 'reserve')" class="d-flex justify-content-between align-items-center p-4 py-md-4 px-md-5 cursor-pointer">
-                  <span class="font-body">
-                    <span class="d-block text-uppercase letter-spacing">Other options</span>
-                    <span>Reserve bounty, set expiration, attach a post job</span>
-                  </span>
-                  <i class="fa fa-fw" :class="isExpanded(1, 'reserve')? 'fa-chevron-up': 'fa-chevron-down'"></i>
-                </div>
-              </div>
-            </div>
-
-            <transition name="collapse">
-              <div v-show="isExpanded(1, 'reserve')" class="row px-md-5 pb-md-5 border-top pt-3">
-                <div class="col-12">
-                  <div class="mt-4">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="fundingOrganisation">Funding Organisation Github handle</label>
-                    <input name="fundingOrganisation" id="fundingOrganisation" v-model="form.fundingOrganisation" class="form__input" type="text" placeholder="MetaMask">
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="row mt-2">
-                    <div class="col-12 col-md-6">
-                      <label class="font-caption letter-spacing text-black-60 text-uppercase" for="notificationEmail">Notification Email</label>
-                      <input name="notificationEmail" id="notificationEmail" v-model="form.notificationEmail" class="form__input" type="email" placeholder="you@domain.co (optional, but recommended for notifications)">
-                      <div class="w-100 mt-2 terms_container">
-                        <div class="form__checkbox">
-                          <input name="show_email_publicly" id="show_email_publicly" v-model="form.showEmailPublicly" type="checkbox" false-value="0" true-value="1">
-                          <label class="form__label" for="show_email_publicly">It's okay to show this information publicly on Gitcoin</label>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-6 github-username">
-                      <label class="font-caption letter-spacing text-black-60 text-uppercase" for="githubUsername">Github Username</label>
-                      <input name="githubUsername" id="githubUsername" class="form__input" v-model="form.githubUsername" type="text" readonly="" placeholder="@you (optional)">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="mt-4">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="expirationTimeDelta">{% trans "Expires in" %}</label>
-                    <date-range-picker :date="form.expirationTimeDelta"  @apply-daterangepicker="updateDate" :disabled="checkboxes.neverExpires"></date-range-picker>
-                    <div class="form__checkbox">
-                      <input name='neverExpires' id='neverExpires' type="checkbox" v-model="checkboxes.neverExpires" />
-                      <label class="form__label" for=neverExpires>{% trans "Never expire" %}
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="mt-4">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="bounty_type">{% trans "Reserved for" %}</label>
-                    <v-select id="reservedFor" label="text" @search="userSearch" :reduce="user => user.text" :options="usersOptions" placeholder="Reserved for" v-model="form.reservedFor">
-                      <template slot="no-options">
-                        type to search Users..
-                      </template>
-                      <template slot="option" slot-scope="option">
-                        <div class="d-flex align-items-baseline">
-                          <div class="mr-2">
-                            <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
-                          </div>
-                          <div>[[ option.text ]]</div>
-                        </div>
-
-                      </template>
-                      <template slot="selected-option" slot-scope="option">
-                        <div class="d-flex align-items-baseline">
-                          <div class="mr-2">
-                            <img class="rounded-circle" :src="option.avatar_url" width="20" height="20"/>
-                          </div>
-                          <div>[[ option.text ]]</div>
-                        </div>
-                      </template>
-
-                    </v-select>
-                  </div>
-                </div>
-                <div class="col-12" v-show="form.reservedFor">
-                  <label class="form__label" for="bounty_type">{% trans "Release To Public After" %}</label>
-
-                  <v-select id="releaseAfter" :options="[{label:'After 3 days', value:'3-days'},{label:'After a week', value:'1-week'},{label:'Keep reserved', value:'never'},]" :reduce="release => release.value" placeholder="Release To Public After" v-model="form.release_to_public">
-                    <template #search="{attributes, events}">
-                      <input
-                        class="vs__search"
-                        :required="!form.release_to_public"
-                        v-bind="attributes"
-                        v-on="events"
-                      />
-                    </template>
-                  </v-select>
-                </div>
-                <div class="col-12">
-                  <div class="mt-4">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
-
-                    <div class="form__checkbox">
-                      <input name='hiringRightNow' id='hiringRightNow' type="checkbox" v-model="checkboxes.hiringRightNow" />
-                      <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
-                      </label>
-                    </div>
-                    <input name="jobDescription" id="jobDescription" v-model="form.jobDescription" type="url" class="form__input " placeholder="https://link.to/job/description" :disabled="!checkboxes.hiringRightNow">
-                  </div>
-                </div>
-              </div>
-            </transition>
-          </div>
-
-          <div class="container mt-5 bg-white position-relative rounded">
-            <div class="row">
-              <div class="col-12">
-
-                <div @click="toggleCollapse(1, 'featuredBounty')" class="d-flex justify-content-between align-items-center p-4 py-md-4 px-md-5 cursor-pointer">
-                  <span class="font-body">
-                    <span class="d-block text-uppercase letter-spacing">Feature your bounty</span>
-                    <span>Get more visibility and feature your bounty at the top of Issue Explorer </span>
-                  </span>
-                  <i class="fa fa-fw" :class="isExpanded(1, 'featuredBounty')? 'fa-chevron-up': 'fa-chevron-down'"></i>
-                </div>
-              </div>
-            </div>
-
-            <transition name="collapse">
-              <div v-show="isExpanded(1, 'featuredBounty')" class="row px-md-5 pb-md-5 border-top pt-3">
-                <div class="col-12">
-                  <div id="featured-bounty-add" class="pt-2 row">
-                    <div class="col-md-7">
-                      <p class="featured-text">{% blocktrans %}Your bounty will be placed on a special ‘Featured Bounties’ section <b>at the top of the Issue Explorer</b> for 14 days.{% endblocktrans %}</p>
-                      <div class="form__flex-group">
-                        <div>
-                          <div class="featured_container">
-                            <small class="mb-3 d-block">Note: You will have to approve this transaction separately via your web3 wallet on submit.</small>
-                            <div class="form__checkbox">
-                              <input name='featuredBounty' id='featuredBounty' v-model="form.featuredBounty" type="checkbox" value=1 />
-                              <label class="form__label" for='featuredBounty'>{% trans "Yes, I want to feature my bounty." %}
-                                <span class="featured-price" :class="{'text-through': subscriptionActive}"><b class="featured-price-eth">[[ethFeaturedPrice]] ETH</b> (<span class="featured-price-usd">[[usdFeaturedPrice]]</span> USD)</span>
-                                <span class="featured-price gc-text-green font-weight-bold" v-if="subscriptionActive">FREE</span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-5 text-right">
-                      <img src="{% static 'v2/images/featured-example.jpg' %}" width="314" alt="featured bounty example" class="featured-example w-auto">
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </transition>
-          </div>
-
-          <div class="container mt-5 bg-white position-relative rounded" v-show="bountyFee > 0 && chainId === '1'">
-            <div class="row p-4 p-md-5">
-              <div class="col-12">
-                <div id="fee-section" class="">
-                  <h5 class="font-body letter-spacing text-black-60 text-uppercase">
-                    No Surprises
-                  </h5>
-                  <div class="row">
-                    <div class="col-12 col-sm-9 mt-3 font-body mb-sm-3">
-                      <p>
-                        Simply pay the bounty amount ( plus a  standard
-                        <span class="fee-percentage font-weight-bold">[[bountyFee]]</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
-                        This covers our costs for finding quality contributors to join our platform so that you get the best work.
-                        If your business requires additional assistance, please contact us <a href="mailto:&#102;&#111;&#117;&#110;&#100;&#101;&#114;&#115;&#064;&#103;&#105;&#116;&#099;&#111;&#105;&#110;&#046;&#099;&#111;">&#102;&#111;&#117;&#110;&#100;&#101;&#114;&#115;&#064;&#103;&#105;&#116;&#099;&#111;&#105;&#110;&#046;&#099;&#111;</a>
-                      </p>
-                    </div>
-                    <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
-                      <div class="fee-circle text-center">
-                        <p class="font-title mb-0"><span id="fee-amount">[[ totalAmount.totalFee ]]</span> <span v-if="form.token" id="fee-token">[[form.token.symbol]]</span></p>
-                        <p class="font-body font-weight-semibold">
-                          (<span class="fee-percentage">[[bountyFee]]</span>%)
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="container mt-5 bg-white position-relative rounded">
-            <div class="row p-4 p-md-5">
-              <div class="col-12">
-                <div id="total-section" class="d-flex" v-if="form.token">
-                  <div class="col-md-3 col-lg-2 my-auto">
-                    <h5 class="text-uppercase h3 font-weight-bold mb-0">Total</h5>
-                  </div>
-                  <div class="col-md-9 col-lg-10 my-auto">
-                    <p class="mb-1 text-uppercase text-black-50 font-body">Payment Due</p>
-                    <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[totalAmount.total | decimals(4)]] [[form.token.symbol]] <span v-if="form.featuredBounty && !subscriptionActive">+ [[ethFeaturedPrice]] ETH</span></span>
-
-                    <p class="font-caption text-black-50 mb-1">
-                      Bounty <span id="summary-bounty-amount" class="font-weight-bold">[[form.amount ]]</span>
-                      <span id="" class="font-weight-bold">[[form.token.symbol]]</span> ($[[form.amountusd]])
-                      <template>
-                        <span> +
-                          <span id="" class="font-weight-bold">[[totalAmount.totalFee | decimals(4)]]</span>
-                          <span id="" class="font-weight-bold">[[form.token.symbol]]</span>
-                          Gitcoin Platform Fee
-                        </span>
-                        <span v-if="form.featuredBounty"> +
-                          <span class="font-weight-bold" :class="{'text-through': subscriptionActive}">[[ethFeaturedPrice]] ETH</span>
-                          <span class="font-weight-bold gc-text-green" v-if="subscriptionActive">FREE</span>
-                          Featured Bounty
-                        </span>
-
-                      </template>
-                    </p>
-
-                    <p v-if="totalTx" class="font-caption mb-0 gc-text-blue">
-                      You will have to approve <b>[[totalTx]]</b> web3 wallet [['confirmation' | pluralize(totalTx)]].
-                    </p>
-
-                  </div>
-                </div>
-                <div class="pt-4">
-                  <div class="form__checkbox">
-                    <input name="terms" id="terms" type="checkbox" value="1" required="" v-model="form.terms">
-                    <label class="form__label" for="terms">I have read, understand, and agree to, the
-                      <a href="/legal/terms" target="_blank" class="text-reset underline" rel="noopener noreferrer">Terms of Service</a>.
-                    </label>
-                  </div>
-                  <div class="text-danger" v-if="errors.terms && !form.terms">
-                    [[errors.terms]]
-                  </div>
-
-                  <div class="form__checkbox">
-                    <input name="termsPrivacy" id="termsPrivacy" type="checkbox" value="1" required="" v-model="form.termsPrivacy">
-                    <label class="form__label" for="termsPrivacy">Payment Upon Completion. Upon delivery of work, I agree to pay the proposed amount to the fulfiller(s) if the submitted fulfillment meets the standards I have set forth.
-                    </label>
-                  </div>
-                  <div class="text-danger" v-if="errors.termsPrivacy && !form.termsPrivacy">
-                    [[errors.termsPrivacy]]
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="container mt-5">
-            <div class="row">
-              <div class="col-12 text-center">
-                <button class="btn btn-primary btn-lg mb-3 px-5" type="submit" @click="submitForm($event)">Fund Issue</button>
-              </div>
-              <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
-                Please verify forms errors and try again
-              </div>
-            </div>
-          </div>
-        </form>
+      <div>
+        <p class="text-center text-grey-400">Need help? Check out our <a href="TODO: needlink to funder guide">Funder
+            Guide</a></p>
       </div>
-      <script type="text/x-template" id="select2-template">
+
+      <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
+        <div class="container mt-3 mb-3 bg-white position-relative rounded">
+ 
+          {% include './new_bounty_step_1.html' %}
+          {% include './new_bounty_step_2.html' %}
+
+          <form-wrapper v-if="step === 3" :heading="'Eligibility & Discovery setup 3'" :current-step="step"
+            :total-steps="currentSteps.length" @update-navigation="updateNav">
+            <div class="mb-4">
+              <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
+              <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+              <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching
+                rounds.</p>
+              <p class="mt-0 mb-2">
+                <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/"
+                  rel="noopener noreferrer">Learn more about matching rounds.</a>
+              </p>
+            </div>
+          </form-wrapper>
+          <form-wrapper v-if="step === 4" :heading="'Eligibility & Discovery setup 4'" :current-step="step"
+            :total-steps="currentSteps.length" @update-navigation="updateNav">
+            <div class="mb-4">
+              <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
+              <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+              <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching
+                rounds.</p>
+              <p class="mt-0 mb-2">
+                <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/"
+                  rel="noopener noreferrer">Learn more about matching rounds.</a>
+              </p>
+            </div>
+          </form-wrapper>
+          <form-wrapper v-if="step === 5" :heading="'Eligibility & Discovery setup 5'" :current-step="step"
+            :total-steps="currentSteps.length" @update-navigation="updateNav">
+            <div class="mb-4">
+              <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
+              <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+              <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching
+                rounds.</p>
+              <p class="mt-0 mb-2">
+                <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/"
+                  rel="noopener noreferrer">Learn more about matching rounds.</a>
+              </p>
+            </div>
+          </form-wrapper>
+        </div>
+      </form>
+    </div>
+    <script type="text/x-template" id="select2-template">
         <select>
           <slot></slot>
         </select>
       </script>
-      <script type="text/x-template" id="date-range-template">
+    <script type="text/x-template" id="date-range-template">
         <div>
           <input class="form__input" type="text" v-model="pickDate" :disabled="disabled" placeholder="" />
         </div>
       </script>
 
-      {% include 'shared/footer.html' %}
-      {% include 'shared/footer_scripts.html' with vue=True %}
-      {% include 'shared/current_profile.html' %}
-      <script>
-        document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
-        document.coupon_code = '{{ coupon_code|safe }}';
-        document.blocked_urls = {{blocked_urls|safe}};
-        {% if expired_coupon %}
-          _alert({ message: 'This coupon has expired.' }, 'danger');
-        {% endif %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts.html' with vue=True %}
+    {% include 'shared/current_profile.html' %}
+    {% include 'grants/components/form_wrapper.html' %}
 
-        document.subscriptions= [
-          {% for subscription in subscriptions.all %}
-              {% if not forloop.first %},{% endif %}
-              {
-                tribe: "{{ subscription.tribe }}",
-                plan_type: "{{ subscription.plan_type }}",
-                expires_on: new Date("{{ subscription.expires_on.isoformat }}"),
+    <script>
+      document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
+      document.coupon_code = '{{ coupon_code|safe }}';
+      document.blocked_urls = {{ blocked_urls | safe }};
+      {% if expired_coupon %}
+      _alert({ message: 'This coupon has expired.' }, 'danger');
+      {% endif %}
+
+      document.subscriptions = [
+        {% for subscription in subscriptions.all %}
+      {% if not forloop.first %}, {% endif %}
+      {
+        tribe: "{{ subscription.tribe }}",
+          plan_type: "{{ subscription.plan_type }}",
+            expires_on: new Date("{{ subscription.expires_on.isoformat }}"),
               }
-          {% endfor %}
+      {% endfor %}
           ]
-      </script>
+    </script>
 
-      {% bundle merge_js file libs %}
-        <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
-        <script src="highlight.min.js" base-dir="/node_modules/@highlightjs/cdn-assets/"></script>
-        <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>
-        <script src="daterangepicker.js" base-dir="/node_modules/daterangepicker/"></script>
-      {% endbundle %}
+    <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
 
-      <script src="{% static "v2/js/ipfs.js" %}"></script>
-      <script src="{% static "v2/js/abi.js" %}"></script>
+    {% bundle merge_js file libs %}
+    <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
+    <script src="highlight.min.js" base-dir="/node_modules/@highlightjs/cdn-assets/"></script>
+    <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>
+    <script src="daterangepicker.js" base-dir="/node_modules/daterangepicker/"></script>
+    {% endbundle %}
 
-      <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
+    <script src="{% static "v2/js/ipfs.js" %}"></script>
+    <script src="{% static "v2/js/abi.js" %}"></script>
 
-      <script>
-        $('body').bootstrapTooltip({
-          selector: '[data-toggle="tooltip"]'
-        });
-        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
 
-      </script>
-      <script src="{% static "v2/js/pages/wallet_address_validation.js" %}"></script>
-      <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
-    </div>
-  </body>
+
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+
+      $(function () {
+        $('[data-toggle="popover"]').popover()
+      });
+
+      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    </script>
+    <script src="{% static "v2/js/pages/wallet_address_validation.js" %}"></script>
+    <script src="{% static "v2/js/grants/form_wrapper.js" %}"></script>
+    <script src="{% static "v2/js/grants/progress_bar.js" %}"></script>
+    <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
+  </div>
+</body>
+
 </html>
