@@ -28,7 +28,7 @@ from django.utils.translation import gettext_lazy as _
 
 import sendgrid
 from app.utils import get_profiles_from_text
-from marketing.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber
+from marketing.common.utils import allowed_to_send_email, func_name, get_or_save_email_subscriber
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,

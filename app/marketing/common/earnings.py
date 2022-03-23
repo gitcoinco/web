@@ -1,14 +1,19 @@
 import io
 import csv
+import logging
 
 from django.conf import settings
 
 from marketing.mails import send_mail
 from retail.emails import render_export_data_email, render_export_data_email_failed
 
-def create_csv(export_type, profile, earnings):
-    earnings_csv = io.StringIO()
-    writer = csv.writer(earnings_csv)
+logger = logging.getLogger(__name__)
+
+def export_earnings(export_type, profile):
+    earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
+    earnings = earnings.filter(network='mainnet').order_by('-created_on')
+    buf = io.StringIO()
+    writer = csv.writer(buf)
     writer.writerow(['ID', 'Date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'TXID', 'Token Name', 'Token Value', 'URL'])
     for earning in earnings:
         writer.writerow([
@@ -26,10 +31,10 @@ def create_csv(export_type, profile, earnings):
             earning.url,
         ])
 
-    return earnings_csv
+    return buf
 
 
-def send_csv(attachment, user_profile):
+def send_csv(data, user_profile):
     to_email = user_profile.user.email
     from_email = settings.CONTACT_EMAIL
     html, text, subject = render_export_data_email(user_profile=user_profile)
@@ -41,7 +46,7 @@ def send_csv(attachment, user_profile):
         html,
         from_name=f"@{user_profile.handle}",
         categories=['transactional'],
-        csv=attachment
+        csv=data
     )
 
 

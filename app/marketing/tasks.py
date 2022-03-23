@@ -13,8 +13,8 @@ from celery.utils.log import get_task_logger
 from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
-from marketing.utils import allowed_to_send_email
-from marketing.common.earnings import create_csv, send_csv, send_download_failure_email
+from marketing.common.utils import allowed_to_send_email
+from marketing.common.earnings import export_earnings, send_csv, send_download_failure_email
 
 logger = get_task_logger(__name__)
 
@@ -23,15 +23,11 @@ redis = RedisService().redis
 rate_limit = '300000/s' if settings.FLUSH_QUEUE or settings.MARKETING_FLUSH_QUEUE else settings.MARKETING_QUEUE_RATE_LIMIT
 
 @app.shared_task(bind=True)
-def export_earnings_to_csv(self, user_pk, export_type):
+def send_earnings_csv(self, user_pk, export_type):
     user = User.objects.get(pk=user_pk)
-    profile = user.profile
-    earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
-    earnings = earnings.filter(network='mainnet').order_by('-created_on')
-
+    data = export_earnings(export_type, user.profile)
     try:
-        attachment = create_csv(export_type, profile, earnings)
-        send_csv(attachment=attachment, user_profile=profile)
+        send_csv(data=data, user_profile=user.profile)
     except:
         send_download_failure_email(profile)
 
