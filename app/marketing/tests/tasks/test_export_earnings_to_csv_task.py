@@ -29,7 +29,8 @@ from app import settings
 from celery.exceptions import MaxRetriesExceededError
 from dashboard.tests.factories import EarningFactory, ProfileFactory
 from grants.tests.factories import GrantFactory
-from marketing.tasks import export_earnings_to_csv, send_csv
+from marketing.tasks import send_earnings_csv
+from marketing.common.earnings import export_earnings, send_csv
 
 
 @pytest.fixture
@@ -54,49 +55,31 @@ def earnings(profile, grant):
 
 @pytest.mark.django_db
 class TestExportEarningsToCSVTask:
-    def test_export_earnings_to_csv(self, profile, grant, earnings):
-        path = f'app/assets/tmp/user-earnings/{profile.handle}'
-
-        assert len(list(Path(path).glob('*.csv'))) == 0
-        export_earnings_to_csv(profile.user.pk, 'earnings')
-        assert len(list(Path(path).glob('*.csv'))) == 1
-
-        shutil.rmtree('app/assets/tmp/user-earnings/')
-
     def test_csv_has_proper_data(self, profile, grant, earnings):
         path = f'app/assets/tmp/user-earnings/{profile.handle}'
-        export_earnings_to_csv(profile.user.pk, 'earnings')
-        csv_path = list(Path(path).glob('*.csv'))[0]
-
-        with open(csv_path, 'r') as file:
-            data = file.readlines()
-
+        buf = export_earnings('earnings', profile)
+        data = buf.getvalue().split('\r\n')
         headers = ['ID', 'Date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'TXID', 'Token Name', 'Token Value', 'URL']
-        assert data[0] == ",".join(headers)+"\n"
-        assert len(data) == 6
+
+        assert data[0] == ",".join(headers)
+        assert len(data) == 7
+        assert len(data[6]) == 0
         assert len(data[1].split(',')) == len(headers)
 
-        shutil.rmtree('app/assets/tmp/user-earnings/')
-
     def test_send_csv_is_called(self, profile, earnings):
-        path = f'app/assets/tmp/user-earnings/{profile.handle}'
-
         with patch('marketing.tasks.send_csv') as send_csv_mock:
-            export_earnings_to_csv(profile.user.pk, 'earnings')
+            send_earnings_csv(profile.user.pk, 'earnings')
 
             assert send_csv_mock.call_count == 1
             assert send_csv_mock.call_args[1]['user_profile'] == profile
-
-        shutil.rmtree('app/assets/tmp/user-earnings/')
 
 
 @pytest.mark.django_db
 class TestSendCSV:
     def test_send_csv_email(self, profile):
-        path = 'app/assets/tmp/test-file.csv'
-
-        with patch('marketing.tasks.send_mail') as mock_send_mail:
-            send_csv(path, profile)
+        with patch('marketing.common.earnings.send_mail') as mock_send_mail:
+            data = export_earnings('earnings', profile)
+            send_csv(data, profile)
 
             assert mock_send_mail.call_count == 1
             assert mock_send_mail.call_args[0][0] == settings.CONTACT_EMAIL
@@ -105,4 +88,4 @@ class TestSendCSV:
 
             assert mock_send_mail.call_args[1]['from_name'] == f'@{profile.handle}'
             assert mock_send_mail.call_args[1]['categories'] == ['transactional']
-            assert mock_send_mail.call_args[1]['csv'] == path
+            assert mock_send_mail.call_args[1]['csv'] == data
