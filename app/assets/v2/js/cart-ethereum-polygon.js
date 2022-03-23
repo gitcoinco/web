@@ -218,7 +218,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     // Send a batch transfer based on donation inputs
-    async checkoutWithPolygon() {
+    async checkoutWithPolygon(onlyPolygon) {
       // Prompt web3 login if not connected
       if (!provider) {
         await onConnect();
@@ -270,7 +270,7 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         // If some grants are multisig, we display modal to prompt the split of the cart
-        if (this.multisigGrants.length > 0 && this.multisigGrants.length < this.grantsByTenant.length) {
+        if (!onlyPolygon && this.multisigGrants.length > 0 && this.multisigGrants.length < this.grantsByTenant.length) {
           this.polygon.showModal = true;
           return;
         }
