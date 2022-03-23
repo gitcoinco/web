@@ -48,6 +48,7 @@
     "webpack-watched-glob-entries-plugin": "^2.1.9"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^3.0.5",
     "@highlightjs/cdn-assets": "^10.0.0",
     "@joeattardi/emoji-button": "^3.1.1",
     "@popperjs/core": "^2.10.2",

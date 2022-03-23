@@ -82,7 +82,10 @@ module.exports = (_, argv) => {
       // prevent chucking of large outputs
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1
-      })
+      }),
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+      }),
     ]
   };
 

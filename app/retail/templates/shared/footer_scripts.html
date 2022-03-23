@@ -51,7 +51,7 @@
   <script src="index.js" base-dir="/node_modules/@joeattardi/emoji-button/dist/"></script>
 {% endbundle %}
 
-<script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.3/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.5/dist/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/authereum@latest/authereum.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@portis/web3@4.0.5/umd/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fortmatic/dist/fortmatic.js"></script>
@@ -66,6 +66,13 @@
   <script src="jquery.validate.min.js" base-dir="/node_modules/jquery-validation/dist/"></script>
   <script src="additional-methods.min.js" base-dir="/node_modules/jquery-validation/dist/"></script>
   <script src="select2.min.js" base-dir="/node_modules/select2/dist/js/"></script>
+{% endbundle %}
+
+{% bundle js file coinbase-wallet-sdk-module %}
+  <script>
+    import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
+    window.CoinbaseWalletSDK = CoinbaseWalletSDK;
+  </script>
 {% endbundle %}
 
 {% if not slim %}
