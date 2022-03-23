@@ -1886,7 +1886,7 @@ def remember_your_cart(profile, cart_query, grants, hours):
 
 def tribe_hackathon_prizes(hackathon):
     from dashboard.models import TribeMember, Sponsor
-    from marketing.utils import generate_hackathon_email_intro
+    from marketing.common.utils import generate_hackathon_email_intro
 
     sponsors = hackathon.sponsor_profiles.all()
     tribe_members_in_sponsors = TribeMember.objects.filter(org__in=[sponsor for sponsor in sponsors]).exclude(status='rejected').exclude(profile__user=None).only('profile')

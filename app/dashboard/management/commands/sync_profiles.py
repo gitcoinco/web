@@ -24,7 +24,7 @@ from django.utils import timezone
 from app.utils import sync_profile
 from dashboard.models import Bounty, Profile
 from dashboard.utils import is_blocked
-from marketing.utils import is_deleted_account
+from marketing.common.utils import is_deleted_account
 
 
 def does_need_refresh(handle):

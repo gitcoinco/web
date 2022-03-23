@@ -1636,7 +1636,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    from marketing.utils import handle_bounty_feedback
+    from marketing.common.utils import handle_bounty_feedback
 
     bounty = Bounty.objects.current().filter(idx_status='done').last()
 
@@ -1753,7 +1753,7 @@ def roundup(request):
 
 @staff_member_required
 def quarterly_roundup(request):
-    from marketing.utils import get_platform_wide_stats
+    from marketing.common.utils import get_platform_wide_stats
     from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
@@ -1836,7 +1836,7 @@ def start_work_applicant_expired(request):
 @staff_member_required
 def tribe_hackathon_prizes(request):
     from dashboard.models import HackathonEvent, Bounty
-    from marketing.utils import generate_hackathon_email_intro
+    from marketing.common.utils import generate_hackathon_email_intro
 
     hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
 
