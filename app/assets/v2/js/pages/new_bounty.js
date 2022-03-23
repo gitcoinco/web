@@ -5,8 +5,40 @@ window.addEventListener('dataWalletReady', function(e) {
   appFormBounty.form.funderAddress = selectedAccount;
 }, false);
 
+const helpText = {
+  '#new-bounty-acceptace-criteria': 'Check out great examples of acceptance criteria from some of our past successful bounties!'
+};
+
+Vue.use(VueQuillEditor);
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.mixin({
+  data() {
+    return {
+      step: 1,
+      bountyTypes: [
+        'Bug',
+        'Project',
+        'Feature',
+        'Security',
+        'Improvement',
+        'Design',
+        'Docs',
+        'Code review',
+        'Other'
+      ],
+      tagOptions: [
+        'Web3',
+        'React',
+        'Http',
+        'Python'
+      ],
+      contactDetailsType: [
+        'Discord',
+        'Telegram',
+        'E-Mail'
+      ]
+    };
+  },
   methods: {
     estHoursValidator: function() {
       this.form.hours = parseFloat(this.form.hours || 0);
@@ -135,7 +167,8 @@ Vue.mixin({
 
       return validateWalletAddress(vm.chainId, vm.form.funderAddress);
     },
-    checkForm: async function(e) {
+    checkForm: async function() {
+      console.log('geri - checkForm');
       let vm = this;
 
       vm.submitted = true;
@@ -174,6 +207,7 @@ Vue.mixin({
       if (!vm.form.termsPrivacy) {
         vm.$set(vm.errors, 'termsPrivacy', 'You need to accept the terms');
       }
+      return true; // TODO geri hardcoded
       if (Object.keys(vm.errors).length) {
         return false;
       }
@@ -466,7 +500,7 @@ Vue.mixin({
           const amountAsString = new web3.utils.BN(BigInt(amountInWei)).toString();
           const token_contract = new web3.eth.Contract(token_abi, vm.form.token.address);
 
-          token_contract.methods.transfer(toAddress, web3.utils.toHex(amountAsString)).send({from: selectedAccount},
+          token_contract.methods.transfer(toAddress, web3.utils.toHex(amountAsString)).send({ from: selectedAccount },
             function(error, txnId) {
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'danger');
@@ -494,26 +528,30 @@ Vue.mixin({
       }
       return tokens;
     },
-    submitForm: async function(event) {
-      event.preventDefault();
+    submitForm: async function() {
+      console.log('geri - submitForm 1');
       let vm = this;
 
-      vm.checkForm(event);
+      vm.checkForm();
 
+      console.log('geri - submitForm 2');
       if (!provider && vm.chainId === '1') {
         onConnect();
         return false;
       }
 
-      if (Object.keys(vm.errors).length) {
-        return false;
-      }
-      if (vm.bountyFee > 0 && !vm.subscriptionActive) {
-        await vm.payFees();
-      }
-      if (vm.form.featuredBounty && !vm.subscriptionActive) {
-        await vm.payFeaturedBounty();
-      }
+      // TODO geri: removed just for testing
+      // if (Object.keys(vm.errors).length) {
+      //   return false;
+      // }
+      // if (vm.bountyFee > 0 && !vm.subscriptionActive) {
+      //   await vm.payFees();
+      // }
+      // if (vm.form.featuredBounty && !vm.subscriptionActive) {
+      //   await vm.payFeaturedBounty();
+      // }
+
+      console.log('geri - submitForm 3');
       const metadata = {
         issueTitle: vm.form.issueDetails.title,
         issueDescription: vm.form.issueDetails.description,
@@ -582,6 +620,7 @@ Vue.mixin({
         'bounty_owner_address': vm.form.funderAddress
       };
 
+      console.log('geri - submitForm 4');
       vm.sendBounty(params);
 
     },
@@ -612,6 +651,46 @@ Vue.mixin({
         _alert('Unable to create a bounty. Please try again later', 'danger');
       });
 
+    },
+    updateNav: function(direction) {
+      if (direction === 1) {
+        // Forward navigation
+        if (this.step === this.currentSteps.length) {
+          console.log('geri - updateNav - submitting ...');
+          this.submitForm();
+          return;
+        }
+        this.step += 1;
+      } else if (this.step > 1) {
+        // Backward navigation
+        this.step -= 1;
+      }
+    },
+
+    removeContactDetails(idx) {
+      console.log('geri - before - ', this.form.contactDetails);
+      this.form.contactDetails.splice(idx, 1);
+      console.log('geri - after - ', this.form.contactDetails);
+    },
+
+    addContactDetails() {
+      this.form.contactDetails.push({
+        type: 'discord',
+        value: 'dhandle'
+      });
+    },
+
+    quilUpdated({ quill, text }) {
+      this.form.description = text;
+      this.form.richDescription = JSON.stringify(quill.getContents());
+    },
+
+    popover(elementId) {
+      console.log('geri - popover for - ', elementId);
+      $(elementId).popover({
+        placement: 'right',
+        content: helpText[elementId]
+      }).popover('show');
     }
   },
   computed: {
@@ -629,7 +708,7 @@ Vue.mixin({
       let totalFee = Number(vm.form.amount) * fee;
       let total = Number(vm.form.amount) + totalFee;
 
-      return {'totalFee': totalFee, 'total': total };
+      return { 'totalFee': totalFee, 'total': total };
     },
     totalTx: function() {
       let vm = this;
@@ -679,7 +758,7 @@ Vue.mixin({
       if (vm.network == '') {
         return vm.sortByPriority;
       }
-      return vm.sortByPriority.filter((item)=>{
+      return vm.sortByPriority.filter((item) => {
 
         return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
       });
@@ -702,6 +781,33 @@ Vue.mixin({
         }
       }
       return result;
+    },
+    currentSteps: function() {
+      const steps = [
+        {
+          text: 'Bounty Type',
+          active: false
+        },
+        {
+          text: 'Bounty Details',
+          active: false
+        },
+        {
+          text: 'Payment Information',
+          active: false
+        },
+        {
+          text: 'Additional Information',
+          active: false
+        },
+        {
+          text: 'Review Bounty',
+          active: false
+        }
+      ];
+
+      steps[this.step - 1].active = true;
+      return steps;
     }
   },
   watch: {
@@ -738,13 +844,12 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
     },
     data() {
       return {
-
         tokens: [],
         network: 'mainnet',
         chainId: '',
         funderAddressFallback: false,
-        checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': true, 'hiringRightNow': false },
-        expandedGroup: {'reserve': [], 'featuredBounty': []},
+        checkboxes: { 'terms': false, 'termsPrivacy': false, 'neverExpires': true, 'hiringRightNow': false },
+        expandedGroup: { 'reserve': [], 'featuredBounty': [] },
         errors: {},
         usersOptions: [],
         bountyFee: document.FEE_PERCENTAGE,
@@ -779,7 +884,35 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           terms: false,
           termsPrivacy: false,
           feeTxId: null,
-          couponCode: document.coupon_code
+          couponCode: document.coupon_code,
+          tags: [],
+          bountyType: null,
+          bountyInformationSource: null,
+          contactDetails: [{
+            type: 'discord',
+            value: 'dhandle'
+          }, {
+            type: 'telegram',
+            value: '@thandle'
+          }],
+          ressources: '',
+          acceptanceCriteria: '',
+          organisationUrl: '',
+          description: '',
+          richDescription: ''
+        },
+        editorOptionPrio: {
+          modules: {
+            toolbar: [
+              [ 'bold', 'italic', 'underline' ],
+              [{ 'align': [] }],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [ 'link', 'code-block' ],
+              ['clean']
+            ]
+          },
+          theme: 'snow',
+          placeholder: 'Describe what your bounty is about'
         }
       };
     },
