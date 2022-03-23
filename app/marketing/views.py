@@ -539,7 +539,7 @@ def account_settings(request):
         elif request.POST.get('export', False):
             export_type = request.POST.get('export_type', False)
             user_pk = request.user.pk
-            send_earnings_csv(user_pk, export_type)
+            send_earnings_csv.delay(user_pk, export_type)
             return HttpResponse(status="200")
 
         elif request.POST.get('disconnect', False):
