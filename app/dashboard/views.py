@@ -3250,6 +3250,7 @@ def verify_user_twitter(request, handle):
         for tweet in last_10_tweets:
             if tweet.full_text.startswith("I am verifying my identity as"):
                 verification_tweet = tweet
+                break
 
     except tweepy.TweepError as e:
         logger.error(f"error: verify_user_twitter TweepError {e}")
