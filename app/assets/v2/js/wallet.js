@@ -52,7 +52,7 @@ function initWallet() {
       options: {
         infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
       }
-    },
+    }
   };
 
   const network = isProd ? 'mainnet' : 'rinkeby';
