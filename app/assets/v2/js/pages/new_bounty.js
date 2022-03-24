@@ -98,10 +98,11 @@ Vue.mixin({
         vm.form.issueDetails = response;
         
         let md = window.markdownit();
+
         vm.form.richDescription = md.render(vm.form.issueDetails.description);
         vm.form.title = vm.form.issueDetails.title;
 
-          // vm.$set(vm.errors, 'issueDetails', undefined);
+        // vm.$set(vm.errors, 'issueDetails', undefined);
       }).catch((err) => {
         console.log(err);
         vm.form.issueDetails = undefined;
@@ -626,7 +627,7 @@ Vue.mixin({
         'acceptance_criteria': vm.form.acceptanceCriteria,
         'resources': vm.form.resources,
         'contact_details': JSON.stringify(vm.form.contactDetails),
-        'organisation_url': vm.form.organisationUrl,
+        'organisation_url': vm.form.organisationUrl
       };
 
       console.log('geri - submitForm 4');
@@ -691,7 +692,7 @@ Vue.mixin({
 
     quilUpdated({ quill, text }) {
       this.form.description = text;
-      console.log("geri - content - ", JSON.stringify(quill.getContents()));
+      console.log('geri - content - ', JSON.stringify(quill.getContents()));
     },
 
     popover(elementId) {
@@ -906,7 +907,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           organisationUrl: '',
           title: '',
           description: '',
-          richDescription: '',
+          richDescription: ''
         },
         editorOptionPrio: {
           modules: {
@@ -920,7 +921,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           },
           theme: 'snow',
           placeholder: 'Describe what your bounty is about',
-          readOnly: true,
+          readOnly: true
         }
       };
     },
