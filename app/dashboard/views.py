@@ -6053,12 +6053,13 @@ def create_bounty_v1(request):
         return JsonResponse(response)
 
     github_url = request.POST.get("github_url", None)
-    if Bounty.objects.filter(github_url=github_url, network=network).exists():
-        response = {
-            'status': 303,
-            'message': 'bounty already exists for this github issue'
-        }
-        return JsonResponse(response)
+    # TODO geri: uncomment below code
+    # if Bounty.objects.filter(github_url=github_url, network=network).exists():
+    #     response = {
+    #         'status': 303,
+    #         'message': 'bounty already exists for this github issue'
+    #     }
+    #     return JsonResponse(response)
 
     bounty = Bounty()
 
@@ -6098,6 +6099,13 @@ def create_bounty_v1(request):
     bounty.value_true = request.POST.get("amount", 0)
     bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
 
+    bounty.acceptance_criteria = request.POST.get("acceptance_criteria", "")
+    bounty.resources = request.POST.get("resources", "")
+    
+    contact_details = request.POST.get("contact_details", "")
+    if contact_details:
+        bounty.contact_details = json.loads(contact_details)
+
     current_time = timezone.now()
 
     bounty.web3_created = current_time
@@ -6120,11 +6128,12 @@ def create_bounty_v1(request):
     )
 
     # bounty github data
-    try:
-        kwargs = get_url_dict(bounty.github_url)
-        bounty.github_issue_details = get_issue_details(**kwargs)
-    except Exception as e:
-        logger.error(e)
+    if bounty.github_url:
+        try:
+            kwargs = get_url_dict(bounty.github_url)
+            bounty.github_issue_details = get_issue_details(**kwargs)
+        except Exception as e:
+            logger.error(e)
 
     # bounty is featured bounty
     bounty.is_featured = request.POST.get("is_featured", False)

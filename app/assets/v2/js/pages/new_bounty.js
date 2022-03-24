@@ -96,7 +96,12 @@ Vue.mixin({
         }
 
         vm.form.issueDetails = response;
-        // vm.$set(vm.errors, 'issueDetails', undefined);
+        
+        let md = window.markdownit();
+        vm.form.richDescription = md.render(vm.form.issueDetails.description);
+        vm.form.title = vm.form.issueDetails.title;
+
+          // vm.$set(vm.errors, 'issueDetails', undefined);
       }).catch((err) => {
         console.log(err);
         vm.form.issueDetails = undefined;
@@ -207,10 +212,10 @@ Vue.mixin({
       if (!vm.form.termsPrivacy) {
         vm.$set(vm.errors, 'termsPrivacy', 'You need to accept the terms');
       }
-      return true; // TODO geri hardcoded
-      if (Object.keys(vm.errors).length) {
-        return false;
-      }
+      return true; // TODO: geri hardcoded - remove this and uncomment the lines below
+      // if (Object.keys(vm.errors).length) {
+      //   return false;
+      // }
     },
     web3Type() {
       let vm = this;
@@ -553,8 +558,8 @@ Vue.mixin({
 
       console.log('geri - submitForm 3');
       const metadata = {
-        issueTitle: vm.form.issueDetails.title,
-        issueDescription: vm.form.issueDetails.description,
+        issueTitle: vm.form.title,
+        issueDescription: vm.form.description,
         issueKeywords: vm.form.keywords.join(),
         githubUsername: vm.form.githubUsername,
         notificationEmail: vm.form.notificationEmail,
@@ -617,7 +622,11 @@ Vue.mixin({
         'auto_approve_workers': vm.form.auto_approve_workers,
         'web3_type': vm.web3Type(),
         'activity': metadata.activity,
-        'bounty_owner_address': vm.form.funderAddress
+        'bounty_owner_address': vm.form.funderAddress,
+        'acceptance_criteria': vm.form.acceptanceCriteria,
+        'resources': vm.form.resources,
+        'contact_details': JSON.stringify(vm.form.contactDetails),
+        'organisation_url': vm.form.organisationUrl,
       };
 
       console.log('geri - submitForm 4');
@@ -637,7 +646,7 @@ Vue.mixin({
       $.when(postBountyData).then((response) => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
-          window.location.href = response.bounty_url;
+          // window.location.href = response.bounty_url;  TODO geri: uncomment this
         } else if (response.status == 304) {
           _alert('Bounty already exists for this github issue.', 'danger');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
@@ -675,14 +684,14 @@ Vue.mixin({
 
     addContactDetails() {
       this.form.contactDetails.push({
-        type: 'discord',
-        value: 'dhandle'
+        type: '',
+        value: ''
       });
     },
 
     quilUpdated({ quill, text }) {
       this.form.description = text;
-      this.form.richDescription = JSON.stringify(quill.getContents());
+      console.log("geri - content - ", JSON.stringify(quill.getContents()));
     },
 
     popover(elementId) {
@@ -889,17 +898,15 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           bountyType: null,
           bountyInformationSource: null,
           contactDetails: [{
-            type: 'discord',
-            value: 'dhandle'
-          }, {
-            type: 'telegram',
-            value: '@thandle'
+            type: '',
+            value: ''
           }],
-          ressources: '',
+          resources: '',
           acceptanceCriteria: '',
           organisationUrl: '',
+          title: '',
           description: '',
-          richDescription: ''
+          richDescription: '',
         },
         editorOptionPrio: {
           modules: {
@@ -912,7 +919,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
             ]
           },
           theme: 'snow',
-          placeholder: 'Describe what your bounty is about'
+          placeholder: 'Describe what your bounty is about',
+          readOnly: true,
         }
       };
     },

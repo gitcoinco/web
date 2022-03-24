@@ -29,16 +29,16 @@
     <!-- GitHub Issue Url -->
     <div v-if="form.bountyInformationSource === '0'" class="mb-4">
       <label class="mb-1 font-subheader font-weight-normal letter-spacing">GitHub Issue Url</label>
-      <input class="form-control" name='issueURL' v-model="form.issueUrl" type="url"
+      <input class="form-control" id="new-bounty-issue-url" name='issueURL' v-model="form.issueUrl" type="url"
         placeholder="https://github.com/org/repo/issues/n" @input="getIssueDetails(form.issueUrl)"
         value="{% if issueURL %}{{ issueURL }}{% endif %}" required />
     </div>
 
     <!-- GitHub Issue Title -->
-    <div v-if="(form.bountyInformationSource === '0' && form.issueDetails) || form.bountyInformationSource === '1'" class="mb-4">
+    <div v-if="form.bountyInformationSource === '0' && form.issueDetails" class="mb-4">
       <label class="mb-1 font-subheader font-weight-normal letter-spacing">Title</label>
-      <input class="form-control" name='title' v-model="form.issueDetails.title"
-        :readonly="form.bountyInformationSource === '0'" required />
+      <input class="form-control" id="new-bounty-title" name='title' v-model="form.title"
+        :readonly="true" required />
     </div>
 
     <!-- GitHub Issue Details -->
@@ -56,27 +56,34 @@
       <div class="issue_description mb-3" :inner-html.prop="form.issueDetails.description | markdownit"></div>
     </div>
 
-    <!-- Issue Details Editor -->
+    <!-- Custom Bounty Title -->
+    <div v-if="form.bountyInformationSource === '1'" class="mb-4">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Title</label>
+
+      <input class="form-control" id="new-bounty-custom-title" name='title' v-model="form.title" required />
+    </div>
+
+    <!-- Custom Bounty Details Editor -->
     <div v-if="form.bountyInformationSource === '1'" class="mb-4">
       <label class="mb-1 font-subheader font-weight-normal letter-spacing">Description</label>
 
-      <quill-editor ref="quillEditorDesc" @change="quilUpdated($event)"
+      <quill-editor id="new-bounty-custom-editor" @change="quilUpdated($event)"
         :class="`editor ${errors.description && !form.description_rich.length ? 'invalid' : ''}`"
-        :options="editorOptionPrio"></quill-editor>
+        :options="editorOptionPrio" v-model="form.richDescription"></quill-editor>
     </div>
     
     <!-- Acceptance Criteria -->
     <div class="mb-4">
       <label class="mb-1 font-subheader font-weight-normal letter-spacing">Acceptance Criteria <i class="far fa-times" @click="popover('#new-bounty-acceptace-criteria')" ></i></label>
       <textarea id="new-bounty-acceptace-criteria" class="form-control" name='acceptanceCriteria' v-model="form.acceptanceCriteria"
-        placeholder="What is the deliverable and acceptance criteria for this bounty?" required></textarea>
+        placeholder="What is the deliverable and acceptance criteria for this bounty?" rows="5" required></textarea>
     </div>
 
     <!-- Ressources -->
     <div class="mb-4">
       <label class="mb-1 font-subheader font-weight-normal letter-spacing">Ressources</label>
-      <textarea class="form-control" name='ressources' v-model="form.ressources"
-        placeholder="Useful resources for working on this bounty (documentations, tutorials, etc.)" required></textarea>
+      <textarea id="new-bounty-resources" class="form-control" name='resources' v-model="form.resources"
+        placeholder="Useful resources for working on this bounty (documentations, tutorials, etc.)" rows="5" required></textarea>
     </div>
 
     <!-- Contact Details -->
@@ -85,21 +92,29 @@
       <p class="text-muted mb-0">How should the contributor get in touch with you / the team? Enter Discord handle /
         Telegram / email address</p>
 
-      <div v-for="(details, index) in form.contactDetails" class="form-row mt-1">
+      <div v-for="(details, index) in form.contactDetails" v-bind:class="'form-row mt-1 new-bounty-contact-details-form-' + index">
         <div class="col">
-          <v-select :required="'true'" :options="$root.contactDetailsType" v-model="details.type">
+          <v-select class="new-bounty-contact-type" :required="'true'" :options="$root.contactDetailsType" v-model="details.type">
+            <template #search="{attributes, events}">
+              <input
+                class="vs__search"
+                :required="!details.type"
+                v-bind="attributes"
+                v-on="events"
+              />
+            </template>
           </v-select>
         </div>
 
         <div class="col">
           <div class="input-group is-invalid">
-            <input name="funderAddress" type="text" placeholder="mydiscord#1234" class="form-control">
+            <input name="contact-value" type="text" placeholder="mydiscord#1234" class="form-control new-bounty-contact-value" v-model="details.value">
             <div class="input-group-append">
               <button type="button"
-                v-bind:class="'btn btn-link text-danger ' + ($root.form.contactDetails.length > 1?'':'hidden')"
+                v-bind:class="'new-bounty-btn-delete-contact btn btn-link text-danger ' + ($root.form.contactDetails.length > 1?'':'hidden')"
                 @click="removeContactDetails(index)"><i class="far fa-times"></i></button>
               <button type="button"
-                v-bind:class="'btn btn-link ' + ($root.form.contactDetails.length === index + 1?'':'invisible')"
+                v-bind:class="'new-bounty-btn-add-contact btn btn-link ' + ($root.form.contactDetails.length === index + 1?'':'invisible')"
                 @click="addContactDetails()"><i class="far fa-plus"></i></button>
             </div>
           </div>
@@ -112,7 +127,7 @@
     <div class="mb-4">
       <label class="mb-1 font-subheader font-weight-normal letter-spacing">Show as Organisation</label>
       <p class="text-muted mb-0">Enter an organization GitHub link to display its logo and name on this bounty</p>
-      <input class="form-control" name='organisationUrl' v-model="form.organisationUrl" type="url"
+      <input class="form-control" id='new-bounty-organisation-url' name='organisationUrl' v-model="form.organisationUrl" type="url"
         placeholder="https://github.com/org/repo/issues/n" required />
     </div>
   </div>

@@ -16,11 +16,11 @@
   <div class="mb-4">
     <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Tags</label>
     <p class="text-muted mb-0">Tags are used for your bounty’s discoverability. You can type to add new tags too.</p>
-    <v-select id="project_length" :options="tagOptions" :taggable="true" :multiple="true" placeholder="Time Commitment" v-model="form.tags">
+    <v-select id="bounty_tags" :options="tagOptions" :taggable="true" :multiple="true" placeholder="Select tag(s) that best describe your bounty" v-model="form.tags">
       <template #search="{attributes, events}">
         <input
           class="vs__search"
-          :required="!form.project_length"
+          :required="!form.tags"
           v-bind="attributes"
           v-on="events"
         />
