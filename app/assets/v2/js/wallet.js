@@ -48,7 +48,7 @@ function initWallet() {
       }
     },
     walletlink: {
-      package: CoinbaseWalletSDK,
+      'package': CoinbaseWalletSDK,
       options: {
         infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
       }
