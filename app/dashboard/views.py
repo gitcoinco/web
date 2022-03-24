@@ -3255,13 +3255,20 @@ def verify_user_twitter(request, handle):
         logger.error(f"error: verify_user_twitter TweepError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
+            'msg': f'Sorry, we couldn\'t get the verification tweet from @{twitter_handle}'
         })
     except IndexError as e:
         logger.error(f"error: verify_user_twitter IndexError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
+            'msg': 'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
+        })
+
+
+    if not verification_tweet:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
         })
 
     if verification_tweet.retweeted or 'RT @' in verification_tweet.full_text:
