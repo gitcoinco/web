@@ -104,3 +104,4 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
 
   });
 });
+
