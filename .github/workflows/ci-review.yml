@@ -104,9 +104,6 @@ jobs:
           pytest -p no:ethereum -p no:warnings
           bin/ci/cypress-run
 
-      - name: Generate Markdown documentation and static docs page
-        run: pydocmd build
-
       - name: Deploy to Github Pages 🚀
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/master'
