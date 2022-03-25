@@ -124,10 +124,6 @@
         <!-- Summary -->
         <div>
           <h4 class="col gc-font-base text-dark px-0 pt-2 my-3">Summary</h4>
-          <div class="d-flex justify-content-between">
-            <p class="mb-1">Grant Contributions</p>
-            <p class="mb-1">[[ donationsToGrantsString ]]</p>
-          </div>
           <div class="d-flex justify-content-between text-success">
             <p>
               Estimated Match
@@ -168,21 +164,20 @@
           </div>
         </div>
         <!-- Donation Amount -->
-        <div class="d-flex justify-content-between mt-2 mb-4 font-smaller-2">
-          <p class="mb-1">Donation</p>
-          <p class="mb-1">[[ donationsToGitcoinString ]]</p>
+        <div class="d-flex justify-content-between mt-4">
+          <p class="mb-0">Matching Pool Contribution</p>
+          <p class="mb-0">[[ donationsToGitcoinString ]]</p>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between">
+          <p class="mb-0">Grant Contributions</p>
+          <p class="mb-0">[[ donationsToGrantsString ]]</p>
         </div>
         <hr>
         <!-- Total -->
-        <div class="d-flex justify-content-between my-3">
-          <p class="mb-1">Total</p>
-          <p class="mb-1">[[ totalString ]]</p>
-        </div>
-        <hr style="border-top-width: 2px;">
-        <!-- Amount Due -->
-        <div class="d-flex justify-content-between mt-3 font-weight-semibold">
-          <p class="mb-1">Amount Due</p>
-          <p class="mb-1">[[ donationsTotalString ]]</p>
+        <div class="d-flex justify-content-between my-3 font-weight-semibold">
+          <p class="mb-0">Your Total Contribution</p>
+          <p class="mb-0">[[ totalString ]]</p>
         </div>
         <div class="text-center text-muted mx-auto mt-5">
           Which option is best for me?
