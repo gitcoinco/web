@@ -6039,6 +6039,7 @@ def create_bounty_v1(request):
     user = request.user if request.user.is_authenticated else None
     network = request.POST.get("network", 'mainnet')
 
+    # TODO geri
     logger.error("*" * 80)
     logger.error("request: %s", pformat(dict(request.META)))
     logger.error("*" * 80)

@@ -19,6 +19,7 @@
 '''
 import json
 import logging
+from pprint import pformat
 import re
 from json import loads as json_parse
 
@@ -69,6 +70,12 @@ def get_activities(tech_stack=None, num_activities=15):
     return activities
 
 def index(request):
+
+    # TODO geri
+    logger.error("*" * 80)
+    logger.error("request: %s", pformat(dict(request.META)))
+    logger.error("*" * 80)
+
     context = {
         'title': 'Build and Fund the Open Web Together',
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
