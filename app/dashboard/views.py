@@ -32,6 +32,7 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
+from pprint import pformat
 
 from django.conf import settings
 from django.contrib import messages
@@ -6037,6 +6038,10 @@ def create_bounty_v1(request):
 
     user = request.user if request.user.is_authenticated else None
     network = request.POST.get("network", 'mainnet')
+
+    logger.error("*" * 80)
+    logger.error("request: %s", pformat(dict(request.META)))
+    logger.error("*" * 80)
 
     if not user:
         response['message'] = 'error: user needs to be authenticated to create bounty'
