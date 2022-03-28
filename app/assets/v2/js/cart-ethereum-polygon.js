@@ -31,11 +31,13 @@ Vue.component('grantsCartEthereumPolygon', {
 
       user: {
         requiredAmounts: null
-      }
+      },
+      ethereum: null
     };
   },
 
   async mounted() {
+    this.ethereum = window.ethereum;
     // Update Polygon checkout connection, state, and data frontend needs when wallet connection changes
     window.addEventListener('dataWalletReady', async(e) => {
       await this.onChangeHandler(this.donationInputs);
@@ -89,7 +91,7 @@ Vue.component('grantsCartEthereumPolygon', {
           appCart.$refs.cart.activeCheckout !== undefined
         ) ||
         this.cart.unsupportedTokens.length > 0 ||
-        !ethereum.selectedAddress
+        !this.ethereum?.selectedAddress
       );
     }
   },
@@ -264,7 +266,7 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         });
 
-        if (!ethereum.selectedAddress) {
+        if (!this.ethereum?.selectedAddress) {
           _alert('Please unlock MetaMask to proceed with Polygon checkout', 'danger');
           return;
         }
@@ -296,7 +298,7 @@ Vue.component('grantsCartEthereumPolygon', {
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)
         const allowanceData = await this.getAllowanceData(
-          ethereum.selectedAddress, bulkCheckoutAddressPolygon
+          this.ethereum?.selectedAddress, bulkCheckoutAddressPolygon
         );
 
         // Save off cart data
@@ -305,17 +307,17 @@ Vue.component('grantsCartEthereumPolygon', {
 
         if (allowanceData.length === 0) {
           // Send transaction and exit function
-          await this.sendDonationTx(ethereum.selectedAddress);
+          await this.sendDonationTx(this.ethereum?.selectedAddress);
           return;
         }
 
         // Request approvals then send donations ---------------------------------------------------
         await this.requestAllowanceApprovalsThenExecuteCallback(
           allowanceData,
-          ethereum.selectedAddress,
+          this.ethereum?.selectedAddress,
           bulkCheckoutAddressPolygon,
           this.sendDonationTx,
-          [ethereum.selectedAddress]
+          [this.ethereum?.selectedAddress]
         );
 
       } catch (e) {
@@ -452,7 +454,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Compare amounts needed to balance
       const web3 = this.initWeb3();
-      const userAddress = ethereum.selectedAddress;
+      const userAddress = this.ethereum?.selectedAddress;
       let isBalanceSufficient = true;
 
       for (let i = 0; i < this.cart.tokenList.length; i += 1) {
