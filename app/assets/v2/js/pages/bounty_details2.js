@@ -582,10 +582,6 @@ Vue.mixin({
         case 'binance_ext':
           payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
-          // TODO geri remove code
-          // case 'harmony_ext':
-          //   payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
-          //   break;
 
         case 'rsk_ext':
           payWithRSKExtension(fulfillment_id, fulfiller_address, vm, modal);

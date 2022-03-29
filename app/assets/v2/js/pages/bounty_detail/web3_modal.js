@@ -10,7 +10,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
     });
   }
 
-  if (token_name == 'ETH' || token_name == 'ONE') {
+  if (token_name == 'ETH') {
     web3.eth.sendTransaction(
       {
         to: fulfiller_address,
@@ -19,6 +19,19 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
         gasPrice: web3.utils.toHex(5 * Math.pow(10, 9)),
         gas: web3.utils.toHex(318730),
         gasLimit: web3.utils.toHex(318730)
+      },
+      (error, result) => callback(error, result)
+    );
+  } else if (token_name == 'ONE') {
+    // Gas limit as indicated here: https://docs.harmony.one/home/general/wallets/browser-extensions-wallets/metamask-wallet/sending-and-receiving#sending-a-regular-transaction
+    web3.eth.sendTransaction(
+      {
+        to: fulfiller_address,
+        from: selectedAccount,
+        value: web3.utils.toWei(String(amount)),
+        gasPrice: web3.utils.toHex(30 * Math.pow(10, 9)),
+        gas: web3.utils.toHex(25000),
+        gasLimit: web3.utils.toHex(25000)
       },
       (error, result) => callback(error, result)
     );
