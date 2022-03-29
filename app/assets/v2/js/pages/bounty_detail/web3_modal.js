@@ -10,7 +10,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address, vm, modal) => {
     });
   }
 
-  if (token_name == 'ETH') {
+  if (token_name == 'ETH' || token_name == 'ONE') {
     web3.eth.sendTransaction(
       {
         to: fulfiller_address,

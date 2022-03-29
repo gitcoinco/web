@@ -81,7 +81,7 @@ fulfillBounty = data => {
   });
 };
 
-
+// TODO: geri remove this in favour of validateWalletAddress
 const is_valid_address = (address) => {
   switch (web3_type) {
 
@@ -90,11 +90,11 @@ const is_valid_address = (address) => {
     // rsk
     // binance
 
-    case 'harmony_ext':
-      if (!address.toLowerCase().startsWith('one')) {
-        return false;
-      }
-      return true;
+    // case 'harmony_ext':
+    //   if (!address.toLowerCase().startsWith('one')) {
+    //     return false;
+    //   }
+    //   return true;
 
     case 'sia_ext':
     case 'polkadot_ext':

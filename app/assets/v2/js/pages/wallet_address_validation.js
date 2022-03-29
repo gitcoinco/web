@@ -3,6 +3,26 @@ var validateWalletAddress = function(chainId, address) {
   let isValid = true;
 
   switch (chainId) {
+    // case '1000':
+    // // Harmony
+    // if (!address.toLowerCase().startsWith('one')) {
+    //   isValid = false;
+    // }
+    // break;
+
+    case '1935': // Sia
+    case '58': // Polkadot
+      if (address.toLowerCase().startsWith('0x')) {
+        isValid = false;
+      }
+      break;
+
+    case '50': // Xinfin
+      if (!address.toLowerCase().startsWith('xdc')) {
+        isValid = false;
+      }
+      break;
+
     case '1995': {
       // nervos
       const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
@@ -38,6 +58,19 @@ var validateWalletAddress = function(chainId, address) {
       break;
     }
 
+    case '600': // Filecoin
+      if (!address.toLowerCase().startsWith('fil')) {
+        isValid = false;
+      }
+      break;
+
+    case '102':// Zilliqa
+      if (!address.toLowerCase().startsWith('zil')) {
+        isValid = false;
+      }
+      break;
+
+
     case '270895': {
       // casper
       let addr = address;
@@ -48,7 +81,8 @@ var validateWalletAddress = function(chainId, address) {
       break;
     }
 
-      // include validation for other chains here
+
+    // include validation for other chains here
   }
 
   return isValid;
