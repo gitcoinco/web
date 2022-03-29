@@ -36,8 +36,8 @@ import cssutils
 import premailer
 from app.utils import get_default_network
 from grants.models import Contribution, Grant, Subscription
-from marketing.models import LeaderboardRank
 from marketing.common.utils import get_or_save_email_subscriber
+from marketing.models import LeaderboardRank
 from perftools.models import StaticJsonEnv
 from retail.utils import build_utm_tracking, strip_double_chars, strip_html
 

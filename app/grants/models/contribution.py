@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -7,8 +9,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from datetime import timedelta
-
 from economy.models import SuperModel, Token
 from economy.tx import check_for_replaced_tx
 from townsquare.models import Comment

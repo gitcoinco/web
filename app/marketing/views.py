@@ -44,11 +44,11 @@ from dashboard.views import mautic_proxy_backend
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_github_primary_email
 from grants.models import Grant
+from marketing.common.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.tasks import send_earnings_csv
-from marketing.common.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
 from retail.emails import render_new_bounty
 from retail.helpers import get_ip
 from townsquare.models import Announcement

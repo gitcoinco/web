@@ -20,8 +20,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty
-from marketing.mails import bounty_feedback
 from marketing.common.utils import handle_bounty_feedback
+from marketing.mails import bounty_feedback
 
 
 class Command(BaseCommand):
