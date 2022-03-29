@@ -783,11 +783,13 @@ def get_grants_by_filters(
 
     if keyword:
         # 13. Grant search by title & description
-        _grants = _grants.annotate(search=SearchVector('description'))
-        keyword_query = Q(title__icontains=keyword)
-        keyword_query |= Q(search=keyword)
+        by_title = _grants.filter(title__icontains=keyword)
+        by_description = _grants.annotate(search=SearchVector('description')).filter(search=keyword)
 
-        _grants = _grants.filter(keyword_query)
+        print(by_title)
+        print(by_description)
+        _grants = by_title | by_description
+        print(_grants)
 
     if sort:
         # 14. Sort filtered grants
