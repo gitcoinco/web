@@ -932,7 +932,7 @@ class Grant(SuperModel):
             'is_on_team': is_grant_team_member(self, user.profile) if user and user.is_authenticated else False,
         }
 
-    def repr(self, user, build_absolute_uri):
+    def repr(self, user, build_absolute_uri, is_detail = True):
         team_members = serializers.serialize('json', self.team_members.all(),
                             fields=['handle', 'url', 'profile__lazy_avatar_url']
                         )
@@ -944,17 +944,7 @@ class Grant(SuperModel):
 
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
-        clr_matches = CLRMatch.objects.filter(grant=self)
-
-        # has funds which have already been claimed
-        has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
-
-        # has claims in pending / ready state
-        has_funds_to_be_claimed = clr_matches.filter(claim_tx__isnull=True).exists()
-        has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
-        has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
-
-        return {
+        result = {
                 'id': self.id,
                 'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
@@ -1017,11 +1007,26 @@ class Grant(SuperModel):
                 'has_external_funding': self.has_external_funding,
                 'active_round_names': active_round_names,
                 'is_idle': self.is_idle,
-                'is_hidden': self.hidden,
-                'has_pending_claim': has_pending_claim,
-                'has_claims_in_review': has_claims_in_review,
-                'has_claim_history': has_claim_history
+                'is_hidden': self.hidden
             }
+
+        if is_detail:
+            clr_matches = CLRMatch.objects.filter(grant=self)
+            print(clr_matches, 'clr_matchesclr_matchesclr_matches')
+
+            # has funds which have already been claimed
+            has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
+
+            # has claims in pending / ready state
+            has_funds_to_be_claimed = clr_matches.filter(claim_tx__isnull=True).exists()
+            has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
+            has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
+
+            result['has_pending_claim'] = has_pending_claim
+            result['has_claims_in_review'] = has_claims_in_review
+            result['has_claim_history'] = has_claim_history
+
+        return result
 
     def favorite(self, user):
         return Favorite.objects.filter(user=user, grant=self).exists()

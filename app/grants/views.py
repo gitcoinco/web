@@ -612,7 +612,7 @@ def get_grants(request):
     # Clean up before sending response
     grants_array = []
     for grant in grants:
-        grant_json = grant.repr(request.user, request.build_absolute_uri)
+        grant_json = grant.repr(request.user, request.build_absolute_uri, False)
         if not request.user.is_staff:
             del grant_json['sybil_score']
             del grant_json['weighted_risk_score']
