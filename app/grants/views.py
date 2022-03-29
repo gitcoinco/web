@@ -783,8 +783,16 @@ def get_grants_by_filters(
 
     if keyword:
         # 13. Grant search by title & description
+        print(_grants.filter(title__icontains=keyword).order_by().query)
+        from django.db.models import BooleanField, ExpressionWrapper
         by_title = _grants.filter(title__icontains=keyword)
-        by_description = _grants.annotate(search=SearchVector('description')).filter(search=keyword)
+        by_description = _grants.annotate(
+            search=SearchVector('description'),
+            rel_to_title=ExpressionWrapper(
+                Q(search=keyword),
+                output_field=BooleanField()
+            )
+        ).filter(search=keyword).order_by('rel_to_title')
 
         print(by_title)
         print(by_description)
