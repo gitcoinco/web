@@ -933,14 +933,9 @@ class Grant(SuperModel):
         }
 
     def repr(self, user, build_absolute_uri, is_detail = True):
-        team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__lazy_avatar_url']
-                        )
         grant_type = None
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
-
-        grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
 
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
@@ -992,10 +987,8 @@ class Grant(SuperModel):
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
-                'team_members': json.loads(team_members),
                 'metadata': self.metadata,
                 'grant_type': json.loads(grant_type) if grant_type else None,
-                'grant_tags': json.loads(grant_tags),
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
@@ -1012,7 +1005,11 @@ class Grant(SuperModel):
 
         if is_detail:
             clr_matches = CLRMatch.objects.filter(grant=self)
-            print(clr_matches, 'clr_matchesclr_matchesclr_matches')
+            team_members = serializers.serialize('json', self.team_members.all(),
+                            fields=['handle', 'url', 'profile__lazy_avatar_url']
+                        )
+
+            grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
 
             # has funds which have already been claimed
             has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
@@ -1025,6 +1022,8 @@ class Grant(SuperModel):
             result['has_pending_claim'] = has_pending_claim
             result['has_claims_in_review'] = has_claims_in_review
             result['has_claim_history'] = has_claim_history
+            result['team_members'] = json.loads(team_members)
+            result['grant_tags'] = json.loads(grant_tags)
 
         return result
 
