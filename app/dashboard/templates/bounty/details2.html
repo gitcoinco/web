@@ -1134,16 +1134,6 @@
 
       <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
       <script src="{% static "v2/js/pages/bounty_detail/binance_extension.js" %}"></script>
-    {# TODO geri remove the block below ... #}
-    {% elif web3_type == 'harmony_ext TODO geri : remove this block and the containing files harmony_ext' %}
-
-      <script src="{% static "v2/js/lib/harmony/HarmonyUtils.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyJs.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyAccount.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyCrypto.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyNetwork.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/utils.js" %}"></script>
-      <script src="{% static "v2/js/pages/bounty_detail/harmony_extension.js" %}"></script>
 
     {% elif web3_type == 'rsk_ext' %}
       <script src="{% static "v2/js/pages/bounty_detail/rsk_extension.js" %}"></script>
