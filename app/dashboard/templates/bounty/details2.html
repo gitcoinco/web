@@ -89,7 +89,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-12" v-if="bounty.network !== 'mainnet'">
+              <div class="col-12" v-if="bounty.network.toLowerCase().indexOf('mainnet') < 0">
                 <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
                 To see mainnet bounties, go to <a href="{% url 'explorer' %}">the bounty explorer</a> and search for mainnet bounties.</span>
               </div>
