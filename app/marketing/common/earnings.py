@@ -1,5 +1,5 @@
-import io
 import csv
+import io
 import logging
 
 from django.conf import settings

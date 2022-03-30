@@ -20,8 +20,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from mailchimp3 import MailChimp
-from marketing.models import EmailSubscriber
 from marketing.common.utils import get_or_save_email_subscriber as process_email
+from marketing.models import EmailSubscriber
 
 hours_ago = 12 #if you change, this make sure you change the crontab file to ...
 # make it inclusive of all users since last run of this job

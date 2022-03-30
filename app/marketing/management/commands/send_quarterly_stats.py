@@ -21,9 +21,9 @@ import warnings
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
+from marketing.common.utils import get_platform_wide_stats
 from marketing.mails import quarterly_stats
 from marketing.models import LeaderboardRank
-from marketing.common.utils import get_platform_wide_stats
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 

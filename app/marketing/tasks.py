@@ -1,6 +1,6 @@
 import csv
-import os
 import io
+import os
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -10,11 +10,11 @@ import marketing.stats as stats
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
+from marketing.common.earnings import export_earnings, send_csv, send_download_failure_email
+from marketing.common.utils import allowed_to_send_email
 from marketing.mails import new_bounty_daily as new_bounty_daily_email
 from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
-from marketing.common.utils import allowed_to_send_email
-from marketing.common.earnings import export_earnings, send_csv, send_download_failure_email
 
 logger = get_task_logger(__name__)
 
