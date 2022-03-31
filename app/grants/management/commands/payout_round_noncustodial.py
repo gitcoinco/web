@@ -132,7 +132,7 @@ class Command(BaseCommand):
         pks = []
         for gclr in gclrs:
             pks += gclr.grants.values_list('pk', flat=True)
-        scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
+        scheduled_matches = CLRMatch.objects.filter(round_number=clr_round, grant_payout=grant_payout)
         grants = Grant.objects.filter(active=True, network='mainnet', is_clr_eligible=True, link_to_new_grant__isnull=True, pk__in=pks)
         self.stdout.write(f"got {grants.count()} grants")
 
