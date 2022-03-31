@@ -51,6 +51,7 @@ Vue.mixin({
               });
 
               const claimData = await vm.checkClaimStatus(m);
+
               m.status = claimData.status;
 
               // check to ensure we don't allow users to claim if balance is 0
@@ -85,17 +86,17 @@ Vue.mixin({
 
       const payoutContract = await new web3.eth.Contract(
         JSON.parse(document.contxt.match_payouts_abi),
-        contractAddress,
+        contractAddress
       );
 
-      const hexAmount = match.merkle_claim?.amount || "0x00";
+      const hexAmount = match.merkle_claim?.amount || '0x00';
       const index = match.merkle_claim?.index;
       const amount = web3.utils.toBN(hexAmount);
 
-      if (index === undefined || amount.toString() === "0") {
+      if (index === undefined || amount.toString() === '0') {
         return {
           status: 'no-balance-to-claim',
-          timestamp,
+          timestamp
         };
       }
 
@@ -104,17 +105,18 @@ Vue.mixin({
       }
 
       const claimed = await payoutContract.methods.hasClaimed(index).call();
+
       if (claimed) {
         return {
-          status: "claimed",
-          timestamp,
-        }
+          status: 'claimed',
+          timestamp
+        };
       }
 
       return {
-        status: "pending",
-        timestamp,
-      }
+        status: 'pending',
+        timestamp
+      };
     },
 
     async claimMatch(match, adminAddress) {
@@ -165,7 +167,7 @@ Vue.mixin({
         match.grant_payout.contract_address
       );
 
-      const hexAmount = match.merkle_claim?.amount || "0x00";
+      const hexAmount = match.merkle_claim?.amount || '0x0';
       const index = match.merkle_claim?.index;
       const merkleProof = match.merkle_claim?.merkleProof || [];
 
