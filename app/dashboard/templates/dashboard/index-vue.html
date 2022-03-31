@@ -786,7 +786,7 @@
           <slot></slot>
         </select>
       </script>
-      {% bundle merge_js file new_bounty %}
+      {% bundle merge_js file app_dashboard %}
         <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>
       {% endbundle %}
       {{orgs|json_script:"sponsor-list"}}
