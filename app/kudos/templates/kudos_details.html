@@ -195,7 +195,7 @@
       </section>
 
       {% include 'shared/footer.html' %}
-      {% bundle merge_js file tweenlite %}
+      {% bundle merge_js file tweenlite_kudos %}
         <script src="gsap.min.js" base-dir="/node_modules/gsap/dist"></script>
       {% endbundle %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
@@ -204,7 +204,7 @@
       <script src="{% static "v2/js/amounts.js" %}"></script>
       <script src="{% static "v2/js/eth-price.js" %}"></script>
       {% include 'shared/activity_scripts.html' %}
-      {% bundle css file activity_stream %}
+      {% bundle css file kudos_details_activity_stream %}
         <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       {% endbundle %}
       <script src="{% static "v2/js/status.js" %}"></script>

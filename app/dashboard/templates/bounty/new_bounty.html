@@ -26,7 +26,7 @@ along with this program. If not, see
   <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
   <meta name="description"
     content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-  {% bundle css file new_bounty %}
+  {% bundle css file new_bounty_style %}
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
   <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
@@ -158,7 +158,7 @@ along with this program. If not, see
     <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
 
-    {% bundle merge_js file libs %}
+    {% bundle merge_js file new_bounty_libs %}
     <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
     <script src="highlight.min.js" base-dir="/node_modules/@highlightjs/cdn-assets/"></script>
     <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>
