@@ -29,8 +29,8 @@ from app import settings
 from celery.exceptions import MaxRetriesExceededError
 from dashboard.tests.factories import EarningFactory, ProfileFactory
 from grants.tests.factories import GrantFactory
-from marketing.tasks import send_earnings_csv
 from marketing.common.earnings import export_earnings, send_csv
+from marketing.tasks import send_earnings_csv
 
 
 @pytest.fixture
