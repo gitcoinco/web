@@ -65,7 +65,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div id="gc-grants-cart" class="container-lg" v-cloak>
         <grants-cart ref="cart" inline-template>
           <div class="m-0 p-0">
-            <h1 v-if="grantData.length > 0" class="text-left text-black my-5">Grants Cart</h1>
             <div v-if="{{trust_bonus}} < 150 && grantData.length != 0 " v-cloak class="alert alert-primary spacer-mt-4 border-1 border-primary">
               <div class="row">
                 <div class="col-12 col-lg-auto text-left pb-1 pb-lg-0" style="max-width: 50px;">
@@ -78,6 +77,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               </div>
             </div>
+            <h1 v-if="grantData.length > 0" class="text-left text-black my-5">Grants Cart</h1>
 
             <div class="container px-0">
               <b-modal
