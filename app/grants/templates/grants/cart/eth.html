@@ -9,16 +9,16 @@
     <div class="col-12 col-lg-8 pr-0">
       <div class="row left-section">
         <!-- TOP BAR -->
-        <div class="row col-12 pr-0">
+        <div class="row col-12 pr-0 mt-2">
           <!-- Donation Token -->
-          <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0 pl-md-3">
+          <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-0">
             <div class="my-auto mr-3">Amount/Currency</div>
             <input v-model="preferredAmount" class="col-auto form-control w-25"
-              style="max-width: 7rem;border-radius: 5rem;font-weight: 600;border-color: #A7A2B6;" />
+              style="max-width: 7rem;border-radius: 0;font-weight: 600;border-color: #A7A2B6;" />
             <div>
               <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens"
                 placeholder="Select token" label="symbol" v-model="selectedETHCartToken"
-                @input="updateDonationCurrency('ETH')" class="rounded-toggle">
+                @input="updateDonationCurrency('ETH')" class="rounded-toggle checkout-toggle">
                 <template v-slot:option="option">
                   <span class="font-weight-semibold">[[ option.symbol ]]</span>
                 </template>
@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="col-12 px-0">
-          <hr class="my-3">
+          <hr class="my-4">
         </div>
         <!-- GRANT LIST -->
         <div class="col-12 mt-3">
@@ -52,10 +52,10 @@
               <!-- ALL DEVICES: Grant name and logo -->
               <div class="col-10 col-md-7">
                 <div class="row align-items-center">
-                  <div class="col-3 col-xxl-2 px-0 px-md-3">
-                    <img :src="grant.grant_logo" alt="Grant logo" class="cart-grant-thumbnail w-100">
+                  <!-- <div class=" px-0 px-md-3"> -->
+                    <img class="col-3 col-xxl-2" :src="grant.grant_logo" alt="Grant logo" class="cart-grant-thumbnail w-100">
                     <!-- <img src="https://c.gitcoin.co/grants/4140a7c993e1cc20c846df49a234faae/EthereumTranslationCommunityCN.png" alt="Grant logo" class="w-100"> -->
-                  </div>
+                  <!-- </div> -->
                   <div class="col-9 col-xxl-10">
                     <p class="mb-2">
                       <a :href="grant.grant_url" target="_blank" class="text-dark">[[grant.grant_title]]</a>

@@ -706,22 +706,33 @@
   margin-top: 0;
 }
 
-.rounded-toggle .vs__dropdown-toggle {
-  border-radius: 5rem;
-  border-color: #A7A2B6;
-  max-width: 6rem;
-  font-weight: 600;
-  padding: 2px ​0 7px 0px;
-
-  .vs__actions {
-    padding: 0.45rem 1rem 0.35rem 0;
+.rounded-toggle {
+  &.checkout-toggle {
+    .vs__dropdown-toggle {
+      border-radius: 0;
+      border-left: 0;
+    }
   }
-
-  .v-select, .v-select * {
-    height: 2rem;
+  .vs__dropdown-toggle {
+    border-radius: 5rem;
+    border-color: #A7A2B6;
+    max-width: 6rem;
+    font-weight: 600;
+    padding: 2px ​0 7px 0px;
+  
+    .vs__actions {
+      padding: 0.45rem 1rem 0.35rem 0;
+    }
+  
+    .v-select, .v-select * {
+      height: 2rem;
+    }
+  
   }
-
 }
+
+
+
 
 .rounded-toggle  {
   .vs__dropdown-toggle .vs__selected {
