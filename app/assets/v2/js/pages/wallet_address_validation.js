@@ -3,13 +3,6 @@ var validateWalletAddress = function(chainId, address) {
   let isValid = true;
 
   switch (chainId) {
-    // case '1000':
-    // // Harmony
-    // if (!address.toLowerCase().startsWith('one')) {
-    //   isValid = false;
-    // }
-    // break;
-
     case '1935': // Sia
     case '58': // Polkadot
       if (address.toLowerCase().startsWith('0x')) {
