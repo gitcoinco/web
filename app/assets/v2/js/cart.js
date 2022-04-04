@@ -1064,8 +1064,6 @@ Vue.component('grants-cart', {
         await await onConnect();
       }
 
-      // console.log({web3}, web3.eth.currentProvider, web3.eth.currentProvider.chainId, 'web3.eth.currentProvider.chainId', String(Number(web3.eth.currentProvider.chainId)), 'String(Number(web3.eth.currentProvider.chainId)');
-      // let networkId = String(Number(web3.eth.currentProvider.chainId));
       let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
       if (networkName == 'mainnet' && this.networkId !== '1') {
