@@ -12,10 +12,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.RemoveField(
-        #     model_name='grantpayout',
-        #     name='payout_token',
-        # ),
+        migrations.RemoveField(
+            model_name='grantpayout',
+            name='payout_token',
+        ),
         migrations.AddField(
             model_name='clrmatch',
             name='token',
