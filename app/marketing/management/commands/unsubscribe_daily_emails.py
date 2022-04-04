@@ -23,9 +23,9 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from marketing.common.utils import allowed_to_send_email
 from marketing.mails import gdpr_reconsent
 from marketing.models import EmailEvent, EmailSubscriber
-from marketing.common.utils import allowed_to_send_email
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 

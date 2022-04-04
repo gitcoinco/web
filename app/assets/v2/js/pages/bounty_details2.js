@@ -571,6 +571,7 @@ Vue.mixin({
 
       switch (payout_type) {
         case 'web3_modal':
+        case 'harmony_ext':
           payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
           break;
 
@@ -580,10 +581,6 @@ Vue.mixin({
 
         case 'binance_ext':
           payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
-          break;
-
-        case 'harmony_ext':
-          payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
 
         case 'rsk_ext':

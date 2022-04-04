@@ -274,7 +274,7 @@ var callbacks = {
     return [ 'fulfillment_accepted_on', timePeg ];
   },
   'network': function(key, val, result) {
-    if (val == 'mainnet') {
+    if (val.toLowerCase().indexOf('mainnet') >= 0) {
       $('#network').addClass('hidden');
       return [ null, null ];
     }

@@ -89,7 +89,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-12" v-if="bounty.network !== 'mainnet'">
+              <div class="col-12" v-if="bounty.network.toLowerCase().indexOf('mainnet') < 0">
                 <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
                 To see mainnet bounties, go to <a href="{% url 'explorer' %}">the bounty explorer</a> and search for mainnet bounties.</span>
               </div>
@@ -1135,16 +1135,6 @@
       <script src="{% static "v2/js/lib/binance/utils.js" %}"></script>
       <script src="{% static "v2/js/pages/bounty_detail/binance_extension.js" %}"></script>
 
-    {% elif web3_type == 'harmony_ext' %}
-
-      <script src="{% static "v2/js/lib/harmony/HarmonyUtils.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyJs.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyAccount.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyCrypto.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/HarmonyNetwork.browser.js" %}"></script>
-      <script src="{% static "v2/js/lib/harmony/utils.js" %}"></script>
-      <script src="{% static "v2/js/pages/bounty_detail/harmony_extension.js" %}"></script>
-
     {% elif web3_type == 'rsk_ext' %}
       <script src="{% static "v2/js/pages/bounty_detail/rsk_extension.js" %}"></script>
 
@@ -1176,7 +1166,7 @@
       {% endif %}
       <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
 
-    {% elif web3_type == 'web3_modal' %}
+    {% elif web3_type == 'web3_modal' or web3_type == 'harmony_ext' %}
       {% bundle merge_js file web3_modal %}
         <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
         <script src="{% static "v2/js/pages/bounty_detail/web3_modal.js" %}"></script>

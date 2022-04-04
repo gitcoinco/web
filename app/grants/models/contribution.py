@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -7,8 +9,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from datetime import timedelta
-
 from economy.models import SuperModel, Token
 from economy.tx import check_for_replaced_tx
 from townsquare.models import Comment
@@ -180,17 +180,13 @@ class Contribution(SuperModel):
             comment = f"Transaction status: {status} (as of {timezone.now().strftime('%Y-%m-%d %H:%m %Z')})"
             profile = Profile.objects.get(handle='gitcoinbot')
             activity = self.subscription.activities.first()
-            # delete all before recreating
-            Comment.objects.filter(
+            Comment.objects.update_or_create(
                 profile=profile,
                 activity=activity,
-            ).delete()
-            # create new entry
-            Comment.objects.create(
-                profile=profile,
-                activity=activity,
-                comment=comment,
-                is_edited=True
+                defaults={
+                    "comment": comment,
+                    "is_edited": True,
+                }
             )
         except Exception as e:
             print(e)
