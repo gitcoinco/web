@@ -73,49 +73,10 @@ along with this program. If not, see
  
           {% include './new_bounty_step_1.html' %}
           {% include './new_bounty_step_2.html' %}
+          {% include './new_bounty_step_3.html' %}
+          {% include './new_bounty_step_4.html' %}
+          {% include './new_bounty_step_5.html' %}
 
-          <form-wrapper v-if="step === 3" :heading="'Eligibility & Discovery setup 3'" :current-step="step"
-            :total-steps="currentSteps.length" @update-navigation="updateNav">
-            <div class="mb-4">
-              <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
-              <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
-
-              <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching
-                rounds.</p>
-              <p class="mt-0 mb-2">
-                <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/"
-                  rel="noopener noreferrer">Learn more about matching rounds.</a>
-              </p>
-            </div>
-          </form-wrapper>
-          <form-wrapper v-if="step === 4" :heading="'Eligibility & Discovery setup 4'" :current-step="step"
-            :total-steps="currentSteps.length" @update-navigation="updateNav">
-            <div class="mb-4">
-              <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
-              <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
-
-              <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching
-                rounds.</p>
-              <p class="mt-0 mb-2">
-                <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/"
-                  rel="noopener noreferrer">Learn more about matching rounds.</a>
-              </p>
-            </div>
-          </form-wrapper>
-          <form-wrapper v-if="step === 5" :heading="'Eligibility & Discovery setup 5'" :current-step="step"
-            :total-steps="currentSteps.length" @update-navigation="updateNav">
-            <div class="mb-4">
-              <label class="mb-1 font-subheader font-weight-light letter-spacing" for="">Tags</label>
-              <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
-
-              <p class="text-muted mb-0">Tags are used for your grant’s discoverability and eligibility for matching
-                rounds.</p>
-              <p class="mt-0 mb-2">
-                <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/"
-                  rel="noopener noreferrer">Learn more about matching rounds.</a>
-              </p>
-            </div>
-          </form-wrapper>
         </div>
       </form>
     </div>

@@ -1,9 +1,81 @@
-<form-wrapper v-if="step === 4" :heading="'Additional Information'" :current-step="step" :total-steps="currentSteps.length"
-  @update-navigation="updateNav">
+<form-wrapper v-if="step === 1" :heading="'Additional Information'" :current-step="step"
+  :total-steps="currentSteps.length" @update-navigation="updateNav">
 
-  <!-- Bounty Information -->
+  <!-- Project Type -->
   <div class="mb-4">
-    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Additional Information</label>
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Project Type</label>
 
+    <div class="row d-flex flex-column flex-lg-row flex-wrap pt-1">
+      <div class="col-6 btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.project_type === 'traditional')?'active':'')">
+          <input type="radio" name="project_type" value="traditional" v-model="form.project_type" required>
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Standard</p>
+            <p class="m-0 text-grey-400 mt-1">Only one contributor is allowed to work
+              at any time.</p>
+          </div>
+        </label>
+      </div>
+      <div class="col-6 btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.project_type === 'cooperative')?'active':'')">
+          <input type="radio" name="project_type" value="cooperative" v-model="form.project_type">
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Multiple</p>
+            <p class="m-0 text-grey-400 mt-1">Allow multiple contributors and one-to-many payouts.
+              Useful for cooperative or contest bounties.</p>
+          </div>
+        </label>
+      </div>
+    </div>
   </div>
-</form-wrapper>
+
+  <!-- Permissions -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Permissions</label>
+    <div class="row btn-group-toggle d-flex flex-column flex-lg-row flex-wrap pt-1">
+      <div class="col-6 btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.permission_type === 'approval')?'active':'')">
+          <input type="radio" name="permission_type" value="approval" v-model="form.permission_type" required>
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Permissionless</p>
+            <p class="m-0 text-grey-400 mt-1">Anyone can start work without approval</p>
+          </div>
+        </label>
+      </div>
+      <div class="col-6 btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.permission_type === 'permissionless')?'active':'')">
+          <input type="radio" name="permission_type" value="permissionless" v-model="form.permission_type">
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Approval Required</p>
+            <p class="m-0 text-grey-400 mt-1">Applicants need to be approved by you to start work</p>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submission cutoff date -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Submission Cutoff Date</label>
+    <input name="bounty_cutoff_date" class="form__input" type="text" v-model="form.cutoff_date" placeholder="04/01/2022">
+  </div>
+
+    <!-- Estimated Bounty Payout Date -->
+    <div class="mb-4">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Estimated Bounty Payout Date</label>
+      <p class="text-muted mb-0">To ensure prompt winner payout, Gitcoin advises that payouts are handled within 7 days post bounty wrap-up. Kindly note that failure to complete payouts within 21 days post bounty wrap-up, will prohibit posting of future bounties going forward.</p>
+      <input name="bounty_owners" class="form__input" type="text" v-model="form.owner" placeholder="04/01/2022">
+    </div>
+  
+    <!-- Notification Email -->
+    <div class="mb-4">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Notification Email</label>
+      <p class="text-muted mb-0">Updates to this bounty will be sent to this email address</p>
+      <input name="bounty_owners" class="form__input" type="text" v-model="form.owner" placeholder="my@email.com">
+    </div>
+
+  </form-wrapper>

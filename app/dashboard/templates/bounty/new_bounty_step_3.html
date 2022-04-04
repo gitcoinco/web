@@ -1,11 +1,11 @@
 <form-wrapper v-if="step === 3" :heading="'Payment Information'" :current-step="step" :total-steps="currentSteps.length"
   @update-navigation="updateNav">
 
-
-  <!-- Tags -->
+  <!-- Chain -->
   <div class="mb-4">
     <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Chain</label>
-    <v-select id="bounty_tags" :options="chainOptions" :taggable="true" :multiple="true" placeholder="Select chain you are paying out the bounty with" v-model="form.chainId">
+    <!-- TODO: change model from chainId to chain + chainId should be a calced value ... -->
+    <v-select id="bounty_tags" :options="networkOptions" :taggable="true" placeholder="Select chain you are paying out the bounty with" v-model="chain">
       <template #search="{attributes, events}">
         <input
           class="vs__search"
@@ -14,6 +14,55 @@
           v-on="events"
         />
       </template>
+      <template #option="{ label, logo }">
+        <img class="mr-2" v-bind:src="logo" alt="" width="10">
+        [[ label ]]
+      </template>
+      <template #selected-option="{ label, logo }">
+        <img class="mr-2" v-bind:src="logo" alt="" width="10">
+        [[ label ]]
+      </template>
     </v-select>
+  </div>
+
+  <!-- Token -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Token</label>
+    <v-select id="token" :options="filterByChainId" label="symbol" v-model="form.token" placeholder="Select chain you are paying out the bounty with" @input="getAmount(form.token ? form.token.symbol : null);">
+      <template v-slot:option="{ symbol }">
+        <span class="font-weight-semibold">[[ symbol ]]</span>
+      </template>
+    </v-select>
+  </div>
+
+  <!-- Amount -->
+  <div class="row ml-0 mr-0 mb-4">
+    <div class="cell">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Amount</label>
+      <input name="amount" id="amount" class="form__input" :class="{'valid': form.amount, 'error': !form.amount}" type="number" step="any" min="0.001" v-model="form.amount" @input="calcValues('usd')">
+    </div>
+    <div class="pl-3 pr-3">
+      <i class="far fa-arrow-left"></i>
+      <i class="far fa-arrow-right"></i>
+    </div>
+    <div class="cell">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Amount (USD)</label>
+      <input name="usd_amount" id="usd_amount" class="form__input" :class="{'valid': form.amountusd, 'error': !form.amountusd}" type="number" step="any" min="0.00" v-model="form.amountusd" @input="calcValues('token')">
+    </div>
+  </div>
+
+  <!-- Peg to USD -->
+  <div class="form__checkbox mb-4">
+    <input id="new-bounty-peg-to-usd" v-model="form.peg_to_usd" type="checkbox" >
+    <label class="form__label" for="new-bounty-peg-to-usd" style="display: flex;">
+      Peg to USD
+    </label>
+  </div>
+
+  <!-- Add bounty owners -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Add bounty owners</label>
+    <p class="text-muted mb-0">Additional bounty owners will be able to edit and payout this bounty on your behalf.</p>
+    <input name="bounty_owners" class="form__input" type="text" v-model="form.owner" placeholder="Enter Gitcoin username">
   </div>
 </form-wrapper>
