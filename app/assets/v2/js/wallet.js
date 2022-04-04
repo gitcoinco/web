@@ -95,7 +95,9 @@ async function fetchAccountData(provider) {
   }
   await web3.eth.net.getId().then(id => {
     networkId = id;
-    networkName = getDataChains(id, 'chainId')[0] && getDataChains(id, 'chainId')[0].network;
+    const chainInfo = getDataChains(id, 'chainId')[0];
+
+    networkName = chainInfo && (chainInfo.network || chainInfo.name);
   });
   // web3.currentProvider.chainId
   // networkName = await web3.eth.net.getNetworkType();

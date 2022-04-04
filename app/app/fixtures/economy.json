@@ -24373,5 +24373,157 @@
       "metadata": {},
       "approved": true
     }
+  },
+  {
+    "model": "economy.token",
+    "pk": 365,
+    "fields": {
+        "created_on": "2022-04-04T06:28:03Z",
+        "modified_on": "2022-04-04T06:29:18.680Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Mainnet Shard 0",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666600000,
+        "network_id": 1666600000,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 366,
+    "fields": {
+        "created_on": "2022-04-04T06:28:03Z",
+        "modified_on": "2022-04-04T06:29:18.680Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Mainnet Shard 1",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666600001,
+        "network_id": 1666600001,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 367,
+    "fields": {
+        "created_on": "2022-04-04T06:28:03Z",
+        "modified_on": "2022-04-04T06:29:18.680Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Mainnet Shard 2",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666600002,
+        "network_id": 1666600002,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 368,
+    "fields": {
+        "created_on": "2022-04-04T06:29:18Z",
+        "modified_on": "2022-04-04T06:30:05.945Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Mainnet Shard 3",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666600003,
+        "network_id": 1666600003,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 369,
+    "fields": {
+        "created_on": "2022-04-04T06:29:18Z",
+        "modified_on": "2022-04-04T06:30:05.945Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Testnet Shard 0",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666700000,
+        "network_id": 1666700000,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 370,
+    "fields": {
+        "created_on": "2022-04-04T06:29:18Z",
+        "modified_on": "2022-04-04T06:30:05.945Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Testnet Shard 1",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666700001,
+        "network_id": 1666700001,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 371,
+    "fields": {
+        "created_on": "2022-04-04T06:29:18Z",
+        "modified_on": "2022-04-04T06:30:05.945Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Testnet Shard 2",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666700002,
+        "network_id": 1666700002,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
+  },
+  {
+    "model": "economy.token",
+    "pk": 372,
+    "fields": {
+        "created_on": "2022-04-04T06:29:18Z",
+        "modified_on": "2022-04-04T06:30:05.945Z",
+        "address": "0x0000000000000000000000000000000000000001",
+        "symbol": "ONE",
+        "network": "Harmony Testnet Shard 3",
+        "decimals": 18,
+        "priority": 1,
+        "chain_id": 1666700003,
+        "network_id": 1666700003,
+        "metadata": {},
+        "approved": true,
+        "conversion_rate_id": "harmony",
+        "conversion_rate_source": "coingecko"
+    }
   }
 ]

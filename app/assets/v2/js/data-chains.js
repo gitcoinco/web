@@ -1,5 +1,6 @@
 // https://chainid.network/chains.json
 // 20200603145449
+// Note: information about harmony network have been appended on 20220330
 var dataChains =
 [
   {
@@ -1293,7 +1294,161 @@ var dataChains =
       "symbol": "MATIC",
       "decimals": 18
     },
-    "infoURL":"https://matic.network/"
+    "infoURL": "https://matic.network/"
+  },
+  {
+    "name": "Harmony Mainnet Shard 0",
+    "chain": "Harmony",
+    "rpc": [
+      "https://api.harmony.one"
+    ],
+    "faucets": [
+      "https://free-online-app.com/faucet-for-eth-evm-chains/"
+    ],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-s0",
+    "chainId": 1666600000,
+    "networkId": 1666600000,
+    "explorers": [
+      {
+        "name": "Harmony Block Explorer",
+        "url": "https://explorer.harmony.one",
+        "standard": "EIP3091"
+      }
+    ]
+  },
+  {
+    "name": "Harmony Mainnet Shard 1",
+    "chain": "Harmony",
+    "rpc": [
+      "https://s1.api.harmony.one"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-s1",
+    "chainId": 1666600001,
+    "networkId": 1666600001
+  },
+  {
+    "name": "Harmony Mainnet Shard 2",
+    "chain": "Harmony",
+    "rpc": [
+      "https://s2.api.harmony.one"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-s2",
+    "chainId": 1666600002,
+    "networkId": 1666600002
+  },
+  {
+    "name": "Harmony Mainnet Shard 3",
+    "chain": "Harmony",
+    "rpc": [
+      "https://s3.api.harmony.one"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-s3",
+    "chainId": 1666600003,
+    "networkId": 1666600003
+  },
+  {
+    "name": "Harmony Testnet Shard 0",
+    "chain": "Harmony",
+    "rpc": [
+      "https://api.s0.b.hmny.io"
+    ],
+    "faucets": [
+      "https://faucet.pops.one"
+    ],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-b-s0",
+    "chainId": 1666700000,
+    "networkId": 1666700000,
+    "explorers": [
+      {
+        "name": "Harmony Testnet Block Explorer",
+        "url": "https://explorer.pops.one",
+        "standard": "EIP3091"
+      }
+    ]
+  },
+  {
+    "name": "Harmony Testnet Shard 1",
+    "chain": "Harmony",
+    "rpc": [
+      "https://api.s1.b.hmny.io"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-b-s1",
+    "chainId": 1666700001,
+    "networkId": 1666700001
+  },
+  {
+    "name": "Harmony Testnet Shard 2",
+    "chain": "Harmony",
+    "rpc": [
+      "https://api.s2.b.hmny.io"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-b-s2",
+    "chainId": 1666700002,
+    "networkId": 1666700002
+  },
+  {
+    "name": "Harmony Testnet Shard 3",
+    "chain": "Harmony",
+    "rpc": [
+      "https://api.s3.b.hmny.io"
+    ],
+    "faucets": [],
+    "nativeCurrency": {
+      "name": "ONE",
+      "symbol": "ONE",
+      "decimals": 18
+    },
+    "infoURL": "https://www.harmony.one/",
+    "shortName": "hmy-b-s3",
+    "chainId": 1666700003,
+    "networkId": 1666700003
   }
 ];
 

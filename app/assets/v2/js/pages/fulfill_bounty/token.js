@@ -81,68 +81,6 @@ fulfillBounty = data => {
   });
 };
 
-
 const is_valid_address = (address) => {
-  switch (web3_type) {
-
-    // etc
-    // celo
-    // rsk
-    // binance
-
-    case 'harmony_ext':
-      if (!address.toLowerCase().startsWith('one')) {
-        return false;
-      }
-      return true;
-
-    case 'sia_ext':
-    case 'polkadot_ext':
-      if (address.toLowerCase().startsWith('0x')) {
-        return false;
-      }
-      return true;
-
-    case 'xinfin_ext':
-      if (!address.toLowerCase().startsWith('xdc')) {
-        return false;
-      }
-      return true;
-
-    case 'nervos_ext': {
-      const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
-      const isNervosValid = ADDRESS_REGEX.test(address);
-
-      if (isNervosValid || address.toLowerCase().startsWith('0x')) {
-        return true;
-      }
-
-      return false;
-    }
-
-    case 'qr':
-
-      if (token_name == 'BTC') {
-        if (address.toLowerCase().startsWith('0x')) {
-          return false;
-        }
-        return true;
-      } else if (token_name == 'FIL') {
-        if (!address.toLowerCase().startsWith('fil')) {
-          return false;
-        }
-        return true;
-      } else if (token_name == 'ZIL') {
-        if (!address.toLowerCase().startsWith('zil')) {
-          return false;
-        }
-        return true;
-      }
-
-      return true;
-
-    default:
-      return true;
-  }
-
+  return validateWalletAddress(chainId, address);
 };
