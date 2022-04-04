@@ -38,101 +38,101 @@ Vue.mixin({
         'E-Mail'
       ],
       networkOptions: [
-      {
-          "id": "1",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/ethereum.512bdfc90974.svg",
-          "label" : "ETH"
-      },
-      {
-          "id": "0",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/bitcoin.a606afe92dc0.svg",
-          "label" : "BTC"
-      },
-      {
-          "id": "666",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/paypal.94a717ec583d.svg",
-          "label" : "PayPal"
-      },
-      {
-          "id": "56",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/binance.f29b8c5b883c.svg",
-          "label" : "Binance"
-      },
-      {
-          "id": "1000",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/harmony.94e314f87cb6.svg",
-          "label" : "Harmony"
-      },
-      {
-          "id": "58",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/polkadot.ab164a0162c0.svg",
-          "label" : "Polkadot"
-      },
-      {
-          "id": "59",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/kusama.79f72c4ef309.svg",
-          "label" : "Kusama"
-      },
-      {
-          "id": "61",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/ethereum-classic.5da22d66e88a.svg",
-          "label": "ETC"
-      },
-      {
-          "id": "102",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/zilliqa.53f121329fe2.svg",
-          "label" : "Zilliqa"
-      },
-      {
-          "id": "600",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/filecoin.5b66dcda075a.svg",
-          "label" : "Filecoin"
-      },
-      {
-          "id": "42220",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/celo.92f6ddaad4cd.svg",
-          "label" : "Celo"
-      },
-      {
-          "id": "30",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/rsk.ad4762fa3b4b.svg",
-          "label" : "RSK"
-      },
-      {
-          "id": "50",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/xinfin.dfca06ac5f24.svg",
-          "label" : "Xinfin"
-      },
-      {
-          "id": "1001",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/algorand.25e6b9cd9ae9.svg",
-          "label" : "Algorand"
-      },
-      {
-          "id": "1935",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/sia.1aeab380df24.svg",
-          "label" : "Sia"
-      },
-      {
-          "id": "1995",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/nervos.e3e776d77e06.svg",
-          "label" : "Nervos"
-      },
-      {
-          "id": "50797",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/tezos.66a5e2b53980.svg",
-          "label" : "Tezos"
-      },
-      {
-          "id": "270895",
-          "logo": "https://s.gitcoin.co/static/v2/images/chains/casper.4718c7855050.svg",
-          "label" : "Casper"
-      },
-      {
-          "id": "717171",
-          "logo": null,
-          "label": "Other"
-      }
+        {
+          'id': '1',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/ethereum.512bdfc90974.svg',
+          'label': 'ETH'
+        },
+        {
+          'id': '0',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/bitcoin.a606afe92dc0.svg',
+          'label': 'BTC'
+        },
+        {
+          'id': '666',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/paypal.94a717ec583d.svg',
+          'label': 'PayPal'
+        },
+        {
+          'id': '56',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/binance.f29b8c5b883c.svg',
+          'label': 'Binance'
+        },
+        {
+          'id': '1000',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/harmony.94e314f87cb6.svg',
+          'label': 'Harmony'
+        },
+        {
+          'id': '58',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/polkadot.ab164a0162c0.svg',
+          'label': 'Polkadot'
+        },
+        {
+          'id': '59',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/kusama.79f72c4ef309.svg',
+          'label': 'Kusama'
+        },
+        {
+          'id': '61',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/ethereum-classic.5da22d66e88a.svg',
+          'label': 'ETC'
+        },
+        {
+          'id': '102',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/zilliqa.53f121329fe2.svg',
+          'label': 'Zilliqa'
+        },
+        {
+          'id': '600',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/filecoin.5b66dcda075a.svg',
+          'label': 'Filecoin'
+        },
+        {
+          'id': '42220',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/celo.92f6ddaad4cd.svg',
+          'label': 'Celo'
+        },
+        {
+          'id': '30',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/rsk.ad4762fa3b4b.svg',
+          'label': 'RSK'
+        },
+        {
+          'id': '50',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/xinfin.dfca06ac5f24.svg',
+          'label': 'Xinfin'
+        },
+        {
+          'id': '1001',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/algorand.25e6b9cd9ae9.svg',
+          'label': 'Algorand'
+        },
+        {
+          'id': '1935',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/sia.1aeab380df24.svg',
+          'label': 'Sia'
+        },
+        {
+          'id': '1995',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/nervos.e3e776d77e06.svg',
+          'label': 'Nervos'
+        },
+        {
+          'id': '50797',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/tezos.66a5e2b53980.svg',
+          'label': 'Tezos'
+        },
+        {
+          'id': '270895',
+          'logo': 'https://s.gitcoin.co/static/v2/images/chains/casper.4718c7855050.svg',
+          'label': 'Casper'
+        },
+        {
+          'id': '717171',
+          'logo': null,
+          'label': 'Other'
+        }
       ]
     };
   },
@@ -918,7 +918,7 @@ Vue.mixin({
     },
     // TODO geri: we could drop this an duse chain.id everywhere ....
     chainId: function() {
-      if(this.chain) {
+      if (this.chain) {
         return this.chain.id;
       }
       return '';
@@ -936,7 +936,7 @@ Vue.mixin({
 
     },
     chain: async function(val) {
-      if(val) {
+      if (val) {
         if (!provider && val.id === '1') {
           await onConnect();
         }
@@ -1015,7 +1015,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           title: '',
           description: '',
           richDescription: '',
-          owner: '',
+          owner: ''
         },
         editorOptionPrio: {
           modules: {
