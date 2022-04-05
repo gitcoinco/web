@@ -529,7 +529,7 @@ def render_grant_match_distribution_final_txn(match):
     claim_end_date = datetime.datetime.strptime(claim_end_date, '%Y-%m-%d:%H.%M.%S')
     params = {
         'round_number': match.round_number,
-        'token_symbol': match.token_symbol,
+        'token_symbol': match.token.symbol,
         'rounded_amount': round(match.token_amount, 2),
         'profile_handle': match.grant.admin_profile.handle,
         'grant_url': f'https://gitcoin.co{match.grant.get_absolute_url()}',
