@@ -56,7 +56,7 @@
         >
           <div class="row justify-content-between align-items-center m-0">
             <!-- ALL DEVICES: Grant name and logo -->
-            <div class="col-10 col-md-7">
+            <div class="col-10 col-md-6">
               <div class="row align-items-center">
                 <img class="col-3 col-xxl-2 p-0" :src="grant.grant_logo" alt="Grant logo">
                 <div class="col-9 col-xxl-10">
@@ -164,6 +164,15 @@
                   </div>
                 </div>
               </modal>
+            </div>
+            <!-- MOBILE: Delete icon -->
+            <div class="col-1 d-none d-block d-md-none px-1">
+              <i @click="removeGrantFromCart(grant.grant_id)" class="far fa-times cursor-pointer text-muted"></i>
+            </div>
+            <!-- DESKTOP: Delete icon -->
+            <div class="col-auto d-none d-md-flex align-self-center inputs-height clear-cart">
+              <i @click="removeGrantFromCart(grant.grant_id)"
+                class="far fa-times cursor-pointer text-muted pr-lg-4 my-auto"></i>
             </div>
           </div>
           <hr class="my-4">
