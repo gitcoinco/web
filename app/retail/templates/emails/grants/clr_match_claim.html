@@ -96,7 +96,7 @@ along with this program. If not, see
   </p>
 
   <p style="font-weight: bold; font-size: 24px; color: #11BC92; line-height: 1px;">
-    ${{ rounded_amount|floatformat:2|intcomma }}
+    {{ rounded_amount|floatformat:2|intcomma }} {{ token_symbol }}
   </p>
 
   <hr style="margin-left: 0; margin-top: 40px;">
@@ -115,7 +115,7 @@ along with this program. If not, see
   <p style="font-size: 14px;">
     <span style="font-weight: bold;">*Please note*: </span>
     If your grant received donations in the Uniswap or Synthetix ecosystem round, that portion of your match will be sent directly to your wallet in UNI/SNX with no claim required, and it will not show up in your claim history (along with UNI from GR11, and any dGrants rounds).
-    All matching from other GR12 rounds is included in the claim contract and paid in DAI.
+    All matching from other GR12 rounds is included in the claim contract and paid in {{ token_symbol }}.
   </p>
 
 

@@ -1,6 +1,6 @@
 Vue.component('matching-claim', {
   delimiters: [ '[[', ']]' ],
-  props: ['match'],
+  props: ['match', 'grant'],
   methods: {
     filterMatchingPayout(matches) {
       return matches.filter(match => match.grant_payout);
