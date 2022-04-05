@@ -82,7 +82,7 @@ Vue.mixin({
       let status = 'not-found';
       let timestamp = null;
 
-      web3 = new Web3(`wss://rinkeby.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
+      web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
 
       const payoutContract = await new web3.eth.Contract(
         JSON.parse(document.contxt.match_payouts_abi),
