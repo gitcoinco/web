@@ -478,10 +478,16 @@ Vue.mixin({
       }
     },
     updateDate(date) {
+      // date is expected to be a momentjs object
       let vm = this;
 
-      vm.form.expirationTimeDelta = date.format('MM/DD/YYYY');
+      vm.form.expirationTimeDelta = date;
+    },
+    updatePayoutDate(date) {
+      // date is expected to be a momentjs object
+      let vm = this;
 
+      vm.form.payoutDate = date;
     },
     userSearch(search, loading) {
       let vm = this;
@@ -491,7 +497,6 @@ Vue.mixin({
       }
       loading(true);
       vm.getUser(loading, search);
-
     },
     getUser: async function(loading, search, selected) {
       let vm = this;
@@ -922,6 +927,12 @@ Vue.mixin({
         return this.chain.id;
       }
       return '';
+    },
+    isExpired: function() {
+      return moment(this.form.expirationTimeDelta).isBefore();
+    },
+    expiresAfterAYear: function() {
+      return moment().diff(this.form.expirationTimeDelta, 'years') < -1;
     }
   },
   watch: {
@@ -960,6 +971,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
     },
     data() {
       return {
+        status: 'OPEN',
         tokens: [],
         network: 'mainnet',
         chain: null,
@@ -979,7 +991,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         dirty: false,
         submitted: false,
         form: {
-          expirationTimeDelta: moment().add(1, 'month').format('MM/DD/YYYY'),
+          expirationTimeDelta: moment().add(1, 'month'),
+          payoutDate: moment().add(1, 'month'),
           featuredBounty: false,
           fundingOrganisation: '',
           issueDetails: undefined,
