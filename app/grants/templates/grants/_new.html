@@ -451,13 +451,11 @@
                   :is-preview="true"
                   @update-navigation="updateNav"
                 >
-                  <fieldset disabled>
-                    <img :src="logoPreview" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="form?.image_css">
-                    <div class="container mb-3 px-5">
-                      <a href="/grants/explorer" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to Grants </a>
-                    </div>
-                    {% include 'grants/grant-preview.html' %}
-                  </fieldset>
+                  <img :src="logoPreview" alt="" height="290px" class="d-block w-100 mb-4" style="object-fit: contain; background: black;" :style="form?.image_css">
+                  <div class="container mb-3 px-5">
+                    <a href="/grants/explorer" class="font-body" rel="noopener noreferrer"><i class="fas fa-chevron-left mr-2"></i>Back to Grants </a>
+                  </div>
+                  {% include 'grants/grant-preview.html' %}
                 </form-wrapper>
 
                 <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
