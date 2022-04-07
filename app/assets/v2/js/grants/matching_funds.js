@@ -273,7 +273,6 @@ Vue.mixin({
 });
 
 if (document.getElementById('gc-matching-funds')) {
-  ['grant'],
   appGrantDetails = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-matching-funds',
