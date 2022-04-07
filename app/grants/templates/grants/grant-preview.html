@@ -1,0 +1,360 @@
+{% load static humanize i18n grants_extra %}
+<div class="container grid grid-template-sidebar px-5">
+    <div class="grant-data overflow-auto">
+      <!-- Inactive Grant -->
+      <div>
+        <b-alert show dismissible variant="primary" class="border border-primary">
+          <div class="row">
+            <div class="col-auto col-md-10">
+              <i class="fas fa-info-circle mr-2"></i>
+              <span class="text-black">
+                <b>Your grant is currently inactive.</b> We review grants more often around grants rounds. Check your review status
+                <a
+                  href="https://gitcoin.notion.site/fc5155ddb7804560a42387043bd805c1?v=937073ff11d149d29e08aa5901befc77"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  class="text-black"
+                >
+                  <u>here.</u>
+                </a>
+              </span>
+            </div>
+          </div>
+        </b-alert>
+      </div>
+      <div class="mt-3 border-bottom">
+        <!-- Title -->
+        <h2>[[form.title]]</h2>
+
+        <!-- Category Details -->
+        <div class="row my-4">
+
+          <div class="col-12 col-md-auto">
+
+            <!-- Grant Eligibility Tags -->
+            <template v-for="item in grant_tags">
+              <a v-if="item.is_eligibility_tag"
+                class="badge badge-pill bg-tags text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
+              >
+                [[item.name]]
+              </a>
+            </template>
+
+            <!-- Grant Discovery Tags -->
+            <template v-for="item in grant_tags">
+              <a v-if="!item.is_eligibility_tag"
+                class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
+              >
+                [[item.name]]
+              </a>
+            </template>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="row border-bottom font-smaller-1 py-4 mx-0 mt-1 mb-4 ">
+
+        <!-- Grant Link -->
+        <div class="col-12 col-md-5 col-md-auto mb-3">
+          <i class="fas fa-link text-grey-400"></i>
+          <a target="_blank" :href="form.reference_url"
+            class="text-primary py-1 px-2 font-weight-normal mr-2"
+          >
+            [[form.reference_url | truncate(40)]]
+          </a>
+        </div>
+
+        <!-- Grant Address -->
+        <div class="col-12 col-md-5 col-md-auto mb-2">
+
+          <!-- ETH -->
+          <template v-if="chainId === 'eth'">
+            <span v-b-tooltip.hover.bottom="form.eth_payout_address">
+              <i class="text-grey-400 ml-1 mr-1 pr-1 pr-md-0 ml-md-0 mr-md-2 fab fa-ethereum"></i>
+              <a :href="`https://etherscan.io/address/${form.eth_payout_address}`" target="_blank">
+                [[form.eth_payout_address | truncateHash]]
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.eth_payout_address">
+                <i class="far fa-copy"></i>
+              </copy-clipboard>
+            </span>
+            <span>
+              <a target="_blank" :href="`https://zkscan.io/explorer/accounts/${form.eth_payout_address}`"
+                class="col-auto badge badge-pill bg-lightpurple text-primary font-weight-semibold" id="wallet-zkscan-link">
+                zkSync
+              </a>
+              <a target="_blank" :href="`https://polygonscan.com/address/${form.eth_payout_address}`"
+                class="col-auto badge badge-pill bg-lightpurple text-primary font-weight-semibold" id="wallet-polygonscan-link">
+                Polygon
+              </a>
+            </span>
+          </template>
+
+          <!-- ZCASH -->
+          <template v-if="chainId === 'zcash'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/zcash.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://sochain.com/address/ZEC/${form.zcash_payout_address}`">
+                <span id="z-cash-address" class="wallet-address" v-b-tooltip.hover.bottom="form.zcash_payout_address">
+                  [[form.zcash_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.zcash_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- CELO -->
+          <template v-if="chainId === 'celo'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://explorer.celo.org/address/${form.celo_payout_address}`">
+                <span id="celo-address" class="wallet-address" v-b-tooltip.hover.bottom="form.celo_payout_address">
+                  [[form.celo_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.celo_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- ZIL -->
+          <template v-if="chainId === 'zilliqa'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://viewblock.io/zilliqa/address/${form.zil_payout_address}`">
+                <span id="zil-address" class="wallet-address" v-b-tooltip.hover.bottom="form.zil_payout_address">
+                  [[form.zil_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.zil_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- HARMONY -->
+          <template v-if="chainId === 'harmony'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://explorer.harmony.one/#/address/${form.harmony_payout_address}`">
+                <span id="harmony-address" class="wallet-address" v-b-tooltip.hover.bottom="form.harmony_payout_address">
+                  [[form.harmony_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.harmony_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- BINANCE -->
+          <template v-if="chainId === 'binance'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://bscscan.com/address/${form.binance_payout_address}`">
+                <span id="binance-address" class="wallet-address" v-b-tooltip.hover.bottom="form.binance_payout_address">
+                  [[form.binance_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.binance_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- POLKADOT -->
+          <template v-if="chainId === 'polkadot'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://polkadot.subscan.io/account/${form.polkadot_payout_address}`">
+                <span id="polkadot-address" class="wallet-address" v-b-tooltip.hover.bottom="form.polkadot_payout_address">
+                  [[form.polkadot_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.polkadot_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- KUSAMA -->
+          <template v-if="chainId === 'kusama'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/kusama.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://kusama.subscan.io/account/${form.kusama_payout_address}`">
+                <span id="kusama-address" class="wallet-address" v-b-tooltip.hover.bottom="form.kusama_payout_address">
+                  [[form.kusama_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.kusama_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- RSK -->
+          <template v-if="chainId === 'rsk'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/rsk.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://explorer.rsk.co/address/${form.rsk_payout_address}`">
+                <span id="rsk-address" class="wallet-address" v-b-tooltip.hover.bottom="form.rsk_payout_address">
+                  [[form.rsk_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.rsk_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+
+          <!-- ALGORAND -->
+          <template v-if="chainId === 'algorand'">
+            <div class="d-flex align-items-center">
+              <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/algorand.svg' %}" alt="" width="16">
+              <a target="_blank" :href="`https://algoexplorer.io/address/${form.algorand_payout_address}`">
+                <span id="algorand-address" class="wallet-address" v-b-tooltip.hover.bottom="form.algorand_payout_address">
+                  [[form.algorand_payout_address | truncateHash]]
+                </span>
+              </a>
+              <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="form.algorand_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+            </div>
+          </template>
+        </div>
+
+        <!-- Twitter Verified-->
+        <div class="col-12 col-md-5 col-md-auto mb-3">
+          <i class="text-grey-400 fab fa-twitter"></i>
+          <a class="text-primary py-1 px-2 font-weight-normal mr-2"
+            target="_blank" :href="`https://twitter.com/${form.twitter_handle_1}`"
+          >
+            [[form.twitter_handle_1]]
+          </a>
+        </div>
+
+        <!-- Grant Region -->
+        <div class="col-12 col-md-5 col-md-auto mb-3">
+          <i class="font-smaller-2 fas fa-globe text-grey-400"></i>
+          <span class="text-grey-400text-primary py-1 px-2 font-weight-normal mr-2">
+            <template v-if="form.region && form.region.label != 'undefined'">[[form.region.label]]</template>
+            <template v-else>Unknown</template>
+          </span>
+        </div>
+
+
+        <!-- Grant Last Updated -->
+        <div class="col-12 col-md-5 col-md-auto mb-3 mb-md-1 text-grey-400">
+          <i class="fas fa-stopwatch text-grey-400"></i>
+          <span class="py-1 px-2 font-weight-normal mr-2">
+            Updated a few seconds ago
+          </span>
+        </div>
+
+        <!-- Grant External Funding -->
+        <div v-if="form.has_external_funding == 'yes'" class="col-12 col-md-5 mb-3 mb-md-1 col-md-auto text-grey-400">
+          <i class="fas fa-dollar-sign text-grey-400"></i>
+          <span class="py-1 px-2 font-weight-normal mr-2">
+            Raised external funding
+          </span>
+        </div>
+      </div>
+
+      <!-- CLR details [[form.positive_round_contributor_count]] -->
+      <div class="border-bottom mt-3 pb-3">
+
+        <div class="row mt-2">
+          <div class="col mb-5">
+            <h3>Lifetime funding received</h3>
+            <h2>$0</h2>
+            <span>raised from all contributors</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <h3 class="col-12">
+            Not in an active matching round
+          </h3>
+        </div>
+
+      </div>
+
+      <!-- About -->
+      <div class="grant-description mt-4 mb-5">
+        <h3>About</h3>
+        <render-quill :delta="richDescription"></render-quill>
+      </div>
+    </div>
+
+    <!-- Grant Management -->
+    <div class="grant-managment mt-4 mt-md-0">
+      <b-card>
+
+        <!-- Edit Grant Button -->
+        <template>
+          <b-card-text>
+            <p class="font-weight-semibold mb-2">
+              <i class="fal fa-edit mr-1"></i>
+              Keep your grant up to date
+            </p>
+            Let your grant contributors know about your project and progress.
+          </b-card-text>
+          <button class="btn btn-block btn-primary">Edit Grant</button>
+          <hr class="my-4">
+        </template>
+
+      </b-card>
+
+    </div>
+
+    <!-- CLR details and Add-to/remove-from cart -->
+    <div class="grant-checkout text-nowrap">
+      <div class="rounded shadow-sm bg-white px-3 pt-3 pb-3 border">
+        <div style="max-width: 250px;" class="mx-auto mb-3 mt-2 position-relative clr-disabled">
+          <svg width="145" height="77" viewBox="0 0 145 77" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.15491 76.0846C1.15491 22.2514 19.2304 -0.706763 108.423 1.27248" stroke="#C4C1CF" stroke-width="2"/>
+            <line x1="19" y1="21.5" x2="145" y2="21.5" stroke="#11BC92" stroke-dasharray="5 5"/>
+            <line x1="2" y1="74.5" x2="145" y2="74.5" stroke="#11BC92" stroke-dasharray="5 5"/>
+          </svg>
+          <div class="d-inline-flex flex-column-reverse mt-n4 position-absolute" style="right: 0px;">
+            <div class="bg-white d-flex flex-column" style="flex: 1 1 50%;margin-top: 14px;">
+              <span>$0 contribution</span>
+              <span class="text-secondary"><b>$0 match</b></span>
+            </div>
+            <div class="bg-white d-flex flex-column" style="flex: 1 1 50%;margin-top: 14px;">
+              <span>$0 contribution</span>
+              <span class="text-secondary"><b>$0 match</b></span>
+            </div>
+          </div>
+        </div>
+
+        <template>
+          <button type="button" class="btn btn-block btn-primary" disabled>
+            {% trans "This Grant Is Not Active" %}
+          </button>
+        </template>
+      </div>
+
+      <div class="d-flex justify-content-between mt-2 text-grey-400 font-smaller-1">
+
+        <!-- Grants Fav-->
+        <div>
+          <button class="pl-0 btn btn-link mx-0 my-auto text-grey-300">
+            <i class="far fa-star" ></i>
+            Add to Favorites
+          </button>
+        </div>
+
+        <!-- Grants Rules-->
+        <div class="d-inline font-smaller-2 cursor-pointer my-auto" id="popover-target-1" style="width: 65px;">
+          <i class="fas fa-info-circle mr-2"></i>
+          Rules
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Grants Team -->
+    <div class="grant-team">
+      <div class="">
+        <h3>Team</h3>
+        <div :class="`d-flex flex-wrap${teamMembers.length > 3 ? ' justify-content-center' : ''}`">
+          <div v-for="member in teamMembers" :key="member.id" class="d-flex flex-column align-items-center px-2 py-3" v-if="member?.text">
+            <b-img-lazy class="rounded-circle bg-light" width="50" height="50" :src="member.avatar_url" :alt="member.text"></b-img-lazy>
+            <a :href="`/profile/${member.text}`" class="mt-2">[[member.text]]</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
