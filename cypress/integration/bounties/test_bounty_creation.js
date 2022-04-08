@@ -38,7 +38,18 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
     // Screen 1
     cy.contains('Feature').click();
     cy.get('#bounty_tags').find('.vs__search').click();
-    cy.contains('Python').click();
+
+    let tags = [ 'Python', 'Lua', 'Web Assembly' ];
+
+    tags.forEach(tag => {
+      if (tag === 'Python') {
+        cy.contains(tag).click();
+      } else {
+        cy.get('#bounty_tags').find('.vs__search').type(tag + '{enter}');
+      }
+    });
+    cy.get('#bounty_tags').find('.vs__search').click();
+
     cy.get('#experience_level').find('.vs__search').click();
     cy.contains('Beginner').click();
     cy.get('#project_length').find('.vs__search').click();
@@ -98,7 +109,26 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
     
     // Screen 5
 
+    tags.forEach(tag => {
+      cy.contains(tag);
+    });
+
+    // cy.contains('Time Left').parent().contains();
+    cy.log('Opened', cy.contains('Opened'));
+    cy.log('Opened', cy.contains('Opened').parent());
+    // cy.log('Opened', cy.contains('Opened').parent().contains('Few Seconds Ago'));
+    // cy.contains('Opened').parent().contains('Few Seconds Ago');
+    // cy.get('#bounty_type').contains('Improvement');
+    // cy.get('#admin_override_suspend_auto_approval').contains('Off');
+    // cy.contains('Project Type').parent().contains('Traditional');
+    // cy.contains('Time Commitment').parent().contains('Days');
+    cy.get('#experience_level').contains('Beginner');
+    // cy.contains('Permission').parent().contains('Approval');
+
+    
+    // Save and navigate to the details screen
     cy.contains('Confirm').click();
+
 
     // Verify that the redirect happened
     cy.url().should('include', '/issue/');
