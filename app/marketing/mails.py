@@ -34,18 +34,17 @@ from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_featured_funded_bounty,
-    render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent, render_gdpr_update,
-    render_grant_cancellation_email, render_grant_match_distribution_final_txn, render_grant_recontribute,
-    render_grant_txn_failed, render_grant_update, render_match_distribution, render_match_email, render_mention,
-    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_contributions_email, render_new_grant_approved_email, render_new_grant_email, render_new_work_submission,
-    render_no_applicant_reminder, render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart,
-    render_request_amount_email, render_reserved_issue, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
-    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
-    render_tribe_hackathon_prizes, render_unread_notification_email_weekly_roundup, render_wallpost,
-    render_weekly_recap,
+    render_funder_payout_reminder, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email,
+    render_grant_match_distribution_final_txn, render_grant_recontribute, render_grant_txn_failed, render_grant_update,
+    render_match_distribution, render_match_email, render_mention, render_new_bounty, render_new_bounty_acceptance,
+    render_new_bounty_rejection, render_new_bounty_roundup, render_new_contributions_email,
+    render_new_grant_approved_email, render_new_grant_email, render_new_work_submission, render_no_applicant_reminder,
+    render_pending_contribution_email, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
+    render_reserved_issue, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
+    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
+    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
+    render_tax_report, render_thank_you_for_supporting_email, render_tip_email, render_tribe_hackathon_prizes,
+    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -422,29 +421,6 @@ def admin_contact_funder(bounty, text, from_user):
         subject = bounty.url
         __, text = render_admin_contact_funder(bounty, text, from_user)
         cc_emails = [from_email]
-        if allowed_to_send_email(to_email, 'admin_contact_funder'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                text,
-                cc_emails=cc_emails,
-                from_name=from_email,
-                categories=['transactional', func_name()],
-            )
-    finally:
-        translation.activate(cur_language)
-
-
-def funder_stale(to_email, github_username, days=30, time_as_str='about a month'):
-    from_email = 'product@gitcoin.co'
-    cur_language = translation.get_language()
-    try:
-        setup_lang(to_email)
-
-        subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
-        __, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = []
         if allowed_to_send_email(to_email, 'admin_contact_funder'):
             send_mail(
                 from_email,
