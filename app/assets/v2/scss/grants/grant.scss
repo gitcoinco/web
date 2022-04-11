@@ -727,19 +727,11 @@
     .v-select, .v-select * {
       height: 2rem;
     }
-  
+    .vs__selected {
+      margin: 0;
+      padding: 0 0 0 15px;
+    }
   }
-}
-
-
-
-
-.rounded-toggle  {
-  .vs__dropdown-toggle .vs__selected {
-    margin: 0;
-    padding: 0 0 0 15px;
-  }
-
   svg {
     transform: scale(0.7);
     fill: black;
