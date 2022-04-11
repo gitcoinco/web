@@ -171,6 +171,7 @@ class Command(BaseCommand):
                 match = CLRMatch.objects.create(
                     round_number=clr_round,
                     amount=amount,
+                    token=token_info,
                     token_amount=token_amount,
                     grant=grant,
                     comments=comments,
