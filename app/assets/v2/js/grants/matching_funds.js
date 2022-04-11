@@ -36,7 +36,7 @@ Vue.mixin({
         let grants = await (await fetch(url)).json();
 
         // fetch only ETH grants
-        grants = grants.filter(grant => grant.admin_address != '0x0')
+        grants = grants.filter(grant => grant.admin_address != '0x0');
         // update claim status + format date fields
         await Promise.all(grants.map(async grant => {
           await Promise.all(grant.clr_matches.map(async m => {
@@ -176,7 +176,7 @@ Vue.mixin({
         index: index,
         claimee: adminAddress,
         amount: hexAmount,
-        merkleProof: merkleProof,
+        merkleProof: merkleProof
       };
 
       matchPayouts.methods.claim(claimArgs)
@@ -273,7 +273,6 @@ Vue.mixin({
 });
 
 if (document.getElementById('gc-matching-funds')) {
-  props: ['grant'],
   appGrantDetails = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-matching-funds',
