@@ -91,8 +91,6 @@ class Command(BaseCommand):
         # fetch GrantPayout contract
         grant_payout = GrantPayout.objects.get(pk=grant_payout_pk)
 
-        # get deployed contract address
-        match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
 
         # get network on which the contract is deployed
         network = grant_payout.network
@@ -281,6 +279,8 @@ class Command(BaseCommand):
             from web3.middleware import geth_poa_middleware
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
+            # get deployed contract address
+            match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
 
             # Get total token amount
             total_token_amount = Decimal(0)
