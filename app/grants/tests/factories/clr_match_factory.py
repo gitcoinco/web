@@ -12,5 +12,6 @@ class CLRMatchFactory(factory.django.DjangoModelFactory):
         model = CLRMatch
 
     amount = factory.Faker('pyfloat', positive=True)
+    token_amount = factory.Faker('pyfloat', positive=True)
     grant = factory.SubFactory(GrantFactory)
     payout_contribution = factory.SubFactory(ContributionFactory)
