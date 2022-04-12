@@ -128,39 +128,19 @@
     <div class="header">
       {% include 'home/nav.html' %}
     </div>
-    <header class="grad home-carousel">
-      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators home">
-          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item active" data-carousel-item-href="{% url 'grants:grants' %}">
-            <div class="grants">
-              <div class="d-flex flex-column justify-content-around container">
-                <h3 class="dates gc-font-heading">March 9-24, 2022</h3>
-                <img src="{% static "v2/images/home/GR13_Logo_desktop.png" %}">
-                <h5>Web3's Biggest Funding &amp; Building Event</h5>
-                <a class="btn btn-lg btn-outline-primary" href="/grants/explorer">{% trans 'Explore Grants' %}</a>
-              </div>
-            </div>
+    <header class="grad">
+       <!-- This can be converted to a carousel if needed for grants rounds: https://github.com/gitcoinco/web/pull/10276 -->
+      <div class="container build-slide">
+        <div class="row pt-5">
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-around">
+            <h1 class="mt-5">Build and Fund the Open Web Together</h1>
+            <p class="font-bigger-4 text-grey-400 font-weight-300">Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.</p>
           </div>
-          <div class="carousel-item">
-            <div class="container build-slide">
-              <div class="row pt-5">
-                <div class="col-12 col-md-6 d-flex flex-column justify-content-around">
-                  <h1 class="mt-5">Build and Fund the Open Web Together</h1>
-                  <p class="font-bigger-4 text-grey-400 font-weight-300">Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.</p>
-                </div>
-                <div class="col-12 col-md-6 header-image">
-                  <img class="mt-5" src="{% static "v2/images/home/Flying_ppl_optimized.svg" %}">
-                </div>
-              </div>
-            </div>
+          <div class="col-12 col-md-6 header-image">
+            <img class="mt-5" src="{% static "v2/images/home/Flying_ppl_optimized.svg" %}">
           </div>
         </div>
       </div>
-
     </header>
 
     <section class="container my-5">
