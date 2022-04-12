@@ -285,7 +285,7 @@ class Command(BaseCommand):
 
             # Get total token amount
             total_token_amount = Decimal(0)
-            clr_matches = CLRMatch.objects.filter(round_number=clr_round)
+            clr_matches = CLRMatch.objects.filter(round_number=clr_round, grant_payout=grant_payout)
             for clr_match in clr_matches:
                 total_token_amount += Decimal(clr_match.amount)
 
