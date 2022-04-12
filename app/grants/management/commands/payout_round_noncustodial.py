@@ -166,7 +166,7 @@ class Command(BaseCommand):
                 comments = "" if not needs_kyc else "Needs KYC"
 
                 # get token amount
-                token_amount = amount * grant_payout.conversion_rate
+                token_amount = amount / grant_payout.conversion_rate
 
                 match = CLRMatch.objects.create(
                     round_number=clr_round,
