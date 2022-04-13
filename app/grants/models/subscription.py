@@ -31,7 +31,8 @@ class Subscription(SuperModel):
         ('HARMONY', 'HARMONY'),
         ('BINANCE', 'BINANCE'),
         ('RSK', 'RSK'),
-        ('ALGORAND', 'ALGORAND')
+        ('ALGORAND', 'ALGORAND'),
+        ('COSMOS', 'COSMOS')
     ]
 
     active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
