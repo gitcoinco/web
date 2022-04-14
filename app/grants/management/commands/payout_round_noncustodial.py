@@ -90,8 +90,6 @@ class Command(BaseCommand):
         # fetch GrantPayout contract
         grant_payout = GrantPayout.objects.get(pk=grant_payout_pk)
 
-        # get deployed contract address
-        match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
 
         # get network on which the contract is deployed
         network = grant_payout.network
@@ -167,11 +165,12 @@ class Command(BaseCommand):
                 comments = "" if not needs_kyc else "Needs KYC"
 
                 # get token amount
-                token_amount = amount * grant_payout.conversion_rate
+                token_amount = amount / grant_payout.conversion_rate
 
                 match = CLRMatch.objects.create(
                     round_number=clr_round,
                     amount=amount,
+                    token=token_info,
                     token_amount=token_amount,
                     grant=grant,
                     comments=comments,
@@ -280,12 +279,14 @@ class Command(BaseCommand):
             from web3.middleware import geth_poa_middleware
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
+            # get deployed contract address
+            match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
 
             # Get total token amount
             total_token_amount = Decimal(0)
-            clr_matches = CLRMatch.objects.filter(round_number=clr_round)
+            clr_matches = CLRMatch.objects.filter(round_number=clr_round, grant_payout=grant_payout)
             for clr_match in clr_matches:
-                total_token_amount += Decimal(clr_match.amount)
+                total_token_amount += Decimal(clr_match.token_amount)
 
             TOKEN_DECIMALS =  Decimal(10 ** token_decimal)
             # Get contract token balance

@@ -17,7 +17,7 @@ class MatchesContract:
         self.contract = w3.eth.contract(address=address, abi=settings.MATCH_PAYOUTS_ABI)
 
     def get_payout_claimed_entries(self):
-        payout_claim_filter = self.contract.events.PayoutClaimed.createFilter(fromBlock='0x0')
+        payout_claim_filter = self.contract.events.FundsClaimed.createFilter(fromBlock='0x0')
         entries = payout_claim_filter.get_all_entries()
         return [{'recipient': log['args']['recipient'].lower(), 'tx_hash': log['transactionHash'].hex() } for log in entries]
 
