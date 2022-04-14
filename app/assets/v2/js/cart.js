@@ -123,6 +123,10 @@ Vue.component('grants-cart', {
         'ALGORAND': [
           `${static_url}v2/js/tokens.js`,
           `${static_url}v2/js/grants/cart/algorand_extension.js`
+        ],
+        'COSMOS': [
+          `${static_url}v2/js/lib/cosmos/cosmwasmjs.js`,
+          `${static_url}v2/js/grants/cart/cosmos_extension.js`
         ]
       }
     };
@@ -715,6 +719,9 @@ Vue.component('grants-cart', {
           vm.tokenListOptions.chainId = '1001';
           vm.tokenListOptions.strict = true;
           break;
+        case 'COSMOS':
+          vm.chainId = '1155';
+          break;
       }
     },
     confirmQRPayment: function(e, grant) {
@@ -795,6 +802,9 @@ Vue.component('grants-cart', {
           } else {
             initAlgorandConnection(grant, vm);
           }
+          break;
+        case 'COSMOS':
+          contributeWithCosmosExtension(grant, vm);
           break;
         case 'RSK':
           contributeWithRskExtension(grant, vm);
