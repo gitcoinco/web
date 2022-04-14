@@ -31,17 +31,13 @@
 
           <div class="col-12 col-md-auto">
 
-            <!-- Grant Eligibility Tags -->
+            <!-- Grant Eligibility & Discovery Tags -->
             <template v-for="item in grant_tags">
               <a v-if="item.is_eligibility_tag"
                 class="badge badge-pill bg-tags text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
               >
                 [[item.name]]
               </a>
-            </template>
-
-            <!-- Grant Discovery Tags -->
-            <template v-for="item in grant_tags">
               <a v-if="!item.is_eligibility_tag"
                 class="badge badge-pill bg-lightpurple text-primary py-1 px-2 font-smaller-2 font-weight-normal mr-2"
               >
@@ -60,7 +56,7 @@
         <!-- Grant Link -->
         <div class="col-12 col-md-5 col-md-auto mb-3">
           <i class="fas fa-link text-grey-400"></i>
-          <a target="_blank" :href="form.reference_url"
+          <a target="_blank" :href="form.reference_url" rel="noreferrer noopener"
             class="text-primary py-1 px-2 font-weight-normal mr-2"
           >
             [[form.reference_url | truncate(40)]]
