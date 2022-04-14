@@ -41,6 +41,7 @@ from dashboard.sync.binance import sync_binance_payout
 from dashboard.sync.btc import sync_btc_payout
 from dashboard.sync.casper import sync_casper_payout
 from dashboard.sync.celo import sync_celo_payout
+from dashboard.sync.cosmos import sync_cosmos_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.filecoin import sync_filecoin_payout
@@ -678,6 +679,9 @@ def sync_payout(fulfillment):
 
     elif fulfillment.payout_type == 'casper_ext':
         sync_casper_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'cosmos_ext':
+        sync_cosmos_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
