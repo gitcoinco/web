@@ -175,7 +175,8 @@ class Command(BaseCommand):
                     token_amount=token_amount,
                     grant=grant,
                     comments=comments,
-                    grant_payout=grant_payout
+                    grant_payout=grant_payout,
+                    ready_for_payout=False if needs_kyc else True
                 )
                 clr_matches_created += 1
                 if needs_kyc:
