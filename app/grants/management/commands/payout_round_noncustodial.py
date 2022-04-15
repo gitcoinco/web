@@ -339,64 +339,65 @@ class Command(BaseCommand):
                 grant_match_distribution_final_txn(match, True)
                 match.save()
 
-                # create payout obj artifacts
-                profile = Profile.objects.get(handle__iexact='gitcoinbot')
-                validator_comment = f"created by ingest payout_round_script"
-                subscription = Subscription()
-                subscription.is_postive_vote = True
-                subscription.active = False
-                subscription.error = True
-                subscription.contributor_address = 'N/A'
-                subscription.amount_per_period = match.token_amount
-                subscription.real_period_seconds = 2592000
-                subscription.frequency = 30
-                subscription.frequency_unit = 'N/A'
-                subscription.token_address = token_address
-                subscription.token_symbol = token_symbol
-                subscription.gas_price = 0
-                subscription.new_approve_tx_id = '0x0'
-                subscription.num_tx_approved = 1
-                subscription.network = network
-                subscription.contributor_profile = profile
-                subscription.grant = match.grant
-                subscription.comments = validator_comment
-                subscription.amount_per_period_usdt = match.amount
-                subscription.save()
+                if not match.payout_contribution:
+                    # create payout obj artifacts
+                    profile = Profile.objects.get(handle__iexact='gitcoinbot')
+                    validator_comment = f"created by ingest payout_round_script"
+                    subscription = Subscription()
+                    subscription.is_postive_vote = True
+                    subscription.active = False
+                    subscription.error = True
+                    subscription.contributor_address = 'N/A'
+                    subscription.amount_per_period = match.token_amount
+                    subscription.real_period_seconds = 2592000
+                    subscription.frequency = 30
+                    subscription.frequency_unit = 'N/A'
+                    subscription.token_address = token_address
+                    subscription.token_symbol = token_symbol
+                    subscription.gas_price = 0
+                    subscription.new_approve_tx_id = '0x0'
+                    subscription.num_tx_approved = 1
+                    subscription.network = network
+                    subscription.contributor_profile = profile
+                    subscription.grant = match.grant
+                    subscription.comments = validator_comment
+                    subscription.amount_per_period_usdt = match.amount
+                    subscription.save()
 
-                contrib = Contribution.objects.create(
-                    success=True,
-                    tx_cleared=True,
-                    tx_override=True,
-                    tx_id=tx_id,
-                    subscription=subscription,
-                    validator_passed=True,
-                    validator_comment=validator_comment,
-                )
-                self.stdout.write(f"ingested {subscription.pk} / {contrib.pk}")
+                    contrib = Contribution.objects.create(
+                        success=True,
+                        tx_cleared=True,
+                        tx_override=True,
+                        tx_id=tx_id,
+                        subscription=subscription,
+                        validator_passed=True,
+                        validator_comment=validator_comment,
+                    )
+                    self.stdout.write(f"ingested {subscription.pk} / {contrib.pk}")
 
-                match.payout_contribution = contrib
-                match.save()
+                    match.payout_contribution = contrib
+                    match.save()
 
-                metadata = {
-                    'id': subscription.id,
-                    'value_in_token': str(subscription.amount_per_period),
-                    'value_in_usdt_now': str(round(subscription.amount_per_period_usdt, 2)),
-                    'token_name': subscription.token_symbol,
-                    'title': subscription.grant.title,
-                    'grant_url': subscription.grant.url,
-                    'num_tx_approved': subscription.num_tx_approved,
-                    'category': 'grant',
-                }
-                kwargs = {
-                    'profile': profile,
-                    'subscription': subscription,
-                    'grant': subscription.grant,
-                    'activity_type': 'new_grant_contribution',
-                    'metadata': metadata,
-                }
+                    metadata = {
+                        'id': subscription.id,
+                        'value_in_token': str(subscription.amount_per_period),
+                        'value_in_usdt_now': str(round(subscription.amount_per_period_usdt, 2)),
+                        'token_name': subscription.token_symbol,
+                        'title': subscription.grant.title,
+                        'grant_url': subscription.grant.url,
+                        'num_tx_approved': subscription.num_tx_approved,
+                        'category': 'grant',
+                    }
+                    kwargs = {
+                        'profile': profile,
+                        'subscription': subscription,
+                        'grant': subscription.grant,
+                        'activity_type': 'new_grant_contribution',
+                        'metadata': metadata,
+                    }
 
-                activity = Activity.objects.create(**kwargs)
-                activity.populate_activity_index()
+                    activity = Activity.objects.create(**kwargs)
+                    activity.populate_activity_index()
 
-                comment = f"CLR Round {clr_round} Payout"
-                comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
+                    comment = f"CLR Round {clr_round} Payout"
+                    comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
