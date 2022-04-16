@@ -114,8 +114,7 @@ Vue.component('grants-cart', {
           `${static_url}v2/js/lib/harmony/HarmonyAccount.browser.js`,
           `${static_url}v2/js/lib/harmony/HarmonyCrypto.browser.js`,
           `${static_url}v2/js/lib/harmony/HarmonyNetwork.browser.js`,
-          `${static_url}v2/js/lib/harmony/utils.js`,
-          `${static_url}v2/js/grants/cart/harmony_extension.js`
+          `${static_url}v2/js/lib/harmony/utils.js`
         ],
         'RSK': [
           `${static_url}v2/js/grants/cart/rsk_extension.js`
@@ -785,6 +784,10 @@ Vue.component('grants-cart', {
         vm.$set(grant, 'loading', false);
       });
     },
+    async contributeWithHarmony(grant, vm, modal) {
+      this.sendPaymentInfoEvent('harmony');
+      await setupHarmony();
+    },
     contributeWithExtension: function(grant, tenant, data) {
       let vm = this;
 
@@ -798,9 +801,6 @@ Vue.component('grants-cart', {
           break;
         case 'RSK':
           contributeWithRskExtension(grant, vm);
-          break;
-        case 'HARMONY':
-          contributeWithHarmonyExtension(grant, vm);
           break;
         case 'BINANCE':
           contributeWithBinanceExtension(grant, vm);
