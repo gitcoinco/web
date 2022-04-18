@@ -6,13 +6,6 @@ from economy.models import SuperModel
 
 class Flag(SuperModel):
 
-    grant = models.ForeignKey(
-        'grants.Grant',
-        related_name='flags',
-        on_delete=models.CASCADE,
-        null=False,
-        help_text=_('The associated Grant.'),
-    )
     profile = models.ForeignKey(
         'dashboard.Profile',
         related_name='grantflags',
@@ -24,6 +17,14 @@ class Flag(SuperModel):
     processed = models.BooleanField(default=False, help_text=_('Was it processed?'))
     comments_admin = models.TextField(default='', blank=True, help_text=_('The comments of an admin.'))
     tweet = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='flags',
+        on_delete=models.CASCADE,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
 
     def post_flag(self):
         from dashboard.models import Activity, Profile
