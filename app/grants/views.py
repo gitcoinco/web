@@ -4018,6 +4018,6 @@ def ingest_merkle_claim_to_clr_match(request):
         return HttpResponseBadRequest("message: incorrect round field")
 
     for claim in _claims:
-        clr_matches.filter(grant__admin_address=claim['claimee']).update(merkle_claim=claim)
+        clr_matches.filter(grant__admin_address__iexact=claim['claimee']).update(merkle_claim=claim)
 
     return HttpResponse('message: Merkle Claim successfully ingested into CLRMatch!')
