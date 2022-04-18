@@ -11,9 +11,15 @@
       padding: 0 0 24px 0;
     }
   }
+
+  .preview-shadow {
+    box-shadow: 0.25rem 1.5rem 1.5rem 0.5rem $gc-grey-100;
+    border: none;
+    pointer-events: none;
+  }
   
   .navigation {
-    margin-top: 30px;
+    margin-top: 50px;
     color: $gc-violet-400;
     button {
       margin: 0 5px;
@@ -27,6 +33,15 @@
       color: $gc-grey-300;
     }
   }
+
+  .preview-navigation {
+    margin-top: 50px;
+    button {
+      margin: 0 5px;
+      width: 204px;
+    }
+  }
+
   .vs__dropdown-option--disabled {
     border-bottom: 1px solid $border-color;
     font-size: 9px;

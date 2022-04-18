@@ -527,12 +527,11 @@ if (document.getElementById('gc-new-grant')) {
           {
             text: 'Owner Information',
             active: false
+          },
+          {
+            text: 'Review Grant',
+            active: false
           }
-          // commented out until preview step is created
-          // {
-          //   text: 'Review Grant',
-          //   active: false
-          // }
         ];
 
         if (this.step == 100) {
