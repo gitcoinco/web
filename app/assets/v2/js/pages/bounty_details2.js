@@ -43,7 +43,7 @@ Vue.mixin({
         vm.eventParams();
       }).catch(function(error) {
         vm.loadingState = 'error';
-        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'danger');
+        _alert('Error fetching bounties. Please contact support@gitcoin.co', 'danger');
       });
     },
     eventParams: function() {
