@@ -1,7 +1,6 @@
 const contributeWithCosmosExtension = async(grant, vm, modal) => {
   const amount = grant.grant_donation_amount;
   const to_address = grant.cosmos_payout_address;
-  const from_address = 'TODO: <FROM ADDRESS>';
   const chainId = 'cosmoshub-4';
 
   if (!window.keplr) {
@@ -20,6 +19,8 @@ const contributeWithCosmosExtension = async(grant, vm, modal) => {
     rpcEndpoint: `${window.location.origin}/api/v1/reverse-proxy/${tenant}`,
     gasPrice: '0.0008uatom'
   });
+
+  const from_address = (await client.signer.getAccounts())[0].address;
     
   let atomBalance = (await client.getBalance(from_address, 'uatom')).amount;
 
