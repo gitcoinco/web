@@ -470,6 +470,10 @@ Vue.component('grants-cart', {
       return window.WalletConnect || window.MyAlgoConnect || window.AlgoSigner || false;
     },
 
+    isCosmosExtInstalled() {
+      return window.keplr && window.CosmWasmJS;
+    },
+
     isRskExtInstalled() {
       const rskHost = 'https://public-node.rsk.co';
       const rskClient = new Web3();
