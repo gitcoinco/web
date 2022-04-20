@@ -471,7 +471,7 @@ Vue.component('grants-cart', {
     },
 
     isCosmosExtInstalled() {
-      return window.keplr && window.CosmWasmJS;
+      return window.keplr || false;
     },
 
     isRskExtInstalled() {

@@ -30,15 +30,19 @@ def get_cosmos_txn_status(contribution):
             ).json()['block']['header']['height']
             confirmations = int(block_tip) - int(response['tx_response']['height'])
 
+            print(tx_response['to_address'], to_address)
+            print([token['amount'] for token in tx_response['amount'] if token['denom'] == 'uatom'][0], amount)
+
             if (
                 response['tx_response']['txhash'].strip() == txnid
                 and tx_response['from_address'] == from_address
                 and tx_response['to_address'] == to_address
                 and float([
                     token['amount'] for token in tx_response['amount'] if token['denom'] == 'uatom'
-                ][0]) == float(amount)
+                ][0]) == float(amount) * 10 ** 6
             ):
                 if response['tx_response']['code'] == 0 and confirmations > 0:
+                    print('hello successs')
                     return 'success'
                 return 'expired'
 

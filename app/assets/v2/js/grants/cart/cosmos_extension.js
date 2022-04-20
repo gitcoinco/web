@@ -1,5 +1,8 @@
-const contributeWithCosmosExtension = async(grant, vm, modal) => {
-  const amount = grant.grant_donation_amount;
+const contributeWithCosmosExtension = async(grant, vm) => {
+  let decimals = vm.filterByChainId.filter(token => {
+    return token.name == grant.grant_donation_currency;
+  })[0].decimals;
+  const amount = grant.grant_donation_amount * 10 ** decimals;
   const to_address = grant.cosmos_payout_address;
   const chainId = 'cosmoshub-4';
 
@@ -16,7 +19,7 @@ const contributeWithCosmosExtension = async(grant, vm, modal) => {
 
   let client = await window.CosmWasmJS.setupWebKeplr({
     chainId,
-    rpcEndpoint: `${window.location.origin}/api/v1/reverse-proxy/${tenant}`,
+    rpcEndpoint: `${window.location.origin}/api/v1/reverse-proxy/cosmos`,
     gasPrice: '0.0008uatom'
   });
 
@@ -43,7 +46,6 @@ const contributeWithCosmosExtension = async(grant, vm, modal) => {
 
     callback(null, from_address, result.transactionHash);
   } catch (e) {
-    modal.closeModal();
     callback(e);
   }
 

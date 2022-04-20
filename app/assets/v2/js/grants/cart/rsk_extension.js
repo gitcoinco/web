@@ -1,4 +1,4 @@
-const contributeWithRskExtension = async(grant, vm, modal) => {
+const contributeWithRskExtension = async(grant, vm) => {
   const token_name = grant.grant_donation_currency;
   const amount = grant.grant_donation_amount;
   const to_address = grant.rsk_payout_address;
@@ -19,15 +19,13 @@ const contributeWithRskExtension = async(grant, vm, modal) => {
     try {
       console.log(ethereum.selectedAddress);
     } catch (e) {
-      modal.closeModal();
       _alert({ message: 'Please download or enable Nifty Wallet extension' }, 'danger');
       return;
     }
 
     if (!ethereum.selectedAddress) {
-      modal.closeModal();
       return onConnect().then(() => {
-        modal.openModal();
+        console.log('wallet connected');
       });
     }
   }
