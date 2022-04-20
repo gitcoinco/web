@@ -1134,7 +1134,6 @@ Vue.component('grants-cart', {
         const tokenName = selectedTokens[i];
         const tokenDetails = this.getTokenByName(tokenName, isPolygon);
 
-        console.log({ tokenDetails });
         // If native currency donation no approval is necessary, just check balance
         if (tokenDetails.name === this.nativeCurrency) {
           const userEthBalance = await web3.eth.getBalance(userAddress);
