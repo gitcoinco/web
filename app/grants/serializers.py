@@ -12,8 +12,6 @@ from .models import (
 from .utils import amount_in_wei, get_converted_amount
 
 
-
-
 class TokenSerializer(FlexFieldsModelSerializer):
     class Meta:
         model = Token
