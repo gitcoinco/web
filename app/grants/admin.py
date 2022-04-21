@@ -49,6 +49,10 @@ class FlagAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     raw_id_fields = ['profile', 'grant']
+    readonly_fields = ['grant_link']
+    
+    def grant_link(self, obj):
+        return format_html("<a href='/grants/{id}/{slug}' target=\"_blank\">Grant Details</a>", id=obj.grant.id, slug=obj.grant.slug)
 
     def response_change(self, request, obj):
         if "_post_flag" in request.POST:

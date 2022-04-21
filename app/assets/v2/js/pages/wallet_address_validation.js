@@ -63,7 +63,6 @@ var validateWalletAddress = function(chainId, address) {
       }
       break;
 
-
     case '270895': {
       // casper
       let addr = address;
@@ -74,6 +73,15 @@ var validateWalletAddress = function(chainId, address) {
       break;
     }
 
+    case '1155': {
+      // cosmos
+      let addr = address;
+
+      if (!addr.toLowerCase().startsWith('cosmos')) {
+        isValid = false;
+      }
+      break;
+    }
 
     // include validation for other chains here
   }
