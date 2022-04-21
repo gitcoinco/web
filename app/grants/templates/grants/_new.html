@@ -196,8 +196,10 @@
 
                   <!-- Project twitter -->
                   <div class="mb-4">
-                    <label class="font-subheader font-weight-light letter-spacing" for="twitter_handle_1">Project Twitter Handle</label>
-                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+                    <label class="mb-0 font-subheader font-weight-light letter-spacing" for="twitter_handle_1">Project Twitter Handle</label>
+                    <span class="font-smaller-2 pt-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                    <p class="text-muted font-smaller-2 py-1">Gitcoin will occasionally need to reach out to you on Twitter for grant verification, so please make sure to use an active handle to which you have access.</p>
 
                     <input id="twitter_handle_1" v-model="form.twitter_handle_1" @blur.prevent="handleTwitterUsername" name="twitter_handle_1" class="form__input form__input-lg" type="text" placeholder="mygrant" required/>
 
