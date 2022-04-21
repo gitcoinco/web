@@ -11,7 +11,11 @@ let appCart;
 
 document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
-  appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
+  if (web3.eth.currentProvider.isPortis) {
+    appCart.$refs['cart'].networkId = web3.eth.currentProvider._portis._config.network.chainId;
+  } else {
+    appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
+  }
 }, false);
 
 // needWalletConnection();
@@ -1060,10 +1064,9 @@ Vue.component('grants-cart', {
         await await onConnect();
       }
 
-      let networkId = String(Number(web3.eth.currentProvider.chainId));
-      let networkName = getDataChains(networkId, 'chainId')[0] && getDataChains(networkId, 'chainId')[0].network;
+      let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
-      if (networkName == 'mainnet' && networkId !== '1') {
+      if (networkName == 'mainnet' && this.networkId !== '1') {
         // User MetaMask must be connected to Ethereum mainnet
         try {
           await ethereum.request({
