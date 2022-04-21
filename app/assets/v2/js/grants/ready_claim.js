@@ -18,7 +18,7 @@ Vue.component('matching-claim', {
       return this.status === 'pending';
     },
     isKYCPending() {
-      return this.match.ready_for_payout
+      return this.match.ready_for_payout;
     },
     claimStartDate() {
       return this.match.grant_payout.grant_clrs[0].claim_start_date;
