@@ -32,6 +32,8 @@ var getWalletAddressPlaceholder = function(chainId) {
       return 'bc1...';
     case '270895': // Casper
       return '01...';
+    case '1155': // Cosmos
+      return 'cosmos...';
     case '1000':// Harmony
       return 'one...';
     case '58':// Polkadot

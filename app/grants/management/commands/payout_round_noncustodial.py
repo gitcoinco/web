@@ -35,7 +35,6 @@ from marketing.mails import grant_match_distribution_final_txn, grant_match_dist
 from townsquare.models import Comment
 from web3 import Web3
 
-
 MAINNET_DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
 RINKEBY_DAI_ADDRESS = '0x2e055eEe18284513B993dB7568A592679aB13188'
 

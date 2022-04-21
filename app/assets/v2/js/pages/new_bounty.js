@@ -228,6 +228,10 @@ Vue.mixin({
           // casper
           type = 'casper_ext';
           break;
+        case '1155':
+          // cosmos
+          type = 'cosmos_ext';
+          break;
         case '666':
           // paypal
           type = 'fiat';
