@@ -29,7 +29,6 @@ from django.dispatch import receiver
 
 from economy.models import SuperModel
 
-
 class Alumni(SuperModel):
 
     profile = models.ForeignKey(
@@ -462,3 +461,8 @@ class EmailInventory(SuperModel):
 
     def __str__(self):
         return f"{self.path}"
+
+
+class ImageDropZone(SuperModel):
+    name = models.CharField(max_length=50)
+    image = models.ImageField()
