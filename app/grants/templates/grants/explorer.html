@@ -838,17 +838,16 @@ along with this program. If not, see
     document.collections = JSON.parse(document.getElementById('collections-object').textContent);
     document.activePage = "{{ active }}";
 
-    {% if clr_round %}
-      document.clr_round_pk = "{{clr_round.pk}}";
-      document.round_num = "{{clr_round.round_num}}";
-      document.sub_round_slug = "{{clr_round.sub_round_slug}}";
-      document.customer_name = "{{clr_round.customer_name}}";
+    {% if round_num and sub_round_slug and customer_name %}
+      document.round_num = "{{round_num}}";
+      document.sub_round_slug = "{{sub_round_slug}}";
+      document.customer_name = "{{customer_name}}";
     {% else %}
-      delete document.round_num;
-      delete document.customer_name;
-      delete document.clr_round_pk;
-      delete document.sub_round_slug;
+      document.round_num = 0;
+      document.customer_name = false;
+      document.sub_round_slug = false;
     {% endif %}
+
     let base_style = {
         bg: '/static/v2/images/bg/{{styles.bg}}',
         size: "{{styles.bg_size}}",
