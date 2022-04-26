@@ -50,6 +50,7 @@ from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from marketing.models import ImageDropZone
 
 import boto3
 import dateutil.parser
@@ -962,6 +963,14 @@ def grants_landing(request):
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
 
+    try:
+        data = StaticJsonEnv.objects.get(key="TWITTER_UNFURL").data
+        dropzone = ImageDropZone.objects.get(pk=data['pk'])
+        twitterUnfurlURL = dropzone.image.url
+    except:
+        twitterUnfurlURL = request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png'))
+
+
     params = dict(
         {
             'active': 'grants_landing',
@@ -971,7 +980,7 @@ def grants_landing(request):
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
-            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png')),
+            'avatar_url': twitterUnfurlURL,
             'card_type': 'summary_large_image',
             'avatar_height': 675,
             'avatar_width': 1200,
@@ -2349,11 +2358,17 @@ def hall_of_fame(request):
     if hall_of_fame.top_matching_partners_mobile:
         top_matching_partners_mobile_is_svg = hall_of_fame.top_matching_partners_mobile.name.endswith('.svg')
 
+    try:
+        data = StaticJsonEnv.objects.get(key="TWITTER_UNFURL").data
+        dropzone = ImageDropZone.objects.get(pk=data['pk'])
+        twitterUnfurlURL = dropzone.image.url
+    except:
+        twitterUnfurlURL = request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png'))
+
     params = {
         'active': 'hall_of_fame',
         'title': _('Hall of Fame'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png')),
-
+        'avatar_url': twitterUnfurlURL,
         'total_donations': hall_of_fame.total_donations,
         'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
         'top_matching_partners_url': hall_of_fame.top_matching_partners.url,
