@@ -240,12 +240,12 @@ along with this program. If not, see
                 </div>
 
                 <!-- SEARCH BAR AND CART -->
-                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white mb-2 mb-md-0" :class="{'flex-basis-md-60': searchVisible}">
+                <div class="flex-basis-md-25 flex-nowrap d-flex bg-white mb-2 mb-md-0 position-relative" :class="{'flex-basis-md-60': searchVisible}">
                   <button class="btn" v-show="searchVisible" @click="searchVisible=!searchVisible"></button>
                   <i
-                    class="far fa-fw fa-search font-smaller-3 position-absolute text-grey-300"
+                    class="far fa-fw fa-search font-smaller-3 text-grey-300 position-absolute"
                     :class="{'pt-2 pt-md-0': searchVisible}"
-                    :style="(searchVisible ? 'top: 10px;margin-left: 7px;left: 34px;' : 'top: 19px; margin-left: 7px;')"
+                    :style="(searchVisible ? 'top: 10px; margin-left: 5px;left: 30px;' : 'top: 10px; margin-left: 5px;')"
                   ></i>
                   <input
                     class="form-control form-control-sm rounded-pill pl-4"
@@ -253,7 +253,7 @@ along with this program. If not, see
                     type="search"
                     v-model="params.keyword"
                     @focus="searchVisible=true"
-                    @blur="searchVisible=false"
+                    @blur="searchVisible = params.keyword.length ? true : false"
                     @input="params.sort_option = '', delayedChangeQuery()"
                     @keyup.enter="changeQuery({page: 1})"/>
                   <div class="navCart dropdown gc-cart" v-if="!searchVisible && sticky_active">
