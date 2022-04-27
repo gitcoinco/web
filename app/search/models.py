@@ -49,6 +49,7 @@ class SearchResult(SuperModel):
             'img_url': self.img_url,
             'timestamp': timezone.now(),
             'source_type': source_type,
+            'source_type_id': self.source_type_id
         }
         res = es.index(index=index, id=self.pk, body=doc)
 
@@ -56,7 +57,7 @@ class SearchResult(SuperModel):
 def search(query, page=0, num_results=500):
     if not settings.ELASTIC_SEARCH_URL:
         return {}
-    es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
+    es = Elasticsearch('web-elasticsearch-1:9200')
     # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
     # index name will need updated once index is ready to be searched
     res = es.search(index="search-index", body={
@@ -80,6 +81,13 @@ def search(query, page=0, num_results=500):
             }
           ],
           "minimum_should_match": "1"
+        }
+      },
+      "aggs": {
+        "search-totals": {
+          "terms": {
+            "field": "source_type_id"
+          }
         }
       }
     })
