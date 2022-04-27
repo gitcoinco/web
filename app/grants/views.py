@@ -543,16 +543,6 @@ def get_grants(request):
     }
     _grants = get_grants_by_filters(**filters)
 
-    if sort == '' and keyword:
-        # return grants result starting with exact title matches
-        exact_matches = [
-            grant for grant in _grants if grant.title.lower() == keyword.lower()
-        ]
-        non_exact_matches = [
-            grant for grant in _grants if grant.title.lower() != keyword.lower()
-        ]
-        _grants = exact_matches + non_exact_matches
-
     if collection_id and collection_id.isnumeric():
         # 4.1 Fetch grants by collection
         _collections = get_collections(
