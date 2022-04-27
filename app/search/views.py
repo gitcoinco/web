@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
 
 from dashboard.models import SearchHistory
 from ratelimit.decorators import ratelimit
@@ -22,14 +23,31 @@ def get_search(request):
     # set the number of items to display per page
     per_page = 100
     # fetch the results for the keyword on the given page
-    return_results, results_total, next_page = search_helper(request, keyword, page, per_page)
+    return_results, results_totals, next_page = search_helper(request, keyword, page, per_page)
     # return a JSON obj of the results + meta
     return HttpResponse(json.dumps({
         'results': return_results,
-        'total': results_total,
+        'totals': results_totals,
         'page': next_page,
         'perPage': per_page
     }), mimetype)
+
+def format_totals(aggregations):
+    buckets = aggregations['search-totals']['buckets']
+    # get content type keys from search results
+    type_keys = map(lambda d: d['key'], buckets)
+    # Get content types for search results that were returned
+    content_types = ContentType.objects.filter(pk__in=type_keys).values('id', 'model')
+
+    totals = {}
+    for content_type in content_types:
+        # find total based on content type
+        bucket_index = buckets.index(next(filter(lambda n: n.get('key') == content_type['id'], buckets)))
+        bucket = buckets[bucket_index]
+        # link model to search total
+        totals[content_type['model']] = bucket
+
+    return totals
 
 def search_helper(request, keyword='', page=0, per_page=100):
     # attempt elasticsearch first
@@ -39,8 +57,8 @@ def search_helper(request, keyword='', page=0, per_page=100):
     try:
         # collect the results from elasticsearch instance
         all_result_sets = search(keyword, page, per_page)
-        # get the total number of available records
-        results_total = all_result_sets.get('hits', {}).get('total', {}).get('value', 0)
+        # get the totals for each category
+        results_totals = format_totals(all_result_sets['aggregations'])
         # check if there is a next page
         next_page = int(page) + 1 if results_total > (int(page) + 1) * per_page else False
         # pull the results from the es response
@@ -58,8 +76,8 @@ def search_helper(request, keyword='', page=0, per_page=100):
     except Exception as e:
         logger.exception(e)
     finally:
-        if not settings.DEBUG or results_total:
-            return return_results, results_total, next_page
+        if not settings.DEBUG or results_totals:
+            return return_results, results_totals, next_page
 
     # fetch the results for the given keyword
     raw_results = SearchResult.objects.filter(Q(title__icontains=keyword) | Q(description__icontains=keyword))
