@@ -425,7 +425,6 @@
                       </div>
                     </template>
 
-
                     <template v-if="chainId == 'algorand'">
                       <label class="font-subheader font-weight-light letter-spacing" for="algorand_payout_address">
                         Algorand Recipient Wallet Address
@@ -440,6 +439,23 @@
 
                       <div class="text-danger" v-if="errors.algorand_payout_address">
                         [[errors.algorand_payout_address]]
+                      </div>
+                    </template>
+
+                    <template v-if="chainId == 'cosmos'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="cosmos_payout_address">
+                        Cosmos Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
+
+                      <input id="cosmos_payout_address" v-model="form.cosmos_payout_address" name="cosmos_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+
+                      <div class="text-danger" v-if="errors.cosmos_payout_address">
+                        [[errors.cosmos_payout_address]]
                       </div>
                     </template>
                   </div>

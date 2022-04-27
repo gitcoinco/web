@@ -443,6 +443,13 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The algorand wallet address where subscription funds will be sent.'),
     )
+    cosmos_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The cosmos wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -683,6 +690,8 @@ class Grant(SuperModel):
             tenants.append('RSK')
         if self.algorand_payout_address and self.algorand_payout_address != '0x0':
             tenants.append('ALGORAND')
+        if self.cosmos_payout_address and self.cosmos_payout_address != '0x0':
+            tenants.append('COSMOS')
 
         return tenants
 
@@ -934,6 +943,7 @@ class Grant(SuperModel):
             'harmony_payout_address': self.harmony_payout_address,
             'rsk_payout_address': self.rsk_payout_address,
             'algorand_payout_address': self.algorand_payout_address,
+            'cosmos_payout_address': self.cosmos_payout_address,
             'is_on_team': is_grant_team_member(self, user.profile) if user and user.is_authenticated else False,
         }
 
@@ -1003,6 +1013,7 @@ class Grant(SuperModel):
                 'binance_payout_address': self.binance_payout_address,
                 'rsk_payout_address': self.rsk_payout_address,
                 'algorand_payout_address': self.algorand_payout_address,
+                'cosmos_payout_address': self.cosmos_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,

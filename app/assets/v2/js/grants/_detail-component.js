@@ -111,6 +111,7 @@ Vue.mixin({
         'kusama_payout_address': vm.grant.kusama_payout_address,
         'rsk_payout_address': vm.grant.rsk_payout_address,
         'algorand_payout_address': vm.grant.algorand_payout_address,
+        'cosmos_payout_address': vm.grant.cosmos_payout_address,
         'region': vm.grant.region?.name || undefined,
         'has_external_funding': vm.grant.has_external_funding,
         'grant_tags[]': JSON.stringify(vm.grantTagsFormatted)
