@@ -10,26 +10,32 @@
         <span v-if="match.grant_payout.status === 'pending'">(pending review)</span>
       </b-col>
 
-      <b-col v-if="activeClaimPeriod" lg="4" sm="12" class="pt-2 pt-lg-0">
-        <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base text-grey-500">[[ status ==='ready' ? 'Ready to Claim' : 'In Review' ]]</h4>
-        <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">[[ status ==='ready' ? 'Ready to Claim' : 'In Review' ]]</span>
-        <span class="font-body text-grey-500">
-          Claim Period:
-          <template v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0 && claimStartDate">
-            [[ claimStartDate ]] - [[ claimEndDate ]]
-          </template>
-          <template v-else>
-            N/A
-          </template>
-        </span>
-        <template v-if="!activeClaimPeriod">
+      <b-col lg="4" sm="12" class="pt-2 pt-lg-0">
+        <template v-if="activeClaimPeriod">
+          <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base text-grey-500">[[ status ==='ready' ? 'Ready to Claim' : 'In Review' ]]</h4>
+          <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-500">[[ status ==='ready' ? 'Ready to Claim' : 'In Review' ]]</span>
+          <span class="font-body text-grey-500">
+            Claim Period:
+            <template v-if="match.grant_payout && match.grant_payout.grant_clrs.length > 0 && claimStartDate">
+              [[ claimStartDate ]] - [[ claimEndDate ]]
+            </template>
+            <template v-else>
+              N/A
+            </template>
+          </span>
+        </template>
+        <template v-else="isKYCPending">
+          <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">Complete KYC to claim</h4>
+          <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">Complete KYC to claim</span>
+        </template>
+        <template v-else>
           <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">No Action</h4>
           <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">No Action</span>
         </template>
       </b-col>
 
       <b-col class="text-lg-right mt-3 mt-lg-0">
-        <template v-if="['pending', 'ready'].includes(match.grant_payout.status)">
+        <template v-if="['pending', 'ready'].includes(match.grant_payout.status) && isKYCPending">
           <a href="javascript:;" id="claim-match"
             @click="claimMatch(match, grant.admin_address)"
             class="btn btn-primary btn-lg font-body w-100"

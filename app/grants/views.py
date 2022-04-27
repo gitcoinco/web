@@ -50,6 +50,7 @@ from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from marketing.models import ImageDropZone
 
 import boto3
 import dateutil.parser
@@ -103,7 +104,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
-grant_tenants = ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND']
+grant_tenants = ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND', 'COSMOS']
 
 clr_rounds_metadata = get_clr_rounds_metadata()
 
@@ -962,6 +963,14 @@ def grants_landing(request):
     sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
 
+    try:
+        data = StaticJsonEnv.objects.get(key="TWITTER_UNFURL").data
+        dropzone = ImageDropZone.objects.get(pk=data['pk'])
+        twitterUnfurlURL = dropzone.image.url
+    except:
+        twitterUnfurlURL = request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png'))
+
+
     params = dict(
         {
             'active': 'grants_landing',
@@ -971,7 +980,7 @@ def grants_landing(request):
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
-            'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png')),
+            'avatar_url': twitterUnfurlURL,
             'card_type': 'summary_large_image',
             'avatar_height': 675,
             'avatar_width': 1200,
@@ -1726,6 +1735,7 @@ def grant_edit(request, grant_id):
         binance_payout_address = request.POST.get('binance_payout_address', '0x0')
         rsk_payout_address = request.POST.get('rsk_payout_address', '0x0')
         algorand_payout_address = request.POST.get('algorand_payout_address', '0x0')
+        cosmos_payout_address = request.POST.get('cosmos_payout_address', '0x0')
 
         if (
             eth_payout_address == '0x0' and
@@ -1737,7 +1747,8 @@ def grant_edit(request, grant_id):
             harmony_payout_address == '0x0' and
             binance_payout_address == '0x0' and
             rsk_payout_address == '0x0' and
-            algorand_payout_address == '0x0'
+            algorand_payout_address == '0x0' and
+            cosmos_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1778,6 +1789,9 @@ def grant_edit(request, grant_id):
 
         if algorand_payout_address != '0x0':
             grant.algorand_payout_address = algorand_payout_address
+
+        if cosmos_payout_address != '0x0':
+            grant.cosmos_payout_address = cosmos_payout_address
 
         github_project_url = request.POST.get('github_project_url', None)
         if github_project_url:
@@ -2349,11 +2363,17 @@ def hall_of_fame(request):
     if hall_of_fame.top_matching_partners_mobile:
         top_matching_partners_mobile_is_svg = hall_of_fame.top_matching_partners_mobile.name.endswith('.svg')
 
+    try:
+        data = StaticJsonEnv.objects.get(key="TWITTER_UNFURL").data
+        dropzone = ImageDropZone.objects.get(pk=data['pk'])
+        twitterUnfurlURL = dropzone.image.url
+    except:
+        twitterUnfurlURL = request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png'))
+
     params = {
         'active': 'hall_of_fame',
         'title': _('Hall of Fame'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/GenericTwitterUnfurl.png')),
-
+        'avatar_url': twitterUnfurlURL,
         'total_donations': hall_of_fame.total_donations,
         'top_individual_donors_url': hall_of_fame.top_individual_donors.url,
         'top_matching_partners_url': hall_of_fame.top_matching_partners.url,
@@ -3778,13 +3798,15 @@ class GrantSubmissionView(View):
         binance_payout_address = request.POST.get('binance_payout_address', None)
         rsk_payout_address = request.POST.get('rsk_payout_address', None)
         algorand_payout_address = request.POST.get('algorand_payout_address', None)
+        cosmos_payout_address = request.POST.get('cosmos_payout_address', None)
 
         if (
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
             not polkadot_payout_address and not kusama_payout_address and
             not harmony_payout_address and not binance_payout_address and
-            not rsk_payout_address and not algorand_payout_address
+            not rsk_payout_address and not algorand_payout_address and
+            not cosmos_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -3845,6 +3867,7 @@ class GrantSubmissionView(View):
             'binance_payout_address': binance_payout_address if binance_payout_address else '0x0',
             'rsk_payout_address': rsk_payout_address if rsk_payout_address else '0x0',
             'algorand_payout_address': algorand_payout_address if algorand_payout_address else '0x0',
+            'cosmos_payout_address': cosmos_payout_address if cosmos_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),
@@ -4018,6 +4041,6 @@ def ingest_merkle_claim_to_clr_match(request):
         return HttpResponseBadRequest("message: incorrect round field")
 
     for claim in _claims:
-        clr_matches.filter(grant__admin_address=claim['claimee']).update(merkle_claim=claim)
+        clr_matches.filter(grant__admin_address__iexact=claim['claimee']).update(merkle_claim=claim)
 
     return HttpResponse('message: Merkle Claim successfully ingested into CLRMatch!')

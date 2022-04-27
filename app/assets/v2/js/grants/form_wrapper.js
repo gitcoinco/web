@@ -13,6 +13,10 @@ Vue.component('form-wrapper', {
     disableConfirm: {
       type: Boolean,
       'default': false
+    },
+    isPreview: {
+      type: Boolean,
+      'default': false
     }
   },
   template: '#form-wrapper'

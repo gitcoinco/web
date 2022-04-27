@@ -83,7 +83,7 @@ if (document.getElementById('gc-search')) {
         }
 
         // get results from the api and group
-        if (vm.term.length >= 4) {
+        if (vm.term.length >= 3) {
           // mark as reloading
           vm.isLoading = true;
           // mark thisDate against component to check for race conditions

@@ -11,7 +11,11 @@ let appCart;
 
 document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
-  appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
+  if (web3.eth.currentProvider.isPortis) {
+    appCart.$refs['cart'].networkId = web3.eth.currentProvider._portis._config.network.chainId;
+  } else {
+    appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
+  }
 }, false);
 
 // needWalletConnection();
@@ -123,6 +127,10 @@ Vue.component('grants-cart', {
         'ALGORAND': [
           `${static_url}v2/js/tokens.js`,
           `${static_url}v2/js/grants/cart/algorand_extension.js`
+        ],
+        'COSMOS': [
+          `${static_url}v2/js/lib/cosmos/cosmwasmjs.js`,
+          `${static_url}v2/js/grants/cart/cosmos_extension.js`
         ]
       }
     };
@@ -466,6 +474,10 @@ Vue.component('grants-cart', {
       return window.WalletConnect || window.MyAlgoConnect || window.AlgoSigner || false;
     },
 
+    isCosmosExtInstalled() {
+      return window.keplr || false;
+    },
+
     isRskExtInstalled() {
       const rskHost = 'https://public-node.rsk.co';
       const rskClient = new Web3();
@@ -715,6 +727,9 @@ Vue.component('grants-cart', {
           vm.tokenListOptions.chainId = '1001';
           vm.tokenListOptions.strict = true;
           break;
+        case 'COSMOS':
+          vm.chainId = '1155';
+          break;
       }
     },
     confirmQRPayment: function(e, grant) {
@@ -795,6 +810,9 @@ Vue.component('grants-cart', {
           } else {
             initAlgorandConnection(grant, vm);
           }
+          break;
+        case 'COSMOS':
+          contributeWithCosmosExtension(grant, vm);
           break;
         case 'RSK':
           contributeWithRskExtension(grant, vm);
@@ -1060,10 +1078,9 @@ Vue.component('grants-cart', {
         await await onConnect();
       }
 
-      let networkId = String(Number(web3.eth.currentProvider.chainId));
-      let networkName = getDataChains(networkId, 'chainId')[0] && getDataChains(networkId, 'chainId')[0].network;
+      let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
-      if (networkName == 'mainnet' && networkId !== '1') {
+      if (networkName == 'mainnet' && this.networkId !== '1') {
         // User MetaMask must be connected to Ethereum mainnet
         try {
           await ethereum.request({

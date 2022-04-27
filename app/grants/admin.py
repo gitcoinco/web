@@ -49,6 +49,10 @@ class FlagAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     raw_id_fields = ['profile', 'grant']
+    readonly_fields = ['grant_link']
+    
+    def grant_link(self, obj):
+        return format_html("<a href='/grants/{id}/{slug}' target=\"_blank\">Grant Details</a>", id=obj.grant.id, slug=obj.grant.slug)
 
     def response_change(self, request, obj):
         if "_post_flag" in request.POST:
@@ -120,7 +124,8 @@ class GrantAdmin(GeneralAdmin):
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'emails', 'admin_message', 'has_external_funding'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'cosmos_payout_address',
+        'emails', 'admin_message', 'has_external_funding'
     ]
     readonly_fields = [
         'defer_clr_to', 'logo_svg_asset', 'logo_asset',

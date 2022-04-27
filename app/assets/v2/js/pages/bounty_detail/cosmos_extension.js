@@ -21,16 +21,18 @@ const payWithCosmosExtension = async(fulfillment_id, to_address, vm, modal) => {
     gasPrice: '0.0008uatom'
   });
 
-  let atomBalance = (await client.getBalance(vm.bounty.bounty_owner_address, 'uatom')).amount;
+  const from_address = (await client.signer.getAccounts())[0].address;
+
+  let atomBalance = (await client.getBalance(from_address, 'uatom')).amount;
 
   if (Number(atomBalance) < amount) {
-    _alert({ message: gettext(`Insufficient balance in address ${vm.bounty.bounty_owner_address}`) }, 'danger');
+    _alert({ message: gettext(`Insufficient balance in address ${from_address}`) }, 'danger');
     return;
   }
 
   try {
     const result = await client.sendTokens(
-      vm.bounty.bounty_owner_address,
+      from_address,
       to_address,
       [{ amount: amount.toString(), denom: 'uatom' }],
       'auto'
@@ -40,7 +42,7 @@ const payWithCosmosExtension = async(fulfillment_id, to_address, vm, modal) => {
       throw new Error(result.log || result.rawLog);
     }
   
-    callback(null, vm.bounty.bounty_owner_address, result.transactionHash);
+    callback(null, from_address, result.transactionHash);
   } catch (e) {
     modal.closeModal();
     callback(e);

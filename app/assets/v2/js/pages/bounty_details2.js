@@ -43,7 +43,7 @@ Vue.mixin({
         vm.eventParams();
       }).catch(function(error) {
         vm.loadingState = 'error';
-        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'danger');
+        _alert('Error fetching bounties. Please contact support@gitcoin.co', 'danger');
       });
     },
     eventParams: function() {
@@ -514,7 +514,6 @@ Vue.mixin({
 
         case 'ATOM':
           tenant = 'COSMOS';
-          vm.canChangeFunderAddress = true;
           break;
 
         default:
@@ -828,7 +827,6 @@ Vue.mixin({
         case 'manual':
         case 'nervos_ext':
         case 'sia_ext':
-        case 'cosmos_ext':
           vm.fulfillment_context.active_step = 'check_wallet_owner';
           vm.getTenant(vm.bounty.token_name, fulfillment.payout_type);
           break;
@@ -841,6 +839,7 @@ Vue.mixin({
         case 'algorand_ext':
         case 'tezos_ext':
         case 'casper_ext':
+        case 'cosmos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }

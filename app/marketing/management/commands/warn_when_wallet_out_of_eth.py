@@ -36,7 +36,7 @@ class Command(BaseCommand):
             for account in monitored_accounts:
                 balance_eth_threshold = 0.1
                 if account == settings.KUDOS_OWNER_ACCOUNT:
-                    balance_eth_threshold = 0.4
+                    balance_eth_threshold = 0.2
 
                 balance_wei = w3.eth.getBalance(account)
                 balance_eth = balance_wei / 10**18
