@@ -45,6 +45,7 @@
         <li class="nav-item flex-grow-1 text-center" v-for='(source_type, index) in source_types' :key="index">
           <a class="nav-link nav-line gc-search-tab__title px-1" @click="currentTab = index" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ labels[source_type] ]]
             <span v-if="typeof totals[source_type] !== 'undefined'">([[ totals[source_type] ]])</span>
+            <span v-else-if="source_type === 'All'">([[ totalResultCount ]])</span>
             <span v-else>(0)</span>
           </a>
         </li>
