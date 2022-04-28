@@ -41,6 +41,14 @@ if (document.getElementById('gc-search')) {
     computed: {
       hasMoreResults() {
         return this.page !== false && this.total && this.page * this.perPage < this.total;
+      },
+      totalResultCount() {
+        let total = 0;
+
+        Object.keys(this.totals).forEach((key) => {
+          total += this.totals[key];
+        });
+        return total;
       }
     },
     methods: {
