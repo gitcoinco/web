@@ -31,7 +31,7 @@ import twitter
 from django_svg_image_form_field import SvgAndImageFormField
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType, MatchPledge,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType,
     PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
@@ -73,16 +73,6 @@ class FlagAdmin(admin.ModelAdmin):
             obj.save()
             self.message_user(request, "posted flag to twitter feed")
         return redirect(obj.admin_url)
-
-
-
-class MatchPledgeAdmin(admin.ModelAdmin):
-    """Define the MatchPledge administration layout."""
-
-    ordering = ['-id']
-    raw_id_fields = ['profile']
-    list_display =['pk', 'profile', 'active','pledge_type','amount']
-
 
 class GrantCLRCalculationAdmin(admin.ModelAdmin):
     """Define the GrantCLRCalculation administration layout."""
@@ -596,7 +586,6 @@ class GrantPayoutAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
-admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)

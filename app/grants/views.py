@@ -75,7 +75,7 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
-    GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, MatchPledge, Subscription,
+    GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, Subscription,
 )
 from grants.serializers import GrantSerializer
 from grants.tasks import (
@@ -960,7 +960,6 @@ def grants_landing(request):
     active_ecosystem_rounds = active_rounds.filter(type='ecosystem').order_by('-total_pot')
 
     now = datetime.now()
-    sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
 
     try:
@@ -988,7 +987,6 @@ def grants_landing(request):
             'active_main_rounds': active_main_rounds,
             'active_cause_rounds': active_cause_rounds,
             'active_ecosystem_rounds': active_ecosystem_rounds,
-            'sponsors': sponsors,
             'featured': True,
             'now': now,
             'trust_bonus': round(
@@ -1036,14 +1034,6 @@ def grants_by_grant_type(request, grant_type):
         grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
         if grant_stats.exists():
             grant_amount = lazy_round_number(grant_stats.first().val)
-
-    # partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)
-    # now = datetime.now()
-    # current_partners = partners.filter(end_date__gte=now).order_by('-amount')
-    # current_partners_fund = 0
-
-    # for partner in current_partners:
-    #     current_partners_fund += partner.amount
 
     grant_types = get_grant_type_cache(network)
 
@@ -1256,11 +1246,6 @@ def grants_by_grant_clr(request, clr_round):
     if len(pks):
         increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
-    # current_partners = MatchPledge.objects.filter(clr_round_num=clr_round)
-    # current_partners_fund = 0
-
-    # for partner in current_partners:
-    #     current_partners_fund += partner.amount
 
     grant_types = get_grant_clr_types(clr_round, network=network)
 
@@ -2456,131 +2441,6 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
     }
     activity = Activity.objects.create(**kwargs)
     activity.populate_activity_index()
-
-
-@login_required
-def new_matching_partner(request):
-    grant_collections = []
-    for g_collection in GrantCollection.objects.filter(hidden=False):
-        grant_collections.append({
-            'id': g_collection.pk,
-            'name': g_collection.title,
-        })
-
-    grant_types = []
-    for g_type in GrantType.objects.filter(is_active=True):
-        grant_types.append({
-            'id': g_type.pk,
-            'name': g_type.label,
-        })
-
-    grant_tags = []
-    for tag in GrantTag.objects.all():
-        grant_tags.append({
-            'id': tag.pk,
-            'name': tag.name
-        })
-
-    params = {
-        'title': 'Pledge your support.',
-        'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
-        'grant_types': grant_types,
-        'grant_tags': grant_tags,
-        'grant_collections': grant_collections
-    }
-
-    return TemplateResponse(request, 'grants/new_match.html', params)
-
-
-def create_matching_pledge_v1(request):
-    response = {
-        'status': 400,
-        'message': 'error: Bad Request. Unable to create pledge'
-    }
-
-    user = request.user if request.user.is_authenticated else None
-    if not user:
-        response['message'] = 'error: user needs to be authenticated to create a pledge'
-        return JsonResponse(response)
-
-    profile = request.user.profile if hasattr(request.user, 'profile') else None
-
-    if not profile:
-        response['message'] = 'error: no matching profile found'
-        return JsonResponse(response)
-
-    if not request.method == 'POST':
-        response['message'] = 'error: pledge creation is a POST operation'
-        return JsonResponse(response)
-
-    grant_types = request.POST.get('grant_types[]', None)
-    grant_tags = request.POST.get('grant_tags[]', None)
-    grant_collections = request.POST.get('grant_collections[]', None)
-
-    if grant_types:
-        grant_types = grant_types.split(',')
-    if grant_tags:
-        grant_tags = grant_tags.split(',')
-    if grant_collections:
-        grant_collections = grant_collections.split(',')
-
-    if not grant_types and not grant_collections:
-        response['message'] = 'error:  grant_types / grant_collections is parameter'
-        return JsonResponse(response)
-
-    matching_pledge_stage = request.POST.get('matching_pledge_stage', None)
-    tx_id = request.POST.get('tx_id', None)
-    if matching_pledge_stage == 'ready' and not tx_id:
-        response['message'] = 'error: tx_id is a mandatory parameter'
-        return JsonResponse(response)
-
-    amount = request.POST.get('amount', False)
-
-    if tx_id:
-        # TODO
-        collection_filters = None
-        grant_filters = None
-
-        if grant_types:
-            grant_filters = {
-                'grant_type__in': grant_types
-            }
-            if grant_tags:
-                grant_filters['tags__in'] = grant_tags
-
-        if grant_collections:
-            collection_filters = {
-                'pk__in': grant_collections
-            }
-
-        clr_round = GrantCLR.objects.create(
-            round_num=0,
-            sub_round_slug='pledge',
-            start_date=timezone.now(),
-            end_date=timezone.now(),
-            total_pot=amount,
-            grant_filters=grant_filters if grant_filters else {},
-            collection_filters=collection_filters if collection_filters else {}
-        )
-        clr_round.save()
-
-    end_date = timezone.now() + timezone.timedelta(days=7 * 3)
-    match_pledge = MatchPledge.objects.create(
-        profile=profile,
-        active=False,
-        end_date=end_date,
-        amount=amount,
-        data=json.dumps(request.POST.dict()),
-        clr_round_num=clr_round if tx_id else None
-    )
-
-    match_pledge.save()
-
-    response = {
-        'status': 200,
-        'message': 'success: match pledge created'
-    }
-    return JsonResponse(response)
 
 
 def invoice(request, contribution_pk):
