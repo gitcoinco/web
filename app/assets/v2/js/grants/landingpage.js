@@ -6,13 +6,13 @@ if (document.getElementById('grants-showcase')) {
     data: {
       activePage: document.activePage,
       state: 'active',
-      mainBanner: document.current_style,
+      mainBanner: document.current_style
     },
     computed: {
       isLandingPage() {
         return (this.activePage == 'grants_landing');
       }
-    },
+    }
   });
 }
 
