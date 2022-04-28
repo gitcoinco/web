@@ -50,7 +50,6 @@ from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from marketing.models import ImageDropZone
 
 import boto3
 import dateutil.parser
@@ -87,7 +86,7 @@ from grants.utils import (
     is_grant_team_member, sync_payout, toggle_user_sybil,
 )
 from marketing.mails import grant_cancellation, new_grant_flag_admin
-from marketing.models import Keyword, Stat
+from marketing.models import ImageDropZone, Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
 from PIL import Image
 from ratelimit.decorators import ratelimit
@@ -3533,8 +3532,19 @@ def ingest_contributions(request):
                 # Extract contribution parameters from the JSON
                 symbol = transaction["tx"]["token"]
                 value = transaction["tx"]["amount"]
-                token = Token.objects.filter(network=network, symbol=transaction["tx"]["token"],
-                                             approved=True).first().to_dict
+
+                try:
+                    token = Token.objects.filter(
+                        network=network,
+                        symbol=transaction["tx"]["token"],
+                        approved=True
+                    ).first().to_dict
+                except Exception as e:
+                    logger.exception(e)
+                    logger.warning(f"{value_adjusted}{symbol} => {to}, Unknown Token ")
+                    logger.warning("Skipping transaction with unknown token\n")
+                    continue
+
                 decimals = token["decimals"]
                 symbol = token["name"]
                 value_adjusted = int(value) / 10 ** int(decimals)

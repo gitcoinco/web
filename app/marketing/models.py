@@ -29,6 +29,7 @@ from django.dispatch import receiver
 
 from economy.models import SuperModel
 
+
 class Alumni(SuperModel):
 
     profile = models.ForeignKey(
