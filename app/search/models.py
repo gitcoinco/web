@@ -28,7 +28,7 @@ class SearchResult(SuperModel):
         grant = Grant.objects.get(pk=self.source_id)
         return grant.active and not grant.hidden
         
-    def put_on_elasticsearch(self):
+    def put_on_elasticsearch(self, index='search-index'):
         if self.visible_to:
             return None
 
@@ -50,7 +50,7 @@ class SearchResult(SuperModel):
             'timestamp': timezone.now(),
             'source_type': source_type,
         }
-        res = es.index(index="search-index", id=self.pk, body=doc)
+        res = es.index(index=index, id=self.pk, body=doc)
 
 
 def search(query, page=0, num_results=500):
@@ -58,6 +58,7 @@ def search(query, page=0, num_results=500):
         return {}
     es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
     # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
+    # index name will need updated once index is ready to be searched
     res = es.search(index="search-index", body={
       "from" : page, "size" : num_results,
       "query": {
