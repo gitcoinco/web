@@ -50,7 +50,14 @@ def format_totals(aggregations):
     # Get content types for search results that were returned
     content_types = ContentType.objects.filter(pk__in=type_keys).values('id', 'app_label', 'model')
 
-    
+    mapped_labels = {
+        82: 'Grant',
+        16: 'Bounty',
+        25: 'Profile',
+        73: 'Kudos',
+        133: 'Quest'
+        # pages??? I'm not sure
+    }
     totals = {}
     total_all = 0
     for content_type in content_types:
