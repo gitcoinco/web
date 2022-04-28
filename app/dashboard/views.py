@@ -130,7 +130,7 @@ from .models import (
     Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
-from .poh_utils import is_registered_on_poh
+from .poh_utils import is_registered_on_poh, is_valid_eip_1271_signature
 from .router import HackathonEventSerializer, TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
@@ -3244,41 +3244,28 @@ def verify_user_twitter(request, handle):
                 'msg': msg
             })
 
-        verification_tweet = None
-        last_10_tweets = api.user_timeline(screen_name=twitter_handle, count=10, tweet_mode="extended",
-                                       include_rts=False, exclude_replies=False)
-        for tweet in last_10_tweets:
-            if tweet.full_text.startswith("I am verifying my identity as"):
-                verification_tweet = tweet
-                break
-
+        last_tweet = api.user_timeline(screen_name=twitter_handle, count=1, tweet_mode="extended",
+                                       include_rts=False, exclude_replies=False)[0]
     except tweepy.TweepError as e:
         logger.error(f"error: verify_user_twitter TweepError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': f'Sorry, we couldn\'t get the verification tweet from @{twitter_handle}'
+            'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
         })
     except IndexError as e:
         logger.error(f"error: verify_user_twitter IndexError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': 'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
+            'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
         })
 
-
-    if not verification_tweet:
-        return JsonResponse({
-            'ok': False,
-            'msg': f'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
-        })
-
-    if verification_tweet.retweeted or 'RT @' in verification_tweet.full_text:
+    if last_tweet.retweeted or 'RT @' in last_tweet.full_text:
         return JsonResponse({
             'ok': False,
             'msg': f'We get a retweet from your last status, at this moment we don\'t supported retweets.'
         })
 
-    full_text = html.unescape(verification_tweet.full_text)
+    full_text = html.unescape(last_tweet.full_text)
     expected_msg = verify_text_for_tweet(handle)
 
     # Twitter replaces the URL with a shortened version, which is what it returns
@@ -7155,13 +7142,18 @@ def verify_user_poh(request, handle):
             'msg': 'Empty signature or Ethereum address',
         })
 
+    web3 = get_web3('mainnet')
     message_hash = defunct_hash_message(text="verify_poh_registration")
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     if eth_address != signer:
-        return JsonResponse({
-            'ok': False,
-            'msg': 'Invalid signature',
-        })
+        # recoverHash() will fail if the address is a smart contract wallet. Check for EIP-1271 compliance
+        if not is_valid_eip_1271_signature(web3, web3.toChecksumAddress(eth_address), message_hash, signature):
+            return JsonResponse({
+                'ok': False,
+                'msg': 'Invalid signature',
+            })
+        # We got a valid EIP-1271 signature from eth_address, so we can trust it.
+        signer = eth_address
 
     if Profile.objects.filter(poh_handle=signer).exists():
         return JsonResponse({
@@ -7169,7 +7161,7 @@ def verify_user_poh(request, handle):
             'msg': 'Ethereum address is already registered.',
         })
 
-    web3 = get_web3('mainnet')
+
     if not is_registered_on_poh(web3, signer):
         return JsonResponse({
             'ok': False,

@@ -1,7 +1,18 @@
+import json
+
 POH_CONTRACT_ADDRESS = '0xC5E9dDebb09Cd64DfaCab4011A0D5cEDaf7c9BDb'
 
 _poh_contract = None
 
+EIP_1271_ABI = '[{"constant":true,"inputs":[{"name":"_messageHash","type":"bytes32"},{"name":"_signature","type":"bytes"}],"name":"isValidSignature","outputs":[{"name":"magicValue","type":"bytes4"}],"payable":false,"stateMutability":"view","type":"function"}]'
+
+def is_valid_eip_1271_signature(web3, address, hash, signature) -> bool:
+    try:
+        eip_1271_contract = web3.eth.contract(address=address, abi=json.loads(EIP_1271_ABI))
+        retval = eip_1271_contract.functions.isValidSignature(hash, signature).call()
+        return web3.toInt(retval) == 0x1626ba7e
+    except Exception as e:
+        return False
 
 def get_poh_contract(web3):
     global _poh_contract
