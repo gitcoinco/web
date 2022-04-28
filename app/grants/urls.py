@@ -31,7 +31,7 @@ from grants.views import (
     grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
     grants_type_redirect, hall_of_fame, ingest_contributions, ingest_contributions_view,
     ingest_merkle_claim_to_clr_match, invoice, leaderboard, manage_ethereum_cart_data, matching_funds,
-    new_matching_partner, profile, quickstart, remove_grant_from_collection, save_collection, toggle_grant_favorite,
+    new_matching_partner, profile, remove_grant_from_collection, save_collection, toggle_grant_favorite,
     upload_sybil_csv, verify_grant,
 )
 
@@ -76,7 +76,6 @@ urlpatterns = [
     path('get-ethereum-cart-data', get_ethereum_cart_data, name='get_ethereum_cart_data'),
     path('get-replaced-tx', get_replaced_tx, name='get-replaced-tx'),
     re_path(r'^profile', profile, name='profile'),
-    re_path(r'^quickstart', quickstart, name='quickstart'),
     re_path(r'^hall_of_fame', hall_of_fame, name='hall_of_fame'),
     re_path(r'^leaderboard', leaderboard, name='leaderboard'),
     re_path(r'^matching-partners/new', new_matching_partner, name='new_matching_partner'),

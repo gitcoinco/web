@@ -2332,16 +2332,6 @@ def profile(request):
     return redirect(f'/profile/{handle}/grants')
 
 
-def quickstart(request):
-    """Display quickstart guide."""
-    params = {
-        'active': 'grants_quickstart',
-        'title': _('Quickstart'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
-    }
-    return TemplateResponse(request, 'grants/quickstart.html', params)
-
-
 @staff_member_required
 def hall_of_fame(request):
     """Display the hall of fame."""
