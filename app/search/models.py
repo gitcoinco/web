@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 
 from economy.models import SuperModel
+from grants.models import Grant
 from elasticsearch import Elasticsearch
 
 
@@ -23,10 +24,18 @@ class SearchResult(SuperModel):
     def __str__(self):
         return f"{self.source_type}; {self.url}"
 
-
+    def check_for_active_grant(self):
+        grant = Grant.objects.get(pk=self.source_id)
+        return grant.active and not grant.hidden
+        
     def put_on_elasticsearch(self):
         if self.visible_to:
             return None
+
+        if self.source_type_id == 82:
+            active_grant = self.check_for_active_grant()
+            if not active_grant:
+                return None
 
         es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
         source_type  = str(str(self.source_type).replace('token', 'kudos')).title()
