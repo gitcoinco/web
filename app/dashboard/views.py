@@ -7160,13 +7160,14 @@ def verify_user_poh(request, handle):
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     if eth_address != signer:
         # recoverHash() will fail if the address is a smart contract wallet. Check for EIP-1271 compliance
-        if not is_valid_eip_1271_signature(web3, web3.toChecksumAddress(eth_address), message_hash, signature):
+        if is_valid_eip_1271_signature(web3, web3.toChecksumAddress(eth_address), message_hash, signature):
+            # We got a valid EIP-1271 signature from eth_address, so we can trust it.
+            signer = eth_address
+        else:
             return JsonResponse({
                 'ok': False,
                 'msg': 'Invalid signature',
             })
-        # We got a valid EIP-1271 signature from eth_address, so we can trust it.
-        signer = eth_address
 
     if Profile.objects.filter(poh_handle=signer).exists():
         return JsonResponse({
