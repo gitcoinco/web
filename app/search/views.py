@@ -52,10 +52,10 @@ def format_totals(aggregations):
         # find total based on content type
         bucket_index = buckets.index(next(filter(lambda n: n.get('key') == content_type['id'], buckets)))
         bucket = buckets[bucket_index]
-        bucket['label'] = mapped_labels[bucket['key']]
-        # link app_label to search total
-        totals[mapped_labels[bucket['key']]] = bucket['doc_count']
-
+        if bucket['key']:
+            bucket['label'] = mapped_labels[bucket['key']]
+            # link mapped_labels to search total
+            totals[mapped_labels[bucket['key']]] = bucket['doc_count']
     return totals
 
 def search_helper(request, keyword='', page=0, per_page=100):
@@ -84,11 +84,14 @@ def search_helper(request, keyword='', page=0, per_page=100):
             )
     # return results + meta
     except Exception as e:
+        print(e, 'eeeeeee')
         logger.exception(e)
     finally:
+        print(settings.DEBUG, results_totals, 'settings.DEBUG, results_totalssettings.DEBUG, results_totals')
         if not settings.DEBUG or results_totals:
             return return_results, results_totals, next_page
 
+    print('fetch not elasticccc')
     # fetch the results for the given keyword
     raw_results = SearchResult.objects.filter(Q(title__icontains=keyword) | Q(description__icontains=keyword))
     if request.user.is_authenticated:
