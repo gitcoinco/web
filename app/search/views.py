@@ -37,15 +37,24 @@ def format_totals(aggregations):
     # get content type keys from search results
     type_keys = map(lambda d: d['key'], buckets)
     # Get content types for search results that were returned
-    content_types = ContentType.objects.filter(pk__in=type_keys).values('id', 'model')
+    content_types = ContentType.objects.filter(pk__in=type_keys).values('id', 'app_label', 'model')
 
+    mapped_labels = {
+        82: 'Grant',
+        16: 'Bounty',
+        25: 'Profile',
+        73: 'Kudos',
+        133: 'Quest'
+        # pages??? I'm not sure
+    }
     totals = {}
     for content_type in content_types:
         # find total based on content type
         bucket_index = buckets.index(next(filter(lambda n: n.get('key') == content_type['id'], buckets)))
         bucket = buckets[bucket_index]
-        # link model to search total
-        totals[content_type['model']] = bucket
+        bucket['label'] = mapped_labels[bucket['key']]
+        # link app_label to search total
+        totals[mapped_labels[bucket['key']]] = bucket['doc_count']
 
     return totals
 
@@ -54,6 +63,7 @@ def search_helper(request, keyword='', page=0, per_page=100):
     return_results = []
     results_total = 0
     next_page = 0
+    results_totals = None
     try:
         # collect the results from elasticsearch instance
         all_result_sets = search(keyword, page, per_page)
