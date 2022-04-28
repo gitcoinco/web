@@ -442,14 +442,22 @@ def bulk_grants_for_cart(request):
     return JsonResponse({'grants': grants})
 
 
-def clr_grants(request, round_num, sub_round_slug, customer_name):
+def clr_grants(request, round_num=None, sub_round_slug=None, customer_name=None):
     """CLR grants explorer."""
 
     request.GET._mutable = True
 
+    if sub_round_slug and ( not round_num or not customer_name):
+        try:
+            clr = GrantCLR.objects.get(sub_round_slug=sub_round_slug)
+            round_num = clr.round_num
+            customer_name = clr.customer_name
+        except:
+            pass
+
+    request.GET['customer_name'] = customer_name
     request.GET['round_num'] = round_num
     request.GET['sub_round_slug'] = sub_round_slug
-    request.GET['customer_name'] = customer_name
 
     return grants(request)
 

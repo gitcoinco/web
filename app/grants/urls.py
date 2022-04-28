@@ -49,6 +49,9 @@ urlpatterns = [
     path('clr/<int:round_num>/<str:sub_round_slug>', clr_grants, name='clr_grants'),
     path('clr/<int:round_num>/<str:sub_round_slug>/', clr_grants, name='clr_grants'),
 
+    path('clr/<str:sub_round_slug>', clr_grants, name='clr_grants'),
+
+
     path('clr/<str:customer_name>/<int:round_num>', clr_grants, name='clr_grants'),
     path('clr/<str:customer_name>/<int:round_num>/', clr_grants, name='clr_grants'),
 
