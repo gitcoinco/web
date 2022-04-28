@@ -49,6 +49,7 @@ class SearchResult(SuperModel):
             'img_url': self.img_url,
             'timestamp': timezone.now(),
             'source_type': source_type,
+            # in order to aggregate totals by type an int needs to be indexed as opposed to a string
             'source_type_id': self.source_type_id
         }
         res = es.index(index=index, id=self.pk, body=doc)
