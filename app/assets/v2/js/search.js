@@ -100,7 +100,7 @@ if (document.getElementById('gc-search')) {
               res.json().then((response) => {
                 vm.results = groupBySource(response.results, vm.term !== vm.searchTerm ? {} : vm.results);
                 vm.searchTerm = vm.term;
-                vm.total = response.total;
+                vm.totals = response.totals;
                 vm.page = response.page;
                 vm.perPage = response.perPage;
                 // clear loading states
