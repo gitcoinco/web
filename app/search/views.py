@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from dashboard.models import SearchHistory
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from search.models import SearchResult, search
+from search.models import SearchResult, search, search_by_type
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +20,11 @@ def get_search(request):
     mimetype = 'application/json'
     keyword = request.GET.get('term', '')
     page = request.GET.get('page', 0)
+    search_type = request.GET.get('type')
     # set the number of items to display per page
     per_page = 100
     # fetch the results for the keyword on the given page
-    return_results, results_totals, next_page = search_helper(request, keyword, page, per_page)
+    return_results, results_totals, next_page = search_helper(request, keyword, search_type, page, per_page)
     # return a JSON obj of the results + meta
     return HttpResponse(json.dumps({
         'results': return_results,
@@ -32,14 +33,7 @@ def get_search(request):
         'perPage': per_page
     }), mimetype)
 
-def format_totals(aggregations):
-    buckets = aggregations['search-totals']['buckets']
-    # get content type keys from search results
-    type_keys = map(lambda d: d['key'], buckets)
-    # Get content types for search results that were returned
-    content_types = ContentType.objects.filter(pk__in=type_keys).values('id', 'app_label', 'model')
-
-    mapped_labels = {
+mapped_labels = {
         82: 'Grant',
         16: 'Bounty',
         25: 'Profile',
@@ -47,6 +41,15 @@ def format_totals(aggregations):
         133: 'Quest',
         120: 'Page'
     }
+
+def format_totals(aggregations):
+    buckets = aggregations['search-totals']['buckets']
+    # get content type keys from search results
+    type_keys = map(lambda d: d['key'], buckets)
+    # Get content types for search results that were returned
+    content_types = ContentType.objects.filter(pk__in=type_keys).values('id', 'app_label', 'model')
+
+    
     totals = {}
     total_all = 0
     for content_type in content_types:
@@ -62,19 +65,33 @@ def format_totals(aggregations):
 
     return totals
 
-def search_helper(request, keyword='', page=0, per_page=100):
+def get_type_id(val):
+    for key, value in mapped_labels.items():
+         if val == value:
+             return key
+ 
+    return "key doesn't exist"
+
+def search_helper(request, keyword='', search_type=None, page=0, per_page=100):
     # attempt elasticsearch first
     return_results = []
     results_total = 0
     next_page = 0
     results_totals = None
     try:
-        # collect the results from elasticsearch instance
-        all_result_sets = search(keyword, page, per_page)
+        all_result_sets = None
+        if search_type:
+            # collect the results from elasticsearch instance
+            all_result_sets = search_by_type(keyword, get_type_id(search_type), page, per_page)    
+        else:
+            # collect the results from elasticsearch instance
+            all_result_sets = search(keyword, page, per_page)
+        
         # get the totals for each category
         results_totals = format_totals(all_result_sets['aggregations'])
+
         # check if there is a next page
-        next_page = int(page) + 1 if int(results_totals['All']) > (int(page) + 1) * per_page else False
+        next_page = int(page) + 1 if int(results_totals[search_type if search_type else 'All']) > (int(page) + 1) * per_page else False
         # pull the results from the es response
         return_results = [ele['_source'] for ele in all_result_sets['hits']['hits']]
         # record that a search was made for this keyword
