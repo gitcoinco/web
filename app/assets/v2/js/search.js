@@ -192,7 +192,7 @@ if (document.getElementById('gc-search')) {
                 }
                 vm.searchTerm = vm.term;
                 vm.totals = response.totals;
-                vm.page = response.page;
+                vm.page = !response.page ? 0 : response.page;
                 vm.perPage = response.perPage;
                 // clear loading states
                 vm.isLoading = false;
