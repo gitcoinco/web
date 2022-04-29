@@ -55,8 +55,8 @@ def format_totals(aggregations):
         16: 'Bounty',
         25: 'Profile',
         73: 'Kudos',
-        133: 'Quest'
-        # pages??? I'm not sure
+        133: 'Quest',
+        120: 'Page'
     }
     totals = {}
     total_all = 0
