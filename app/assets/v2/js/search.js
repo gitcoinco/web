@@ -60,10 +60,7 @@ if (document.getElementById('gc-search')) {
         return page;
       },
       hasMoreResults() {
-        const sourceType = this.source_types[this.currentTab];
-        const page = this.currentTab > 0 ? this.tabPageCount[sourceType] : this.page;
-
-        return page !== false && this.totals[sourceType] && page * this.perPage < this.totals[sourceType];
+        return this.page !== false && this.totals[this.sourceType] && this.page * this.perPage < this.totals[this.sourceType];
       }
     },
     methods: {
