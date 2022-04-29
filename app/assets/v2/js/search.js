@@ -64,6 +64,9 @@ if (document.getElementById('gc-search')) {
       }
     },
     methods: {
+      checkForMoreResults: function(source_type) {
+        console.log({ source_type });
+      },
       init: function() {
         setTimeout(() => {
           $('.has-search input[type=text]').focus();
