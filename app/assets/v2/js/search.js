@@ -4,7 +4,7 @@ if (document.getElementById('gc-search')) {
     el: '#gc-search',
     data: {
       term: '',
-      results: {},
+      results: [],
       page: 0,
       total: 0,
       perPage: 100,
@@ -48,16 +48,19 @@ if (document.getElementById('gc-search')) {
       this.search();
     },
     computed: {
+      sourceType() {
+        return this.source_types[this.currentTab];
+      },
       currentTotal() {
-        const sourceType = this.source_types[this.currentTab];
+        return this.totals[this.sourceType];
+      },
+      currentPage() {
+        const page = this.currentTab > 0 ? this.tabPageCount[this.sourceType] : this.page;
 
-        return this.totals[sourceType];
+        return page;
       },
       hasMoreResults() {
-        const sourceType = this.source_types[this.currentTab];
-        const page = this.currentTab > 0 ? this.tabPageCount[sourceType] : this.page;
-
-        return page !== false && this.totals[sourceType] && page * this.perPage < this.totals[sourceType];
+        return this.page !== false && this.totals[this.sourceType] && this.page * this.perPage < this.totals[this.sourceType];
       }
     },
     methods: {
@@ -66,8 +69,15 @@ if (document.getElementById('gc-search')) {
           $('.has-search input[type=text]').focus();
         }, 100);
       },
+      loadMoreResults: function() {
+        if (this.sourceType === 'All') {
+          this.search();
+          return;
+        }
+        this.search_type(this.sourceType);
+      },
       clear: function() {
-        this.results = {};
+        this.results = [];
         this.page = 0;
         this.total = 0;
       },
@@ -114,7 +124,7 @@ if (document.getElementById('gc-search')) {
             }
           ).then((res) => {
             res.json().then((response) => {
-              vm.results = response.results;
+              vm.results.push(...response.results);
               vm.isTypeSearchLoading = false;
               vm.tabPageCount[type] = response.page;
             });
@@ -160,7 +170,7 @@ if (document.getElementById('gc-search')) {
           ).then((res) => {
             if (document.current_search == thisDate) {
               res.json().then((response) => {
-                vm.results = response.results;
+                vm.results.push(...response.results);
                 vm.searchTerm = vm.term;
                 vm.totals = response.totals;
                 vm.page = response.page;

@@ -40,7 +40,7 @@
         Click 'Go' to Search.
       </p>
     </template>
-    <template v-else-if="Object.keys(results).length">
+    <template v-else-if="results.length">
       <ul class="nav nav-tabs mt-1 gc-search-nav d-flex" role="tablist">
         <li class="nav-item flex-grow-1 text-center" v-for='(source_type, index) in source_types' :key="index">
           <a class="nav-link nav-line gc-search-tab__title px-1" @click="change_tab(index, source_type)" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ labels[source_type] ]]
@@ -86,7 +86,7 @@
             </a>
           </template>
           <template v-else>
-            <a class="cursor-pointer" @click="search">Load more results (showing [[ page * perPage ]] of [[ currentTotal ]])...</a>
+            <a class="cursor-pointer" @click="search">Load more results (showing [[ currentPage * perPage ]] of [[ currentTotal ]])...</a>
           </template>
         </div>
       </template>
