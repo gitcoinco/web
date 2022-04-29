@@ -48,6 +48,11 @@ if (document.getElementById('gc-search')) {
       this.search();
     },
     computed: {
+      currentTotal() {
+        const sourceType = this.source_types[this.currentTab];
+
+        return this.totals[sourceType];
+      },
       hasMoreResults() {
         const sourceType = this.source_types[this.currentTab];
         const page = this.currentTab > 0 ? this.tabPageCount[sourceType] : this.page;
