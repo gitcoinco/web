@@ -60,13 +60,13 @@ if (document.getElementById('gc-search')) {
         return page;
       },
       hasMoreResults() {
-        return this.page !== false && this.total && this.page * this.perPage < this.total;
+        const sourceType = this.source_types[this.currentTab];
+        const page = this.currentTab > 0 ? this.tabPageCount[sourceType] : this.page;
+
+        return page !== false && this.totals[sourceType] && page * this.perPage < this.totals[sourceType];
       }
     },
     methods: {
-      checkForMoreResults: function(source_type) {
-        console.log({ source_type });
-      },
       init: function() {
         setTimeout(() => {
           $('.has-search input[type=text]').focus();
