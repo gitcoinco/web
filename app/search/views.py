@@ -48,6 +48,7 @@ def format_totals(aggregations):
         120: 'Page'
     }
     totals = {}
+    total_all = 0
     for content_type in content_types:
         # find total based on content type
         bucket_index = buckets.index(next(filter(lambda n: n.get('key') == content_type['id'], buckets)))
@@ -56,6 +57,9 @@ def format_totals(aggregations):
             bucket['label'] = mapped_labels[bucket['key']]
             # link mapped_labels to search total
             totals[mapped_labels[bucket['key']]] = bucket['doc_count']
+            total_all += bucket['doc_count']
+    totals['All'] = total_all
+
     return totals
 
 def search_helper(request, keyword='', page=0, per_page=100):
@@ -70,7 +74,7 @@ def search_helper(request, keyword='', page=0, per_page=100):
         # get the totals for each category
         results_totals = format_totals(all_result_sets['aggregations'])
         # check if there is a next page
-        next_page = int(page) + 1 if results_total > (int(page) + 1) * per_page else False
+        next_page = int(page) + 1 if int(results_totals['All']) > (int(page) + 1) * per_page else False
         # pull the results from the es response
         return_results = [ele['_source'] for ele in all_result_sets['hits']['hits']]
         # record that a search was made for this keyword

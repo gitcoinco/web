@@ -20,7 +20,8 @@ class SearchResult(SuperModel):
     description = models.TextField(default='', blank=True)
     url = models.CharField(max_length=500, default='')
     img_url = models.CharField(max_length=600, default='', null=True)
-    visible_to = models.ForeignKey('dashboard.Profile', related_name='search_results_visible', on_delete=models.CASCADE, db_index=True, null=True)
+    visible_to = models.ForeignKey('dashboard.Profile', related_name='search_results_visible',
+                                   on_delete=models.CASCADE, db_index=True, null=True)
 
     def __str__(self):
         return f"{self.source_type}; {self.url}"
@@ -28,7 +29,7 @@ class SearchResult(SuperModel):
     def check_for_active_grant(self):
         grant = Grant.objects.get(pk=self.source_id)
         return grant.active and not grant.hidden
-        
+
     def put_on_elasticsearch(self, index='search-index'):
         if self.visible_to:
             return None
@@ -39,7 +40,7 @@ class SearchResult(SuperModel):
                 return None
 
         es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
-        source_type  = str(str(self.source_type).replace('token', 'kudos')).title()
+        source_type = str(str(self.source_type).replace('token', 'kudos')).title()
         full_search = f"{self.title} {self.description} {source_type}"
         doc = {
             'title': self.title,
@@ -57,41 +58,42 @@ class SearchResult(SuperModel):
 
 
 def search(query, page=0, num_results=500):
+    print(query, 'queryqueryquery', page, num_results, 'page, num_resultspage, num_results')
     if not settings.ELASTIC_SEARCH_URL:
         return {}
     es = Elasticsearch('web-elasticsearch-1:9200')
     # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
     # index name will need updated once index is ready to be searched
-    res = es.search(index="search-index", body={
-      "from" : page, "size" : num_results,
-      "query": {
-        "bool": {
-          "should": [
-            {
-              "query_string": {
-                "query": f"*{query}*",
-                "fields": ["title^10", "description", "source_type"],
-              }
-            },
-            {
-              "match": {
-                "source_type": {
-                  "query": "grant",
-                  "boost": "2"
-                }
-              }
+    res = es.search(index="search-index-1", body={
+        "from": page, "size": num_results,
+        "query": {
+            "bool": {
+                "should": [
+                    {
+                        "query_string": {
+                            "query": f"*{query}*",
+                            "fields": ["title^10", "description", "source_type"],
+                        }
+                    },
+                    {
+                        "match": {
+                            "source_type": {
+                                "query": "grant",
+                                "boost": "2"
+                            }
+                        }
+                    }
+                ],
+                "minimum_should_match": "1"
             }
-          ],
-          "minimum_should_match": "1"
+        },
+        "aggs": {
+            "search-totals": {
+                "terms": {
+                    "field": "source_type_id"
+                }
+            }
         }
-      },
-      "aggs": {
-        "search-totals": {
-          "terms": {
-            "field": "source_type_id"
-          }
-        }
-      }
     })
     return res
 
@@ -102,7 +104,6 @@ class ProgrammingLanguage(SuperModel):
 
     def __str__(self):
         return f"{self.val}"
-
 
 
 class Page(SuperModel):
