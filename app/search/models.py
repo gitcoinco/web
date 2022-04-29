@@ -56,6 +56,43 @@ class SearchResult(SuperModel):
         }
         res = es.index(index=index, id=self.pk, body=doc)
 
+def search_by_type(query, content_type, page=0, num_results=500):
+    if not settings.ELASTIC_SEARCH_URL:
+        return {}
+
+    es = Elasticsearch('web-elasticsearch-1:9200')
+    res = es.search(index="search-index-1", body={
+        "from": page, "size": num_results,
+        "query": {
+            "bool": {
+                "must": {
+                    "match": {
+                        "source_type_id": {
+                            "query": content_type
+                        }
+                    }
+                },
+                "should": [
+                    {
+                        "query_string": {
+                            "query": f"*{query}*",
+                            "fields": ["title^10", "description", "source_type"],
+                        }
+                    }
+                ],
+                "minimum_should_match": "1"
+            }
+        },
+        "aggs": {
+            "search-totals": {
+                "terms": {
+                    "field": "source_type_id"
+                }
+            }
+        }
+    })
+    return res
+
 
 def search(query, page=0, num_results=500):
     print(query, 'queryqueryquery', page, num_results, 'page, num_resultspage, num_results')
@@ -73,14 +110,6 @@ def search(query, page=0, num_results=500):
                         "query_string": {
                             "query": f"*{query}*",
                             "fields": ["title^10", "description", "source_type"],
-                        }
-                    },
-                    {
-                        "match": {
-                            "source_type": {
-                                "query": "grant",
-                                "boost": "2"
-                            }
                         }
                     }
                 ],

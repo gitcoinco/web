@@ -10,6 +10,15 @@ if (document.getElementById('gc-search')) {
       perPage: 100,
       searchTerm: '',
       isLoading: false,
+      isTypeSearchLoading: false,
+      tabPageCount: {
+        Profile: 0,
+        Bounty: 0,
+        Grant: 0,
+        Kudos: 0,
+        Quest: 0,
+        Page: 0
+      },
       isDirty: false,
       currentTab: 0,
       source_types: [
@@ -70,6 +79,51 @@ if (document.getElementById('gc-search')) {
           this.fetchController = new AbortController();
         }
       },
+      change_tab: function(index, source_type) {
+        const vm = this;
+
+        vm.currentTab = index;
+        if (index > 0) {
+          vm.search_type(source_type);
+        } else {
+          vm.search();
+        }
+      },
+      search_type: async function(type) {
+        const vm = this;
+        // use signal to kill fetch req
+        const { signal } = vm.fetchController;
+
+
+        if (vm.isTypeSearchLoading) {
+          return;
+        }
+
+        if (vm.term.length >= 3) {
+          vm.isTypeSearchLoading = true;
+          fetch(
+            `/api/v0.1/search/?term=${vm.term}&page=${vm.tabPageCount[type]}&type=${type}`,
+            {
+              method: 'GET',
+              signal: signal
+            }
+          ).then((res) => {
+            res.json().then((response) => {
+              vm.results = response.results;
+              vm.isTypeSearchLoading = false;
+              vm.tabPageCount[type] = response.page;
+            });
+          }).catch(() => {
+            if (document.current_search == thisDate) {
+              // clear the results
+              vm.clear();
+              // clear loading states
+              vm.isTypeSearchLoading = false;
+            }
+          });
+        }
+
+      },
       search: async function(e) {
         const vm = this;
         // use Date to enforce
@@ -101,10 +155,10 @@ if (document.getElementById('gc-search')) {
           ).then((res) => {
             if (document.current_search == thisDate) {
               res.json().then((response) => {
-                vm.results = groupBySource(response.results, vm.term !== vm.searchTerm ? {} : vm.results);
+                vm.results = response.results;
                 vm.searchTerm = vm.term;
                 vm.totals = response.totals;
-                vm.page = !response.page ? 0 : response.page;
+                vm.page = response.page;
                 vm.perPage = response.perPage;
                 // clear loading states
                 vm.isLoading = false;
