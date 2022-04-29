@@ -60,6 +60,7 @@ def _format_grant(grant: Grant) -> dict:
             "Creator Handle": grant.admin_profile.handle,
             "Database Number": grant.pk,
             "Tags": tags,
+            "Flags": _format_flags(grant)
         },
     }
 
