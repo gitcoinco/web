@@ -15,11 +15,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
 from django.contrib.contenttypes.models import ContentType
+from django.core.management.base import BaseCommand
 
-from search.models import SearchResult
 from grants.models import Grant
+from search.models import SearchResult
 
 
 class Command(BaseCommand):

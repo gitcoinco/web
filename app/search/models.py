@@ -5,8 +5,8 @@ from django.db import models
 from django.utils import timezone
 
 from economy.models import SuperModel
-from grants.models import Grant
 from elasticsearch import Elasticsearch
+from grants.models import Grant
 
 
 class SearchResult(SuperModel):
