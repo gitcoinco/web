@@ -38,7 +38,7 @@ class SearchResult(SuperModel):
             if not active_grant:
                 return None
 
-        es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
+        es = Elasticsearch(settings.ELASTIC_SEARCH_URL)
         source_type = str(str(self.source_type).replace('token', 'kudos')).title()
         full_search = f"{self.title} {self.description} {source_type}"
         doc = {
@@ -56,11 +56,11 @@ class SearchResult(SuperModel):
         res = es.index(index=index, id=self.pk, body=doc)
 
 def search_by_type(query, content_type, page=0, num_results=500):
-    if not settings.ELASTIC_SEARCH_URL:
+    if not settings.ELASTIC_SEARCH_URL and not settings.ACTIVE_ELASTIC_INDEX:
         return {}
 
     es = Elasticsearch(settings.ELASTIC_SEARCH_URL)
-    res = es.search(index="search-index-1", body={
+    res = es.search(index=settings.ACTIVE_ELASTIC_INDEX, body={
         "from": page, "size": num_results,
         "query": {
             "bool": {
@@ -94,12 +94,12 @@ def search_by_type(query, content_type, page=0, num_results=500):
 
 
 def search(query, page=0, num_results=500):
-    if not settings.ELASTIC_SEARCH_URL:
+    if not settings.ELASTIC_SEARCH_URL and not settings.ELASTIC_SEARCH_URL:
         return {}
     es = Elasticsearch(settings.ELASTIC_SEARCH_URL)
     # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
     # index name will need updated once index is ready to be searched
-    res = es.search(index="search-index-1", body={
+    res = es.search(index=settings.ACTIVE_ELASTIC_INDEX, body={
         "from": page, "size": num_results,
         "query": {
             "bool": {
