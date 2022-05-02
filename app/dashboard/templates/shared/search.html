@@ -79,14 +79,14 @@
       </div>
       <template v-if="hasMoreResults">
         <div class="gc-search-more-results bg-white border-grey border-top-1 bottom-0 font-smaller-2 pb-3 position-sticky pt-3 text-center">
-          <template v-if="isLoading">
+          <template v-if="isLoading || isTypeSearchLoading">
             <a class="text-muted cursor-none disable-hover-underline" @click.prevent="false">
               <i class="font-smaller-1 fas fa-spinner fa-pulse mr-1"></i>
               Fetching result
             </a>
           </template>
           <template v-else>
-            <a class="cursor-pointer" @click="search">Load more results (showing [[ currentPage * perPage ]] of [[ currentTotal ]])...</a>
+            <a class="cursor-pointer" @click="loadMoreResults">Load more results (showing [[ currentPage * perPage ]] of [[ currentTotal ]])...</a>
           </template>
         </div>
       </template>
