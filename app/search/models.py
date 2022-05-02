@@ -5,7 +5,6 @@ from django.db import models
 from django.utils import timezone
 
 from economy.models import SuperModel
-from grants.models import Grant
 from elasticsearch import Elasticsearch
 from grants.models import Grant
 
@@ -60,7 +59,7 @@ def search_by_type(query, content_type, page=0, num_results=500):
     if not settings.ELASTIC_SEARCH_URL:
         return {}
 
-    es = Elasticsearch('web-elasticsearch-1:9200')
+    es = Elasticsearch(settings.ELASTIC_SEARCH_URL)
     res = es.search(index="search-index-1", body={
         "from": page, "size": num_results,
         "query": {
@@ -95,10 +94,9 @@ def search_by_type(query, content_type, page=0, num_results=500):
 
 
 def search(query, page=0, num_results=500):
-    print(query, 'queryqueryquery', page, num_results, 'page, num_resultspage, num_results')
     if not settings.ELASTIC_SEARCH_URL:
         return {}
-    es = Elasticsearch('web-elasticsearch-1:9200')
+    es = Elasticsearch(settings.ELASTIC_SEARCH_URL)
     # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
     # index name will need updated once index is ready to be searched
     res = es.search(index="search-index-1", body={

@@ -2,10 +2,10 @@ import json
 import logging
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.contrib.contenttypes.models import ContentType
 
 from dashboard.models import SearchHistory
 from ratelimit.decorators import ratelimit
