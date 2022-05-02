@@ -93,7 +93,7 @@ def search_by_type(query, content_type, page=0, num_results=500):
 
 
 def search(query, page=0, num_results=500):
-    if not settings.ELASTIC_SEARCH_URL:
+    if not settings.ELASTIC_SEARCH_URL and not settings.ELASTIC_SEARCH_URL:
         return {}
     es = Elasticsearch(settings.ELASTIC_SEARCH_URL)
     # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
