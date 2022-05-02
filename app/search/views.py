@@ -106,14 +106,11 @@ def search_helper(request, keyword='', search_type=None, page=0, per_page=100):
             )
     # return results + meta
     except Exception as e:
-        print(e, 'eeeeeee')
         logger.exception(e)
     finally:
-        print(settings.DEBUG, results_totals, 'settings.DEBUG, results_totalssettings.DEBUG, results_totals')
         if not settings.DEBUG or results_totals:
             return return_results, results_totals, next_page
 
-    print('fetch not elasticccc')
     # fetch the results for the given keyword
     raw_results = SearchResult.objects.filter(Q(title__icontains=keyword) | Q(description__icontains=keyword))
     if request.user.is_authenticated:

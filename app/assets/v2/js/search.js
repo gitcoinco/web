@@ -60,7 +60,7 @@ if (document.getElementById('gc-search')) {
         return page;
       },
       hasMoreResults() {
-        return this.page !== false && this.totals[this.sourceType] && this.page * this.perPage < this.totals[this.sourceType];
+        return this.currentPage !== false && this.totals[this.sourceType] && this.page * this.perPage < this.totals[this.sourceType];
       }
     },
     methods: {
