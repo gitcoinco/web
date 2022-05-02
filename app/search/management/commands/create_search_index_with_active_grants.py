@@ -15,20 +15,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-<<<<<<< HEAD
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 
 from grants.models import Grant
 from search.models import SearchResult
-=======
-from django.core.management.base import BaseCommand
-from django.contrib.contenttypes.models import ContentType
-
-from search.models import SearchResult
-from grants.models import Grant
->>>>>>> 2fdf19976a (added command to update searchresult model to only include active grants, and index those results into elastic search)
-
 
 class Command(BaseCommand):
     help = 'uploads latest search results into elasticsearch'
@@ -68,8 +59,5 @@ class Command(BaseCommand):
                 sr.put_on_elasticsearch(index_name)
             except Exception as e:
                 print('failed:', e)
-<<<<<<< HEAD
+
         print('indexing complete')
-=======
-        print('indexing complete')
->>>>>>> 2fdf19976a (added command to update searchresult model to only include active grants, and index those results into elastic search)
