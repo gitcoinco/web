@@ -81,7 +81,7 @@ def search_helper(request, keyword='', search_type=None, page=0, per_page=100):
     try:
         all_result_sets = None
         if search_type:
-            # collect the results from elasticsearch instance
+            # collect the results from elasticsearch instance based on content type
             all_result_sets = search_by_type(keyword, get_type_id(search_type), page, per_page)    
         else:
             # collect the results from elasticsearch instance
