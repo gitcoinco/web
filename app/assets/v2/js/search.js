@@ -60,7 +60,7 @@ if (document.getElementById('gc-search')) {
         return page;
       },
       hasMoreResults() {
-        return this.page !== false && this.totals[this.sourceType] && this.page * this.perPage < this.totals[this.sourceType];
+        return this.currentPage !== false && this.totals[this.sourceType] && this.page * this.perPage < this.totals[this.sourceType];
       }
     },
     methods: {
@@ -98,9 +98,12 @@ if (document.getElementById('gc-search')) {
         const vm = this;
 
         vm.currentTab = index;
+
         if (index > 0) {
+          vm.tabPageCount[source_type] = 0;
           vm.search_type(source_type);
         } else {
+          vm.page = 0;
           vm.search();
         }
       },
@@ -124,7 +127,11 @@ if (document.getElementById('gc-search')) {
             }
           ).then((res) => {
             res.json().then((response) => {
-              vm.results.push(...response.results);
+              if (vm.tabPageCount[type] === 0) {
+                vm.results = response.results;
+              } else {
+                vm.results.push(...response.results);
+              }
               vm.isTypeSearchLoading = false;
               vm.tabPageCount[type] = response.page;
             });
@@ -170,7 +177,11 @@ if (document.getElementById('gc-search')) {
           ).then((res) => {
             if (document.current_search == thisDate) {
               res.json().then((response) => {
-                vm.results.push(...response.results);
+                if (vm.page === 0) {
+                  vm.results = response.results;
+                } else {
+                  vm.results.push(...response.results);
+                }
                 vm.searchTerm = vm.term;
                 vm.totals = response.totals;
                 vm.page = response.page;
@@ -198,18 +209,6 @@ if (document.getElementById('gc-search')) {
   });
 }
 document.current_search = new Date();
-
-const groupBySource = (results, prev_results) => {
-  let grouped_result = prev_results || {};
-
-  results.map(result => {
-    const source_type = result.source_type;
-
-    grouped_result['All'] ? grouped_result['All'].push(result) : grouped_result['All'] = [result];
-    grouped_result[source_type] ? grouped_result[source_type].push(result) : grouped_result[source_type] = [result];
-  });
-  return grouped_result;
-};
 
 $(document).on('click', '.gc-search .dropdown-menu', function(event) {
   event.stopPropagation();
