@@ -11,9 +11,10 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
 
   const amount = grant.grant_donation_amount;
   const to_address = grant.harmony_payout_address;
+  const from_address = (await web3.eth.getAccounts())[0];
 
   try {
-    await provider.request({
+    await web3.currentProvider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
     });
@@ -22,13 +23,14 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
     if (switchError.code === 4902) {
 
       try {
-        await provider.request({
+        await web3.currentProvider.request({
           method: 'wallet_addEthereumChain',
           params: [{
             chainId,
-            rpcUrls: chainInfo.rpc,
+            rpcUrls: [chainInfo.rpc],
             chainName: chainInfo.name,
-            nativeCurrency: chainInfo.nativeCurrency
+            nativeCurrency: chainInfo.nativeCurrency,
+            blockExplorerUrls: ['https://explorer.harmony.one']
           }]
         });
       } catch (addError) {
@@ -49,7 +51,7 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
 
   // Check balance
   const account_balance = web3.utils.fromWei(
-    (await web3.eth.getBalance(provider.selectedAddress)),
+    (await web3.eth.getBalance(from_address)),
     'ether'
   );
 
@@ -64,14 +66,14 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
   try {
     const txHash = await web3.eth.sendTransaction({
       to: to_address,
-      from: provider.selectedAddress,
+      from: from_address,
       value: web3.utils.toWei(String(amount)),
       gasPrice: web3.utils.toHex(30 * Math.pow(10, 9)),
       gas: web3.utils.toHex(25000),
       gasLimit: web3.utils.toHex(25000)
     });
 
-    callback(null, provider.selectedAddress, txHash);
+    callback(null, from_address, txHash);
   } catch (e) {
     callback(e);
   }
