@@ -140,15 +140,11 @@ Vue.component('grants-ingest-contributions', {
           throw new Error('Please connect a wallet');
         }
 
-        if (!window.ethereum) {
-          throw new Error('Metamask is either not installed or blocked by a third party');
-        }
-
         // Parse out provided form inputs and verify them, but bypass address checks if user is staff
         ({ txHash, userAddress, checkoutType } = formParams);
         
         if (checkoutType === 'eth_polygon') {
-          await setupPolygon('mainnet'); // handles switching to polygon network + adding network config if doesn't exist
+          await switchChain(137); // handles switching to polygon mainnet network + adding network config if doesn't exist
         }
 
         // If user entered an address, verify that it matches the user's connected wallet address
