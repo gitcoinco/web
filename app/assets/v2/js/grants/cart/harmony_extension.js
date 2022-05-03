@@ -5,52 +5,13 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
     await onConnect();
   }
 
-  const web3 = new Web3(provider);
-  const providerName = window.Web3Modal.getInjectedProviderName();
-  const chainInfo = getDataChains(1666600000, 'chainId')[0];
-  const chainId = Web3.utils.numberToHex(chainInfo.chainId);
-
   const amount = grant.grant_donation_amount;
   const to_address = grant.harmony_payout_address;
   const from_address = selectedAccount;
 
-  try {
-    await web3.currentProvider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId }]
-    });
-  } catch (switchError) {
-    // This error code indicates that the chain has not been added to MetaMask
-    if (switchError.code === 4902) {
+  await switchChain(1666600000);
 
-      try {
-        await web3.currentProvider.request({
-          method: 'wallet_addEthereumChain',
-          params: [{
-            chainId,
-            rpcUrls: [chainInfo.rpc],
-            chainName: chainInfo.name,
-            nativeCurrency: chainInfo.nativeCurrency,
-            blockExplorerUrls: chainInfo.explorers && chainInfo.explorers.map(e => e.url)
-          }]
-        });
-      } catch (addError) {
-        if (addError.code === 4001) {
-          throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
-        } else {
-          console.error(addError);
-        }
-      }
-    } else if (switchError.code === 4001) {
-      throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
-    } else if (switchError.code === -32002) {
-      throw new Error(`Please respond to a pending ${providerName} request.`);
-    } else {
-      console.error(switchError);
-    }
-  }
-
-  // Check balance
+  // Check balance sufficiency
   const account_balance = web3.utils.fromWei(balance, 'ether');
 
   if (Number(account_balance) < amount) {
