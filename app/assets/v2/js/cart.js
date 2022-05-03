@@ -1081,21 +1081,8 @@ Vue.component('grants-cart', {
       let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
       if (networkName == 'mainnet' && this.networkId !== '1') {
-        // User MetaMask must be connected to Ethereum mainnet
-        try {
-          await ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x1' }]
-          });
-        } catch (switchError) {
-          if (switchError.code === 4001) {
-            throw new Error('Please connect MetaMask to Ethereum network.');
-          } else if (switchError.code === -32002) {
-            throw new Error('Please respond to a pending MetaMask request.');
-          } else {
-            console.error(switchError);
-          }
-        }
+        // User's wallet must be connected to Ethereum mainnet
+        await switchChain(1);
       }
 
       if (typeof ga !== 'undefined') {
