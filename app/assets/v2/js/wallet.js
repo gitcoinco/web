@@ -253,7 +253,7 @@ async function switchChain(id) {
           method: 'wallet_addEthereumChain',
           params: [{
             chainId,
-            rpcUrls: [chainInfo.rpc],
+            rpcUrls: chainInfo.rpc,
             chainName: chainInfo.name,
             nativeCurrency: chainInfo.nativeCurrency,
             blockExplorerUrls: chainInfo.explorers && chainInfo.explorers.map(e => e.url)
