@@ -463,7 +463,7 @@ Vue.component('grants-cart', {
     },
 
     isHarmonyExtInstalled() {
-      return window.onewallet && window.onewallet.isOneWallet;
+      return window.ethereum && window.ethereum.isMetaMask;
     },
 
     isBinanceExtInstalled() {
@@ -1075,7 +1075,7 @@ Vue.component('grants-cart', {
       this.sendPaymentInfoEvent('eth');
       // Prompt web3 login if not connected
       if (!provider) {
-        await await onConnect();
+        await onConnect();
       }
 
       let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
