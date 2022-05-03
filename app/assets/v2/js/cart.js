@@ -113,12 +113,6 @@ Vue.component('grants-cart', {
           `${static_url}v2/js/grants/cart/binance_extension.js`
         ],
         'HARMONY': [
-          `${static_url}v2/js/lib/harmony/HarmonyUtils.browser.js`,
-          `${static_url}v2/js/lib/harmony/HarmonyJs.browser.js`,
-          `${static_url}v2/js/lib/harmony/HarmonyAccount.browser.js`,
-          `${static_url}v2/js/lib/harmony/HarmonyCrypto.browser.js`,
-          `${static_url}v2/js/lib/harmony/HarmonyNetwork.browser.js`,
-          `${static_url}v2/js/lib/harmony/utils.js`,
           `${static_url}v2/js/grants/cart/harmony_extension.js`
         ],
         'RSK': [
@@ -708,7 +702,7 @@ Vue.component('grants-cart', {
           vm.chainId = '102';
           break;
         case 'HARMONY':
-          vm.chainId = '1000';
+          vm.chainId = '1666600000';
           break;
         case 'BINANCE':
           vm.chainId = '56';

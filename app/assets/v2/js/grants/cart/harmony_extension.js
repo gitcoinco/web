@@ -6,12 +6,13 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
   }
 
   const web3 = new Web3(provider);
+  const providerName = window.Web3Modal.getInjectedProviderName();
   const chainInfo = getDataChains(1666600000, 'chainId')[0];
   const chainId = Web3.utils.numberToHex(chainInfo.chainId);
 
   const amount = grant.grant_donation_amount;
   const to_address = grant.harmony_payout_address;
-  const from_address = (await web3.eth.getAccounts())[0];
+  const from_address = selectedAccount;
 
   try {
     await web3.currentProvider.request({
@@ -30,30 +31,27 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
             rpcUrls: [chainInfo.rpc],
             chainName: chainInfo.name,
             nativeCurrency: chainInfo.nativeCurrency,
-            blockExplorerUrls: ['https://explorer.harmony.one']
+            blockExplorerUrls: chainInfo.explorers && chainInfo.explorers.map(e => e.url)
           }]
         });
       } catch (addError) {
         if (addError.code === 4001) {
-          throw new Error(`Please connect MetaMask to ${chainInfo.name} network.`);
+          throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
         } else {
           console.error(addError);
         }
       }
     } else if (switchError.code === 4001) {
-      throw new Error(`Please connect MetaMask to ${chainInfo.name} network.`);
+      throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
     } else if (switchError.code === -32002) {
-      throw new Error('Please respond to a pending MetaMask request.');
+      throw new Error(`Please respond to a pending ${providerName} request.`);
     } else {
       console.error(switchError);
     }
   }
 
   // Check balance
-  const account_balance = web3.utils.fromWei(
-    (await web3.eth.getBalance(from_address)),
-    'ether'
-  );
+  const account_balance = web3.utils.fromWei(balance, 'ether');
 
   if (Number(account_balance) < amount) {
     _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'danger');
