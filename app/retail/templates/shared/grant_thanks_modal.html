@@ -94,6 +94,23 @@
           <div class="mt-5 my-4">
             You've successfully contributed to [[numberOfContributions]] grant<span v-if="numberOfContributions !== 1">s</span>:
           </div>
+
+          <div class="row my-2">
+            <div class="col-12 col-lg-8">
+              <h5 class="gc-font-base">Share on Twitter!</h5>
+              Help projects gain more exposure by sharing your favorite Grants on Twitter!
+            </div>
+            <div class="col-12 col-lg-4 text-right">
+              <b-button
+                class="mt-4 mt-lg-0 w-100 w-lg-auto"
+                variant="outline-primary"
+                @click="shareOnTwitter()"
+              >
+                Share on Twitter
+              </b-button>
+            </div>
+          </div>
+          <hr class="my-4" />
           <div style="max-height: 156px; overflow: auto; background: #F6F2FF;" class="px-4">
             <template v-for="donation in donations">
               <div class="my-3">
@@ -111,22 +128,6 @@
             </div>
             <div class="col-12 col-lg-4 text-right">
               <a href="/profile/trust" target="_blank" rel="noopener noreferrer" class="btn btn-primary px-5 w-100 w-lg-auto mt-4 mt-lg-0">Verify</a>
-            </div>
-          </div>
-          <hr class="my-4" />
-          <div class="row my-2">
-            <div class="col-12 col-lg-8">
-              <h5 class="gc-font-base">Share on Twitter!</h5>
-              Help projects gain more exposure by sharing your favorite Grants on Twitter!
-            </div>
-            <div class="col-12 col-lg-4 text-right">
-              <b-button
-                class="mt-4 mt-lg-0 w-100 w-lg-auto"
-                variant="outline-primary"
-                @click="shareOnTwitter()"
-              >
-                Share on Twitter
-              </b-button>
             </div>
           </div>
         </div>
