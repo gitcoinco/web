@@ -121,42 +121,10 @@ along with this program. If not, see
               </div>
 
             </div>
-            <!-- Collections -->
-            <div style="min-height: 150px;">
-              <div class="container">
-                <div class="row justify-content-between align-items-end">
-                  <div class="col-auto">
-                    <div class="row justify-content-start align-items-center">
-                      <div class="col-auto">
-                        <h4 class="font-weight-bold py-0 my-0 pl-0">Collections</h4>
-                        <div class="font-subheader d-none d-md-block">
-                          Selections of grants curated by the community
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-auto font-subheader d-block d-md-none">
-                    Selections of grants curated by the community
-                  </div>
-                  <div class="col-auto">
-                    <a href="/grants/explorer/?tab=collections">{% trans "View all collections" %}</a>
-                    <i class="ml-2 text-primary fas fa-long-arrow-alt-right"></i>
-                  </div>
-                </div>
-              </div>
-              {% include 'grants/shared/landing_grants.html' with container_class='container pt-3' %}
-            </div>
+
           </div>
         </div>
         {% csrf_token %}
-
-      {% include 'grants/components/collection.html' %}
-
-      <div class="text-center mt-5">
-        <a class="btn btn-outline-gc-blue" href="{% url 'grants:grants_explorer' %}?tab=collections">
-          {% trans "View More" %}
-        </a>
-      </div>
 
     </div>
 

@@ -138,12 +138,7 @@
               <h2>Increase Your Impact Up to 150%</h2>
               <span class="font-smaller-1 line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
               <div class="row spacer-mt-2 font-smaller-1 line-height-2">
-                {% if show_round_banner %}
-                  <div class="col-12 col-lg-6 spacer-mt-2">
-                    <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[round_start_date]] - [[round_end_date]]</a>
-                  </div>
-                {% endif %}
-                <div class="col-12 col-lg-6 spacer-mt-2">
+                <div class="col-12 spacer-mt-2">
                   <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2"></i> Why this matters</span>
                 </div>
               </div>
@@ -219,41 +214,6 @@
           <div class="col">
               <h3>Need help verifying identity?</h3>
               <span>Please contact the services directly for any questions or support in getting your identity confirmed.</span>
-          </div>
-        </div>
-
-        <div class="accordion-group gc-accordion spacer-mb-7" style="margin-left: -27px;" id="accordion-group">
-          <h5 class="accordion collapsed" id="headingOne" data-parent="#accordion-group" data-toggle="collapse" data-target="#collapseOne" aria-controls="collapseOne">
-            <span class="accordion-title">
-              Coming Soon
-            </span>
-          </h5>
-          <div class="accordion-panel collapse font-subheader text-grey-400" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordion-group">
-            <div class="container mt-4">
-              <p>
-                Verifying with these services doesn't provide a matching bonus yet, but will in future Grants rounds.
-              </p>
-              <!-- <active-trust-row-template icon-type="image" icon-path="/static/v2/images/project_logos/duniter_brand.png"
-                title="Verify with Duniter" :match-percent=0 :is-verified="'{{is_duniter_verified}}' === 'True'" button-text="Verify"
-                @verify-button-pressed="showModal('duniter-modal')">
-                <template v-slot:description>
-                  Verify your Duniter Account
-                </template>
-              </active-trust-row-template> -->
-              <div v-for="service in coming_soon">
-                <inactive-trust-row-template :service="service" :when="'Coming Soon'"></inactive-trust-row-template>
-              </div>
-            </div>
-
-            <div>
-              <div class="container mt-4">
-                <h5>Roadmap</h5>
-                <a class="py-2 d-block" href="https://twitter.com/owocki/status/1304422182043303937" target="_blank">To view our full roadmap click here</a>
-                <div v-for="service in roadmap">
-                  <inactive-trust-row-template :service="service" :when="'On the Roadmap'"></inactive-trust-row-template>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
