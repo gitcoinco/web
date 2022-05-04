@@ -3,7 +3,7 @@ import re
 import shutil
 
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.template import Context, Template
 from django.template.loaders.app_directories import get_app_template_dirs
 
@@ -111,7 +111,14 @@ class Command(BaseCommand):
                         block = block.render(bundleContext)
 
                         # render the template (producing a bundle file)
-                        rendered[render(block, kind, 'file', name, True)] = True
+                        rendered_tag = render(block, kind, 'file', name, True)
+                        if rendered_tag in rendered:
+                            error = '-- X - duplicate: "%s"\ntemplate: "%s"\nblock:"%s"' % (rendered_tag, template, block)
+                            raise CommandError(error)
+                            
+                        rendered[rendered_tag] = True
+            except CommandError:
+                raise
             except Exception as e:
                 print('-- X - failed to parse %s: %s' % (template, e))
                 pass
