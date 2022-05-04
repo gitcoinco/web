@@ -40,6 +40,7 @@ from gas.utils import eth_usd_conv_rate
 from grants.sync.algorand import sync_algorand_payout
 from grants.sync.binance import sync_binance_payout
 from grants.sync.celo import sync_celo_payout
+from grants.sync.cosmos import sync_cosmos_payout
 from grants.sync.harmony import sync_harmony_payout
 from grants.sync.polkadot import sync_polkadot_payout
 from grants.sync.rsk import sync_rsk_payout
@@ -64,7 +65,8 @@ tenant_payout_mapper = {
     'BINANCE': sync_binance_payout,
     'KUSAMA': sync_polkadot_payout,
     'RSK': sync_rsk_payout,
-    'ALGORAND': sync_algorand_payout
+    'ALGORAND': sync_algorand_payout,
+    'COSMOS': sync_cosmos_payout
 }
 
 def get_clr_rounds_metadata():

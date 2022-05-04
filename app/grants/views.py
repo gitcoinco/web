@@ -50,7 +50,6 @@ from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from marketing.models import ImageDropZone
 
 import boto3
 import dateutil.parser
@@ -75,7 +74,7 @@ from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
-    GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, MatchPledge, Subscription,
+    GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, Subscription,
 )
 from grants.serializers import GrantSerializer
 from grants.tasks import (
@@ -87,7 +86,7 @@ from grants.utils import (
     is_grant_team_member, sync_payout, toggle_user_sybil,
 )
 from marketing.mails import grant_cancellation, new_grant_flag_admin
-from marketing.models import Keyword, Stat
+from marketing.models import ImageDropZone, Keyword, Stat
 from perftools.models import JSONStore, StaticJsonEnv
 from PIL import Image
 from ratelimit.decorators import ratelimit
@@ -104,7 +103,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
-grant_tenants = ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND']
+grant_tenants = ['ETH', 'ZCASH', 'ZIL', 'CELO', 'POLKADOT', 'HARMONY', 'KUSAMA', 'BINANCE', 'RSK', 'ALGORAND', 'COSMOS']
 
 clr_rounds_metadata = get_clr_rounds_metadata()
 
@@ -924,7 +923,6 @@ def grants_landing(request):
     active_ecosystem_rounds = active_rounds.filter(type='ecosystem').order_by('-total_pot')
 
     now = datetime.now()
-    sponsors = MatchPledge.objects.filter(active=True, end_date__gte=now).order_by('-amount')
     live_now = 'Gitcoin grants sustain web3 projects with quadratic funding'
 
     try:
@@ -952,7 +950,6 @@ def grants_landing(request):
             'active_main_rounds': active_main_rounds,
             'active_cause_rounds': active_cause_rounds,
             'active_ecosystem_rounds': active_ecosystem_rounds,
-            'sponsors': sponsors,
             'featured': True,
             'now': now,
             'trust_bonus': round(
@@ -989,7 +986,6 @@ def grants_by_grant_type(request, grant_type):
         grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
         if grant_stats.exists():
             grant_amount = lazy_round_number(grant_stats.first().val)
-
 
     grant_types = get_grant_type_cache(network)
 
@@ -1559,6 +1555,7 @@ def grant_edit(request, grant_id):
         binance_payout_address = request.POST.get('binance_payout_address', '0x0')
         rsk_payout_address = request.POST.get('rsk_payout_address', '0x0')
         algorand_payout_address = request.POST.get('algorand_payout_address', '0x0')
+        cosmos_payout_address = request.POST.get('cosmos_payout_address', '0x0')
 
         if (
             eth_payout_address == '0x0' and
@@ -1570,7 +1567,8 @@ def grant_edit(request, grant_id):
             harmony_payout_address == '0x0' and
             binance_payout_address == '0x0' and
             rsk_payout_address == '0x0' and
-            algorand_payout_address == '0x0'
+            algorand_payout_address == '0x0' and
+            cosmos_payout_address == '0x0'
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -1611,6 +1609,9 @@ def grant_edit(request, grant_id):
 
         if algorand_payout_address != '0x0':
             grant.algorand_payout_address = algorand_payout_address
+
+        if cosmos_payout_address != '0x0':
+            grant.cosmos_payout_address = cosmos_payout_address
 
         github_project_url = request.POST.get('github_project_url', None)
         if github_project_url:
@@ -2151,16 +2152,6 @@ def profile(request):
     return redirect(f'/profile/{handle}/grants')
 
 
-def quickstart(request):
-    """Display quickstart guide."""
-    params = {
-        'active': 'grants_quickstart',
-        'title': _('Quickstart'),
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/default_grants.png')),
-    }
-    return TemplateResponse(request, 'grants/quickstart.html', params)
-
-
 @staff_member_required
 def hall_of_fame(request):
     """Display the hall of fame."""
@@ -2285,131 +2276,6 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
     }
     activity = Activity.objects.create(**kwargs)
     activity.populate_activity_index()
-
-
-@login_required
-def new_matching_partner(request):
-    grant_collections = []
-    for g_collection in GrantCollection.objects.filter(hidden=False):
-        grant_collections.append({
-            'id': g_collection.pk,
-            'name': g_collection.title,
-        })
-
-    grant_types = []
-    for g_type in GrantType.objects.filter(is_active=True):
-        grant_types.append({
-            'id': g_type.pk,
-            'name': g_type.label,
-        })
-
-    grant_tags = []
-    for tag in GrantTag.objects.all():
-        grant_tags.append({
-            'id': tag.pk,
-            'name': tag.name
-        })
-
-    params = {
-        'title': 'Pledge your support.',
-        'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
-        'grant_types': grant_types,
-        'grant_tags': grant_tags,
-        'grant_collections': grant_collections
-    }
-
-    return TemplateResponse(request, 'grants/new_match.html', params)
-
-
-def create_matching_pledge_v1(request):
-    response = {
-        'status': 400,
-        'message': 'error: Bad Request. Unable to create pledge'
-    }
-
-    user = request.user if request.user.is_authenticated else None
-    if not user:
-        response['message'] = 'error: user needs to be authenticated to create a pledge'
-        return JsonResponse(response)
-
-    profile = request.user.profile if hasattr(request.user, 'profile') else None
-
-    if not profile:
-        response['message'] = 'error: no matching profile found'
-        return JsonResponse(response)
-
-    if not request.method == 'POST':
-        response['message'] = 'error: pledge creation is a POST operation'
-        return JsonResponse(response)
-
-    grant_types = request.POST.get('grant_types[]', None)
-    grant_tags = request.POST.get('grant_tags[]', None)
-    grant_collections = request.POST.get('grant_collections[]', None)
-
-    if grant_types:
-        grant_types = grant_types.split(',')
-    if grant_tags:
-        grant_tags = grant_tags.split(',')
-    if grant_collections:
-        grant_collections = grant_collections.split(',')
-
-    if not grant_types and not grant_collections:
-        response['message'] = 'error:  grant_types / grant_collections is parameter'
-        return JsonResponse(response)
-
-    matching_pledge_stage = request.POST.get('matching_pledge_stage', None)
-    tx_id = request.POST.get('tx_id', None)
-    if matching_pledge_stage == 'ready' and not tx_id:
-        response['message'] = 'error: tx_id is a mandatory parameter'
-        return JsonResponse(response)
-
-    amount = request.POST.get('amount', False)
-
-    if tx_id:
-        # TODO
-        collection_filters = None
-        grant_filters = None
-
-        if grant_types:
-            grant_filters = {
-                'grant_type__in': grant_types
-            }
-            if grant_tags:
-                grant_filters['tags__in'] = grant_tags
-
-        if grant_collections:
-            collection_filters = {
-                'pk__in': grant_collections
-            }
-
-        clr_round = GrantCLR.objects.create(
-            round_num=0,
-            sub_round_slug='pledge',
-            start_date=timezone.now(),
-            end_date=timezone.now(),
-            total_pot=amount,
-            grant_filters=grant_filters if grant_filters else {},
-            collection_filters=collection_filters if collection_filters else {}
-        )
-        clr_round.save()
-
-    end_date = timezone.now() + timezone.timedelta(days=7 * 3)
-    match_pledge = MatchPledge.objects.create(
-        profile=profile,
-        active=False,
-        end_date=end_date,
-        amount=amount,
-        data=json.dumps(request.POST.dict()),
-        clr_round_num=clr_round if tx_id else None
-    )
-
-    match_pledge.save()
-
-    response = {
-        'status': 200,
-        'message': 'success: match pledge created'
-    }
-    return JsonResponse(response)
 
 
 def invoice(request, contribution_pk):
@@ -3352,8 +3218,19 @@ def ingest_contributions(request):
                 # Extract contribution parameters from the JSON
                 symbol = transaction["tx"]["token"]
                 value = transaction["tx"]["amount"]
-                token = Token.objects.filter(network=network, symbol=transaction["tx"]["token"],
-                                             approved=True).first().to_dict
+
+                try:
+                    token = Token.objects.filter(
+                        network=network,
+                        symbol=transaction["tx"]["token"],
+                        approved=True
+                    ).first().to_dict
+                except Exception as e:
+                    logger.exception(e)
+                    logger.warning(f"{value_adjusted}{symbol} => {to}, Unknown Token ")
+                    logger.warning("Skipping transaction with unknown token\n")
+                    continue
+
                 decimals = token["decimals"]
                 symbol = token["name"]
                 value_adjusted = int(value) / 10 ** int(decimals)
@@ -3617,13 +3494,15 @@ class GrantSubmissionView(View):
         binance_payout_address = request.POST.get('binance_payout_address', None)
         rsk_payout_address = request.POST.get('rsk_payout_address', None)
         algorand_payout_address = request.POST.get('algorand_payout_address', None)
+        cosmos_payout_address = request.POST.get('cosmos_payout_address', None)
 
         if (
             not eth_payout_address and not zcash_payout_address and
             not celo_payout_address and not zil_payout_address and
             not polkadot_payout_address and not kusama_payout_address and
             not harmony_payout_address and not binance_payout_address and
-            not rsk_payout_address and not algorand_payout_address
+            not rsk_payout_address and not algorand_payout_address and
+            not cosmos_payout_address
         ):
             response['message'] = 'error: payout_address is a mandatory parameter'
             return JsonResponse(response)
@@ -3684,6 +3563,7 @@ class GrantSubmissionView(View):
             'binance_payout_address': binance_payout_address if binance_payout_address else '0x0',
             'rsk_payout_address': rsk_payout_address if rsk_payout_address else '0x0',
             'algorand_payout_address': algorand_payout_address if algorand_payout_address else '0x0',
+            'cosmos_payout_address': cosmos_payout_address if cosmos_payout_address else '0x0',
             'token_symbol': token_symbol,
             'contract_version': contract_version,
             'deploy_tx_id': request.POST.get('transaction_hash', '0x0'),

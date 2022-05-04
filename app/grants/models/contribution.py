@@ -48,7 +48,8 @@ class Contribution(SuperModel):
         ('harmony_std', 'harmony_std'),
         ('binance_std', 'binance_std'),
         ('rsk_std', 'rsk_std'),
-        ('algorand_std', 'algorand_std')
+        ('algorand_std', 'algorand_std'),
+        ('cosmos_std', 'cosmos_std')
     ]
 
     success = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not success.'))

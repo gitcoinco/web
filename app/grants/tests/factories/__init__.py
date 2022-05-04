@@ -13,5 +13,4 @@ from .grant_factory import GrantFactory
 from .grant_payout_factory import GrantPayoutFactory
 from .grant_stat_factory import GrantStatFactory
 from .grant_type_factory import GrantTypeFactory
-from .match_pledge_factory import MatchPledgeFactory
 from .subscription_factory import SubscriptionFactory

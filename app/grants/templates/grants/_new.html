@@ -256,8 +256,13 @@
                   </div>
                   <!-- Chain -->
                   <div class="mb-4">
-                    <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select a blockchain</label>
+                    <label class="font-subheader font-weight-light letter-spacing" for="bounty_chain">Select blockchain on which to receive funds</label>
                     <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                    <p class="text-black-60 font-caption mb-2">
+                      Grants need a wallet address to receive donations.<br>
+                      Please select a blockchain where you have an active wallet and want to receive your funds.
+                    </p>
 
                     <v-select @input="resetAddress()" placeholder="Select a blockchain to receive funding" :options="grant_chains" label="label" v-model="chainId" :reduce="state => state.name">
                       <template v-slot:option="option">
@@ -274,12 +279,14 @@
                   <div class="mb-3">
                     <template v-if="chainId == 'eth'">
                       <label class="font-subheader font-weight-light letter-spacing" for="eth_payout_address">
-                        ETH Recipient Wallet Address
+                        Add ETH Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as Metamask.<br>
+                        Adding an incorrect wallet address could mean that you don’t receive your funds.
                       </p>
 
                       <input id="eth_payout_address" v-model="form.eth_payout_address" name="eth_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -291,7 +298,7 @@
 
                     <template v-else-if="chainId == 'zcash'">
                       <label class="font-subheader font-weight-light letter-spacing" for="zcash_payout_address">
-                        Transparent Zcash Recipient Wallet Address
+                        Add Transparent Zcash Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -308,7 +315,7 @@
 
                     <template v-if="chainId == 'celo'">
                       <label class="font-subheader font-weight-light letter-spacing" for="celo_payout_address">
-                        CELO Recipient Wallet Address
+                        Add CELO Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -325,7 +332,7 @@
 
                     <template v-if="chainId == 'zilliqa'">
                       <label class="font-subheader font-weight-light letter-spacing" for="zil_payout_address">
-                        Zilliqa Recipient Wallet Address
+                        Add Zilliqa Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -342,7 +349,7 @@
 
                     <template v-if="chainId == 'harmony'">
                       <label class="font-subheader font-weight-light letter-spacing" for="harmony_payout_address">
-                        Harmony Recipient Wallet Address
+                        Add Harmony Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -359,7 +366,7 @@
 
                     <template v-if="chainId == 'binance'">
                       <label class="font-subheader font-weight-light letter-spacing" for="binance_payout_address">
-                        Binance Recipient Wallet Address
+                        Add Binance Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -376,7 +383,7 @@
 
                     <template v-if="chainId == 'polkadot'">
                       <label class="font-subheader font-weight-light letter-spacing" for="polkadot_payout_address">
-                        Polkadot Recipient Wallet Address
+                        Add Polkadot Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -393,7 +400,7 @@
 
                     <template v-if="chainId == 'kusama'">
                       <label class="font-subheader font-weight-light letter-spacing" for="kusama_payout_address">
-                        Kusama Recipient Wallet Address
+                        Add Kusama Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -410,7 +417,7 @@
 
                     <template v-if="chainId == 'rsk'">
                       <label class="font-subheader font-weight-light letter-spacing" for="rsk_payout_address">
-                        RSK Recipient Wallet Address
+                        Add RSK Recipient Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
@@ -425,10 +432,9 @@
                       </div>
                     </template>
 
-
                     <template v-if="chainId == 'algorand'">
                       <label class="font-subheader font-weight-light letter-spacing" for="algorand_payout_address">
-                        Algorand Recipient Wallet Address
+                        Add Algorand Recipient Wallet Address
                       </label>
                       <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">required</span>
 
@@ -440,6 +446,23 @@
 
                       <div class="text-danger" v-if="errors.algorand_payout_address">
                         [[errors.algorand_payout_address]]
+                      </div>
+                    </template>
+
+                    <template v-if="chainId == 'cosmos'">
+                      <label class="font-subheader font-weight-light letter-spacing" for="cosmos_payout_address">
+                        Add Cosmos Recipient Wallet Address
+                      </label>
+                      <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                      <p class="text-black-60 font-caption mb-2">
+                        This is where funds from contributors to this grant will be sent
+                      </p>
+
+                      <input id="cosmos_payout_address" v-model="form.cosmos_payout_address" name="cosmos_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
+
+                      <div class="text-danger" v-if="errors.cosmos_payout_address">
+                        [[errors.cosmos_payout_address]]
                       </div>
                     </template>
                   </div>

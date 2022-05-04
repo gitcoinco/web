@@ -68,7 +68,8 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'KUSAMA', 'label': 'Kusama'},
     {'name': 'BINANCE', 'label': 'Binance'},
     {'name': 'RSK', 'label': 'Rsk'},
-    {'name': 'ALGORAND', 'label': 'Algorand'}
+    {'name': 'ALGORAND', 'label': 'Algorand'},
+    {'name': 'COSMOS', 'label': 'Cosmos'}
   ];
 
   var appGrants = new Vue({

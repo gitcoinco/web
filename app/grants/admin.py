@@ -31,7 +31,7 @@ import twitter
 from django_svg_image_form_field import SvgAndImageFormField
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType, MatchPledge,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType,
     PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
@@ -74,16 +74,6 @@ class FlagAdmin(admin.ModelAdmin):
             self.message_user(request, "posted flag to twitter feed")
         return redirect(obj.admin_url)
 
-
-
-class MatchPledgeAdmin(admin.ModelAdmin):
-    """Define the MatchPledge administration layout."""
-
-    ordering = ['-id']
-    raw_id_fields = ['profile']
-    list_display =['pk', 'profile', 'active','pledge_type','amount']
-
-
 class GrantCLRCalculationAdmin(admin.ModelAdmin):
     """Define the GrantCLRCalculation administration layout."""
 
@@ -124,7 +114,8 @@ class GrantAdmin(GeneralAdmin):
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'emails', 'admin_message', 'has_external_funding'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'cosmos_payout_address',
+        'emails', 'admin_message', 'has_external_funding'
     ]
     readonly_fields = [
         'defer_clr_to', 'logo_svg_asset', 'logo_asset',
@@ -595,7 +586,6 @@ class GrantPayoutAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
-admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)
