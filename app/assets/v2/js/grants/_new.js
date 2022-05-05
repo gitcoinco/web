@@ -395,13 +395,13 @@ const grant_chains = [
   { 'name': 'binance', 'label': 'Binance'},
   { 'name': 'polkadot', 'label': 'Polkadot'},
   { 'name': 'kusama', 'label': 'Kusama'},
-  { 'name': 'algorand', 'label': 'Algorand'}
+  { 'name': 'algorand', 'label': 'Algorand'},
+  { 'name': 'rsk', 'label': 'RSK'},
+  { 'name': 'cosmos', 'label': 'Cosmos'}
 ];
 
 if (document.contxt.is_staff) {
   const staff_chains = [
-    { 'name': 'rsk', 'label': 'RSK'},
-    { 'name': 'cosmos', 'label': 'Cosmos'}
   ];
 
   grant_chains.push(...staff_chains);
