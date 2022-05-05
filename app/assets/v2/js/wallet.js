@@ -236,6 +236,7 @@ function displayProvider() {
 
 async function switchChain(id) {
   const web3 = new Web3(provider);
+  const providerName = window.Web3Modal.getInjectedProviderName();
   const chainInfo = getDataChains(Number(id), 'chainId')[0];
   const chainId = Web3.utils.numberToHex(chainInfo.chainId);
 
