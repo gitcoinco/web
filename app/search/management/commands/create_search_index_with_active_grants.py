@@ -21,6 +21,7 @@ from django.core.management.base import BaseCommand
 from grants.models import Grant
 from search.models import SearchResult
 
+
 class Command(BaseCommand):
     help = 'uploads latest search results into elasticsearch'
 

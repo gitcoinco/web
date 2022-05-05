@@ -51,7 +51,4 @@ def sync_cosmos_payout(fulfillment):
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
             record_payout_activity(fulfillment)
-        elif txn_status == 'expired':
-            fulfillment.payout_status = 'expired'
-
-        fulfillment.save()
+            fulfillment.save()
