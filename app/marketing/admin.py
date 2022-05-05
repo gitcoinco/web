@@ -135,7 +135,7 @@ class SlackUserAdmin(admin.ModelAdmin):
 
 class ImageDropZoneAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    list_display = ['name', 'image']
+    list_display = ['pk', 'name', 'image']
 
 
 admin.site.register(MarketingCallback, GeneralAdmin)
