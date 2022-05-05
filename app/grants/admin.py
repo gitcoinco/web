@@ -26,7 +26,6 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from web3 import Web3
 
 import twitter
 from django_svg_image_form_field import SvgAndImageFormField
@@ -37,6 +36,7 @@ from grants.models import (
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
+from web3 import Web3
 
 
 class GeneralAdmin(admin.ModelAdmin):

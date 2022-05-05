@@ -1,4 +1,4 @@
-from grants.models import Grant, GrantQuerySet, Flag, FlagQuerySet
+from grants.models import Flag, FlagQuerySet, Grant, GrantQuerySet
 
 EXPORT_FILENAME = "grants_export_for_ethelo.json"
 

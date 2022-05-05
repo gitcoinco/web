@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
 
+
 class FlagQuerySet(models.QuerySet):
     def range(self, range):
         """Filter results to only flags within range of Grants being queried"""

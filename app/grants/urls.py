@@ -24,15 +24,14 @@ from grants.views import (
     cancel_grant_v1, cart_thumbnail, clr_grants, clr_matches, collage, collection_thumbnail, contribute_to_grants_v1,
     contribution_addr_from_all_as_json, contribution_addr_from_grant_as_json,
     contribution_addr_from_grant_during_round_as_json, contribution_addr_from_round_as_json,
-    contribution_info_from_grant_during_round_as_json, delete_collection, flag,
-    get_clr_sybil_input, get_collection, get_collections_list, get_ethereum_cart_data, get_grant_payload,
-    get_grant_tags, get_grants, get_interrupted_contributions, get_replaced_tx, get_trust_bonus, grant_activity,
-    grant_details, grant_details_api, grant_details_contributions, grant_details_contributors, grant_edit, grant_fund,
-    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing,
-    grants_type_redirect, hall_of_fame, ingest_contributions, ingest_contributions_view,
-    ingest_merkle_claim_to_clr_match, invoice, leaderboard, manage_ethereum_cart_data, matching_funds,
-    profile, remove_grant_from_collection, save_collection, toggle_grant_favorite,
-    upload_sybil_csv, verify_grant,
+    contribution_info_from_grant_during_round_as_json, delete_collection, flag, get_clr_sybil_input, get_collection,
+    get_collections_list, get_ethereum_cart_data, get_grant_payload, get_grant_tags, get_grants,
+    get_interrupted_contributions, get_replaced_tx, get_trust_bonus, grant_activity, grant_details, grant_details_api,
+    grant_details_contributions, grant_details_contributors, grant_edit, grant_fund, grants, grants_addr_as_json,
+    grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_info, grants_landing, grants_type_redirect,
+    hall_of_fame, ingest_contributions, ingest_contributions_view, ingest_merkle_claim_to_clr_match, invoice,
+    leaderboard, manage_ethereum_cart_data, matching_funds, profile, remove_grant_from_collection, save_collection,
+    toggle_grant_favorite, upload_sybil_csv, verify_grant,
 )
 
 app_name = 'grants/'
