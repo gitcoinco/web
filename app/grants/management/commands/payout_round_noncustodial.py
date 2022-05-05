@@ -33,6 +33,7 @@ from dashboard.models import Activity, Profile
 from grants.models import CLRMatch, Contribution, Grant, GrantCLR, GrantPayout, Subscription
 from marketing.mails import grant_match_distribution_final_txn, grant_match_distribution_kyc
 from townsquare.models import Comment
+from perftools.models import StaticJsonEnv
 from web3 import Web3
 
 MAINNET_DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
@@ -122,7 +123,12 @@ class Command(BaseCommand):
         # Setup
         clr_round = options['clr_round']
         clr_pks = options['clr_pks'].split(',')
-        KYC_THRESHOLD = settings.GRANTS_PAYOUT_CLR_KYC_THRESHOLD
+
+        try:
+            kyc_threshold_data = StaticJsonEnv.objects.get(key='PAYOUT_KYC_THRESHOLD').data
+            KYC_THRESHOLD = kyc_threshold_data['value']
+        except:
+            KYC_THRESHOLD = settings.GRANTS_PAYOUT_CLR_KYC_THRESHOLD
 
         # Get data
         gclrs = GrantCLR.objects.filter(pk__in=clr_pks)
@@ -145,6 +151,7 @@ class Command(BaseCommand):
             total_owed_matches_in_usd = sum(sm.amount for sm in scheduled_matches)
             self.stdout.write(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants, 2)}")
             self.stdout.write(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches_in_usd, 2)}")
+            self.stdout.write(f"KYC email will be sent to Grant owners with matches greater than ${KYC_THRESHOLD} DAI")
             self.stdout.write('------------------------------')
 
             user_input = input("continue? (y/n) ")
