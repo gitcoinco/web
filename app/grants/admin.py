@@ -26,6 +26,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from web3 import Web3
 
 import twitter
 from django_svg_image_form_field import SvgAndImageFormField
@@ -269,6 +270,11 @@ class GrantAdmin(GeneralAdmin):
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
 
+    def save_model(self, request, obj, form, change):
+        if obj.admin_address and obj.admin_address not in ["0x0", ""]:
+            obj.admin_address = Web3.toChecksumAddress(obj.admin_address)
+
+        super(GrantAdmin, self).save_model(request, obj, form, change)
 
 
 class SubscriptionAdmin(GeneralAdmin):
