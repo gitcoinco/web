@@ -216,25 +216,7 @@
             :network="network" :multisig-grants="multisigGrants" :tab-selected="tabSelected">
           </eth-checkout-button>
         </div>
-        <!-- Checkout recommendation -->
-        <div class="text-center mt-2" v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
-          <div class="font-smaller-3 bg-lightpurple p-3 rounded w-100">
-            <template v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
-              💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
-              on gas fees with [[ checkoutRecommendation.name ]]!
-            </template>
-          </div>
-        </div>
-        <!-- CLR matching -->
-        <!-- <div class="row justify-content-start align-items-center ml-1 mt-3">
-          <input v-model="include_for_clr" type="checkbox" id="include_for_clr" name="include_for_clr" class="mr-2" />
-          <label class="mb-0" for="include_for_clr">{% trans "Include this contribution to CLR matching" %}</label>
-        </div> -->
-        <!-- Hide wallet -->
-        <!-- <div class="row justify-content-start align-items-center ml-1 mt-3">
-          <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2" />
-          <label class="mb-0" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
-        </div> -->
+
         </div>
       </div>
     </div>

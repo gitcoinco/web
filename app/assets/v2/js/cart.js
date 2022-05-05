@@ -427,41 +427,6 @@ Vue.component('grants-cart', {
       return gasLimit;
     },
 
-    // Make a recommendation to the user about which checkout to use
-    checkoutRecommendation() {
-      const estimateL1 = Number(this.donationInputsGasLimitL1); // L1 gas cost estimate
-      const estimateZkSync = Number(this.zkSyncEstimatedGasCost); // zkSync gas cost estimate
-      const estimatePolygon = Number(this.polygonEstimatedGasCost); // polygon gas cost estimate
-
-      const compareWithL2 = (estimateL2, name) => {
-        if (estimateL1 < estimateL2) {
-          const savingsInGas = estimateL2 - estimateL1;
-          const savingsInPercent = Math.round(savingsInGas / estimateL2 * 100);
-
-          return { name: 'Standard checkout', savingsInGas, savingsInPercent };
-        }
-
-        const savingsInGas = estimateL1 - estimateL2;
-        const percentSavings = savingsInGas / estimateL1 * 100;
-        const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
-
-        return { name, savingsInGas, savingsInPercent };
-      };
-
-      zkSyncComparisonResult = compareWithL2(estimateZkSync, 'zkSync');
-      polygonComparisonResult = compareWithL2(estimatePolygon, 'Polygon');
-      zkSyncSavings = zkSyncComparisonResult.name === 'zkSync' ? zkSyncComparisonResult.savingsInPercent : 0;
-      polygonSavings = polygonComparisonResult.name === 'Polygon' ? polygonComparisonResult.savingsInPercent : 0;
-
-      if (zkSyncSavings > polygonSavings) {
-        return zkSyncComparisonResult;
-      } else if (zkSyncSavings < polygonSavings) {
-        return polygonComparisonResult;
-      }
-
-      return zkSyncComparisonResult; // recommendation will be standard checkout
-    },
-
     isHarmonyExtInstalled() {
       return window.onewallet && window.onewallet.isOneWallet;
     },
