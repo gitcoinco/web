@@ -144,7 +144,7 @@ Vue.component('grants-ingest-contributions', {
         ({ txHash, userAddress, checkoutType } = formParams);
         
         if (checkoutType === 'eth_polygon') {
-          await switchChain(137); // handles switching to polygon mainnet network + adding network config if doesn't exist
+          await switchChain(networkName === 'mainnet' ? 137 : 80001); // handles switching to polygon network + adding network config if doesn't exist
         }
 
         // If user entered an address, verify that it matches the user's connected wallet address
