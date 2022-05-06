@@ -50,8 +50,17 @@ class Command(BaseCommand):
             if settings.BASE_DIR in template_dir:
                 template_dir_list.append(template_dir)
 
+
+        # We work with absolute paths only, and make sure to exclude duplicates. Sometimes the same dir is comes in via 2 routes:
+        #   - from the app config
+        #   - and from the template dirs config
+        full_template_dir_list = set(template_dir_list + [os.path.abspath(p) for p in settings.TEMPLATES[0]['DIRS']])
+        print('\nThe following folder will be checked for templates:\n')
+        for d in full_template_dir_list:
+            print(d)
+
         template_list = []
-        for template_dir in (template_dir_list + settings.TEMPLATES[0]['DIRS']):
+        for template_dir in full_template_dir_list:
             for base_dir, dirnames, filenames in os.walk(template_dir):
                 for filename in filenames:
                     if ".html" in filename:
