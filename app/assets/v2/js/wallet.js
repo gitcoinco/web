@@ -26,9 +26,6 @@ function initWallet() {
   const isProd = url.host == 'gitcoin.co' && url.protocol == 'https:';
   const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
   const providerOptions = {
-    authereum: {
-      'package': Authereum
-    },
     fortmatic: {
       'package': Fortmatic,
       options: {
