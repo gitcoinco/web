@@ -31,11 +31,12 @@ import twitter
 from django_svg_image_form_field import SvgAndImageFormField
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType, MatchPledge,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType,
     PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
+from web3 import Web3
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -73,16 +74,6 @@ class FlagAdmin(admin.ModelAdmin):
             obj.save()
             self.message_user(request, "posted flag to twitter feed")
         return redirect(obj.admin_url)
-
-
-
-class MatchPledgeAdmin(admin.ModelAdmin):
-    """Define the MatchPledge administration layout."""
-
-    ordering = ['-id']
-    raw_id_fields = ['profile']
-    list_display =['pk', 'profile', 'active','pledge_type','amount']
-
 
 class GrantCLRCalculationAdmin(admin.ModelAdmin):
     """Define the GrantCLRCalculation administration layout."""
@@ -279,6 +270,11 @@ class GrantAdmin(GeneralAdmin):
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
 
+    def save_model(self, request, obj, form, change):
+        if obj.admin_address and obj.admin_address not in ["0x0", ""]:
+            obj.admin_address = Web3.toChecksumAddress(obj.admin_address)
+
+        super(GrantAdmin, self).save_model(request, obj, form, change)
 
 
 class SubscriptionAdmin(GeneralAdmin):
@@ -596,7 +592,6 @@ class GrantPayoutAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
-admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)

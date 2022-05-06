@@ -21,7 +21,7 @@
 {% load i18n admin_static static bundle %}
 
 {% block extrastyle %}{{ block.super }}
-  {% bundle css file admin_dashboard %}
+  {% bundle css file admin_dashboard_graph %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
   {% endbundle %}
 {% endblock %}
@@ -38,7 +38,7 @@
 {% block content %}
   <head>
   <meta charset="utf-8">
-  {% bundle merge_js file jquery %}
+  {% bundle merge_js file jquery_admin_graph %}
     <script src="jquery.min.js" base-dir="/node_modules/jquery/dist/"></script>
   {% endbundle %}
   <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>

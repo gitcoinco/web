@@ -115,7 +115,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     print(lineno(), round(time.time(), 2))
     from search.models import SearchResult
-    if instance.pk:
+    if instance.pk and instance.active and not instance.hidden:
         SearchResult.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='grants', model='grant'),
             source_id=instance.pk,
