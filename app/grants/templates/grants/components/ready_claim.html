@@ -35,7 +35,7 @@
       </b-col>
 
       <b-col class="text-lg-right mt-3 mt-lg-0">
-        <template v-if="['pending', 'ready'].includes(match.grant_payout.status) && isKYCPending">
+        <template v-if="['pending', 'ready'].includes(match.grant_payout.status) && !isKYCPending">
           <a href="javascript:;" id="claim-match"
             @click="claimMatch(match, grant.admin_address)"
             class="btn btn-primary btn-lg font-body w-100"
