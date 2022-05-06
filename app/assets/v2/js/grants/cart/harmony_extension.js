@@ -23,18 +23,23 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
   // Gas limit as indicated here: https://docs.harmony.one/home/general/wallets/browser-extensions-wallets/metamask-wallet/sending-and-receiving#sending-a-regular-transaction
 
   try {
-    const txHash = await web3.eth.sendTransaction({
-      to: to_address,
-      from: from_address,
-      value: web3.utils.toWei(String(amount)),
-      gasPrice: web3.utils.toHex(30 * Math.pow(10, 9)),
-      gas: web3.utils.toHex(25000),
-      gasLimit: web3.utils.toHex(25000)
+    let web3 = new Web3(provider);
+
+    const txHash = await web3.currentProvider.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        to: to_address,
+        from: from_address,
+        value: web3.utils.toHex(web3.utils.toWei(String(amount))),
+        gasPrice: web3.utils.toHex(30 * Math.pow(10, 9)),
+        gas: web3.utils.toHex(25000),
+        gasLimit: web3.utils.toHex(25000)
+      }]
     });
 
     callback(null, from_address, txHash);
   } catch (e) {
-    callback(e);
+    callback(e.message);
   }
 
   function callback(error, from_address, txn) {
@@ -73,6 +78,7 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
               }
             ]
           });
+          console.log('e reach here');
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
