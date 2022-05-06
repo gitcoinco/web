@@ -47,8 +47,16 @@ function initWallet() {
         id: 'b2345081-a47e-413a-941f-33fd645d39b3',
         network: 'mainnet'
       }
+    },
+    coinbasewallet: {
+      'package': CoinbaseWalletSDK,
+      options: {
+        appName: 'Gitcoin Web',
+        infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
+      }
     }
   };
+
   const network = isProd ? 'mainnet' : 'rinkeby';
 
   web3Modal = new Web3Modal({
