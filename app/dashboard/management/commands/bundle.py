@@ -55,6 +55,7 @@ class Command(BaseCommand):
         #   - from the app config
         #   - and from the template dirs config
         full_template_dir_list = set(template_dir_list + [os.path.abspath(p) for p in settings.TEMPLATES[0]['DIRS']])
+        print('\nThe following folder will be checked for templates:\n')
         for d in full_template_dir_list:
             print(d)
 
