@@ -1040,27 +1040,16 @@ Vue.component('grants-cart', {
       this.sendPaymentInfoEvent('eth');
       // Prompt web3 login if not connected
       if (!provider) {
-        await await onConnect();
+        await onConnect();
       }
 
       let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
-      if (networkName == 'mainnet' && this.networkId !== '1') {
-        // User MetaMask must be connected to Ethereum mainnet
-        try {
-          await ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x1' }]
-          });
-        } catch (switchError) {
-          if (switchError.code === 4001) {
-            throw new Error('Please connect MetaMask to Ethereum network.');
-          } else if (switchError.code === -32002) {
-            throw new Error('Please respond to a pending MetaMask request.');
-          } else {
-            console.error(switchError);
-          }
-        }
+      // User's wallet must be connected to Ethereum mainnet or rinkeby
+      if (networkName == 'mainnet') {
+        await switchChain(1);
+      } else {
+        await switchChain(4);
       }
 
       if (typeof ga !== 'undefined') {
@@ -1225,19 +1214,11 @@ Vue.component('grants-cart', {
       }
     },
 
-    resetNetwork() {
-      if (this.nativeCurrency == 'MATIC') {
-        this.network = this.network == 'testnet' ? 'rinkeby' : 'mainnet';
-        this.networkId = this.networkId == '80001' ? '4' : '1';
-      }
-    },
-
     // Standard L1 checkout flow
     async standardCheckout() {
       try {
         // Setup -----------------------------------------------------------------------------------
         this.activeCheckout = 'standard';
-        this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)

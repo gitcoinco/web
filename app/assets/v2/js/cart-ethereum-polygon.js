@@ -247,10 +247,10 @@ Vue.component('grantsCartEthereumPolygon', {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
         }
 
-        if (web3.currentProvider && !web3.currentProvider.isMetaMask) {
-          _alert('Polygon Checkout is not supported on this wallet. Select another checkout option or switch to MetaMask.', 'danger');
-          return;
-        }
+        // if (web3.currentProvider && !web3.currentProvider.isMetaMask) {
+        //   _alert('Polygon Checkout is not supported on this wallet. Select another checkout option or switch to MetaMask.', 'danger');
+        //   return;
+        // }
 
         // Throw if invalid Gitcoin contribution percentage
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
@@ -266,8 +266,8 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         });
 
-        if (!this.ethereum?.selectedAddress) {
-          _alert('Please unlock MetaMask to proceed with Polygon checkout', 'danger');
+        if (!selectedAccount) {
+          _alert('Please unlock your wallet provider to proceed with Polygon checkout', 'danger');
           return;
         }
 
@@ -293,7 +293,7 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         indicateMetamaskPopup();
-        await setupPolygon(network = appCart.$refs.cart.network);
+        await switchChain(appCart.$refs.cart.network === 'mainnet' ? 137 : 80001);
 
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)
