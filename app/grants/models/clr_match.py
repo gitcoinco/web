@@ -9,13 +9,27 @@ class CLRMatch(SuperModel):
     """Define the structure of a CLR Match amount."""
 
     round_number = models.PositiveIntegerField(blank=True, null=True)
-    amount = models.FloatField()
     grant = models.ForeignKey(
         'grants.Grant',
         related_name='clr_matches',
         on_delete=models.CASCADE,
         null=False,
         help_text=_('The associated Grant.'),
+    )
+    token = models.ForeignKey(
+        'economy.Token',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Token in which amount should be paid out')
+    )
+    token_amount = models.FloatField(
+        null=True,
+        blank=True,
+        help_text=_('CLR Amount in Token')
+    )
+    amount = models.FloatField(
+        help_text=_('CLR Amount in USD')
     )
     has_passed_kyc = models.BooleanField(default=False, help_text=_('Has this grant gone through KYC?'))
     ready_for_payout = models.BooleanField(default=False, help_text=_('Ready for regular payout or not'))

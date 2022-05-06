@@ -5,6 +5,7 @@ from django.core.management import CommandError, call_command
 
 import pytest
 from dashboard.tests.factories import ProfileFactory
+from economy.tests.factories import TokenFactory
 from grants.tests.factories import (
     CLRMatchFactory, GrantCLRCalculationFactory, GrantCLRFactory, GrantFactory, GrantPayoutFactory, GrantTypeFactory,
 )
@@ -12,11 +13,23 @@ from grants.tests.factories import (
 prediction_curve=[[0.0, 22051.853262470795, 0.0], [1.0, 22075.114561595507, 23.261299124711513], [10.0, 22112.83567215842, 60.98240968762548], [100.0, 22187.332229392225, 135.47896692142967], [1000.0, 22289.540553690527, 237.6872912197323], [10000.0, 22375.656575359033, 323.803312888238]]
 network='mainnet'
 
+
 @pytest.fixture
-def grant_payout():
+def token():
+    return TokenFactory(
+        address='0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        symbol='DAI',
+        network=network,
+        approved=True
+    )
+
+
+@pytest.fixture
+def grant_payout(token):
     return GrantPayoutFactory(
         contract_address='0xAB8d71d59827dcc90fEDc5DDb97f87eFfB1B1A5B',
-        network=network
+        network=network,
+        token=token
     )
 
 @pytest.fixture
@@ -94,7 +107,7 @@ class TestPayoutRoundNoncustodialFinalize:
             input.return_value = user_input_no
             call_command(
                 'payout_round_noncustodial',
-                'finalize', 
+                'finalize',
                 f'--clr_pks={grant_clr_factory.pk}',
                 f'--clr_round={grant_clr_match_factory.round_number}',
                 f'--grant_payout_pk={grant_payout.pk}',
@@ -117,11 +130,12 @@ class TestPayoutRoundNoncustodialFinalize:
             input.return_value = user_input_no
             call_command(
                 'payout_round_noncustodial',
-                'finalize', 
+                'finalize',
                 f'--clr_pks={grant_clr_factory.pk}',
                 f'--clr_round={grant_clr_match_factory.round_number}',
                 f'--grant_payout_pk={grant_payout.pk}',
-                stdout=out)
+                stdout=out
+            )
 
         result = out.getvalue()
         scheduled_matches = [clr_match, grant_clr_match_factory]
@@ -144,11 +158,12 @@ class TestPayoutRoundNoncustodialFinalize:
             input.return_value = user_input_yes
             call_command(
                 'payout_round_noncustodial',
-                'finalize', 
+                'finalize',
                 f'--clr_pks={grant_clr_factory.pk}',
                 f'--clr_round={grant_clr_match_factory.round_number}',
                 f'--grant_payout_pk={grant_payout.pk}',
-                stdout=out)
+                stdout=out
+            )
         result = out.getvalue()
         assert f'0 matches were created' in result
 
@@ -167,11 +182,12 @@ class TestPayoutRoundNoncustodialFinalize:
             input.return_value = user_input_yes
             call_command(
                 'payout_round_noncustodial',
-                'finalize', 
+                'finalize',
                 f'--clr_pks={grant_clr_factory.pk}',
                 f'--clr_round={grant_clr_match_factory.round_number}',
                 f'--grant_payout_pk={grant_payout.pk}',
-                stdout=out)
+                stdout=out
+            )
         result = out.getvalue()
         assert f'1 matches were created' in result
 
@@ -192,14 +208,18 @@ class TestPayoutRoundNoncustodialFinalPayout:
             input.return_value = user_input_yes
             call_command(
                 'payout_round_noncustodial',
-                'prepare_final_payout', 
+                'prepare_final_payout',
                 f'--clr_pks={grant_clr_factory.pk}',
                 f'--clr_round={grant_clr_match_factory.round_number}',
                 f'--grant_payout_pk={grant_payout.pk}',
-                stdout=out)
+                stdout=out
+            )
 
         result = out.getvalue()
-        assert f'there are 1 UNPAID Match Payments already created worth ${round(grant_clr_match_factory.amount, 2)} {network} DAI' in result
+        amount = round(grant_clr_match_factory.amount, 2)
+        token_amount = round(grant_clr_match_factory.token_amount, 2)
+
+        assert f'There are 1 UNPAID Match Payments already created worth {token_amount} DAI ( AKA ${amount} ) on {network}' in result
         assert f'promoted' in result
 
 @pytest.mark.django_db
@@ -241,7 +261,7 @@ class TestPayoutRoundNoncustodialSetPayouts:
             input.return_value = user_input_yes
             call_command(
                 'payout_round_noncustodial',
-                'set_payouts', 
+                'set_payouts',
                 f'--clr_pks={grant_clr_factory.pk}',
                 f'--clr_round={grant_clr_match_factory.round_number}',
                 f'--grant_payout_pk={grant_payout.pk}',
@@ -252,7 +272,16 @@ class TestPayoutRoundNoncustodialSetPayouts:
         unpaid = [unpaid_no_kyc, unpaid_pending_kyc, grant_clr_match_factory]
         unpaid_ready = [unpaid_no_kyc, unpaid_pending_kyc, grant_clr_match_factory]
 
-        assert f"there are 1 PAID Match (MADE MANUALLY/ALREADY UPLOADED) ${round(paid_match.amount,2)} {network} DAI" in result
-        assert f"there are {len(unpaid)} UNPAID Match Payments worth ${round(sum(sm.amount for sm in unpaid), 2)} {network} DAI of which: " in result
-        assert f"------> {len([unpaid_pending_kyc, grant_clr_match_factory])} UNPAID Matches PENDING KYC ${round(sum(sm.amount for sm in [unpaid_pending_kyc, grant_clr_match_factory]), 2)}" in result
-        assert f"------> {len(unpaid_ready)} UNPAID Matches SKIPPING KYC ${round(sum(sm.amount for sm in unpaid_ready),2)}"
+        total_paid_matches_token = round(paid_match.token_amount,2)
+        total_paid_matches_usd = round(paid_match.amount,2)
+        total_owed_matches_token = round(sum(sm.token_amount for sm in unpaid), 2)
+        total_owed_matches_usd = round(sum(sm.amount for sm in unpaid), 2)
+        total_pending_kyc_matches_token = round(sum(sm.token_amount for sm in [unpaid_pending_kyc, grant_clr_match_factory]), 2)
+        total_pending_kyc_matches_usd = round(sum(sm.amount for sm in [unpaid_pending_kyc, grant_clr_match_factory]), 2)
+        total_no_kyc_matches_token = round(sum(sm.token_amount for sm in unpaid_ready),2)
+        total_no_kyc_matches_usd = round(sum(sm.amount for sm in unpaid_ready),2)
+
+        assert f"there are 1 PAID Match (MADE MANUALLY/ALREADY UPLOADED) {total_paid_matches_token} DAI ( AKA ${total_paid_matches_usd} ) on {network}" in result
+        assert f"there are {len(unpaid)} UNPAID Match Payments worth {total_owed_matches_token} ( AKA ${total_owed_matches_usd} ) on {network} of which: " in result
+        assert f"------> {len([unpaid_pending_kyc, grant_clr_match_factory])} UNPAID Matches PENDING KYC {total_pending_kyc_matches_token} ( AKA ${total_pending_kyc_matches_usd} )" in result
+        assert f"------> {len(unpaid_ready)} UNPAID Matches SKIPPING KYC {total_no_kyc_matches_token} DAI ( AKA ${total_no_kyc_matches_usd} )"

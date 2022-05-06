@@ -1,6 +1,9 @@
+import logging
+
 import requests
 from grants.sync.helpers import record_contribution_activity
 
+logger = logging.getLogger(__name__)
 
 def get_binance_txn_status(contribution):
     txnid = contribution.tx_id

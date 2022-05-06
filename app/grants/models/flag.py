@@ -4,15 +4,15 @@ from django.utils.translation import gettext_lazy as _
 from economy.models import SuperModel
 
 
+class FlagQuerySet(models.QuerySet):
+    def range(self, range):
+        """Filter results to only flags within range of Grants being queried"""
+        if not range:
+            return self
+        return self.filter(grant__id__in=range)
+
 class Flag(SuperModel):
 
-    grant = models.ForeignKey(
-        'grants.Grant',
-        related_name='flags',
-        on_delete=models.CASCADE,
-        null=False,
-        help_text=_('The associated Grant.'),
-    )
     profile = models.ForeignKey(
         'dashboard.Profile',
         related_name='grantflags',
@@ -24,6 +24,16 @@ class Flag(SuperModel):
     processed = models.BooleanField(default=False, help_text=_('Was it processed?'))
     comments_admin = models.TextField(default='', blank=True, help_text=_('The comments of an admin.'))
     tweet = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='flags',
+        on_delete=models.CASCADE,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
+
+    objects = FlagQuerySet.as_manager()
 
     def post_flag(self):
         from dashboard.models import Activity, Profile

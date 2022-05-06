@@ -31,11 +31,13 @@ Vue.component('grantsCartEthereumPolygon', {
 
       user: {
         requiredAmounts: null
-      }
+      },
+      ethereum: null
     };
   },
 
   async mounted() {
+    this.ethereum = window.ethereum;
     // Update Polygon checkout connection, state, and data frontend needs when wallet connection changes
     window.addEventListener('dataWalletReady', async(e) => {
       await this.onChangeHandler(this.donationInputs);
@@ -89,7 +91,7 @@ Vue.component('grantsCartEthereumPolygon', {
           appCart.$refs.cart.activeCheckout !== undefined
         ) ||
         this.cart.unsupportedTokens.length > 0 ||
-        !ethereum.selectedAddress
+        !this.ethereum?.selectedAddress
       );
     }
   },
@@ -218,7 +220,7 @@ Vue.component('grantsCartEthereumPolygon', {
     },
 
     // Send a batch transfer based on donation inputs
-    async checkoutWithPolygon() {
+    async checkoutWithPolygon(onlyPolygon) {
       // Prompt web3 login if not connected
       if (!provider) {
         await onConnect();
@@ -245,10 +247,10 @@ Vue.component('grantsCartEthereumPolygon', {
           ga('send', 'event', 'Grant Checkout', 'click', 'Person');
         }
 
-        if (web3.currentProvider && !web3.currentProvider.isMetaMask) {
-          _alert('Polygon Checkout is not supported on this wallet. Select another checkout option or switch to MetaMask.', 'danger');
-          return;
-        }
+        // if (web3.currentProvider && !web3.currentProvider.isMetaMask) {
+        //   _alert('Polygon Checkout is not supported on this wallet. Select another checkout option or switch to MetaMask.', 'danger');
+        //   return;
+        // }
 
         // Throw if invalid Gitcoin contribution percentage
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
@@ -264,13 +266,13 @@ Vue.component('grantsCartEthereumPolygon', {
           }
         });
 
-        if (!ethereum.selectedAddress) {
-          _alert('Please unlock MetaMask to proceed with Polygon checkout', 'danger');
+        if (!selectedAccount) {
+          _alert('Please unlock your wallet provider to proceed with Polygon checkout', 'danger');
           return;
         }
 
         // If some grants are multisig, we display modal to prompt the split of the cart
-        if (this.multisigGrants.length > 0 && this.multisigGrants.length < this.grantsByTenant.length) {
+        if (!onlyPolygon && this.multisigGrants.length > 0 && this.multisigGrants.length < this.grantsByTenant.length) {
           this.polygon.showModal = true;
           return;
         }
@@ -291,12 +293,12 @@ Vue.component('grantsCartEthereumPolygon', {
         }
 
         indicateMetamaskPopup();
-        await setupPolygon(network = appCart.$refs.cart.network);
+        await switchChain(appCart.$refs.cart.network === 'mainnet' ? 137 : 80001);
 
         // Token approvals and balance checks from bulk checkout contract
         // (just checks data, does not execute approvals)
         const allowanceData = await this.getAllowanceData(
-          ethereum.selectedAddress, bulkCheckoutAddressPolygon
+          this.ethereum?.selectedAddress, bulkCheckoutAddressPolygon
         );
 
         // Save off cart data
@@ -305,17 +307,17 @@ Vue.component('grantsCartEthereumPolygon', {
 
         if (allowanceData.length === 0) {
           // Send transaction and exit function
-          await this.sendDonationTx(ethereum.selectedAddress);
+          await this.sendDonationTx(this.ethereum?.selectedAddress);
           return;
         }
 
         // Request approvals then send donations ---------------------------------------------------
         await this.requestAllowanceApprovalsThenExecuteCallback(
           allowanceData,
-          ethereum.selectedAddress,
+          this.ethereum?.selectedAddress,
           bulkCheckoutAddressPolygon,
           this.sendDonationTx,
-          [ethereum.selectedAddress]
+          [this.ethereum?.selectedAddress]
         );
 
       } catch (e) {
@@ -452,7 +454,7 @@ Vue.component('grantsCartEthereumPolygon', {
 
       // Compare amounts needed to balance
       const web3 = this.initWeb3();
-      const userAddress = ethereum.selectedAddress;
+      const userAddress = this.ethereum?.selectedAddress;
       let isBalanceSufficient = true;
 
       for (let i = 0; i < this.cart.tokenList.length; i += 1) {

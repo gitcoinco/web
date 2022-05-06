@@ -7,15 +7,8 @@ assignees: ''
 
 ---
 
-<!--
-Hello Gitcoiner!
-
-Please use the template below for bugs found within Gitcoin.
-If it is general support you need, reach out to us on [Discord](https://discord.gg/gitcoin)
-
-Provide a general summary of the issue in the title above and use relevant fields below to define the problem.
-
--->
+**Overview**
+Details, details, details
 
 **Steps To Reproduce**
 Steps to reproduce the behavior:

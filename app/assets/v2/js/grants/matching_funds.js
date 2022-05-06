@@ -23,19 +23,22 @@ Vue.mixin({
       }
       window.history.replaceState({}, document.title, `${window.location.pathname}`);
     },
+
     async fetchGrants() {
       let vm = this;
 
       vm.loading = true;
 
       // fetch owned grants with clr matches
-      const url = '/grants/v1/api/clr-matches/';
+      const url = '/grants/v1/api/clr-matches?expand=token';
 
       try {
-        let result = await (await fetch(url)).json();
+        let grants = await (await fetch(url)).json();
 
+        // fetch only ETH grants
+        grants = grants.filter(grant => grant.admin_address != '0x0');
         // update claim status + format date fields
-        await Promise.all(result.map(async grant => {
+        await Promise.all(grants.map(async grant => {
           await Promise.all(grant.clr_matches.map(async m => {
             if (m.grant_payout) {
               m.grant_payout.funding_withdrawal_date = m.grant_payout.funding_withdrawal_date
@@ -46,7 +49,8 @@ Vue.mixin({
                 e.claim_start_date = e.claim_start_date ? moment(e.claim_start_date).format('MMM D') : null;
                 e.claim_end_date = e.claim_end_date ? moment(e.claim_end_date).format('MMM D, Y') : null;
               });
-              const claimData = await vm.checkClaimStatus(m, grant.admin_address);
+
+              const claimData = await vm.checkClaimStatus(m);
 
               m.status = claimData.status;
 
@@ -62,8 +66,7 @@ Vue.mixin({
           }));
         }));
 
-        vm.grants = result;
-
+        vm.grants = grants;
         vm.loading = false;
 
       } catch (e) {
@@ -71,8 +74,8 @@ Vue.mixin({
         _alert('Something went wrong. Please try again later', 'danger');
       }
     },
-    async checkClaimStatus(match, admin_address) {
-      const recipientAddress = admin_address;
+
+    async checkClaimStatus(match, adminAddress) {
       const contractAddress = match.grant_payout.contract_address;
       const txHash = match.claim_tx;
 
@@ -81,50 +84,42 @@ Vue.mixin({
 
       web3 = new Web3(`wss://mainnet.infura.io/ws/v3/${document.contxt.INFURA_V3_PROJECT_ID}`);
 
-      // check if contract has funds for recipientAddress
-      const payout_contract = await new web3.eth.Contract(
+      const payoutContract = await new web3.eth.Contract(
         JSON.parse(document.contxt.match_payouts_abi),
         contractAddress
       );
-      // After payouts are claimed, this will return 0 which updates value of claim_tx
-      const amount = await payout_contract.methods.payouts(recipientAddress).call();
 
-      if (amount == 0) {
-        status = 'no-balance-to-claim';
-        return { status, timestamp };
+      const hexAmount = match.merkle_claim?.amount || '0x00';
+      const index = match.merkle_claim?.index;
+      const amount = web3.utils.toBN(hexAmount);
+
+      if (index === undefined || amount.toString() === '0') {
+        return {
+          status: 'no-balance-to-claim',
+          timestamp
+        };
       }
 
       if (!txHash) {
         return { status, timestamp };
       }
 
+      const claimed = await payoutContract.methods.hasClaimed(index).call();
 
-      let tx = await web3.eth.getTransaction(txHash);
-
-      if (tx && tx.to == contractAddress) {
-        status = 'pending'; // claim transaction is pending
-
-        addressWithout0x = recipientAddress.replace('0x', '').toLowerCase();
-
-        // check if user attempted to claim match payout
-        // 0x8658b34 is the method id of the claimMatchPayout(address _recipient) function
-        userClaimedMatchPayout = tx.input.startsWith('0x8658b34') && tx.input.endsWith(addressWithout0x);
-
-        if (userClaimedMatchPayout) {
-          let receipt = await web3.eth.getTransactionReceipt(txHash);
-
-          if (receipt && receipt.status) {
-            status = 'claimed';
-            timestamp = (await web3.eth.getBlock(receipt.blockNumber)).timestamp; // fetch claim date
-          }
-        }
+      if (claimed) {
+        return {
+          status: 'claimed',
+          timestamp
+        };
       }
 
-      return { status, timestamp };
+      return {
+        status: 'pending',
+        timestamp
+      };
     },
-    async claimMatch(match, admin_address) {
-      const vm = this;
 
+    async claimMatch(match, adminAddress) {
       // Helper method to manage state
       const waitingState = (state) => {
         if (state === true) {
@@ -172,14 +167,25 @@ Vue.mixin({
         match.grant_payout.contract_address
       );
 
+      const hexAmount = match.merkle_claim?.amount || '0x0';
+      const index = match.merkle_claim?.index;
+      const merkleProof = match.merkle_claim?.merkleProof || [];
+
       // Claim payout
-      matchPayouts.methods.claimMatchPayout(admin_address)
+      const claimArgs = {
+        index: index,
+        claimee: adminAddress,
+        amount: hexAmount,
+        merkleProof: merkleProof
+      };
+
+      matchPayouts.methods.claim(claimArgs)
         .send({from: user})
-        .on('transactionHash', async function(txHash) {
-          await vm.postToDatabase(match.pk, txHash);
-          await vm.fetchGrants();
-          vm.$forceUpdate();
-          vm.tabSelected = 1;
+        .on('transactionHash', async txHash => {
+          await this.postToDatabase(match.pk, txHash);
+          await this.fetchGrants();
+          this.$forceUpdate();
+          this.tabSelected = 1;
           waitingState(false);
           _alert('Your matching funds claim is being processed', 'success');
         })
@@ -189,7 +195,7 @@ Vue.mixin({
         });
     },
     async postToDatabase(matchPk, claimTx) {
-      const url = '/grants/v1/api/clr-matches/';
+      const url = '/grants/v1/api/clr-matches/?expand=token';
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
       try {

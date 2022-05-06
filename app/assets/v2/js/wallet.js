@@ -44,7 +44,8 @@ function initWallet() {
     portis: {
       'package': Portis,
       options: {
-        id: 'b2345081-a47e-413a-941f-33fd645d39b3'
+        id: 'b2345081-a47e-413a-941f-33fd645d39b3',
+        network: 'mainnet'
       }
     },
     walletlink: {
@@ -103,7 +104,9 @@ async function fetchAccountData(provider) {
   }
   await web3.eth.net.getId().then(id => {
     networkId = id;
-    networkName = getDataChains(id, 'chainId')[0] && getDataChains(id, 'chainId')[0].network;
+    const chainInfo = getDataChains(id, 'chainId')[0];
+
+    networkName = chainInfo && (chainInfo.network || chainInfo.name);
   });
   // web3.currentProvider.chainId
   // networkName = await web3.eth.net.getNetworkType();
@@ -239,44 +242,43 @@ function displayProvider() {
   createImg(image);
 }
 
-async function setupPolygon(network = networkName) {
-  // Connect to Polygon network with MetaMask
-  let chainId = network === 'mainnet' ? '0x89' : '0x13881';
-  let rpcUrl = network === 'mainnet' ? 'https://polygon-rpc.com'
-    : 'https://rpc-mumbai.matic.today';
+async function switchChain(id) {
+  const web3 = new Web3(provider);
+  const providerName = window.Web3Modal.getInjectedProviderName();
+  const chainInfo = getDataChains(Number(id), 'chainId')[0];
+  const chainId = Web3.utils.numberToHex(chainInfo.chainId);
 
   try {
-    await ethereum.request({
+    await web3.currentProvider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
     });
   } catch (switchError) {
     // This error code indicates that the chain has not been added to MetaMask
     if (switchError.code === 4902) {
-      let networkText = network === 'rinkeby' || network === 'goerli' ||
-        network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
 
       try {
-        await ethereum.request({
+        await web3.currentProvider.request({
           method: 'wallet_addEthereumChain',
           params: [{
             chainId,
-            rpcUrls: [rpcUrl],
-            chainName: `Polygon ${networkText.replace(/\b[a-z]/g, (x) => x.toUpperCase())}`,
-            nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
+            rpcUrls: chainInfo.rpc,
+            chainName: chainInfo.name,
+            nativeCurrency: chainInfo.nativeCurrency,
+            blockExplorerUrls: chainInfo.explorers && chainInfo.explorers.map(e => e.url)
           }]
         });
       } catch (addError) {
         if (addError.code === 4001) {
-          throw new Error('Please connect MetaMask to Polygon network.');
+          throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
         } else {
           console.error(addError);
         }
       }
     } else if (switchError.code === 4001) {
-      throw new Error('Please connect MetaMask to Polygon network.');
+      throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
     } else if (switchError.code === -32002) {
-      throw new Error('Please respond to a pending MetaMask request.');
+      throw new Error(`Please respond to a pending ${providerName} request.`);
     } else {
       console.error(switchError);
     }

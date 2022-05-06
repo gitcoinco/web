@@ -20,8 +20,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty
+from marketing.common.utils import handle_bounty_feedback
 from marketing.mails import bounty_feedback
-from marketing.utils import handle_bounty_feedback
 
 
 class Command(BaseCommand):
@@ -57,6 +57,6 @@ class Command(BaseCommand):
 
             if to_fulfiller:
                 bounty_feedback(bounty, 'fulfiller', fulfiller_previous_bounties)
-            
+
             if to_funder:
                 bounty_feedback(bounty, 'funder', funder_previous_bounties)

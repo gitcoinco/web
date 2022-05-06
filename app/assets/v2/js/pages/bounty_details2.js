@@ -43,7 +43,7 @@ Vue.mixin({
         vm.eventParams();
       }).catch(function(error) {
         vm.loadingState = 'error';
-        _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'danger');
+        _alert('Error fetching bounties. Please contact support@gitcoin.co', 'danger');
       });
     },
     eventParams: function() {
@@ -170,6 +170,10 @@ Vue.mixin({
           url = `https://casperstats.io/tx/${txn}`;
           break;
 
+        case 'ATOM':
+          url = `https://www.mintscan.io/cosmos/txs/${txn}`;
+          break;
+
         default:
           url = `https://etherscan.io/tx/${txn}`;
 
@@ -250,6 +254,10 @@ Vue.mixin({
 
         case 'CSPR':
           url = `https://casperstats.io/address/${address}`;
+          break;
+
+        case 'ATOM':
+          url = `https://mintscan.io/cosmos/account/${address}`;
           break;
 
         default:
@@ -504,6 +512,10 @@ Vue.mixin({
           tenant = 'CASPER';
           break;
 
+        case 'ATOM':
+          tenant = 'COSMOS';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -571,6 +583,7 @@ Vue.mixin({
 
       switch (payout_type) {
         case 'web3_modal':
+        case 'harmony_ext':
           payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
           break;
 
@@ -580,10 +593,6 @@ Vue.mixin({
 
         case 'binance_ext':
           payWithBinanceExtension(fulfillment_id, fulfiller_address, vm, modal);
-          break;
-
-        case 'harmony_ext':
-          payWithHarmonyExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
 
         case 'rsk_ext':
@@ -604,6 +613,10 @@ Vue.mixin({
 
         case 'casper_ext':
           payWithCasperExtension(fulfillment_id, fulfiller_address, vm, modal);
+          break;
+
+        case 'cosmos_ext':
+          payWithCosmosExtension(fulfillment_id, fulfiller_address, vm, modal);
           break;
       }
     },
@@ -826,6 +839,7 @@ Vue.mixin({
         case 'algorand_ext':
         case 'tezos_ext':
         case 'casper_ext':
+        case 'cosmos_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
       }

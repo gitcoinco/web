@@ -1,0 +1,3 @@
+config:
+  aws:region: us-west-2
+  pulumi:template: aws-typescript

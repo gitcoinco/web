@@ -21,27 +21,37 @@
           <div class="collection-item__header mx-3 py-4 border-bottom-1 border-grey">
             <div class="row">
               <div class="col-auto rounded-circle pr-4" >
-                <img :src="`${collection.profile.avatar_url || '/dynamic/avatar/' + collection.profile.handle}`" class="rounded-circle" style="width: 64px;height: 64px;" />
+                <a :href="`/${collection.profile.handle}`">
+                  <img :src="`${collection.profile.avatar_url || '/dynamic/avatar/' + collection.profile.handle}`" class="rounded-circle" style="width: 64px;height: 64px;" />
+                </a>
               </div>
               <div class="col-auto my-auto px-0" >
                 <h5 class="gc-font-base text-grey-500">[[ collection.profile.name || 'anonymous' ]]</h5>
-                <a :href="collection.profile.url || ''" class="mr-2" target="_blank" rel="noopener noreferrer">@[[ collection.profile.handle || 'anon' ]]</a>
+                <a :href="collection.profile.url || ''" class="mr-2 text-decoration-none" target="_blank" rel="noopener noreferrer">@[[ collection.profile.handle || 'anon' ]]</a>
               </div>
             </div>
           </div>
           <div class="mx-3 py-3 px-3 border-bottom-1 border-grey font-smaller-4 text-grey-500">
             <div class="row">
               <div class="col-auto p-0">
-                <span class="font-weight-bold pr-2">[[ collection.profile.followers || 0 ]]</span><span class="pr-3">Followers</span>
+                <a :href="`/${collection.profile.handle}/people`" class="plain-link">
+                  <span class="font-weight-bold pr-2">[[ collection.profile.followers || 0 ]]</span><span class="pr-3">Followers</span>
+                </a>
               </div>
               <div class="col-auto p-0">
-                <span class="font-weight-bold pr-2">[[ collection.profile.following || 0 ]]</span><span class="pr-3">Following</span>
+                <a :href="`/${collection.profile.handle}/people`" class="plain-link">
+                  <span class="font-weight-bold pr-2">[[ collection.profile.following || 0 ]]</span><span class="pr-3">Following</span>
+                </a>
               </div>
               <div class="col-auto p-0">
-                <span class="font-weight-bold pr-2">[[ collection.profile.grants_owned || 0 ]]</span><span class="pr-3">Grant Owned</span>
+                <a :href="`/${collection.profile.handle}/grants`" class="plain-link">
+                  <span class="font-weight-bold pr-2">[[ collection.profile.grants_owned || 0 ]]</span><span class="pr-3">Grant Owned</span>
+                </a>
               </div>
               <div class="col-auto p-0">
-                <span class="font-weight-bold pr-2">[[ collection.profile.grants_contributed || 0 ]]</span><span class="pr-3">Grant Contributed</span>
+                <a :href="`/${collection.profile.handle}/grants`" class="plain-link">
+                  <span class="font-weight-bold pr-2">[[ collection.profile.grants_contributed || 0 ]]</span><span class="pr-3">Grant Contributed</span>
+                </a>
               </div>
             </div>
           </div>

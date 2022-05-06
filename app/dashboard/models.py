@@ -294,6 +294,7 @@ class Bounty(SuperModel):
         ('sia_ext', 'Sia Ext'),
         ('tezos_ext', 'Tezos Ext'),
         ('casper_ext', 'Casper Ext'),
+        ('cosmos_ext', 'Cosmos Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
     )
@@ -1423,6 +1424,7 @@ class BountyFulfillment(SuperModel):
         ('sia_ext', 'sia_ext'),
         ('tezos_ext', 'tezos_ext'),
         ('casper_ext', 'casper_ext'),
+        ('cosmos_ext', 'cosmos_ext'),
         ('manual', 'manual')
     ]
 
@@ -1444,6 +1446,7 @@ class BountyFulfillment(SuperModel):
         ('SIA', 'SIA'),
         ('TEZOS', 'TEZOS'),
         ('CASPER', 'CASPER'),
+        ('COSMOS', 'COSMOS'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -3914,7 +3917,7 @@ class Profile(SuperModel):
             user_active_in_last_quarter = True
             relevant_bounties = []
         else:
-            from marketing.utils import get_or_save_email_subscriber
+            from marketing.common.utils import get_or_save_email_subscriber
             user_coding_languages = get_or_save_email_subscriber(self.email, 'internal').keywords
             if user_coding_languages is not None:
                 potential_bounties = Bounty.objects.all()

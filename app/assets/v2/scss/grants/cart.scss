@@ -342,6 +342,25 @@
     color: #6F3FF5 !important;
     border-color: #6F3FF5 !important;
   }
+  .nav-tabs {
+    border-bottom: 0;
+    .nav-link {
+      padding: 16px;
+      margin: 0 12px;
+      img {
+        opacity: .5;
+      }
+    }
+    .nav-link.active {
+      img {
+        opacity: 1;
+      }
+    }
+
+    .nav-link:first-child {
+      margin-left: 0;
+    }
+  }
 }
 
 .cart-grant-thumbnail {

@@ -24,7 +24,7 @@
     {% include 'shared/cards.html' %}
     <meta name="title" content="Create Funded Issue/Bounty | Gitcoin">
     <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
-    {% bundle css file new_bounty %}
+    {% bundle css file new_bounty_style %}
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/quickstart.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
@@ -86,8 +86,8 @@
                       <input type="radio" name="bounty_chain" id="56_chain" value="56" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/binance.svg' %}" alt="" width="16"> Binance
                     </label>
 
-                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1000'}">
-                      <input type="radio" name="bounty_chain" id="1000_chain" value="1000" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="16"> Harmony
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1666600000'}">
+                      <input type="radio" name="bounty_chain" id="1666600000_chain" value="1666600000" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/harmony.svg' %}" alt="" width="16"> Harmony
                     </label>
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '58'}">
@@ -140,6 +140,10 @@
 
                     <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '270895'}">
                       <input type="radio" name="bounty_chain" id="270895_chain" value="270895" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/casper.svg' %}" alt="" width="16"> Casper
+                    </label>
+
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1155'}">
+                      <input type="radio" name="bounty_chain" id="1155_chain" value="1155" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/cosmos.svg' %}" alt="" width="16"> Cosmos
                     </label>
 
                     {% if is_staff %}
@@ -735,7 +739,7 @@
           ]
       </script>
 
-      {% bundle merge_js file libs %}
+      {% bundle merge_js file new_bounty_libs %}
         <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
         <script src="highlight.min.js" base-dir="/node_modules/@highlightjs/cdn-assets/"></script>
         <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>

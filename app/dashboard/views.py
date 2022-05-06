@@ -3244,28 +3244,41 @@ def verify_user_twitter(request, handle):
                 'msg': msg
             })
 
-        last_tweet = api.user_timeline(screen_name=twitter_handle, count=1, tweet_mode="extended",
-                                       include_rts=False, exclude_replies=False)[0]
+        verification_tweet = None
+        last_10_tweets = api.user_timeline(screen_name=twitter_handle, count=10, tweet_mode="extended",
+                                       include_rts=False, exclude_replies=False)
+        for tweet in last_10_tweets:
+            if tweet.full_text.startswith("I am verifying my identity as"):
+                verification_tweet = tweet
+                break
+
     except tweepy.TweepError as e:
         logger.error(f"error: verify_user_twitter TweepError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': f'Sorry, we couldn\'t get the last tweet from @{twitter_handle}'
+            'msg': f'Sorry, we couldn\'t get the verification tweet from @{twitter_handle}'
         })
     except IndexError as e:
         logger.error(f"error: verify_user_twitter IndexError {e}")
         return JsonResponse({
             'ok': False,
-            'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
+            'msg': 'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
         })
 
-    if last_tweet.retweeted or 'RT @' in last_tweet.full_text:
+
+    if not verification_tweet:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Sorry, we couldn\'t retrieve the verification tweet from your timeline'
+        })
+
+    if verification_tweet.retweeted or 'RT @' in verification_tweet.full_text:
         return JsonResponse({
             'ok': False,
             'msg': f'We get a retweet from your last status, at this moment we don\'t supported retweets.'
         })
 
-    full_text = html.unescape(last_tweet.full_text)
+    full_text = html.unescape(verification_tweet.full_text)
     expected_msg = verify_text_for_tweet(handle)
 
     # Twitter replaces the URL with a shortened version, which is what it returns
@@ -6334,7 +6347,24 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext'] and not fulfiller_address:
+    elif (
+        payout_type
+        in [
+            "qr",
+            "polkadot_ext",
+            "harmony_ext",
+            "binance_ext",
+            "rsk_ext",
+            "xinfin_ext",
+            "nervos_ext",
+            "algorand_ext",
+            "sia_ext",
+            "tezos_ext",
+            "casper_ext",
+            "cosmos_ext",
+        ]
+        and not fulfiller_address
+    ):
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6453,8 +6483,33 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / manual'
+
+    if (
+        payout_type
+        not in [
+            'fiat',
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext' ,
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext',
+            'manual'
+        ]
+    ):
+        response['message'] = (
+            'error: parameter payout_type must be fiat / qr / web_modal / '
+            'polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / '
+            'nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / '
+            'cosmos_ext / manual'
+        )
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6520,7 +6575,24 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext']:
+    elif (
+        payout_type
+        in [
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext',
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext'
+        ]
+    ):
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6544,6 +6616,9 @@ def reverse_proxy_rpc_v1(request, tenant):
     if tenant.upper() == 'CASPER':
         # casper
         url = 'http://3.142.224.108:7777/rpc'
+    elif tenant.upper() == 'COSMOS':
+        # cosmos
+        url = 'https://rpc.cosmos.network'
     else:
         return JsonResponse({'error': 'invalid tenant'}, status=400)
 
@@ -7297,8 +7372,9 @@ def export_grants_ethelo(request):
     end_grant = request.GET.get('end_grant_number')
     end_grant = int(end_grant) if len(end_grant) > 0 else None
     inactive_only = bool(request.GET.get('inactive_only'))
+    flagged_only = bool(request.GET.get('flagged_only'))
 
-    grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only)
+    grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only, flagged_only)
 
     json_str = json.dumps(grants_dict)
     response = HttpResponse(json_str, content_type='application/json')

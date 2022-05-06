@@ -11,7 +11,11 @@ let appCart;
 
 document.addEventListener('dataWalletReady', async function(e) {
   appCart.$refs['cart'].network = networkName;
-  appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
+  if (web3.eth.currentProvider.isPortis) {
+    appCart.$refs['cart'].networkId = web3.eth.currentProvider._portis._config.network.chainId;
+  } else {
+    appCart.$refs['cart'].networkId = String(Number(web3.eth.currentProvider.chainId));
+  }
 }, false);
 
 // needWalletConnection();
@@ -123,6 +127,10 @@ Vue.component('grants-cart', {
         'ALGORAND': [
           `${static_url}v2/js/tokens.js`,
           `${static_url}v2/js/grants/cart/algorand_extension.js`
+        ],
+        'COSMOS': [
+          `${static_url}v2/js/lib/cosmos/cosmwasmjs.js`,
+          `${static_url}v2/js/grants/cart/cosmos_extension.js`
         ]
       }
     };
@@ -419,41 +427,6 @@ Vue.component('grants-cart', {
       return gasLimit;
     },
 
-    // Make a recommendation to the user about which checkout to use
-    checkoutRecommendation() {
-      const estimateL1 = Number(this.donationInputsGasLimitL1); // L1 gas cost estimate
-      const estimateZkSync = Number(this.zkSyncEstimatedGasCost); // zkSync gas cost estimate
-      const estimatePolygon = Number(this.polygonEstimatedGasCost); // polygon gas cost estimate
-
-      const compareWithL2 = (estimateL2, name) => {
-        if (estimateL1 < estimateL2) {
-          const savingsInGas = estimateL2 - estimateL1;
-          const savingsInPercent = Math.round(savingsInGas / estimateL2 * 100);
-
-          return { name: 'Standard checkout', savingsInGas, savingsInPercent };
-        }
-
-        const savingsInGas = estimateL1 - estimateL2;
-        const percentSavings = savingsInGas / estimateL1 * 100;
-        const savingsInPercent = percentSavings > 99 ? 99 : Math.round(percentSavings); // max value of 99%
-
-        return { name, savingsInGas, savingsInPercent };
-      };
-
-      zkSyncComparisonResult = compareWithL2(estimateZkSync, 'zkSync');
-      polygonComparisonResult = compareWithL2(estimatePolygon, 'Polygon');
-      zkSyncSavings = zkSyncComparisonResult.name === 'zkSync' ? zkSyncComparisonResult.savingsInPercent : 0;
-      polygonSavings = polygonComparisonResult.name === 'Polygon' ? polygonComparisonResult.savingsInPercent : 0;
-
-      if (zkSyncSavings > polygonSavings) {
-        return zkSyncComparisonResult;
-      } else if (zkSyncSavings < polygonSavings) {
-        return polygonComparisonResult;
-      }
-
-      return zkSyncComparisonResult; // recommendation will be standard checkout
-    },
-
     isHarmonyExtInstalled() {
       return window.onewallet && window.onewallet.isOneWallet;
     },
@@ -464,6 +437,10 @@ Vue.component('grants-cart', {
 
     isAlgorandExtInstalled() {
       return window.WalletConnect || window.MyAlgoConnect || window.AlgoSigner || false;
+    },
+
+    isCosmosExtInstalled() {
+      return window.keplr || false;
     },
 
     isRskExtInstalled() {
@@ -715,6 +692,9 @@ Vue.component('grants-cart', {
           vm.tokenListOptions.chainId = '1001';
           vm.tokenListOptions.strict = true;
           break;
+        case 'COSMOS':
+          vm.chainId = '1155';
+          break;
       }
     },
     confirmQRPayment: function(e, grant) {
@@ -795,6 +775,9 @@ Vue.component('grants-cart', {
           } else {
             initAlgorandConnection(grant, vm);
           }
+          break;
+        case 'COSMOS':
+          contributeWithCosmosExtension(grant, vm);
           break;
         case 'RSK':
           contributeWithRskExtension(grant, vm);
@@ -1057,28 +1040,16 @@ Vue.component('grants-cart', {
       this.sendPaymentInfoEvent('eth');
       // Prompt web3 login if not connected
       if (!provider) {
-        await await onConnect();
+        await onConnect();
       }
 
-      let networkId = String(Number(web3.eth.currentProvider.chainId));
-      let networkName = getDataChains(networkId, 'chainId')[0] && getDataChains(networkId, 'chainId')[0].network;
+      let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
-      if (networkName == 'mainnet' && networkId !== '1') {
-        // User MetaMask must be connected to Ethereum mainnet
-        try {
-          await ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x1' }]
-          });
-        } catch (switchError) {
-          if (switchError.code === 4001) {
-            throw new Error('Please connect MetaMask to Ethereum network.');
-          } else if (switchError.code === -32002) {
-            throw new Error('Please respond to a pending MetaMask request.');
-          } else {
-            console.error(switchError);
-          }
-        }
+      // User's wallet must be connected to Ethereum mainnet or rinkeby
+      if (networkName == 'mainnet') {
+        await switchChain(1);
+      } else {
+        await switchChain(4);
       }
 
       if (typeof ga !== 'undefined') {
@@ -1243,19 +1214,11 @@ Vue.component('grants-cart', {
       }
     },
 
-    resetNetwork() {
-      if (this.nativeCurrency == 'MATIC') {
-        this.network = this.network == 'testnet' ? 'rinkeby' : 'mainnet';
-        this.networkId = this.networkId == '80001' ? '4' : '1';
-      }
-    },
-
     // Standard L1 checkout flow
     async standardCheckout() {
       try {
         // Setup -----------------------------------------------------------------------------------
         this.activeCheckout = 'standard';
-        this.resetNetwork();
         const userAddress = await this.initializeStandardCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)

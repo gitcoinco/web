@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from economy.models import SuperModel
 from elasticsearch import Elasticsearch
+from grants.models import Grant
 
 
 class SearchResult(SuperModel):
@@ -23,10 +24,18 @@ class SearchResult(SuperModel):
     def __str__(self):
         return f"{self.source_type}; {self.url}"
 
-
-    def put_on_elasticsearch(self):
+    def check_for_active_grant(self):
+        grant = Grant.objects.get(pk=self.source_id)
+        return grant.active and not grant.hidden
+        
+    def put_on_elasticsearch(self, index='search-index'):
         if self.visible_to:
             return None
+
+        if self.source_type_id == 82:
+            active_grant = self.check_for_active_grant()
+            if not active_grant:
+                return None
 
         es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
         source_type  = str(str(self.source_type).replace('token', 'kudos')).title()
@@ -41,7 +50,7 @@ class SearchResult(SuperModel):
             'timestamp': timezone.now(),
             'source_type': source_type,
         }
-        res = es.index(index="search-index", id=self.pk, body=doc)
+        res = es.index(index=index, id=self.pk, body=doc)
 
 
 def search(query, page=0, num_results=500):
@@ -49,6 +58,7 @@ def search(query, page=0, num_results=500):
         return {}
     es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
     # queries for wildcarded paginated results using boosts to lift by title and source_type=grant
+    # index name will need updated once index is ready to be searched
     res = es.search(index="search-index", body={
       "from" : page, "size" : num_results,
       "query": {

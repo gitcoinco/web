@@ -418,9 +418,10 @@ class BountiesViewSet(viewsets.ModelViewSet):
                 slim_interested_count=Count("interested")
             ).filter(slim_interested_count__gte=1).filter(slim_interested_count__lte=5)
         else:
+            # We do not filter by interested count, but we still need the aggregation for the serializer
             queryset = queryset.annotate(
                 slim_interested_count=Count("interested")
-            ).filter(slim_interested_count__gte=1).filter(slim_interested_count__gt=5)
+            )
 
         # filter by who is interested
         if 'started' in param_keys:

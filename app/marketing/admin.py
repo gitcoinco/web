@@ -23,8 +23,8 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     AccountDeletionRequest, Alumni, EmailEvent, EmailInventory, EmailSubscriber, EmailSupressionList, GithubEvent,
-    GithubOrgToTwitterHandleMapping, Job, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match, RoundupEmail,
-    SlackPresence, SlackUser, Stat, UpcomingDate,
+    GithubOrgToTwitterHandleMapping, ImageDropZone, Job, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match,
+    RoundupEmail, SlackPresence, SlackUser, Stat, UpcomingDate,
 )
 
 
@@ -133,6 +133,10 @@ class SlackUserAdmin(admin.ModelAdmin):
             return 'Unknown'
 
 
+class ImageDropZoneAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['name', 'image']
+
 
 admin.site.register(MarketingCallback, GeneralAdmin)
 admin.site.register(AccountDeletionRequest, GeneralAdmin)
@@ -153,3 +157,4 @@ admin.site.register(SlackUser, SlackUserAdmin)
 admin.site.register(SlackPresence, SlackPresenceAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)
 admin.site.register(RoundupEmail, RoundupEmailAdmin)
+admin.site.register(ImageDropZone, ImageDropZoneAdmin)

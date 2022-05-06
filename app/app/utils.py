@@ -25,7 +25,7 @@ from avatar.utils import get_user_github_avatar_image
 from geoip2.errors import AddressNotFoundError
 from git.utils import get_user
 from ipware.ip import get_real_ip
-from marketing.utils import get_or_save_email_subscriber
+from marketing.common.utils import get_or_save_email_subscriber
 from social_core.backends.github import GithubOAuth2
 from social_django.models import UserSocialAuth
 

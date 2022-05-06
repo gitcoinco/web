@@ -2,150 +2,188 @@
 <b-tab title-link-class="nav-line" id="ZIL" v-if="grantsCountByTenant.ZIL !== undefined">
   <template v-slot:title><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" height="16"> <b>ZIL ([[grantsCountByTenant.ZIL || 0]])</b></template>
 
-  <div class="align-items-center justify-content-between font-smaller-2 text-left grant-header-row d-none d-md-flex">
-    <div class="flex-fill">
-      Grant
-    </div>
-    <div class="flex-fill text-center">
-      Amount
-    </div>
-    <div class="flex-fill text-center">
-      Total CLR Match Amount
-    </div>
-  </div>
-  <div v-for="(grant, index) in grantsByTenant" class="grant-row" :key="grant.grant_id">
-    <div class="grant-row-style">
-      <div class="d-flex align-items-center justify-content-between flex-wrap">
-        {% comment %} Title and logo {% endcomment %}
-        <div class="col-lg-6 d-flex flex-fill">
-            <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" class="cart-grant-thumbnail">
-            <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
-        </div>
-        {% comment %} Grant amount and currency {% endcomment %}
-        <div class="d-flex flex-column order-md-0 order-1">
-          <div class="d-flex align-items-center">
-            <input class=" form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
-              placeholder="Amount" style="margin-right: 1rem">
-            <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="filterByChainId" placeholder="Select token" label="symbol" v-model="grant.grant_donation_currency" class="flex-shrink-0" style="
-            width: 160px;
-        ">
-              <template v-slot:option="option">
-                <span class="font-weight-semibold">[[ option.symbol ]]</span>
-              </template>
-            </v-select>
-
-            <!-- <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
-              placeholder="Select token">
-              <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
-                <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
-                <span v-else>[[ option ]]</span>
-              </option>
-            </select2> -->
-          </div>
-          <!-- <div>
-            <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
-              Apply to all
-            </div>
-          </div> -->
-        </div>
-
-        {% comment %} CLR Match Amount {% endcomment %}
-
-        <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <div v-if="!grant.clr_round_num" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-            Not in an active round
-          </div>
-          <div v-else-if="grant.is_on_team" class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-            Cannot match own grant
-          </div>
-          <div v-else-if="grant.is_clr_eligible == true" class="clr-match-box d-flex flex-nowrap align-items-center">
-            <div class="mr-2">[[grant.grant_donation_clr_match]] USD</div>
-            <img src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="Diamonds high-fiving"
-            width="20">
-          </div>
-          <div v-else class="clr-match-box font-caption font-weight-semibold d-flex flex-nowrap align-items-center">
-            Not Eligible for matching
-          </div>
-        </div>
-        <div class=" align-items-center justify-content-around flex-fill flex-shrink-0 d-flex">
-          <b-button v-b-toggle="`collapse-${grant.grant_id}`" variant="primary" class="btn-primary" v-if="!grant.success">
-            Payout
-            <i class="fa fa-fw fa-chevron-up when-open"></i>
-            <i class="fa fa-fw fa-chevron-down when-closed"></i>
-          </b-button>
-          <b-button v-b-toggle="`collapse-${grant.grant_id}`" variant="primary" class="btn-primary" v-else>
-            Completed
-            <i class="fa fa-fw fa-chevron-up when-open"></i>
-            <i class="fa fa-fw fa-chevron-down when-closed"></i>
-          </b-button>
-        </div>
-        {% comment %} Delete Icon {% endcomment %}
-        <div class="d-flex">
-          <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
-            @click="removeGrantFromCart(grant.grant_id)"></i>
-
+  <div class="row">
+    <!-- TOP BAR -->
+    <div class="row col-12 pr-0">
+      <!-- Donation Token -->
+      <div class="col-12 col-md-5 mb-3 mb-md-0 d-flex pl-3">
+        <div class="my-auto mr-3">Amount/Currency</div>
+        <input v-model="preferredAmount" class="col-auto form-control w-25"
+          style="max-width: 7rem;border-radius: 5rem;font-weight: 600;border-color: #A7A2B6;" />
+        <div>
+          <v-select :clearable="false" :reduce="option => option.symbol" append-to-body :options="fetchTokens"
+            placeholder="Select token" label="symbol" v-model="grantsByTenant[0].grant_donation_currency"
+            @input="updateDonationCurrency(tabSelected)" class="rounded-toggle">
+            <template v-slot:option="option">
+              <span class="font-weight-semibold">[[ option.symbol ]]</span>
+            </template>
+          </v-select>
         </div>
       </div>
-      <div>
-        <b-collapse :id="`collapse-${grant.grant_id}`">
-          <form action="" ref="form" @submit="confirmQRPayment($event, grant)">
-
-            <div class="d-flex">
-              <div class="bg-white rounded col mr-2 py-3 d-flex flex-column mt-4">
-                <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner’s address below. Make sure you’re transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>
-
-                <div class="d-flex align-items-center">
-                  <qrcode :string="`zilliqa://${grant.zil_payout_address}?amount=${grant.grant_donation_amount}`" :size="100"></qrcode>
-                  <div class="flex-fill font-smaller-1 ml-4">
-                    <div class="d-flex align-items-center">
-                      <span class="mr-2">To:</span>
+      <div class="col-12 col-md-7 d-flex px-0" id="cartButtonRow">
+        <b-button variant="link" @click="applyPreferredAmountAndTokenToAllGrants(tabSelected)">Apply to all</b-button>
+        <!-- Save Collection -->
+        <div class="d-flex w-50 pl-2 pr-1 justify-content-between">
+          <div class="text-primary my-auto cursor-pointer" @click="$refs.createCollection.fetchCollections()">
+            <i class="fal fa-layer-plus pr-1" aria-hidden="true"></i>
+            Save to Collection
+          </div>
+          <!-- Clear Cart -->
+          <div class="clear-cart cursor-pointer align-self-right text-muted my-auto pr-lg-4"
+            v-b-modal.clear-cart-modal>
+            <i class="far fa-times" aria-hidden="true" v-b-tooltip.hover.bottom="'Clear Cart'">
+            </i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <hr class="my-3">
+    </div>
+    <!-- GRANT LIST -->
+    <div class="col-12 mt-3">
+      <div v-for="(grant, index) in grantsByTenant" :key="grant.grant_id">
+        <div class="row justify-content-between align-items-center">
+          <!-- ALL DEVICES: Grant name and logo -->
+          <div class="col-10 col-md-5 ml-md-0 ml-3">
+            <div class="row align-items-center">
+              <div class="col-3 col-xxl-2 px-0 px-md-3">
+                <img :src="grant.grant_logo" alt="Grant logo" class="cart-grant-thumbnail w-100">
+              </div>
+              <div class="col-9 col-xxl-10">
+                <p class="mb-2">
+                  <a :href="grant.grant_url" target="_blank" class="text-dark">[[grant.grant_title]]</a>
+                </p>
+                <!-- ALL DEVICES: Contribution amount and currency-->
+                <div class="d-flex">
+                  <input v-model="grant.grant_donation_amount"
+                    class="col-auto form-control" placeholder="Amount" style="max-width: 7rem" />
+                  <span class="my-auto mx-3">[[ grant.grant_donation_currency ]]</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ALL DEVICES: CLR match amount-->
+          <div class="col col-md-3 d-block mt-3 mt-md-0 text-md-right">
+            <!-- <div v-if="!grant.clr_round_num" class="text-muted" :class="{ 'mb-3': index === 0 }">Not in an active round</div> -->
+            <div v-if="grant.is_on_team" class="text-muted">Cannot match own grant</div>
+            <div v-else>
+              <span class="text-success" v-if="grant.grant_donation_clr_match">
+                + [[grant.grant_donation_clr_match]] DAI
+              </span>
+              <span class="text-success" v-else>
+                + 0 DAI
+              </span>
+              <span class="text-muted text-nowrap">
+                estd. match
+                <i v-if="grant.has_reached_cap" class="fas fa-info-circle text-grey-400 mx-1 cursor-pointer"
+                  :id="'grant-tooltip-matching' + grant.grant_id"></i>
+                <b-tooltip v-if="grant.has_reached_cap" :target="'grant-tooltip-matching' + grant.grant_id"
+                  triggers="hover">
+                  <div class="text-left p-2" style="min-width: 150px;">
+                    This grant can still receive contributions, but will not receive additional matching funds this
+                    round because it has reached the maximum matching cap.
+                    <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
+                  </div>
+                </b-tooltip>
+              </span>
+            </div>
+          </div>
+          <div class="col col-md-2 d-block mt-3 mt-md-0 text-md-right">
+            <b-button
+              v-if="!grant.success"
+              v-b-toggle="`collapse-${grant.grant_id}`"
+              variant="primary"
+              class="btn btn-primary font-body"
+            >
+              Open to Pay
+              <i class="fa fa-fw fa-chevron-up when-open"></i>
+              <i class="fa fa-fw fa-chevron-down when-closed"></i>
+            </b-button>
+            <b-button
+              v-else
+              v-b-toggle="`collapse-${grant.grant_id}`"
+              variant="primary"
+              class="btn btn-primary font-body"
+            >
+              Completed
+              <i class="fa fa-fw fa-chevron-up when-open"></i>
+              <i class="fa fa-fw fa-chevron-down when-closed"></i>
+            </b-button>
+          </div>
+          <!-- MOBILE: Delete icon -->
+          <div class="col-1 d-none d-block d-md-none px-1">
+            <i @click="removeGrantFromCart(grant.grant_id)" class="far fa-times cursor-pointer text-muted"></i>
+          </div>
+          <!-- DESKTOP: Delete icon -->
+          <div class="col-auto d-none d-md-flex align-self-center inputs-height clear-cart">
+            <i @click="removeGrantFromCart(grant.grant_id)"
+            class="far fa-times cursor-pointer text-muted pr-lg-4 my-auto"></i>
+          </div>
+          <b-collapse :id="`collapse-${grant.grant_id}`">
+            <form action="" ref="form" @submit="confirmQRPayment($event, grant)">
+  
+              <div class="row px-3">
+                <div class="col-12 col-md-6 bg-white rounded col mr-md-2 mx-0 py-3 mt-4">
+                  <p class="font-body"><span class="underline">Step 1</span>: Transfer [[grant.grant_donation_amount]] [[grant.grant_donation_currency]] to the grant owner's address below. Make sure you're transferring the EXACT SAME AMOUNT shown here or your transaction will not be detected.</p>
+  
+                  <div class="row align-items-center">
+                    <div class="col-12 col-md-4">
+                      <qrcode :string="`zilliqa://${grant.zil_payout_address}?amount=${grant.grant_donation_amount}`" :size="100"></qrcode>
+                    </div>
+                    <div class="col-12 col-md-8 font-smaller-1 px-3 px-md-0">
+                      <div class="align-items-center">
+                        <span class="mr-2">To:</span>
+                        <div>
+                          <span class="font-weight-bold d-inline-block text-truncate" style="max-width: 250px;">[[grant.zil_payout_address]]</span>
+                          <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zil_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+                        </div>
+                      </div>
+                      <div class="align-items-center">
+                        <span class="mr-2">Amount:</span>
+                        <div class="font-weight-bold">
+                          [[grant.grant_donation_amount]]
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-5 bg-white rounded col ml-md-2 mx-0 py-3 mt-4">
+                  <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>address</b> or <b>transaction hash</b> and press the confirm button.</p>
+  
+                  <b-form-radio-group v-model="selectedQRPayment" :options="optionsQRPayment" name="radio-options-slots" class="font-body">
+                  </b-form-radio-group>
+  
+                  <div class="form-row align-items-center mt-3">
+                    <div class="col" v-show="selectedQRPayment === 'txid'">
                       <div>
-                        <span class="font-weight-bold">[[grant.zil_payout_address]]</span>
-                        <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.zil_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+                        <label :for="`zil_payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
+                        <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`zil_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
+                        <small class="form-text text-muted">Paste the transaction id</small>
                       </div>
                     </div>
-                    <div class="d-flex align-items-center">
-                      <span class="mr-2">Amount:</span>
-                      <div class="font-weight-bold">
-                        [[grant.grant_donation_amount]]
+                    <div class="col" v-show="selectedQRPayment === 'address'">
+                      <div>
+                        <label :for="`zil_contributor_address_${grant.grant_id}`" class="font-smaller-1">Your address:</label>
+                        <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`zil_contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" :disabled="grant.success">
                       </div>
                     </div>
-
-                  </div>
-                </div>
-              </div>
-              <div class="bg-white rounded col ml-2 py-3 d-flex flex-column mt-4">
-                <p class="font-body"><span class="underline">Step 2</span>: Choose between <b>address</b> or <b>transaction hash</b> and press the confirm button.</p>
-
-                <b-form-radio-group v-model="selectedQRPayment" :options="optionsQRPayment" name="radio-options-slots" class="font-body">
-                </b-form-radio-group>
-
-                <div class="form-row align-items-center mt-3">
-                  <div class="col" v-show="selectedQRPayment === 'txid'">
-                    <div>
-                      <label :for="`zil_payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
-                      <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`zil_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
-                      <small class="form-text text-muted">Paste the transaction id</small>
+                    <div class="mt-4 pt-1">
+                      <button type="submit" class="btn btn-sm btn-primary" :disabled="(selectedQRPayment === 'address' ? !grant.contributor_address : !grant.payoutTxId ) || grant.loading || grant.success">Confirm</button>
                     </div>
                   </div>
-                  <div class="col" v-show="selectedQRPayment === 'address'">
-                    <div>
-                      <label :for="`zil_contributor_address_${grant.grant_id}`" class="font-smaller-1">Your address:</label>
-                      <input v-model="grant.contributor_address" :name="`contributor_address_${grant.grant_id}`" :id="`zil_contributor_address_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" :disabled="grant.success">
-                    </div>
-                  </div>
-                  <div class="mt-4 pt-1">
-                    <button type="submit" class="btn btn-sm btn-primary" :disabled="(selectedQRPayment === 'address' ? !grant.contributor_address : !grant.payoutTxId ) || grant.loading || grant.success">Confirm</button>
-                  </div>
+                  <div v-if="grant.error" class="font-body text-danger">[[grant.error]]</div>
+                  <div v-if="grant.success" class="font-body text-success">[[grant.success]]</div>
                 </div>
-                <div v-if="grant.error" class="font-body text-danger">[[grant.error]]</div>
-                <div v-if="grant.success" class="font-body text-success">[[grant.success]]</div>
               </div>
-            </div>
-
-          </form>
-        </b-collapse>
+  
+            </form>
+          </b-collapse>
+        </div>
+        <hr class="my-4">
       </div>
     </div>
   </div>
+  <!-- Add some empty space before the footer -->
+  <div class="m-5"></div>
 </b-tab>

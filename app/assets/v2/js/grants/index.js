@@ -33,13 +33,15 @@ if (document.getElementById('grants-showcase')) {
     network: 'mainnet',
     state: 'active',
     profile: false,
-    sub_round_slug: false,
+    round_num: document.round_num ? document.round_num : 0,
+    customer_name: document.customer_name ? document.customer_name : false,
+    sub_round_slug: document.sub_round_slug ? document.sub_round_slug : false,
     collections_page: 1,
     grant_regions: [],
     grant_types: [],
     grant_tags: [],
     tenants: [],
-    idle: false,
+    idle: true,
     featured: true,
     round_type: false
   };
@@ -66,7 +68,8 @@ if (document.getElementById('grants-showcase')) {
     {'name': 'KUSAMA', 'label': 'Kusama'},
     {'name': 'BINANCE', 'label': 'Binance'},
     {'name': 'RSK', 'label': 'Rsk'},
-    {'name': 'ALGORAND', 'label': 'Algorand'}
+    {'name': 'ALGORAND', 'label': 'Algorand'},
+    {'name': 'COSMOS', 'label': 'Cosmos'}
   ];
 
   var appGrants = new Vue({
@@ -101,7 +104,9 @@ if (document.getElementById('grants-showcase')) {
       view: localStorage.getItem('grants_view') || 'grid',
       shortView: true,
       bottom: false,
-      sub_round_slug: false,
+      round_num: document.round_num,
+      customer_name: document.customer_name,
+      sub_round_slug: document.sub_round_slug,
       cart_lock: false,
       collection_id: document.collection_id,
       collection_title: document.collection_title,
