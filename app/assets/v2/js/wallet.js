@@ -48,7 +48,7 @@ function initWallet() {
         network: 'mainnet'
       }
     },
-    walletlink: {
+    coinbasewallet: {
       'package': CoinbaseWalletSDK,
       options: {
         appName: 'Gitcoin Web',
