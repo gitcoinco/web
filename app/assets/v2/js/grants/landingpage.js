@@ -7,7 +7,7 @@ if (document.getElementById('grants-showcase')) {
       activePage: document.activePage,
       state: 'active',
       mainBanner: document.current_style,
-      visibleModal: false,
+      visibleModal: false
     },
     computed: {
       isLandingPage() {
@@ -18,7 +18,7 @@ if (document.getElementById('grants-showcase')) {
       },
       hideModal() {
         this.visibleModal = 'none';
-      },
+      }
     }
   });
 }
