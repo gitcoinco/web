@@ -5095,6 +5095,15 @@ class HackathonEvent(SuperModel):
     def town_square_link(self):
         return f'townsquare/?tab=hackathon:{self.pk}'
 
+    def is_expired(self):
+        """Check if Hackathon is active
+
+        Returns:
+            boolean: Whether or not hackathon is expired
+        """
+        now = timezone.now()
+        return self.end_date < now
+
     def get_absolute_url(self):
         """Get the absolute URL for the HackathonEvent.
 
