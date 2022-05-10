@@ -1043,6 +1043,10 @@ Vue.component('grants-cart', {
         await onConnect();
       }
 
+      if (this.nativeCurrency == 'MATIC') {
+        this.networkId = this.networkId == '80001' ? '4' : '1';
+      }
+
       let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
       // User's wallet must be connected to Ethereum mainnet or rinkeby
