@@ -732,7 +732,20 @@
             </div>
             <div class="d-none d-xl-block col-xl-2">
               <div id="sponsor_sidebar" class="font-body">
-                <div class="sponsor-top"></div>
+                <div class="sponsor-top">
+                  {% if hackathon.discord_server is not None %}
+                    <div class="d-flex align-items-center justify-content-center col-12">
+                      <a
+                        type="button"
+                        class="btn btn-primary"
+                        href="{{ hackathon.discord_server }}"
+                        target="_blank"
+                      >
+                        <i class="fab fa-discord mr-1"></i>Join Discord
+                      </a>
+                    </div>
+                  {% endif %}  
+                </div>
                 <sponsor-tribes-widget v-if="hackathonSponsors.length > 0" inline-template>
                   <div class="p-xl-2 p-4">
                     <div class="offset-1 subheading left-ribbon">
