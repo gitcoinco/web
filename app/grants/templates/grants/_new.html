@@ -279,14 +279,14 @@
                   <div class="mb-3">
                     <template v-if="chainId == 'eth'">
                       <label class="font-subheader font-weight-light letter-spacing" for="eth_payout_address">
-                        Add ETH Recipient Wallet Address
+                        Add ETH Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
                         IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
-                        DO NOT use an exchange address — use a self-custody wallet address such as Metamask.<br>
-                        Adding an incorrect wallet address could mean that you don’t receive your funds.
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="eth_payout_address" v-model="form.eth_payout_address" name="eth_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -315,12 +315,14 @@
 
                     <template v-if="chainId == 'celo'">
                       <label class="font-subheader font-weight-light letter-spacing" for="celo_payout_address">
-                        Add CELO Recipient Wallet Address
+                        Add CELO Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="celo_payout_address" v-model="form.celo_payout_address" name="celo_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -332,12 +334,14 @@
 
                     <template v-if="chainId == 'zilliqa'">
                       <label class="font-subheader font-weight-light letter-spacing" for="zil_payout_address">
-                        Add Zilliqa Recipient Wallet Address
+                        Add Zilliqa Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="zil_payout_address" v-model="form.zil_payout_address" name="zil_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -349,12 +353,14 @@
 
                     <template v-if="chainId == 'harmony'">
                       <label class="font-subheader font-weight-light letter-spacing" for="harmony_payout_address">
-                        Add Harmony Recipient Wallet Address
+                        Add Harmony Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="harmony_payout_address" v-model="form.harmony_payout_address" name="harmony_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -366,12 +372,14 @@
 
                     <template v-if="chainId == 'binance'">
                       <label class="font-subheader font-weight-light letter-spacing" for="binance_payout_address">
-                        Add Binance Recipient Wallet Address
+                        Add Binance Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="binance_payout_address" v-model="form.binance_payout_address" name="binance_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -383,12 +391,14 @@
 
                     <template v-if="chainId == 'polkadot'">
                       <label class="font-subheader font-weight-light letter-spacing" for="polkadot_payout_address">
-                        Add Polkadot Recipient Wallet Address
+                        Add Polkadot Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="polkadot_payout_address" v-model="form.polkadot_payout_address" name="polkadot_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -400,12 +410,14 @@
 
                     <template v-if="chainId == 'kusama'">
                       <label class="font-subheader font-weight-light letter-spacing" for="kusama_payout_address">
-                        Add Kusama Recipient Wallet Address
+                        Add Kusama Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="kusama_payout_address" v-model="form.kusama_payout_address" name="kusama_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -417,12 +429,14 @@
 
                     <template v-if="chainId == 'rsk'">
                       <label class="font-subheader font-weight-light letter-spacing" for="rsk_payout_address">
-                        Add RSK Recipient Wallet Address
+                        Add RSK Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="rsk_payout_address" v-model="form.rsk_payout_address" name="rsk_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
@@ -434,12 +448,14 @@
 
                     <template v-if="chainId == 'algorand'">
                       <label class="font-subheader font-weight-light letter-spacing" for="algorand_payout_address">
-                        Add Algorand Recipient Wallet Address
+                        Add Algorand Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-6 badge badge-greylight text-capitalize ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="algorand_payout_address" v-model="form.algorand_payout_address" name="algorand_payout_address" class="form__input form__input-lg" maxlength="58" placeholder="0x0" required/>
@@ -451,12 +467,14 @@
 
                     <template v-if="chainId == 'cosmos'">
                       <label class="font-subheader font-weight-light letter-spacing" for="cosmos_payout_address">
-                        Add Cosmos Recipient Wallet Address
+                        Add Cosmos Recipient's Wallet Address
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
-                        This is where funds from contributors to this grant will be sent
+                        IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
+                        DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
+                        Adding an incorrect wallet address could mean that you don't receive your funds.
                       </p>
 
                       <input id="cosmos_payout_address" v-model="form.cosmos_payout_address" name="cosmos_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
