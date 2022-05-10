@@ -105,7 +105,7 @@ class GrantAdmin(GeneralAdmin):
         'title', 'is_grant_idle',
         'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
-        'grant_type', 'tags', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
+        'grant_type', 'tags', 'tag_eligibility_reason','description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
         'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed', 'defer_clr_to',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
@@ -123,7 +123,7 @@ class GrantAdmin(GeneralAdmin):
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
-        'emails', 'is_grant_idle'
+        'emails', 'is_grant_idle', 'tag_eligibility_reason'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile', 'twitter_verified_by']

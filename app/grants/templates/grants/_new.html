@@ -71,7 +71,10 @@
                     <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                     <p class="text-muted mb-0">
-                      Tags are used for your grant's discoverability and eligibility for matching rounds. Eligibility tags are subject to review by the matching round owner and may be removed at any time for any reason.
+                      Selecting eligibility tags enters your grant for consideration for that specific matching round.<br>
+                      Your grant is then subject to review by the matching round owner and may be removed from that round at any time for any reason.<br>
+                      Discoverability tags are used for finding similar grants in the <a href="https://gitcoin.co/grants/explorer/" target="_blank">Grant Explorer.</a><br>
+                      To learn more about grants, click <a href="https://support.gitcoin.co/gitcoin-grants/what-is-a-grant" target="_blank">here</a>
                     </p>
                     <p class="mt-0 mb-2">
                       <a target="_blank" href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/" rel="noopener noreferrer">Learn more about matching rounds.</a>
@@ -93,6 +96,26 @@
 
                     <div class="text-danger" v-if="errors.grant_tags">
                       [[errors.grant_tags]]
+                    </div>
+                  </div>
+
+                  <!-- Tag Eligibility Reason -->
+                  <div class="mb-4">
+                    <label class="font-subheader font-weight-light letter-spacing">Eligibility Tag Reasoning</label>
+                    <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
+
+                    <p class="text-muted mb-2">
+                      For each eligibility tag you selected above, please provide a reason why your grant will benefit the respective ecosystem
+                    </p>
+
+                    <textarea 
+                      id="tag_eligibility_reason" v-model="form.tag_eligibility_reason" name="tag_eligibility_reason"
+                      class="form__input form__input-lg" cols="50" rows="3">
+                    </textarea>
+
+
+                    <div class="text-danger" v-if="errors.tag_eligibility_reason">
+                      [[errors.tag_eligibility_reason]]
                     </div>
                   </div>
 
