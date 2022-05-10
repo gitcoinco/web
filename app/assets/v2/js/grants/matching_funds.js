@@ -145,9 +145,10 @@ Vue.mixin({
 
       const chainId = Number(web3.eth.currentProvider.chainId);
 
-      if (chainId < 1 || chainId > 5) {
+      // At this moment claims can only be completed on mainnet
+      if (chainId !== 1) {
         waitingState(false);
-        _alert('Please connect to a valid Ethereum network', 'danger');
+        _alert('Please connect to Ethereum mainnet.', 'danger');
         return;
       }
 

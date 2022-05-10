@@ -4,7 +4,7 @@
       <span class="font-bigger-1 text-grey-500">[[ stringifyClrs(match.grant_payout.grant_clrs) ]] (GR[[ match.round_number ]])</span>
     </b-col>
     <b-col lg="2" sm="12" class="pt-2 pt-lg-0">
-      <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.amount | decimals | formatNumber ]] [[ payoutToken ]]</h4>
+      <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 gc-font-base">[[ match.token_amount | decimals | formatNumber ]] [[ payoutToken ]]</h4>
       <span class="d-lg-none d-inline font-weight-bold font-subheader">[[ match.amount | decimals | formatNumber ]] [[ payoutToken ]]</span>
       <span class="font-body text-grey-500 ml-2 ml-lg-0">$[[ match.amount | decimals | formatNumber ]]</span>
     </b-col>
