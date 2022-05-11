@@ -91,7 +91,7 @@ from economy.utils import ConversionRateNotFoundError, convert_amount, convert_t
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
 from git.utils import get_auth_url, get_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
-from grants.utils import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata, is_valid_eip_1271_signature
 from kudos.models import Token
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
@@ -130,7 +130,7 @@ from .models import (
     Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
-from .poh_utils import is_registered_on_poh, is_valid_eip_1271_signature
+from .poh_utils import is_registered_on_poh
 from .router import HackathonEventSerializer, TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
