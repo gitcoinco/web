@@ -60,4 +60,5 @@ class Command(BaseCommand):
                 sr.put_on_elasticsearch(index_name)
             except Exception as e:
                 print('failed:', e)
+
         print('indexing complete')
