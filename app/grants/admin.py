@@ -272,9 +272,13 @@ class GrantAdmin(GeneralAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj.admin_address and obj.admin_address not in ["0x0", ""]:
-            obj.admin_address = Web3.toChecksumAddress(obj.admin_address)
-
-        super(GrantAdmin, self).save_model(request, obj, form, change)
+            try:
+                obj.admin_address = Web3.toChecksumAddress(obj.admin_address)
+                super(GrantAdmin, self).save_model(request, obj, form, change)
+            except:
+                self.message_user(request, "error: Unable to save due to invalid admin_address. Please enter a valid ETH address", level=messages.ERROR)
+        else:
+            super(GrantAdmin, self).save_model(request, obj, form, change)
 
 
 class SubscriptionAdmin(GeneralAdmin):
