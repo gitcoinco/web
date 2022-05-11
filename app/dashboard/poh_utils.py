@@ -2,6 +2,7 @@ POH_CONTRACT_ADDRESS = '0xC5E9dDebb09Cd64DfaCab4011A0D5cEDaf7c9BDb'
 
 _poh_contract = None
 
+
 def get_poh_contract(web3):
     global _poh_contract
     if _poh_contract is None:
