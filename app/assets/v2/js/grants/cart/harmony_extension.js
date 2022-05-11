@@ -1,44 +1,46 @@
-const contributeWithHarmonyExtension = async(grant, vm, modal) => {
+const contributeWithHarmonyExtension = async(grant, vm) => {
 
-  if (!harmony_utils.isOnewalletInstalled()) {
-    _alert({ message: 'Please ensure your Harmony One wallet is installed and unlocked'}, 'danger');
-    return;
+  // Connect to Harmony Mainnet Shard 0 network with MetaMask
+  if (!provider) {
+    await onConnect();
   }
 
   const amount = grant.grant_donation_amount;
   const to_address = grant.harmony_payout_address;
+  const from_address = selectedAccount;
 
-  // step 1: init harmony
-  let hmy = harmony_utils.initHarmony();
+  await switchChain(1666600000);
 
-  // step 2: init extension
-  let harmonyExt = await harmony_utils.initHarmonyExtension();
+  // Check balance sufficiency
+  const account_balance = web3.utils.fromWei(balance, 'ether');
 
-  // step 3: check balance
-  const from_address = await harmony_utils.loginHarmonyExtension(harmonyExt);
-  const account_balance = await harmony_utils.getAddressBalance(hmy, from_address);
-
-  if (account_balance < amount) {
+  if (Number(account_balance) < amount) {
     _alert({ message: `Account needs to have more than ${amount} ONE in shard 0 for payout`}, 'danger');
-    harmony_utils.logoutHarmonyExtension(harmonyExt);
     return;
   }
 
-  // step 4: payout
-  harmony_utils.transfer(
-    hmy,
-    harmonyExt,
-    from_address,
-    to_address,
-    amount
-  ).then(txn => {
-    if (txn) {
-      callback(null, from_address, txn);
-    } else {
-      callback('error in signing transaction');
-    }
-  }).catch(err => callback(err));
+  // Payout
+  // Gas limit as indicated here: https://docs.harmony.one/home/general/wallets/browser-extensions-wallets/metamask-wallet/sending-and-receiving#sending-a-regular-transaction
 
+  try {
+    let web3 = new Web3(provider);
+
+    const txHash = await web3.currentProvider.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        to: to_address,
+        from: from_address,
+        value: web3.utils.toHex(web3.utils.toWei(String(amount))),
+        gasPrice: web3.utils.toHex(30 * Math.pow(10, 9)),
+        gas: web3.utils.toHex(25000),
+        gasLimit: web3.utils.toHex(25000)
+      }]
+    });
+
+    callback(null, from_address, txHash);
+  } catch (e) {
+    callback(e.message);
+  }
 
   function callback(error, from_address, txn) {
     if (error) {
@@ -54,15 +56,13 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
           'tx_id': txn,
           'token_symbol': grant.grant_donation_currency,
           'tenant': 'HARMONY',
-          'amount_per_period': grant.grant_donation_amount
+          'amount_per_period': amount
         }]
       };
 
       const apiUrlBounty = 'v1/api/contribute';
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
-        console.log(response);
-        console.log(payload);
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
           MauticEvent.createEvent({
@@ -78,19 +78,18 @@ const contributeWithHarmonyExtension = async(grant, vm, modal) => {
               }
             ]
           });
+          console.log('e reach here');
 
           vm.updatePaymentStatus(grant.grant_id, 'done', txn);
 
         } else {
           vm.updatePaymentStatus(grant.grant_id, 'failed');
           _alert('Unable to contribute to grant. Please try again later', 'danger');
-          harmony_utils.logoutHarmonyExtension(harmonyExt);
           console.error(`error: grant contribution failed with status: ${response.status} and message: ${response.message}`);
         }
       }).catch(function(error) {
         vm.updatePaymentStatus(grant.grant_id, 'failed');
         _alert('Unable to contribute to grant. Please try again later', 'danger');
-        harmony_utils.logoutHarmonyExtension(harmonyExt);
         console.log(error);
       });
     }
