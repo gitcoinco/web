@@ -238,22 +238,6 @@ Vue.mixin({
         }
       });
     },
-    stringifyClrs(clrs) {
-      let c = clrs.map(a => a.display_text);
-      let g = [];
-
-      c.every(elem => {
-        g.push(elem);
-        if (g.join(', ').length > 24) {
-          g.splice(-1);
-          g.push(`+${c.length - g.length} more`);
-          return false;
-        }
-        return true;
-      });
-
-      return g.slice(0, -1).join(', ') + ' ' + g.slice(-1);
-    },
     scrollToElement(element) {
       const container = this.$refs[element][this.tabSelected];
 
