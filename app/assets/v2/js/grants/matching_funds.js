@@ -251,6 +251,11 @@ Vue.mixin({
         a => a.claim_tx === null &&
         a.grant_payout).length;
     },
+    filterPendingClaims(matches) {
+      return this.filterMatchingPayout(matches).filter(
+        match => !match.claim_tx || match.claim_tx == ''
+      )
+    },
     filterMatchingPayout(matches) {
       return matches.filter(match => match.grant_payout);
     }
