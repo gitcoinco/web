@@ -5071,6 +5071,7 @@ class HackathonEvent(SuperModel):
     use_circle = models.BooleanField(help_text=_('Use circle for the Hackathon'), default=False)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     total_prize = models.CharField(max_length=255, null=True, blank=True, help_text='extra text to display next the event dates on the hackathon list page')
+    discord_server = models.URLField(blank=True, null=True, help_text=_('Link to Discord server for Hackathon'))
 
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
@@ -5094,6 +5095,15 @@ class HackathonEvent(SuperModel):
     @property
     def town_square_link(self):
         return f'townsquare/?tab=hackathon:{self.pk}'
+
+    def is_expired(self):
+        """Check if Hackathon is active
+
+        Returns:
+            boolean: Whether or not hackathon is expired
+        """
+        now = timezone.now()
+        return self.end_date < now
 
     def get_absolute_url(self):
         """Get the absolute URL for the HackathonEvent.

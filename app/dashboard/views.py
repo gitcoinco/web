@@ -4311,6 +4311,9 @@ def new_hackathon_bounty(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
+    if hackathon_event.is_expired():
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),

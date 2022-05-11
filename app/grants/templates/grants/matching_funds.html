@@ -118,7 +118,9 @@
             <div v-if="!loading">
             <div v-if="grants.length > 0">
               <p class="font-subheader mt-4 text-grey-500">
-                View and claim matching funds received by your grants. Claim within the matching period or funds will be returned to the matching pool.<br>
+                View and claim matching funds received by your grants.<br>
+                Matching funds are the funds you've received from the sponsored matching pools — direct contributions are deposited to your grant's wallet separately at time of contribution.<br>
+                Claim within the matching period or funds will be returned to the matching pool.
               </p>
               <p class="font-subheader mt-1 mb-4">
                 <a href="https://gitcoin.co/blog/gitcoin-grants-quadratic-funding-for-the-world/" target="_blank">Learn more on how matching works.</a>
@@ -144,7 +146,7 @@
                     {% include './components/ready_claim.html' %}
                   </div>
                 </div>
-                <p v-else class="font-subheader text-grey-400 pt-2 pt-lg-0">There’s no matching funds ready to claim for this grant.</p>
+                <p v-else class="font-subheader text-grey-400 pt-2 pt-lg-0">There are no matching funds ready to claim for this grant.</p>
               </div>
             </div>
             <div v-else>

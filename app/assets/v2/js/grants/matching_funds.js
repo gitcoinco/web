@@ -145,9 +145,10 @@ Vue.mixin({
 
       const chainId = Number(web3.eth.currentProvider.chainId);
 
-      if (chainId < 1 || chainId > 5) {
+      // At this moment claims can only be completed on mainnet
+      if (chainId !== 1) {
         waitingState(false);
-        _alert('Please connect to a valid Ethereum network', 'danger');
+        _alert('Please connect to Ethereum mainnet.', 'danger');
         return;
       }
 
@@ -236,22 +237,6 @@ Vue.mixin({
             break;
         }
       });
-    },
-    stringifyClrs(clrs) {
-      let c = clrs.map(a => a.display_text);
-      let g = [];
-
-      c.every(elem => {
-        g.push(elem);
-        if (g.join(', ').length > 24) {
-          g.splice(-1);
-          g.push(`+${c.length - g.length} more`);
-          return false;
-        }
-        return true;
-      });
-
-      return g.slice(0, -1).join(', ') + ' ' + g.slice(-1);
     },
     scrollToElement(element) {
       const container = this.$refs[element][this.tabSelected];
