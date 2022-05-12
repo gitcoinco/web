@@ -3587,7 +3587,8 @@ class GrantSubmissionView(View):
             'region': request.POST.get('region', None),
             'clr_prediction_curve': [[0.0, 0.0, 0.0] for x in range(0, 6)],
             'grant_type': GrantType.objects.get(name=grant_type),
-            'has_external_funding': has_external_funding
+            'has_external_funding': has_external_funding,
+            'tag_eligibility_reason': request.POST.get('tag_eligibility_reason', None)
         }
 
         grant = Grant.objects.create(**grant_kwargs)

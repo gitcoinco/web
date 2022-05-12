@@ -236,6 +236,7 @@ class TestNewGrantsPostRoute:
             'admin_address': '0xB81C935D01e734b3D8bb233F5c4E1D72DBC30f6c',
             'team_members[]': '',
             'tags[]': '',
+            'tag_eligibility_reason': '',
         }
 
         client = Client(HTTP_USER_AGENT='chrome')
