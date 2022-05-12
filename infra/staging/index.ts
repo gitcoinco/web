@@ -647,6 +647,10 @@ let environment = [
         value: "https://dpc6bywmosi9y.cloudfront.net/" // Need to swap to read from resource, but just making sure this works
     },
     {
+        name: "AWS_S3_CUSTOM_DOMAIN",
+        value: "https://dpc6bywmosi9y.cloudfront.net/" // Need to swap to read from resource, but just making sure this works
+    },
+    {
         name: "STATIC_URL",
         value: "static/"
     },
