@@ -91,7 +91,7 @@ from economy.utils import ConversionRateNotFoundError, convert_amount, convert_t
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
 from git.utils import get_auth_url, get_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
-from grants.utils import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata, is_valid_eip_1271_signature
 from kudos.models import Token
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
@@ -7220,13 +7220,19 @@ def verify_user_poh(request, handle):
             'msg': 'Empty signature or Ethereum address',
         })
 
+    web3 = get_web3('mainnet')
     message_hash = defunct_hash_message(text="verify_poh_registration")
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     if eth_address != signer:
-        return JsonResponse({
-            'ok': False,
-            'msg': 'Invalid signature',
-        })
+        # recoverHash() will fail if the address is a smart contract wallet. Check for EIP-1271 compliance
+        if is_valid_eip_1271_signature(web3, web3.toChecksumAddress(eth_address), message_hash, signature):
+            # We got a valid EIP-1271 signature from eth_address, so we can trust it.
+            signer = eth_address
+        else:
+            return JsonResponse({
+                'ok': False,
+                'msg': 'Invalid signature',
+            })
 
     if Profile.objects.filter(poh_handle=signer).exists():
         return JsonResponse({
@@ -7234,7 +7240,6 @@ def verify_user_poh(request, handle):
             'msg': 'Ethereum address is already registered.',
         })
 
-    web3 = get_web3('mainnet')
     if not is_registered_on_poh(web3, signer):
         return JsonResponse({
             'ok': False,

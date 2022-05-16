@@ -465,3 +465,12 @@ def bsci_script(csv: str) -> tuple:
 
 def isNaN(string):
     return string != string
+
+def is_valid_eip_1271_signature(web3, address, hash, signature) -> bool:
+    from grants.abi.eip_1271_abi import EIP_1271_ABI
+    try:
+        eip_1271_contract = web3.eth.contract(address=address, abi=EIP_1271_ABI)
+        retval = eip_1271_contract.functions.isValidSignature(hash, signature).call()
+        return web3.toInt(retval) == 0x1626ba7e
+    except Exception as e:
+        return False
