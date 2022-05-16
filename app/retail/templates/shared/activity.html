@@ -486,7 +486,9 @@
     </div>
     {% if row.metadata.resource.type == 'background' and not for_email %}
       <div class="status_background_container">
-        <img class="status_background" src="/static/status_backgrounds/{{row.metadata.resource.id}}.png" />
+          {% with 'status_backgrounds/'|add:row.metadata.resource.id|add:'.png' as background_file %}
+          <img class="status_background" src="{% static background_file %}" />
+          {% endwith %}
         <div class="image-text-container">
           <p style="margin: 0pt;">
             {{row.metadata.title}}
