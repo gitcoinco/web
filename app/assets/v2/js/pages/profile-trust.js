@@ -545,7 +545,7 @@ Vue.component('poap-verify-modal', {
               </button>
             </div>
             <div class="bg-white d-flex mt-4 mx-auto p-1 rounded-circle" style="width: 74px; height: 74px;">
-              <img class="m-auto" src="/static/v2/images/project_logos/poap.svg" alt="POAP Logo" width="45">
+              <img class="m-auto" src="${static_url}v2/images/project_logos/poap.svg" alt="POAP Logo" width="45">
             </div>
             <h3 class="my-4"> [[(step !== 'disconnect' ? 'Verify with' : 'Disconnect from')]] POAP </h3>
           </div>
@@ -786,7 +786,7 @@ Vue.component('poh-verify-modal', {
               </button>
             </div>
             <div class="bg-white d-flex mt-4 mx-auto p-1 rounded-circle" style="width: 74px; height: 74px;">
-              <img class="m-auto" src="/static/v2/images/project_logos/poh-min.svg" alt="POH Logo">
+              <img class="m-auto" src="${static_url}v2/images/project_logos/poh-min.svg" alt="POH Logo">
             </div>
             <h3 class="my-4"> [[(step !== 'disconnect' ? 'Verify with' : 'Disconnect from')]] Proof of Humanity </h3>
           </div>
@@ -1019,7 +1019,7 @@ Vue.component('brightid-verify-modal', {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <img class="mt-4 rounded-circle bg-white" src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="74">
+            <img class="mt-4 rounded-circle bg-white" src="${static_url}v2/images/project_logos/brightid.png" alt="BrightID Logo" width="74">
             <h3 class="my-4"> [[(step !== 'disconnect' ? 'Verify with' : 'Disconnect from')]] BrightID </h3>
           </div>
           <div class="font-smaller-1 line-height-3 spacer-px-4 spacer-px-lg-6 spacer-py-5">
@@ -1036,10 +1036,10 @@ Vue.component('brightid-verify-modal', {
                 <p>
                   <strong>Step 1</strong>: Download the BrightID App on your mobile device<br />
                   <a href="https://apps.apple.com/us/app/brightid/id1428946820">
-                    <img src="/static/v2/images/app_stores/apple_app_store.svg" width="100">
+                    <img src="${static_url}v2/images/app_stores/apple_app_store.svg" width="100">
                   </a>
                   <a href="https://play.google.com/store/apps/details?id=org.brightid">
-                    <img src="/static/v2/images/app_stores/google_play_store.png" width="125">
+                    <img src="${static_url}v2/images/app_stores/google_play_store.png" width="125">
                   </a>
                 </p>
                 <div>
@@ -1664,7 +1664,7 @@ Vue.component('ens-verify-modal', {
               </button>
             </div>
             <div class="bg-white d-flex mt-4 mx-auto p-1 rounded-circle" style="width: 74px; height: 74px;">
-              <img class="m-auto" src="/static/v2/images/project_logos/ens.svg" alt="ENS Logo" width="45">
+              <img class="m-auto" src="${static_url}v2/images/project_logos/ens.svg" alt="ENS Logo" width="45">
             </div>
             <h3 class="my-4"> [[(step !== 'disconnect' ? 'Verify with' : 'Disconnect from')]] ENS </h3>
           </div>
@@ -1874,7 +1874,7 @@ Vue.component('google-verify-modal', {
               </button>
             </div>
             <div class="bg-white d-flex mt-4 mx-auto p-1 rounded-circle" style="width: 74px; height: 74px;">
-              <img width="41" height="40" class="m-auto" src="/static/v2/images/project_logos/google.png">
+              <img width="41" height="40" class="m-auto" src="${static_url}v2/images/project_logos/google.png">
             </div>
             <h3 class="my-4"> [[(step !== 'disconnect' ? 'Verify with' : 'Disconnect from')]] Google </h3>
           </div>

@@ -32,7 +32,7 @@ $(document).ready(function() {
   let selector = $('#bg-selector');
 
   for (var i = 0; i < bgs.length; i++) {
-    selector.append('<div data-bg-name="' + bgs[i] + '" class="bg-thumbnail"><img class="bg-icon" draggable="false" src="/static/status_backgrounds/' + bgs[i] + '-icon.png"/><div class="selector-bar d-none"></div></div>');
+    selector.append('<div data-bg-name="' + bgs[i] + '" class="bg-thumbnail"><img class="bg-icon" draggable="false" src="' + static_url + 'status_backgrounds/' + bgs[i] + '-icon.png"/><div class="selector-bar d-none"></div></div>');
   }
 
   function closeBackgroundDropdown(e) {
@@ -184,7 +184,7 @@ $(document).ready(function() {
           } else {
             $('#thumbnail-img').addClass('py-2 px-4');
             $('#thumbnail-img').css('width', '8rem');
-            $('#thumbnail-img').attr('src', 'https://s.gitcoin.co/static/v2/images/team/gitcoinbot.c1e81ab42f13.png');
+            $('#thumbnail-img').attr('src', static_url + 'v2/images/team/gitcoinbot.c1e81ab42f13.png');
           }
 
           embedded_resource = url;
@@ -362,7 +362,7 @@ $(document).ready(function() {
 
       let html = `
         <div data-gfx=` + item + ` id=video_container class="bg-lightblue p-2">
-        <img src='/static/v2/images/` + item + `'>
+        <img src='${static_url}v2/images/` + item + `'>
         </div>
         `;
 
