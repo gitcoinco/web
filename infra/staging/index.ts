@@ -640,7 +640,7 @@ let environment = [
 
     {
         name: "AWS_STORAGE_BUCKET_NAME",
-        value: bucketWebURL
+        value: bucketName
     },
     {
         name: "STATIC_HOST",
