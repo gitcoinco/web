@@ -24,13 +24,9 @@
             </template>
           </span>
         </template>
-        <template v-else="isKYCPending">
+        <template v-else-if="isKYCPending">
           <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">Complete KYC to claim</h4>
           <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">Complete KYC to claim</span>
-        </template>
-        <template v-else>
-          <h4 class="d-lg-block d-none font-weight-bold font-bigger-1 text-grey-400 gc-font-base">No Action</h4>
-          <span class="d-lg-none d-block font-weight-bold font-subheader text-grey-400">No Action</span>
         </template>
       </b-col>
 
