@@ -379,7 +379,7 @@ class BountyAdmin(admin.ModelAdmin):
     raw_id_fields = ['interested', 'coupon_code', 'org', 'event', 'bounty_owner_profile', 'bounty_reserved_for_user']
     ordering = ['-id']
 
-    search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
+    search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name', 'cusom_title', 'custom_description']
     list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',

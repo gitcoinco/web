@@ -84,7 +84,7 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}" --defaultBalanceEther 1000000000'
+    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}" --defaultBalanceEther 1000000000 --networkId 1111111111'
     deploy:
       replicas: 1
       resources:

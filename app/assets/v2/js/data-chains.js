@@ -1449,7 +1449,24 @@ var dataChains =
     "shortName": "hmy-b-s3",
     "chainId": 1666700003,
     "networkId": 1666700003
-  }
+  },
+  { // Creating a testnet entry, with the ID 1111111111, such that it is possible to use testnet when running integration tests for payments
+    "name": "Ethereum Testnet RPC",
+    "chainId": 1111111111,
+    "shortName": "rpc",
+    "chain": "ETH",
+    "network": "testnetrpc",
+    "networkId": 1111111111,
+    "nativeCurrency": {
+      "name": "Testnet Ether",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "rpc": [
+    ],
+    "faucets": [
+    ],
+  },
 ];
 
 function searchDataChains(name, obj) {

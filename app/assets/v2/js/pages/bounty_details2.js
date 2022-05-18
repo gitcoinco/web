@@ -10,29 +10,32 @@ const loadingState = {
 
 document.result = bounty;
 
+Vue.use(VueQuillEditor);
+Vue.component('v-select', VueSelect.VueSelect);
+
 Vue.mixin({
   methods: {
     fetchBounty: function(newData) {
       let vm = this;
-      let apiUrlBounty = `/actions/api/v0.1/bounty?github_url=${document.issueURL}`;
+      let apiUrlBounty = document.bountyID ? `/actions/api/v0.1/bounty/${document.bountyID}` : `/actions/api/v0.1/bounty?github_url=${document.issueURL}`;
       const getBounty = fetchData(apiUrlBounty, 'GET');
 
       $.when(getBounty).then(function(response) {
-        if (!response.length) {
+        if (!document.bountyID && !response.length) {
           vm.loadingState = 'empty';
           return vm.syncBounty();
         }
-        vm.bounty = response[0];
+        vm.bounty = document.bountyID ? response : response[0];
         vm.loadingState = 'resolved';
-        vm.isOwner = vm.checkOwner(response[0].bounty_owner_github_username);
-        vm.isOwnerAddress = vm.checkOwnerAddress(response[0].bounty_owner_address);
-        document.result = response[0];
+        vm.isOwner = vm.checkOwner();
+        vm.isOwnerAddress = vm.checkOwnerAddress(vm.bounty.bounty_owner_address);
+        document.result = vm.bounty;
         if (newData) {
           delete sessionStorage['fulfillers'];
           delete sessionStorage['bountyId'];
           localStorage[document.issueURL] = '';
-          document.title = `${response[0].title} | Gitcoin`;
-          window.history.replaceState({}, `${response[0].title} | Gitcoin`, response[0].url);
+          document.title = `${vm.bounty.title} | Gitcoin`;
+          window.history.replaceState({}, `${vm.bounty.title} | Gitcoin`, vm.bounty.url);
         }
         if (vm.bounty.event && localStorage['pendingProject'] && (vm.bounty.standard_bounties_id == localStorage['pendingProject'])) {
           projectModal(vm.bounty.pk);
@@ -343,14 +346,28 @@ Vue.mixin({
       waitBlock(bountyMetadata.txid);
 
     },
-    checkOwner: function(handle) {
+    checkOwner: function() {
       let vm = this;
+      let ret = false;
+      let owner_handle = vm.bounty.bounty_owner_github_username;
 
       if (vm.contxt.github_handle) {
-        return caseInsensitiveCompare(document.contxt['github_handle'], handle);
+        ret = caseInsensitiveCompare(document.contxt['github_handle'], owner_handle);
       }
-      return false;
 
+      // Check also for additional bounty owners
+      if (!ret) {
+        for (let i = 0; i < vm.bounty.owners.length; i++) {
+          let additionalOwner = vm.bounty.owners[i];
+
+          console.log('geri: additionalOwner', additionalOwner.handle);
+          ret = caseInsensitiveCompare(document.contxt['github_handle'], additionalOwner.handle);
+          if (ret) {
+            break;
+          }
+        }
+      }
+      return ret;
     },
     checkOwnerAddress: function(bountyOwnerAddress) {
       let vm = this;
@@ -934,6 +951,12 @@ Vue.mixin({
     },
     expiresAfterAYear: function() {
       return moment().diff(document.result['expires_date'], 'years') < -1;
+    },
+    isPayoutDateExpired: function() {
+      return moment(document.result['payout_date']).isBefore();
+    },
+    payoutDateExpiresAfterAYear: function() {
+      return moment().diff(document.result['payout_date'], 'years') < -1;
     }
   }
 });

@@ -1,0 +1,129 @@
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
+<form-wrapper v-if="step === 3" :heading="'Payment Information'" :current-step="step" :total-steps="currentSteps.length"
+  @update-navigation="updateNav" :disable-confirm="!isStep3Valid">
+
+  <!-- Chain -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Chain</label>
+    <v-select id="payout_chain" @input="onChainInput" :options="networkOptions" :taggable="false" placeholder="Select chain you are paying out the bounty with" v-model="chain" :disabled="!isNew">
+      <template #search="{attributes, events}">
+        <input
+          class="vs__search"
+          :required="step3Submitted && !chain"
+          v-bind="attributes"
+          v-on="events"
+        />
+      </template>
+      <template #option="{ label, logo }">
+        <img class="mr-2" v-bind:src="logo" alt="" width="10">
+        [[ label ]]
+      </template>
+      <template #selected-option="{ label, logo }">
+        <img class="mr-2" v-bind:src="logo" alt="" width="10">
+        [[ label ]]
+      </template>
+    </v-select>
+    <div class="text-danger" v-if="step3Errors.chainId && !chain">
+      [[ step3Errors.chainId ]]
+    </div>
+</div>
+
+  <!-- Token -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Token</label>
+    <v-select id="payout_token" :options="filterByChainId" label="symbol" v-model="form.token" :taggable="false" placeholder="Select token to be paid out" @input="getAmount(form.token ? form.token.symbol : null);" :disabled="chain === null || !isNew">
+      <template #search="{attributes, events}">
+        <input
+          class="vs__search"
+          :required="step3Submitted && !form.token"
+          v-bind="attributes"
+          v-on="events"
+        />
+      </template>
+      <template v-slot:option="{ symbol }">
+        <span class="font-weight-semibold">[[ symbol ]]</span>
+      </template>
+    </v-select>
+    <div class="text-danger" v-if="step3Errors.token && !form.token">
+      [[ step3Errors.token ]]
+    </div>
+  </div>
+
+  <!-- Amount -->
+  <div class="row ml-0 mr-0 mb-4">
+    <div class="cell">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Amount</label>
+      <input name="amount" id="amount" class="form__input" :class="{'valid': false, 'error': !!step3Errors.amount}" type="number" step="any" min="0.001" v-model="form.amount" @input="calcValues('usd')" :disabled="chain === null || form.token === null || form.peg_to_usd || !isNew">
+    </div>
+    <div class="pl-3 pr-3 mt-4 pt-3">
+      <i v-if="form.peg_to_usd" class="far fa-arrow-left"></i>
+      <i v-else class="far fa-arrow-right"></i>
+    </div>
+    <div class="cell">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Amount (USD)</label>
+      <input name="usd_amount" id="usd_amount" class="form__input" :class="{'valid': false, 'error': !!step3Errors.amountusd}" type="number" step="any" min="0.00" v-model="form.amountusd" @input="calcValues('token')" :disabled="chain === null || form.token === null || !form.peg_to_usd || !isNew">
+    </div>
+    <div class="w-100"></div>
+    <div class="text-danger" v-if="(step3Errors.amount || step3Errors.amountusd) && ((form.peg_to_usd && (Number.isNaN(Number.parseFloat(form.amountusd)) || Number.parseFloat(form.amountusd) <= 0)) || (!form.peg_to_usd && (Number.isNaN(Number.parseFloat(form.amount)) || Number.parseFloat(form.amount) <= 0)))">
+      [[ step3Errors.amount || step3Errors.amountusd ]]
+    </div>
+  </div>
+
+  <!-- Peg to USD -->
+  <div class="form__checkbox mb-4">
+    <input id="new_bounty_peg_to_usd" v-model="form.peg_to_usd" type="checkbox" :disabled="chain === null || form.token === null  || !isNew">
+    <label class="form__label" for="new_bounty_peg_to_usd" style="display: flex;">
+      Peg to USD
+    </label>
+  </div>
+
+  <!-- Add bounty owners -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Add Bounty Owners</label>
+    <p class="text-muted mb-0">Additional bounty owners will be able to edit and payout this bounty on your behalf.</p>
+
+    <v-select id="bounty_owner" label="text" @search="userSearch" :multiple="true" :options="usersOptions" placeholder="Additional bounty owners" v-model="form.bounty_owners">
+      <template slot="no-options">
+        type to search Users..
+      </template>
+      <template slot="option" slot-scope="option">
+        <div class="d-flex align-items-baseline">
+          <div class="mr-2">
+            <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
+          </div>
+          <div>[[ option.text ]]</div>
+        </div>
+
+      </template>
+      <template slot="selected-option" slot-scope="option">
+        <div class="d-flex align-items-baseline">
+          <div class="mr-2">
+            <img class="rounded-circle" :src="option.avatar_url" width="20" height="20"/>
+          </div>
+          <div>[[ option.text || option.handle ]]</div>
+        </div>
+      </template>
+
+    </v-select>
+  </div>
+
+
+  <template v-slot:footer>
+    <div v-if="!isHackathonBounty && !subscriptionActive && bountyFee > 0" class="mt-2 pl-0 pr-0 col-12">
+
+      <div v-if="totalAmount.totalFee > 0 && chainId === '1' && form.token" class="bounty-creation-help p-3">
+        [[bountyFee]]% platform fee ([[ totalAmount.totalFee ]] [[form.token.symbol]]) will be charged upon bounty creation.
+        A Gitcoin PRO subscription removes the platform fee and more.
+        For more information, contact <a href="mailto:pro@gitcoin.co" target="_blank" class="font-weight-bold">pro@gitcoin.co</a>.
+      </div>
+
+      <div v-else class="bounty-creation-help p-3">
+        [[bountyFee]]% platform fee will be charged upon bounty creation.
+        A Gitcoin PRO subscription removes the platform fee and more.
+        For more information, contact <a href="mailto:pro@gitcoin.co" target="_blank" class="font-weight-bold">pro@gitcoin.co</a>.
+      </div>
+
+    </div>
+  </template>
+
+</form-wrapper>

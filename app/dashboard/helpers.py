@@ -218,7 +218,31 @@ def issue_details(request):
         logger.warning(e)
         message = 'could not pull back remote response'
         return JsonResponse({'status':'false','message':message}, status=404)
+
     return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
+def validate_org_url(request):
+    """Determine if the github org URL represents a valid bounty sponsor.
+
+    Returns:
+        Empty response with status 200 if the url is valid
+        
+    """
+    url = request.GET.get('url')
+    hackathon_slug = request.GET.get('hackathon_slug')
+
+    if hackathon_slug:
+        sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
+        sponsor_profiles = list(sponsor_profiles)
+        org_issue = org_name(url).lower()
+
+        if org_issue not in sponsor_profiles:
+            message = 'This GitHub URL is not for a valid sponsor'
+            return JsonResponse({'status':'false','message':message}, status=404)
+
+    return JsonResponse({'status': 'true'})
 
 
 def normalize_url(url):

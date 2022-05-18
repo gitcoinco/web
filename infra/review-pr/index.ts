@@ -194,6 +194,10 @@ const cluster = new awsx.ecs.Cluster(`gitcoin-review-${environmentName}`, { vpc 
 export const clusterId = cluster.id;
 const listener = new awsx.lb.ApplicationListener(`gitcoin-review-${environmentName}`, { port: 80, vpc: cluster.vpc });
 
+// Export the URL so we can easily access it.
+export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
+export const frontend = listener.endpoint
+
 
 let environment = [
     {
@@ -248,9 +252,8 @@ let environment = [
     },
     {
         name: "BASE_URL",
-        value: "http://127.0.0.1:8000/"
+        value: frontendURL,
     },
-
     ///////////////////////////////////////////////////////////////////////////////
     // DOCKER PROVISIONING PARAMS
     ///////////////////////////////////////////////////////////////////////////////
@@ -560,11 +563,6 @@ const service = new awsx.ecs.FargateService(`gitcoin-review-${environmentName}-a
         },
     },
 });
-
-// Export the URL so we can easily access it.
-export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
-export const frontend = listener.endpoint
-
 
 const www = new aws.route53.Record("www", {
     zoneId: route53ZoneID,

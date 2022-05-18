@@ -333,19 +333,6 @@ var callbacks = {
       );
 
     }
-
-    $('#value_in_usdt').html(Math.round(totalUSDValue));
-
-    $('#value_in_usdt_wrapper').attr('title',
-      '<div class="tooltip-info tooltip-sm">' +
-      '<p class="text-highlight-gc-purple">How did we calculate this?</p>' +
-      '<div style="float:left; text-align:left;">' +
-      leftHtml +
-      '</div><div style="margin-left: .5rem; float:right; text-align:left;">' +
-      rightHtml +
-      '</div></div>'
-    );
-
     return [ key, val ];
   },
   'token_value_time_peg': function(key, val, result) {
