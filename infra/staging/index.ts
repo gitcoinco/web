@@ -672,21 +672,6 @@ let environment = [
 
 ];
 
-let dd_environment = [
-    {
-        name: "DD_API_KEY",
-        value: datadogKey
-    },
-    {
-        name: "ECS_FARGATE",
-        value: "true"
-    },
-    {
-        name: "DD_TAGS",
-        value: "env:staging"
-    }
-]
-
 const task = new awsx.ecs.FargateTaskDefinition("task", {
     containers: {
         web: {
@@ -698,10 +683,6 @@ const task = new awsx.ecs.FargateTaskDefinition("task", {
             environment: environment,
             dependsOn: [],
             links: []
-        },
-        datadog: {
-            image: "public.ecr.aws/datadog/agent:latest",
-            environment: dd_environment
         },
     },
 });
@@ -720,11 +701,6 @@ const service = new awsx.ecs.FargateService("app", {
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
-            },
-            datadog: {
-                image: "public.ecr.aws/datadog/agent:latest",
-                memory: 512,
-                environment: dd_environment
             },
         },
     },
