@@ -715,12 +715,12 @@ export const taskDefinition = task.taskDefinition.id;
 
 const service = new awsx.ecs.FargateService("app", {
     cluster,
-    desiredCount: 1,
+    desiredCount: 2,
     taskDefinitionArgs: {
         containers: {
             web: {
                 image: dockerGtcWebImage,
-                memory: 512,
+                memory: 4096,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
