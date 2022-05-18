@@ -682,10 +682,6 @@ let dd_environment = [
         value: "true"
     },
     {
-        name: "DD_ENV",
-        value: "staging"
-    },
-    {
         name: "DD_TAGS",
         value: "env:staging"
     }
