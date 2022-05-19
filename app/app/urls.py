@@ -443,7 +443,9 @@ urlpatterns = [
     ),
 
     # View Bounty
-    # TODO geri: should we drop the 2 URL patterns below???
+    # TODO: The 2 URLs below issue_details_new2 and issue_details_new3 will not be used any more (we will not create such 
+    # links any more), and can be removed in the future. We are keeping these for now to avoid breaking the 
+    # existing links tat users might have saved already.
     url(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',
         dashboard.views.bounty_details,

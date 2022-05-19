@@ -360,7 +360,6 @@ Vue.mixin({
         for (let i = 0; i < vm.bounty.owners.length; i++) {
           let additionalOwner = vm.bounty.owners[i];
 
-          console.log('geri: additionalOwner', additionalOwner.handle);
           ret = caseInsensitiveCompare(document.contxt['github_handle'], additionalOwner.handle);
           if (ret) {
             break;

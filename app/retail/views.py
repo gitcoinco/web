@@ -19,7 +19,6 @@
 '''
 import json
 import logging
-from pprint import pformat
 import re
 from json import loads as json_parse
 

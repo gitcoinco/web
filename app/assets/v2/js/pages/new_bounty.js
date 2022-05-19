@@ -1223,9 +1223,7 @@ Vue.mixin({
       deep: true,
       handler(newVal, oldVal) {
         this.dirty = true;
-        console.log('geri model richDescriptionContent', newVal.richDescriptionContent);
       }
-
     },
     chain: async function(val) {
 

@@ -32,7 +32,6 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
-from pprint import pformat
 
 from django.conf import settings
 from django.contrib import messages

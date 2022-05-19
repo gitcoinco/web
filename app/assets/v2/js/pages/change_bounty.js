@@ -1151,9 +1151,6 @@ Vue.mixin({
 if (document.getElementById('gc-hackathon-new-bounty')) {
   let bounty = document.result;
 
-  console.log('geri bounty.custom_issue_description', bounty.custom_issue_description);
-
-
   appFormBounty = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-hackathon-new-bounty',
