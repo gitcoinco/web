@@ -446,6 +446,14 @@ Vue.mixin({
         });
       }
     },
+    parseJSONNoFail(jsonString) {
+      try {
+        return JSON.parse(jsonString);
+      } catch (error) {
+        // Nothing to do
+      }
+      return '';
+    },
     getTenant: function(token_name, web3_type) {
       let tenant;
       let vm = this;

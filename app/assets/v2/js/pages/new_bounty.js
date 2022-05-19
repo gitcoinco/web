@@ -90,92 +90,92 @@ Vue.mixin({
       networkOptions: [
         {
           'id': '1',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/ethereum.512bdfc90974.svg',
+          'logo': static_url + 'v2/images/chains/ethereum.svg',
           'label': 'ETH'
         },
         {
           'id': '0',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/bitcoin.a606afe92dc0.svg',
+          'logo': static_url + 'v2/images/chains/bitcoin.svg',
           'label': 'BTC'
         },
         {
           'id': '666',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/paypal.94a717ec583d.svg',
+          'logo': static_url + 'v2/images/chains/paypal.svg',
           'label': 'PayPal'
         },
         {
           'id': '56',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/binance.f29b8c5b883c.svg',
+          'logo': static_url + 'v2/images/chains/binance.svg',
           'label': 'Binance'
         },
         {
           'id': '1000',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/harmony.94e314f87cb6.svg',
+          'logo': static_url + 'v2/images/chains/harmony.svg',
           'label': 'Harmony'
         },
         {
           'id': '58',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/polkadot.ab164a0162c0.svg',
+          'logo': static_url + 'v2/images/chains/polkadot.svg',
           'label': 'Polkadot'
         },
         {
           'id': '59',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/kusama.79f72c4ef309.svg',
+          'logo': static_url + 'v2/images/chains/kusama.svg',
           'label': 'Kusama'
         },
         {
           'id': '61',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/ethereum-classic.5da22d66e88a.svg',
+          'logo': static_url + 'v2/images/chains/ethereum-classic.svg',
           'label': 'ETC'
         },
         {
           'id': '102',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/zilliqa.53f121329fe2.svg',
+          'logo': static_url + 'v2/images/chains/zilliqa.svg',
           'label': 'Zilliqa'
         },
         {
           'id': '600',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/filecoin.5b66dcda075a.svg',
+          'logo': static_url + 'v2/images/chains/filecoin.svg',
           'label': 'Filecoin'
         },
         {
           'id': '42220',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/celo.92f6ddaad4cd.svg',
+          'logo': static_url + 'v2/images/chains/celo.svg',
           'label': 'Celo'
         },
         {
           'id': '30',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/rsk.ad4762fa3b4b.svg',
+          'logo': static_url + 'v2/images/chains/rsk.svg',
           'label': 'RSK'
         },
         {
           'id': '50',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/xinfin.dfca06ac5f24.svg',
+          'logo': static_url + 'v2/images/chains/xinfin.svg',
           'label': 'Xinfin'
         },
         {
           'id': '1001',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/algorand.25e6b9cd9ae9.svg',
+          'logo': static_url + 'v2/images/chains/algorand.svg',
           'label': 'Algorand'
         },
         {
           'id': '1935',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/sia.1aeab380df24.svg',
+          'logo': static_url + 'v2/images/chains/sia.svg',
           'label': 'Sia'
         },
         {
           'id': '1995',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/nervos.e3e776d77e06.svg',
+          'logo': static_url + 'v2/images/chains/nervos.svg',
           'label': 'Nervos'
         },
         {
           'id': '50797',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/tezos.66a5e2b53980.svg',
+          'logo': static_url + 'v2/images/chains/tezos.svg',
           'label': 'Tezos'
         },
         {
           'id': '270895',
-          'logo': 'https://s.gitcoin.co/static/v2/images/chains/casper.4718c7855050.svg',
+          'logo': static_url + 'v2/images/chains/casper.svg',
           'label': 'Casper'
         },
         {

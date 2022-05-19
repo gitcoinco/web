@@ -295,7 +295,7 @@
               </div>
             </div>
 
-            <div v-if="JSON.parse(bounty.acceptance_criteria)" class="row">
+            <div v-if="parseJSONNoFail(bounty.acceptance_criteria)" class="row">
               <div class="col-12 mt-2">
                 <h5 class="bounty-heading mt-0 pt-4">{% trans "Acceptance Criteria" %}</h5>
                 <div class="acceptance_criteria">
@@ -304,7 +304,7 @@
               </div>
             </div>
 
-            <div v-if="JSON.parse(bounty.resources)" class="row">
+            <div v-if="parseJSONNoFail(bounty.resources)" class="row">
               <div class="col-12 mt-2">
                 <h5 class="bounty-heading mt-0 pt-4">{% trans "Resources" %}</h5>
                 <div class="resources">

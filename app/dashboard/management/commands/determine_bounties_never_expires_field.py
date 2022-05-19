@@ -20,6 +20,7 @@ from django.core.management.base import BaseCommand
 
 from dashboard.models import Bounty
 
+
 class Command(BaseCommand):
 
     help = """This will set the `never_expire` flag to true on each bounty that meets the following criteria:

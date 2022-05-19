@@ -129,10 +129,11 @@ from .models import (
     LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView,
     Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
 )
-from .router import ProfileSerializer as SimpleProfileSerializer
 from .notifications import maybe_market_to_email, maybe_market_to_github
 from .poh_utils import is_registered_on_poh
-from .router import HackathonEventSerializer, TribesSerializer
+from .router import HackathonEventSerializer
+from .router import ProfileSerializer as SimpleProfileSerializer
+from .router import TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
@@ -1945,8 +1946,7 @@ def bounty_invite_url(request, invitecode):
             bounty_invite.bounty.add(bounty)
             bounty_invite.inviter.add(inviter)
             bounty_invite.invitee.add(request.user)
-            # TODO: geri, this URL will not work custom bounties
-        return redirect('/funding/details/?url=' + bounty.github_url)
+        return redirect(bounty.get_canonical_url())
     except Exception as e:
         logger.debug(e)
         raise Http404
