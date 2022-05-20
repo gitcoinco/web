@@ -1,7 +1,7 @@
 // handle from contxt
 const trustHandle = document.contxt.github_handle;
 
-const reader = new PassportReader("https://ceramic-clay.3boxlabs.com")
+const reader = new PassportReader('https://ceramic-clay.3boxlabs.com');
 
 const apiCall = (url, givenPayload) => {
 
@@ -94,6 +94,7 @@ Vue.component('active-trust-manager', {
             // validate the contents of the stamp collection
             const ignore_expiry_check = true;
             const expiry_check = ignore_expiry_check || new Date(stamp.credential.expirationDate) > new Date();
+
             if (stamp && stamp.credential && expiry_check && this.serviceDict[stamp.provider]) {
               // do didkit verify here? or only serverside?
               this.serviceDict[stamp.provider].is_verified = true;
@@ -106,13 +107,14 @@ Vue.component('active-trust-manager', {
               // request signature
               let signature = false;
               // attempt the signature
+
               try {
                 signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
               } catch {
                 // set error state
                 this.verificationError = 'There was an error; please sign the requested message';
                 // clear all state
-                this.reset()
+                this.reset();
               }
               // if we have sig, attempt to save the passports details into the backend
               const response = await apiCall(`/api/v2/profile/${trustHandle}/dpopp/verify`, {
@@ -121,6 +123,7 @@ Vue.component('active-trust-manager', {
                 'did': this.did
               });
               // merge the response with state
+
               this.services.forEach((service) => {
                 this.serviceDict[service.ref].is_verified = response.passport.stamps[service.ref] ? response.passport.stamps[service.ref].is_verified : false;
               });
@@ -140,7 +143,7 @@ Vue.component('active-trust-manager', {
         }
       } else {
         // clear all state
-        this.reset()
+        this.reset();
       }
 
       // done with loading state
