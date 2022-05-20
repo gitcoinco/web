@@ -73,13 +73,24 @@ Vue.component('active-trust-manager', {
         });
       }
     },
+    async listener() {
+      this.connectPassport();
+    },
     async connectPassport() {
+      document.removeEventListener('dataWalletReady', this.listener);
+
       // ensure selected account is known
       if (!selectedAccount) {
+        // call again once wallet is ready
+        document.addEventListener('dataWalletReady', this.listener);
         // global wallet setup requirements
         needWalletConnection();
         initWallet();
+
+        // end early
+        return false
       }
+
 
       // enter loading state
       this.loading = true;
