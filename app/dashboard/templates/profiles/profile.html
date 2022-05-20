@@ -108,12 +108,12 @@
         {% if tab == 'trust' %}
           <script>
             document.services = {{ services|safe }};
-            document.roadmap = {{ roadmap|safe }};
-            document.coming_soon = {{ coming_soon|safe }};
+            document.challenge = "{{ challenge }}";
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
           </script>
           {% bundle merge_js file profile-trust %}
+            <script src="{% static "v2/js/dPoPP/reader.bundle.js" %}"></script>
             <script src="{% static "v2/js/parseMonthDay.js" %}"></script>
             <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
             <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>

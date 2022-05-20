@@ -139,105 +139,14 @@ urlpatterns = [
     ),
 
     # verification services
+
     url(
-        r'^api/v0.1/profile/(?P<handle>.*)/request_user_sms/?$',
-        dashboard.views.send_verification,
-        name='request_verification'
+        r'^api/v2/profile/(?P<handle>.*)/dpopp/verify',
+        dashboard.views.verify_dpopp,
+        name='verify_dpopp'
     ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_sms/?$',
-        dashboard.views.validate_verification,
-        name='request_verification'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_sms/?$',
-        dashboard.views.disconnect_sms,
-        name='disconnect_sms'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/start_session_idena',
-        dashboard.views.start_session_idena,
-        name='start_session_idena'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/authenticate_idena',
-        dashboard.views.authenticate_idena,
-        name='authenticate_idena'
-    ),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/logout_idena', dashboard.views.logout_idena, name='logout_idena'),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/recheck_idena_status',
-        dashboard.views.recheck_idena_status,
-        name='recheck_idena_status'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_twitter',
-        dashboard.views.verify_user_twitter,
-        name='verify_user_twitter'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_twitter',
-        dashboard.views.disconnect_user_twitter,
-        name='disconnect_user_twitter'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poap', dashboard.views.verify_user_poap, name='verify_user_poap'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_poap',
-        dashboard.views.disconnect_user_poap,
-        name='disconnect_user_poap'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/verify_user_brightid',
-        dashboard.views.verify_user_brightid,
-        name='verify_user_brightid'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_brightid',
-        dashboard.views.disconnect_user_brightid,
-        name='disconnect_user_brightid'
-    ),
-    url(r'^api/v0.1/profile/(?P<handle>.*)/verify_user_poh', dashboard.views.verify_user_poh, name='verify_user_poh',
-        ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_poh',
-        dashboard.views.disconnect_user_poh,
-        name='disconnect_user_poh'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_google',
-        dashboard.views.request_verify_google,
-        name='request_verify_google'
-    ),
-    url(r'^api/v0.1/profile/verify_user_google', dashboard.views.verify_user_google, name='verify_user_google'),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_google',
-        dashboard.views.disconnect_user_google,
-        name='disconnect_user_google'
-    ),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/request_verify_facebook',
-        dashboard.views.request_verify_facebook,
-        name='request_verify_facebook'
-    ),
-    url(r'^api/v0.1/profile/verify_user_facebook', dashboard.views.verify_user_facebook, name='verify_user_facebook'),
-    url(
-        r'^api/v0.1/profile/(?P<handle>.*)/disconnect_user_facebook',
-        dashboard.views.disconnect_user_facebook,
-        name='disconnect_user_facebook'
-    ),
-    url(r'api/v0.1/profile/(?P<handle>.*)/verify_user_ens', dashboard.views.verify_user_ens, name='verify_user_ens'),
-    url(
-        r'api/v0.1/profile/(?P<handle>.*)/disconnect_user_ens',
-        dashboard.views.disconnect_user_ens,
-        name='disconnect_user_ens'
-    ),
-    # url(
-    #     r'^api/v0.1/profile/verify_user_duniter',
-    #     dashboard.views.verify_user_duniter,
-    #     name='verify_user_duniter'
-    # ),
+
+
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),

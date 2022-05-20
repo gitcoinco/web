@@ -119,3 +119,4 @@ unidecode==1.2.0
 drf-flex-fields==0.9.1
 pandas
 django-svg-image-form-field==1.0.1
+git+https://github.com/gdixon/dag-cbor.git#egg=dag-cbor
