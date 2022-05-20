@@ -247,7 +247,7 @@ Vue.mixin({
       return grant.clr_matches.length &&
       (
         grant.clr_matches.filter(a => a.claim_tx).length ||
-        grant.clr_matches.filter(a => [8, 9].includes(a.round_number)).length
+        grant.clr_matches.filter(a => [ 8, 9 ].includes(a.round_number)).length
       );
     },
     canClaimMatch(grant) {
@@ -255,7 +255,7 @@ Vue.mixin({
         grant.clr_matches.filter(a =>
           a.claim_tx === null &&
           a.grant_payout &&
-          ["ready", "pending"].includes(a.grant_payout.status)
+          [ 'ready', 'pending' ].includes(a.grant_payout.status)
         ).length;
     },
     filterPendingClaims(matches) {
