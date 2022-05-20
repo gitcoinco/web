@@ -161,6 +161,9 @@
           <input class="form__input" type="text" v-model="pickDate" placeholder="04/01/2022" :disabled="disabled"/>
         </div>
       </script>
+      <script type="text/x-template" id="quill-editor-ext">
+        <quill-editor ref="quillEditor" id="new-bounty-custom-editor" @change="onUpdate($event)" :options="options"></quill-editor>
+      </script>
       {% include 'shared/footer.html' %}
       {% include 'shared/footer_scripts.html' with slim=1 %}
       {% include 'shared/current_profile.html' %}
