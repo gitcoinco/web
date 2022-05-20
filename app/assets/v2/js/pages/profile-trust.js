@@ -98,13 +98,16 @@ Vue.component('active-trust-manager', {
       // clear errors
       this.verificationError = false;
 
+      console.log('TODO trust-bonus selectedAccount', selectedAccount);
       // get the selectedAccounts ceramic DID
       this.did = await reader.getDID(selectedAccount);
 
+      console.log('TODO trust-bonus this.did', this.did);
       // with did...
       if (this.did) {
         // extract passport from reader
         this.passport = await reader.getPassport(this.did);
+        console.log('TODO trust-bonus  this.passport', this.passport);
         // with passport...
         if (this.passport) {
           this.passport.stamps.forEach((stamp) => {
