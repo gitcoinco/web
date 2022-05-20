@@ -77,6 +77,7 @@ Vue.component('active-trust-manager', {
       this.connectPassport();
     },
     async connectPassport() {
+      // drop listener once its been called once
       document.removeEventListener('dataWalletReady', this.listener);
 
       // ensure selected account is known
@@ -88,9 +89,8 @@ Vue.component('active-trust-manager', {
         initWallet();
 
         // end early
-        return false
+        return false;
       }
-
 
       // enter loading state
       this.loading = true;
@@ -115,7 +115,6 @@ Vue.component('active-trust-manager', {
             if (stamp && stamp.credential && expiry_check && this.serviceDict[stamp.provider]) {
               // do didkit verify here? or only serverside?
               this.serviceDict[stamp.provider].is_verified = true;
-              // make a request here to store the new state on the backend - need a nonce to sign and to pass the did to the backend
             }
           });
         }
