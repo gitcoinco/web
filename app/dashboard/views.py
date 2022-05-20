@@ -2943,7 +2943,7 @@ def get_profile_tab(request, profile, tab, prev_context):
 
         # pass as JSON in the context
         context['services'] = json.dumps(services)
-        context['challenge'] = request.session['dpopp_challenge'] if request.session['dpopp_challenge'] else hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
+        context['challenge'] = request.session.get('dpopp_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
 
         # store into session
         request.session['dpopp_challenge'] = context['challenge']
