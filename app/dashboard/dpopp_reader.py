@@ -30,7 +30,6 @@ def get_stream_ids(did, ids=[ceramic_crypto_accounts_stream_id, ceramic_passport
 
     # return streams in a dict
     streams = {}
-    content = {}
 
     try:
         # get the stream content for the given did according to its genesis stream_id

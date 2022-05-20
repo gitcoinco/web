@@ -28,6 +28,7 @@ Vue.component('active-trust-manager', {
       visibleModal: 'none',
       did: undefined,
       passport: undefined,
+      passportVerified: false,
       loading: false,
       verificationError: false,
       console: console,
@@ -61,12 +62,16 @@ Vue.component('active-trust-manager', {
     hideModal() {
       this.visibleModal = 'none';
     },
-    reset() {
+    reset(clearStamps) {
       this.did = false;
       this.passport = false;
-      this.services.forEach((service) => {
-        this.serviceDict[service.ref].is_verified = false;
-      });
+      this.passportVerified = false;
+
+      if (clearStamps) {
+        this.services.forEach((service) => {
+          this.serviceDict[service.ref].is_verified = false;
+        });
+      }
     },
     async connectPassport() {
       // ensure selected account is known
@@ -78,6 +83,7 @@ Vue.component('active-trust-manager', {
 
       // enter loading state
       this.loading = true;
+      this.passportVerified = false;
       // clear errors
       this.verificationError = false;
 
@@ -101,53 +107,54 @@ Vue.component('active-trust-manager', {
               // make a request here to store the new state on the backend - need a nonce to sign and to pass the did to the backend
             }
           });
-          // attempt to verify the passport
-          try {
-            if (document.challenge) {
-              // request signature
-              let signature = false;
-              // attempt the signature
-
-              try {
-                signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
-              } catch {
-                // set error state
-                this.verificationError = 'There was an error; please sign the requested message';
-                // clear all state
-                this.reset();
-              }
-              // if we have sig, attempt to save the passports details into the backend
-              const response = await apiCall(`/api/v2/profile/${trustHandle}/dpopp/verify`, {
-                'eth_address': selectedAccount,
-                'signature': signature,
-                'did': this.did
-              });
-              // merge the response with state
-
-              this.services.forEach((service) => {
-                this.serviceDict[service.ref].is_verified = response.passport.stamps[service.ref] ? response.passport.stamps[service.ref].is_verified : false;
-              });
-              // notify success (temp)
-              _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
-            }
-          } catch (err) {
-            // set error state
-            this.verificationError = 'There was an error; please try again later';
-            // clear all state but not the stamps
-            this.did = false;
-            this.passport = false;
-          } finally {
-            // done with loading state
-            this.loading = false;
-          }
         }
       } else {
         // clear all state
-        this.reset();
+        this.reset(true);
       }
 
       // done with loading state
       this.loading = false;
+    },
+    async verifyPassport() {
+      // attempt to verify the passport
+      try {
+        if (document.challenge) {
+          // request signature
+          let signature = false;
+
+          // attempt the signature
+          try {
+            signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
+          } catch {
+            // set error state
+            this.verificationError = 'There was an error; please sign the requested message';
+            // clear all state
+            this.reset(true);
+          }
+
+          // if we have sig, attempt to save the passports details into the backend
+          const response = await apiCall(`/api/v2/profile/${trustHandle}/dpopp/verify`, {
+            'eth_address': selectedAccount,
+            'signature': signature,
+            'did': this.did
+          });
+
+          // merge the response with state
+          this.services.forEach((service) => {
+            this.serviceDict[service.ref].is_verified = response.passport.stamps[service.ref] ? response.passport.stamps[service.ref].is_verified : false;
+          });
+          // notify success (temp)
+          _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
+          // mark verified
+          this.passportVerified = true;
+        }
+      } catch (err) {
+        // set error state
+        this.verificationError = 'There was an error; please try again later';
+        // clear all state but not the stamps
+        this.reset();
+      }
     }
   }
 });
