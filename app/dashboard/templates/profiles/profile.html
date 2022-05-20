@@ -112,8 +112,8 @@
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
           </script>
+          <script src="{% static "v2/js/dpopp/reader.bundle.js" %}"></script>
           {% bundle merge_js file profile-trust %}
-            <script src="{% static "v2/js/dpopp/reader.bundle.js" %}"></script>
             <script src="{% static "v2/js/parseMonthDay.js" %}"></script>
             <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
             <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
