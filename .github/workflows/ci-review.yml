@@ -299,7 +299,7 @@ jobs:
               repo: context.repo.repo,
               body: `Test your commit here: \n\
               - [${{ steps.pulumi.outputs.frontendURL }}](${{ steps.pulumi.outputs.frontendURL }}) \n\
-              - [http://${{ steps.compute.outputs.review_domain }}](http://${{ steps.compute.outputs.review_domain }}) \n\
+              - [https://${{ steps.compute.outputs.review_domain }}](https://${{ steps.compute.outputs.review_domain }}) \n\
               `
             })
           
