@@ -107,9 +107,94 @@ const staticAssetsBucketPolicy = new aws.s3.BucketPolicy(`gitcoin-review-${envir
     policy: staticAssetsBucketPolicyDocument.apply(staticAssetsBucketPolicyDocument => staticAssetsBucketPolicyDocument.json),
 });
 
+const s3OriginId = "myS3Origin";
+const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
+    origins: [{
+        domainName: staticAssetsBucket.bucketRegionalDomainName,
+        originId: s3OriginId,
+    }],
+    enabled: true,
+    isIpv6Enabled: true,
+    defaultRootObject: "index.html",
+    defaultCacheBehavior: {
+        allowedMethods: [
+            "DELETE",
+            "GET",
+            "HEAD",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+        ],
+        cachedMethods: [
+            "GET",
+            "HEAD",
+        ],
+        targetOriginId: s3OriginId,
+        forwardedValues: {
+            queryString: false,
+            cookies: {
+                forward: "none",
+            },
+        },
+        viewerProtocolPolicy: "allow-all",
+        minTtl: 0,
+        defaultTtl: 3600,
+        maxTtl: 86400,
+    },
+    orderedCacheBehaviors: [
+        {
+            pathPattern: "/static/*",
+            allowedMethods: [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+            ],
+            cachedMethods: [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+            ],
+            targetOriginId: s3OriginId,
+            forwardedValues: {
+                queryString: false,
+                headers: ["Origin"],
+                cookies: {
+                    forward: "none",
+                },
+            },
+            minTtl: 0,
+            defaultTtl: 86400,
+            maxTtl: 31536000,
+            compress: true,
+            viewerProtocolPolicy: "redirect-to-https",
+        },
+    ],
+    priceClass: "PriceClass_200",
+    restrictions: {
+        geoRestriction: {
+            restrictionType: "none",
+        },
+    },
+    tags: {
+        Environment: "staging",
+    },
+    viewerCertificate: {
+        cloudfrontDefaultCertificate: true,
+    },
+});
+
+// export const bucketName = staticAssetsBucket.id;
+// export const bucketArn = staticAssetsBucket.arn;
+// export const bucketWebURL1 = staticAssetsBucket.website;
+// export const bucketWebURL1Domain = staticAssetsBucket.websiteDomain;
+// export const bucketWebURL1Endpoint = staticAssetsBucket.websiteEndpoint;
+// export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.websiteEndpoint}/`;
+
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
-export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.websiteEndpoint}/`;
+// export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websiteEndpoint}/`;
+export const bucketWebURL = "https://gitcoin-review-10618-c00aa99.s3.us-west-2.amazonaws.com/"; // TODO: fix this ...
 
 //////////////////////////////////////////////////////////////
 // Load VPC for review environments
