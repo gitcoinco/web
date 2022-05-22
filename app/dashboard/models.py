@@ -708,7 +708,11 @@ class Bounty(SuperModel):
     @property
     def github_org_name(self):
         try:
-            return org_name(self.github_url)
+            if self.bounty_source == "github":
+                return org_name(self.github_url)
+            elif self.funding_organisation:
+                return self.funding_organisation
+            return None
         except Exception:
             return None
 
