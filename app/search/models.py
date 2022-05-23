@@ -72,9 +72,17 @@ def search_by_type(query, content_type, page=0, num_results=500):
                 },
                 "should": [
                     {
+                        "match": {
+                            "title": {
+                                "query": f"*{query}*",
+                                "boost": 2
+                            }
+                        }
+                    },
+                    {
                         "query_string": {
                             "query": f"*{query}*",
-                            "fields": ["title^10", "description", "source_type"],
+                            "fields": ["title"],
                         }
                     }
                 ],
@@ -104,9 +112,17 @@ def search(query, page=0, num_results=500):
             "bool": {
                 "should": [
                     {
+                        "match": {
+                            "title": {
+                                "query": f"*{query}*",
+                                "boost": 2
+                            }
+                        }
+                    },
+                    {
                         "query_string": {
                             "query": f"*{query}*",
-                            "fields": ["title^10", "description", "source_type"],
+                            "fields": ["title"],
                         }
                     }
                 ],
