@@ -3081,6 +3081,9 @@ class Profile(SuperModel):
     # store the trust bonus on the model itself
     trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on verified services')
 
+    dpopp_trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on dpopp passport')
+    dpopp_passport = JSONField(null=True, blank=True)
+
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
 

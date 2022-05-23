@@ -3005,17 +3005,73 @@ def verify_dpopp(request, handle):
 
     # dict from list
     stamps_to_return = {}
+    matched_services = {
+            'POH': {
+                'match_percent': 50,
+                'verified': 0
+            },
+            'POAP': {
+                'match_percent': 25,
+                'is_verified': 0,
+            },
+            'ENS': {
+                'match_percent': 25,
+                'verified': 0
+            },
+            'Google': {
+                'match_percent': 15,
+                'verified': 0
+            },
+            'Twitter': {
+                'match_percent': 15,
+                'verified': 0
+            },
+            'Facebook': {
+                'match_percent': 15,
+                'verified': 0
+            },
+            # {
+            #     'ref': 'BrightID',
+            #     'name': 'BrightID',
+            #     'icon_path': static('v2/images/project_logos/brightid.png'),
+            #     'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
+            #     'match_percent': 50,
+            #     'is_verified': profile.is_brightid_verified
+            # },
+            # {
+            #     'ref': 'Idena',
+            #     'name': 'Idena',
+            #     'icon_path': static('v2/images/project_logos/idena.svg'),
+            #     'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
+            #     'match_percent': 50,
+            #     'is_verified': profile.is_idena_verified
+            # },
+    }
+
     for stamp in passport['stamps']:
 
         logger.error("TODO: verifying stamp: %s", pformat(stamp))
         verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
+        verification = json.loads(verification)
 
         logger.error("TODO: verification result: %s", pformat(verification))
         # TODO: check for validity according to didkit and check that stamp.credentialSubject.id is in accounts
         stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings?
         stamps_to_return[stamp['provider']] = stamp
+        matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
 
         # TODO: update score here
+
+    trust_score = 0
+    for provider_name, provider in matched_services.items():
+        logger.error("TODO matched_services provider %s => %s", provider_name, provider)
+        # verified should be 1 for all verified providers
+        trust_score += provider["match_percent"] * provider["verified"]
+
+    profile = request.user.profile
+    profile.dpopp_trust_bonus = trust_score
+    profile.dpopp_passport = passport
+    profile.save()
 
     logger.error("TODO: Verify dpopp 5")
 
@@ -3027,7 +3083,8 @@ def verify_dpopp(request, handle):
 
     # return full passport
     return JsonResponse({
-        'passport': passport
+        'passport': passport,
+        'trust_score': trust_score,     # TODO: we probably do not need this here ...
         # 'challenge': request.session['dpopp_challenge']
     })
 
