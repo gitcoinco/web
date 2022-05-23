@@ -136,21 +136,14 @@
           <input name="project_type" id="traditional" type="checkbox" value="traditional" val-ui='Traditional' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=traditional>{% trans "Traditional" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="project_type" id="contest" type="checkbox" value="contest" val-ui='Contest' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=contest>{% trans "Contest" %}</label>
+            <label for=traditional>{% trans "Open to 1 worker" %}</label>
           </div>
         </div>
         <div class="checkbox_container mb-2">
-          <input name="project_type" id="cooperative" type="checkbox" value="cooperative" val-ui='Cooperative' />
+          <input name="project_type" id="cooperative" type="checkbox" value="cooperative,contest,multiple" val-ui='Cooperative' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=cooperative>{% trans "Cooperative" %}</label>
+            <label for=cooperative>{% trans "Open to multiple workers" %}</label>
           </div>
         </div>
       </div>
