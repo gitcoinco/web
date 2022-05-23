@@ -33,6 +33,7 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
+from pprint import pformat
 
 from django.conf import settings
 from django.contrib import messages
@@ -61,6 +62,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
+import didkit
 import ens
 import magic
 import pytz
@@ -118,7 +120,6 @@ from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
 from .dpopp_reader import get_crypto_accounts, get_passport, get_stream_ids
-
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -2959,11 +2960,14 @@ def verify_dpopp(request, handle):
     signature = request.POST.get('signature')
     did = request.POST.get('did')
 
+    logger.error("TODO: Verify dpopp did = '%s'", did)
+    logger.error("TODO: Verify dpopp 1")
     # check for valid sig
     message_hash = defunct_hash_message(text=request.session['dpopp_challenge'])
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     sig_is_valid = address.lower() == signer.lower()
 
+    logger.error("TODO: Verify dpopp 2")
     # invalid sig error
     if not sig_is_valid:
         return JsonResponse({
@@ -2974,9 +2978,17 @@ def verify_dpopp(request, handle):
     # pull streamIds from ceramic
     stream_ids = get_stream_ids(did)
 
+    logger.error("TODO: Verify dpopp stream_ids: '%s'", stream_ids)
     # get accounts for did
     accounts = get_crypto_accounts(stream_ids=stream_ids)
+    logger.error("TODO: Verify dpopp accounts: '%s'", accounts)
+    logger.error("TODO: Verify dpopp address: '%s'", address)
+
     is_owner = address.lower() in accounts and sig_is_valid
+
+    logger.error("TODO: Verify dpopp is_owner: '%s'", is_owner)
+
+    logger.error("TODO: Verify dpopp 3")
 
     # invalid owner
     if not is_owner:
@@ -2988,18 +3000,27 @@ def verify_dpopp(request, handle):
     # retrieve passport
     passport = get_passport(stream_ids=stream_ids)
 
-    # dict from list
-    stamps = {}
-    for stamp in passport['stamps']:
-        stamps[stamp['provider']] = stamp
+    logger.error("TODO: Verify dpopp 4")
+    logger.error("TODO: Verify dpopp passport: %s", passport)
 
+    # dict from list
+    stamps_to_return = {}
+    for stamp in passport['stamps']:
+
+        logger.error("TODO: verifying stamp: %s", pformat(stamp))
+        verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
+
+        logger.error("TODO: verification result: %s", pformat(verification))
         # TODO: check for validity according to didkit and check that stamp.credentialSubject.id is in accounts
-        stamps[stamp['provider']]['is_verified'] = True
+        stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings?
+        stamps_to_return[stamp['provider']] = stamp
 
         # TODO: update score here
 
+    logger.error("TODO: Verify dpopp 5")
+
     # return as a dict of stamps
-    passport['stamps'] = stamps
+    passport['stamps'] = stamps_to_return
 
     # reset challenge?
     # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()

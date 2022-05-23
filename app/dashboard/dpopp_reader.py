@@ -1,7 +1,7 @@
 # libs for processing the deterministic stream location
-import dag_cbor
 import hashlib
 
+import dag_cbor
 # Making GET requests against the ceramic_url to read streams
 import requests
 
@@ -16,8 +16,8 @@ ceramic_crypto_accounts_stream_id = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9d
 ceramic_passport_stream_id = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
 
 def clean_address(address):
-    # strip addresses suffix
-    return address.replace("@eip155:1", "")
+    # strip addresses suffix like @eip155:1, @eip155:4, @eip155:137
+    return address.split("@eip155")[0]
 
 def get_stream_ids(did, ids=[ceramic_crypto_accounts_stream_id, ceramic_passport_stream_id]):
     # encode the input object with cborg (Concise Binary Object Representation)

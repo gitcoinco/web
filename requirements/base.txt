@@ -120,3 +120,4 @@ drf-flex-fields==0.9.1
 pandas
 django-svg-image-form-field==1.0.1
 git+https://github.com/gdixon/dag-cbor.git#egg=dag-cbor
+didkit==0.2.1
