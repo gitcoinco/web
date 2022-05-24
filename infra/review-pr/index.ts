@@ -360,7 +360,6 @@ const www = new aws.route53.Record("www", {
     }]
 });
 
-
 let environment = [
     {
         name: "ENV",
@@ -414,8 +413,9 @@ let environment = [
     },
     {
         name: "BASE_URL",
-        value: frontendURL,
+        value: "http://127.0.0.1:8000/"
     },
+
     ///////////////////////////////////////////////////////////////////////////////
     // DOCKER PROVISIONING PARAMS
     ///////////////////////////////////////////////////////////////////////////////
@@ -660,7 +660,7 @@ let environment = [
     },
     // This is used for prod: STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     // STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
-    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage 
+    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage
     {
         name: "STATICFILES_STORAGE",
         value: "django.contrib.staticfiles.storage.StaticFilesStorage"
