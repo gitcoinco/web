@@ -1881,6 +1881,14 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     * Simplify the view logic.</p>
 <p>Returns:
     JsonResponse: A JSON response containing the Github issue or PR keywords.</p>
+<h2 id="dashboard.helpers.validate_org_url">validate_org_url</h2>
+
+<pre><code class="python">validate_org_url(request)
+</code></pre>
+
+<p>Determine if the github org URL represents a valid bounty sponsor.</p>
+<p>Returns:
+    Empty response with status 200 if the url is valid</p>
 <h2 id="dashboard.helpers.normalize_url">normalize_url</h2>
 
 <pre><code class="python">normalize_url(url)

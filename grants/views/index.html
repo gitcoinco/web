@@ -1860,7 +1860,7 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 
 <p>Handle grant matching funds page.
 <h2 id="grants.views.clr_grants">clr_grants</h2></p>
-<pre><code class="python">clr_grants(request, round_num, sub_round_slug='', customer_name='')
+<pre><code class="python">clr_grants(request, round_num=None, sub_round_slug=None, customer_name=None)
 </code></pre>
 
 <p>CLR grants explorer.
@@ -1879,11 +1879,6 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 </code></pre>
 
 <p>Redirect old grant url with search params to /explorer keeping query params.
-<h2 id="grants.views.grants_by_grant_clr">grants_by_grant_clr</h2></p>
-<pre><code class="python">grants_by_grant_clr(request, clr_round)
-</code></pre>
-
-<p>Handle grants explorer.
 <h2 id="grants.views.grant_details_api">grant_details_api</h2></p>
 <pre><code class="python">grant_details_api(request, grant_id)
 </code></pre>
@@ -1939,11 +1934,6 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Show grants profile of logged in user.
-<h2 id="grants.views.quickstart">quickstart</h2></p>
-<pre><code class="python">quickstart(request)
-</code></pre>
-
-<p>Display quickstart guide.
 <h2 id="grants.views.hall_of_fame">hall_of_fame</h2></p>
 <pre><code class="python">hall_of_fame(request)
 </code></pre>

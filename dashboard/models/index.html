@@ -1877,6 +1877,41 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h2 id="dashboard.models.Bounty_owners">Bounty_owners</h2>
+
+<pre><code class="python">Bounty_owners(self, *args, **kwargs)
+</code></pre>
+
+<p>Bounty_owners(id, bounty, profile)
+<h3 id="dashboard.models.Bounty_owners.bounty">bounty</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Bounty_owners.bounty_id">bounty_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty_owners.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty_owners.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Bounty_owners.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h2 id="dashboard.models.BountyInvites_bounty">BountyInvites_bounty</h2>
 
 <pre><code class="python">BountyInvites_bounty(self, *args, **kwargs)
@@ -2432,6 +2467,10 @@ object the first time, the query is executed.</p>
     OPEN_STATUSES (list of str): The list of status types considered open.
     CLOSED_STATUSES (list of str): The list of status types considered closed.
     TERMINAL_STATUSES (list of str): The list of status types considered terminal states.</p>
+<h3 id="dashboard.models.Bounty.acceptance_criteria">acceptance_criteria</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.accepted">accepted</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2527,8 +2566,17 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Bounty.bounty_state">bounty_state</h3>
+<h3 id="dashboard.models.Bounty.bounty_source">bounty_source</h3>
 
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.BOUNTY_SOURCES">BOUNTY_SOURCES</h3>
+
+<p>Built-in immutable sequence.</p>
+<p>If no argument is given, the constructor returns an empty tuple.
+If iterable is specified the tuple is initialized from iterable's items.</p>
+<p>If the argument is a tuple, the return value is the same object.
+<h3 id="dashboard.models.Bounty.bounty_state">bounty_state</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.BOUNTY_STATES">BOUNTY_STATES</h3>
@@ -2575,7 +2623,11 @@ object the first time, the query is executed.</p>
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
-<h3 id="dashboard.models.Bounty.contract_address">contract_address</h3></p>
+<h3 id="dashboard.models.Bounty.contact_details">contact_details</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.contract_address">contract_address</h3>
+
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.coupon_code">coupon_code</h3>
@@ -2592,6 +2644,10 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.current_bounty">current_bounty</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.custom_issue_description">custom_issue_description</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2705,6 +2761,11 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.get_bounty_source_display">_method</h3>
+
+<pre><code class="python">Bounty._method(self, *, field=&lt;django.db.models.fields.CharField: bounty_source&gt;)
+</code></pre>
+
 <h3 id="dashboard.models.Bounty.get_bounty_state_display">_method</h3>
 
 <pre><code class="python">Bounty._method(self, *, field=&lt;django.db.models.fields.CharField: bounty_state&gt;)
@@ -2897,6 +2958,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.never_expires">never_expires</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.now">now</h3>
 
 <p>Return the time now in the current timezone.
@@ -2924,6 +2989,18 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.owners">owners</h3>
+
+<p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example::</p>
+<pre><code>class Pizza(Model):
+    toppings = ManyToManyField(Topping, related_name='pizzas')
+</code></pre>
+<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Bounty.paid">paid</h3>
 
 <p>Return list of users paid for this bounty.
@@ -2932,7 +3009,15 @@ object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.past_hard_expiration_date">past_hard_expiration_date</h3></p>
 <p>Return true IFF issue is past smart contract expiration date
 and therefore cannot ever be claimed again
-<h3 id="dashboard.models.Bounty.permission_type">permission_type</h3></p>
+<h3 id="dashboard.models.Bounty.payout_date">payout_date</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.peg_to_usd">peg_to_usd</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.permission_type">permission_type</h3>
+
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.PERMISSION_TYPES">PERMISSION_TYPES</h3>
@@ -2994,6 +3079,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.resources">resources</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.snooze_warnings_for_days">snooze_warnings_for_days</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -3047,6 +3136,14 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.usd_pegged_value_in_token">usd_pegged_value_in_token</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.usd_pegged_value_in_token_now">usd_pegged_value_in_token_now</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.value_in_eth">value_in_eth</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -3064,6 +3161,10 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.value_true">value_true</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Bounty.value_true_usd">value_true_usd</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -5213,6 +5314,18 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.bounty_set">bounty_set</h3>
+
+<p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example::</p>
+<pre><code>class Pizza(Model):
+    toppings = ManyToManyField(Topping, related_name='pizzas')
+</code></pre>
+<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.bountyfulfillment_set">bountyfulfillment_set</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -5943,17 +6056,6 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.match_rankings">match_rankings</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="dashboard.models.Profile.matchPledges">matchPledges</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
 many-to-one relation.</p>
@@ -7961,6 +8063,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonEvent.discord_server">discord_server</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.HackathonEvent.display_showcase">display_showcase</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -8176,6 +8282,14 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.HackathonEvent.is_expired">is_expired</h3>
+
+<pre><code class="python">HackathonEvent.is_expired(self)
+</code></pre>
+
+<p>Check if Hackathon is active</p>
+<p>Returns:
+    boolean: Whether or not hackathon is expired</p>
 <h3 id="dashboard.models.HackathonEvent.get_absolute_url">get_absolute_url</h3>
 
 <pre><code class="python">HackathonEvent.get_absolute_url(self)
