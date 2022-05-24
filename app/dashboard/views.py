@@ -2072,7 +2072,7 @@ def bounty_details(request, ghuser=None, ghrepo=None, ghissue=None, stdbounties_
 
     if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
         return TemplateResponse(request, 'bounty/details.html', params)
-        
+
     params['PYPL_CLIENT_ID'] = settings.PYPL_CLIENT_ID
     return TemplateResponse(request, 'bounty/details2.html', params)
 
@@ -3104,7 +3104,6 @@ def verify_dpopp(request, handle):
                 'error': 'Bad signature',
                 'stamps': []
             })
-at: adds passport verifications to frontend
 
         # pull streamIds from ceramic
         stream_ids = get_stream_ids(did)
@@ -4814,7 +4813,7 @@ def change_bounty(request, bounty_id):
     result['value_true_usd'] = str(bounty.value_true_usd)
     result['owners'] = SimpleProfileSerializer(bounty.owners.all(), many=True, read_only=True).data
     result['bounty_reserved_for_user'] = SimpleProfileSerializer(bounty.bounty_reserved_for_user, read_only=True).data
-    
+
     del result['featuring_date']
 
     params = {
@@ -6402,14 +6401,14 @@ def create_bounty_v1(request):
     bounty.value_true_usd = request.POST.get("amount_usd", 0)
     bounty.peg_to_usd = request.POST.get("peg_to_usd", 0) == 'true'
     bounty.never_expires = request.POST.get("never_expires", 0) == 'true'
-    
+
     bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
 
     bounty.bounty_source = bounty_source
     bounty.acceptance_criteria = request.POST.get("acceptance_criteria", "")
     bounty.resources = request.POST.get("resources", "")
-    bounty.custom_issue_description = request.POST.get("custom_issue_description", "")    
-    
+    bounty.custom_issue_description = request.POST.get("custom_issue_description", "")
+
     contact_details = request.POST.get("contact_details", "")
     if contact_details:
         bounty.contact_details = json.loads(contact_details)
@@ -6434,7 +6433,7 @@ def create_bounty_v1(request):
         timezone.datetime.fromtimestamp(payout_date),
         timezone=UTC
     )
-    
+
 
     # bounty github data
     if bounty.github_url:
@@ -6808,7 +6807,7 @@ def payout_bounty_v1(request, fulfillment_id):
                 is_owner = handle == owner_handler.lower().lstrip('@')
                 if is_owner:
                     break
-        
+
         if not is_owner:
             response['message'] = 'error: payout is bounty funder operation'
             return JsonResponse(response)
