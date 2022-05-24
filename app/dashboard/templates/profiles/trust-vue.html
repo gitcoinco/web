@@ -57,11 +57,10 @@
 
             <div class="spacer-my-5">
               <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" :class="`btn btn-lg px-5 btn-${passportVerified ? 'dark' : 'primary'}`" @click="connectPassport">
-                <!-- <b-spinner small v-if="awaitingResponse" type="grow" class="ml-n4 position-absolute spinner-grow spinner-grow-sm"></b-spinner> -->
-                [[!passport ? "Connect Passport" : "Refresh Passport"]]
+                [[!passport && !loading ? "Connect Passport" : "Refresh Passport"]]
               </b-button>
               <div v-if="passport && !passportVerified" class="d-inline ml-4">
-                <i class="fas fa-shield px-1" style="color: transparent"></i><a class="link cursor-pointer" @click="verifyPassport">Verify Passport</a>
+                <i class="fas fa-shield px-1" style="color: transparent"></i><a class="link cursor-pointer" @click="savePassport">Verify Passport</a>
               </div>
               <div v-else-if="passport && passportVerified" class="d-inline ml-4">
                 <i class="fa fa-check px-1" style="color: #059669"></i><span style="color: #059669">Passport Verified!</span>
@@ -91,7 +90,6 @@
           </div>
         </div>
       </div>
-
     </active-trust-manager>
 
 

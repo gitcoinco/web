@@ -119,7 +119,9 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
-from .dpopp_reader import get_crypto_accounts, get_passport, get_stream_ids
+
+from .dpopp_reader import get_crypto_accounts, get_did, get_passport, get_stream_ids
+
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -2865,6 +2867,9 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
+        # force use of dpassport
+        context['use_dpassport'] = True
+
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
 
@@ -2873,81 +2878,174 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())
         context['show_round_banner'] = clr_rounds_metadata['show_round_banner']
 
-        # detail available services
-        services = [
-            {
-                'ref': 'POH',
-                'name': 'Proof of Humanity',
-                'icon_path': static('v2/images/project_logos/poh-min.svg'),
-                'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
-                'match_percent': 50,
-                'is_verified': profile.is_poh_verified # needs to be replace with dpopp_is_*_verified
-            }, {
-                'ref': 'POAP',
-                'name': 'POAP',
-                'icon_path': static('v2/images/project_logos/poap.svg'),
-                'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
-                'match_percent': 25,
-                'is_verified': profile.is_poap_verified # needs to be replace with dpopp_is_*_verified
-            }, {
-                'ref': 'ENS',
-                'name': 'ENS',
-                'icon_path': static('v2/images/project_logos/ens.svg'),
-                'desc': 'Get verified through the Ethereum Naming Service.',
-                'match_percent': 25,
-                'is_verified': profile.is_ens_verified # needs to be replace with dpopp_is_*_verified
-            }, {
-                'ref': 'Google',
-                'name': 'Google',
-                'icon_path': static('v2/images/project_logos/google.png'),
-                'desc': 'Get verified by connecting to your Google account.',
-                'match_percent': 15,
-                'is_verified': profile.is_google_verified # needs to be replace with dpopp_is_*_verified
-            }, {
-                'ref': 'Twitter',
-                'name': 'Twitter',
-                'icon_style': {
-                    'color': 'rgb(0, 172, 237)'
-                },
-                'icon_class': 'fab fa-twitter fa-3x',
-                'desc': 'Get verified by connecting your Twitter account.',
-                'match_percent': 15,
-                'is_verified': profile.is_twitter_verified # needs to be replace with dpopp_is_*_verified
-            }, {
-                'ref': 'Facebook',
-                'name': 'Facebook',
-                'icon_style': {
-                    'color': 'rgb(24, 119, 242)'
-                },
-                'icon_class': 'fab fa-facebook fa-3x',
-                'desc': 'Get verified by connecting your Facebook account.',
-                'match_percent': 15,
-                'is_verified': profile.is_facebook_verified # needs to be replace with dpopp_is_*_verified
-            },
-            # {
-            #     'ref': 'BrightID',
-            #     'name': 'BrightID',
-            #     'icon_path': static('v2/images/project_logos/brightid.png'),
-            #     'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
-            #     'match_percent': 50,
-            #     'is_verified': profile.is_brightid_verified
-            # },
-            # {
-            #     'ref': 'Idena',
-            #     'name': 'Idena',
-            #     'icon_path': static('v2/images/project_logos/idena.svg'),
-            #     'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
-            #     'match_percent': 50,
-            #     'is_verified': profile.is_idena_verified
-            # },
-        ]
+        # dPassport or cTrust
+        if context['use_dpassport']:
+            # truster IAM issuer
+            trusted_issuer = 'did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw'
+
+            # detail available services
+            services = [
+                {
+                    'ref': f'{trusted_issuer}#Poh',
+                    'match_percent': 50,
+                    'is_verified': profile.is_poh_verified # @TODO needs to be replace with dpopp_is_*_verified
+                }, {
+                    'ref': f'{trusted_issuer}#POAP',
+                    'match_percent': 25,
+                    'is_verified': profile.is_poap_verified # @TODO needs to be replace with dpopp_is_*_verified
+                }, {
+                    'ref': f'{trusted_issuer}#Ens',
+                    'match_percent': 25,
+                    'is_verified': profile.is_ens_verified # @TODO needs to be replace with dpopp_is_*_verified
+                }, {
+                    'ref': f'{trusted_issuer}#Google',
+                    'match_percent': 15,
+                    'is_verified': profile.is_google_verified # @TODO needs to be replace with dpopp_is_*_verified
+                }, {
+                    'ref': f'{trusted_issuer}#Twitter',
+                    'match_percent': 15,
+                    'is_verified': profile.is_twitter_verified # @TODO needs to be replace with dpopp_is_*_verified
+                }, {
+                    'ref': f'{trusted_issuer}#Facebook',
+                    'match_percent': 15,
+                    'is_verified': profile.is_facebook_verified # @TODO needs to be replace with dpopp_is_*_verified
+                }
+            ]
+
+            # use session challenge or generate a new one
+            context['challenge'] = request.session.get('dpopp_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+            # store into session
+            request.session['dpopp_challenge'] = context['challenge']
+        else:
+            idena = {}
+            idena['is_connected'] = profile.is_idena_connected
+            # always pass in the urls so that we can easily switch state client side
+            idena['login_url'] = idena_callback_url(request, profile)
+            idena['logout_url'] = reverse('logout_idena', args=[profile.handle])
+            idena['check_status_url'] = reverse('recheck_idena_status', args=[profile.handle])
+            # construct verified state
+            if profile.is_idena_connected:
+                idena['address'] = profile.idena_address
+                idena['status'] = profile.idena_status
+                idena['is_verified'] = profile.is_idena_verified
+                if not idena['is_verified']:
+                    idena['next_validation'] = str(localtime(next_validation_time()))
+
+            # states:
+            #0. not_connected - start state, user has no brightid_uuid
+            #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
+            #2. not_verified - connected, but not verified
+            #3. verified - connected, and verified
+            brightid = {}
+            brightid['status'] = 'not_connected'
+            brightid['uuid'] = profile.brightid_uuid
+            if profile.brightid_uuid:
+                brightid['status'] = 'unknown'
+            if profile.is_brightid_verified:
+                brightid['status'] = 'verified'
+            if request.GET.get('pull_bright_id_status'):
+                brightid['status'] = get_brightid_status(profile.brightid_uuid)
+
+            try:
+                brightid['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+            except JSONStore.DoesNotExist:
+                brightid['upcoming_calls'] = []
+
+            # detail available services
+            services = [
+                {
+                    'ref': 'poh',
+                    'name': 'Proof of Humanity',
+                    'icon_path': static('v2/images/project_logos/poh-min.svg'),
+                    'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
+                    'match_percent': 50,
+                    'is_verified': profile.is_poh_verified
+                }, {
+                    'ref': 'brightid',
+                    'name': 'BrightID',
+                    'icon_path': static('v2/images/project_logos/brightid.png'),
+                    'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
+                    'match_percent': 50,
+                    'is_verified': brightid['status'] == 'verified',
+                    'status': "Awaiting Verification" if brightid['status'] == 'not_verified' else None,
+                    '_status': brightid['status'],
+                    'uuid': str(brightid['uuid']),
+                    'upcoming_calls': brightid['upcoming_calls']
+                }, {
+                    'ref': 'idena',
+                    'name': 'Idena',
+                    'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('v2/images/project_logos/idena.svg'),
+                    'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
+                    'match_percent': 50,
+                    'is_connected': idena['is_connected'],
+                    'is_verified': idena['is_connected'] and idena['is_verified'],
+                    'status': idena['status'] if idena['is_connected'] and not idena['is_verified'] else None,
+                    '_status': idena['status'] if idena['is_connected'] else None,
+                    'address': idena['address'] if idena['is_connected'] else None,
+                    'login_url': idena['login_url'],
+                    'logout_url': idena['logout_url'],
+                    'check_status_url': idena['check_status_url'],
+                    'next_validation': idena['next_validation'] if idena['is_connected'] and not idena['is_verified'] else None,
+                }, {
+                    'ref': 'poap',
+                    'name': 'POAP',
+                    'icon_path': static('v2/images/project_logos/poap.svg'),
+                    'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
+                    'match_percent': 25,
+                    'is_verified': profile.is_poap_verified
+                }, {
+                    'ref': 'ens',
+                    'name': 'ENS',
+                    'icon_path': static('v2/images/project_logos/ens.svg'),
+                    'desc': 'Get verified through the Ethereum Naming Service.',
+                    'match_percent': 25,
+                    'is_verified': profile.is_ens_verified
+                }, {
+                    'ref': 'sms',
+                    'name': 'SMS',
+                    'icon_class': 'fa fa-mobile-alt fa-3x',
+                    'desc': 'Get verified through text from your phone.',
+                    'match_percent': 15,
+                    'is_verified': profile.sms_verification
+                }, {
+                    'ref': 'google',
+                    'name': 'Google',
+                    'icon_path': static('v2/images/project_logos/google.png'),
+                    'desc': 'Get verified by connecting to your Google account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_google_verified
+                }, {
+                    'ref': 'twitter',
+                    'name': 'Twitter',
+                    'icon_style': {
+                        'color': 'rgb(0, 172, 237)'
+                    },
+                    'icon_class': 'fab fa-twitter fa-3x',
+                    'desc': 'Get verified by connecting your Twitter account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_twitter_verified,
+                    'verify_tweet_text': verify_text_for_tweet(profile.handle)
+                }, {
+                    'ref': 'facebook',
+                    'name': 'Facebook',
+                    'icon_style': {
+                        'color': 'rgb(24, 119, 242)'
+                    },
+                    'icon_class': 'fab fa-facebook fa-3x',
+                    'desc': 'Get verified by connecting your Facebook account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_facebook_verified
+                }
+            ]
+
+            # Tentatively Coming Soon
+            context['coming_soon'] = json.dumps(['Duniter'])
+            # Tentatively On the Roadmap
+            context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
 
         # pass as JSON in the context
         context['services'] = json.dumps(services)
-        context['challenge'] = request.session.get('dpopp_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
 
-        # store into session
-        request.session['dpopp_challenge'] = context['challenge']
     else:
         raise Http404
     return context
@@ -2979,7 +3077,7 @@ def verify_dpopp(request, handle):
         # Verifications
         # [X] did -> must be connected to 1 accounts (1 did -> 1 profile)
         # Stamp hash -> must be used by 1 acount
-        # [X] address in the stamp -> make sure it belongs to one of the accounts ... => can't find the address ... I guess I'll need to recalculate the hash / merkle proof 
+        # [X] address in the stamp -> make sure it belongs to one of the accounts ... => can't find the address ... I guess I'll need to recalculate the hash / merkle proof
         #           => l
 
 
@@ -2997,6 +3095,7 @@ def verify_dpopp(request, handle):
                 'error': 'Bad signature',
                 'stamps': []
             })
+at: adds passport verifications to frontend
 
         # pull streamIds from ceramic
         stream_ids = get_stream_ids(did)
@@ -3069,7 +3168,7 @@ def verify_dpopp(request, handle):
             logger.error("TODO: verifying credential: %s", pformat(stamp["credential"]))
             logger.error("TODO: verifying credentialSubject: %s", pformat(stamp["credential"]["credentialSubject"]))
             logger.error("TODO: verifying id: %s", pformat(stamp["credential"]["credentialSubject"]["id"]))
-            
+
             # get the user crential ID, this will have the form: "did:ethr:0x...#POAP"
             subject_id = stamp["credential"]["credentialSubject"]["id"]
 
@@ -3106,7 +3205,7 @@ def verify_dpopp(request, handle):
 
                     stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings?
                     stamps_to_return[stamp['provider']] = stamp
-                    
+
                     matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
 
         trust_score = 0

@@ -1,5 +1,6 @@
 # libs for processing the deterministic stream location
 import hashlib
+import json
 
 import dag_cbor
 # Making GET requests against the ceramic_url to read streams
@@ -9,18 +10,37 @@ import requests
 from .base36 import base36
 
 # Location of a ceramic node that we can read state from
-ceramic_url = "https://ceramic-clay.3boxlabs.com"
+ceramic_url = "https://ceramic.staging.dpopp.gitcoin.co"
+
 # Ceramic definition id for CryptoAccounts on the ceramic model
 ceramic_crypto_accounts_stream_id = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
 # Ceramic definition id for dPoPP passport
 ceramic_passport_stream_id = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
 
-def clean_address(address):
+def get_did(address, network="1"):
+    # default to no did found
+    did = False
+
+    # attempt to discover the did associated to the account via a caip10 link
+    try:
+        # grab did that this address controls (defaults to "on mainnet")
+        data = {"type":1,"genesis":{"header":{"controllers":[f"{address.lower()}@eip155:{network}"],"family":f"caip10-eip155:{network}"}},"opts":{"anchor":False,"publish":True,"sync":0,"pin":True}}
+        response = requests.post(url=f"{ceramic_url}/api/v0/streams", json=data)
+        did = response.json()['state']['content']
+    except requests.exceptions.RequestException:
+        pass
+    except:
+        pass
+
+    # returns the did associated with the address on the given network
+    return did
+
+def clean_address(address, network="1"):
     # strip addresses suffix like @eip155:1, @eip155:4, @eip155:137
     return address.split("@eip155")[0]
 
 def get_stream_ids(did, ids=[ceramic_crypto_accounts_stream_id, ceramic_passport_stream_id]):
-    # encode the input object with cborg (Concise Binary Object Representation)
+    # encode the input genesis with cborg (Concise Binary Object Representation)
     input_bytes = dag_cbor.encode({"header":{"controllers":[did],"family":"IDX"}})
     # hash the input_bytes and pad with STREAMID_CODEC and type (as bytes)
     stream_id_digest = [206, 1, 0, 1, 113, 18, 32] + list(bytearray(hashlib.sha256(input_bytes).digest()))
@@ -34,11 +54,15 @@ def get_stream_ids(did, ids=[ceramic_crypto_accounts_stream_id, ceramic_passport
     try:
         # get the stream content for the given did according to its genesis stream_id
         stream_response = requests.get(f"{ceramic_url}/api/v0/streams/{stream_id}")
-        content = stream_response.json()['state']['content']
+        # get the state and default to empty content
+        state = stream_response.json().get('state', { "content": {}})
+        # check for a next record else pull from content
+        content = state['next']['content'] if state.get('next') else state['content']
+
         # return streams for the given ids
         for linked_stream_id in ids:
             # pull CryptoAccounts streamID from expected location (kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f)
-            streams[linked_stream_id] = content[linked_stream_id].replace("ceramic://", "") if content[linked_stream_id] else False
+            streams[linked_stream_id] = content[linked_stream_id].replace("ceramic://", "") if content.get(linked_stream_id) else False
     except requests.exceptions.RequestException:
         pass
     except:
@@ -48,7 +72,7 @@ def get_stream_ids(did, ids=[ceramic_crypto_accounts_stream_id, ceramic_passport
     return streams
 
 def get_crypto_accounts(did="", stream_ids=[]):
-    # use of get new streamIds
+    # get streamIds if non are provided
     stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [ceramic_crypto_accounts_stream_id])
 
     # create an empty list of accounts
@@ -61,7 +85,14 @@ def get_crypto_accounts(did="", stream_ids=[]):
 
         # get the stream content from given streamID
         stream_response = requests.get(f"{ceramic_url}/api/v0/streams/{stream_id}")
-        crypto_accounts = list(map(clean_address, stream_response.json()['state']['content'].keys()))
+        # get the state and default to empty content
+        state = stream_response.json().get('state', {"content": {}})
+
+        # check for a next record else pull from content
+        content = state['next']['content'] if state.get('next') else state['content']
+
+        # extract all accounts
+        crypto_accounts = list(map(clean_address, content.keys()))
     except requests.exceptions.RequestException:
         pass
     except:
@@ -71,7 +102,7 @@ def get_crypto_accounts(did="", stream_ids=[]):
     return crypto_accounts
 
 def get_passport(did="", stream_ids=[]):
-    # use of get new streamIds
+    # get streamIds if non are provided
     stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [ceramic_passport_stream_id])
 
     # attempt to pull content
@@ -83,8 +114,8 @@ def get_passport(did="", stream_ids=[]):
 def get_stamps(passport):
     # hydrate stamps contained within the passport
     if passport and passport['stamps']:
-        for stamp in passport['stamps']:
-            stamp = get_stamp_stream(stamp)
+        for (index, stamp) in enumerate(passport['stamps']):
+            passport['stamps'][index] = get_stamp_stream(stamp)
 
     return passport
 
@@ -99,8 +130,11 @@ def get_passport_stream(stream_ids=[]):
         stream_id = stream_ids[ceramic_passport_stream_id]
         # get the stream content from given streamID
         stream_response = requests.get(f"{ceramic_url}/api/v0/streams/{stream_id}")
-        # passport contained within
-        passport = stream_response.json()['state']['content']
+        # get back the state object
+        state = stream_response.json().get('state', {"content": {}})
+
+        # check for a next record else pull from content
+        passport = state['next']['content'] if state.get('next') else state['content']
     except requests.exceptions.RequestException:
         pass
     except:
@@ -112,7 +146,10 @@ def get_stamp_stream(stamp):
     try:
         stamp['credential'] = stamp['credential'].replace("ceramic://", "")
         stamp_response = requests.get(f"{ceramic_url}/api/v0/streams/{stamp['credential']}")
-        stamp['credential'] = stamp_response.json()['state']['content']
+        # get back the state object
+        state = stamp_response.json().get('state', {"content": {}})
+        # check for a next record else pull from content
+        stamp['credential'] = state['next']['content'] if state.get('next') else state['content']
     except requests.exceptions.RequestException:
         pass
     except:

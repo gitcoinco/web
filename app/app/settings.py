@@ -25,6 +25,7 @@ import warnings
 from django.utils.translation import gettext_noop
 
 import environ
+import mimetypes
 import raven
 import sentry_sdk
 from boto3.session import Session
@@ -76,6 +77,10 @@ TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
 
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
+
+# Set .wasm mime type for dev env
+if DEBUG:
+    mimetypes.add_type("application/wasm", ".wasm", True)
 
 # Application definition
 INSTALLED_APPS = [

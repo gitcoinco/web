@@ -134,7 +134,11 @@
           {% elif tab == 'hackathons' %}
             {% include 'profiles/tab_hackathons.html' %}
           {% elif tab == 'trust' %}
-            {% include 'profiles/trust-vue.html' %}
+            {% if use_dpassport %}
+              {% include 'profiles/trust-vue.html' %}
+            {% else %}
+              {% include 'profiles/trust-c-vue.html' %}
+            {% endif %}
           {% endif %}
         </div>
       </div>
