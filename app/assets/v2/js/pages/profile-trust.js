@@ -22,7 +22,7 @@ Vue.component('active-trust-manager', {
   data() {
     return {
       reader: new PassportReader('https://ceramic.staging.dpopp.gitcoin.co', 1),
-      issuer: "did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw",
+      issuer: 'did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw',
       DIDKit: undefined,
       did: undefined,
       accounts: undefined,
@@ -105,8 +105,12 @@ Vue.component('active-trust-manager', {
       this.reset(true);
 
       console.log('TODO trust-bonus selectedAccount', selectedAccount);
+
       // get the selectedAccounts ceramic DID
-      if (this.did = await this.reader.getDID(selectedAccount)) {
+      this.did = await this.reader.getDID(selectedAccount);
+
+      // if loaded then the user has a ceramicAccount
+      if (this.did) {
         // grab all the streams at once to reduce the required number of reqs
         const genesis = await this.reader._tulons.getGenesisHash(this.did);
         const streams = await this.reader._tulons.getGenesisStreams(genesis);
@@ -129,7 +133,7 @@ Vue.component('active-trust-manager', {
       // check for a passport and then its validity
       if (this.passport) {
         // get a boolean for if the given passport would verify if presented to the back-end for verification
-        return (await Promise.all(this.passport.stamps.map(async (stamp) => {
+        return (await Promise.all(this.passport.stamps.map(async(stamp) => {
           // set the service against provider and issuer
           const serviceDictId = `${this.issuer}#${stamp.provider}`;
           // validate the contents of the stamp collection
@@ -153,12 +157,13 @@ Vue.component('active-trust-manager', {
               JSON.stringify(stamp.credential),
               `{"proofPurpose":"${stamp.credential.proof.proofPurpose}"}`
             ));
+
             // if no errors then this is a valid VerifiableCredential issued by the known issuer and unique to our store
-            this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0
+            this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0;
           }
 
           // collect array of true/false to check validity of every issued stamp (if stamp isn't recognised then it should be ignored (always true))
-          return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified
+          return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
         }))).reduce((isVerified, verified) => !isVerified ? false : verified, true);
       }
 
@@ -215,7 +220,7 @@ Vue.component('active-trust-manager', {
 });
 
 if (document.getElementById('gc-trust-manager-app')) {
-  new Vue({
+  const TrustManager = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-trust-manager-app',
     data: { }
