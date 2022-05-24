@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('dashboard', '0205_passportstampregistry'),
+        ('dashboard', '0206_passportstampregistry'),
     ]
 
     operations = [
