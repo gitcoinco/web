@@ -360,6 +360,7 @@ const www = new aws.route53.Record("www", {
     }]
 });
 
+
 let environment = [
     {
         name: "ENV",
@@ -413,9 +414,8 @@ let environment = [
     },
     {
         name: "BASE_URL",
-        value: "http://127.0.0.1:8000/"
+        value: frontendURL,
     },
-
     ///////////////////////////////////////////////////////////////////////////////
     // DOCKER PROVISIONING PARAMS
     ///////////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,17 @@
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
   {% bundle css file bounty_change %}
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.bubble.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/quill.snow.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/lib/daterangepicker.scss" %} />
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/submit_bounty.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/progress_bar.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/form_wrapper.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/tag.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/progress_bar.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/grants/form_wrapper.scss" %} />
+    <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/bounty.scss" %} />
+  
   {% endbundle %}
 </head>
 <body class="interior submit_bounty g-font-muli">
@@ -31,93 +41,112 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    <div class="container-fluid submit_bounty_content">
-      <div class="row">
-        <div class="col-sm-12 col-lg-12">
-          <div id="form_container">
-            <div class="row justify-content-center">
-              <div id="primary_form" class="col-xl-8 col-sm-12 my-5">
-                <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
-                  <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
-
-                  <div id="details-section" class="pt-2">
-                    {% include 'shared/issue_details.html' %}
-                  </div>
-
-                  <div class="mt-4">
-                    {% include 'shared/bounty_details.html' %}
-                  </div>
-
-                  <div class="mt-4">
-                    {% include 'shared/bounty_categories.html' %}
-                  </div>
-
-                  <div class="mt-4">
-                    {% include 'shared/bounty_keywords.html' %}
-                  </div>
-
-                  <div class="mt-4">
-                    {% include 'shared/reserved.html' %}
-                  </div>
-
-                  {% if is_bounties_network %}
-                    <div class="m-4 pt-4">
-                      {% include 'shared/featured.html' %}
-                    </div>
-                  {% endif %}
-
-                  {% if not is_bounties_network %}
-                    <div class="mt-4" id="pricing-section">
-                    <label class="font-caption letter-spacing text-black-60 text-uppercase mb-0">{% trans "Pricing" %}</label>
-                      <div class="row mb-2">
-                        <div class="col-12 col-md-3">
-                          <label class="form__label" for="denomination">{% trans "Denomination" %}</label>
-                          <input name="denomination" class="border-0 form__input font-caption" value="{{ token_name }}" disabled/>
-                        </div>
-                        <div class="col-12 col-md-3">
-                          <label class="form__label" for="amount">{% trans "Amount" %}</label>
-                          <input name='amount' id='amount'  class="form__input" type="number" min="{{ amount }}" value="{{ amount }}" min="0.001"/>
-                        </div>
-                        <div class="col-12 col-md-3" id="usd-amount-wrapper">
-                          <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
-                          <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
-                        </div>
-                        <div class="col-12 col-md-3">
-                        <label class="form__label" for="amount">{% trans "Est. Hours of Work" %}</label>
-                          <input name='hours' id='hours' class="form__input" type="number" step="1" value="{{ estimated_hours }}"
-                          min="1" required="required"/>
-                        </div>
-                      </div>
-
-                      <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text"></small>
-                    </div>
-                  {% endif %}
-
-                  <div class="row justify-content-center p-3">
-                    <button class="btn btn-primary btn-lg js-submit mb-3 btn-lg-padding" type="submit">{% trans 'Update Issue Details' %}</button>
-                  </div>
-
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="container-fluid pb-5 pt-5" id="gc-hackathon-new-bounty" v-cloak>
+      <div class="col-lg-9 mx-auto mb-5">
+        {% include './bounty_progress_bar.html' %}
       </div>
+      <div>
+        <p class="text-center text-grey-400">Need help? Check out our <a href="https://support.gitcoin.co/gitcoin-bounties/bounty-guidelines">Funder
+            Guide</a></p>
+      </div>
+
+      <form action="" @submit="checkForm" :class="`${Object.keys(errors).length ? 'invalid' : ''}`">
+        <div class="container mt-3 mb-3 bg-white position-relative rounded">
+ 
+          {% include './new_bounty_step_1.html' %}
+          {% include './new_bounty_step_2.html' %}
+          {% include './new_bounty_step_3.html' %}
+          {% include './new_bounty_step_4.html' %}
+          {% include './new_bounty_step_5.html' %}
+
+        </div>
+      </form>
     </div>
+
+    <script type="text/x-template" id="date-range-template">
+      <div>
+        <input class="form__input" type="text" v-model="pickDate" placeholder="04/01/2022" :disabled="disabled"/>
+      </div>
+    </script>
+    <script type="text/x-template" id="quill-editor-ext">
+      <quill-editor ref="quillEditor" id="new-bounty-custom-editor" @change="onUpdate($event)" :options="options"></quill-editor>
+    </script>
+
     {% include 'shared/footer.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/current_profile.html' %}
+    {% include 'grants/components/form_wrapper.html' %}
   </div>
   <script>
     document.pk = {{ pk }};
     document.result = {{ result|safe }};
     const token_address = '{{ token_address }}';
     const bounty_network = '{{ network }}';
+    document.subscriptions = [
+      {% for subscription in subscriptions.all %}
+        {% if not forloop.first %}, {% endif %}
+        {
+          tribe: "{{ subscription.tribe }}",
+          plan_type: "{{ subscription.plan_type }}",
+          expires_on: new Date("{{ subscription.expires_on.isoformat }}"),
+        }
+      {% endfor %}
+    ];
+
+    {% if hackathon %}
+      document.isHackathonBounty = true;
+      document.hackathon = {
+        slug: '{{hackathon.slug | safe}}',
+        name: '{{hackathon.name}}',
+        endDate: '{{hackathon.end_date|date:"U"}}'
+      };
+      document.sponsors= [
+        {% for sponsor in hackathon.sponsor_profiles.all %}
+            {% if not forloop.first %},{% endif %}
+            {
+              handle: "{{ sponsor }}",
+              name: "{{ sponsor.data.name }}",
+              avatar_url: "{{ sponsor.avatar_url }}",
+            }
+        {% endfor %}
+      ];
+    {% else %}
+      document.isHackathonBounty = false;
+      document.hackathon = null;
+      document.sponsors = [ ];
+    {% endif %}
+
+    function beforeUnloadListener (event) {
+        event.preventDefault();
+        return event.returnValue = "Are you sure you want to exit?";
+      };
+
+    addEventListener("beforeunload", beforeUnloadListener, {capture: true});
+    
+    $('body').bootstrapTooltip({
+      selector: '[data-toggle="tooltip"]'
+    });
+
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    });
+
+    const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
   </script>
+  <script src='https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/grants/form_wrapper.js" %}"></script>
+  <script src="{% static "v2/js/pages/bounty_progress_bar.js" %}"></script>
   <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
+
+  {% bundle merge_js file change_bounty_libs %}
+  <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>
+  <script src="daterangepicker.js" base-dir="/node_modules/daterangepicker/"></script>
+  {% endbundle %}
+
 </body>
 </html>

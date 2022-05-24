@@ -79,7 +79,7 @@ class DashboardModelsTest(TestCase):
             profile=fulfiller_profile,
         )
         assert str(bounty) == f'{bounty.pk}: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
-        assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
+        assert bounty.url == f'{settings.BASE_URL}issue/{bounty.id}'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
         assert bounty.org_name == 'gitcoinco'
@@ -154,7 +154,7 @@ class DashboardModelsTest(TestCase):
             github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
             raw_data={}
         )
-        expected_url = '/funding/details?url=https://github.com/gitcoinco/web/issues/0xdeadbeef'
+        expected_url = f'/issue/{bounty.id}'
         assert bounty.get_relative_url() == expected_url
 
     @staticmethod
@@ -540,7 +540,8 @@ class DashboardModelsTest(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        assert bounty.canonical_url == settings.BASE_URL + 'issue/gitcoinco/web/12'
+        bounty.save()
+        assert bounty.canonical_url == settings.BASE_URL + f'issue/{bounty.id}'
 
     @staticmethod
     def test_bounty_clean_gh_url_on_save():

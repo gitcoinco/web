@@ -1,0 +1,80 @@
+<form-wrapper v-if="step === 1" :heading="'Bounty Type'" :current-step="step"
+:total-steps="currentSteps.length" @update-navigation="updateNav" :disable-confirm="!isStep1Valid">
+
+<!-- Bounty Type -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Type</label>
+    <p class="text-muted mb-0">Selecting the right bounty type will help users discover your bounty</p>
+    <div class="btn-group-toggle d-flex flex-row flex-wrap pt-1">
+      <label v-for="(bountyType, index) in bountyTypes"  v-bind:class="'btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 py-2 px-0 text-center bounty-type-label ' + ((form.bounty_type === bountyType)?'active':'')">
+        <input type="radio" name="bountyType" :value="bountyType" v-model="form.bounty_type">
+        <p class="m-0 text-center text-grey-500 font-subheader">[[ bountyType ]]</p>
+      </label>
+    </div>
+    <div class="text-danger" v-if="step1Errors.bounty_type && !form.bounty_type">
+      [[step1Errors.bounty_type]]
+    </div>
+  </div>
+  
+  <!-- Other bounty type -->
+  <div v-if="form.bounty_type === 'Other'" class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Type (Other)</label>
+    <input class="form-control" id='new-bounty-type-other' name='organisationUrl' v-model="form.bounty_type_other" type="text" placeholder="Describe the type of bounty" :required="step1Submitted && form.bounty_type === 'Other' && !form.bounty_type_other" />
+    <div class="text-danger" v-if="step1Errors.bounty_type_other && !form.bounty_type_other">
+      [[step1Errors.bounty_type_other]]
+    </div>
+  </div>
+
+  <!-- Tags -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Tags</label>
+    <p class="text-muted mb-0">Tags are used for your bounty’s discoverability. You can type to add new tags too.</p>
+    <v-select id="bounty_tags" :options="tagOptions" :taggable="true" :multiple="true" placeholder="Select tag(s) that best describe your bounty" v-model="form.keywords">
+      <template #search="{attributes, events}">
+        <input
+          class="vs__search"
+          :required="step1Submitted && form.keywords.length === 0"
+          v-bind="attributes"
+          v-on="events"
+        />
+      </template>
+    </v-select>
+    <div class="text-danger" v-if="step1Errors.keywords && !form.keywords.length">
+      [[step1Errors.keywords]]
+    </div>
+  </div>
+  <!-- Experience Level -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Experience Level</label>
+    <v-select id="experience_level" :options="['Beginner','Intermediate','Advanced']" placeholder="Experience Level" v-model="form.experience_level">
+      <template #search="{attributes, events}">
+        <input
+          class="vs__search"
+          :required="step1Submitted && !form.experience_level"
+          v-bind="attributes"
+          v-on="events"
+        />
+      </template>
+    </v-select>
+    <div class="text-danger" v-if="step1Errors.experience_level && !form.experience_level">
+      [[step1Errors.experience_level]]
+    </div>
+  </div>
+  <!-- Time Commitment -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing" for="">Time Commitment</label>
+    <v-select id="project_length" :options="['Hours','Days','Weeks', 'Months']" placeholder="Time Commitment" v-model="form.project_length">
+      <template #search="{attributes, events}">
+        <input
+          class="vs__search"
+          :required="step1Submitted && !form.project_length"
+          v-bind="attributes"
+          v-on="events"
+        />
+      </template>
+    </v-select>
+    <div class="text-danger" v-if="step1Errors.project_length && !form.project_length">
+      [[step1Errors.project_length]]
+    </div>
+  </div>
+</form-wrapper>

@@ -452,6 +452,9 @@ urlpatterns = [
     ),
 
     # View Bounty
+    # TODO: The 2 URLs below issue_details_new2 and issue_details_new3 will not be used any more (we should not create such 
+    # links any more), and can be removed in the future. We are keeping these for now to avoid breaking the 
+    # existing links that users might have saved already.
     url(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',
         dashboard.views.bounty_details,
@@ -463,6 +466,7 @@ urlpatterns = [
         name='issue_details_new2'
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    re_path(r'^issue/(?P<bounty_id>\d+)', dashboard.views.bounty_details, name='issue_details_new4'),
     re_path(r'^issue/(?P<invitecode>.*)', dashboard.views.bounty_invite_url, name='unique_bounty_invite'),
 
     # Tips
@@ -522,6 +526,7 @@ urlpatterns = [
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
+    re_path(r'^sync/validate_org_url/?', dashboard.helpers.validate_org_url, name='helpers_validate_org_url'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),

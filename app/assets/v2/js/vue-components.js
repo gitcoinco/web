@@ -787,25 +787,42 @@ Vue.component('suggested-profile', {
 
 Vue.component('date-range-picker', {
   template: '#date-range-template',
+  // date is expected to be a momentjs object
   props: [ 'date', 'disabled' ],
 
   data: function() {
     return {
-      newDate: this.date
+      newDate: this.date.format('MM/DD/YYYY')
     };
   },
   computed: {
-    pickDate() {
-      return this.newDate;
+    pickDate: {
+      // getter
+      get() {
+        return this.newDate;
+      },
+      // setter
+      set(newValue) {
+        let vm = this;
+        let mDate = moment(newValue);
+
+        vm.newDate = newValue;
+        vm.$emit('apply-daterangepicker', mDate);
+      }
+    }
+  },
+  methods: {
+    $datepicker: function() {
+      return window.$(this.$el).find('input');
     }
   },
   mounted: function() {
     let vm = this;
 
     this.$nextTick(function() {
-      window.$(this.$el).daterangepicker({
+      this.$datepicker().daterangepicker({
         singleDatePicker: true,
-        startDate: moment().add(1, 'month'),
+        startDate: vm.newDate,
         alwaysShowCalendars: false,
         ranges: {
           '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
