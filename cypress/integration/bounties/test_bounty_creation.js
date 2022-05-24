@@ -488,10 +488,8 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
         }
       });
 
-      cy.get('#experience_level').find('.vs__search').click();
-      cy.contains('Beginner').click();
-      cy.get('#project_length').find('.vs__search').click();
-      cy.contains('Hours').click();
+      cy.get('#experience_level').find('.vs__search').click().type('Beginner{enter}');
+      cy.get('#project_length').find('.vs__search').click().type('Hours{enter}');
 
       cy.contains('Next').click();
 
@@ -594,10 +592,8 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
         }
       });
 
-      cy.get('#experience_level').find('.vs__search').click();
-      cy.contains('Beginner').click();
-      cy.get('#project_length').find('.vs__search').click();
-      cy.contains('Hours').click();
+      cy.get('#experience_level').find('.vs__search').click().type('Beginner{enter}');
+      cy.get('#project_length').find('.vs__search').click().type('Hours{enter}');
 
       cy.contains('Next').click();
 
@@ -605,10 +601,10 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
       cy.contains('Create Custom Bounty').click();
 
       cy.get('#new-bounty-custom-title').type('My Custom Bounty');
-      cy.get('#new-bounty-custom-editor').type('My custom bounty long long long description');
+      cy.get('#new-bounty-custom-editor-ext').type('My custom bounty long long long description');
 
-      cy.get('#new-bounty-acceptace-criteria').type('Custom bounty acceptance criteria');
-      cy.get('#new-bounty-resources').type('Custom bounty resource');
+      cy.get('#new-bounty-acceptace-criteria-editor-ext').type('Custom bounty acceptance criteria');
+      cy.get('#new-bounty-resources-editor-ext').type('Custom bounty resource');
       cy.get('#new-bounty-organisation-url').type('https://github.com/gitcoinco/');
 
       cy.get('.new-bounty-contact-details-form-0').find('.new-bounty-contact-type').find('.vs__search').click().type('Discord{enter}');
@@ -634,7 +630,7 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
     /*
     * Screen 4
     */
-    it('Should validated screen 4 ', () => {
+    it.only('Should validated screen 4 ', () => {
       cy.visit('bounty/new');
       cy.wait(1000);
 
@@ -652,10 +648,8 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
         }
       });
 
-      cy.get('#experience_level').find('.vs__search').click();
-      cy.contains('Beginner').click();
-      cy.get('#project_length').find('.vs__search').click();
-      cy.contains('Hours').click();
+      cy.get('#experience_level').find('.vs__search').click().type('Beginner{enter}');
+      cy.get('#project_length').find('.vs__search').click().type('Hours{enter}');
 
       cy.contains('Next').click();
 
@@ -663,10 +657,10 @@ describe('Creating a new bounty', { tags: ['bounties'] }, () => {
       cy.contains('Create Custom Bounty').click();
 
       cy.get('#new-bounty-custom-title').type('My Custom Bounty');
-      cy.get('#new-bounty-custom-editor').type('My custom bounty long long long description');
+      cy.get('#new-bounty-custom-editor-ext').type('My custom bounty long long long description');
 
-      cy.get('#new-bounty-acceptace-criteria').type('Custom bounty acceptance criteria');
-      cy.get('#new-bounty-resources').type('Custom bounty resource');
+      cy.get('#new-bounty-acceptace-criteria-editor-ext').type('Custom bounty acceptance criteria');
+      cy.get('#new-bounty-resources-editor-ext').type('Custom bounty resource');
       cy.get('#new-bounty-organisation-url').type('https://github.com/gitcoinco/');
 
       cy.get('.new-bounty-contact-details-form-0').find('.new-bounty-contact-type').find('.vs__search').click().type('Discord{enter}');

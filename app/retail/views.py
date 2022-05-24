@@ -107,6 +107,7 @@ def index(request):
 
         if len(slides) == 0:
             landingBanner = {
+                'default': True,
                 'slides': [
                     {
                         'img': static('v2/images/home/Flying_ppl_optimized.svg'),
@@ -120,6 +121,7 @@ def index(request):
 
     except:
         landingBanner = {
+            'default': True,
             'slides': [
                 {
                     'img': static('v2/images/home/Flying_ppl_optimized.svg'),

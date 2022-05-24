@@ -163,23 +163,40 @@
       </div>
     </header>
 
-
-
-    {% else %}
-    <header class="grad">
-      <div class="container build-slide">
-        <div class="row pt-5">
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-around">
-            <h1 class="mt-5">{{ landingBanner.slides.0.title }}</h1>
-            <p class="font-bigger-4 text-grey-400 font-weight-300">{{ landingBanner.slides.0.subtitle }}</p>
-          </div>
-          <div class="col-12 col-md-6 header-image">
-            <img class="mt-5" src="{{ landingBanner.slides.0.img }}">
+    {% elif landingBanner.default %}
+      <!-- Default Slide -->
+      <header class="grad">
+        <div class="container build-slide">
+          <div class="row pt-5">
+            <div class="col-12 col-md-6 d-flex flex-column justify-content-around">
+              <h1 class="mt-5">{{ landingBanner.slides.0.title }}</h1>
+              <p class="font-bigger-4 text-grey-400 font-weight-300">{{ landingBanner.slides.0.subtitle }}</p>
+            </div>
+            <div class="col-12 col-md-6 header-image">
+              <img class="mt-5" src="{{ landingBanner.slides.0.img }}">
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
 
+    {% else %}
+      <!-- custom slide -->
+      <header class="grad home-carousel">
+        <div class="container build-slide">
+          <div class="row pt-5">
+            <div class="grants" style="background-image: url('{{ landingBanner.slides.0.backgroundImage }}')">
+              <div class="d-flex flex-column justify-content-around container">
+                <h3 class="dates gc-font-heading">{{ landingBanner.slides.0.title }}</h3>
+                <img src="{{ landingBanner.slides.0.img }}">
+                <h5>{{ landingBanner.slides.0.subtitle }}</h5>
+                <a class="btn btn-lg btn-outline-primary" href="{{ landingBanner.slides.0.buttonLink}} ">
+                  {{ landingBanner.slides.0.buttonCTA }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
     {% endif %}
 
     <section class="container my-5">
