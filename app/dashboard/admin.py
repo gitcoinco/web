@@ -33,7 +33,7 @@ from .models import (
     FundRequest, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
     Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
     ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
-    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
+    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel, PassportStamp, Passport
 )
 
 
@@ -671,6 +671,20 @@ class MediaFileAdmin(admin.ModelAdmin):
     list_display = ['id', 'file', 'filename']
 
 
+class PassportStampAdmin(admin.ModelAdmin):
+    list_display = ['user', 'stamp_id']
+    raw_id_fields = ['user']
+    search_fields = [
+        'user__id', 'user__username', 'stamp_id'
+    ]
+
+class PassportAdmin(admin.ModelAdmin):
+    list_display = ['user', 'did']
+    raw_id_fields = ['user']
+    search_fields = [
+        'user__id', 'user__username', 'did'
+    ]
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -716,3 +730,5 @@ admin.site.register(Answer, AnswersAdmin)
 admin.site.register(PollMedia, PollMediaAdmin)
 admin.site.register(ProfileVerification, ProfileVerificationAdmin)
 admin.site.register(MediaFile, MediaFileAdmin)
+admin.site.register(PassportStamp, PassportStampAdmin)
+admin.site.register(Passport, PassportAdmin)

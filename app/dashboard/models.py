@@ -3082,7 +3082,6 @@ class Profile(SuperModel):
     trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on verified services')
 
     dpopp_trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on dpopp passport')
-    dpopp_passport = JSONField(null=True, blank=True)
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
@@ -5996,3 +5995,13 @@ class MediaFile(SuperModel):
 
     def __str__(self):
         return f'{self.id} - {self.filename}'
+
+class Passport(SuperModel):
+    user = models.ForeignKey(User, related_name='passports', on_delete=models.CASCADE, null=True, db_index=True)
+    did = models.CharField(unique=True, null=False, blank=False, max_length=100)
+    dpopp_passport = JSONField(null=True, blank=True)
+
+class PassportStamp(SuperModel):
+    user = models.ForeignKey(User, related_name='passport_stamps', on_delete=models.CASCADE, null=True, db_index=True)
+    stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100)
+

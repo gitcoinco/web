@@ -33,7 +33,7 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
-from pprint import pformat
+from pprint import pformat, pprint
 
 from django.conf import settings
 from django.contrib import messages
@@ -130,8 +130,8 @@ from .helpers import (
 from .models import (
     Activity, ActivityIndex, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon,
     Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
-    LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView,
-    Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
+    LabsResearch, MediaFile, Option, Passport, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView,
+    Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel, PassportStamp
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
 from .poh_utils import is_registered_on_poh
@@ -2960,134 +2960,189 @@ def verify_dpopp(request, handle):
     signature = request.POST.get('signature')
     did = request.POST.get('did')
 
-    logger.error("TODO: Verify dpopp did = '%s'", did)
-    logger.error("TODO: Verify dpopp 1")
-    # check for valid sig
-    message_hash = defunct_hash_message(text=request.session['dpopp_challenge'])
-    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
-    sig_is_valid = address.lower() == signer.lower()
+    user = request.user
+    profile = user.profile
 
-    logger.error("TODO: Verify dpopp 2")
-    # invalid sig error
-    if not sig_is_valid:
+    try:
+        # Verify that this DID is not associated to any other profile.
+        # We want to avoid the same user creating multiple accounts and re-using the same did
+        duplicates = Passport.objects.exclude(user=user).filter(did=did)
+
+        if len(duplicates) > 0:
+            return JsonResponse({
+                'error': 'The DID already associate with another user profile',
+                'stamps': []
+            })
+
+        Passport.objects.update_or_create(user=user, did=did)
+
+        # Verifications
+        # [X] did -> must be connected to 1 accounts (1 did -> 1 profile)
+        # Stamp hash -> must be used by 1 acount
+        # [X] address in the stamp -> make sure it belongs to one of the accounts ... => can't find the address ... I guess I'll need to recalculate the hash / merkle proof 
+        #           => l
+
+
+        logger.error("TODO: Verify dpopp did = '%s'", did)
+        logger.error("TODO: Verify dpopp 1")
+        # check for valid sig
+        message_hash = defunct_hash_message(text=request.session['dpopp_challenge'])
+        signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+        sig_is_valid = address.lower() == signer.lower()
+
+        logger.error("TODO: Verify dpopp 2")
+        # invalid sig error
+        if not sig_is_valid:
+            return JsonResponse({
+                'error': 'Bad signature',
+                'stamps': []
+            })
+
+        # pull streamIds from ceramic
+        stream_ids = get_stream_ids(did)
+
+        logger.error("TODO: Verify dpopp stream_ids: '%s'", stream_ids)
+        # get accounts for did
+        accounts = get_crypto_accounts(stream_ids=stream_ids)
+        logger.error("TODO: Verify dpopp accounts: '%s'", accounts)
+        logger.error("TODO: Verify dpopp address: '%s'", address)
+
+        is_owner = address.lower() in accounts and sig_is_valid
+
+        logger.error("TODO: Verify dpopp is_owner: '%s'", is_owner)
+
+        logger.error("TODO: Verify dpopp 3")
+
+        # invalid owner
+        if not is_owner:
+            return JsonResponse({
+                'error': 'Bad owner',
+                'stamps': []
+            })
+
+        # retrieve passport
+        passport = get_passport(stream_ids=stream_ids)
+
+        logger.error("TODO: Verify dpopp 4")
+        logger.error("TODO: Verify dpopp passport: %s", pformat(passport))
+
+        # dict from list
+        stamps_to_return = {}
+        matched_services = {
+                'POH': {
+                    'match_percent': 50,
+                    'verified': 0
+                },
+                'POAP': {
+                    'match_percent': 25,
+                    'verified': 0,
+                },
+                'ENS': {
+                    'match_percent': 25,
+                    'verified': 0
+                },
+                'Google': {
+                    'match_percent': 15,
+                    'verified': 0
+                },
+                'Twitter': {
+                    'match_percent': 15,
+                    'verified': 0
+                },
+                'Facebook': {
+                    'match_percent': 15,
+                    'verified': 0
+                },
+                'BrightID': {
+                    'match_percent': 15,
+                    'verified': 0
+                },
+                'Idena': {
+                    'match_percent': 15,
+                    'verified': 0
+                },
+        }
+
+        for stamp in passport['stamps']:
+
+            logger.error("TODO: verifying stamp: %s", pformat(stamp))
+            logger.error("TODO: verifying credential: %s", pformat(stamp["credential"]))
+            logger.error("TODO: verifying credentialSubject: %s", pformat(stamp["credential"]["credentialSubject"]))
+            logger.error("TODO: verifying id: %s", pformat(stamp["credential"]["credentialSubject"]["id"]))
+            
+            # get the user crential ID, this will have the form: "did:ethr:0x...#POAP"
+            subject_id = stamp["credential"]["credentialSubject"]["id"]
+
+            # get the users address
+            subject_address = (subject_id.split(":")[-1]).split("#")[0].lower()
+
+            # the users addresses must be one of the addresses in the accounts list we got for the did, otherwise
+            # we just ognore this stamp
+            is_subject_valid = subject_address in accounts
+
+            if not is_subject_valid:
+                logger.error("Invalid stamp subject: %s", subject_address)
+
+            if is_subject_valid:
+                # get the stamp ID, and register it with our records
+                # this will be used to ensure that this stamp is not linked to any other user profile
+                stamp_id = stamp["credential"]["credentialSubject"]["root"]      # TODO: geri: to be replaced with the new field (the sha hash)
+
+                duplicate_stamp_ids = PassportStamp.objects.exclude(user=user).filter(stamp_id=stamp_id)
+                stamp_id_is_valid = len(duplicate_stamp_ids) == 0
+
+                if not stamp_id_is_valid:
+                    logger.error("Duplicate stamp id was detected: %s", stamp_id)
+
+                if stamp_id_is_valid:
+                    # Save the stamp id
+                    stamp_registry = PassportStamp.objects.update_or_create(user=user, stamp_id=stamp_id)
+
+                    # Proceed with verifying the credential
+                    verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
+                    verification = json.loads(verification)
+
+                    logger.error("TODO: verification result: %s", pformat(verification))
+
+                    stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings?
+                    stamps_to_return[stamp['provider']] = stamp
+                    
+                    matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
+
+        trust_score = 0
+        for provider_name, provider in matched_services.items():
+            logger.error("TODO matched_services provider %s => %s", provider_name, provider)
+            # verified should be 1 for all verified providers
+            trust_score += provider["match_percent"] * provider["verified"]
+
+        profile = request.user.profile
+        profile.dpopp_did = did
+        profile.dpopp_trust_bonus = trust_score
+        profile.dpopp_passport = passport
+        profile.save()
+
+        logger.error("TODO: Verify dpopp 5")
+
+        # return as a dict of stamps
+        passport['stamps'] = stamps_to_return
+
+        # reset challenge?
+        # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
+
+        # return full passport
         return JsonResponse({
-            'error': 'Bad signature',
-            'stamps': []
+            'passport': passport,
+            'trust_score': trust_score,     # TODO: we probably do not need this here ...
+            # 'challenge': request.session['dpopp_challenge']
         })
 
-    # pull streamIds from ceramic
-    stream_ids = get_stream_ids(did)
-
-    logger.error("TODO: Verify dpopp stream_ids: '%s'", stream_ids)
-    # get accounts for did
-    accounts = get_crypto_accounts(stream_ids=stream_ids)
-    logger.error("TODO: Verify dpopp accounts: '%s'", accounts)
-    logger.error("TODO: Verify dpopp address: '%s'", address)
-
-    is_owner = address.lower() in accounts and sig_is_valid
-
-    logger.error("TODO: Verify dpopp is_owner: '%s'", is_owner)
-
-    logger.error("TODO: Verify dpopp 3")
-
-    # invalid owner
-    if not is_owner:
+    except Exception as e:
+        # We expect this verification to throw
+        logger.error("Error when verifying credential.", exc_info=True)
         return JsonResponse({
-            'error': 'Bad owner',
+            'error': f'Internal Error: {e}',
             'stamps': []
         })
-
-    # retrieve passport
-    passport = get_passport(stream_ids=stream_ids)
-
-    logger.error("TODO: Verify dpopp 4")
-    logger.error("TODO: Verify dpopp passport: %s", passport)
-
-    # dict from list
-    stamps_to_return = {}
-    matched_services = {
-            'POH': {
-                'match_percent': 50,
-                'verified': 0
-            },
-            'POAP': {
-                'match_percent': 25,
-                'is_verified': 0,
-            },
-            'ENS': {
-                'match_percent': 25,
-                'verified': 0
-            },
-            'Google': {
-                'match_percent': 15,
-                'verified': 0
-            },
-            'Twitter': {
-                'match_percent': 15,
-                'verified': 0
-            },
-            'Facebook': {
-                'match_percent': 15,
-                'verified': 0
-            },
-            # {
-            #     'ref': 'BrightID',
-            #     'name': 'BrightID',
-            #     'icon_path': static('v2/images/project_logos/brightid.png'),
-            #     'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
-            #     'match_percent': 50,
-            #     'is_verified': profile.is_brightid_verified
-            # },
-            # {
-            #     'ref': 'Idena',
-            #     'name': 'Idena',
-            #     'icon_path': static('v2/images/project_logos/idena.svg'),
-            #     'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
-            #     'match_percent': 50,
-            #     'is_verified': profile.is_idena_verified
-            # },
-    }
-
-    for stamp in passport['stamps']:
-
-        logger.error("TODO: verifying stamp: %s", pformat(stamp))
-        verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
-        verification = json.loads(verification)
-
-        logger.error("TODO: verification result: %s", pformat(verification))
-        # TODO: check for validity according to didkit and check that stamp.credentialSubject.id is in accounts
-        stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings?
-        stamps_to_return[stamp['provider']] = stamp
-        matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
-
-        # TODO: update score here
-
-    trust_score = 0
-    for provider_name, provider in matched_services.items():
-        logger.error("TODO matched_services provider %s => %s", provider_name, provider)
-        # verified should be 1 for all verified providers
-        trust_score += provider["match_percent"] * provider["verified"]
-
-    profile = request.user.profile
-    profile.dpopp_trust_bonus = trust_score
-    profile.dpopp_passport = passport
-    profile.save()
-
-    logger.error("TODO: Verify dpopp 5")
-
-    # return as a dict of stamps
-    passport['stamps'] = stamps_to_return
-
-    # reset challenge?
-    # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
-
-    # return full passport
-    return JsonResponse({
-        'passport': passport,
-        'trust_score': trust_score,     # TODO: we probably do not need this here ...
-        # 'challenge': request.session['dpopp_challenge']
-    })
-
 
 def get_profile_by_idena_token(token):
     handle = get_handle_by_idena_token(token)
