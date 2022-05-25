@@ -27,9 +27,9 @@ Vue.component('active-trust-manager', {
       did: undefined,
       accounts: undefined,
       // TODO geri: following to lines would get the trust bonus from the BE
-      // trust_bonus: document.trust_bonus,
-      // passport: document.passport,
-      passport: null,
+      trust_bonus: document.trust_bonus * 100,
+      passport: document.passport,
+      // passport: null,
       passportVerified: document.is_passport_connected,
       passportVerifiedLocally: false,
       loading: false,
@@ -45,17 +45,18 @@ Vue.component('active-trust-manager', {
     this.DIDKit = (await DIDKit);
 
     // on account change/connect etc...
-    document.addEventListener('dataWalletReady', () => this.connectPassportListener());
+    // document.addEventListener('dataWalletReady', () => this.connectPassportListener());
     // on wallet disconnect (clear Passport state)
-    document.addEventListener('walletDisconnect', () => this.reset(true));
+    // document.addEventListener('walletDisconnect', () => this.reset(true));
   },
   computed: {
-    trust_bonus: function() {
+    // TODO: not sure that we need this when we read the stories, I think we only need to display the score from the BE when it is linked to the passport
+    // trust_bonus: function() {
 
-      return Math.min(150, this.services.reduce((total, service) => {
-        return (service.is_verified ? service.match_percent : 0) + total;
-      }, 50));
-    },
+    //   return Math.min(150, this.services.reduce((total, service) => {
+    //     return (service.is_verified ? service.match_percent : 0) + total;
+    //   }, 50));
+    // },
     serviceDict: function() {
 
       return this.services.reduce((services, service) => {
