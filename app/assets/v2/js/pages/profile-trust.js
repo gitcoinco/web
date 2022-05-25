@@ -133,7 +133,7 @@ Vue.component('active-trust-manager', {
         this.passportVerifiedLocally = await this.verifyPassport();
       } else {
         // error if no passport found
-        this.verificationError = "There is no Passport associated with this wallet"
+        this.verificationError = 'There is no Passport associated with this wallet';
       }
 
       // done with loading state
