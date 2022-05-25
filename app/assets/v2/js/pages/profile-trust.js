@@ -17,8 +17,10 @@ const apiCall = (url, givenPayload) => {
   });
 };
 
+// Initial score defined in context payload
 const pageLoadTrustBonus = document.trust_bonus * 100;
 
+// Create the trust-bonus view
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
   data() {
@@ -32,11 +34,11 @@ Vue.component('active-trust-manager', {
       passportVerified: document.is_passport_connected,
       passportVerifiedLocally: false,
       passportVerifiedScore: pageLoadTrustBonus,
-      trust_bonus: pageLoadTrustBonus || 50,
+      trustBonus: pageLoadTrustBonus || 50,
       loading: false,
       verificationError: false,
-      round_start_date: parseMonthDay(document.round_start_date),
-      round_end_date: parseMonthDay(document.round_end_date),
+      roundStartDate: parseMonthDay(document.round_start_date),
+      roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
       visibleModal: 'none'
     };
@@ -68,20 +70,25 @@ Vue.component('active-trust-manager', {
     hideModal() {
       this.visibleModal = 'none';
     },
-    reset(clearStamps) {
-      this.did = false;
-      this.accounts = false;
-      this.passport = false;
+    reset(fullReset) {
       // this is set after we savePassport() if no verifications failed
       this.passportVerified = false;
-      // this tells us if all stamps would verify if submitted via savePassport()
-      this.passportVerifiedLocally = false;
       // clear the first-load verified score
       this.passportVerifiedScore = false;
-      // bonus to default of 50
-      this.trust_bonus = 50;
 
-      if (clearStamps) {
+      if (fullReset) {
+        // clear current user state
+        this.did = false;
+        this.accounts = false;
+        this.passport = false;
+
+        // bonus to default of 50
+        this.trustBonus = 50;
+
+        // this tells us if all stamps would verify if submitted via savePassport()
+        this.passportVerifiedLocally = false;
+
+        // clear the stamps
         this.services.forEach((service) => {
           this.serviceDict[service.ref].is_verified = false;
         });
@@ -124,6 +131,9 @@ Vue.component('active-trust-manager', {
 
         // check the validity of the Passport updating the score
         this.passportVerifiedLocally = await this.verifyPassport();
+      } else {
+        // error if no passport found
+        this.verificationError = "There is no Passport associated with this wallet"
       }
 
       // done with loading state
@@ -172,8 +182,8 @@ Vue.component('active-trust-manager', {
           return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
         }))).reduce((isVerified, verified) => !isVerified ? false : verified, true);
 
-        // set the new trust_bonus score
-        this.trust_bonus = Math.min(150, this.services.reduce((total, service) => {
+        // set the new trustBonus score
+        this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
           return (service.is_verified ? service.match_percent : 0) + total;
         }, 50));
 
@@ -195,10 +205,13 @@ Vue.component('active-trust-manager', {
           try {
             signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
           } catch {
-            // clear all state
-            this.reset(true);
-            // set error state
+            // clear state
+            this.reset();
+            // set error
             this.verificationError = 'There was an error; please sign the requested message';
+
+            // if there was an error in the sig - don't post to verify
+            return false;
           }
 
           // if we have sig, attempt to save the passports details into the backend
@@ -220,10 +233,10 @@ Vue.component('active-trust-manager', {
           this.passportVerified = !response.error;
         }
       } catch (err) {
-        // set error state
-        this.verificationError = 'There was an error; please try again later';
         // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
         this.reset();
+        // set error state
+        this.verificationError = 'There was an error; please try again later';
       }
     }
   }

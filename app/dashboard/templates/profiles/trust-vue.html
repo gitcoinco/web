@@ -19,7 +19,7 @@
               <div class="row spacer-mt-2 font-smaller-1 line-height-2">
                 {% if show_round_banner %}
                   <div class="col-12 col-lg-6 spacer-mt-2">
-                    <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[round_start_date]] - [[round_end_date]]</a>
+                    <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[roundStartDate]] - [[roundEndDate]]</a>
                   </div>
                 {% endif %}
                 <div class="col-12 col-lg-6 spacer-mt-2">
@@ -59,10 +59,10 @@
               <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" :class="`btn btn-lg px-5 btn-${passportVerified ? 'dark' : 'primary'}`" @click="connectPassport">
                 [[!passport && !loading ? "Connect Passport" : "Refresh Passport"]]
               </b-button>
-              <div v-if="passport && !passportVerified" class="d-inline ml-4">
+              <div v-if="passport && !passportVerified && !verificationError" class="d-inline ml-4">
                 <i class="fas fa-shield px-1" style="color: transparent"></i><a class="link cursor-pointer" @click="savePassport">Verify Passport</a>
               </div>
-              <div v-else-if="passport && passportVerified" class="d-inline ml-4">
+              <div v-else-if="passport && passportVerified && !verificationError" class="d-inline ml-4">
                 <i class="fa fa-check px-1" style="color: #059669"></i><span style="color: #059669">Passport Verified!</span>
               </div>
               <div v-else-if="verificationError" class="d-inline ml-4">
@@ -70,14 +70,13 @@
               </div>
             </div>
 
-
             <div class="row">
               <div class="col-12 col-lg-6">
                 <div class="spacer-mb-2 font-weight-semibold">Verification Level</div>
                 <div class="progress rounded-0" style="height: 0.4rem;">
-                  <div class="progress-bar bg-secondary disabled" role="progressbar" :style="{width: `${!passport ? 0 : 100/150 * trust_bonus}%`}" :aria-valuenow="`${100/150 * trust_bonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div class="progress-bar bg-secondary disabled" role="progressbar" :style="{width: `${!passport ? 0 : 100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trust_bonus]]% of 150% Match</div>
+                <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match</div>
                 <div class="spacer-mt-5">
                   <a href="https://orange-sky-5671.on.fleek.co/" target="_blank" target="_blank" rel="noopener noreferrer" class="font-weight-semibold">Go to dPassport<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12.2929 5.29289C12.6834 4.90237 13.3166 4.90237 13.7071 5.29289L17.7071 9.29289C18.0976 9.68342 18.0976 10.3166 17.7071 10.7071L13.7071 14.7071C13.3166 15.0976 12.6834 15.0976 12.2929 14.7071C11.9024 14.3166 11.9024 13.6834 12.2929 13.2929L14.5858 11H3C2.44772 11 2 10.5523 2 10C2 9.44772 2.44772 9 3 9H14.5858L12.2929 6.70711C11.9024 6.31658 11.9024 5.68342 12.2929 5.29289Z" fill="#664AEC"/>
