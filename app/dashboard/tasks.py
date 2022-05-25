@@ -444,7 +444,7 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
     """
 
     # There seems to be a race condition, this is task is sometimes
-    # executed in parallel for the same profile. And this leads to an integrity 
+    # executed in parallel for the same profile. And this leads to an integrity
     # error (becasue Activity.objects.create also performs delete operations in a
     # post_save signal)
     # To avoid the integrity error we execute this operation in a transaction
@@ -574,7 +574,7 @@ def calculate_trust_bonus(self,  user_id, did, address):
             logger.error("TODO: verifying credentialSubject: %s", pformat(stamp["credential"]["credentialSubject"]))
             logger.error("TODO: verifying id: %s", pformat(stamp["credential"]["credentialSubject"]["id"]))
 
-            # get the user crential ID, this will have the form: "did:ethr:0x...#POAP"
+            # get the user credential ID, this will have the form: "did:ethr:0x...#POAP"
             subject_id = stamp["credential"]["credentialSubject"]["id"]
 
             # get the users address
@@ -642,9 +642,6 @@ def calculate_trust_bonus(self,  user_id, did, address):
             "did": did,
             "passport": passport
         })
-
-        # TODO: reset challenge?
-        # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
 
     except Exception as e:
         # We expect this verification to throw
