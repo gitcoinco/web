@@ -3,6 +3,9 @@ import json
 import math
 import os
 from datetime import datetime
+from functools import reduce
+from operator import add
+from pprint import pformat
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -11,16 +14,21 @@ from django.db import transaction
 from django.http import HttpRequest
 from django.utils import timezone
 
+import didkit
 from app.services import RedisService
 from app.utils import get_location_from_ip
 from celery import app, group
 from celery.utils.log import get_task_logger
-from dashboard.models import Activity, Bounty, Earning, ObjectView, Profile, TransactionHistory, UserAction
+from dashboard.models import (
+    Activity, Bounty, Earning, ObjectView, Passport, PassportStamp, Profile, TransactionHistory, UserAction,
+)
 from dashboard.utils import get_tx_status_and_details
 from economy.models import EncodeAnything
 from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
+
+from .dpopp_reader import CERAMIC_URL, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_did, get_passport, get_stream_ids
 
 logger = get_task_logger(__name__)
 
@@ -475,3 +483,169 @@ def save_tx_status_and_details(self, earning_pk, chain='std'):
             txid=txid,
             captured_at=timezone.now(),
         )
+
+
+@app.shared_task(bind=True, max_retries=1)
+def calculate_trust_bonus(self,  user_id, did, address):
+    """
+    :param self: Self
+    :param user_id: the user_id
+    :param did: the did for the passport
+    :return: None
+    """
+
+    try:
+        # Verify that this DID is not associated to any other profile.
+        # We want to avoid the same user creating multiple accounts and re-using the same did
+        duplicates = Passport.objects.exclude(user_id=user_id).filter(did=did)
+
+        if len(duplicates) > 0:
+            logger.error("The DID '%s' already associate with another user profile (checked for user '%s')", did, user_id)
+            return
+
+        logger.error("TODO: Verify dpopp did = '%s'", did)
+        logger.error("TODO: Verify dpopp 1")
+
+        # pull streamIds from ceramic
+        stream_ids = get_stream_ids(did)
+
+        logger.error("TODO: Verify dpopp stream_ids: '%s'", stream_ids)
+        # get accounts for did
+        accounts = get_crypto_accounts(stream_ids=stream_ids)
+        logger.error("TODO: Verify dpopp accounts: '%s'", accounts)
+        logger.error("TODO: Verify dpopp address: '%s'", address)
+
+        is_owner = address.lower() in accounts
+
+        logger.error("TODO: Verify dpopp is_owner: '%s'", is_owner)
+        logger.error("TODO: Verify dpopp 3")
+
+        # invalid owner
+        if not is_owner:
+            logger.error("Bad owner when checking did '%s'", did)
+
+        # retrieve passport
+        passport = get_passport(stream_ids=stream_ids)
+
+        logger.error("TODO: Verify dpopp 4")
+        logger.error("TODO: Verify dpopp passport: %s", pformat(passport))
+
+        # dict from list
+        stamps_to_return = {}
+        matched_services = {
+                'Poh': {
+                    'match_percent': 0.50,
+                    'verified': 0
+                },
+                'POAP': {
+                    'match_percent': 0.25,
+                    'verified': 0,
+                },
+                'Ens': {
+                    'match_percent': 0.25,
+                    'verified': 0
+                },
+                'Google': {
+                    'match_percent': 0.15,
+                    'verified': 0
+                },
+                'Twitter': {
+                    'match_percent': 0.15,
+                    'verified': 0
+                },
+                'Facebook': {
+                    'match_percent': 0.15,
+                    'verified': 0
+                },
+                'BrightID': {
+                    'match_percent': 0.15,
+                    'verified': 0
+                },
+                'Idena': {
+                    'match_percent': 0.15,
+                    'verified': 0
+                },
+        }
+
+        for stamp in passport['stamps']:
+
+            logger.error("TODO: verifying stamp: %s", pformat(stamp))
+            logger.error("TODO: verifying credential: %s", pformat(stamp["credential"]))
+            logger.error("TODO: verifying credentialSubject: %s", pformat(stamp["credential"]["credentialSubject"]))
+            logger.error("TODO: verifying id: %s", pformat(stamp["credential"]["credentialSubject"]["id"]))
+
+            # get the user crential ID, this will have the form: "did:ethr:0x...#POAP"
+            subject_id = stamp["credential"]["credentialSubject"]["id"]
+
+            # get the users address
+            subject_address = (subject_id.split(":")[-1]).split("#")[0].lower()
+
+            # the users addresses must be one of the addresses in the accounts list we got for the did, otherwise
+            # we just ignore this stamp
+            is_subject_valid = subject_address in accounts
+
+            # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
+            is_stamp_expired = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
+
+            # the stamp must be issued by the trusted IAM server
+            is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
+
+            if not is_subject_valid:
+                logger.error("Invalid stamp subject: %s", subject_address)
+
+            if is_stamp_expired:
+                logger.error("Expired stamp: %s", subject_id)
+
+            if not is_issued_by_iam:
+                logger.error("Stamp wasn't issued by the trusted IAM: '%s' instead got '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
+
+            if is_subject_valid and not is_stamp_expired and is_issued_by_iam:
+                # get the stamp ID, and register it with our records
+                # this will be used to ensure that this stamp is not linked to any other user profile
+                stamp_id = stamp["credential"]["credentialSubject"]["root"]      # TODO: geri: to be replaced with the new field (the sha hash)
+
+                duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
+                stamp_id_is_valid = len(duplicate_stamp_ids) == 0
+
+                if not stamp_id_is_valid:
+                    logger.error("Duplicate stamp id was detected: %s", stamp_id)
+
+                if stamp_id_is_valid:
+                    # Save the stamp id (@TODO: should we also have `did` and `active` fields?)
+                    stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id)
+
+                    # Proceed with verifying the credential
+                    verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
+                    verification = json.loads(verification)
+
+                    logger.error("TODO: verification result: %s", pformat(verification))
+
+                    stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings? GD: I've just been basing these checks on the errors
+                    stamps_to_return[stamp['provider']] = stamp
+
+                    matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
+
+
+        trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * match["verified"] for _, match in matched_services.items()]))
+
+        profile = Profile.objects.get(user_id=user_id)
+        profile.dpopp_trust_bonus = trust_score
+        profile.save()
+
+        logger.error("TODO: Verify dpopp 5")
+
+        # return as a dict of stamps
+        passport['stamps'] = stamps_to_return
+
+        # store the passport
+        Passport.objects.update_or_create(user_id=user_id, defaults={
+            "did": did,
+            "passport": passport
+        })
+
+        # TODO: reset challenge?
+        # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
+
+    except Exception as e:
+        # We expect this verification to throw
+        logger.error("Error when calculating trust bonus!", exc_info=True)

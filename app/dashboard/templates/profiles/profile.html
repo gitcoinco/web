@@ -113,8 +113,8 @@
             document.challenge = "{{ challenge }}";
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
-            document.is_passport_connected = "{{ is_passport_connected }}" == "True";
-            document.trust_bonus = {{ profile.dpopp_trust_bonus }};
+            document.is_passport_connected = {{ is_passport_connected }};
+            document.trust_bonus = {{ dpopp_trust_bonus }};
             document.passport = {{ passport|safe }};
 
           </script>

@@ -33,9 +33,6 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
-from functools import reduce
-from operator import add
-from pprint import pformat, pprint
 
 from django.conf import settings
 from django.contrib import messages
@@ -64,7 +61,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_GET, require_POST
 
-import didkit
 import ens
 import magic
 import pytz
@@ -87,7 +83,7 @@ from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
-from dashboard.tasks import increment_view_count, update_trust_bonus
+from dashboard.tasks import calculate_trust_bonus, increment_view_count, update_trust_bonus
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
@@ -121,8 +117,7 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
-from .dpopp_reader import CERAMIC_URL, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_did, get_passport, get_stream_ids
-
+from .dpopp_reader import CERAMIC_URL, TRUSTED_IAM_ISSUER
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -2895,7 +2890,9 @@ def get_profile_tab(request, profile, tab, prev_context):
             trusted_issuer = 'did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw'
 
             # detail available services
-            context['is_passport_connected'] = bool(profile.dpopp_trust_bonus)
+            context['is_passport_connected'] = json.dumps(bool(profile.dpopp_trust_bonus))
+            context['dpopp_trust_bonus']  = profile.dpopp_trust_bonus if profile.dpopp_trust_bonus is not None else 'null';
+
             try:
                 context['passport'] = json.dumps(Passport.objects.get(user=profile.user).passport)
             except Passport.DoesNotExist:
@@ -3105,198 +3102,21 @@ def verify_dpopp(request, handle):
     signature = request.POST.get('signature')
     did = request.POST.get('did')
 
-    try:
-        # Verify that this DID is not associated to any other profile.
-        # We want to avoid the same user creating multiple accounts and re-using the same did
-        duplicates = Passport.objects.exclude(user=user).filter(did=did)
+    # check for valid sig
+    message_hash = defunct_hash_message(text=request.session['dpopp_challenge'])
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    sig_is_valid = address.lower() == signer.lower()
 
-        if len(duplicates) > 0:
-            return JsonResponse({
-                'error': 'The DID already associate with another user profile',
-                'stamps': []
-            })
-
-        # Verifications
-        # [X] did -> must be connected to 1 accounts (1 did -> 1 profile)
-        # Stamp hash -> must be used by 1 acount
-        # [X] address in the stamp -> make sure it belongs to one of the accounts ... => can't find the address ... I guess I'll need to recalculate the hash / merkle proof
-        #           => l
-
-
-        logger.error("TODO: Verify dpopp did = '%s'", did)
-        logger.error("TODO: Verify dpopp 1")
-
-        # check for valid sig
-        message_hash = defunct_hash_message(text=request.session['dpopp_challenge'])
-        signer = w3.eth.account.recoverHash(message_hash, signature=signature)
-        sig_is_valid = address.lower() == signer.lower()
-
-        logger.error("TODO: Verify dpopp 2")
-        # invalid sig error
-        if not sig_is_valid:
-            return JsonResponse({
-                'error': 'Bad signature',
-                'stamps': []
-            })
-
-        # pull streamIds from ceramic
-        stream_ids = get_stream_ids(did)
-
-        logger.error("TODO: Verify dpopp stream_ids: '%s'", stream_ids)
-        # get accounts for did
-        accounts = get_crypto_accounts(stream_ids=stream_ids)
-        logger.error("TODO: Verify dpopp accounts: '%s'", accounts)
-        logger.error("TODO: Verify dpopp address: '%s'", address)
-
-        is_owner = address.lower() in accounts and sig_is_valid
-
-        logger.error("TODO: Verify dpopp is_owner: '%s'", is_owner)
-
-        logger.error("TODO: Verify dpopp 3")
-
-        # invalid owner
-        if not is_owner:
-            return JsonResponse({
-                'error': 'Bad owner',
-                'stamps': []
-            })
-
-        # retrieve passport
-        passport = get_passport(stream_ids=stream_ids)
-
-        logger.error("TODO: Verify dpopp 4")
-        logger.error("TODO: Verify dpopp passport: %s", pformat(passport))
-
-        # dict from list
-        stamps_to_return = {}
-        matched_services = {
-                'Poh': {
-                    'match_percent': 0.50,
-                    'verified': 0
-                },
-                'POAP': {
-                    'match_percent': 0.25,
-                    'verified': 0,
-                },
-                'Ens': {
-                    'match_percent': 0.25,
-                    'verified': 0
-                },
-                'Google': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'Twitter': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'Facebook': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'BrightID': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'Idena': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-        }
-
-        for stamp in passport['stamps']:
-
-            logger.error("TODO: verifying stamp: %s", pformat(stamp))
-            logger.error("TODO: verifying credential: %s", pformat(stamp["credential"]))
-            logger.error("TODO: verifying credentialSubject: %s", pformat(stamp["credential"]["credentialSubject"]))
-            logger.error("TODO: verifying id: %s", pformat(stamp["credential"]["credentialSubject"]["id"]))
-
-            # get the user crential ID, this will have the form: "did:ethr:0x...#POAP"
-            subject_id = stamp["credential"]["credentialSubject"]["id"]
-
-            # get the users address
-            subject_address = (subject_id.split(":")[-1]).split("#")[0].lower()
-
-            # the users addresses must be one of the addresses in the accounts list we got for the did, otherwise
-            # we just ignore this stamp
-            is_subject_valid = subject_address in accounts
-
-            # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
-            is_stamp_expired = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
-
-            # the stamp must be issued by the trusted IAM server
-            is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
-
-            if not is_subject_valid:
-                logger.error("Invalid stamp subject: %s", subject_address)
-
-            if is_stamp_expired:
-                logger.error("Expired stamp: %s", subject_id)
-
-            if not is_issued_by_iam:
-                logger.error("Stamp wasn't issued by the trusted IAM: '%s' instead got '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
-
-            if is_subject_valid and not is_stamp_expired and is_issued_by_iam:
-                # get the stamp ID, and register it with our records
-                # this will be used to ensure that this stamp is not linked to any other user profile
-                stamp_id = stamp["credential"]["credentialSubject"]["root"]      # TODO: geri: to be replaced with the new field (the sha hash)
-
-                duplicate_stamp_ids = PassportStamp.objects.exclude(user=user).filter(stamp_id=stamp_id)
-                stamp_id_is_valid = len(duplicate_stamp_ids) == 0
-
-                if not stamp_id_is_valid:
-                    logger.error("Duplicate stamp id was detected: %s", stamp_id)
-
-                if stamp_id_is_valid:
-                    # Save the stamp id (@TODO: should we also have `did` and `active` fields?)
-                    stamp_registry = PassportStamp.objects.update_or_create(user=user, stamp_id=stamp_id)
-
-                    # Proceed with verifying the credential
-                    verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
-                    verification = json.loads(verification)
-
-                    logger.error("TODO: verification result: %s", pformat(verification))
-
-                    stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings? GD: I've just been basing these checks on the errors
-                    stamps_to_return[stamp['provider']] = stamp
-
-                    matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
-
-
-        trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * match["verified"] for _, match in matched_services.items()]))
-
-        profile = request.user.profile
-        profile.dpopp_trust_bonus = trust_score
-        profile.save()
-
-        logger.error("TODO: Verify dpopp 5")
-
-        # return as a dict of stamps
-        passport['stamps'] = stamps_to_return
-
-        # store the passport
-        Passport.objects.update_or_create(user=user, defaults={
-            "did": did,
-            "passport": passport
-        })
-
-        # TODO: reset challenge?
-        # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
-
-        # return full passport
+    logger.error("TODO: Verify dpopp 2")
+    # invalid sig error
+    if not sig_is_valid:
         return JsonResponse({
-            'passport': passport,
-            'trust_score': trust_score,
-            # 'challenge': request.session['dpopp_challenge']
+            'error': 'Bad signature',
         })
 
-    except Exception as e:
-        # We expect this verification to throw
-        logger.error("Error when verifying credential.", exc_info=True)
-        return JsonResponse({
-            'error': f'Internal Error: {e}',
-            'stamps': []
-        })
+    calculate_trust_bonus.delay(request.user.id, did, address )
+
+    return JsonResponse({'ok': True})
 
 def get_profile_by_idena_token(token):
     handle = get_handle_by_idena_token(token)
