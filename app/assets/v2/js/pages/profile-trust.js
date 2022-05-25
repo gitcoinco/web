@@ -26,8 +26,9 @@ Vue.component('active-trust-manager', {
       DIDKit: undefined,
       did: undefined,
       accounts: undefined,
-      passport: null,
+      passport: document.is_passport_connected ? {} : undefined,
       passportVerified: document.is_passport_connected,
+      passportVerifiedScore: document.trust_bonus * 100,
       passportVerifiedLocally: false,
       loading: false,
       verificationError: false,
@@ -42,14 +43,14 @@ Vue.component('active-trust-manager', {
     this.DIDKit = (await DIDKit);
 
     // on account change/connect etc...
-    document.addEventListener('dataWalletReady', () => this.connectPassportListener());
+    document.addEventListener('dataWalletReady', () => !this.passportVerifiedScore && this.connectPassportListener());
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => this.reset(true));
   },
   computed: {
     trust_bonus: function() {
 
-      return Math.min(150, this.services.reduce((total, service) => {
+      return this.passportVerifiedScore || Math.min(150, this.services.reduce((total, service) => {
         return (service.is_verified ? service.match_percent : 0) + total;
       }, 50));
     },
@@ -78,8 +79,8 @@ Vue.component('active-trust-manager', {
       this.passportVerified = false;
       // this tells us if all stamps would verify if submitted via savePassport()
       this.passportVerifiedLocally = false;
-
-      this.verificationError = false;
+      // clear the first-load verified score
+      this.passportVerifiedScore = false;
 
       if (clearStamps) {
         this.services.forEach((service) => {
@@ -91,6 +92,14 @@ Vue.component('active-trust-manager', {
       this.connectPassport();
     },
     async connectPassport() {
+      // enter loading state
+      this.loading = true;
+      // clear error state
+      this.verificationError = false;
+
+      // clear all state
+      this.reset(true);
+
       // ensure selected account is known
       if (!selectedAccount) {
         // global wallet setup requirements - initiates web3 modal and then onConnect will emit dataWalletReady
@@ -99,12 +108,6 @@ Vue.component('active-trust-manager', {
 
         return;
       }
-
-      // enter loading state
-      this.loading = true;
-
-      // clear all state
-      this.reset(true);
 
       console.log('TODO trust-bonus selectedAccount', selectedAccount);
 
@@ -190,10 +193,10 @@ Vue.component('active-trust-manager', {
           try {
             signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
           } catch {
-            // set error state
-            this.verificationError = 'There was an error; please sign the requested message';
             // clear all state
             this.reset(true);
+            // set error state
+            this.verificationError = 'There was an error; please sign the requested message';
           }
 
           // if we have sig, attempt to save the passports details into the backend
@@ -203,19 +206,13 @@ Vue.component('active-trust-manager', {
             'did': this.did
           });
 
-          // @TODO: rather than saving - set and forget - saving will be enqueued and the act of submitting should set `passportVerified=true`
-
-          // // merge the response with state
-          // this.services.forEach((service) => {
-          //   const provider = service.ref.split('#')[1];
-
-          //   // check if the stamp was verified by the server and update local state to match
-          //   this.serviceDict[service.ref].is_verified = response.passport.stamps[provider] ? response.passport.stamps[provider].is_verified : false;
-          // });
-
-          // notify success (temp)
-          _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
-
+          // display error state if sig was bad
+          if (response.error) {
+            this.verificationError = response.error;
+          } else {
+            // notify success (temp)
+            _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
+          }
 
           // mark verified if no errors are returned
           this.passportVerified = !response.error;

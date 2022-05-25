@@ -3114,7 +3114,11 @@ def verify_dpopp(request, handle):
             'error': 'Bad signature',
         })
 
-    calculate_trust_bonus.delay(request.user.id, did, address )
+    # TODO: reset challenge?
+    # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
+
+    # enqueue the validation and saving procedure
+    calculate_trust_bonus.delay(request.user.id, did, address)
 
     return JsonResponse({'ok': True})
 
