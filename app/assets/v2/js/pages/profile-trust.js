@@ -205,13 +205,13 @@ Vue.component('active-trust-manager', {
 
           // @TODO: rather than saving - set and forget - saving will be enqueued and the act of submitting should set `passportVerified=true`
 
-          // merge the response with state
-          this.services.forEach((service) => {
-            const provider = service.ref.split('#')[1];
+          // // merge the response with state
+          // this.services.forEach((service) => {
+          //   const provider = service.ref.split('#')[1];
 
-            // check if the stamp was verified by the server and update local state to match
-            this.serviceDict[service.ref].is_verified = response.passport.stamps[provider] ? response.passport.stamps[provider].is_verified : false;
-          });
+          //   // check if the stamp was verified by the server and update local state to match
+          //   this.serviceDict[service.ref].is_verified = response.passport.stamps[provider] ? response.passport.stamps[provider].is_verified : false;
+          // });
 
           // notify success (temp)
           _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
