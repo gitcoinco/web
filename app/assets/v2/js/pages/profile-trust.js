@@ -82,8 +82,6 @@ Vue.component('active-trust-manager', {
       // clear the first-load verified score
       this.passportVerifiedScore = false;
 
-      this.verificationError = false;
-
       if (clearStamps) {
         this.services.forEach((service) => {
           this.serviceDict[service.ref].is_verified = false;
@@ -96,6 +94,8 @@ Vue.component('active-trust-manager', {
     async connectPassport() {
       // enter loading state
       this.loading = true;
+      // clear error state
+      this.verificationError = false;
 
       // clear all state
       this.reset(true);
@@ -193,10 +193,10 @@ Vue.component('active-trust-manager', {
           try {
             signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
           } catch {
-            // set error state
-            this.verificationError = 'There was an error; please sign the requested message';
             // clear all state
             this.reset(true);
+            // set error state
+            this.verificationError = 'There was an error; please sign the requested message';
           }
 
           // if we have sig, attempt to save the passports details into the backend
@@ -206,9 +206,13 @@ Vue.component('active-trust-manager', {
             'did': this.did
           });
 
-          // notify success (temp)
-          _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
-
+          // display error state if sig was bad
+          if (response.error) {
+            this.verificationError = response.error;
+          } else {
+            // notify success (temp)
+            _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
+          }
 
           // mark verified if no errors are returned
           this.passportVerified = !response.error;
