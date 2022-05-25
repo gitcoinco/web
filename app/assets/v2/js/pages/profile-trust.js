@@ -143,7 +143,7 @@ Vue.component('active-trust-manager', {
         const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/dpopp/stamp/check`, {
           'did': this.did,
           'stamp_hashes': this.passport.stamps.map((stamp) => {
-            return stamp.credential.credentialSubject.root
+            return stamp.credential.credentialSubject.root;
           })
         });
 
