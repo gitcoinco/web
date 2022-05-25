@@ -31,9 +31,9 @@ from .models import (
     Activity, ActivityIndex, Answer, BlockedIP, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment,
     BountyInvites, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry,
     FundRequest, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
-    Investigation, LabsResearch, MediaFile, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile,
-    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
-    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel, PassportStamp, Passport
+    Investigation, LabsResearch, MediaFile, ObjectView, Option, Passport, PassportStamp, Poll, PollMedia, PortfolioItem,
+    Profile, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
+    TransactionHistory, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
 

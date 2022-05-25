@@ -111,6 +111,10 @@
             document.challenge = "{{ challenge }}";
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
+            document.is_passport_connected = "{{ is_passport_connected }}" == "True";
+            document.trust_bonus = {{ profile.dpopp_trust_bonus }};
+            document.passport = {{ passport|safe }};
+
           </script>
           {% bundle merge_js file profile-trust %}
             <script src="{% static "v2/js/parseMonthDay.js" %}"></script>

@@ -82,7 +82,7 @@ def populate_data_for_clr(grants, contributions, clr_round):
                 if key not in contributions_by_id.keys():
                     contributions_by_id[key] = []
                 contributions_by_id[key].append(c)
-                contributing_profile_ids.append((prof.id, prof.trust_bonus))
+                contributing_profile_ids.append((prof.id, prof.final_trust_bonus))
 
         contributing_profile_ids = list(set(contributing_profile_ids))
 

@@ -26,8 +26,11 @@ Vue.component('active-trust-manager', {
       DIDKit: undefined,
       did: undefined,
       accounts: undefined,
-      passport: undefined,
-      passportVerified: false,
+      // TODO geri: following to lines would get the trust bonus from the BE
+      // trust_bonus: document.trust_bonus,
+      // passport: document.passport,
+      passport: null,
+      passportVerified: document.is_passport_connected,
       passportVerifiedLocally: false,
       loading: false,
       verificationError: false,

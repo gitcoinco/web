@@ -33,6 +33,8 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
+from functools import reduce
+from operator import add
 from pprint import pformat, pprint
 
 from django.conf import settings
@@ -119,9 +121,7 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
-
 from .dpopp_reader import get_crypto_accounts, get_did, get_passport, get_stream_ids
-
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -132,8 +132,9 @@ from .helpers import (
 from .models import (
     Activity, ActivityIndex, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon,
     Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
-    LabsResearch, MediaFile, Option, Passport, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView,
-    Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel, PassportStamp
+    LabsResearch, MediaFile, Option, Passport, PassportStamp, Poll, PortfolioItem, Profile, ProfileSerializer,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction,
+    UserVerificationModel,
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
 from .poh_utils import is_registered_on_poh
@@ -2893,6 +2894,14 @@ def get_profile_tab(request, profile, tab, prev_context):
             trusted_issuer = 'did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw'
 
             # detail available services
+            context['is_passport_connected'] = bool(profile.dpopp_trust_bonus)
+            try:
+                context['passport'] = json.dumps(Passport.objects.get(user=profile.user).passport)
+            except Passport.DoesNotExist:
+                context['passport'] = 'null'
+
+            context['trust_bonus'] = profile.final_trust_bonus
+            
             services = [
                 {
                     'ref': f'{trusted_issuer}#Poh',
@@ -3081,8 +3090,6 @@ def verify_dpopp(request, handle):
                 'stamps': []
             })
 
-        Passport.objects.update_or_create(user=user, did=did)
-
         # Verifications
         # [X] did -> must be connected to 1 accounts (1 did -> 1 profile)
         # Stamp hash -> must be used by 1 acount
@@ -3092,6 +3099,7 @@ def verify_dpopp(request, handle):
 
         logger.error("TODO: Verify dpopp did = '%s'", did)
         logger.error("TODO: Verify dpopp 1")
+
         # check for valid sig
         message_hash = defunct_hash_message(text=request.session['dpopp_challenge'])
         signer = w3.eth.account.recoverHash(message_hash, signature=signature)
@@ -3137,35 +3145,35 @@ def verify_dpopp(request, handle):
         stamps_to_return = {}
         matched_services = {
                 'POH': {
-                    'match_percent': 50,
+                    'match_percent': 0.50,
                     'verified': 0
                 },
                 'POAP': {
-                    'match_percent': 25,
+                    'match_percent': 0.25,
                     'verified': 0,
                 },
                 'ENS': {
-                    'match_percent': 25,
+                    'match_percent': 0.25,
                     'verified': 0
                 },
                 'Google': {
-                    'match_percent': 15,
+                    'match_percent': 0.15,
                     'verified': 0
                 },
                 'Twitter': {
-                    'match_percent': 15,
+                    'match_percent': 0.15,
                     'verified': 0
                 },
                 'Facebook': {
-                    'match_percent': 15,
+                    'match_percent': 0.15,
                     'verified': 0
                 },
                 'BrightID': {
-                    'match_percent': 15,
+                    'match_percent': 0.15,
                     'verified': 0
                 },
                 'Idena': {
-                    'match_percent': 15,
+                    'match_percent': 0.15,
                     'verified': 0
                 },
         }
@@ -3216,16 +3224,11 @@ def verify_dpopp(request, handle):
 
                     matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
 
-        trust_score = 0
-        for provider_name, provider in matched_services.items():
-            logger.error("TODO matched_services provider %s => %s", provider_name, provider)
-            # verified should be 1 for all verified providers
-            trust_score += provider["match_percent"] * provider["verified"]
+
+        trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * match["verified"] for _, match in matched_services.items()]))
 
         profile = request.user.profile
-        profile.dpopp_did = did
         profile.dpopp_trust_bonus = trust_score
-        profile.dpopp_passport = passport
         profile.save()
 
         logger.error("TODO: Verify dpopp 5")
@@ -3233,13 +3236,19 @@ def verify_dpopp(request, handle):
         # return as a dict of stamps
         passport['stamps'] = stamps_to_return
 
-        # reset challenge?
+        # store the passport
+        Passport.objects.update_or_create(user=user, defaults={
+            "did": did,
+            "passport": passport
+        })
+
+        # TODO: reset challenge?
         # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
 
         # return full passport
         return JsonResponse({
             'passport': passport,
-            'trust_score': trust_score,     # TODO: we probably do not need this here ...
+            'trust_score': trust_score,
             # 'challenge': request.session['dpopp_challenge']
         })
 

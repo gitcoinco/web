@@ -3172,7 +3172,7 @@ class Profile(SuperModel):
     # store the trust bonus on the model itself
     trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on verified services')
 
-    dpopp_trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on dpopp passport')
+    dpopp_trust_bonus = models.DecimalField(default=None, null=True, blank=True, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on dpopp passport')
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
@@ -3181,6 +3181,10 @@ class Profile(SuperModel):
             self.is_idena_verified = True
         else:
             self.is_idena_verified = False
+
+    @property
+    def final_trust_bonus(self):
+        return self.trust_bonus if self.dpopp_trust_bonus is None else self.dpopp_trust_bonus
 
     @property
     def shadowbanned(self):
@@ -6090,9 +6094,8 @@ class MediaFile(SuperModel):
 class Passport(SuperModel):
     user = models.ForeignKey(User, related_name='passports', on_delete=models.CASCADE, null=True, db_index=True)
     did = models.CharField(unique=True, null=False, blank=False, max_length=100)
-    dpopp_passport = JSONField(null=True, blank=True)
+    passport = JSONField(default=dict)
 
 class PassportStamp(SuperModel):
     user = models.ForeignKey(User, related_name='passport_stamps', on_delete=models.CASCADE, null=True, db_index=True)
     stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100)
-
