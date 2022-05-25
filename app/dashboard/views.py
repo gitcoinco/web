@@ -121,7 +121,12 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
+<<<<<<< HEAD
 from .dpopp_reader import get_crypto_accounts, get_did, get_passport, get_stream_ids
+=======
+from .dpopp_reader import CERAMIC_URL, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_did, get_passport, get_stream_ids
+
+>>>>>>> fix: services to match expected casing and adds more validity checks server-side
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -2929,7 +2934,10 @@ def get_profile_tab(request, profile, tab, prev_context):
                     'is_verified': profile.is_facebook_verified # @TODO needs to be replace with dpopp_is_*_verified
                 }
             ]
-
+            # place the issuer into context
+            context['iam_issuer'] = TRUSTED_IAM_ISSUER
+            # pass the ceramic_url to the frontend
+            context['ceramic_url'] = CERAMIC_URL
             # use session challenge or generate a new one
             context['challenge'] = request.session.get('dpopp_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
             # store into session
@@ -3144,16 +3152,26 @@ def verify_dpopp(request, handle):
         # dict from list
         stamps_to_return = {}
         matched_services = {
+<<<<<<< HEAD
                 'POH': {
                     'match_percent': 0.50,
+=======
+                'Poh': {
+                    'match_percent': 50,
+>>>>>>> fix: services to match expected casing and adds more validity checks server-side
                     'verified': 0
                 },
                 'POAP': {
                     'match_percent': 0.25,
                     'verified': 0,
                 },
+<<<<<<< HEAD
                 'ENS': {
                     'match_percent': 0.25,
+=======
+                'Ens': {
+                    'match_percent': 25,
+>>>>>>> fix: services to match expected casing and adds more validity checks server-side
                     'verified': 0
                 },
                 'Google': {
@@ -3192,13 +3210,25 @@ def verify_dpopp(request, handle):
             subject_address = (subject_id.split(":")[-1]).split("#")[0].lower()
 
             # the users addresses must be one of the addresses in the accounts list we got for the did, otherwise
-            # we just ognore this stamp
+            # we just ignore this stamp
             is_subject_valid = subject_address in accounts
+
+            # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
+            is_stamp_expired = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
+
+            # the stamp must be issued by the trusted IAM server
+            is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
 
             if not is_subject_valid:
                 logger.error("Invalid stamp subject: %s", subject_address)
 
-            if is_subject_valid:
+            if is_stamp_expired:
+                logger.error("Expired stamp: %s", subject_id)
+
+            if not is_issued_by_iam:
+                logger.error("Stamp wasn't issued by the trusted IAM: '%s' instead got '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
+
+            if is_subject_valid and not is_stamp_expired and is_issued_by_iam:
                 # get the stamp ID, and register it with our records
                 # this will be used to ensure that this stamp is not linked to any other user profile
                 stamp_id = stamp["credential"]["credentialSubject"]["root"]      # TODO: geri: to be replaced with the new field (the sha hash)
@@ -3210,7 +3240,7 @@ def verify_dpopp(request, handle):
                     logger.error("Duplicate stamp id was detected: %s", stamp_id)
 
                 if stamp_id_is_valid:
-                    # Save the stamp id
+                    # Save the stamp id (@TODO: should we also have `did` and `active` fields?)
                     stamp_registry = PassportStamp.objects.update_or_create(user=user, stamp_id=stamp_id)
 
                     # Proceed with verifying the credential
@@ -3219,7 +3249,7 @@ def verify_dpopp(request, handle):
 
                     logger.error("TODO: verification result: %s", pformat(verification))
 
-                    stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings?
+                    stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings? GD: I've just been basing these checks on the errors
                     stamps_to_return[stamp['provider']] = stamp
 
                     matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0

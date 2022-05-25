@@ -2149,7 +2149,7 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     if instance.github_url:
-        instance.github_url = instance.github_url.lower() 
+        instance.github_url = instance.github_url.lower()
         try:
             handle = instance.github_url.split('/')[3]
             if not instance.org:

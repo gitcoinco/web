@@ -21,8 +21,8 @@ Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
   data() {
     return {
-      reader: new PassportReader('https://ceramic.staging.dpopp.gitcoin.co', 1),
-      issuer: 'did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw',
+      reader: new PassportReader(document.ceramic_url, 1),
+      issuer: document.issuer,
       DIDKit: undefined,
       did: undefined,
       accounts: undefined,
