@@ -16,9 +16,9 @@ CERAMIC_URL = "https://ceramic.staging.dpopp.gitcoin.co"
 TRUSTED_IAM_ISSUER = "did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw"
 
 # Ceramic definition id for CryptoAccounts on the ceramic model
-ceramic_crypto_accounts_stream_id = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
+CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
 # Ceramic definition id for dPoPP passport
-ceramic_passport_stream_id = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
+CERAMIC_PASSPORT_STREAM_ID = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
 
 def get_did(address, network="1"):
     # default to no did found
@@ -42,7 +42,7 @@ def clean_address(address, network="1"):
     # strip addresses suffix like @eip155:1, @eip155:4, @eip155:137
     return address.split("@eip155")[0]
 
-def get_stream_ids(did, ids=[ceramic_crypto_accounts_stream_id, ceramic_passport_stream_id]):
+def get_stream_ids(did, ids=[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID, CERAMIC_PASSPORT_STREAM_ID]):
     # encode the input genesis with cborg (Concise Binary Object Representation)
     input_bytes = dag_cbor.encode({"header":{"controllers":[did],"family":"IDX"}})
     # hash the input_bytes and pad with STREAMID_CODEC and type (as bytes)
@@ -76,7 +76,7 @@ def get_stream_ids(did, ids=[ceramic_crypto_accounts_stream_id, ceramic_passport
 
 def get_crypto_accounts(did="", stream_ids=[]):
     # get streamIds if non are provided
-    stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [ceramic_crypto_accounts_stream_id])
+    stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID])
 
     # create an empty list of accounts
     crypto_accounts = []
@@ -84,7 +84,7 @@ def get_crypto_accounts(did="", stream_ids=[]):
     # attempt to pull content
     try:
         # pull the CryptoAccounts streamID
-        stream_id = stream_ids[ceramic_crypto_accounts_stream_id]
+        stream_id = stream_ids[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID]
 
         # get the stream content from given streamID
         stream_response = requests.get(f"{CERAMIC_URL}/api/v0/streams/{stream_id}")
@@ -106,7 +106,7 @@ def get_crypto_accounts(did="", stream_ids=[]):
 
 def get_passport(did="", stream_ids=[]):
     # get streamIds if non are provided
-    stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [ceramic_passport_stream_id])
+    stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [CERAMIC_PASSPORT_STREAM_ID])
 
     # attempt to pull content
     passport = get_stamps(get_passport_stream(stream_ids))
@@ -130,7 +130,7 @@ def get_passport_stream(stream_ids=[]):
 
     try:
         # pull the CryptoAccounts streamID
-        stream_id = stream_ids[ceramic_passport_stream_id]
+        stream_id = stream_ids[CERAMIC_PASSPORT_STREAM_ID]
         # get the stream content from given streamID
         stream_response = requests.get(f"{CERAMIC_URL}/api/v0/streams/{stream_id}")
         # get back the state object

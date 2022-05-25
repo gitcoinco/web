@@ -2891,40 +2891,38 @@ def get_profile_tab(request, profile, tab, prev_context):
 
             # detail available services
             context['is_passport_connected'] = json.dumps(bool(profile.dpopp_trust_bonus))
-            context['dpopp_trust_bonus']  = profile.dpopp_trust_bonus if profile.dpopp_trust_bonus is not None else 'null';
 
+            # gets dpopp_trust_bonus || trust_bonus
+            context['trust_bonus'] = profile.final_trust_bonus
+            # this score will be displayed on first load if the passport is connected
+            context['dpopp_trust_bonus']  = profile.dpopp_trust_bonus if profile.dpopp_trust_bonus is not None else 'null'
+
+            # dump the full passport into the context
             try:
                 context['passport'] = json.dumps(Passport.objects.get(user=profile.user).passport)
             except Passport.DoesNotExist:
                 context['passport'] = 'null'
 
-            context['trust_bonus'] = profile.final_trust_bonus
-
+            # pass in a list of available services and the available matching
             services = [
                 {
                     'ref': f'{trusted_issuer}#Poh',
-                    'match_percent': 50,
-                    'is_verified': profile.is_poh_verified # @TODO needs to be replace with dpopp_is_*_verified
+                    'match_percent': 50
                 }, {
                     'ref': f'{trusted_issuer}#POAP',
-                    'match_percent': 25,
-                    'is_verified': profile.is_poap_verified # @TODO needs to be replace with dpopp_is_*_verified
+                    'match_percent': 25
                 }, {
                     'ref': f'{trusted_issuer}#Ens',
-                    'match_percent': 25,
-                    'is_verified': profile.is_ens_verified # @TODO needs to be replace with dpopp_is_*_verified
+                    'match_percent': 25
                 }, {
                     'ref': f'{trusted_issuer}#Google',
-                    'match_percent': 15,
-                    'is_verified': profile.is_google_verified # @TODO needs to be replace with dpopp_is_*_verified
+                    'match_percent': 15
                 }, {
                     'ref': f'{trusted_issuer}#Twitter',
-                    'match_percent': 15,
-                    'is_verified': profile.is_twitter_verified # @TODO needs to be replace with dpopp_is_*_verified
+                    'match_percent': 15
                 }, {
                     'ref': f'{trusted_issuer}#Facebook',
-                    'match_percent': 15,
-                    'is_verified': profile.is_facebook_verified # @TODO needs to be replace with dpopp_is_*_verified
+                    'match_percent': 15
                 }
             ]
             # place the issuer into context
@@ -3107,7 +3105,8 @@ def verify_dpopp(request, handle):
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     sig_is_valid = address.lower() == signer.lower()
 
-    logger.error("TODO: Verify dpopp 2")
+    logger.error("TODO: Verify dpopp - %s == %s", address, did)
+
     # invalid sig error
     if not sig_is_valid:
         return JsonResponse({

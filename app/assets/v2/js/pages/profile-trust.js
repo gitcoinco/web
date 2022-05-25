@@ -109,8 +109,6 @@ Vue.component('active-trust-manager', {
         return;
       }
 
-      console.log('TODO trust-bonus selectedAccount', selectedAccount);
-
       // get the selectedAccounts ceramic DID
       this.did = await this.reader.getDID(selectedAccount);
 
@@ -124,8 +122,6 @@ Vue.component('active-trust-manager', {
         this.accounts = await this.reader.getAccounts(this.did, streams);
         // extract passport from reader each refresh to ensure we catch any newly created streams
         this.passport = await this.reader.getPassport(this.did, streams);
-
-        console.log('TODO trust-bonus  this.passport', this.passport);
 
         // check the validity of the Passport updating the score
         this.passportVerifiedLocally = await this.verifyPassport();
