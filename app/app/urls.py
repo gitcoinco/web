@@ -138,12 +138,19 @@ urlpatterns = [
         name='profile_set_tax_settings'
     ),
 
+
     # grants2.0 Verification Services
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/dpopp/stamp/check',
+        dashboard.views.check_dpopp_stamps,
+        name='check_dpopp_stamp'
+    ),
     url(
         r'^api/v2/profile/(?P<handle>.*)/dpopp/verify',
         dashboard.views.verify_dpopp,
         name='verify_dpopp'
     ),
+
 
     # grants1.0 Verification Services
     url(
@@ -452,8 +459,8 @@ urlpatterns = [
     ),
 
     # View Bounty
-    # TODO: The 2 URLs below issue_details_new2 and issue_details_new3 will not be used any more (we should not create such 
-    # links any more), and can be removed in the future. We are keeping these for now to avoid breaking the 
+    # TODO: The 2 URLs below issue_details_new2 and issue_details_new3 will not be used any more (we should not create such
+    # links any more), and can be removed in the future. We are keeping these for now to avoid breaking the
     # existing links that users might have saved already.
     url(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',

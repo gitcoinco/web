@@ -108,7 +108,7 @@
         {% if tab == 'trust' %}
           <script>
             document.services = {{ services|safe }};
-            document.issuer = "{{ iam_issuer }}";
+            document.iam_issuer = "{{ iam_issuer }}";
             document.ceramic_url = "{{ ceramic_url }}";
             document.challenge = "{{ challenge }}";
             document.round_start_date = {{ round_start_date }};

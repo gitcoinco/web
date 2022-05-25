@@ -3076,16 +3076,38 @@ def get_profile_tab(request, profile, tab, prev_context):
         raise Http404
     return context
 
+
+@login_required
+@require_POST
+def check_dpopp_stamps(request, handle):
+    stamps = {}
+
+    user = request.user
+
+    # pull from post data
+    did = request.POST.get('did')
+    hashes = request.POST.getlist('stamp_hashes[]')
+
+    # check if the stamp has been allocated to a different user
+    for stamp_id in hashes:
+        duplicate_stamp_ids = PassportStamp.objects.exclude(user=user).filter(stamp_id=stamp_id)
+        stamps[stamp_id] = len(duplicate_stamp_ids) == 0
+
+    return JsonResponse({
+        'checks': stamps
+    })
+
+
 @login_required
 @require_POST
 def verify_dpopp(request, handle):
+    user = request.user
+    profile = user.profile
+
     # pull from post data
     address = request.POST.get('eth_address')
     signature = request.POST.get('signature')
     did = request.POST.get('did')
-
-    user = request.user
-    profile = user.profile
 
     try:
         # Verify that this DID is not associated to any other profile.

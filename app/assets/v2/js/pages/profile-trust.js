@@ -22,7 +22,7 @@ Vue.component('active-trust-manager', {
   data() {
     return {
       reader: new PassportReader(document.ceramic_url, 1),
-      issuer: document.issuer,
+      IAMIssuer: document.iam_issuer,
       DIDKit: undefined,
       did: undefined,
       accounts: undefined,
@@ -78,7 +78,9 @@ Vue.component('active-trust-manager', {
       this.did = false;
       this.accounts = false;
       this.passport = false;
+      // this is set after we savePassport() if no verifications failed
       this.passportVerified = false;
+      // this tells us if all stamps would verify if submitted via savePassport()
       this.passportVerifiedLocally = false;
 
       this.verificationError = false;
@@ -126,7 +128,7 @@ Vue.component('active-trust-manager', {
 
         console.log('TODO trust-bonus  this.passport', this.passport);
 
-        // check the validity of the Passport updating the score (@TODO - have the verification check hashes in the dupes table)
+        // check the validity of the Passport updating the score
         this.passportVerifiedLocally = await this.verifyPassport();
       }
 
@@ -136,33 +138,40 @@ Vue.component('active-trust-manager', {
     async verifyPassport() {
       // check for a passport and then its validity
       if (this.passport) {
-        // get a boolean for if the given passport would verify if presented to the back-end for verification
+
+        // check if the stamps are unique to this user...
+        const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/dpopp/stamp/check`, {
+          'did': this.did,
+          'stamp_hashes': this.passport.stamps.map((stamp) => {
+            return stamp.credential.credentialSubject.root
+          })
+        });
+
+        // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
         return (await Promise.all(this.passport.stamps.map(async(stamp) => {
           // set the service against provider and issuer
-          const serviceDictId = `${this.issuer}#${stamp.provider}`;
+          const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
           // validate the contents of the stamp collection
-          const ignore_expiry_check = true;
-          const ignore_issuer_check = true;
-          const ignore_owner_check = false;
-          const ignore_hash_check = true;
-          const expiry_check = ignore_expiry_check || new Date(stamp.credential.expirationDate) > new Date();
-          const issuer_check = ignore_issuer_check || stamp.credential.issuer === this.issuer;
-          const owner_check = ignore_owner_check || this.accounts.indexOf(
+          const ignoreExpiryCheck = true;
+          const ignoreIssuerCheck = false;
+          const ignoreHashCheck = false;
+          const ignoreOwnerCheck = false;
+          const expiryCheck = ignoreExpiryCheck || new Date(stamp.credential.expirationDate) > new Date();
+          const issuerCheck = ignoreIssuerCheck || stamp.credential.issuer === this.IAMIssuer;
+          const hashCheck = ignoreHashCheck || stampHashes.checks[stamp.credential.credentialSubject.root] === true;
+          const ownerCheck = ignoreOwnerCheck || this.accounts.indexOf(
             stamp.credential.credentialSubject.id.replace('did:ethr:', '').replace('#' + stamp.provider, '').toLowerCase()
           ) !== -1;
 
-          // @TODO - need to check the hash against the dupes store - collect roots and request all checks at once?
-          const hash_check = ignore_hash_check && stamp.credential.credentialSubject.root;
-
-          // check exists and has valid expiry / issuer / owner...
-          if (stamp && this.serviceDict[serviceDictId] && stamp.credential && expiry_check && issuer_check && owner_check && hash_check) {
+          // check exists and has valid expiry / issuer / hash / owner...
+          if (stamp && this.serviceDict[serviceDictId] && stamp.credential && expiryCheck && issuerCheck && hashCheck && ownerCheck) {
             // verify with DIDKits verifyCredential()
             const verified = JSON.parse(await this.DIDKit.verifyCredential(
               JSON.stringify(stamp.credential),
               `{"proofPurpose":"${stamp.credential.proof.proofPurpose}"}`
             ));
 
-            // if no errors then this is a valid VerifiableCredential issued by the known issuer and unique to our store
+            // if no errors then this is a valid VerifiableCredential issued by the known issuer and is unique to our store
             this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0;
           }
 
@@ -210,8 +219,10 @@ Vue.component('active-trust-manager', {
 
           // notify success (temp)
           _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
-          // mark verified
-          this.passportVerified = true;
+
+
+          // mark verified if no errors are returned
+          this.passportVerified = !response.error;
         }
       } catch (err) {
         // set error state
