@@ -17,6 +17,8 @@ const apiCall = (url, givenPayload) => {
   });
 };
 
+const pageLoadTrustBonus = document.trust_bonus * 100;
+
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
   data() {
@@ -28,8 +30,9 @@ Vue.component('active-trust-manager', {
       accounts: undefined,
       passport: document.is_passport_connected ? {} : undefined,
       passportVerified: document.is_passport_connected,
-      passportVerifiedScore: document.trust_bonus * 100,
       passportVerifiedLocally: false,
+      passportVerifiedScore: pageLoadTrustBonus,
+      trust_bonus: pageLoadTrustBonus || 50,
       loading: false,
       verificationError: false,
       round_start_date: parseMonthDay(document.round_start_date),
@@ -48,12 +51,6 @@ Vue.component('active-trust-manager', {
     document.addEventListener('walletDisconnect', () => this.reset(true));
   },
   computed: {
-    trust_bonus: function() {
-
-      return this.passportVerifiedScore || Math.min(150, this.services.reduce((total, service) => {
-        return (service.is_verified ? service.match_percent : 0) + total;
-      }, 50));
-    },
     serviceDict: function() {
 
       return this.services.reduce((services, service) => {
@@ -81,6 +78,8 @@ Vue.component('active-trust-manager', {
       this.passportVerifiedLocally = false;
       // clear the first-load verified score
       this.passportVerifiedScore = false;
+      // bonus to default of 50
+      this.trust_bonus = 50;
 
       if (clearStamps) {
         this.services.forEach((service) => {
@@ -143,7 +142,7 @@ Vue.component('active-trust-manager', {
         });
 
         // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
-        return (await Promise.all(this.passport.stamps.map(async(stamp) => {
+        const isVerified = (await Promise.all(this.passport.stamps.map(async(stamp) => {
           // set the service against provider and issuer
           const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
           // validate the contents of the stamp collection
@@ -169,10 +168,17 @@ Vue.component('active-trust-manager', {
             // if no errors then this is a valid VerifiableCredential issued by the known issuer and is unique to our store
             this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0;
           }
-
           // collect array of true/false to check validity of every issued stamp (if stamp isn't recognised then it should be ignored (always true))
           return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
         }))).reduce((isVerified, verified) => !isVerified ? false : verified, true);
+
+        // set the new trust_bonus score
+        this.trust_bonus = Math.min(150, this.services.reduce((total, service) => {
+          return (service.is_verified ? service.match_percent : 0) + total;
+        }, 50));
+
+        // return to set passportVerifiedLocally
+        return isVerified;
       }
 
       // not verified if we don't have a Passport
