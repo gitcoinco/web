@@ -3116,8 +3116,8 @@ def verify_dpopp(request, handle):
     # TODO: reset challenge?
     # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
 
-    # enqueue the validation and saving procedure
-    calculate_trust_bonus.delay(request.user.id, did, address)
+    # enqueue the validation and saving procedure - @TODO - this task should be enqueued (.delay) but review env has no celerey worker
+    calculate_trust_bonus(request.user.id, did, address)
 
     return JsonResponse({'ok': True})
 
