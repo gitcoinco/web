@@ -121,12 +121,8 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
-<<<<<<< HEAD
-from .dpopp_reader import get_crypto_accounts, get_did, get_passport, get_stream_ids
-=======
 from .dpopp_reader import CERAMIC_URL, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_did, get_passport, get_stream_ids
 
->>>>>>> fix: services to match expected casing and adds more validity checks server-side
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -2906,7 +2902,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                 context['passport'] = 'null'
 
             context['trust_bonus'] = profile.final_trust_bonus
-            
+
             services = [
                 {
                     'ref': f'{trusted_issuer}#Poh',
@@ -3174,26 +3170,16 @@ def verify_dpopp(request, handle):
         # dict from list
         stamps_to_return = {}
         matched_services = {
-<<<<<<< HEAD
-                'POH': {
-                    'match_percent': 0.50,
-=======
                 'Poh': {
-                    'match_percent': 50,
->>>>>>> fix: services to match expected casing and adds more validity checks server-side
+                    'match_percent': 0.50,
                     'verified': 0
                 },
                 'POAP': {
                     'match_percent': 0.25,
                     'verified': 0,
                 },
-<<<<<<< HEAD
-                'ENS': {
-                    'match_percent': 0.25,
-=======
                 'Ens': {
-                    'match_percent': 25,
->>>>>>> fix: services to match expected casing and adds more validity checks server-side
+                    'match_percent': 0.25,
                     'verified': 0
                 },
                 'Google': {
