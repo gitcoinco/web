@@ -961,7 +961,7 @@ def grants_landing(request):
             'featured': True,
             'now': now,
             'trust_bonus': round(
-                request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
+                request.user.profile.final_trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
         },
         **clr_rounds_metadata
     )
@@ -1113,7 +1113,7 @@ def grants_by_grant_type(request, grant_type):
         'sub_round_slug': request.GET.get('sub_round_slug'),
         'customer_name': request.GET.get('customer_name'),
         'trust_bonus': round(
-            request.user.profile.trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
+            request.user.profile.final_trust_bonus * 100) if request.user.is_authenticated and request.user.profile else 0
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -2064,7 +2064,7 @@ def grants_cart_view(request):
     if request.user.is_authenticated:
         profile = request.user.profile
         context['username'] = profile.username
-        context['trust_bonus'] = round(request.user.profile.trust_bonus * 100)
+        context['trust_bonus'] = round(request.user.profile.final_trust_bonus * 100)
 
         is_brightid_verified = ('verified' == get_brightid_status(profile.brightid_uuid))
 
@@ -3377,7 +3377,7 @@ def get_trust_bonus(request):
         if subscription.contributor_address not in _addrs:
             response.append({
                 'address': subscription.contributor_address,
-                'score': subscription.contributor_profile.trust_bonus
+                'score': subscription.contributor_profile.final_trust_bonus
             })
             _addrs.append(subscription.contributor_address)
 

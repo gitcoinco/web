@@ -35,9 +35,7 @@ from django.views.decorators.http import require_http_methods
 
 from app.utils import get_profiles_from_text
 from cacheops import cached_view
-from dashboard.models import (
-    Activity, HackathonEvent, Profile, Tip
-)
+from dashboard.models import Activity, HackathonEvent, Profile, Tip
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
