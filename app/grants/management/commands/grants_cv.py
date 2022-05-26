@@ -37,7 +37,7 @@ class Command(BaseCommand):
         def run_query(q):
             url = 'https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-rinkeby'
             if not settings.DEBUG:
-                url = 'TODO-get-from-dani'
+                url = 'https://api.studio.thegraph.com/query/20308/gtc-conviction-voting-mainnet/v0.0.1'
             request = requests.post(url,
                                     '',
                                     json={'query': q})
