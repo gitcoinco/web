@@ -17,40 +17,88 @@ const apiCall = (url, givenPayload) => {
   });
 };
 
-// Initial score defined in context payload
-const pageLoadTrustBonus = document.trust_bonus * 100;
+Vue.component('error-passport-content', {
+  template: `<a>passport error</a>`
+});
+
+Vue.component('error-wallet-content', {
+  template: `<a>wallet error</a>`
+});
+
+Vue.component('success-verify-content', {
+  template: `<a>passport verified</a>`
+});
+
+// Modal to display state in
+Vue.component('state-modal', {
+  delimiters: [ '[[', ']]' ],
+  props: {
+    showModal: {
+      type: Boolean,
+      required: false,
+      'default': false
+    },
+    type: {
+      type: [String, Boolean],
+      required: false,
+      'default': false
+    }
+  },
+  template: `
+    <b-modal id="error-modal" @hide="dismissModal()" :visible="showModal" size="md" body-class="p-0" hide-header hide-footer>
+      <template v-slot:default="{ hide }">
+        <div class="modal-content rounded-0 p-0">
+          <div class="p-2 text-center">
+            [[type]]
+            <template v-if="type == 'success-verify'">
+              <success-verify-content></success-verify-content>
+            </template>
+            <template v-else-if="type == 'error-passport'">
+              <error-passport-content></error-passport-content>
+            </template>
+            <template v-else-if="type == 'error-wallet'">
+              <error-wallet-content></error-wallet-content>
+            </template>
+          </div>
+        </div>
+      </template>
+    </b-modal>`,
+  methods: {
+    dismissModal() {
+      this.$emit('modal-dismissed');
+    },
+  }
+});
 
 // Create the trust-bonus view
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
   data() {
     return {
-      reader: new PassportReader(document.ceramic_url, 1),
       IAMIssuer: document.iam_issuer,
       DIDKit: undefined,
+      reader: new PassportReader(document.ceramic_url, 1),
       did: undefined,
-      accounts: undefined,
       passport: document.is_passport_connected ? {} : undefined,
       passportVerified: document.is_passport_connected,
-      passportVerifiedLocally: false,
-      passportVerifiedScore: pageLoadTrustBonus,
-      trustBonus: pageLoadTrustBonus || 50,
+      trustBonus: (document.trust_bonus * 100) || 50,
       loading: false,
       verificationError: false,
       roundStartDate: parseMonthDay(document.round_start_date),
       roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
-      visibleModal: 'none'
+      modalShow: false,
+      modalName: false
     };
   },
   async mounted() {
     // await DIDKits bindings
     this.DIDKit = (await DIDKit);
 
-    // on account change/connect etc...
-    document.addEventListener('dataWalletReady', () => !this.passportVerifiedScore && this.connectPassportListener());
+    // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
+    document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassportListener());
     // on wallet disconnect (clear Passport state)
-    document.addEventListener('walletDisconnect', () => this.reset(true));
+    document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
   },
   computed: {
     serviceDict: function() {
@@ -65,28 +113,25 @@ Vue.component('active-trust-manager', {
   },
   methods: {
     showModal(modalName) {
-      this.visibleModal = modalName;
+      this.modalShow = true;
+      this.modalName = modalName;
     },
     hideModal() {
-      this.visibleModal = 'none';
+      this.modalShow = false;
+
+      // reset modal content after timeout
+      setTimeout(() => {
+        this.modalName = false;
+      }, 1000);
     },
     reset(fullReset) {
       // this is set after we savePassport() if no verifications failed
       this.passportVerified = false;
-      // clear the first-load verified score
-      this.passportVerifiedScore = false;
 
       if (fullReset) {
         // clear current user state
         this.did = false;
-        this.accounts = false;
         this.passport = false;
-
-        // bonus to default of 50
-        this.trustBonus = 50;
-
-        // this tells us if all stamps would verify if submitted via savePassport()
-        this.passportVerifiedLocally = false;
 
         // clear the stamps
         this.services.forEach((service) => {
@@ -123,36 +168,49 @@ Vue.component('active-trust-manager', {
         // grab all the streams at once to reduce the required number of reqs
         const genesis = await this.reader._tulons.getGenesisHash(this.did);
         const streams = await this.reader._tulons.getGenesisStreams(genesis);
-
-        // extract all accounts who have control of the passport
-        this.accounts = await this.reader.getAccounts(this.did, streams);
+        // get records from the reader
+        const records = await Promise.all([
+          await this.reader.getPassport(this.did, streams),
+          await this.reader.getAccounts(this.did, streams)
+        ]);
         // extract passport from reader each refresh to ensure we catch any newly created streams
-        this.passport = await this.reader.getPassport(this.did, streams);
+        const passport = records[0];
+        // extract all accounts who have control of the passport
+        const accounts = records[1];
 
-        // check the validity of the Passport updating the score
-        this.passportVerifiedLocally = await this.verifyPassport();
+        // if we didn't discover a passport or the accounts then enter fail state
+        if (passport && accounts) {
+          // check the validity of the Passport updating the score
+          await this.verifyPassport(passport, accounts).then(() => {
+            // store passport into state after verifying content to avoid display scoring until ready
+            this.passport = passport;
+          });
+        } else {
+          // error if no passport found
+          this.verificationError = 'There is no Passport associated with this wallet';
+        }
       } else {
-        // error if no passport found
-        this.verificationError = 'There is no Passport associated with this wallet';
+        // error if no ceramic account found
+        this.verificationError = 'There is no Ceramic Account associated with this wallet';
       }
 
       // done with loading state
       this.loading = false;
     },
-    async verifyPassport() {
+    async verifyPassport(passport, accounts) {
       // check for a passport and then its validity
-      if (this.passport) {
+      if (passport) {
 
         // check if the stamps are unique to this user...
         const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/dpopp/stamp/check`, {
           'did': this.did,
-          'stamp_hashes': this.passport.stamps.map((stamp) => {
+          'stamp_hashes': passport.stamps.map((stamp) => {
             return stamp.credential.credentialSubject.root;
           })
         });
 
         // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
-        const isVerified = (await Promise.all(this.passport.stamps.map(async(stamp) => {
+        await Promise.all(passport.stamps.map(async(stamp) => {
           // set the service against provider and issuer
           const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
           // validate the contents of the stamp collection
@@ -163,7 +221,7 @@ Vue.component('active-trust-manager', {
           const expiryCheck = ignoreExpiryCheck || new Date(stamp.credential.expirationDate) > new Date();
           const issuerCheck = ignoreIssuerCheck || stamp.credential.issuer === this.IAMIssuer;
           const hashCheck = ignoreHashCheck || stampHashes.checks[stamp.credential.credentialSubject.root] === true;
-          const ownerCheck = ignoreOwnerCheck || this.accounts.indexOf(
+          const ownerCheck = ignoreOwnerCheck || accounts.indexOf(
             stamp.credential.credentialSubject.id.replace('did:ethr:', '').replace('#' + stamp.provider, '').toLowerCase()
           ) !== -1;
 
@@ -180,19 +238,13 @@ Vue.component('active-trust-manager', {
           }
           // collect array of true/false to check validity of every issued stamp (if stamp isn't recognised then it should be ignored (always true))
           return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
-        }))).reduce((isVerified, verified) => !isVerified ? false : verified, true);
+        }));
 
         // set the new trustBonus score
         this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
           return (service.is_verified ? service.match_percent : 0) + total;
         }, 50));
-
-        // return to set passportVerifiedLocally
-        return isVerified;
       }
-
-      // not verified if we don't have a Passport
-      return false;
     },
     async savePassport() {
       // attempt to verify the passport
@@ -223,6 +275,7 @@ Vue.component('active-trust-manager', {
 
           // display error state if sig was bad
           if (response.error) {
+            // Bad signature error
             this.verificationError = response.error;
           } else {
             // notify success (temp)

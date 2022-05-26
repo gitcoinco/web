@@ -7,9 +7,14 @@
       <div>
 
         <why-this-matters-modal
-          :show-modal="visibleModal === 'why-this-matters-modal'"
+          :show-modal="modalShow && modalName === 'why-this-matters-modal'"
           @modal-dismissed="hideModal()">
         </why-this-matters-modal>
+
+        <state-modal
+          :show-modal="modalShow" :type="modalName"
+          @modal-dismissed="hideModal()">
+        </state-modal>
 
         <div class="bg-violet-300 text-white spacer-p-4 spacer-mt-5">
           <div class="row">
@@ -41,11 +46,11 @@
         </div>
 
         <div class="row spacer-mt-4 spacer-mt-lg-6">
-          <div class="col-12 col-lg-6 d-flex spacer-pb-3">
+          <div class="col-12 col-lg-4 col-xl-6 d-flex spacer-pb-3">
             <img class="w-100 my-auto" src={% static "v2/images/dpopp-landing-1.png" %} />
           </div>
 
-          <div class="col-12 col-lg-6 spacer-pb-3">
+          <div class="col-12 col-lg-8 col-xl-6 spacer-pb-3">
 
             <h1>dPassport</h1>
             <h4>Decentralized Proof Of Personhood Passport</h4>
@@ -55,18 +60,26 @@
               The scorer is designed to provide proof of identity through your passport.
             </span>
 
-            <div class="spacer-my-5">
-              <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" :class="`btn btn-lg px-5 btn-${passportVerified ? 'dark' : 'primary'}`" @click="connectPassport">
+            <div class="d-block d-md-flex spacer-my-5" style="min-height: 52px;">
+              <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" :class="`col-12 col-md-auto btn btn-lg px-5 flex-shrink-0 btn-${passportVerified ? 'dark' : 'primary'}`" @click="connectPassport">
                 [[!passport && !loading ? "Connect Passport" : "Refresh Passport"]]
               </b-button>
-              <div v-if="passport && !passportVerified && !verificationError" class="d-inline ml-4">
-                <i class="fas fa-shield px-1" style="color: transparent"></i><a class="link cursor-pointer" @click="savePassport">Verify Passport</a>
+              <div v-if="passport && !passportVerified && !verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
+                <div class="d-inline ml-md-5 my-auto">
+                  <a class="link cursor-pointer" @click="savePassport">Verify Passport</a>
+                </div>
               </div>
-              <div v-else-if="passport && passportVerified && !verificationError" class="d-inline ml-4">
-                <i class="fa fa-check px-1" style="color: #059669"></i><span style="color: #059669">Passport Verified!</span>
+              <div v-else-if="passport && passportVerified && !verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
+                <i class="fa fa-check my-auto ml-md-5 px-1" style="color: #059669"></i>
+                <div class="d-inline ml-2 my-auto">
+                  <span style="color: #059669">Passport Verified!</span>
+                </div>
               </div>
-              <div v-else-if="verificationError" class="d-inline ml-4">
-                <i class="fas fa-shield-virus px-1" style="color: #757087"></i><span style="color: #757087">Verification Failed</span>
+              <div v-else-if="verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
+                <i class="fa-shield-virus fas my-auto ml-md-5 px-1" style="color: #d03e63"></i>
+                <div class="d-inline ml-2 my-auto">
+                  <span style="color: #d03e63">Verification Failed <div class="font-smaller-5">[[ verificationError ]]</div></span>
+                </div>
               </div>
             </div>
 

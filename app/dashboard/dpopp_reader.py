@@ -3,6 +3,7 @@ import hashlib
 import json
 
 import dag_cbor
+
 # Making GET requests against the CERAMIC_URL to read streams
 import requests
 
@@ -12,7 +13,7 @@ from .base36 import base36
 # Location of a ceramic node that we can read state from
 CERAMIC_URL = "https://ceramic.staging.dpopp.gitcoin.co"
 
-# DID of the trusted IAM server
+# DID of the trusted IAM server (PROD = "did:key:z6MkghvGHLobLEdj1bgRLhS4LPGJAvbMA1tn2zcRyqmYU5LC")
 TRUSTED_IAM_ISSUER = "did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw"
 
 # Service weights for scorer
