@@ -10,7 +10,7 @@ import requests
 # Base36 is the expected encoding for a ceramic streamID
 from .base36 import base36
 
-# Location of a ceramic node that we can read state from
+# Location of a Ceramic node that we can read state from
 CERAMIC_URL = "https://ceramic.staging.dpopp.gitcoin.co"
 
 # DID of the trusted IAM server (DEV = "did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw")
@@ -41,7 +41,7 @@ SCORER_SERVICE_WEIGHTS = [
 
 # Ceramic definition id for CryptoAccounts on the ceramic model
 CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
-# Ceramic definition id for dPoPP passport
+# Ceramic definition id for Gitcoin Passport
 CERAMIC_PASSPORT_STREAM_ID = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
 
 def get_did(address, network="1"):

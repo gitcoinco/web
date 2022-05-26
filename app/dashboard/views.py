@@ -117,7 +117,7 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
-from .dpopp_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
+from .passport_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -2873,8 +2873,8 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
-        # force use of dpassport
-        context['use_dpassport'] = True
+        # force use of passport
+        context['use_passport_trust_bonus'] = True
 
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
@@ -2884,15 +2884,15 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())
         context['show_round_banner'] = clr_rounds_metadata['show_round_banner']
 
-        # dPassport or cTrust
-        if context['use_dpassport']:
+        # Passport Trust Bonus or original Trust Bonus
+        if context['use_passport_trust_bonus']:
             # detail available services
-            context['is_passport_connected'] = json.dumps(bool(profile.dpopp_trust_bonus))
+            context['is_passport_connected'] = json.dumps(bool(profile.passport_trust_bonus))
 
-            # gets dpopp_trust_bonus || trust_bonus
+            # gets passport_trust_bonus || trust_bonus
             context['trust_bonus'] = profile.final_trust_bonus
             # this score will be displayed on first load if the passport is connected
-            context['dpopp_trust_bonus']  = profile.dpopp_trust_bonus if profile.dpopp_trust_bonus is not None else 'null'
+            context['passport_trust_bonus']  = profile.passport_trust_bonus if profile.passport_trust_bonus is not None else 'null'
 
             # dump the full passport into the context
             try:
@@ -2900,17 +2900,18 @@ def get_profile_tab(request, profile, tab, prev_context):
             except Passport.DoesNotExist:
                 context['passport'] = 'null'
 
-            context['trust_bonus'] = profile.final_trust_bonus
-            services = SCORER_SERVICE_WEIGHTS
+            # pass services as JSON in the context
+            context['services'] = json.dumps(SCORER_SERVICE_WEIGHTS)
 
             # place the issuer into context
             context['iam_issuer'] = TRUSTED_IAM_ISSUER
             # pass the ceramic_url to the frontend
             context['ceramic_url'] = CERAMIC_URL
+
             # use session challenge or generate a new one
-            context['challenge'] = request.session.get('dpopp_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+            context['challenge'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
             # store into session
-            request.session['dpopp_challenge'] = context['challenge']
+            request.session['passport_challenge'] = context['challenge']
         else:
             idena = {}
             idena['is_connected'] = profile.is_idena_connected
@@ -3033,13 +3034,13 @@ def get_profile_tab(request, profile, tab, prev_context):
                 }
             ]
 
+            # pass as JSON in the context
+            context['services'] = json.dumps(services)
+
             # Tentatively Coming Soon
             context['coming_soon'] = json.dumps(['Duniter'])
             # Tentatively On the Roadmap
             context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
-
-        # pass as JSON in the context
-        context['services'] = json.dumps(services)
 
     else:
         raise Http404
@@ -3048,7 +3049,7 @@ def get_profile_tab(request, profile, tab, prev_context):
 
 @login_required
 @require_POST
-def check_dpopp_stamps(request, handle):
+def check_passport_stamps(request, handle):
     stamps = {}
 
     user = request.user
@@ -3069,7 +3070,7 @@ def check_dpopp_stamps(request, handle):
 
 @login_required
 @require_POST
-def verify_dpopp(request, handle):
+def verify_passport(request, handle):
     user = request.user
     profile = user.profile
 
@@ -3079,11 +3080,11 @@ def verify_dpopp(request, handle):
     did = request.POST.get('did')
 
     # check for valid sig
-    message_hash = defunct_hash_message(text=request.session['dpopp_challenge'])
+    message_hash = defunct_hash_message(text=request.session['passport_challenge'])
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     sig_is_valid = address.lower() == signer.lower()
 
-    logger.error("TODO: Verify dpopp - %s == %s", address, did)
+    logger.error("TODO: Verify Passport - %s == %s", address, did)
 
     # invalid sig error
     if not sig_is_valid:
@@ -3092,10 +3093,11 @@ def verify_dpopp(request, handle):
         })
 
     # TODO: reset challenge?
-    # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
+    # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
 
     # enqueue the validation and saving procedure
     calculate_trust_bonus.delay(request.user.id, did, address)
+
     return JsonResponse({'ok': True})
 
 def get_profile_by_idena_token(token):

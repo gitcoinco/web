@@ -202,7 +202,7 @@ Vue.component('active-trust-manager', {
       if (passport) {
 
         // check if the stamps are unique to this user...
-        const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/dpopp/stamp/check`, {
+        const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
           'did': this.did,
           'stamp_hashes': passport.stamps.map((stamp) => {
             return stamp.credential.credentialSubject.root;
@@ -267,7 +267,7 @@ Vue.component('active-trust-manager', {
           }
 
           // if we have sig, attempt to save the passports details into the backend
-          const response = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/dpopp/verify`, {
+          const response = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/verify`, {
             'eth_address': selectedAccount,
             'signature': signature,
             'did': this.did
@@ -279,7 +279,7 @@ Vue.component('active-trust-manager', {
             this.verificationError = response.error;
           } else {
             // notify success (temp)
-            _alert('Your dPassport Trust Bonus has been saved!', 'success', 6000);
+            _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
           }
 
           // mark verified if no errors are returned

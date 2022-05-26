@@ -7,7 +7,7 @@ app/assets/landingpage/*
 
 app/assets/onepager/js/confetti.js
 
-app/assets/v2/js/dpopp/*
+app/assets/v2/js/passport/*
 app/assets/v2/js/dataviz/*
 app/assets/v2/js/ethereumjs-accounts.js
 app/assets/onepager/js/tx.js

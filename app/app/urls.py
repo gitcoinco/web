@@ -141,14 +141,14 @@ urlpatterns = [
 
     # grants2.0 Verification Services
     url(
-        r'^api/v2/profile/(?P<handle>.*)/dpopp/stamp/check',
-        dashboard.views.check_dpopp_stamps,
-        name='check_dpopp_stamp'
+        r'^api/v2/profile/(?P<handle>.*)/passport/stamp/check',
+        dashboard.views.check_passport_stamps,
+        name='check_passport_stamp'
     ),
     url(
-        r'^api/v2/profile/(?P<handle>.*)/dpopp/verify',
-        dashboard.views.verify_dpopp,
-        name='verify_dpopp'
+        r'^api/v2/profile/(?P<handle>.*)/passport/verify',
+        dashboard.views.verify_passport,
+        name='verify_passport'
     ),
 
 

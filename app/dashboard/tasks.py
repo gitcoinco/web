@@ -28,7 +28,7 @@ from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
 
-from .dpopp_reader import SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_passport, get_stream_ids
+from .passport_reader import SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_passport, get_stream_ids
 
 logger = get_task_logger(__name__)
 
@@ -499,67 +499,62 @@ def calculate_trust_bonus(user_id, did, address):
         # We want to avoid the same user creating multiple accounts and re-using the same did
         duplicates = Passport.objects.exclude(user_id=user_id).filter(did=did)
 
+        # Duplicate DID
         if len(duplicates) > 0:
-            logger.error("The DID '%s' already associate with another user profile (checked for user '%s')", did, user_id)
+            logger.error("The DID '%s' is already associate with another users profile (checked for user '%s')", did, user_id)
             return
 
-        logger.error("TODO: Verify dpopp did = '%s'", did)
-        logger.error("TODO: Verify dpopp 1")
-
-        # pull streamIds from ceramic
+        # Pull streamIds from Ceramic Account associated with DID
         stream_ids = get_stream_ids(did)
 
-        logger.error("TODO: Verify dpopp stream_ids: '%s'", stream_ids)
-        # get accounts for did
-        accounts = get_crypto_accounts(stream_ids=stream_ids)
-        logger.error("TODO: Verify dpopp accounts: '%s'", accounts)
-        logger.error("TODO: Verify dpopp address: '%s'", address)
+        # No Ceramic Account found for user
+        if not stream_ids:
+            logger.error("No Ceramic Account found for '%s'", did)
+            return
 
+        # Get accounts for did
+        accounts = get_crypto_accounts(stream_ids=stream_ids)
         is_owner = address.lower() in accounts
 
-        logger.error("TODO: Verify dpopp is_owner: '%s'", is_owner)
-        logger.error("TODO: Verify dpopp 3")
-
-        # invalid owner
+        # Invalid owner
         if not is_owner:
             logger.error("Bad owner when checking did '%s'", did)
+            return
 
-        # retrieve passport
+        # Retrieve DIDs Passport from Ceramic
         passport = get_passport(stream_ids=stream_ids)
 
-        logger.error("TODO: Verify dpopp 4")
-        logger.error("TODO: Verify dpopp passport: %s", pformat(passport))
+        # No Passport discovered
+        if not passport:
+            logger.error("No Passport discovered for '%s'", did)
+            return
 
-        # dict from list
+        # Dict from list of stamps
         stamps_to_return = {}
 
         # Build a dict like
         #    {
         #       'TRUSTED_IAM_ISSUER#Poh': {
         #         'match_percent': 0.50,
-        #         'num_verifications': 0        // number of verifications
+        #         'is_verified': 0  # The user needs at least one verification of this type to get the match_percent
         #     },
         #     ...
         # }
+        matched_services = {
+            s['ref']: {
+                'match_percent': s['match_percent'] / 100.0,
+                'is_verified': 0,
+            } for s in SCORER_SERVICE_WEIGHTS
+        }
 
-        matched_services = {s['ref']: {
-            'match_percent': s['match_percent'] / 100.0,
-            'is_verified': 0,  # The user needs at least one verification of this type to get the match_percent
-        } for s in SCORER_SERVICE_WEIGHTS }
-
-        # store the passport
+        # Store the passport
         db_passport, _ = Passport.objects.update_or_create(user_id=user_id, defaults={
             "did": did,
             "passport": passport
         })
 
+        # Check the validity of each stamp in the passport
         for stamp in passport['stamps']:
-
-            logger.error("TODO: verifying stamp: %s", pformat(stamp))
-            logger.error("TODO: verifying credential: %s", pformat(stamp["credential"]))
-            logger.error("TODO: verifying credentialSubject: %s", pformat(stamp["credential"]["credentialSubject"]))
-            logger.error("TODO: verifying id: %s", pformat(stamp["credential"]["credentialSubject"]["id"]))
-
             # get the user credential ID, this will have the form: "did:ethr:0x...#POAP"
             subject_id = stamp["credential"]["credentialSubject"]["id"]
 
@@ -586,10 +581,11 @@ def calculate_trust_bonus(user_id, did, address):
                 logger.error("Stamp wasn't issued by the trusted IAM: '%s' instead got '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
 
             if is_subject_valid and not is_stamp_expired and is_issued_by_iam:
-                # get the stamp ID, and register it with our records
-                # this will be used to ensure that this stamp is not linked to any other user profile
+                # Get the stamp ID, and register it with our records
+                # This will be used to ensure that this stamp is not linked to any other user profile
                 stamp_id = stamp["credential"]["credentialSubject"]["root"]      # TODO: geri: to be replaced with the new field (the sha hash)
 
+                # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
                 duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
                 stamp_id_is_valid = len(duplicate_stamp_ids) == 0
 
@@ -597,7 +593,7 @@ def calculate_trust_bonus(user_id, did, address):
                     logger.error("Duplicate stamp id was detected: %s", stamp_id)
 
                 if stamp_id_is_valid:
-                    # Save the stamp id (@TODO: should we also have `did` and `active` fields?)
+                    # Save the stamp id and associate it with the Passport entry
                     stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id, defaults={
                         "passport": db_passport
                     })
@@ -606,27 +602,28 @@ def calculate_trust_bonus(user_id, did, address):
                     verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
                     verification = json.loads(verification)
 
-                    logger.error("TODO: verification result: %s", pformat(verification))
+                    # Check that the credential verified
+                    stamp['is_verified'] = (not verification["errors"])
 
-                    stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings? GD: I've just been basing these checks on the errors
-                    stamps_to_return[stamp['provider']] = stamp
+                    # Given a valid stamp - set is_verified and add stamp to returns
+                    if stamp['is_verified']:
+                        # The user only needs one verification for a certain provider in order to obtain the score for that provider
+                        service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
+                        matched_services[service_key]['is_verified'] = matched_services[service_key]['is_verified'] or True
 
-                    # The use only needs one verification for a certain provider in order to obtain the score for that provider
-                    service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
-                    matched_services[service_key]['is_verified'] = matched_services[service_key]['is_verified'] or True
-                    
-        logger.error("TODO: services: %s", pformat(matched_services))
+                        # Store the stamp to return it later
+                        stamps_to_return[stamp['provider']] = stamp
+
+
+        # Calculate the trust score based on the verified stamps
         trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))
 
-        logger.error("TODO: trust_score: %s", trust_score)
-
+        # Save the new trust score into the users profile
         profile = Profile.objects.get(user_id=user_id)
-        profile.dpopp_trust_bonus = trust_score
+        profile.passport_trust_bonus = trust_score
         profile.save()
 
-        logger.error("TODO: Verify dpopp 5")
-
-        # return as a dict of stamps
+        # Return as a dict of stamps
         passport['stamps'] = stamps_to_return
 
     except Exception as e:

@@ -3172,7 +3172,7 @@ class Profile(SuperModel):
     # store the trust bonus on the model itself
     trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on verified services')
 
-    dpopp_trust_bonus = models.DecimalField(default=None, null=True, blank=True, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on dpopp passport')
+    passport_trust_bonus = models.DecimalField(default=None, null=True, blank=True, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on Gitcoin Passport')
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
@@ -3184,7 +3184,7 @@ class Profile(SuperModel):
 
     @property
     def final_trust_bonus(self):
-        return self.trust_bonus if self.dpopp_trust_bonus is None else self.dpopp_trust_bonus
+        return self.trust_bonus if self.passport_trust_bonus is None else self.passport_trust_bonus
 
     @property
     def shadowbanned(self):
