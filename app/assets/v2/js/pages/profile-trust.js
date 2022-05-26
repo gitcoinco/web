@@ -18,15 +18,15 @@ const apiCall = (url, givenPayload) => {
 };
 
 Vue.component('error-passport-content', {
-  template: `<a>passport error</a>`
+  template: '<a>passport error</a>'
 });
 
 Vue.component('error-wallet-content', {
-  template: `<a>wallet error</a>`
+  template: '<a>wallet error</a>'
 });
 
 Vue.component('success-verify-content', {
-  template: `<a>passport verified</a>`
+  template: '<a>passport verified</a>'
 });
 
 // Modal to display state in
@@ -39,7 +39,7 @@ Vue.component('state-modal', {
       'default': false
     },
     type: {
-      type: [String, Boolean],
+      type: [ String, Boolean ],
       required: false,
       'default': false
     }
@@ -66,7 +66,7 @@ Vue.component('state-modal', {
   methods: {
     dismissModal() {
       this.$emit('modal-dismissed');
-    },
+    }
   }
 });
 
