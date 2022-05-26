@@ -18,13 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+from pprint import pprint
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from grants.models import Grant
 import requests
-from pprint import pprint
-from django.conf import settings
+from grants.models import Grant
 
 
 class Command(BaseCommand):
