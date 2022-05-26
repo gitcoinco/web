@@ -2,6 +2,7 @@ from django.templatetags.static import static
 from django.urls import reverse
 
 from dashboard.router import ProfileSerializer
+from economy.models import Token
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
@@ -9,6 +10,12 @@ from .models import (
     CLRMatch, Contribution, Grant, GrantCLR, GrantCollection, GrantPayout, GrantTag, GrantType, Subscription,
 )
 from .utils import amount_in_wei, get_converted_amount
+
+
+class TokenSerializer(FlexFieldsModelSerializer):
+    class Meta:
+        model = Token
+        fields = '__all__'
 
 
 class GrantCLRSerializer(FlexFieldsModelSerializer):
@@ -28,11 +35,15 @@ class GrantPayoutSerializer(FlexFieldsModelSerializer):
         many=True
     )
 
+    token = TokenSerializer(
+        fields = ['symbol', 'network', 'decimals']
+    )
+
     class Meta:
         model = GrantPayout
         fields = [
-            'status', 'contract_address', 'payout_token', 'funding_withdrawal_date',
-            'grant_clrs', 'network'
+            'status', 'contract_address', 'funding_withdrawal_date',
+            'grant_clrs', 'network', 'token'
         ]
 
 
@@ -42,7 +53,7 @@ class CLRMatchSerializer(FlexFieldsModelSerializer):
     class Meta:
         model = CLRMatch
         fields = (
-            'pk', 'amount', 'round_number', 'claim_tx', 'grant_payout', 'ready_for_payout'
+            'pk', 'amount', 'token_amount', 'round_number', 'claim_tx', 'grant_payout', 'ready_for_payout', 'merkle_claim'
         )
 
 
@@ -54,7 +65,7 @@ class GrantSerializer(FlexFieldsModelSerializer):
     admin_profile = ProfileSerializer()
     team_members = ProfileSerializer(many=True)
     clr_matches = CLRMatchSerializer(
-        fields=['pk', 'amount', 'round_number', 'claim_tx', 'grant_payout', 'ready_for_payout'],
+        fields=['pk', 'amount', 'token_amount', 'round_number', 'claim_tx', 'grant_payout', 'ready_for_payout', 'merkle_claim'],
         many=True
     )
 

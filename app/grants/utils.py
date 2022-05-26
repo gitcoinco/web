@@ -40,6 +40,7 @@ from gas.utils import eth_usd_conv_rate
 from grants.sync.algorand import sync_algorand_payout
 from grants.sync.binance import sync_binance_payout
 from grants.sync.celo import sync_celo_payout
+from grants.sync.cosmos import sync_cosmos_payout
 from grants.sync.harmony import sync_harmony_payout
 from grants.sync.polkadot import sync_polkadot_payout
 from grants.sync.rsk import sync_rsk_payout
@@ -64,7 +65,8 @@ tenant_payout_mapper = {
     'BINANCE': sync_binance_payout,
     'KUSAMA': sync_polkadot_payout,
     'RSK': sync_rsk_payout,
-    'ALGORAND': sync_algorand_payout
+    'ALGORAND': sync_algorand_payout,
+    'COSMOS': sync_cosmos_payout
 }
 
 def get_clr_rounds_metadata():
@@ -463,3 +465,12 @@ def bsci_script(csv: str) -> tuple:
 
 def isNaN(string):
     return string != string
+
+def is_valid_eip_1271_signature(web3, address, hash, signature) -> bool:
+    from grants.abi.eip_1271_abi import EIP_1271_ABI
+    try:
+        eip_1271_contract = web3.eth.contract(address=address, abi=EIP_1271_ABI)
+        retval = eip_1271_contract.functions.isValidSignature(hash, signature).call()
+        return web3.toInt(retval) == 0x1626ba7e
+    except Exception as e:
+        return False

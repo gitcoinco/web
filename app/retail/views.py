@@ -35,15 +35,13 @@ from django.views.decorators.http import require_http_methods
 
 from app.utils import get_profiles_from_text
 from cacheops import cached_view
-from dashboard.models import (
-    Activity, ActivityIndex, HackathonEvent, Profile, Tip, get_my_earnings_counter_profiles, get_my_grants,
-)
+from dashboard.models import Activity, HackathonEvent, Profile, Tip
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
 from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
-from marketing.models import EmailInventory
-from perftools.models import JSONStore
+from marketing.models import EmailInventory, ImageDropZone
+from perftools.models import JSONStore, StaticJsonEnv
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
@@ -69,6 +67,7 @@ def get_activities(tech_stack=None, num_activities=15):
     return activities
 
 def index(request):
+
     context = {
         'title': 'Build and Fund the Open Web Together',
         'card_title': 'Gitcoin - Build and Fund the Open Web Together',
@@ -93,6 +92,44 @@ def index(request):
             'bounties_gmv': '3.43m'
         }
     context.update(data_results)
+
+    try:
+        landingBanner = StaticJsonEnv.objects.get(key='landingBanner').data
+        slides = landingBanner['slides']
+
+        for index, slide in enumerate(slides):
+            slides[index]['img'] = ImageDropZone.objects.get(pk=slide['img']).image.url
+            if slide['backgroundImage']:
+                slides[index]['backgroundImage'] = ImageDropZone.objects.get(pk=slide['backgroundImage']).image.url
+
+
+        if len(slides) == 0:
+            landingBanner = {
+                'default': True,
+                'slides': [
+                    {
+                        'img': static('v2/images/home/Flying_ppl_optimized.svg'),
+                        'title': 'Build and Fund the Open Web Together',
+                        'subtitle': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+                    }
+                ]
+            }
+
+        landingBanner['slides'] = slides
+
+    except:
+        landingBanner = {
+            'default': True,
+            'slides': [
+                {
+                    'img': static('v2/images/home/Flying_ppl_optimized.svg'),
+                    'title': 'Build and Fund the Open Web Together',
+                    'subtitle': 'Connect with the community developing digital public goods, creating financial freedom, and defining the future of the open web.',
+                }
+            ]
+        }
+
+    context.update({'landingBanner': landingBanner})
 
     return TemplateResponse(request, 'home/index2021.html', context)
 

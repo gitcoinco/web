@@ -223,8 +223,9 @@ class Bounty(SuperModel):
     ]
     PROJECT_TYPES = [
         ('traditional', 'traditional'),
-        ('contest', 'contest'),
-        ('cooperative', 'cooperative'),
+        ('contest', 'contest - deprecated'),
+        ('cooperative', 'cooperative - deprecated'),
+        ('multiple', 'multiple'),
     ]
     BOUNTY_CATEGORIES = [
         ('frontend', 'frontend'),
@@ -235,10 +236,17 @@ class Bounty(SuperModel):
     ]
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
-        ('Security', 'Security'),
+        ('Project', 'Project'),
         ('Feature', 'Feature'),
+        ('Security', 'Security'),
+        ('Improvement', 'Improvement'),
+        ('Design', 'Design'),
+        ('Docs', 'Docs'),
+        ('Code review', 'Code review'),
+        ('Other', 'Other'),
         ('Unknown', 'Unknown'),
     ]
+
     EXPERIENCE_LEVELS = [
         ('Beginner', 'Beginner'),
         ('Intermediate', 'Intermediate'),
@@ -294,8 +302,15 @@ class Bounty(SuperModel):
         ('sia_ext', 'Sia Ext'),
         ('tezos_ext', 'Tezos Ext'),
         ('casper_ext', 'Casper Ext'),
+        ('cosmos_ext', 'Cosmos Ext'),
         ('fiat', 'Fiat'),
         ('manual', 'Manual')
+    )
+
+
+    BOUNTY_SOURCES = (
+        ('github', 'Github'),
+        ('custom', 'Custom'),
     )
 
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
@@ -309,7 +324,7 @@ class Bounty(SuperModel):
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True)
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True)
-    github_url = models.URLField(db_index=True)
+    github_url = models.URLField(db_index=True, blank=True, null=True)
     github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=100, blank=True, null=True, db_index=True)
@@ -329,6 +344,8 @@ class Bounty(SuperModel):
     reserved_for_user_expiration = models.DateTimeField(blank=True, null=True)
     is_open = models.BooleanField(db_index=True, help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
+    payout_date = models.DateTimeField(null=True, blank=True)
+    never_expires = models.BooleanField(default=False)
     raw_data = JSONField(blank=True)
     metadata = JSONField(default=dict, blank=True)
     current_bounty = models.BooleanField(
@@ -376,6 +393,12 @@ class Bounty(SuperModel):
     value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
+
+    usd_pegged_value_in_token_now = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True) # The calculated amount in token, corresponding to value_true_usd
+    usd_pegged_value_in_token = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)     # The calculated amount in token, corresponding to value_true_usd
+    value_true_usd = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)     # The value the user wants to pay in USD
+    peg_to_usd = models.BooleanField(default=False)                                                             # True if the amount to pay should be pegged to USD
+
     privacy_preferences = JSONField(default=dict, blank=True)
     admin_override_and_hide = models.BooleanField(
         default=False, help_text=_('Admin override to hide the bounty from the system')
@@ -403,6 +426,22 @@ class Bounty(SuperModel):
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
+
+    contact_details = JSONField(default=dict, blank=True, null=True)
+    bounty_source = models.CharField(max_length=50, choices=BOUNTY_SOURCES, default='github', db_index=True)
+
+    # acceptance criteria
+    acceptance_criteria = models.TextField(default='', blank=True, null=True, help_text=_('Acceptance criteria'))
+
+    # resources
+    resources = models.TextField(default='', blank=True, null=True, help_text=_('Resources'))
+
+    # Allow multiple owners
+    # This contains a list of IDs to dashboard.Profile
+    owners = models.ManyToManyField("Profile", blank=True)
+
+    # Issue description for custom bounties, not related to a GitHUB issue
+    custom_issue_description = models.TextField(default='', blank=True)
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -515,13 +554,7 @@ class Bounty(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        try:
-            _org_name = org_name(self.github_url)
-            _issue_num = int(issue_number(self.github_url))
-            _repo_name = repo_name(self.github_url)
-            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}/{self.standard_bounties_id}"
-        except Exception:
-            return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
+        return f"{'/' if preceding_slash else ''}issue/{self.id}"
 
     def get_canonical_url(self):
         """Get the canonical URL of the Bounty for SEO purposes.
@@ -530,10 +563,7 @@ class Bounty(SuperModel):
             str: The canonical URL of the Bounty.
 
         """
-        _org_name = org_name(self.github_url)
-        _repo_name = repo_name(self.github_url)
-        _issue_num = int(issue_number(self.github_url))
-        return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
+        return settings.BASE_URL.rstrip('/') + reverse('issue_details_new4', kwargs={'bounty_id': self.id})
 
     def get_natural_value(self):
         if not self.value_in_token:
@@ -678,7 +708,11 @@ class Bounty(SuperModel):
     @property
     def github_org_name(self):
         try:
-            return org_name(self.github_url)
+            if self.bounty_source == "github":
+                return org_name(self.github_url)
+            elif self.funding_organisation:
+                return self.funding_organisation
+            return None
         except Exception:
             return None
 
@@ -857,6 +891,14 @@ class Bounty(SuperModel):
 
     @property
     def get_value_in_eth(self):
+        if self.peg_to_usd:
+            if self.token_name == 'ETH':
+                return self.value_in_token / 10**18
+            try:
+                return convert_amount(self.value_true, 'USDT', 'ETH')
+            except Exception:
+                return None
+
         if self.token_name == 'ETH':
             return self.value_in_token / 10**18
         try:
@@ -866,20 +908,61 @@ class Bounty(SuperModel):
 
     @property
     def get_value_in_usdt_now(self):
+        if self.peg_to_usd:
+            return self.value_true_usd
         return self.value_in_usdt_at_time(None)
 
     @property
     def get_value_in_usdt(self):
+        if self.peg_to_usd:
+            return self.value_true_usd
         if self.status in self.OPEN_STATUSES:
             return self.value_in_usdt_now
         return self.value_in_usdt_then
+
+    @property
+    def get_usd_pegged_value_in_token_now(self):
+        if self.peg_to_usd:
+            try:
+                return self.usd_pegged_value_in_token_at_time(None)
+            except Exception:
+                return None
+        return self.value_true
+
+    @property
+    def get_usd_pegged_value_in_token(self):
+        if self.peg_to_usd:
+            if self.status in self.OPEN_STATUSES:
+                try:
+                    return self.usd_pegged_value_in_token_now
+                except Exception:
+                    return None
+            return self.usd_pegged_value_in_token_then
+        return self.value_true
+
+    @property
+    def usd_pegged_value_in_token_then(self):
+        return self.usd_pegged_value_in_token_at_time(self.web3_created)
+
+    def usd_pegged_value_in_token_at_time(self, at_time):
+        if self.token_name in ['USDT', 'USDC']:
+            return self.value_true_usd
+        if self.token_name in settings.STABLE_COINS:
+            return self.value_true_usd
+        try:
+            return convert_amount(self.value_true_usd, 'USDT', self.token_name)
+        except ConversionRateNotFoundError:
+            try:
+                in_eth = convert_amount(self.value_true, 'USDT', 'ETH', at_time)
+                return convert_amount(in_eth, 'ETH', self.token_name, at_time)
+            except ConversionRateNotFoundError:
+                return None
 
     @property
     def value_in_usdt_then(self):
         return self.value_in_usdt_at_time(self.web3_created)
 
     def value_in_usdt_at_time(self, at_time):
-        decimals = 10 ** 18
         if self.token_name in ['USDT', 'USDC']:
             return float(self.value_in_token / 10 ** 6)
         if self.token_name in settings.STABLE_COINS:
@@ -895,6 +978,8 @@ class Bounty(SuperModel):
 
     @property
     def token_value_in_usdt_now(self):
+        if self.peg_to_usd:
+            return self.value_true_usd
         if self.token_name in settings.STABLE_COINS:
             return 1
         try:
@@ -904,6 +989,8 @@ class Bounty(SuperModel):
 
     @property
     def token_value_in_usdt_then(self):
+        if self.peg_to_usd:
+            return self.value_true_usd
         try:
             return round(convert_token_to_usdt(self.token_name, self.web3_created), 2)
         except ConversionRateNotFoundError:
@@ -1423,6 +1510,7 @@ class BountyFulfillment(SuperModel):
         ('sia_ext', 'sia_ext'),
         ('tezos_ext', 'tezos_ext'),
         ('casper_ext', 'casper_ext'),
+        ('cosmos_ext', 'cosmos_ext'),
         ('manual', 'manual')
     ]
 
@@ -1444,6 +1532,7 @@ class BountyFulfillment(SuperModel):
         ('SIA', 'SIA'),
         ('TEZOS', 'TEZOS'),
         ('CASPER', 'CASPER'),
+        ('COSMOS', 'COSMOS'),
         ('OTHERS', 'OTHERS')
     ]
 
@@ -2059,13 +2148,15 @@ def psave_bounty(sender, instance, **kwargs):
         'Months': 5,
     }
 
-    instance.github_url = instance.github_url.lower()
-    try:
-        handle = instance.github_url.split('/')[3]
-        if not instance.org:
-            instance.org = Profile.objects.get(handle=handle)
-    except:
-        pass
+    if instance.github_url:
+        instance.github_url = instance.github_url.lower() 
+        try:
+            handle = instance.github_url.split('/')[3]
+            if not instance.org:
+                instance.org = Profile.objects.get(handle=handle)
+        except:
+            pass
+
     instance.idx_status = instance.status
     instance.fulfillment_accepted_on = instance.get_fulfillment_accepted_on
     instance.fulfillment_submitted_on = instance.get_fulfillment_submitted_on
@@ -2080,6 +2171,9 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_usdt = instance.get_value_in_usdt
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
+
+    instance.usd_pegged_value_in_token_now = instance.get_usd_pegged_value_in_token_now
+    instance.usd_pegged_value_in_token = instance.get_usd_pegged_value_in_token
 
     # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1600019142065700
     if not instance.value_true:
@@ -4254,7 +4348,7 @@ class Profile(SuperModel):
 
         if work_type != 'org':
             github_urls = bounties.values_list('github_url', flat=True)
-            profiles = [org_name(url) for url in github_urls]
+            profiles = [org_name(url) for url in github_urls if url]   # github_url will be empty for custom bounties
             profiles = [ele for ele in profiles if ele]
         else:
             profiles = self.as_dict.get('orgs_bounties_works_with', [])
@@ -5068,6 +5162,7 @@ class HackathonEvent(SuperModel):
     use_circle = models.BooleanField(help_text=_('Use circle for the Hackathon'), default=False)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     total_prize = models.CharField(max_length=255, null=True, blank=True, help_text='extra text to display next the event dates on the hackathon list page')
+    discord_server = models.URLField(blank=True, null=True, help_text=_('Link to Discord server for Hackathon'))
 
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
@@ -5091,6 +5186,15 @@ class HackathonEvent(SuperModel):
     @property
     def town_square_link(self):
         return f'townsquare/?tab=hackathon:{self.pk}'
+
+    def is_expired(self):
+        """Check if Hackathon is active
+
+        Returns:
+            boolean: Whether or not hackathon is expired
+        """
+        now = timezone.now()
+        return self.end_date < now
 
     def get_absolute_url(self):
         """Get the absolute URL for the HackathonEvent.

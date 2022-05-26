@@ -32,8 +32,12 @@ from dashboard.abi import erc20_abi
 from dashboard.models import Activity, Profile
 from grants.models import CLRMatch, Contribution, Grant, GrantCLR, GrantPayout, Subscription
 from marketing.mails import grant_match_distribution_final_txn, grant_match_distribution_kyc
+from perftools.models import StaticJsonEnv
 from townsquare.models import Comment
 from web3 import Web3
+
+MAINNET_DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+RINKEBY_DAI_ADDRESS = '0x2e055eEe18284513B993dB7568A592679aB13188'
 
 
 class Command(BaseCommand):
@@ -87,34 +91,51 @@ class Command(BaseCommand):
         # fetch GrantPayout contract
         grant_payout = GrantPayout.objects.get(pk=grant_payout_pk)
 
-        # get deployed contract address
-        match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
 
         # get network on which the contract is deployed
         network = grant_payout.network
 
-        token_name = grant_payout.payout_token
+        # get token information in which the payout will be done
+        token_info = grant_payout.token
 
-        # TODO: fetch token_address from grant_payout
-        dai_address = '0x6B175474E89094C44Da98b954EedeAC495271d0F' if network == 'mainnet' else '0x2e055eEe18284513B993dB7568A592679aB13188'
+        if not token_info:
+            raise Exception(f"Token is not set for GrantPayout Entry")
+
+        token_symbol = token_info.symbol
+        token_address = token_info.address
+        token_decimal = token_info.decimals
+
+        if not token_address:
+            # Default to network DAI address
+            self.stdout.write('Token address. Are you sure you want to proceed with default DAI address ?')
+            user_input = input("continue? (y/n) ")
+            if user_input != 'y':
+                return
+
+            token_address = MAINNET_DAI_ADDRESS if network == 'mainnet' else RINKEBY_DAI_ADDRESS
 
         # Get contract instances
         PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
         w3 = Web3(Web3.WebsocketProvider(PROVIDER))
 
-        dai = w3.eth.contract(address=dai_address, abi=erc20_abi)
+        token_contract = w3.eth.contract(address=token_address, abi=erc20_abi)
 
         # Setup
         clr_round = options['clr_round']
         clr_pks = options['clr_pks'].split(',')
-        KYC_THRESHOLD = settings.GRANTS_PAYOUT_CLR_KYC_THRESHOLD
+
+        try:
+            kyc_threshold_data = StaticJsonEnv.objects.get(key='PAYOUT_KYC_THRESHOLD').data
+            KYC_THRESHOLD = kyc_threshold_data['value']
+        except:
+            KYC_THRESHOLD = settings.GRANTS_PAYOUT_CLR_KYC_THRESHOLD
 
         # Get data
         gclrs = GrantCLR.objects.filter(pk__in=clr_pks)
         pks = []
         for gclr in gclrs:
             pks += gclr.grants.values_list('pk', flat=True)
-        scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
+        scheduled_matches = CLRMatch.objects.filter(round_number=clr_round, grant_payout=grant_payout)
         grants = Grant.objects.filter(active=True, network='mainnet', is_clr_eligible=True, link_to_new_grant__isnull=True, pk__in=pks)
         self.stdout.write(f"got {grants.count()} grants")
 
@@ -127,11 +148,12 @@ class Command(BaseCommand):
                         total_owed_grants += gclr.clr_prediction_curve[0][1]
                 except:
                     pass
-            total_owed_matches = sum(sm.amount for sm in scheduled_matches)
-            self.stdout.write(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants,2)}")
-            self.stdout.write(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches,2)}")
+            total_owed_matches_in_usd = sum(sm.amount for sm in scheduled_matches)
+            self.stdout.write(f"there are {grants.count()} grants to finalize worth ${round(total_owed_grants, 2)}")
+            self.stdout.write(f"there are {scheduled_matches.count()} Match Payments already created worth ${round(total_owed_matches_in_usd, 2)}")
+            self.stdout.write(f"KYC email will be sent to Grant owners with matches greater than ${KYC_THRESHOLD} DAI")
             self.stdout.write('------------------------------')
-            
+
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
                 return
@@ -140,7 +162,7 @@ class Command(BaseCommand):
             for grant in grants:
                 amount = sum(ele.clr_prediction_curve[0][1] for ele in grant.clr_calculations.filter(grantclr__in=gclrs, latest=True))
                 has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
-                
+
                 if not amount:
                     continue
                 already_exists = scheduled_matches.filter(grant=grant).exists()
@@ -148,12 +170,19 @@ class Command(BaseCommand):
                     continue
                 needs_kyc = amount > KYC_THRESHOLD and not has_already_kyc
                 comments = "" if not needs_kyc else "Needs KYC"
+
+                # get token amount
+                token_amount = amount / grant_payout.conversion_rate
+
                 match = CLRMatch.objects.create(
                     round_number=clr_round,
                     amount=amount,
+                    token=token_info,
+                    token_amount=token_amount,
                     grant=grant,
                     comments=comments,
-                    grant_payout=grant_payout
+                    grant_payout=grant_payout,
+                    ready_for_payout=False if needs_kyc else True
                 )
                 clr_matches_created += 1
                 if needs_kyc:
@@ -163,8 +192,9 @@ class Command(BaseCommand):
         # Payout rankings (round must be finalized first) ------------------------------------------
         if what in ['prepare_final_payout']:
             payout_matches = scheduled_matches.filter(ready_for_payout=False)
-            payout_matches_amount = sum(sm.amount for sm in payout_matches)
-            self.stdout.write(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
+            payout_matches_amount_in_usd = sum(sm.amount for sm in payout_matches)
+            payout_matches_amount_in_token = sum(sm.token_amount for sm in payout_matches)
+            self.stdout.write(f"There are {payout_matches.count()} UNPAID Match Payments already created worth {round(payout_matches_amount_in_token,2)} {token_symbol} ( AKA ${round(payout_matches_amount_in_usd, 2)} ) on {network}")
             self.stdout.write(f"All these are users would need KYC. Do not do this for mainnet")
             self.stdout.write('------------------------------')
             user_input = input("continue? (y/n) ")
@@ -189,17 +219,25 @@ class Command(BaseCommand):
             # matches which don't need KYC but need to be uploaded to contract
             no_kyc_unpaid_matches = unpaid_scheduled_matches.filter(ready_for_payout=True)
 
-            total_paid_matches = sum(sm.amount for sm in paid_scheduled_matches)
-            total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
-            total_pending_kyc_matches = sum(sm.amount for sm in pending_kyc_unpaid_matches)
-            total_no_kyc_matches = sum(sm.amount for sm in no_kyc_unpaid_matches)
+            # total payout breakdown in USD
+            total_paid_matches_in_usd = sum(sm.amount for sm in paid_scheduled_matches)
+            total_owed_matches_in_usd = sum(sm.amount for sm in unpaid_scheduled_matches)
+            total_pending_kyc_matches_in_usd = sum(sm.amount for sm in pending_kyc_unpaid_matches)
+            total_no_kyc_matches_in_usd = sum(sm.amount for sm in no_kyc_unpaid_matches)
 
+
+            # total payout breakdown in token_amount
+            total_paid_matches_in_token = sum(sm.token_amount for sm in paid_scheduled_matches)
+            total_owed_matches_in_token = sum(sm.token_amount for sm in unpaid_scheduled_matches)
+            total_pending_kyc_matches_in_token = sum(sm.token_amount for sm in pending_kyc_unpaid_matches)
+            total_no_kyc_matches_in_token = sum(sm.token_amount for sm in no_kyc_unpaid_matches)
 
             self.stdout.write('=============================')
-            self.stdout.write(f"there are {paid_scheduled_matches.count()} PAID Match (MADE MANUALLY/ALREADY UPLOADED) ${round(total_paid_matches,2)} {network} {token_name}")
-            self.stdout.write(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments worth ${round(total_owed_matches,2)} {network} {token_name} of which: ")
-            self.stdout.write(f"------> {pending_kyc_unpaid_matches.count()} UNPAID Matches PENDING KYC ${round(total_pending_kyc_matches,2)}")
-            self.stdout.write(f"------> {no_kyc_unpaid_matches.count()} UNPAID Matches SKIPPING KYC ${round(total_no_kyc_matches,2)}")
+
+            self.stdout.write(f"there are {paid_scheduled_matches.count()} PAID Match (MADE MANUALLY/ALREADY UPLOADED) {round(total_paid_matches_in_token, 2)} {token_symbol} ( AKA ${round(total_paid_matches_in_usd, 2)} ) on {network}")
+            self.stdout.write(f"there are {unpaid_scheduled_matches.count()} UNPAID Match Payments worth {round(total_owed_matches_in_token, 2)} ( AKA ${round(total_owed_matches_in_usd, 2)} ) on {network} of which: ")
+            self.stdout.write(f"------> {pending_kyc_unpaid_matches.count()} UNPAID Matches PENDING KYC {round(total_pending_kyc_matches_in_token, 2)} ( AKA ${round(total_pending_kyc_matches_in_usd, 2)} )")
+            self.stdout.write(f"------> {no_kyc_unpaid_matches.count()} UNPAID Matches SKIPPING KYC {round(total_no_kyc_matches_in_token, 2)} ( AKA ${round(total_no_kyc_matches_in_usd, 2)} )")
 
             self.stdout.write('=============================')
 
@@ -214,7 +252,7 @@ class Command(BaseCommand):
 
             # Generate dict of payout mapping that we'll use to set the contract's payout mapping
             full_payouts_mapping_dict = {}
-            for match in target_matches.order_by('amount'):
+            for match in target_matches.order_by('token_amount'):
 
                 try:
                     address = w3.toChecksumAddress(match.grant.admin_address)
@@ -222,18 +260,18 @@ class Command(BaseCommand):
                     # This ensures that even when multiple grants have the same receiving address,
                     # all match funds are accounted for
                     if address in full_payouts_mapping_dict.keys():
-                        full_payouts_mapping_dict[address] += match.amount
+                        full_payouts_mapping_dict[address] += match.token_amount
                     else:
-                        full_payouts_mapping_dict[address] = match.amount
+                        full_payouts_mapping_dict[address] = match.token_amount
                 except Exception as e:
                     self.stdout.write(f"could not payout grant:{match.grant.pk} bc exception{e}")
 
 
             merkle_input = []
-            for address, amount in full_payouts_mapping_dict.items():
+            for address, token_amount in full_payouts_mapping_dict.items():
                 payout = {
                     'address': address,
-                    'amount': amount
+                    'amount': token_amount
                 }
                 merkle_input.append(payout)
 
@@ -249,37 +287,41 @@ class Command(BaseCommand):
             from web3.middleware import geth_poa_middleware
             w3.middleware_stack.inject(geth_poa_middleware, layer=0)
 
+            # get deployed contract address
+            match_payouts_address = Web3.toChecksumAddress(grant_payout.contract_address)
 
-            # Get total token amount 
+            # Get total token amount
             total_token_amount = Decimal(0)
-            clr_matches = CLRMatch.objects.filter(round_number=clr_round)
+            clr_matches = CLRMatch.objects.filter(round_number=clr_round, grant_payout=grant_payout)
             for clr_match in clr_matches:
-                total_token_amount += Decimal(clr_match.amount)
+                total_token_amount += Decimal(clr_match.token_amount)
 
-            TOKEN_DECIMALS =  Decimal(1e18) # TODO: DO NOT HARDCODE
+            TOKEN_DECIMALS =  Decimal(10 ** token_decimal)
             # Get contract token balance
-            token_balance = Decimal(dai.functions.balanceOf(match_payouts_address).call()) / TOKEN_DECIMALS
+            token_balance = Decimal(
+                token_contract.functions.balanceOf(match_payouts_address).call()
+            ) / TOKEN_DECIMALS
 
-            # Verify that contract has sufficient DAI balance to cover all payouts
+            # Verify that contract has sufficient token balance to cover all payouts
             self.stdout.write('\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *')
             if token_balance == total_token_amount:
-                self.stdout.write(f'Contract balance of {token_balance} token is exactly equal to the required amount')
+                self.stdout.write(f'Contract balance of {token_balance} ${token_symbol} is exactly equal to the required amount')
 
             elif token_balance < total_token_amount:
                 shortage = total_token_amount - token_balance
-                self.stdout.write(f'Contract DAI balance is insufficient')
+                self.stdout.write(f'Contract {token_symbol} balance is insufficient')
                 self.stdout.write(f'Required balance: {total_token_amount}')
                 self.stdout.write(f'Current balance:  {token_balance}')
-                self.stdout.write(f'Extra DAI needed: {shortage}')
-                self.stdout.write(f'\n Contract needs another {shortage} tokens')
+                self.stdout.write(f'Extra {token_symbol} needed: {shortage}')
+                self.stdout.write(f'\n Contract needs another {shortage} {token_symbol}')
 
             elif token_balance > total_token_amount:
                 excess = token_balance - total_token_amount
-                self.stdout.write('Contract has excess DAI balance')
-                self.stdout.write('Required balance:  {total_token_amount}')
-                self.stdout.write('Current balance:   {token_balance}')
-                self.stdout.write('Excess DAI amount: {excess}')
-                self.stdout.write(f'\n Contract has an excess of {excess} tokens')
+                self.stdout.write(f'Contract has excess {token_symbol} balance')
+                self.stdout.write(f'Required balance:  {total_token_amount}')
+                self.stdout.write(f'Current balance:   {token_balance}')
+                self.stdout.write(f'Excess {token_symbol} amount: {excess}')
+                self.stdout.write(f'\n Contract has an excess of {excess} {token_symbol}')
             self.stdout.write('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n')
 
 
@@ -292,74 +334,76 @@ class Command(BaseCommand):
             )
             target_matches = unpaid_scheduled_matches if not process_all else scheduled_matches
 
-            tx_id = input("enter the last chunk txid:  ")
+            tx_id = input("enter the merkle contract deploy txn:  ")
 
             # All payouts have been successfully set, so now we update the database
             for match in target_matches.order_by('amount'):
                 # make save state to DB
                 match.payout_tx = tx_id
                 match.payout_tx_date = timezone.now()
+                match.token_symbol = token_symbol
                 grant_match_distribution_final_txn(match, True)
                 match.save()
 
-                # create payout obj artifacts
-                profile = Profile.objects.get(handle__iexact='gitcoinbot')
-                validator_comment = f"created by ingest payout_round_script"
-                subscription = Subscription()
-                subscription.is_postive_vote = True
-                subscription.active = False
-                subscription.error = True
-                subscription.contributor_address = 'N/A'
-                subscription.amount_per_period = match.amount
-                subscription.real_period_seconds = 2592000
-                subscription.frequency = 30
-                subscription.frequency_unit = 'N/A'
-                subscription.token_address = dai_address
-                subscription.token_symbol = token_name
-                subscription.gas_price = 0
-                subscription.new_approve_tx_id = '0x0'
-                subscription.num_tx_approved = 1
-                subscription.network = network
-                subscription.contributor_profile = profile
-                subscription.grant = match.grant
-                subscription.comments = validator_comment
-                subscription.amount_per_period_usdt = match.amount
-                subscription.save()
+                if not match.payout_contribution:
+                    # create payout obj artifacts
+                    profile = Profile.objects.get(handle__iexact='gitcoinbot')
+                    validator_comment = f"created by ingest payout_round_script"
+                    subscription = Subscription()
+                    subscription.is_postive_vote = True
+                    subscription.active = False
+                    subscription.error = True
+                    subscription.contributor_address = 'N/A'
+                    subscription.amount_per_period = match.token_amount
+                    subscription.real_period_seconds = 2592000
+                    subscription.frequency = 30
+                    subscription.frequency_unit = 'N/A'
+                    subscription.token_address = token_address
+                    subscription.token_symbol = token_symbol
+                    subscription.gas_price = 0
+                    subscription.new_approve_tx_id = '0x0'
+                    subscription.num_tx_approved = 1
+                    subscription.network = network
+                    subscription.contributor_profile = profile
+                    subscription.grant = match.grant
+                    subscription.comments = validator_comment
+                    subscription.amount_per_period_usdt = match.amount
+                    subscription.save()
 
-                contrib = Contribution.objects.create(
-                    success=True,
-                    tx_cleared=True,
-                    tx_override=True,
-                    tx_id=tx_id,
-                    subscription=subscription,
-                    validator_passed=True,
-                    validator_comment=validator_comment,
-                )
-                self.stdout.write(f"ingested {subscription.pk} / {contrib.pk}")
+                    contrib = Contribution.objects.create(
+                        success=True,
+                        tx_cleared=True,
+                        tx_override=True,
+                        tx_id=tx_id,
+                        subscription=subscription,
+                        validator_passed=True,
+                        validator_comment=validator_comment,
+                    )
+                    self.stdout.write(f"ingested {subscription.pk} / {contrib.pk}")
 
-                match.payout_contribution = contrib
-                match.save()
+                    match.payout_contribution = contrib
+                    match.save()
 
-                metadata = {
-                    'id': subscription.id,
-                    'value_in_token': str(subscription.amount_per_period),
-                    'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
-                    'token_name': subscription.token_symbol,
-                    'title': subscription.grant.title,
-                    'grant_url': subscription.grant.url,
-                    'num_tx_approved': subscription.num_tx_approved,
-                    'category': 'grant',
-                }
-                kwargs = {
-                    'profile': profile,
-                    'subscription': subscription,
-                    'grant': subscription.grant,
-                    'activity_type': 'new_grant_contribution',
-                    'metadata': metadata,
-                }
+                    metadata = {
+                        'id': subscription.id,
+                        'value_in_token': str(subscription.amount_per_period),
+                        'value_in_usdt_now': str(round(subscription.amount_per_period_usdt, 2)),
+                        'token_name': subscription.token_symbol,
+                        'title': subscription.grant.title,
+                        'grant_url': subscription.grant.url,
+                        'num_tx_approved': subscription.num_tx_approved,
+                        'category': 'grant',
+                    }
+                    kwargs = {
+                        'profile': profile,
+                        'subscription': subscription,
+                        'grant': subscription.grant,
+                        'activity_type': 'new_grant_contribution',
+                        'metadata': metadata,
+                    }
 
-                activity = Activity.objects.create(**kwargs)
-                activity.populate_activity_index()
+                    activity = Activity.objects.create(**kwargs)
+                    activity.populate_activity_index()
 
-                comment = f"CLR Round {clr_round} Payout"
-                comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
+                    comment = f"CLR Round {clr_round} Payout"
+                    comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)

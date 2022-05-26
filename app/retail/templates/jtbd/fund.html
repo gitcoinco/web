@@ -24,7 +24,7 @@ along with this program. If not,see
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  {% bundle css file jtbd %}
+  {% bundle css file jtbd_fund %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/jtbd.scss" %} />
   {% endbundle %}
 </head>
@@ -266,7 +266,7 @@ along with this program. If not,see
                   <p class="font-bigger-1">Pledge your support to public goods development by contributing to the match pool.</p>
                 </div>
                 <div>
-                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="{% url 'social:begin' 'github' %}?next={% url 'grants:new_matching_partner' %}">Pledge support</a>
+                  <a class="col-12 col-md-auto btn btn-primary btn-lg btn-cta py-2" href="#">Pledge support</a>
 
                 </div>
               </div>

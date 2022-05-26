@@ -71,7 +71,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           inline-template
           @polygon-data-updated="onPolygonUpdate"
           :current-tokens="currentTokens"
-          :donation-inputs="donationInputs"
+          :donation-inputs="donationInputsPolygon"
           :max-cart-items="100"
           :grants-by-tenant="grantsByTenant"
           :grants-under-minimal-contribution="grantsUnderMinimalContribution"
@@ -143,7 +143,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       inline-template
       @polygon-data-updated="onPolygonUpdate"
       :current-tokens="currentTokens"
-      :donation-inputs="donationInputs"
+      :donation-inputs="donationInputsPolygon"
       :max-cart-items="100"
       :grants-by-tenant="grantsByTenant"
       :grants-under-minimal-contribution="grantsUnderMinimalContribution"
@@ -157,10 +157,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           :disabled="activeCheckout !== undefined || grantsUnderMinimalContribution?.length > 0"
           @click="checkoutWithPolygon(true)"
         >
-        Polygon Checkout
-      </button>
+          Polygon Checkout
+        </button>
 
-      {% include 'grants/cart/polygon_modal.html' %}
+        {% include 'grants/cart/polygon_modal.html' %}
 
       </div>
     </grants-cart-ethereum-polygon>

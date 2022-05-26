@@ -1,0 +1,188 @@
+{% load i18n static email_obfuscator add_url_schema avatar_tags bundle %}
+<form-wrapper v-if="step === 4" :heading="'Additional Information'" :current-step="step"
+  :total-steps="currentSteps.length" @update-navigation="updateNav" :disable-confirm="!isStep4Valid">
+
+  <!-- Project Type -->
+  <div v-if="isHackathonBounty" class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Project Type</label>
+
+    <div class="row d-flex flex-column flex-lg-row flex-wrap pt-1">
+      <div class="col btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio bounty-toggle-btn text-left mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.project_type === 'multiple')?'active':'')">
+          <input type="radio" name="project_type" value="multiple" v-model="form.project_type" :disabled="!subscriptionActive">
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Multiple</p>
+            <p class="m-0 text-grey-400 mt-1">Allow multiple contributors and one-to-many payouts.
+              Useful for cooperative or contest bounties.</p>
+          </div>
+        </label>
+      </div>
+      <div class="col btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio bounty-toggle-btn text-left mr-2 mb-2 py-2 px-2 bounty-information-label disabled'">
+          <input type="radio" name="project_type" value="traditional" v-model="form.project_type" required>
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Standard</p>
+            <p class="m-0 text-grey-400 mt-1">Only one contributor is allowed to work
+              at any time.</p>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="text-danger" v-if="step4Errors.project_type && !form.project_type">
+      [[step4Errors.project_type]]
+    </div>
+
+    <div v-if="!isHackathonBounty && !subscriptionActive" class="bounty-creation-help p-3">
+      Multiple contributors and payouts is only available to Gitcoin PRO members. For more information, 
+      contact <a href="mailto:pro@gitcoin.co" target="_blank" class="font-weight-bold">pro@gitcoin.co</a>.      
+    </div>
+  </div>
+  <div v-else class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Project Type</label>
+
+    <div class="row d-flex flex-column flex-lg-row flex-wrap pt-1">
+      <div class="col btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio bounty-toggle-btn text-left mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.project_type === 'traditional')?'active':'')">
+          <input type="radio" name="project_type" value="traditional" v-model="form.project_type" required>
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Standard</p>
+            <p class="m-0 text-grey-400 mt-1">Only one contributor is allowed to work
+              at any time.</p>
+          </div>
+        </label>
+      </div>
+      <div class="col btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio bounty-toggle-btn text-left mr-2 mb-2 py-2 px-2 bounty-information-label ' + (subscriptionActive?'':'disabled ') + ((form.project_type === 'multiple')?'active':'')">
+          <input type="radio" name="project_type" value="multiple" v-model="form.project_type" :disabled="!subscriptionActive">
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Multiple</p>
+            <p class="m-0 text-grey-400 mt-1">Allow multiple contributors and one-to-many payouts.
+              Useful for cooperative or contest bounties.</p>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="text-danger" v-if="step4Errors.project_type && !form.project_type">
+      [[step4Errors.project_type]]
+    </div>
+
+    <div v-if="!subscriptionActive" class="bounty-creation-help p-3">
+      Multiple contributors and payouts is only available to Gitcoin PRO members. For more information, 
+      contact <a href="mailto:pro@gitcoin.co" target="_blank" class="font-weight-bold">pro@gitcoin.co</a>.      
+    </div>
+  </div>
+
+  <!-- Permissions -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Permissions</label>
+    <div class="row btn-group-toggle d-flex flex-column flex-lg-row flex-wrap pt-1">
+      <div class="col btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.permission_type === 'permissionless')?'active':'')">
+          <input type="radio" name="permission_type" value="permissionless" v-model="form.permission_type" required>
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Permissionless</p>
+            <p class="m-0 text-grey-400 mt-1">Anyone can start work without approval</p>
+          </div>
+        </label>
+      </div>
+      <div class="col btn-group-toggle">
+        <label
+          v-bind:class="'w-100 btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.permission_type === 'approval')?'active':'')">
+          <input type="radio" name="permission_type" value="approval" v-model="form.permission_type">
+          <div class="p-1">
+            <p class="m-0 text-grey-500 font-subheader">Approval Required</p>
+            <p class="m-0 text-grey-400 mt-1">Applicants need to be approved by you to start work</p>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="text-danger" v-if="step4Errors.permission_type && !form.permission_type">
+      [[step4Errors.permission_type]]
+    </div>
+  </div>
+
+  <!-- Auto-Approve -->
+  <div class="mb-4" v-if="form.permission_type === 'approval'">
+    <div class="mt-2">
+      <div class="form__checkbox">
+        <input name="new_bounty_auto_approve" id="new_bounty_auto_approve" v-model="form.auto_approve_workers" type="checkbox">
+        <label class="form__label" for="new_bounty_auto_approve"><span class="font-subheader pt-2">Auto-Approve</span></label>
+      </div>
+      <p class="text-muted mb-0">If selected, contributors who applied will be automatically approved after 72 hours.</p>
+    </div>
+  </div>
+
+  <!-- Reserve bounty -->
+  <div class="mb-4" v-if="form.permission_type === 'approval' && isNew">
+    <div class="mt-2">
+      <div class="form__checkbox">
+        <input name="new_bounty_reserve" id="new_bounty_reserve" v-model="reserveBounty" type="checkbox">
+        <label class="form__label" for="new_bounty_reserve"><span class="font-subheader pt-2">Reserve Bounty</span></label>
+      </div>
+      <p class="text-muted mb-0">Reserve this bounty so only a specific contributor can start work.</p>
+    </div>
+  </div>
+
+  <!-- Reserved for -->
+  <div class="mb-4" v-if="form.permission_type === 'approval' && reserveBounty && isNew">
+    <label class="font-caption letter-spacing text-black-60 text-uppercase">{% trans "Reserved for" %}</label>
+    <v-select id="reservedFor" @search="userSearch" :options="usersOptions" placeholder="Reserved for" v-model="form.reserved_for_user">
+      <template slot="no-options">
+        type to search Users..
+      </template>
+      <template slot="option" slot-scope="option">
+        <div class="d-flex align-items-baseline">
+          <div class="mr-2">
+            <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
+          </div>
+          <div>[[ option.text ]]</div>
+        </div>
+      </template>
+      <template slot="selected-option" slot-scope="option">
+        <div class="d-flex align-items-baseline">
+          <div class="mr-2">
+            <img class="rounded-circle" :src="option.avatar_url" width="20" height="20"/>
+          </div>
+          <div>[[ option.text ]]</div>
+        </div>
+      </template>
+
+    </v-select>
+  </div>
+
+  <!-- Submission cutoff date -->
+  <div class="mb-1">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Submission Cutoff Date</label>
+    <date-range-picker id="new_bounty_cutoff_date" :date="form.expirationTimeDelta"  @apply-daterangepicker="updateDate" :disabled="form.never_expires"></date-range-picker>
+  </div>
+
+  <!-- Never expire -->
+  <div class="mb-4">
+    <div class="mt-2">
+      <div class="form__checkbox">
+        <input name="new_bounty_never_expires" id="new_bounty_never_expires" v-model="form.never_expires" type="checkbox">
+        <label class="form__label" for="new_bounty_never_expires"><span class="font-subheader">Set to never expire</span></label>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Estimated Bounty Payout Date -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Estimated Bounty Payout Date</label>
+    <p class="text-muted mb-0">To ensure prompt winner payout, Gitcoin advises that payouts are handled within 7 days post bounty wrap-up. Kindly note that failure to complete payouts within 21 days post bounty wrap-up, will prohibit posting of future bounties going forward.</p>
+    <date-range-picker id="new_bounty_payout_date" :date="form.payoutDate"  @apply-daterangepicker="updatePayoutDate" :disabled="form.never_expires"></date-range-picker>
+  </div>
+
+  <!-- Notification Email -->
+  <div class="mb-4">
+    <label class="mb-1 font-subheader font-weight-normal letter-spacing">Notification Email</label>
+    <p class="text-muted mb-0">Updates to this bounty will be sent to this email address</p>
+    <input id="bounty_notification_email" name="notification_email" class="form__input" type="text" v-model="form.notificationEmail" placeholder="my@email.com">
+  </div>
+
+  </form-wrapper>

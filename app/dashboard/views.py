@@ -91,7 +91,7 @@ from economy.utils import ConversionRateNotFoundError, convert_amount, convert_t
 from eth_account.messages import defunct_hash_message
 from eth_utils import is_address, is_same_address
 from git.utils import get_auth_url, get_issue_details, get_url_dict, get_user, is_github_token_valid, search_users
-from grants.utils import get_clr_rounds_metadata
+from grants.utils import get_clr_rounds_metadata, is_valid_eip_1271_signature
 from kudos.models import Token
 from kudos.utils import humanize_name
 # from mailchimp3 import MailChimp
@@ -131,7 +131,9 @@ from .models import (
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
 from .poh_utils import is_registered_on_poh
-from .router import HackathonEventSerializer, TribesSerializer
+from .router import HackathonEventSerializer
+from .router import ProfileSerializer as SimpleProfileSerializer
+from .router import TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
     get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
@@ -1944,13 +1946,13 @@ def bounty_invite_url(request, invitecode):
             bounty_invite.bounty.add(bounty)
             bounty_invite.inviter.add(inviter)
             bounty_invite.invitee.add(request.user)
-        return redirect('/funding/details/?url=' + bounty.github_url)
+        return redirect(bounty.get_canonical_url())
     except Exception as e:
         logger.debug(e)
         raise Http404
 
 
-def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
+def bounty_details(request, ghuser=None, ghrepo=None, ghissue=None, stdbounties_id=None, bounty_id=None):
     """Display the bounty details.
 
     Args:
@@ -1974,7 +1976,12 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         _access_token = request.session.get('access_token')
 
     try:
-        if ghissue:
+        if bounty_id:
+            # The bounties should be referenced by their ID, as they do not always need to be source on github
+            bounties = Bounty.objects.current().filter(pk=bounty_id)
+            issue_url = None
+        elif ghissue:
+            # Fallback for using old URL types to access bounties
             issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue
             bounties = Bounty.objects.current().filter(github_url=issue_url.lower())
             if not bounties.exists():
@@ -1989,6 +1996,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     params = {
         'issueURL': issue_url,
+        'bounty_id': bounty_id if bounty_id else 'null',
         'title': _('Issue Details'),
         'card_title': _('Funded Issue Details | Gitcoin'),
         'avatar_url': static('v2/images/helmet.png'),
@@ -2002,7 +2010,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     bounty = None
 
-    if issue_url:
+    # issue_url will be None for custom bounties
+    if issue_url or bounty_id:
         try:
             if stdbounties_id is not None and stdbounties_id == "0":
                 new_id = Bounty.objects.current().filter(github_url__iexact=issue_url).first().standard_bounties_id
@@ -2057,7 +2066,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
         return TemplateResponse(request, 'bounty/details.html', params)
-
+        
     params['PYPL_CLIENT_ID'] = settings.PYPL_CLIENT_ID
     return TemplateResponse(request, 'bounty/details2.html', params)
 
@@ -4311,6 +4320,9 @@ def new_hackathon_bounty(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
+    if hackathon_event.is_expired():
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
@@ -4410,7 +4422,20 @@ def change_bounty(request, bounty_id):
         'reserved_for_user_handle',
         'is_featured',
         'admin_override_suspend_auto_approval',
-        'keywords'
+        'keywords',
+        'contact_details',
+        'bounty_source',
+        'acceptance_criteria',
+        'resources',
+        'github_url',
+        'funding_organisation',
+        'network',
+        'metadata',
+        'peg_to_usd',
+        'expires_date',
+        'payout_date',
+        'never_expires',
+        'custom_issue_description'
     ]
 
     if request.body:
@@ -4436,8 +4461,10 @@ def change_bounty(request, bounty_id):
         bounty_changed = False
         new_reservation = False
         for key in keys:
+            value = params.get(key, None)
             value = params.get(key, 0)
-            if value != 0:
+            # Explicitly allow the value False to get into the if path
+            if value is False or value != 0:
                 if key == 'featuring_date':
                     value = timezone.make_aware(
                         timezone.datetime.fromtimestamp(int(value)),
@@ -4445,6 +4472,20 @@ def change_bounty(request, bounty_id):
 
                 if key == 'bounty_categories':
                     value = value.split(',')
+                elif key == "payout_date":
+                    value = 9999999999 if value == 0 else value
+                    value = timezone.make_aware(
+                        timezone.datetime.fromtimestamp(value),
+                        timezone=UTC
+                    )
+                elif key == "expires_date":
+                    value = 9999999999 if value == 0 else value
+                    value = timezone.make_aware(
+                        timezone.datetime.fromtimestamp(value),
+                        timezone=UTC
+                    )
+
+
                 old_value = getattr(bounty, key)
 
                 if value != old_value:
@@ -4455,6 +4496,17 @@ def change_bounty(request, bounty_id):
                     bounty_changed = True
                     if key == 'reserved_for_user_handle' and value:
                         new_reservation = True
+
+
+        owners = params.get('owners', [])
+        old_owners = [o.id for o in bounty.owners.all()]
+
+        if owners != old_owners:
+            bounty.owners.clear()
+            for owner_id in owners:
+                bounty.owners.add(Profile.objects.get(pk=owner_id))
+            bounty_changed = True
+
 
         bounty_increased = False
         if not bounty.is_bounties_network:
@@ -4516,6 +4568,14 @@ def change_bounty(request, bounty_id):
     result = {}
     for key in keys:
         result[key] = getattr(bounty, key)
+
+    result['expires_date'] = bounty.expires_date.timestamp() if bounty.expires_date else None
+    result['payout_date'] = bounty.payout_date.timestamp() if bounty.payout_date else None
+    result['value_true'] = str(bounty.value_true)
+    result['value_true_usd'] = str(bounty.value_true_usd)
+    result['owners'] = SimpleProfileSerializer(bounty.owners.all(), many=True, read_only=True).data
+    result['bounty_reserved_for_user'] = SimpleProfileSerializer(bounty.bounty_reserved_for_user, read_only=True).data
+    
     del result['featuring_date']
 
     params = {
@@ -4527,7 +4587,9 @@ def change_bounty(request, bounty_id):
         'token_address': bounty.token_address,
         'amount': bounty.get_value_true,
         'estimated_hours': bounty.estimated_hours,
-        'network': bounty.network
+        'network': bounty.network,
+        'subscriptions': request.user.profile.active_subscriptions,
+        'hackathon': bounty.event,
     }
 
     return TemplateResponse(request, 'bounty/change.html', params)
@@ -6053,12 +6115,14 @@ def create_bounty_v1(request):
         return JsonResponse(response)
 
     github_url = request.POST.get("github_url", None)
-    if Bounty.objects.filter(github_url=github_url, network=network).exists():
-        response = {
-            'status': 303,
-            'message': 'bounty already exists for this github issue'
-        }
-        return JsonResponse(response)
+    bounty_source = request.POST.get("bounty_source", None)
+    if bounty_source == 'github':
+        if Bounty.objects.filter(github_url=github_url, network=network).exists():
+            response = {
+                'status': 303,
+                'message': 'bounty already exists for this github issue'
+            }
+            return JsonResponse(response)
 
     bounty = Bounty()
 
@@ -6096,21 +6160,27 @@ def create_bounty_v1(request):
     bounty.raw_data = request.POST.get("raw_data", {})      # ETC-TODO: REMOVE ?
     bounty.web3_type = request.POST.get("web3_type", '')
     bounty.value_true = request.POST.get("amount", 0)
+    bounty.value_true_usd = request.POST.get("amount_usd", 0)
+    bounty.peg_to_usd = request.POST.get("peg_to_usd", 0) == 'true'
+    bounty.never_expires = request.POST.get("never_expires", 0) == 'true'
+    
     bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
+
+    bounty.bounty_source = bounty_source
+    bounty.acceptance_criteria = request.POST.get("acceptance_criteria", "")
+    bounty.resources = request.POST.get("resources", "")
+    bounty.custom_issue_description = request.POST.get("custom_issue_description", "")    
+    
+    contact_details = request.POST.get("contact_details", "")
+    if contact_details:
+        bounty.contact_details = json.loads(contact_details)
+
+    owners = request.POST.get("owners", "")
 
     current_time = timezone.now()
 
     bounty.web3_created = current_time
     bounty.last_remarketed = current_time
-
-    try:
-        bounty.token_value_in_usdt = convert_token_to_usdt(bounty.token_name)
-        bounty.value_in_usdt = convert_amount(bounty.value_true, bounty.token_name, 'USDT')
-        bounty.value_in_usdt_now = bounty.value_in_usdt
-        bounty.value_in_eth = convert_amount(bounty.value_true, bounty.token_name, 'ETH')
-
-    except ConversionRateNotFoundError as e:
-        logger.debug(e)
 
     # bounty expiry date
     expires_date = int(request.POST.get("expires_date", 9999999999))
@@ -6119,12 +6189,21 @@ def create_bounty_v1(request):
         timezone=UTC
     )
 
+    # bounty payout date
+    payout_date = int(request.POST.get("payout_date", 9999999999))
+    bounty.payout_date = timezone.make_aware(
+        timezone.datetime.fromtimestamp(payout_date),
+        timezone=UTC
+    )
+    
+
     # bounty github data
-    try:
-        kwargs = get_url_dict(bounty.github_url)
-        bounty.github_issue_details = get_issue_details(**kwargs)
-    except Exception as e:
-        logger.error(e)
+    if bounty.github_url:
+        try:
+            kwargs = get_url_dict(bounty.github_url)
+            bounty.github_issue_details = get_issue_details(**kwargs)
+        except Exception as e:
+            logger.error(e)
 
     # bounty is featured bounty
     bounty.is_featured = request.POST.get("is_featured", False)
@@ -6168,6 +6247,11 @@ def create_bounty_v1(request):
         logger.error(e)
 
     bounty.save()
+
+    # Now that bounty has an ID save the m2m fields
+    if owners:
+        for owner_id in json.loads(owners):
+            bounty.owners.add(Profile.objects.get(pk=owner_id))
 
     # save again so we have the primary key set and now we can set the
     # standard_bounties_id
@@ -6347,7 +6431,24 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type in ['qr', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext'] and not fulfiller_address:
+    elif (
+        payout_type
+        in [
+            "qr",
+            "polkadot_ext",
+            "harmony_ext",
+            "binance_ext",
+            "rsk_ext",
+            "xinfin_ext",
+            "nervos_ext",
+            "algorand_ext",
+            "sia_ext",
+            "tezos_ext",
+            "casper_ext",
+            "cosmos_ext",
+        ]
+        and not fulfiller_address
+    ):
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -6459,15 +6560,51 @@ def payout_bounty_v1(request, fulfillment_id):
     is_funder = bounty.is_funder(user.username.lower()) if user else False
 
     if not is_funder:
-        response['message'] = 'error: payout is bounty funder operation'
-        return JsonResponse(response)
+        is_owner = False
+
+        if user:
+            owners = [profile.handle for profile in bounty.owners.all()]
+            handle = user.username.lower().lstrip('@')
+            for owner_handler in owners:
+                is_owner = handle == owner_handler.lower().lstrip('@')
+                if is_owner:
+                    break
+        
+        if not is_owner:
+            response['message'] = 'error: payout is bounty funder operation'
+            return JsonResponse(response)
 
     payout_type = request.POST.get('payout_type')
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'harmony_ext' , 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / manual'
+
+    if (
+        payout_type
+        not in [
+            'fiat',
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext' ,
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext',
+            'manual'
+        ]
+    ):
+        response['message'] = (
+            'error: parameter payout_type must be fiat / qr / web_modal / '
+            'polkadot_ext / harmony_ext / binance_ext / rsk_ext / xinfin_ext / '
+            'nervos_ext / algorand_ext / sia_ext / tezos_ext / casper_ext / '
+            'cosmos_ext / manual'
+        )
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -6533,7 +6670,24 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext', 'harmony_ext', 'binance_ext', 'rsk_ext', 'xinfin_ext', 'nervos_ext', 'algorand_ext', 'sia_ext', 'tezos_ext', 'casper_ext']:
+    elif (
+        payout_type
+        in [
+            'qr',
+            'web3_modal',
+            'polkadot_ext',
+            'harmony_ext',
+            'binance_ext',
+            'rsk_ext',
+            'xinfin_ext',
+            'nervos_ext',
+            'algorand_ext',
+            'sia_ext',
+            'tezos_ext',
+            'casper_ext',
+            'cosmos_ext'
+        ]
+    ):
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)
@@ -6557,6 +6711,9 @@ def reverse_proxy_rpc_v1(request, tenant):
     if tenant.upper() == 'CASPER':
         # casper
         url = 'http://3.142.224.108:7777/rpc'
+    elif tenant.upper() == 'COSMOS':
+        # cosmos
+        url = 'https://rpc.cosmos.network'
     else:
         return JsonResponse({'error': 'invalid tenant'}, status=400)
 
@@ -7155,13 +7312,19 @@ def verify_user_poh(request, handle):
             'msg': 'Empty signature or Ethereum address',
         })
 
+    web3 = get_web3('mainnet')
     message_hash = defunct_hash_message(text="verify_poh_registration")
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     if eth_address != signer:
-        return JsonResponse({
-            'ok': False,
-            'msg': 'Invalid signature',
-        })
+        # recoverHash() will fail if the address is a smart contract wallet. Check for EIP-1271 compliance
+        if is_valid_eip_1271_signature(web3, web3.toChecksumAddress(eth_address), message_hash, signature):
+            # We got a valid EIP-1271 signature from eth_address, so we can trust it.
+            signer = eth_address
+        else:
+            return JsonResponse({
+                'ok': False,
+                'msg': 'Invalid signature',
+            })
 
     if Profile.objects.filter(poh_handle=signer).exists():
         return JsonResponse({
@@ -7169,7 +7332,6 @@ def verify_user_poh(request, handle):
             'msg': 'Ethereum address is already registered.',
         })
 
-    web3 = get_web3('mainnet')
     if not is_registered_on_poh(web3, signer):
         return JsonResponse({
             'ok': False,
@@ -7310,8 +7472,9 @@ def export_grants_ethelo(request):
     end_grant = request.GET.get('end_grant_number')
     end_grant = int(end_grant) if len(end_grant) > 0 else None
     inactive_only = bool(request.GET.get('inactive_only'))
+    flagged_only = bool(request.GET.get('flagged_only'))
 
-    grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only)
+    grants_dict = ethelo.get_grants_from_database(start_grant, end_grant, inactive_only, flagged_only)
 
     json_str = json.dumps(grants_dict)
     response = HttpResponse(json_str, content_type='application/json')

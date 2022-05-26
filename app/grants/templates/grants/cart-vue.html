@@ -65,7 +65,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div id="gc-grants-cart" class="container-lg" v-cloak>
         <grants-cart ref="cart" inline-template>
           <div class="m-0 p-0">
-            <h1 v-if="grantData.length > 0" class="text-left text-black my-5">Grants Cart</h1>
             <div v-if="{{trust_bonus}} < 150 && grantData.length != 0 " v-cloak class="alert alert-primary spacer-mt-4 border-1 border-primary">
               <div class="row">
                 <div class="col-12 col-lg-auto text-left pb-1 pb-lg-0" style="max-width: 50px;">
@@ -78,6 +77,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               </div>
             </div>
+            <h1 v-if="grantData.length > 0" class="text-left text-black my-5">Grants Cart</h1>
 
             <div class="container px-0">
               <b-modal
@@ -162,7 +162,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
               <div v-else class="m-auto" style="padding-bottom: 10rem;">
                 <div>
-                  <b-tabs @input="tabChange" v-model="tabIndex" content-class="mt-3" lazy ref="tabs">
+                  <b-tabs @input="tabChange" v-model="tabIndex" nav-class="cart-tabs" content-class="mt-3" lazy ref="tabs">
                     <!-- Checkout for ETH Grants -->
                     {% include 'grants/cart/eth.html' %}
 
@@ -196,6 +196,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <!-- Checkout for Algorand Grants -->
                     {% include 'grants/cart/extension/algorand.html' %}
 
+                    <!-- Checkout for Cosmos Grants -->
+                    {% include 'grants/cart/extension/cosmos.html' %}
+
                     <!-- Sticky checkout for ETH -->
                     <div v-if="tabSelected === 'ETH' || tabSelected === 'ETH_POLYGON'" class="bg-white border-grey border-top-2 bottom-0 px-2 py-4 position-sticky text-center w-100 d-block d-md-none">
                       <eth-checkout-button
@@ -207,6 +210,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         :is-polygon-down="isPolygonDown"
                         :current-tokens="currentTokens"
                         :donation-inputs="donationInputs"
+                        :donation-inputs-polygon="donationInputsPolygon"
                         :max-cart-items="maxCartItems"
                         :grants-by-tenant="grantsByTenant"
                         :grants-under-minimal-contribution="grantsUnderMinimalContribution"
@@ -282,7 +286,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       document.disablePolygon = '{{ disablePolygon }}' === 'true';
 
     </script>
-    {% bundle merge_js file qrcode %}
+    {% bundle merge_js file grants_cart_qrcode %}
       <script src="qrcode.min.js" base-dir="/node_modules/qrcodejs/"></script>
     {% endbundle %}
     <script src="/dynamic/js/tokens_dynamic.js"></script>

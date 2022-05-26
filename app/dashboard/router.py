@@ -129,6 +129,22 @@ class InterestSerializer(serializers.ModelSerializer):
         model = Interest
         fields = ('pk', 'profile', 'created', 'pending', 'issue_message')
 
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    avatar_url = serializers.SerializerMethodField()
+
+    def get_avatar_url(self, obj):
+        ret = obj.avatar_url
+        if obj.avatar_baseavatar_related.filter(active=True).exists():
+            # profile_json['avatar_id'] = user.avatar_baseavatar_related.filter(active=True).first().pk
+            ret = obj.avatar_baseavatar_related.filter(active=True).first().avatar_url
+        return ret
+
+    class Meta:
+
+        """Define the profile serializer metadata."""
+        model = Profile
+        fields = ('id', 'handle', 'avatar_url')
+
 
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
@@ -140,6 +156,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     event = HackathonEventSerializer(many=False)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
+    owners = ProfileSerializer(many=True, read_only=True)
+    bounty_owner_profile = ProfileSerializer()
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
@@ -170,7 +188,10 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
             'additional_funding_summary', 'funding_organisation', 'paid', 'event',
             'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'is_featured',
-            'featuring_date', 'repo_type', 'funder_last_messaged_on', 'can_remarket', 'is_reserved'
+            'featuring_date', 'repo_type', 'funder_last_messaged_on', 'can_remarket', 'is_reserved',
+            'contact_details', 'usd_pegged_value_in_token_now', 'usd_pegged_value_in_token', 
+            'value_true_usd', 'peg_to_usd', 'owners', 'payout_date', 'acceptance_criteria', 'resources',
+            'bounty_source', 'bounty_owner_profile', 'never_expires', 'custom_issue_description'
         )
 
     def create(self, validated_data):
@@ -316,7 +337,7 @@ class BountySerializerSlim(BountySerializer):
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested_count', 'token_name', 'value_in_usdt',
             'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
-            'bounty_categories'
+            'bounty_categories', 'value_true_usd', 'peg_to_usd'
         )
 
 

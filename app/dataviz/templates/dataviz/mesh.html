@@ -17,7 +17,7 @@
 {% endcomment %}
 {% load i18n static bundle %}
 {% block extrastyle %}{{ block.super }}
-  {% bundle css file admin_dashboard %}
+  {% bundle css file admin_dashboard_mesh %}
     <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/admin/dashboard.scss" %} />
   {% endbundle %}
 {% endblock %}

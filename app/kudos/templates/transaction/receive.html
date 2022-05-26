@@ -18,7 +18,7 @@
 {% load i18n static kudos_extras bundle %}
 {% block 'scripts' %}
 
-  {% bundle merge_js file receive %}
+  {% bundle merge_js file receive_kudos %}
     <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
     <script src="secrets.min.js" base-dir="/node_modules/secrets.js-grempe/"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>

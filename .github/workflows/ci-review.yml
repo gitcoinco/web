@@ -240,6 +240,8 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USER: ${{ secrets.DB_USER }}
           DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
+          GITHUB_API_USER: ${{ secrets.REVIEW_GITHUB_API_USER }}
+          GITHUB_API_TOKEN: ${{ secrets.REVIEW_GITHUB_API_TOKEN }}
 
           # Pass in the outputs from the generic environment, we will deploy our ressources in the VPC
           # and subnet that where created there

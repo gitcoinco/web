@@ -17,6 +17,7 @@ class GenericAdmin(admin.ModelAdmin):
 class SquelchProfileAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile']
+    search_fields = ['profile__handle']
 
 
 class SuggestedActionAdmin(admin.ModelAdmin):

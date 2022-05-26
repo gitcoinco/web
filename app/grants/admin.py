@@ -31,11 +31,12 @@ import twitter
 from django_svg_image_form_field import SvgAndImageFormField
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantBrandingRoutingPolicy, GrantCLR, GrantCLRCalculation,
-    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType, MatchPledge,
+    GrantCollection, GrantHallOfFame, GrantHallOfFameGrantee, GrantPayout, GrantStat, GrantTag, GrantType,
     PhantomFunding, Subscription,
 )
 from grants.views import record_grant_activity_helper
 from marketing.mails import grant_more_info_required, new_grant_approved
+from web3 import Web3
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -49,6 +50,10 @@ class FlagAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     raw_id_fields = ['profile', 'grant']
+    readonly_fields = ['grant_link']
+    
+    def grant_link(self, obj):
+        return format_html("<a href='/grants/{id}/{slug}' target=\"_blank\">Grant Details</a>", id=obj.grant.id, slug=obj.grant.slug)
 
     def response_change(self, request, obj):
         if "_post_flag" in request.POST:
@@ -69,16 +74,6 @@ class FlagAdmin(admin.ModelAdmin):
             obj.save()
             self.message_user(request, "posted flag to twitter feed")
         return redirect(obj.admin_url)
-
-
-
-class MatchPledgeAdmin(admin.ModelAdmin):
-    """Define the MatchPledge administration layout."""
-
-    ordering = ['-id']
-    raw_id_fields = ['profile']
-    list_display =['pk', 'profile', 'active','pledge_type','amount']
-
 
 class GrantCLRCalculationAdmin(admin.ModelAdmin):
     """Define the GrantCLRCalculation administration layout."""
@@ -110,7 +105,7 @@ class GrantAdmin(GeneralAdmin):
         'title', 'is_grant_idle',
         'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
-        'grant_type', 'tags', 'description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
+        'grant_type', 'tags', 'tag_eligibility_reason','description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
         'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed', 'defer_clr_to',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
@@ -120,14 +115,15 @@ class GrantAdmin(GeneralAdmin):
         'metadata', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'in_active_clrs',
         'last_update', 'funding_info', 'twitter_verified', 'twitter_verified_by', 'twitter_verified_at', 'stats_history',
         'zcash_payout_address', 'celo_payout_address','zil_payout_address', 'harmony_payout_address', 'binance_payout_address',
-        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'emails', 'admin_message', 'has_external_funding'
+        'polkadot_payout_address', 'kusama_payout_address', 'rsk_payout_address', 'algorand_payout_address', 'cosmos_payout_address',
+        'emails', 'admin_message', 'has_external_funding'
     ]
     readonly_fields = [
         'defer_clr_to', 'logo_svg_asset', 'logo_asset',
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count', 'in_active_clrs', 'stats_history',
-        'emails', 'is_grant_idle'
+        'emails', 'is_grant_idle', 'tag_eligibility_reason'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile', 'twitter_verified_by']
@@ -274,6 +270,15 @@ class GrantAdmin(GeneralAdmin):
     logo_svg_asset.short_description = 'Logo SVG Asset'
     logo_asset.short_description = 'Logo Image Asset'
 
+    def save_model(self, request, obj, form, change):
+        if obj.admin_address and obj.admin_address not in ["0x0", ""]:
+            try:
+                obj.admin_address = Web3.toChecksumAddress(obj.admin_address)
+                super(GrantAdmin, self).save_model(request, obj, form, change)
+            except:
+                self.message_user(request, "error: Unable to save due to invalid admin_address. Please enter a valid ETH address", level=messages.ERROR)
+        else:
+            super(GrantAdmin, self).save_model(request, obj, form, change)
 
 
 class SubscriptionAdmin(GeneralAdmin):
@@ -591,7 +596,6 @@ class GrantPayoutAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
-admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)
