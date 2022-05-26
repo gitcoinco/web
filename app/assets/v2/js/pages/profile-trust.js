@@ -279,7 +279,7 @@ Vue.component('active-trust-manager', {
             this.verificationError = response.error;
           } else {
             // notify success (temp)
-            _alert('Your dPoPP Trust Bonus has been saved!', 'success', 6000);
+            _alert('Your dPassport Trust Bonus has been saved!', 'success', 6000);
           }
 
           // mark verified if no errors are returned
