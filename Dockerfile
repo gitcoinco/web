@@ -52,6 +52,8 @@ RUN pip3 install --upgrade -r test.txt
 # Copy over docker-command (start-up script)
 COPY bin/docker-command.bash /bin/docker-command.bash
 COPY bin/review-env-initial-data.bash /bin/review-env-initial-data.bash
+COPY bin/celery/worker/run.sh /bin/celery/worker/run.sh
+
 RUN dos2unix /bin/docker-command.bash
 RUN dos2unix /bin/review-env-initial-data.bash
 
