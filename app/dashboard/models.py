@@ -6096,6 +6096,13 @@ class Passport(SuperModel):
     did = models.CharField(unique=True, null=False, blank=False, max_length=100)
     passport = JSONField(default=dict)
 
+    def __str__(self):
+        return f'{self.did}'
+
 class PassportStamp(SuperModel):
     user = models.ForeignKey(User, related_name='passport_stamps', on_delete=models.CASCADE, null=True, db_index=True)
+    passport = models.ForeignKey(Passport, related_name='stamps', on_delete=models.CASCADE, null=True)
     stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100)
+
+    def __str__(self):
+        return f'{self.stamp_id}'

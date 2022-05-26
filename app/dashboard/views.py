@@ -117,7 +117,7 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
-from .dpopp_reader import CERAMIC_URL, TRUSTED_IAM_ISSUER
+from .dpopp_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -2886,9 +2886,6 @@ def get_profile_tab(request, profile, tab, prev_context):
 
         # dPassport or cTrust
         if context['use_dpassport']:
-            # truster IAM issuer
-            trusted_issuer = 'did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw'
-
             # detail available services
             context['is_passport_connected'] = json.dumps(bool(profile.dpopp_trust_bonus))
 
@@ -2903,28 +2900,9 @@ def get_profile_tab(request, profile, tab, prev_context):
             except Passport.DoesNotExist:
                 context['passport'] = 'null'
 
-            # pass in a list of available services and the available matching
-            services = [
-                {
-                    'ref': f'{trusted_issuer}#Poh',
-                    'match_percent': 50
-                }, {
-                    'ref': f'{trusted_issuer}#POAP',
-                    'match_percent': 25
-                }, {
-                    'ref': f'{trusted_issuer}#Ens',
-                    'match_percent': 25
-                }, {
-                    'ref': f'{trusted_issuer}#Google',
-                    'match_percent': 15
-                }, {
-                    'ref': f'{trusted_issuer}#Twitter',
-                    'match_percent': 15
-                }, {
-                    'ref': f'{trusted_issuer}#Facebook',
-                    'match_percent': 15
-                }
-            ]
+            context['trust_bonus'] = profile.final_trust_bonus
+            services = SCORER_SERVICE_WEIGHTS
+
             # place the issuer into context
             context['iam_issuer'] = TRUSTED_IAM_ISSUER
             # pass the ceramic_url to the frontend
@@ -3116,9 +3094,8 @@ def verify_dpopp(request, handle):
     # TODO: reset challenge?
     # request.session['dpopp_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
 
-    # enqueue the validation and saving procedure - @TODO - this task should be enqueued (.delay) but review env has no celerey worker
-    calculate_trust_bonus(request.user.id, did, address)
-
+    # enqueue the validation and saving procedure
+    calculate_trust_bonus.delay(request.user.id, did, address)
     return JsonResponse({'ok': True})
 
 def get_profile_by_idena_token(token):

@@ -15,6 +15,29 @@ CERAMIC_URL = "https://ceramic.staging.dpopp.gitcoin.co"
 # DID of the trusted IAM server
 TRUSTED_IAM_ISSUER = "did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw"
 
+# Service weights for scorer
+SCORER_SERVICE_WEIGHTS = [
+    {
+        'ref': f'{TRUSTED_IAM_ISSUER}#Poh',
+        'match_percent': 50,
+    }, {
+        'ref': f'{TRUSTED_IAM_ISSUER}#POAP',
+        'match_percent': 25,
+    }, {
+        'ref': f'{TRUSTED_IAM_ISSUER}#Ens',
+        'match_percent': 25,
+    }, {
+        'ref': f'{TRUSTED_IAM_ISSUER}#Google',
+        'match_percent': 15,
+    }, {
+        'ref': f'{TRUSTED_IAM_ISSUER}#Twitter',
+        'match_percent': 15,
+    }, {
+        'ref': f'{TRUSTED_IAM_ISSUER}#Facebook',
+        'match_percent': 15,
+    }
+]
+
 # Ceramic definition id for CryptoAccounts on the ceramic model
 CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
 # Ceramic definition id for dPoPP passport

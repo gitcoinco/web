@@ -28,7 +28,7 @@ from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
 
-from .dpopp_reader import CERAMIC_URL, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_did, get_passport, get_stream_ids
+from .dpopp_reader import SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_passport, get_stream_ids
 
 logger = get_task_logger(__name__)
 
@@ -485,8 +485,8 @@ def save_tx_status_and_details(self, earning_pk, chain='std'):
         )
 
 
-@app.shared_task(bind=True, max_retries=1)
-def calculate_trust_bonus(self,  user_id, did, address):
+@app.shared_task
+def calculate_trust_bonus(user_id, did, address):
     """
     :param self: Self
     :param user_id: the user_id
@@ -532,40 +532,26 @@ def calculate_trust_bonus(self,  user_id, did, address):
 
         # dict from list
         stamps_to_return = {}
-        matched_services = {
-                'Poh': {
-                    'match_percent': 0.50,
-                    'verified': 0
-                },
-                'POAP': {
-                    'match_percent': 0.25,
-                    'verified': 0,
-                },
-                'Ens': {
-                    'match_percent': 0.25,
-                    'verified': 0
-                },
-                'Google': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'Twitter': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'Facebook': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'BrightID': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-                'Idena': {
-                    'match_percent': 0.15,
-                    'verified': 0
-                },
-        }
+
+        # Build a dict like
+        #    {
+        #       'TRUSTED_IAM_ISSUER#Poh': {
+        #         'match_percent': 0.50,
+        #         'num_verifications': 0        // number of verifications
+        #     },
+        #     ...
+        # }
+
+        matched_services = {s['ref']: {
+            'match_percent': s['match_percent'] / 100.0,
+            'is_verified': 0,  # The user needs at least one verification of this type to get the match_percent
+        } for s in SCORER_SERVICE_WEIGHTS }
+
+        # store the passport
+        db_passport, _ = Passport.objects.update_or_create(user_id=user_id, defaults={
+            "did": did,
+            "passport": passport
+        })
 
         for stamp in passport['stamps']:
 
@@ -612,7 +598,9 @@ def calculate_trust_bonus(self,  user_id, did, address):
 
                 if stamp_id_is_valid:
                     # Save the stamp id (@TODO: should we also have `did` and `active` fields?)
-                    stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id)
+                    stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id, defaults={
+                        "passport": db_passport
+                    })
 
                     # Proceed with verifying the credential
                     verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
@@ -623,10 +611,14 @@ def calculate_trust_bonus(self,  user_id, did, address):
                     stamp['is_verified'] = (not verification["warnings"] and not verification["errors"])    # Not sure: should we exclude warnings? GD: I've just been basing these checks on the errors
                     stamps_to_return[stamp['provider']] = stamp
 
-                    matched_services[stamp['provider']]['verified'] = 1 if stamp['is_verified'] else 0
+                    # The use only needs one verification for a certain provider in order to obtain the score for that provider
+                    service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
+                    matched_services[service_key]['is_verified'] = matched_services[service_key]['is_verified'] or True
+                    
+        logger.error("TODO: services: %s", pformat(matched_services))
+        trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))
 
-
-        trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * match["verified"] for _, match in matched_services.items()]))
+        logger.error("TODO: trust_score: %s", trust_score)
 
         profile = Profile.objects.get(user_id=user_id)
         profile.dpopp_trust_bonus = trust_score
@@ -636,12 +628,6 @@ def calculate_trust_bonus(self,  user_id, did, address):
 
         # return as a dict of stamps
         passport['stamps'] = stamps_to_return
-
-        # store the passport
-        Passport.objects.update_or_create(user_id=user_id, defaults={
-            "did": did,
-            "passport": passport
-        })
 
     except Exception as e:
         # We expect this verification to throw

@@ -673,7 +673,7 @@ class MediaFileAdmin(admin.ModelAdmin):
 
 class PassportStampAdmin(admin.ModelAdmin):
     list_display = ['user', 'stamp_id']
-    raw_id_fields = ['user']
+    raw_id_fields = ['user', 'passport']
     search_fields = [
         'user__id', 'user__username', 'stamp_id'
     ]
