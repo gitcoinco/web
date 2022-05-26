@@ -723,10 +723,10 @@ const service = new awsx.ecs.FargateService(`gitcoin-review-${environmentName}-a
             },
             worker: {
                 image: dockerGtcWebImage,
-                memory: 512,
+                memory: 1024,
                 environment: environment,
                 links: [],
-                command: ["bash", "/bin/celery/worker/run.sh"]
+                command: ["python3", "manage.py", "celery"]
             }
         },
     },
