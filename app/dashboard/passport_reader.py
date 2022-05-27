@@ -52,7 +52,8 @@ def get_did(address, network="1"):
         # grab did that this address controls (defaults to "on mainnet")
         data = {"type":1,"genesis":{"header":{"controllers":[f"{address.lower()}@eip155:{network}"],"family":f"caip10-eip155:{network}"}},"opts":{"anchor":False,"publish":True,"sync":0,"pin":True}}
         response = requests.post(url=f"{CERAMIC_URL}/api/v0/streams", json=data)
-        did = response.json()['state']['content']
+        state = response.json().get('state', { "content": False})
+        did = state['next']['content'] if state.get('next') else state['content']
     except requests.exceptions.RequestException:
         pass
     except:
