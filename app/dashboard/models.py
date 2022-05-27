@@ -4415,12 +4415,16 @@ class Profile(SuperModel):
 
     @property
     def to_representation(instance):
+        avatar_url = instance.avatar_url
+        if instance.avatar_baseavatar_related.filter(active=True).exists():
+            avatar_url = instance.avatar_baseavatar_related.filter(active=True).first().avatar_url
+
         return {
             'id': instance.id,
             'handle': instance.handle,
             'name': instance.name,
             'github_url': instance.github_url,
-            'avatar_url': instance.avatar_url,
+            'avatar_url': avatar_url,
             'keywords': instance.keywords,
             'url': instance.get_relative_url(),
             'position': instance.get_contributor_leaderboard_index(),
