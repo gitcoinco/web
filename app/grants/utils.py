@@ -322,12 +322,7 @@ def save_grant_to_notion(grant):
         fullUrl = BASE_URL.rstrip('/') + grant.url
         grant_tags = []
         for tag in grant.tags.all():
-            grant_tags.append({
-                "id" : "tags",
-                "name": str(tag),
-                "color": "default"
-            })
-
+            grant_tags.append(str(tag))
 
         # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
         return notion_write(NOTION_SYBIL_DB, {
@@ -356,10 +351,28 @@ def save_grant_to_notion(grant):
                     "href": fullUrl
                 }]
             },
-            "Requested Rounds": {
+             "Requested Rounds": {
                 "id": "qBXH",
-                "type": "multi_select",
-                "multi_select": grant_tags
+                "type": "rich_text",
+                "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                            "content": ", ".join(grant_tags),
+                            "link": None
+                        },
+                        "annotations": {
+                            "bold": False,
+                            "italic": False,
+                            "strikethrough": False,
+                            "underline": False,
+                            "code": False,
+                            "color": "default"
+                        },
+                        "plain_text": ", ".join(grant_tags),
+                        "href": None
+                    }
+                ]
             },
             "Eligibility Tag Reasoning": {
                 "id": "Q]?]",
