@@ -117,7 +117,6 @@ from townsquare.views import get_tags
 from unidecode import unidecode
 from web3 import HTTPProvider, Web3
 
-from .passport_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -133,6 +132,7 @@ from .models import (
     UserVerificationModel,
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
+from .passport_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .poh_utils import is_registered_on_poh
 from .router import HackathonEventSerializer
 from .router import ProfileSerializer as SimpleProfileSerializer
