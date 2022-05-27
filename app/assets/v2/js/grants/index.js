@@ -761,6 +761,7 @@ if (document.getElementById('grants-showcase')) {
           };
 
           currentCLR.formatted_dates = formatted_dates;
+          currentCLR.shareURL = window.location.origin + '/grants/clr/' + currentCLR.sub_round_slug;
         }
 
         return currentCLR;
