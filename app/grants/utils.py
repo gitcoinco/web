@@ -320,9 +320,13 @@ def save_grant_to_notion(grant):
     if NOTION_SYBIL_DB and NOTION_API_KEY:
         # fully qualified url
         fullUrl = BASE_URL.rstrip('/') + grant.url
-        grant_tags = ''
+        grant_tags = []
         for tag in grant.tags.all():
-            grant_tags += str(tag) + ', '
+            grant_tags.append({
+                "id" : "tags",
+                "name": str(tag),
+                "color": "default"
+            })
 
 
         # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
@@ -352,15 +356,33 @@ def save_grant_to_notion(grant):
                     "href": fullUrl
                 }]
             },
-             "Requested Rounds": {
-                "id": "tags",
-                "type": "string",
-                "string": grant_tags
+            "Requested Rounds": {
+                "id": "qBXH",
+                "type": "multi_select",
+                "multi_select": grant_tags
             },
             "Eligibility Tag Reasoning": {
-                "id": "tag_eligibility_reason",
-                "type": "string",
-                "string": grant.tag_eligibility_reason
+                "id": "Q]?]",
+                "type": "rich_text",
+                "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                            "content": grant.tag_eligibility_reason,
+                            "link": None
+                        },
+                        "annotations": {
+                            "bold": False,
+                            "italic": False,
+                            "strikethrough": False,
+                            "underline": False,
+                            "code": False,
+                            "color": "default"
+                        },
+                        "plain_text": grant.tag_eligibility_reason,
+                        "href": None
+                    }
+                ]
             }
         })
 
