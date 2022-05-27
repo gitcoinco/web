@@ -1732,6 +1732,12 @@ Vue.component('grants-cart', {
     // Show loading dialog
     this.isLoading = true;
 
+    // Check if shared/global wallet functions are loaded from shared.js
+    if (!window.indicateMetamaskPopup) {
+      // rerender component to pickup load of global fncts
+      vm.$forceUpdate();
+    }
+
     // Load list of all tokens
     const tokensResponse = await fetch('/api/v1/tokens');
     const allTokens = await tokensResponse.json();
