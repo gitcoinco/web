@@ -193,7 +193,7 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
 
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
-export const bucketWebURL = pulumi.interpolate`https://$(bucketRegionalDomainName)/`;
+export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.bucketRegionalDomainName}/`;
 // export const bucketWebURL = "https://gitcoin-review-10618-c00aa99.s3.us-west-2.amazonaws.com/"; 
 
 //////////////////////////////////////////////////////////////
