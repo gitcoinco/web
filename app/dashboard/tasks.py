@@ -28,7 +28,9 @@ from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
 
-from .passport_reader import SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_passport, get_stream_ids
+from .passport_reader import (
+    SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_passport, get_stream_ids,
+)
 
 logger = get_task_logger(__name__)
 
@@ -609,7 +611,7 @@ def calculate_trust_bonus(user_id, did, address):
                     if stamp['is_verified']:
                         # The user only needs one verification for a certain provider in order to obtain the score for that provider
                         service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
-                        matched_services[service_key]['is_verified'] = matched_services[service_key]['is_verified'] or True
+                        matched_services[service_key]['is_verified'] = True
 
                         # Store the stamp to return it later
                         stamps_to_return[stamp['provider']] = stamp

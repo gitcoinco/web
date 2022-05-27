@@ -3,7 +3,6 @@ import hashlib
 import json
 
 import dag_cbor
-
 # Making GET requests against the CERAMIC_URL to read streams
 import requests
 
