@@ -83,7 +83,7 @@ from grants.tasks import (
 )
 from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
-    is_grant_team_member, is_valid_eip_1271_signature, sync_payout, toggle_user_sybil,
+    is_grant_team_member, sync_payout, toggle_user_sybil,
 )
 from marketing.mails import grant_cancellation, new_grant_flag_admin
 from marketing.models import ImageDropZone, Keyword, Stat
@@ -2956,12 +2956,8 @@ def ingest_contributions(request):
         message_hash = defunct_hash_message(text=message)
         recovered_address = w3.eth.account.recoverHash(message_hash, signature=signature)
         if recovered_address.lower() != expected_address.lower():
-            # The signature could still be valid if the wallet is a contract and supports EIP-1271
-            logger.info("Signatures didn't match from recoverHash(), trying EIP-1271 support")
-            if not is_valid_eip_1271_signature(w3, w3.toChecksumAddress(expected_address), message_hash, signature):
-                raise Exception("Signature could not be verified")
-            else:
-                logger.info("EIP-1271 signature verified")
+            raise Exception("Signature could not be verified")
+
     try:
         if txHash != '':
             receipt = w3.eth.getTransactionReceipt(txHash)
