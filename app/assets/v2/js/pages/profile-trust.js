@@ -161,13 +161,14 @@ Vue.component('active-trust-manager', {
       }
 
       // get the selectedAccounts ceramic DID
-      this.did = await this.reader.getDID(selectedAccount);
+      this.did = this.reader.getDID(selectedAccount);
+
+      // grab all the streams at once to reduce the required number of reqs
+      const genesis = await this.reader._tulons.getGenesisHash(this.did);
+      const streams = await this.reader._tulons.getGenesisStreams(genesis);
 
       // if loaded then the user has a ceramicAccount
-      if (this.did) {
-        // grab all the streams at once to reduce the required number of reqs
-        const genesis = await this.reader._tulons.getGenesisHash(this.did);
-        const streams = await this.reader._tulons.getGenesisStreams(genesis);
+      if (streams && streams.length > 0) {
         // get records from the reader
         const records = await Promise.all([
           await this.reader.getPassport(this.did, streams),

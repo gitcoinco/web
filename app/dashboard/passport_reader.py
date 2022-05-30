@@ -41,32 +41,17 @@ SCORER_SERVICE_WEIGHTS = [
 # Ceramic definition id for CryptoAccounts on the ceramic model
 CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
 # Ceramic definition id for Gitcoin Passport
-CERAMIC_PASSPORT_STREAM_ID = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
+CERAMIC_GITCOIN_PASSPORT_STREAM_ID = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
 
 def get_did(address, network="1"):
-    # default to no did found
-    did = False
-
-    # attempt to discover the did associated to the account via a caip10 link
-    try:
-        # grab did that this address controls (defaults to "on mainnet")
-        data = {"type":1,"genesis":{"header":{"controllers":[f"{address.lower()}@eip155:{network}"],"family":f"caip10-eip155:{network}"}},"opts":{"anchor":False,"publish":True,"sync":0,"pin":True}}
-        response = requests.post(url=f"{CERAMIC_URL}/api/v0/streams", json=data)
-        state = response.json().get('state', { "content": False})
-        did = state['next']['content'] if state.get('next') else state['content']
-    except requests.exceptions.RequestException:
-        pass
-    except:
-        pass
-
     # returns the did associated with the address on the given network
-    return did
+    return f"did:pkh:eip155:{network}:{address}"
 
 def clean_address(address, network="1"):
     # strip addresses suffix like @eip155:1, @eip155:4, @eip155:137
     return address.split("@eip155")[0]
 
-def get_stream_ids(did, ids=[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID, CERAMIC_PASSPORT_STREAM_ID]):
+def get_stream_ids(did, ids=[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID, CERAMIC_GITCOIN_PASSPORT_STREAM_ID]):
     # encode the input genesis with cborg (Concise Binary Object Representation)
     input_bytes = dag_cbor.encode({"header":{"controllers":[did],"family":"IDX"}})
     # hash the input_bytes and pad with STREAMID_CODEC and type (as bytes)
@@ -82,7 +67,7 @@ def get_stream_ids(did, ids=[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID, CERAMIC_PASSPORT
         # get the stream content for the given did according to its genesis stream_id
         stream_response = requests.get(f"{CERAMIC_URL}/api/v0/streams/{stream_id}")
         # get the state and default to empty content
-        state = stream_response.json().get('state', { "content": {}})
+        state = stream_response.json().get('state', {"content": {}})
         # check for a next record else pull from content
         content = state['next']['content'] if state.get('next') else state['content']
 
@@ -154,7 +139,7 @@ def get_passport_stream(stream_ids=[]):
 
     try:
         # pull the CryptoAccounts streamID
-        stream_id = stream_ids[CERAMIC_PASSPORT_STREAM_ID]
+        stream_id = stream_ids[CERAMIC_GITCOIN_PASSPORT_STREAM_ID]
         # get the stream content from given streamID
         stream_response = requests.get(f"{CERAMIC_URL}/api/v0/streams/{stream_id}")
         # get back the state object
