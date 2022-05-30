@@ -537,6 +537,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
 # https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
 CELERY_ROUTES = [
+    ('dashboard.tasks.calculate_trust_bonus', {'queue': 'high_priority'}),
     ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
     ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
