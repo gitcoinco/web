@@ -3172,7 +3172,10 @@ class Profile(SuperModel):
     # store the trust bonus on the model itself
     trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on verified services')
 
+    # score details of the passport_trust_bonus on the model
     passport_trust_bonus = models.DecimalField(default=None, null=True, blank=True, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on Gitcoin Passport')
+    passport_trust_bonus_status = models.CharField(max_length=14, null=True, blank=True, help_text='Trust Bonus score update status')
+    passport_trust_bonus_last_updated = models.DateTimeField(null=True, blank=True, help_text='Trust Bonus score last updated datetime')
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)

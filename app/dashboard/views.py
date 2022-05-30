@@ -3092,12 +3092,18 @@ def verify_passport(request, handle):
             'error': 'Bad signature',
         })
 
+    # record that a pending update is in-progress...
+    profile.passport_trust_bonus_status = "pending_celery"
+    profile.passport_trust_bonus_last_updated = timezone.now()
+    profile.save()
+
     # TODO: reset challenge?
     # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
 
     # enqueue the validation and saving procedure
     calculate_trust_bonus.delay(request.user.id, did, address)
 
+    # return a 200 response to signal that calculate_trust_bonus has been called
     return JsonResponse({'ok': True})
 
 def get_profile_by_idena_token(token):

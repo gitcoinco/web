@@ -618,6 +618,8 @@ def calculate_trust_bonus(user_id, did, address):
         # Save the new trust score into the users profile
         profile = Profile.objects.get(user_id=user_id)
         profile.passport_trust_bonus = trust_score
+        profile.passport_trust_bonus_status = "saved"
+        profile.passport_trust_bonus_last_updated = timezone.now()
         profile.save()
 
     except Exception as e:
