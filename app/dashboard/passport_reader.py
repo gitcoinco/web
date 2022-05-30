@@ -41,7 +41,7 @@ SCORER_SERVICE_WEIGHTS = [
 # Ceramic definition id for CryptoAccounts on the ceramic model
 CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
 # Ceramic definition id for Gitcoin Passport
-CERAMIC_GITCOIN_PASSPORT_STREAM_ID = "kjzl6cwe1jw14b5pv8zucigpz0sc2lh9z5l0ztdrvqw5y1xt2tvz8cjt34bkub9"
+CERAMIC_GITCOIN_PASSPORT_STREAM_ID = "kjzl6cwe1jw148h1e14jb5fkf55xmqhmyorp29r9cq356c7ou74ulowf8czjlzs"
 
 def get_did(address, network="1"):
     # returns the did associated with the address on the given network

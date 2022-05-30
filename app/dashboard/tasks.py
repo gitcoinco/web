@@ -585,7 +585,7 @@ def calculate_trust_bonus(user_id, did, address):
             if is_subject_valid and not is_stamp_expired and is_issued_by_iam:
                 # Get the stamp ID, and register it with our records
                 # This will be used to ensure that this stamp is not linked to any other user profile
-                stamp_id = stamp["credential"]["credentialSubject"]["root"]      # TODO: geri: to be replaced with the new field (the sha hash)
+                stamp_id = stamp["credential"]["credentialSubject"]["hash"]
 
                 # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
                 duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
