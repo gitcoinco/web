@@ -3,6 +3,7 @@ import hashlib
 import json
 
 import dag_cbor
+
 # Making GET requests against the CERAMIC_URL to read streams
 import requests
 
@@ -38,8 +39,6 @@ SCORER_SERVICE_WEIGHTS = [
     }
 ]
 
-# Ceramic definition id for CryptoAccounts on the ceramic model
-CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID = "kjzl6cwe1jw149z4rvwzi56mjjukafta30kojzktd9dsrgqdgz4wlnceu59f95f"
 # Ceramic definition id for Gitcoin Passport
 CERAMIC_GITCOIN_PASSPORT_STREAM_ID = "kjzl6cwe1jw148h1e14jb5fkf55xmqhmyorp29r9cq356c7ou74ulowf8czjlzs"
 
@@ -47,11 +46,7 @@ def get_did(address, network="1"):
     # returns the did associated with the address on the given network
     return f"did:pkh:eip155:{network}:{address}"
 
-def clean_address(address, network="1"):
-    # strip addresses suffix like @eip155:1, @eip155:4, @eip155:137
-    return address.split("@eip155")[0]
-
-def get_stream_ids(did, ids=[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID, CERAMIC_GITCOIN_PASSPORT_STREAM_ID]):
+def get_stream_ids(did, ids=[CERAMIC_GITCOIN_PASSPORT_STREAM_ID]):
     # encode the input genesis with cborg (Concise Binary Object Representation)
     input_bytes = dag_cbor.encode({"header":{"controllers":[did],"family":"IDX"}})
     # hash the input_bytes and pad with STREAMID_CODEC and type (as bytes)
@@ -82,36 +77,6 @@ def get_stream_ids(did, ids=[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID, CERAMIC_GITCOIN_
 
     # return the CryptoAccounts streamID (without the ceramic:// prefix)
     return streams
-
-def get_crypto_accounts(did="", stream_ids=[]):
-    # get streamIds if non are provided
-    stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID])
-
-    # create an empty list of accounts
-    crypto_accounts = []
-
-    # attempt to pull content
-    try:
-        # pull the CryptoAccounts streamID
-        stream_id = stream_ids[CERAMIC_CRYPTO_ACCOUNTS_STREAM_ID]
-
-        # get the stream content from given streamID
-        stream_response = requests.get(f"{CERAMIC_URL}/api/v0/streams/{stream_id}")
-        # get the state and default to empty content
-        state = stream_response.json().get('state', {"content": {}})
-
-        # check for a next record else pull from content
-        content = state['next']['content'] if state.get('next') else state['content']
-
-        # extract all accounts
-        crypto_accounts = list(map(clean_address, content.keys()))
-    except requests.exceptions.RequestException:
-        pass
-    except:
-        pass
-
-    # return a list of wallet address without the @eip155:1 suffix
-    return crypto_accounts
 
 def get_passport(did="", stream_ids=[]):
     # get streamIds if non are provided

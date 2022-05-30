@@ -29,7 +29,7 @@ from proxy.views import proxy_view
 from retail.emails import render_share_bounty
 
 from .passport_reader import (
-    SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_crypto_accounts, get_passport, get_stream_ids,
+    SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_passport, get_stream_ids,
 )
 
 logger = get_task_logger(__name__)
@@ -514,9 +514,8 @@ def calculate_trust_bonus(user_id, did, address):
             logger.error("No Ceramic Account found for '%s'", did)
             return
 
-        # Get accounts for did
-        accounts = get_crypto_accounts(stream_ids=stream_ids)
-        is_owner = address.lower() in accounts
+        # check account against did
+        is_owner = did.lower() == f"did:pkh:eip155:1:{address.lower()}"
 
         # Invalid owner
         if not is_owner:
@@ -530,9 +529,6 @@ def calculate_trust_bonus(user_id, did, address):
         if not passport:
             logger.error("No Passport discovered for '%s'", did)
             return
-
-        # Dict from list of stamps
-        stamps_to_return = {}
 
         # Build a dict like
         #    {
@@ -557,65 +553,67 @@ def calculate_trust_bonus(user_id, did, address):
 
         # Check the validity of each stamp in the passport
         for stamp in passport['stamps']:
-            # get the user credential ID, this will have the form: "did:ethr:0x...#POAP"
-            subject_id = stamp["credential"]["credentialSubject"]["id"]
+            if stamp and stamp['credential'] and stamp["provider"]:
+                # extract the expiry date from the credential
+                expiry_date = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
 
-            # get the users address
-            subject_address = (subject_id.split(":")[-1]).split("#")[0].lower()
+                # get the user credential ID, this will have the form: "did:ethr:0x...#POAP"
+                subject_id = stamp["credential"]["credentialSubject"]["id"]
 
-            # the users addresses must be one of the addresses in the accounts list we got for the did, otherwise
-            # we just ignore this stamp
-            is_subject_valid = subject_address in accounts
+                # the subjectId must match the users DID
+                is_subject_valid = subject_id.lower() == did.lower()
 
-            # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
-            is_stamp_expired = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
+                # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
+                is_stamp_expired = expiry_date < datetime.now()
 
-            # the stamp must be issued by the trusted IAM server
-            is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
+                # the stamp must be issued by the trusted IAM server
+                is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
 
-            if not is_subject_valid:
-                logger.error("Invalid stamp subject: %s", subject_address)
+                # check that the provider matches the provider in the VC
+                is_for_provider = stamp["provider"] == stamp["credential"]["credentialSubject"]["provider"]
 
-            if is_stamp_expired:
-                logger.error("Expired stamp: %s", subject_id)
+                if not is_subject_valid:
+                    logger.error("Invalid stamp subject: %s == %s", subject_id, did)
 
-            if not is_issued_by_iam:
-                logger.error("Stamp wasn't issued by the trusted IAM: '%s' instead got '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
+                if is_stamp_expired:
+                    logger.error("Expired stamp: %s - expired: %s", subject_id)
 
-            if is_subject_valid and not is_stamp_expired and is_issued_by_iam:
-                # Get the stamp ID, and register it with our records
-                # This will be used to ensure that this stamp is not linked to any other user profile
-                stamp_id = stamp["credential"]["credentialSubject"]["hash"]
+                if not is_issued_by_iam:
+                    logger.error("Stamp wasn't issued by the trusted IAM: '%s' instead got '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
 
-                # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
-                duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
-                stamp_id_is_valid = len(duplicate_stamp_ids) == 0
+                if not is_for_provider:
+                    logger.error("The Stamps decalred Provider does not match the Provider defined in the credential");
 
-                if not stamp_id_is_valid:
-                    logger.error("Duplicate stamp id was detected: %s", stamp_id)
+                if is_subject_valid and not is_stamp_expired and is_issued_by_iam and is_for_provider:
+                    # Get the stamp ID, and register it with our records
+                    # This will be used to ensure that this stamp is not linked to any other user profile
+                    stamp_id = stamp["credential"]["credentialSubject"]["hash"]
 
-                if stamp_id_is_valid:
-                    # Save the stamp id and associate it with the Passport entry
-                    stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id, defaults={
-                        "passport": db_passport
-                    })
+                    # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
+                    duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
+                    stamp_id_is_valid = len(duplicate_stamp_ids) == 0
 
-                    # Proceed with verifying the credential
-                    verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
-                    verification = json.loads(verification)
+                    if not stamp_id_is_valid:
+                        logger.error("Duplicate stamp id was detected: %s", stamp_id)
 
-                    # Check that the credential verified
-                    stamp['is_verified'] = (not verification["errors"])
+                    if stamp_id_is_valid:
+                        # Save the stamp id and associate it with the Passport entry
+                        stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id, defaults={
+                            "passport": db_passport
+                        })
 
-                    # Given a valid stamp - set is_verified and add stamp to returns
-                    if stamp['is_verified']:
-                        # The user only needs one verification for a certain provider in order to obtain the score for that provider
-                        service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
-                        matched_services[service_key]['is_verified'] = True
+                        # Proceed with verifying the credential
+                        verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
+                        verification = json.loads(verification)
 
-                        # Store the stamp to return it later
-                        stamps_to_return[stamp['provider']] = stamp
+                        # Check that the credential verified
+                        stamp['is_verified'] = (not verification["errors"])
 
+                        # Given a valid stamp - set is_verified and add stamp to returns
+                        if stamp['is_verified']:
+                            # The user only needs one verification for a certain provider in order to obtain the score for that provider
+                            service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
+                            matched_services[service_key]['is_verified'] = True
 
         # Calculate the trust score based on the verified stamps
         trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))
@@ -624,9 +622,6 @@ def calculate_trust_bonus(user_id, did, address):
         profile = Profile.objects.get(user_id=user_id)
         profile.passport_trust_bonus = trust_score
         profile.save()
-
-        # Return as a dict of stamps
-        passport['stamps'] = stamps_to_return
 
     except Exception as e:
         # We expect this verification to throw

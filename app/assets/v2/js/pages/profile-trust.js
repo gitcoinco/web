@@ -160,29 +160,24 @@ Vue.component('active-trust-manager', {
         return;
       }
 
-      // get the selectedAccounts ceramic DID
-      this.did = this.reader.getDID(selectedAccount);
+      // read the genesis from the selectedAccount (pulls the associated stream index)
+      const genesis = await this.reader.getGenesis(selectedAccount);
 
       // grab all the streams at once to reduce the required number of reqs
-      const genesis = await this.reader._tulons.getGenesisHash(this.did);
-      const streams = await this.reader._tulons.getGenesisStreams(genesis);
+      const streams = genesis && genesis.streams;
 
       // if loaded then the user has a ceramicAccount
-      if (streams && streams.length > 0) {
-        // get records from the reader
-        const records = await Promise.all([
-          await this.reader.getPassport(this.did, streams),
-          await this.reader.getAccounts(this.did, streams)
-        ]);
-        // extract passport from reader each refresh to ensure we catch any newly created streams
-        const passport = records[0];
-        // extract all accounts who have control of the passport
-        const accounts = records[1];
+      if (streams && Object.keys(streams).length > 0) {
+        // get the selectedAccounts ceramic DID
+        this.did = genesis.did;
 
-        // if we didn't discover a passport or the accounts then enter fail state
-        if (passport && accounts) {
+        // read passport from reader each refresh to ensure we catch any newly created streams/updated stamps
+        const passport = await this.reader.getPassport(selectedAccount, streams);
+
+        // if we find a passport verify it and create a trust_bonus score
+        if (passport) {
           // check the validity of the Passport updating the score
-          await this.verifyPassport(passport, accounts).then(() => {
+          await this.verifyPassport(passport).then(() => {
             // store passport into state after verifying content to avoid display scoring until ready
             this.passport = passport;
           });
@@ -198,7 +193,7 @@ Vue.component('active-trust-manager', {
       // done with loading state
       this.loading = false;
     },
-    async verifyPassport(passport, accounts) {
+    async verifyPassport(passport) {
       // check for a passport and then its validity
       if (passport) {
 
@@ -206,39 +201,36 @@ Vue.component('active-trust-manager', {
         const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
           'did': this.did,
           'stamp_hashes': passport.stamps.map((stamp) => {
-            return stamp.credential.credentialSubject.root;
+            return stamp.credential.credentialSubject.hash;
           })
         });
 
         // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
         await Promise.all(passport.stamps.map(async(stamp) => {
-          // set the service against provider and issuer
-          const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
-          // validate the contents of the stamp collection
-          const ignoreExpiryCheck = true;
-          const ignoreIssuerCheck = false;
-          const ignoreHashCheck = false;
-          const ignoreOwnerCheck = false;
-          const expiryCheck = ignoreExpiryCheck || new Date(stamp.credential.expirationDate) > new Date();
-          const issuerCheck = ignoreIssuerCheck || stamp.credential.issuer === this.IAMIssuer;
-          const hashCheck = ignoreHashCheck || stampHashes.checks[stamp.credential.credentialSubject.root] === true;
-          const ownerCheck = ignoreOwnerCheck || accounts.indexOf(
-            stamp.credential.credentialSubject.id.replace('did:ethr:', '').replace('#' + stamp.provider, '').toLowerCase()
-          ) !== -1;
+          if (stamp && Object.keys(stamp).length > 0) {
+            // set the service against provider and issuer
+            const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
+            // validate the contents of the stamp collection
+            const expiryCheck = new Date(stamp.credential.expirationDate) > new Date();
+            const issuerCheck = stamp.credential.issuer === this.IAMIssuer;
+            const hashCheck = stampHashes.checks[stamp.credential.credentialSubject.hash] === true;
+            const providerCheck = stamp.provider === stamp.credential.credentialSubject.provider;
+            const ownerCheck = selectedAccount.toLowerCase() == stamp.credential.credentialSubject.id.replace('did:pkh:eip155:1:', '').toLowerCase();
 
-          // check exists and has valid expiry / issuer / hash / owner...
-          if (stamp && this.serviceDict[serviceDictId] && stamp.credential && expiryCheck && issuerCheck && hashCheck && ownerCheck) {
-            // verify with DIDKits verifyCredential()
-            const verified = JSON.parse(await this.DIDKit.verifyCredential(
-              JSON.stringify(stamp.credential),
-              `{"proofPurpose":"${stamp.credential.proof.proofPurpose}"}`
-            ));
+            // check exists and has valid expiry / issuer / hash / owner...
+            if (this.serviceDict[serviceDictId] && stamp.credential && expiryCheck && issuerCheck && hashCheck && providerCheck && ownerCheck) {
+              // verify with DIDKits verifyCredential()
+              const verified = JSON.parse(await this.DIDKit.verifyCredential(
+                JSON.stringify(stamp.credential),
+                `{"proofPurpose":"${stamp.credential.proof.proofPurpose}"}`
+              ));
 
-            // if no errors then this is a valid VerifiableCredential issued by the known issuer and is unique to our store
-            this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0;
+              // if no errors then this is a valid VerifiableCredential issued by the known issuer and is unique to our store
+              this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0;
+            }
+            // collect array of true/false to check validity of every issued stamp (if stamp isn't recognised then it should be ignored (always true))
+            return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
           }
-          // collect array of true/false to check validity of every issued stamp (if stamp isn't recognised then it should be ignored (always true))
-          return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
         }));
 
         // set the new trustBonus score
