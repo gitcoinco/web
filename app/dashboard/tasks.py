@@ -554,9 +554,6 @@ def calculate_trust_bonus(user_id, did, address):
         # Check the validity of each stamp in the passport
         for stamp in passport['stamps']:
             if stamp and stamp['credential'] and stamp["provider"]:
-                # extract the expiry date from the credential
-                expiry_date = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
-
                 # get the user credential ID, this will have the form: "did:ethr:0x...#POAP"
                 subject_id = stamp["credential"]["credentialSubject"]["id"]
 
@@ -564,7 +561,7 @@ def calculate_trust_bonus(user_id, did, address):
                 is_subject_valid = subject_id.lower() == did.lower()
 
                 # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
-                is_stamp_expired = expiry_date < datetime.now()
+                is_stamp_expired = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
 
                 # the stamp must be issued by the trusted IAM server
                 is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
@@ -573,16 +570,16 @@ def calculate_trust_bonus(user_id, did, address):
                 is_for_provider = stamp["provider"] == stamp["credential"]["credentialSubject"]["provider"]
 
                 if not is_subject_valid:
-                    logger.error("Invalid stamp subject: %s == %s", subject_id, did)
+                    logger.error("Invalid stamp subject: %s != %s", subject_id, did)
 
                 if is_stamp_expired:
-                    logger.error("Expired stamp: %s - expired: %s", subject_id)
+                    logger.error("Expired stamp (%s): %s", subject_id, stamp["credential"]["expirationDate"])
 
                 if not is_issued_by_iam:
-                    logger.error("Stamp wasn't issued by the trusted IAM: '%s' instead got '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
+                    logger.error("Stamp issuer missmatch: '%s' != '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
 
                 if not is_for_provider:
-                    logger.error("The Stamps decalred Provider does not match the Provider defined in the credential");
+                    logger.error("Stamp provider missmatch: '%s' != '%s' ", stamp["provider"], stamp["credential"]["credentialSubject"]["provider"])
 
                 if is_subject_valid and not is_stamp_expired and is_issued_by_iam and is_for_provider:
                     # Get the stamp ID, and register it with our records
@@ -594,7 +591,7 @@ def calculate_trust_bonus(user_id, did, address):
                     stamp_id_is_valid = len(duplicate_stamp_ids) == 0
 
                     if not stamp_id_is_valid:
-                        logger.error("Duplicate stamp id was detected: %s", stamp_id)
+                        logger.error("Duplicate stamp id detected: %s", stamp_id)
 
                     if stamp_id_is_valid:
                         # Save the stamp id and associate it with the Passport entry
@@ -625,4 +622,4 @@ def calculate_trust_bonus(user_id, did, address):
 
     except Exception as e:
         # We expect this verification to throw
-        logger.error("Error when calculating trust bonus!", exc_info=True)
+        logger.error("Error calculating trust bonus score!", exc_info=True)
