@@ -34,11 +34,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        def run_query(q):
-            url = 'https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-rinkeby'
-            if not settings.DEBUG:
-                url = 'https://api.studio.thegraph.com/query/20308/gtc-conviction-voting-mainnet/v0.0.1'
-                url = 'https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-optimism'
+        def run_query(q, url):
             request = requests.post(url,
                                     '',
                                     json={'query': q})
@@ -65,17 +61,34 @@ class Command(BaseCommand):
         }
         """
 
-        grantsResult = run_query(queryGrants)
+        urls = []
+        if not settings.DEBUG or True:
+            urls += ['https://api.studio.thegraph.com/query/20308/gtc-conviction-voting-mainnet/v0.0.1']
+            urls += ['https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-optimism']
+        else:
+            urls += ['https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-rinkeby']
 
-        for result in grantsResult['data']['grants']:
+
+        for url in urls:
+            grantsResult = run_query(queryGrants, url)
+
+            # sum amounts
+            results = {}
+            for result in grantsResult['data']['grants']:
                 id = int(result['id'], 16)
                 amount = sum([int(ele['amount']) for ele in result['votes']])
                 amount = amount / 10**18
-                if settings.DEBUG:
-                    print(id, amount)
-                try:
-                    grant = Grant.objects.get(pk=id)
-                    grant.metadata['cv'] = amount
-                    grant.save()
-                except Exception as e:
-                    print(e)
+                if id not in results.keys():
+                    results[id] = 0
+                results[id] += amount
+
+            # store in db
+            for id, val in results.items():
+                    if settings.DEBUG:
+                        print(id, amount)
+                    try:
+                        grant = Grant.objects.get(pk=id)
+                        grant.metadata['cv'] = amount
+                        grant.save()
+                    except Exception as e:
+                        print(e)
