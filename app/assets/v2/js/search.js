@@ -148,6 +148,8 @@ if (document.getElementById('gc-search')) {
       },
       search: async function(e) {
         const vm = this;
+
+        vm.currentTab = 0;
         // use Date to enforce
         const thisDate = new Date();
         // use signal to kill fetch req
