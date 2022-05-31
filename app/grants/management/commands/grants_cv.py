@@ -38,6 +38,7 @@ class Command(BaseCommand):
             url = 'https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-rinkeby'
             if not settings.DEBUG:
                 url = 'https://api.studio.thegraph.com/query/20308/gtc-conviction-voting-mainnet/v0.0.1'
+                url = 'https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-optimism'
             request = requests.post(url,
                                     '',
                                     json={'query': q})
@@ -66,12 +67,12 @@ class Command(BaseCommand):
 
         grantsResult = run_query(queryGrants)
 
-        ## TODO: calculation of voting power per grant
-
         for result in grantsResult['data']['grants']:
                 id = int(result['id'], 16)
                 amount = sum([int(ele['amount']) for ele in result['votes']])
                 amount = amount / 10**18
+                if settings.DEBUG:
+                    print(id, amount)
                 try:
                     grant = Grant.objects.get(pk=id)
                     grant.metadata['cv'] = amount
