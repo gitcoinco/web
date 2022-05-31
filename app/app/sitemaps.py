@@ -13,7 +13,7 @@ class StaticViewSitemap(Sitemap):
 
     def items(self):
         return [
-            'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
+            'dashboard', 'new_bounty', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
             'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'mission', 'slack', 'labs', 'results',
             'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties', 'quests_index', 'newquest',
             'products', 'avatar_landing'

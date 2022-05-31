@@ -451,7 +451,7 @@ def contributor_bounties(request, tech_stack):
     }
 
     if tech_stack == 'new':
-        return redirect('new_funding_short')
+        return redirect('new_bounty')
 
     try:
         store = JSONStore.objects.filter(view='contributor_landing_page', key=tech_stack).first()
