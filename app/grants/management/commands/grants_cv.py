@@ -68,13 +68,10 @@ class Command(BaseCommand):
 
         ## TODO: calculation of voting power per grant
 
-        print('Grant Results')
-        print('#############')
         for result in grantsResult['data']['grants']:
                 id = int(result['id'], 16)
                 amount = sum([int(ele['amount']) for ele in result['votes']])
                 amount = amount / 10**18
-                print(id, amount)
                 try:
                     grant = Grant.objects.get(pk=id)
                     grant.metadata['cv'] = amount
