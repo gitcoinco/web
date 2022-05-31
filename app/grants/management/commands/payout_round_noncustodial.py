@@ -32,8 +32,8 @@ from dashboard.abi import erc20_abi
 from dashboard.models import Activity, Profile
 from grants.models import CLRMatch, Contribution, Grant, GrantCLR, GrantPayout, Subscription
 from marketing.mails import grant_match_distribution_final_txn, grant_match_distribution_kyc
-from townsquare.models import Comment
 from perftools.models import StaticJsonEnv
+from townsquare.models import Comment
 from web3 import Web3
 
 MAINNET_DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F'

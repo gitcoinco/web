@@ -129,22 +129,6 @@ class InterestSerializer(serializers.ModelSerializer):
         model = Interest
         fields = ('pk', 'profile', 'created', 'pending', 'issue_message')
 
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    avatar_url = serializers.SerializerMethodField()
-
-    def get_avatar_url(self, obj):
-        ret = obj.avatar_url
-        if obj.avatar_baseavatar_related.filter(active=True).exists():
-            # profile_json['avatar_id'] = user.avatar_baseavatar_related.filter(active=True).first().pk
-            ret = obj.avatar_baseavatar_related.filter(active=True).first().avatar_url
-        return ret
-
-    class Meta:
-
-        """Define the profile serializer metadata."""
-        model = Profile
-        fields = ('id', 'handle', 'avatar_url')
-
 
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
