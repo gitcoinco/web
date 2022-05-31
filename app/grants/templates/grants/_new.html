@@ -374,14 +374,14 @@
 
                     <template v-if="chainId == 'harmony'">
                       <label class="font-subheader font-weight-light letter-spacing" for="harmony_payout_address">
-                        Add Harmony Recipient's Wallet Address
+                        Add Harmony Recipient's Wallet Address - IN ETH FORMAT
                       </label>
                       <span class="font-smaller-2 py-1 font-weight-normal badge badge-greylight ml-2">required</span>
 
                       <p class="text-black-60 font-caption mb-2">
                         IMPORTANT: This is the wallet address where contributions to this grant will be sent.<br>
                         DO NOT use an exchange address — use a self-custody wallet address such as MetaMask.<br>
-                        Adding an incorrect wallet address could mean that you don't receive your funds.
+                        Adding an incorrect wallet address could mean that you don't receive your funds. Please make sure to enter your Harmony address in ETH format. You can find your address using the <a href="https://explorer.harmony.one/" rel="noopener noreferrer">Harmony block explorer</a>.
                       </p>
 
                       <input id="harmony_payout_address" v-model="form.harmony_payout_address" name="harmony_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required/>
