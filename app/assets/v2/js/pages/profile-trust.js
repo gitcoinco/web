@@ -86,12 +86,12 @@ Vue.component('active-trust-manager', {
         });
       }
     },
-    async passportActionHandler() {
-      if (this.step === 1 || this.passportVerified) {
+    async passportActionHandler(forceRefresh) {
+      if (this.step === 1 || this.passportVerified || forceRefresh) {
         await this.connectPassport();
-        // if (this.step !== 1) {
-        //   await this.passportActionHandler();
-        // }
+        if (forceRefresh) {
+          await this.passportActionHandler();
+        }
       } else if (this.step === 2) {
         await this.verifyPassport(this.rawPassport).then(() => {
           // move to step 3 (saving)
