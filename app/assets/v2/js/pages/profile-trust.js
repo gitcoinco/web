@@ -129,8 +129,7 @@ Vue.component('active-trust-manager', {
       // ensure selected account is known
       if (!selectedAccount) {
         // global wallet setup requirements - initiates web3 modal and then onConnect will emit dataWalletReady
-        needWalletConnection();
-        initWallet();
+        await onConnect();
 
         return;
       }
