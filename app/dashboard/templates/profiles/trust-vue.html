@@ -60,7 +60,7 @@
 
             <div>
 
-              <ul class="list-unstyled mt-4">
+              <ul class="list-unstyled mt-4 pb-2">
                 <!-- <i class="fa-regular fa-circle-check"></i> -->
                 <li class="py-1">
                   <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
@@ -77,7 +77,7 @@
                     <i v-else :class="`fa fa-check m-auto ${step > 2 || passportVerified ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
                   <div :class="`d-inline px-2 ${step < 2 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                    Come back to this page to <a :class="`${step >= 2 || passportVerified ? 'link cursor-pointer' : 'text-black-50'}`" @click="() => (step >= 2 || passportVerified) && passportActionHandler(step !== 2)">score your passport</a>
+                    Come back to this page to <a :class="`${step >= 2 || passportVerified ? 'link cursor-pointer' : 'text-black-50 text-decoration-none'}`" @click="() => (step >= 2 || passportVerified) && passportActionHandler(step !== 2)">score your passport</a>
                   </div>
                 </li>
                 <li class="py-1">
@@ -86,27 +86,27 @@
                     <i v-else :class="`fa fa-check m-auto ${step > 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
                   <div :class="`d-inline px-2 ${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                    <a :class="`${step >= 3 || passportVerified ? 'link cursor-pointer' : 'text-black-50'}`" @click="() => (step >= 3 || passportVerified) && passportActionHandler()">Save your passport</a> score to Gitcoin.co
+                    <a :class="`${step >= 3 || passportVerified ? 'link cursor-pointer' : 'text-black-50 text-decoration-none'}`" @click="() => (step >= 3 || passportVerified) && passportActionHandler()">Save your passport</a> score to Gitcoin.co
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div class="d-block d-md-flex spacer-my-5" style="min-height: 52px;">
-              <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" :class="`col-12 col-md-auto btn btn-lg px-5 flex-shrink-0 btn-${passportVerified ? 'dark' : 'primary'}`" :disabled="loading" @click="() => passportActionHandler()">
+            <div class="d-block d-md-flex mt-4 spacer-my-5" style="min-height: 52px;">
+              <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" style="max-height: 52px;" :class="`col-12 col-md-auto btn btn-lg px-5 flex-shrink-0 btn-${passportVerified ? 'dark' : 'primary'}`" :disabled="loading" @click="() => passportActionHandler()">
                 [[!passportVerified ? (step === 1 ? "Connect Passport" : step === 2 ? "Score Passport" : "Save Passport") : "Refresh Passport"]]
               </b-button>
 
               <div v-if="passport && passportVerified && !verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
-                <i class="fa fa-check my-auto ml-md-5 px-1" style="color: #059669"></i>
+                <i class="fa fa-check my-auto ml-md-3 px-1" style="color: #059669"></i>
                 <div class="d-inline ml-2 my-auto">
                   <span style="color: #059669">Passport Verified!</span>
                 </div>
               </div>
               <div v-else-if="verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
-                <i class="fa-shield-virus fas my-auto ml-md-5 px-1" style="color: #d03e63"></i>
-                <div class="d-inline ml-2 my-auto">
-                  <span style="color: #d03e63"><div class="font-smaller-5" @click="handleErrorClick" v-html="verificationError"></div></span>
+                <i class="fa-shield-virus fas mt-3 ml-md-3 px-1" style="color: #d03e63"></i>
+                <div class="d-inline ml-3 my-auto">
+                  <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
                 </div>
               </div>
             </div>

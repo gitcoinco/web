@@ -46,7 +46,7 @@ Vue.component('active-trust-manager', {
     this.DIDKit = (await DIDKit);
 
     // error message attachment
-    this.visitGitcoinPassport = `Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
+    this.visitGitcoinPassport = `</br></br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
 
     // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
     document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassport());
@@ -79,6 +79,7 @@ Vue.component('active-trust-manager', {
         // clear current user state
         this.did = false;
         this.passport = false;
+        this.rawPassport = false;
 
         // clear the stamps
         this.services.forEach((service) => {
@@ -87,24 +88,30 @@ Vue.component('active-trust-manager', {
       }
     },
     async passportActionHandler(forceRefresh) {
+      // We can call the same handler to step through each operation...
       if (this.step === 1 || this.passportVerified || forceRefresh) {
+        // connect and read the passport...
         await this.connectPassport();
+        // when forceRefreshing we want to go straight to scoring
         if (forceRefresh) {
+          // move to step 2 to immediately score the passport
           await this.passportActionHandler();
         }
       } else if (this.step === 2) {
-        await this.verifyPassport(this.rawPassport).then(() => {
+        // verify the passports content (this recreates the trust bonus score based on the discovered stamps)
+        await this.verifyPassport().then(() => {
           // move to step 3 (saving)
           this.step = 3;
           // store passport into state after verifying content to avoid display scoring until ready
           this.passport = this.rawPassport;
         });
       } else if (this.step === 3) {
+        // post a * save request to gitcoin (* note that gitcoin will enqueue the save request and changes may not be immediate)
         await this.savePassport();
       }
     },
     async handleErrorClick(e) {
-      let clickedElId = e.target.id;
+      const clickedElId = e.target.id;
 
       if (clickedElId === 'save-passport') {
         await this.savePassport();
@@ -146,7 +153,7 @@ Vue.component('active-trust-manager', {
         if (passport) {
           // move to step 2
           this.step = 2;
-          // check the validity of the Passport updating the score
+          // store the passport so that we can verify its content in step-2 (before saving to this.passport)
           this.rawPassport = passport;
         } else {
           // error if no passport found
@@ -160,12 +167,15 @@ Vue.component('active-trust-manager', {
       // done with loading state
       this.loading = false;
     },
-    async verifyPassport(passport) {
+    async verifyPassport() {
+      // pull the raw passport...
+      const passport = this.rawPassport;
+
       // enter loading
       this.loading = true;
+
       // check for a passport and then its validity
       if (passport) {
-
         // check if the stamps are unique to this user...
         const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
           'did': this.did,
@@ -207,12 +217,14 @@ Vue.component('active-trust-manager', {
           return (service.is_verified ? service.match_percent : 0) + total;
         }, 50));
       }
+
       // stop loading
       this.loading = false;
     },
     async savePassport() {
       // enter loading
       this.loading = true;
+
       // attempt to verify the passport
       try {
         if (document.challenge) {
@@ -224,10 +236,11 @@ Vue.component('active-trust-manager', {
 
           // attempt the signature
           try {
+            // get the signature for the document-wide provided challenge (set in dashboard/views.py::get_profile_tab::trust)
             signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
           } catch {
-            // set error
-            this.verificationError = 'In order to verify your Passport, the wallet message requires a signature. <a id="save-passport" class="link cursor-pointer">Click here</a> to verify ownership of your wallet and submit to Gitcoin.';
+            // set error - * note that #save-passport does not have an event handler - it is caught by `this.handleErrorClick(e)` as the event bubbles
+            this.verificationError = 'In order to verify your Passport, the wallet message requires a signature.</br></br><a id="save-passport" class="link cursor-pointer">Click here</a> to verify ownership of your wallet and submit to Gitcoin.';
             // stop loading
             this.loading = false;
 
@@ -259,6 +272,7 @@ Vue.component('active-trust-manager', {
         // set error state
         this.verificationError = 'There was an error; please try again later';
       }
+
       // stop loading
       this.loading = false;
     }
