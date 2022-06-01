@@ -129,7 +129,7 @@
       {% include 'home/nav.html' %}
     </div>
     {% if landingBanner.slides|length > 1 %}
-    <header class="grad home-carousel">
+    <header class="w-100 home-carousel">
       <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <ol class="carousel-indicators home">
           {% for slide in landingBanner.slides %}
@@ -181,9 +181,9 @@
 
     {% else %}
       <!-- custom slide -->
-      <header class="grad home-carousel">
-        <div class="container build-slide">
-          <div class="row pt-5">
+      <header class="w-100 home-carousel">
+        <div class="build-slide">
+          <div>
             <div class="grants" style="background-image: url('{{ landingBanner.slides.0.backgroundImage }}')">
               <div class="d-flex flex-column justify-content-around container">
                 <h3 class="dates gc-font-heading">{{ landingBanner.slides.0.title }}</h3>
