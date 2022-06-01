@@ -47,7 +47,7 @@
 
         <div class="row spacer-mt-4 spacer-mt-lg-6">
           <div class="col-12 col-lg-4 col-xl-6 d-flex spacer-pb-3">
-            <img class="w-100 my-auto" src={% static "v2/images/passport-landing-1.png" %} />
+            <img class="w-100 my-auto" src={% static "v2/images/passport-landing-2.png" %} />
           </div>
 
           <div class="col-12 col-lg-8 col-xl-6 spacer-pb-3">
@@ -58,16 +58,45 @@
               The Gitcoin Passport verifies your personhood and strengthens sybil resistance. Trust Bonus Scores are calculated by the identification stamps you complete. The Passport Scorer is fully decentralized on the Ceramic Network.
             </span>
 
+            <div>
+
+              <ul class="list-unstyled mt-4">
+                <!-- <i class="fa-regular fa-circle-check"></i> -->
+                <li class="py-1">
+                  <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
+                    <span v-if="step === 1 && !passportVerified" class="m-auto">1</span>
+                    <i v-else :class="`fa fa-check m-auto ${step > 1 || passportVerified ? 'gc-text-success' : 'gc-text-default'}`"></i>
+                  </div>
+                  <div :class="`d-inline px-2 ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                    Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your passport
+                  </div>
+                </li>
+                <li class="py-1">
+                  <div :class="`gc-border-circle ${step > 2 || passportVerified ? 'gc-border-success' : step < 2 ? 'gc-border-disabled' : 'gc-border-default'}`">
+                    <span v-if="step <= 2 && !passportVerified" :class="`m-auto ${step > 2 ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`">2</span>
+                    <i v-else :class="`fa fa-check m-auto ${step > 2 || passportVerified ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
+                  </div>
+                  <div :class="`d-inline px-2 ${step < 2 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
+                    Come back to this page to score your passport
+                  </div>
+                </li>
+                <li class="py-1">
+                  <div :class="`gc-border-circle ${step > 3 || passportVerified ? 'gc-border-success' : step < 3 ? 'gc-border-disabled' : 'gc-border-default'}`">
+                    <span v-if="step <= 3 && !passportVerified" :class="`m-auto ${step > 3 ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">3</span>
+                    <i v-else :class="`fa fa-check m-auto ${step > 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
+                  </div>
+                  <div :class="`d-inline px-2 ${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
+                    Save your passport score to Gitcoin.co
+                  </div>
+                </li>
+              </ul>
+            </div>
+
             <div class="d-block d-md-flex spacer-my-5" style="min-height: 52px;">
-              <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" :class="`col-12 col-md-auto btn btn-lg px-5 flex-shrink-0 btn-${passportVerified ? 'dark' : 'primary'}`" @click="connectPassport">
-                [[!passport && !loading ? "Connect Passport" : "Refresh Passport"]]
+              <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" :class="`col-12 col-md-auto btn btn-lg px-5 flex-shrink-0 btn-${passportVerified ? 'dark' : 'primary'}`" :disabled="loading" @click="passportActionHandler">
+                [[!passportVerified ? (step === 1 ? "Connect Passport" : step === 2 ? "Score Passport" : "Save Passport") : "Refresh Passport"]]
               </b-button>
-              <div v-if="passport && !passportVerified && !verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
-                <div class="d-inline ml-md-5 my-auto">
-                  <a class="link cursor-pointer" @click="savePassport">Verify Passport</a>
-                </div>
-              </div>
-              <div v-else-if="passport && passportVerified && !verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
+              <div v-if="passport && passportVerified && !verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
                 <i class="fa fa-check my-auto ml-md-5 px-1" style="color: #059669"></i>
                 <div class="d-inline ml-2 my-auto">
                   <span style="color: #059669">Passport Verified!</span>
@@ -76,7 +105,7 @@
               <div v-else-if="verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
                 <i class="fa-shield-virus fas my-auto ml-md-5 px-1" style="color: #d03e63"></i>
                 <div class="d-inline ml-2 my-auto">
-                  <span style="color: #d03e63">Verification Failed <div class="font-smaller-5">[[ verificationError ]]</div></span>
+                  <span style="color: #d03e63"><div class="font-smaller-5" @click="handleErrorClick" v-html="verificationError"></div></span>
                 </div>
               </div>
             </div>
@@ -89,7 +118,7 @@
                 </div>
                 <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match</div>
                 <div class="spacer-mt-5">
-                  <a href="https://orange-sky-5671.on.fleek.co/" target="_blank" target="_blank" rel="noopener noreferrer" class="font-weight-semibold">Go to Gitcoin Passport<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="font-weight-semibold">Go to Gitcoin Passport<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12.2929 5.29289C12.6834 4.90237 13.3166 4.90237 13.7071 5.29289L17.7071 9.29289C18.0976 9.68342 18.0976 10.3166 17.7071 10.7071L13.7071 14.7071C13.3166 15.0976 12.6834 15.0976 12.2929 14.7071C11.9024 14.3166 11.9024 13.6834 12.2929 13.2929L14.5858 11H3C2.44772 11 2 10.5523 2 10C2 9.44772 2.44772 9 3 9H14.5858L12.2929 6.70711C11.9024 6.31658 11.9024 5.68342 12.2929 5.29289Z" fill="#664AEC"/>
                     </svg>
                   </a>

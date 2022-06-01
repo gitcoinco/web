@@ -11,7 +11,7 @@ import requests
 from .base36 import base36
 
 # Location of a Ceramic node that we can read state from
-CERAMIC_URL = "https://ceramic.staging.dpopp.gitcoin.co"
+CERAMIC_URL = "https://ceramic.passport-iam.gitcoin.co"
 
 # DID of the trusted IAM server (DEV = "did:key:z6Mkmhp2sE9s4AxFrKUXQjcNxbDV7WTM8xdh1FDNmNDtogdw")
 TRUSTED_IAM_ISSUER = "did:key:z6MkghvGHLobLEdj1bgRLhS4LPGJAvbMA1tn2zcRyqmYU5LC"

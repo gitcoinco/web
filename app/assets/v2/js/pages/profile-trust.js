@@ -17,59 +17,6 @@ const apiCall = (url, givenPayload) => {
   });
 };
 
-Vue.component('error-passport-content', {
-  template: '<a>passport error</a>'
-});
-
-Vue.component('error-wallet-content', {
-  template: '<a>wallet error</a>'
-});
-
-Vue.component('success-verify-content', {
-  template: '<a>passport verified</a>'
-});
-
-// Modal to display state in
-Vue.component('state-modal', {
-  delimiters: [ '[[', ']]' ],
-  props: {
-    showModal: {
-      type: Boolean,
-      required: false,
-      'default': false
-    },
-    type: {
-      type: [ String, Boolean ],
-      required: false,
-      'default': false
-    }
-  },
-  template: `
-    <b-modal id="error-modal" @hide="dismissModal()" :visible="showModal" size="md" body-class="p-0" hide-header hide-footer>
-      <template v-slot:default="{ hide }">
-        <div class="modal-content rounded-0 p-0">
-          <div class="p-2 text-center">
-            [[type]]
-            <template v-if="type == 'success-verify'">
-              <success-verify-content></success-verify-content>
-            </template>
-            <template v-else-if="type == 'error-passport'">
-              <error-passport-content></error-passport-content>
-            </template>
-            <template v-else-if="type == 'error-wallet'">
-              <error-wallet-content></error-wallet-content>
-            </template>
-          </div>
-        </div>
-      </template>
-    </b-modal>`,
-  methods: {
-    dismissModal() {
-      this.$emit('modal-dismissed');
-    }
-  }
-});
-
 // Create the trust-bonus view
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
@@ -79,8 +26,11 @@ Vue.component('active-trust-manager', {
       DIDKit: undefined,
       reader: new PassportReader(document.ceramic_url, 1),
       did: undefined,
+      step: 1,
       passport: document.is_passport_connected ? {} : undefined,
       passportVerified: document.is_passport_connected,
+      passportUrl: 'https://passport.gitcoin.co/',
+      rawPassport: undefined,
       trustBonus: (document.trust_bonus * 100) || 50,
       loading: false,
       verificationError: false,
@@ -95,8 +45,11 @@ Vue.component('active-trust-manager', {
     // await DIDKits bindings
     this.DIDKit = (await DIDKit);
 
+    // error message attachment
+    this.visitGitcoinPassport = `Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
+
     // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
-    document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassportListener());
+    document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassport());
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
   },
@@ -116,15 +69,9 @@ Vue.component('active-trust-manager', {
       this.modalShow = true;
       this.modalName = modalName;
     },
-    hideModal() {
-      this.modalShow = false;
-
-      // reset modal content after timeout
-      setTimeout(() => {
-        this.modalName = false;
-      }, 1000);
-    },
     reset(fullReset) {
+      // reset the step
+      this.step = 1;
       // this is set after we savePassport() if no verifications failed
       this.passportVerified = false;
 
@@ -139,8 +86,29 @@ Vue.component('active-trust-manager', {
         });
       }
     },
-    async connectPassportListener() {
-      this.connectPassport();
+    async passportActionHandler() {
+      if (this.step === 1 || this.passportVerified) {
+        await this.connectPassport();
+        // if (this.step !== 1) {
+        //   await this.passportActionHandler();
+        // }
+      } else if (this.step === 2) {
+        await this.verifyPassport(this.rawPassport).then(() => {
+          // move to step 3 (saving)
+          this.step = 3;
+          // store passport into state after verifying content to avoid display scoring until ready
+          this.passport = this.rawPassport;
+        });
+      } else if (this.step === 3) {
+        await this.savePassport();
+      }
+    },
+    async handleErrorClick(e) {
+      let clickedElId = e.target.id;
+
+      if (clickedElId === 'save-passport') {
+        await this.savePassport();
+      }
     },
     async connectPassport() {
       // enter loading state
@@ -176,24 +144,25 @@ Vue.component('active-trust-manager', {
 
         // if we find a passport verify it and create a trust_bonus score
         if (passport) {
+          // move to step 2
+          this.step = 2;
           // check the validity of the Passport updating the score
-          await this.verifyPassport(passport).then(() => {
-            // store passport into state after verifying content to avoid display scoring until ready
-            this.passport = passport;
-          });
+          this.rawPassport = passport;
         } else {
           // error if no passport found
-          this.verificationError = 'There is no Passport associated with this wallet';
+          this.verificationError = `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
         }
       } else {
         // error if no ceramic account found
-        this.verificationError = 'There is no Ceramic Account associated with this wallet';
+        this.verificationError = `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
       }
 
       // done with loading state
       this.loading = false;
     },
     async verifyPassport(passport) {
+      // enter loading
+      this.loading = true;
       // check for a passport and then its validity
       if (passport) {
 
@@ -238,22 +207,29 @@ Vue.component('active-trust-manager', {
           return (service.is_verified ? service.match_percent : 0) + total;
         }, 50));
       }
+      // stop loading
+      this.loading = false;
     },
     async savePassport() {
+      // enter loading
+      this.loading = true;
       // attempt to verify the passport
       try {
         if (document.challenge) {
           // request signature
           let signature = false;
 
+          // clear error state
+          this.verificationError = undefined;
+
           // attempt the signature
           try {
             signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
           } catch {
-            // clear state
-            this.reset();
             // set error
-            this.verificationError = 'There was an error; please sign the requested message';
+            this.verificationError = 'In order to verify your Passport, the wallet message requires a signature. <a id="save-passport" class="link cursor-pointer">Click here</a> to verify ownership of your wallet and submit to Gitcoin.';
+            // stop loading
+            this.loading = false;
 
             // if there was an error in the sig - don't post to verify
             return false;
@@ -271,12 +247,11 @@ Vue.component('active-trust-manager', {
             // Bad signature error
             this.verificationError = response.error;
           } else {
+            // mark as verified
+            this.passportVerified = true;
             // notify success (temp)
             _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
           }
-
-          // mark verified if no errors are returned
-          this.passportVerified = !response.error;
         }
       } catch (err) {
         // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
@@ -284,6 +259,8 @@ Vue.component('active-trust-manager', {
         // set error state
         this.verificationError = 'There was an error; please try again later';
       }
+      // stop loading
+      this.loading = false;
     }
   }
 });
