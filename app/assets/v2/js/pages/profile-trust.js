@@ -69,6 +69,9 @@ Vue.component('active-trust-manager', {
       this.modalShow = true;
       this.modalName = modalName;
     },
+    hideModal() {
+      this.modalShow = this.modalName = false;
+    },
     reset(fullReset) {
       // reset the step
       this.step = 1;
