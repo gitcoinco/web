@@ -105,11 +105,11 @@ Vue.component('active-trust-manager', {
         await this.verifyPassport().then(() => {
           // move to step 3 (saving)
           this.step = 3;
-          // store passport into state after verifying content to avoid display scoring until ready
+          // store passport into state after verifying content to avoid displaying the scoring until ready
           this.passport = this.rawPassport;
         });
       } else if (this.step === 3) {
-        // post a * save request to gitcoin (* note that gitcoin will enqueue the save request and changes may not be immediate)
+        // post a * save request to gitcoin (* note that gitcoin will enqueue the save request and changes may not be reflected immediately)
         await this.savePassport();
       }
     },
@@ -131,10 +131,9 @@ Vue.component('active-trust-manager', {
 
       // ensure selected account is known
       if (!selectedAccount) {
-        // global wallet setup requirements - initiates web3 modal and then onConnect will emit dataWalletReady
-        await onConnect();
 
-        return;
+        // global wallet setup requirements - initiates web3 modal and then onConnect will emit dataWalletReady
+        return await onConnect();
       }
 
       // read the genesis from the selectedAccount (pulls the associated stream index)

@@ -77,7 +77,7 @@
                     <i v-else :class="`fa fa-check m-auto ${step > 2 || passportVerified ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
                   <div :class="`d-inline px-2 ${step < 2 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                    Come back to this page to <a :class="`${step >= 2 || passportVerified ? 'link cursor-pointer' : 'text-black-50 text-decoration-none'}`" @click="() => (step >= 2 || passportVerified) && passportActionHandler(step !== 2)">score your passport</a>
+                    Come back to this page to <a :class="`${step >= 2 || passportVerified ? 'link cursor-pointer' : 'text-reset text-decoration-none'}`" @click="() => (step >= 2 || passportVerified) && passportActionHandler(step !== 2)">score your passport</a>
                   </div>
                 </li>
                 <li class="py-1">
@@ -86,7 +86,7 @@
                     <i v-else :class="`fa fa-check m-auto ${step > 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
                   <div :class="`d-inline px-2 ${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                    <a :class="`${step >= 3 || passportVerified ? 'link cursor-pointer' : 'text-black-50 text-decoration-none'}`" @click="() => (step >= 3 || passportVerified) && passportActionHandler()">Save your passport</a> score to Gitcoin.co
+                    <a :class="`${step >= 3 || passportVerified ? 'link cursor-pointer' : 'text-reset text-decoration-none'}`" @click="() => (step >= 3 || passportVerified) && passportActionHandler()">Save your passport</a> score to Gitcoin.co
                   </div>
                 </li>
               </ul>
