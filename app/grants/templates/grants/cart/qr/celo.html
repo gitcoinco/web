@@ -158,7 +158,7 @@
                     <div class="col" v-show="selectedQRPayment === 'txid'">
                       <div>
                         <label :for="`celo_payoutTxId_${grant.grant_id}`" class="font-smaller-1">Transaction Hash:</label>
-                        <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`celo_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="[a-zA-Z0-9]{64}$" :disabled="grant.success">
+                        <input v-model="grant.payoutTxId" :name="`payoutTxId_${grant.grant_id}`" :id="`celo_payoutTxId_${grant.grant_id}`" placeholder="00000..." class="form-control form-control-sm" pattern="0x[a-zA-Z0-9]{64}$" :disabled="grant.success">
                         <small class="form-text text-muted">Paste the transaction id</small>
                       </div>
                     </div>
