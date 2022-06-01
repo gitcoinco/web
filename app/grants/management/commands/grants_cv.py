@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
         queryGrants = """
         query getGrants {
-          grants(orderBy: id, orderDirection: asc, first: 100) {
+          grants(orderBy: id, orderDirection: asc, first: 500) {
             id
             votes {
               id
@@ -63,7 +63,7 @@ class Command(BaseCommand):
 
         urls = []
         if not settings.DEBUG or True:
-            urls += ['https://api.studio.thegraph.com/query/20308/gtc-conviction-voting-mainnet/v0.0.1']
+            urls += ['https://api.studio.thegraph.com/query/20308/gtc-conviction-voting-mainnet/v0.0.2']
             urls += ['https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-optimism']
         else:
             urls += ['https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-rinkeby']
