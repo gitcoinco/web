@@ -77,13 +77,12 @@
                     <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
                       Connect Passport
                     </b-button>
-                    <div v-if="verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
-                      <i class="fa-shield-virus fas mt-3 ml-md-3 px-1" style="color: #d03e63"></i>
-                      <div class="d-inline ml-3 my-auto">
+                    <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-2 my-auto">
                         <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
                       </div>
                     </div>
-      
                   </div>
                 </li>
                 <li class="d-flex border-bottom py-3">
@@ -104,6 +103,12 @@
                     <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
                       Refresh Passport
                     </b-button>
+                    <div v-if="step === 2 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-2 my-auto">
+                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                      </div>
+                    </div>
                   </div>
                 </li>
                 <li class="d-flex border-bottom py-3">
@@ -121,6 +126,12 @@
                     <b-button v-if="step === 3 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerSave()">
                       Save Passport
                     </b-button>
+                    <div v-if="step === 3 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-2 my-auto">
+                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                      </div>
+                    </div>
                   </div>
                 </li>
               </ul>

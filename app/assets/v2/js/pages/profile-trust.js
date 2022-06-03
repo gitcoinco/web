@@ -46,10 +46,10 @@ Vue.component('active-trust-manager', {
     this.DIDKit = (await DIDKit);
 
     // error message attachment
-    this.visitGitcoinPassport = `</br></br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
+    this.visitGitcoinPassport = `</br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
 
     // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
-    document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassport());
+    document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassport(true));
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
   },
@@ -143,7 +143,11 @@ Vue.component('active-trust-manager', {
         await this.savePassport();
       }
     },
-    async connectPassport() {
+    /*
+     * The ignoreErrors attribute is intended to be used when calling this function automatically on page
+     * load and not expecting this to trigger an error.
+     */
+    async connectPassport(ignoreErrors) {
       // enter loading state
       this.loading = true;
       // clear error state
@@ -193,11 +197,11 @@ Vue.component('active-trust-manager', {
           this.rawPassport = passport;
         } else {
           // error if no passport found
-          this.verificationError = `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
+          this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
         }
       } else {
         // error if no ceramic account found
-        this.verificationError = `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
+        this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
       }
 
       // done with loading state
@@ -276,7 +280,7 @@ Vue.component('active-trust-manager', {
             signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
           } catch {
             // set error - * note that #save-passport does not have an event handler - it is caught by `this.handleErrorClick(e)` as the event bubbles
-            this.verificationError = 'In order to verify your Passport, the wallet message requires a signature.</br></br><a id="save-passport" class="link cursor-pointer">Click here</a> to verify ownership of your wallet and submit to Gitcoin.';
+            this.verificationError = 'In order to verify your Passport, the wallet message requires a signature.</br><a id="save-passport" class="link cursor-pointer">Click here</a> to verify ownership of your wallet and submit to Gitcoin.';
             // stop loading
             this.loading = false;
 
