@@ -62,37 +62,71 @@
 
               <ul class="list-unstyled mt-4 pb-2">
                 <!-- <i class="fa-regular fa-circle-check"></i> -->
-                <li class="py-1">
+                <li class="d-flex border-top border-bottom py-3">
                   <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
                     <span v-if="step === 1 && !passportVerified" class="m-auto">1</span>
                     <i v-else :class="`fa fa-check m-auto ${step > 1 || passportVerified ? 'gc-text-success' : 'gc-text-default'}`"></i>
                   </div>
-                  <div :class="`d-inline px-2 ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
-                    Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your passport
+                  <div class="px-2">
+                    <div :class="`pb-1 ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      <strong>Create</strong>
+                    </div>
+                    <div :class="` ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your passport.
+                    </div>
+                    <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
+                      Connect Passport
+                    </b-button>
+                    <div v-if="verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
+                      <i class="fa-shield-virus fas mt-3 ml-md-3 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-3 my-auto">
+                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                      </div>
+                    </div>
+      
                   </div>
                 </li>
-                <li class="py-1">
-                  <div :class="`gc-border-circle ${step > 2 || passportVerified ? 'gc-border-success' : step < 2 ? 'gc-border-disabled' : 'gc-border-default'}`">
+                <li class="d-flex border-bottom py-3">
+                  <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
                     <span v-if="step <= 2 && !passportVerified" :class="`m-auto ${step > 2 ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`">2</span>
                     <i v-else :class="`fa fa-check m-auto ${step > 2 || passportVerified ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
-                  <div :class="`d-inline px-2 ${step < 2 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                    Come back to this page to <a :class="`${step >= 2 || passportVerified ? 'link cursor-pointer' : 'text-reset text-decoration-none'}`" @click="() => (step >= 2 || passportVerified) && passportActionHandler(step !== 2)">score your passport</a>
+                  <div class="px-2">
+                    <div :class="`pb-1 ${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
+                      <strong>Score</strong>
+                    </div>
+                    <div :class="`${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
+                      Complete more stamps and return to score your passport.
+                    </div>
+                    <b-button v-if="step === 2 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerRefresh()">
+                      Score Passport
+                    </b-button>
+                    <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
+                      Refresh Passport
+                    </b-button>
                   </div>
                 </li>
-                <li class="py-1">
-                  <div :class="`gc-border-circle ${step > 3 || passportVerified ? 'gc-border-success' : step < 3 ? 'gc-border-disabled' : 'gc-border-default'}`">
+                <li class="d-flex border-bottom py-3">
+                  <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
                     <span v-if="step <= 3 && !passportVerified" :class="`m-auto ${step > 3 ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">3</span>
                     <i v-else :class="`fa fa-check m-auto ${step > 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
-                  <div :class="`d-inline px-2 ${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
-                    <a :class="`${step >= 3 || passportVerified ? 'link cursor-pointer' : 'text-reset text-decoration-none'}`" @click="() => (step >= 3 || passportVerified) && passportActionHandler()">Save your passport</a> score to Gitcoin.co
+                  <div class="px-2">
+                    <div :class="`pb-1 ${step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      <strong>Save</strong>
+                    </div>
+                    <div :class="`${step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      Your passport score is saved to Gitcoin.co.
+                    </div>
+                    <b-button v-if="step === 3 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerSave()">
+                      Save Passport
+                    </b-button>
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div class="d-block d-md-flex mt-4 spacer-my-5" style="min-height: 52px;">
+            <!-- <div class="d-block d-md-flex mt-4 spacer-my-5" style="min-height: 52px;">
               <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" style="max-height: 52px;" :class="`col-12 col-md-auto btn btn-lg px-5 flex-shrink-0 btn-${passportVerified ? 'dark' : 'primary'}`" :disabled="loading" @click="() => passportActionHandler()">
                 [[!passportVerified ? (step === 1 ? "Connect Passport" : step === 2 ? "Score Passport" : "Save Passport") : "Refresh Passport"]]
               </b-button>
@@ -109,7 +143,7 @@
                   <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <div class="row">
               <div class="col-12 col-lg-6">

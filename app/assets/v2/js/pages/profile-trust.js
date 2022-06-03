@@ -3,7 +3,7 @@ const apiCall = (url, givenPayload) => {
 
   return new Promise((resolve, reject) => {
     const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const headers = {'X-CSRFToken': csrfmiddlewaretoken, 'content_type': 'application/json'};
+    const headers = { 'X-CSRFToken': csrfmiddlewaretoken, 'content_type': 'application/json' };
     const payload = Object.assign({
       'gitcoin_handle': document.contxt.github_handle
     }, givenPayload || {});
@@ -90,7 +90,30 @@ Vue.component('active-trust-manager', {
         });
       }
     },
+    async passportActionHandlerConnect(forceRefresh) {
+      // We can call the same handler to step through each operation...
+      // connect and read the passport...
+      await this.connectPassport();
+      // when forceRefreshing we want to go straight to scoring
+      if (forceRefresh) {
+        // move to step 2 to immediately score the passport
+        await this.passportActionHandlerRefresh();
+      }
+    },
+    async passportActionHandlerRefresh() {
+      await this.verifyPassport().then(() => {
+        // move to step 3 (saving)
+        this.step = 3;
+        // store passport into state after verifying content to avoid displaying the scoring until ready
+        this.passport = this.rawPassport;
+        console.log('geri this.passport', this.passport);
+      });
+    },
+    async passportActionHandlerSave() {
+      await this.savePassport();
+    },
     async passportActionHandler(forceRefresh) {
+      // TODO geri: remove this ... it should not be used any  more
       // We can call the same handler to step through each operation...
       if (this.step === 1 || this.passportVerified || forceRefresh) {
         // connect and read the passport...
@@ -133,14 +156,19 @@ Vue.component('active-trust-manager', {
       if (!selectedAccount) {
         if (!web3Modal) {
           // set-up call to onConnect on walletReady events
-          await needWalletConnection();
+          const ret = await needWalletConnection();
 
           // will setup wallet and emit walletReady event
-          return initWallet();
+          let ret1 = await initWallet();
+
+          return;
         }
 
         // call onConnect directly after first load to force web3Modal to display every time its called
-        return await onConnect();
+        const ret = await onConnect();
+
+        this.loading = false;
+        return;
       }
 
       // read the genesis from the selectedAccount (pulls the associated stream index)
@@ -291,7 +319,7 @@ if (document.getElementById('gc-trust-manager-app')) {
   const TrustManager = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-trust-manager-app',
-    data: { }
+    data: {}
   });
 }
 
