@@ -27,6 +27,9 @@ from django.utils import timezone
 import requests
 from grants.models import Grant
 
+import time
+from web3 import Web3
+from decimal import *
 
 class Command(BaseCommand):
 
@@ -44,21 +47,22 @@ class Command(BaseCommand):
                 raise Exception('Query failed. return code is {}.      {}'.format(request.status_code, query))
 
         queryGrants = """
-        query getGrants {
-          grants(orderBy: id, orderDirection: asc, first: 500) {
-            id
-            votes {
-              id
-              amount
-              createdAt
+            query getGrants {
+                grants(orderBy: id, orderDirection: asc, first: 100) {
+                    id
+                    votes {
+                    id
+                    amount
+                    createdAt
+                    }
+                    releases {
+                    id
+                    voteId
+                    amount
+                    createdAt
+                    }
+                }
             }
-            releases {
-              id
-              amount
-              createdAt
-            }
-          }
-        }
         """
 
         urls = []
@@ -69,26 +73,67 @@ class Command(BaseCommand):
             urls += ['https://api.thegraph.com/subgraphs/name/danielesalatti/gtc-conviction-voting-rinkeby']
 
 
+        maxMultiplier = 50
+        secondsInSixMonths = 60 * 60 * 24 * 30 * 6
+        alphaDecay = 0.8
+        beta = pow(maxMultiplier, 1 / secondsInSixMonths) - 1
+
+        def mapReleasesToVoteId(grant):
+            releases = grant['releases']
+            releaseByVoteId = {}
+            for release in releases:
+                releaseByVoteId[int(release['voteId'])] = release
+            return releaseByVoteId
+
+        def calculate_voting_power(grant):
+            totalVotingPower = 0
+
+            releaseByVoteId = mapReleasesToVoteId(grant)
+
+            for vote in grant['votes']:
+                secondsSinceVote = (time. time() - int(vote['createdAt']))
+
+                secondsSinceRelease = 0
+
+                voteIdInt = int(vote['id'], 16)
+
+                if (voteIdInt in releaseByVoteId):
+                    secondsSinceRelease = (time. time() - int(releaseByVoteId[voteIdInt]['createdAt']))
+                    secondsSinceVote = secondsSinceVote - secondsSinceRelease
+
+                
+                secondsSinceVote = min(secondsSinceVote, secondsInSixMonths)
+
+                votingPower = Web3.fromWei(int(vote['amount']), 'ether') * Decimal(pow(1 + beta, secondsSinceVote))
+
+                for i in range(0, int(secondsSinceRelease)):
+                    votingPower = votingPower - Decimal(((1 - alphaDecay) / (24 * 60 * 60))) * votingPower
+                
+                totalVotingPower = totalVotingPower + votingPower
+            
+            return totalVotingPower
+
+        grantVotingPower = {}
+
         for url in urls:
             grantsResult = run_query(queryGrants, url)
+            grants = grantsResult['data']['grants']
+            for grant in grants:
+                grantId = int(grant['id'], 16)
+                vp = calculate_voting_power(grant)
+                if grantId not in grantVotingPower:
+                    grantVotingPower[grantId] = vp
+                else:
+                    grantVotingPower[grantId] = grantVotingPower[grantId] + vp
 
-            # sum amounts
-            results = {}
-            for result in grantsResult['data']['grants']:
-                id = int(result['id'], 16)
-                amount = sum([int(ele['amount']) for ele in result['votes']])
-                amount = amount / 10**18
-                if id not in results.keys():
-                    results[id] = 0
-                results[id] += amount
 
+        for grantId in grantVotingPower:
             # store in db
-            for id, val in results.items():
-                    if settings.DEBUG:
-                        print(id, amount)
-                    try:
-                        grant = Grant.objects.get(pk=id)
-                        grant.metadata['cv'] = amount
-                        grant.save()
-                    except Exception as e:
-                        print(e)
+            if settings.DEBUG:
+                print("Grant ID: " + str(grantId) + " Voting Power: " + str(grantVotingPower[grantId]))
+            try:
+                grant = Grant.objects.get(pk=grantId)
+                grant.metadata['cv'] = grantVotingPower[grantId]
+                grant.save()
+            except Exception as e:
+                print("Error:", e)
