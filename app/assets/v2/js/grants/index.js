@@ -144,6 +144,7 @@ if (document.getElementById('grants-showcase')) {
         {label: 'Weighted Shuffle', value: 'weighted_shuffle'},
         {label: 'Trending', value: '-metadata__upcoming'},
         {label: 'Undiscovered Gems', value: '-metadata__gem'},
+        {label: 'GTC Conviction Voting', value: '-metadata__cv'},
         {label: 'Recently Updated', value: '-last_update'},
         {label: 'Newest', value: '-created_on'},
         {label: 'Oldest', value: 'created_on'},
