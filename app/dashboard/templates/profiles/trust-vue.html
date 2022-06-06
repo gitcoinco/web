@@ -55,7 +55,7 @@
               <ul class="list-unstyled mt-4 pb-2">
                 <!-- <i class="fa-regular fa-circle-check"></i> -->
                 <li class="d-flex border-top border-bottom py-3">
-                  <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
+                  <div :class="`gc-border-circle ${step === 1 && !passportVerified? 'gc-border-default' : 'gc-border-success'}`">
                     <span v-if="step === 1 && !passportVerified" class="m-auto">1</span>
                     <i v-else :class="`fa fa-check m-auto ${step > 1 || passportVerified ? 'gc-text-success' : 'gc-text-default'}`"></i>
                   </div>
@@ -78,12 +78,12 @@
                   </div>
                 </li>
                 <li class="d-flex border-bottom py-3">
-                  <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
+                  <div :class="`gc-border-circle ${step < 2 && !passportVerified ? 'gc-border-disabled' : step === 2 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">
                     <span v-if="step <= 2 && !passportVerified" :class="`m-auto ${step > 2 ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`">2</span>
                     <i v-else :class="`fa fa-check m-auto ${step > 2 || passportVerified ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
                   <div class="px-2">
-                    <div :class="`pb-1 ${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
+                    <div :class="`pb-1 ${(step < 2 && !passportVerified) ? 'gc-text-disabled' : 'gc-text-default'}`">
                       <strong>Score</strong>
                     </div>
                     <div :class="`${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
@@ -104,9 +104,9 @@
                   </div>
                 </li>
                 <li class="d-flex border-bottom py-3">
-                  <div :class="`gc-border-circle ${step > 1 || passportVerified ? 'gc-border-success' : 'gc-border-default'}`">
+                  <div :class="`gc-border-circle ${step < 3 && !passportVerified ? 'gc-border-disabled' : step === 3 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">
                     <span v-if="step <= 3 && !passportVerified" :class="`m-auto ${step > 3 ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">3</span>
-                    <i v-else :class="`fa fa-check m-auto ${step > 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
+                    <i v-else :class="`fa fa-check m-auto ${step >= 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
                   <div class="px-2">
                     <div :class="`pb-1 ${step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">
