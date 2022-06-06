@@ -78,7 +78,7 @@ RUN echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf
 EXPOSE 9222
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 WORKDIR /code/app
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests=200"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "--timeout", "120", "app.wsgi:application", "--max-requests=200"]
 
 # Tag
 ARG BUILD_DATETIME

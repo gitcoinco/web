@@ -710,13 +710,13 @@ export const securityGroupForTaskDefinition = secgrp.id;
 
 const service = new awsx.ecs.FargateService(`gitcoin-review-${environmentName}-app`, {
     cluster,
-    desiredCount: 1,
+    desiredCount: 2,
     assignPublicIp: false,
     taskDefinitionArgs: {
         containers: {
             web: {
                 image: dockerGtcWebImage,
-                memory: 512,
+                memory: 1024,
                 portMappings: [httpsListener],
                 environment: environment,
                 links: []
