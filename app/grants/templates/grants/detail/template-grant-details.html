@@ -337,6 +337,12 @@
 
       <!-- Grant Management -->
       <div class="grant-managment mt-4 mt-md-0" v-if="(grant.is_on_team || isStaff)">
+        <b-card class="mb-2 grant-hub-cta">
+          <h3>Grants 2.0 is here.</h3>
+          <p>Grants 2.0, Gitcoin’s new decentralized grants protocol, is now available in alpha.</p>
+          <p>Create a grant on Grant Hub to be eligible for future Grants 2.0 funding rounds and more.</p>
+          <button class="btn btn-block btn-primary">Go to Grant Hub</button>
+        </b-card>
         <b-card>
 
           <!-- Admin Message -->
@@ -1107,6 +1113,12 @@
 
   .grant-managment {
     grid-area: grant-managment;
+  }
+
+  .grant-hub-cta {
+    background: -webkit-linear-gradient(top, #FFF7D9 50%, #92FFE5 33.5%, #FFFFFF 50%);
+    background: -moz-linear-gradient(top, #FFF7D9 50%, #92FFE5 33.5%, #FFFFFF 50%);
+    background-image: linear-gradient(180deg, #FFF7D9, #92FFE5);
   }
 
   input {
