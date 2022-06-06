@@ -137,38 +137,13 @@
               </ul>
             </div>
 
-            <!-- <div class="d-block d-md-flex mt-4 spacer-my-5" style="min-height: 52px;">
-              <b-button :variant="`${passportVerified ? 'dark' : 'primary'}`" style="max-height: 52px;" :class="`col-12 col-md-auto btn btn-lg px-5 flex-shrink-0 btn-${passportVerified ? 'dark' : 'primary'}`" :disabled="loading" @click="() => passportActionHandler()">
-                [[!passportVerified ? (step === 1 ? "Connect Passport" : step === 2 ? "Score Passport" : "Save Passport") : "Refresh Passport"]]
-              </b-button>
-
-              <div v-if="passport && passportVerified && !verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
-                <i class="fa fa-check my-auto ml-md-3 px-1" style="color: #059669"></i>
-                <div class="d-inline ml-2 my-auto">
-                  <span style="color: #059669">Passport Verified!</span>
-                </div>
-              </div>
-              <div v-else-if="verificationError" class="col-12 col-md d-flex px-0 pt-4 pt-md-0 my-auto">
-                <i class="fa-shield-virus fas mt-3 ml-md-3 px-1" style="color: #d03e63"></i>
-                <div class="d-inline ml-3 my-auto">
-                  <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
-                </div>
-              </div>
-            </div> -->
-
             <div class="row">
               <div class="col-12 col-lg-6">
-                <div class="spacer-mb-2 font-weight-semibold">Verification Level</div>
+                <div class="spacer-mb-2 font-weight-semibold">Trust Bonus Score</div>
                 <div class="progress rounded-0" style="height: 0.4rem;">
                   <div class="progress-bar bg-secondary disabled" role="progressbar" :style="{width: `${!passport ? 0 : 100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match</div>
-                <div class="spacer-mt-5">
-                  <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="font-weight-semibold">Go to Gitcoin Passport<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.2929 5.29289C12.6834 4.90237 13.3166 4.90237 13.7071 5.29289L17.7071 9.29289C18.0976 9.68342 18.0976 10.3166 17.7071 10.7071L13.7071 14.7071C13.3166 15.0976 12.6834 15.0976 12.2929 14.7071C11.9024 14.3166 11.9024 13.6834 12.2929 13.2929L14.5858 11H3C2.44772 11 2 10.5523 2 10C2 9.44772 2.44772 9 3 9H14.5858L12.2929 6.70711C11.9024 6.31658 11.9024 5.68342 12.2929 5.29289Z" fill="#664AEC"/>
-                    </svg>
-                  </a>
-                </div>
               </div>
             </div>
 

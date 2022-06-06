@@ -112,30 +112,6 @@ Vue.component('active-trust-manager', {
     async passportActionHandlerSave() {
       await this.savePassport();
     },
-    async passportActionHandler(forceRefresh) {
-      // TODO geri: remove this ... it should not be used any  more
-      // We can call the same handler to step through each operation...
-      if (this.step === 1 || this.passportVerified || forceRefresh) {
-        // connect and read the passport...
-        await this.connectPassport();
-        // when forceRefreshing we want to go straight to scoring
-        if (forceRefresh) {
-          // move to step 2 to immediately score the passport
-          await this.passportActionHandler();
-        }
-      } else if (this.step === 2) {
-        // verify the passports content (this recreates the trust bonus score based on the discovered stamps)
-        await this.verifyPassport().then(() => {
-          // move to step 3 (saving)
-          this.step = 3;
-          // store passport into state after verifying content to avoid displaying the scoring until ready
-          this.passport = this.rawPassport;
-        });
-      } else if (this.step === 3) {
-        // post a * save request to gitcoin (* note that gitcoin will enqueue the save request and changes may not be reflected immediately)
-        await this.savePassport();
-      }
-    },
     async handleErrorClick(e) {
       const clickedElId = e.target.id;
 
