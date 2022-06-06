@@ -105,7 +105,7 @@ from marketing.mails import (
 from marketing.models import Keyword
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
@@ -2873,8 +2873,11 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
-        # force use of passport
-        context['use_passport_trust_bonus'] = True
+        # puts Gitcoin Passport behind a feature flag
+        usePassport = StaticJsonEnv.objects.filter(key='GITCOIN_PASSPORT')
+
+        # check if we should be displaying Passport or trust_bonus
+        context['use_passport_trust_bonus'] = usePassport.count() > 0 and usePassport[0].data.get('active', False)
 
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
@@ -2886,7 +2889,7 @@ def get_profile_tab(request, profile, tab, prev_context):
 
         # Passport Trust Bonus or original Trust Bonus
         if context['use_passport_trust_bonus']:
-            # detail available services
+            # check if their is already a Passport associated for the user
             context['is_passport_connected'] = json.dumps(bool(profile.passport_trust_bonus))
 
             # gets passport_trust_bonus || trust_bonus
