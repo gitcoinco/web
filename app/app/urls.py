@@ -138,7 +138,21 @@ urlpatterns = [
         name='profile_set_tax_settings'
     ),
 
-    # verification services
+
+    # grants2.0 Verification Services
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/stamp/check',
+        dashboard.views.check_passport_stamps,
+        name='check_passport_stamp'
+    ),
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/verify',
+        dashboard.views.verify_passport,
+        name='verify_passport'
+    ),
+
+
+    # grants1.0 Verification Services
     url(
         r'^api/v0.1/profile/(?P<handle>.*)/request_user_sms/?$',
         dashboard.views.send_verification,
@@ -238,6 +252,8 @@ urlpatterns = [
     #     dashboard.views.verify_user_duniter,
     #     name='verify_user_duniter'
     # ),
+
+
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -441,8 +457,8 @@ urlpatterns = [
     ),
 
     # View Bounty
-    # TODO: The 2 URLs below issue_details_new2 and issue_details_new3 will not be used any more (we should not create such 
-    # links any more), and can be removed in the future. We are keeping these for now to avoid breaking the 
+    # TODO: The 2 URLs below issue_details_new2 and issue_details_new3 will not be used any more (we should not create such
+    # links any more), and can be removed in the future. We are keeping these for now to avoid breaking the
     # existing links that users might have saved already.
     url(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',

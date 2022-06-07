@@ -26,6 +26,7 @@ import json
 import logging
 import random
 import re
+import string
 import time
 import urllib.parse
 import uuid
@@ -82,7 +83,7 @@ from dashboard.context import quickstart as qs
 from dashboard.idena_utils import (
     IdenaNonce, get_handle_by_idena_token, idena_callback_url, next_validation_time, signature_address,
 )
-from dashboard.tasks import increment_view_count, update_trust_bonus
+from dashboard.tasks import calculate_trust_bonus, increment_view_count, update_trust_bonus
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url,
     get_ens_contract_addresss, get_orgs_perms, get_poap_earliest_owned_token_timestamp, profile_helper,
@@ -104,7 +105,7 @@ from marketing.mails import (
 from marketing.models import Keyword
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
-from perftools.models import JSONStore
+from perftools.models import JSONStore, StaticJsonEnv
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from requests_oauthlib import OAuth2Session
@@ -126,10 +127,12 @@ from .helpers import (
 from .models import (
     Activity, ActivityIndex, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, Coupon,
     Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest,
-    LabsResearch, MediaFile, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileVerification, ProfileView,
-    Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction, UserVerificationModel,
+    LabsResearch, MediaFile, Option, Passport, PassportStamp, Poll, PortfolioItem, Profile, ProfileSerializer,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Tool, TribeMember, UserAction,
+    UserVerificationModel,
 )
 from .notifications import maybe_market_to_email, maybe_market_to_github
+from .passport_reader import CERAMIC_URL, SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER
 from .poh_utils import is_registered_on_poh
 from .router import HackathonEventSerializer
 from .router import ProfileSerializer as SimpleProfileSerializer
@@ -2066,7 +2069,7 @@ def bounty_details(request, ghuser=None, ghrepo=None, ghissue=None, stdbounties_
 
     if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
         return TemplateResponse(request, 'bounty/details.html', params)
-        
+
     params['PYPL_CLIENT_ID'] = settings.PYPL_CLIENT_ID
     return TemplateResponse(request, 'bounty/details2.html', params)
 
@@ -2870,41 +2873,11 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
+        # puts Gitcoin Passport behind a feature flag
+        usePassport = StaticJsonEnv.objects.filter(key='GITCOIN_PASSPORT')
 
-        idena = {}
-        idena['is_connected'] = profile.is_idena_connected
-        # always pass in the urls so that we can easily switch state client side
-        idena['login_url'] = idena_callback_url(request, profile)
-        idena['logout_url'] = reverse('logout_idena', args=[profile.handle])
-        idena['check_status_url'] = reverse('recheck_idena_status', args=[profile.handle])
-        # construct verified state
-        if profile.is_idena_connected:
-            idena['address'] = profile.idena_address
-            idena['status'] = profile.idena_status
-            idena['is_verified'] = profile.is_idena_verified
-            if not idena['is_verified']:
-                idena['next_validation'] = str(localtime(next_validation_time()))
-
-
-        # states:
-        #0. not_connected - start state, user has no brightid_uuid
-        #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
-        #2. not_verified - connected, but not verified
-        #3. verified - connected, and verified
-        brightid = {}
-        brightid['status'] = 'not_connected'
-        brightid['uuid'] = profile.brightid_uuid
-        if profile.brightid_uuid:
-            brightid['status'] = 'unknown'
-        if profile.is_brightid_verified:
-            brightid['status'] = 'verified'
-        if request.GET.get('pull_bright_id_status'):
-            brightid['status'] = get_brightid_status(profile.brightid_uuid)
-
-        try:
-            brightid['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
-        except JSONStore.DoesNotExist:
-            brightid['upcoming_calls'] = []
+        # check if we should be displaying Passport or trust_bonus
+        context['use_passport_trust_bonus'] = usePassport.count() > 0 and usePassport[0].data.get('active', False)
 
         # QF round info
         clr_rounds_metadata = get_clr_rounds_metadata()
@@ -2914,104 +2887,227 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['round_end_date'] = calendar.timegm(clr_rounds_metadata['round_end_date'].utctimetuple())
         context['show_round_banner'] = clr_rounds_metadata['show_round_banner']
 
-        # detail available services
-        services = [
-            {
-                'ref': 'poh',
-                'name': 'Proof of Humanity',
-                'icon_path': static('v2/images/project_logos/poh-min.svg'),
-                'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
-                'match_percent': 50,
-                'is_verified': profile.is_poh_verified
-            }, {
-                'ref': 'brightid',
-                'name': 'BrightID',
-                'icon_path': static('v2/images/project_logos/brightid.png'),
-                'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
-                'match_percent': 50,
-                'is_verified': brightid['status'] == 'verified',
-                'status': "Awaiting Verification" if brightid['status'] == 'not_verified' else None,
-                '_status': brightid['status'],
-                'uuid': str(brightid['uuid']),
-                'upcoming_calls': brightid['upcoming_calls']
-            }, {
-                'ref': 'idena',
-                'name': 'Idena',
-                'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('v2/images/project_logos/idena.svg'),
-                'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
-                'match_percent': 50,
-                'is_connected': idena['is_connected'],
-                'is_verified': idena['is_connected'] and idena['is_verified'],
-                'status': idena['status'] if idena['is_connected'] and not idena['is_verified'] else None,
-                '_status': idena['status'] if idena['is_connected'] else None,
-                'address': idena['address'] if idena['is_connected'] else None,
-                'login_url': idena['login_url'],
-                'logout_url': idena['logout_url'],
-                'check_status_url': idena['check_status_url'],
-                'next_validation': idena['next_validation'] if idena['is_connected'] and not idena['is_verified'] else None,
-            }, {
-                'ref': 'poap',
-                'name': 'POAP',
-                'icon_path': static('v2/images/project_logos/poap.svg'),
-                'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
-                'match_percent': 25,
-                'is_verified': profile.is_poap_verified
-            }, {
-                'ref': 'ens',
-                'name': 'ENS',
-                'icon_path': static('v2/images/project_logos/ens.svg'),
-                'desc': 'Get verified through the Ethereum Naming Service.',
-                'match_percent': 25,
-                'is_verified': profile.is_ens_verified
-            }, {
-                'ref': 'sms',
-                'name': 'SMS',
-                'icon_class': 'fa fa-mobile-alt fa-3x',
-                'desc': 'Get verified through text from your phone.',
-                'match_percent': 15,
-                'is_verified': profile.sms_verification
-            }, {
-                'ref': 'google',
-                'name': 'Google',
-                'icon_path': static('v2/images/project_logos/google.png'),
-                'desc': 'Get verified by connecting to your Google account.',
-                'match_percent': 15,
-                'is_verified': profile.is_google_verified
-            }, {
-                'ref': 'twitter',
-                'name': 'Twitter',
-                'icon_style': {
-                    'color': 'rgb(0, 172, 237)'
-                },
-                'icon_class': 'fab fa-twitter fa-3x',
-                'desc': 'Get verified by connecting your Twitter account.',
-                'match_percent': 15,
-                'is_verified': profile.is_twitter_verified,
-                'verify_tweet_text': verify_text_for_tweet(profile.handle)
-            }, {
-                'ref': 'facebook',
-                'name': 'Facebook',
-                'icon_style': {
-                    'color': 'rgb(24, 119, 242)'
-                },
-                'icon_class': 'fab fa-facebook fa-3x',
-                'desc': 'Get verified by connecting your Facebook account.',
-                'match_percent': 15,
-                'is_verified': profile.is_facebook_verified
-            }
-        ]
+        # Passport Trust Bonus or original Trust Bonus
+        if context['use_passport_trust_bonus']:
+            # check if their is already a Passport associated for the user
+            context['is_passport_connected'] = json.dumps(bool(profile.passport_trust_bonus))
 
-        # pass as JSON in the context
-        context['services'] = json.dumps(services)
-        # Tentatively Coming Soon
-        context['coming_soon'] = json.dumps(['Duniter'])
-        # Tentatively On the Roadmap
-        context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
+            # gets passport_trust_bonus || trust_bonus
+            context['trust_bonus'] = profile.final_trust_bonus
+            # this score will be displayed on first load if the passport is connected
+            context['passport_trust_bonus']  = profile.passport_trust_bonus if profile.passport_trust_bonus is not None else 'null'
+
+            # dump the full passport into the context
+            try:
+                context['passport'] = json.dumps(Passport.objects.get(user=profile.user).passport)
+            except Passport.DoesNotExist:
+                context['passport'] = 'null'
+
+            # pass services as JSON in the context
+            context['services'] = json.dumps(SCORER_SERVICE_WEIGHTS)
+
+            # place the issuer into context
+            context['iam_issuer'] = TRUSTED_IAM_ISSUER
+            # pass the ceramic_url to the frontend
+            context['ceramic_url'] = CERAMIC_URL
+
+            # use session challenge or generate a new one
+            context['challenge'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+            # store into session
+            request.session['passport_challenge'] = context['challenge']
+        else:
+            idena = {}
+            idena['is_connected'] = profile.is_idena_connected
+            # always pass in the urls so that we can easily switch state client side
+            idena['login_url'] = idena_callback_url(request, profile)
+            idena['logout_url'] = reverse('logout_idena', args=[profile.handle])
+            idena['check_status_url'] = reverse('recheck_idena_status', args=[profile.handle])
+            # construct verified state
+            if profile.is_idena_connected:
+                idena['address'] = profile.idena_address
+                idena['status'] = profile.idena_status
+                idena['is_verified'] = profile.is_idena_verified
+                if not idena['is_verified']:
+                    idena['next_validation'] = str(localtime(next_validation_time()))
+
+            # states:
+            #0. not_connected - start state, user has no brightid_uuid
+            #1. unknown - since brightid can take 30s to respond, unknown means that were connected, but we dont know if were verified or not
+            #2. not_verified - connected, but not verified
+            #3. verified - connected, and verified
+            brightid = {}
+            brightid['status'] = 'not_connected'
+            brightid['uuid'] = profile.brightid_uuid
+            if profile.brightid_uuid:
+                brightid['status'] = 'unknown'
+            if profile.is_brightid_verified:
+                brightid['status'] = 'verified'
+            if request.GET.get('pull_bright_id_status'):
+                brightid['status'] = get_brightid_status(profile.brightid_uuid)
+
+            try:
+                brightid['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+            except JSONStore.DoesNotExist:
+                brightid['upcoming_calls'] = []
+
+            # detail available services
+            services = [
+                {
+                    'ref': 'poh',
+                    'name': 'Proof of Humanity',
+                    'icon_path': static('v2/images/project_logos/poh-min.svg'),
+                    'desc': 'Through PoH, upload a a video of yourself and get vouched for by a member of their community.',
+                    'match_percent': 50,
+                    'is_verified': profile.is_poh_verified
+                }, {
+                    'ref': 'brightid',
+                    'name': 'BrightID',
+                    'icon_path': static('v2/images/project_logos/brightid.png'),
+                    'desc': 'BrightID is a social identity network. Get verified by joining a BrightID verification party.',
+                    'match_percent': 50,
+                    'is_verified': brightid['status'] == 'verified',
+                    'status': "Awaiting Verification" if brightid['status'] == 'not_verified' else None,
+                    '_status': brightid['status'],
+                    'uuid': str(brightid['uuid']),
+                    'upcoming_calls': brightid['upcoming_calls']
+                }, {
+                    'ref': 'idena',
+                    'name': 'Idena',
+                    'icon_path': 'https://robohash.org/%s' % idena['address'] if idena['is_connected'] else static('v2/images/project_logos/idena.svg'),
+                    'desc': 'Idena is a proof-of-person blockchain. Get verified in an Idena validation session.',
+                    'match_percent': 50,
+                    'is_connected': idena['is_connected'],
+                    'is_verified': idena['is_connected'] and idena['is_verified'],
+                    'status': idena['status'] if idena['is_connected'] and not idena['is_verified'] else None,
+                    '_status': idena['status'] if idena['is_connected'] else None,
+                    'address': idena['address'] if idena['is_connected'] else None,
+                    'login_url': idena['login_url'],
+                    'logout_url': idena['logout_url'],
+                    'check_status_url': idena['check_status_url'],
+                    'next_validation': idena['next_validation'] if idena['is_connected'] and not idena['is_verified'] else None,
+                }, {
+                    'ref': 'poap',
+                    'name': 'POAP',
+                    'icon_path': static('v2/images/project_logos/poap.svg'),
+                    'desc': 'POAP is a proof-of-attendance protocol. Get verified by attending a POAP party.',
+                    'match_percent': 25,
+                    'is_verified': profile.is_poap_verified
+                }, {
+                    'ref': 'ens',
+                    'name': 'ENS',
+                    'icon_path': static('v2/images/project_logos/ens.svg'),
+                    'desc': 'Get verified through the Ethereum Naming Service.',
+                    'match_percent': 25,
+                    'is_verified': profile.is_ens_verified
+                }, {
+                    'ref': 'sms',
+                    'name': 'SMS',
+                    'icon_class': 'fa fa-mobile-alt fa-3x',
+                    'desc': 'Get verified through text from your phone.',
+                    'match_percent': 15,
+                    'is_verified': profile.sms_verification
+                }, {
+                    'ref': 'google',
+                    'name': 'Google',
+                    'icon_path': static('v2/images/project_logos/google.png'),
+                    'desc': 'Get verified by connecting to your Google account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_google_verified
+                }, {
+                    'ref': 'twitter',
+                    'name': 'Twitter',
+                    'icon_style': {
+                        'color': 'rgb(0, 172, 237)'
+                    },
+                    'icon_class': 'fab fa-twitter fa-3x',
+                    'desc': 'Get verified by connecting your Twitter account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_twitter_verified,
+                    'verify_tweet_text': verify_text_for_tweet(profile.handle)
+                }, {
+                    'ref': 'facebook',
+                    'name': 'Facebook',
+                    'icon_style': {
+                        'color': 'rgb(24, 119, 242)'
+                    },
+                    'icon_class': 'fab fa-facebook fa-3x',
+                    'desc': 'Get verified by connecting your Facebook account.',
+                    'match_percent': 15,
+                    'is_verified': profile.is_facebook_verified
+                }
+            ]
+
+            # pass as JSON in the context
+            context['services'] = json.dumps(services)
+
+            # Tentatively Coming Soon
+            context['coming_soon'] = json.dumps(['Duniter'])
+            # Tentatively On the Roadmap
+            context['roadmap'] = json.dumps(['Upala', 'PASS', 'Equality Protocol', 'Zero Knowledge KYC', 'Activity on Gitcoin'])
 
     else:
         raise Http404
     return context
 
+
+@login_required
+@require_POST
+def check_passport_stamps(request, handle):
+    stamps = {}
+
+    user = request.user
+
+    # pull from post data
+    did = request.POST.get('did')
+    hashes = request.POST.getlist('stamp_hashes[]')
+
+    # check if the stamp has been allocated to a different user
+    for stamp_id in hashes:
+        duplicate_stamp_ids = PassportStamp.objects.exclude(user=user).filter(stamp_id=stamp_id)
+        stamps[stamp_id] = len(duplicate_stamp_ids) == 0
+
+    return JsonResponse({
+        'checks': stamps
+    })
+
+
+@login_required
+@require_POST
+def verify_passport(request, handle):
+    user = request.user
+    profile = user.profile
+
+    # pull from post data
+    address = request.POST.get('eth_address')
+    signature = request.POST.get('signature')
+    did = request.POST.get('did')
+
+    # check for valid sig
+    message_hash = defunct_hash_message(text=request.session['passport_challenge'])
+    signer = w3.eth.account.recoverHash(message_hash, signature=signature)
+    sig_is_valid = address.lower() == signer.lower()
+
+    logger.error("TODO: Verify Passport - %s == %s", address, did)
+
+    # invalid sig error
+    if not sig_is_valid:
+        return JsonResponse({
+            'error': 'Bad signature',
+        })
+
+    # record that a pending update is in-progress...
+    profile.passport_trust_bonus_status = "pending_celery"
+    profile.passport_trust_bonus_last_updated = timezone.now()
+    profile.save()
+
+    # TODO: reset challenge?
+    # request.session['passport_challenge'] = hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()
+
+    # enqueue the validation and saving procedure
+    calculate_trust_bonus.delay(request.user.id, did, address)
+
+    # return a 200 response to signal that calculate_trust_bonus has been called
+    return JsonResponse({'ok': True})
 
 def get_profile_by_idena_token(token):
     handle = get_handle_by_idena_token(token)
@@ -4322,7 +4418,7 @@ def new_hackathon_bounty(request, hackathon=''):
 
     if hackathon_event.is_expired():
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
-    
+
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
@@ -4575,7 +4671,7 @@ def change_bounty(request, bounty_id):
     result['value_true_usd'] = str(bounty.value_true_usd)
     result['owners'] = SimpleProfileSerializer(bounty.owners.all(), many=True, read_only=True).data
     result['bounty_reserved_for_user'] = SimpleProfileSerializer(bounty.bounty_reserved_for_user, read_only=True).data
-    
+
     del result['featuring_date']
 
     params = {
@@ -6163,14 +6259,14 @@ def create_bounty_v1(request):
     bounty.value_true_usd = request.POST.get("amount_usd", 0)
     bounty.peg_to_usd = request.POST.get("peg_to_usd", 0) == 'true'
     bounty.never_expires = request.POST.get("never_expires", 0) == 'true'
-    
+
     bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
 
     bounty.bounty_source = bounty_source
     bounty.acceptance_criteria = request.POST.get("acceptance_criteria", "")
     bounty.resources = request.POST.get("resources", "")
-    bounty.custom_issue_description = request.POST.get("custom_issue_description", "")    
-    
+    bounty.custom_issue_description = request.POST.get("custom_issue_description", "")
+
     contact_details = request.POST.get("contact_details", "")
     if contact_details:
         bounty.contact_details = json.loads(contact_details)
@@ -6195,7 +6291,7 @@ def create_bounty_v1(request):
         timezone.datetime.fromtimestamp(payout_date),
         timezone=UTC
     )
-    
+
 
     # bounty github data
     if bounty.github_url:
@@ -6569,7 +6665,7 @@ def payout_bounty_v1(request, fulfillment_id):
                 is_owner = handle == owner_handler.lower().lstrip('@')
                 if is_owner:
                     break
-        
+
         if not is_owner:
             response['message'] = 'error: payout is bounty funder operation'
             return JsonResponse(response)

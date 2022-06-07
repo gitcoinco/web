@@ -25,6 +25,7 @@ import warnings
 from django.utils.translation import gettext_noop
 
 import environ
+import mimetypes
 import raven
 import sentry_sdk
 from boto3.session import Session
@@ -76,6 +77,10 @@ TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
 
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
+
+# Set .wasm mime type for dev env
+if DEBUG:
+    mimetypes.add_type("application/wasm", ".wasm", True)
 
 # Application definition
 INSTALLED_APPS = [
@@ -532,6 +537,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default=CACHEOPS_REDIS)
 # https://docs.celeryproject.org/en/latest/userguide/configuration.html#std-setting-task_routes
 CELERY_ROUTES = [
+    ('dashboard.tasks.calculate_trust_bonus', {'queue': 'high_priority'}),
     ('grants.tasks.process_grant_contribution', {'queue': 'high_priority'}),
     ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),

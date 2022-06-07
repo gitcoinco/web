@@ -108,16 +108,27 @@
         {% if tab == 'trust' %}
           <script>
             document.services = {{ services|safe }};
-            document.roadmap = {{ roadmap|safe }};
-            document.coming_soon = {{ coming_soon|safe }};
+            document.iam_issuer = "{{ iam_issuer }}";
+            document.ceramic_url = "{{ ceramic_url }}";
+            document.challenge = "{{ challenge }}";
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
+            document.is_passport_connected = {% if is_passport_connected %}{{ is_passport_connected }}{% else %}0{% endif %};
+            document.trust_bonus = {% if passport_trust_bonus %}{{ passport_trust_bonus }}{% else %}0{% endif %};
+            document.passport = {% if passport %}{{ passport|safe }}{% else %}null{% endif %};
+
           </script>
           {% bundle merge_js file profile-trust %}
             <script src="{% static "v2/js/parseMonthDay.js" %}"></script>
             <script src="{% static "v2/js/why-this-matters-modal.js" %}"></script>
-            <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
           {% endbundle %}
+          {% if use_passport_trust_bonus %}
+            <script src="{% static "v2/js/passport/didkit.bundle.js" %}"></script>
+            <script src="{% static "v2/js/passport/reader.bundle.js" %}"></script>
+            <script src="{% static "v2/js/pages/profile-trust.js" %}"></script>
+          {% else %}
+            <script src="{% static "v2/js/pages/profile-c-trust.js" %}"></script>
+          {% endif %}
         {% endif %}
         <script src="/dynamic/js/tokens_dynamic.js"></script>
         <script src="{% static "v2/js/tokens.js" %}"></script>

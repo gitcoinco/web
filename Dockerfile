@@ -52,6 +52,8 @@ RUN pip3 install --upgrade -r test.txt
 # Copy over docker-command (start-up script)
 COPY bin/docker-command.bash /bin/docker-command.bash
 COPY bin/review-env-initial-data.bash /bin/review-env-initial-data.bash
+COPY bin/celery/worker/run.sh /bin/celery/worker/run.sh
+
 RUN dos2unix /bin/docker-command.bash
 RUN dos2unix /bin/review-env-initial-data.bash
 
@@ -76,7 +78,7 @@ RUN echo fs.inotify.max_user_watches=524288 >> /etc/sysctl.conf
 EXPOSE 9222
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 WORKDIR /code/app
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "app.wsgi:application", "--max-requests=200"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:80", "--timeout", "120", "app.wsgi:application", "--max-requests=200"]
 
 # Tag
 ARG BUILD_DATETIME

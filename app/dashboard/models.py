@@ -2149,7 +2149,7 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     if instance.github_url:
-        instance.github_url = instance.github_url.lower() 
+        instance.github_url = instance.github_url.lower()
         try:
             handle = instance.github_url.split('/')[3]
             if not instance.org:
@@ -3172,6 +3172,11 @@ class Profile(SuperModel):
     # store the trust bonus on the model itself
     trust_bonus = models.DecimalField(default=0.5, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on verified services')
 
+    # score details of the passport_trust_bonus on the model
+    passport_trust_bonus = models.DecimalField(default=None, null=True, blank=True, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on Gitcoin Passport')
+    passport_trust_bonus_status = models.CharField(max_length=14, null=True, blank=True, help_text='Trust Bonus score update status')
+    passport_trust_bonus_last_updated = models.DateTimeField(null=True, blank=True, help_text='Trust Bonus score last updated datetime')
+
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
 
@@ -3179,6 +3184,10 @@ class Profile(SuperModel):
             self.is_idena_verified = True
         else:
             self.is_idena_verified = False
+
+    @property
+    def final_trust_bonus(self):
+        return self.trust_bonus if self.passport_trust_bonus is None else self.passport_trust_bonus
 
     @property
     def shadowbanned(self):
@@ -6088,3 +6097,19 @@ class MediaFile(SuperModel):
 
     def __str__(self):
         return f'{self.id} - {self.filename}'
+
+class Passport(SuperModel):
+    user = models.ForeignKey(User, related_name='passports', on_delete=models.CASCADE, null=True, db_index=True)
+    did = models.CharField(unique=True, null=False, blank=False, max_length=100)
+    passport = JSONField(default=dict)
+
+    def __str__(self):
+        return f'{self.did}'
+
+class PassportStamp(SuperModel):
+    user = models.ForeignKey(User, related_name='passport_stamps', on_delete=models.CASCADE, null=True, db_index=True)
+    passport = models.ForeignKey(Passport, related_name='stamps', on_delete=models.CASCADE, null=True)
+    stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100)
+
+    def __str__(self):
+        return f'{self.stamp_id}'

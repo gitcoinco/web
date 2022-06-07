@@ -1,136 +1,20 @@
-{% load i18n static humanize %}
+{% load i18n bundle static humanize %}
 
 {% if not profile.is_org and is_my_profile %}
-
-<!-- Passport Modal -->
-<div class="modal fade" id="passportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Generate your Proof of Personhood Passport</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <img class="float-left p-2" src="/static/v2/images/passport-cover.png" style="max-width:200px;">
-        <div class="subbody">
-          <strong>What:</strong> PoPP aggregates the top personhood-identity providers in the web3 space into one transportable identity that proves your personhood.
-          <hr>
-          <strong>How:</strong> You can generate your Proof of Personhood Passport via the following methods.
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="gen_passport" class="btn btn-primary">NFT</button>
-        <button type="button" class="btn btn-secondary disabled">3Box (coming soon)</button>
-        <button type="button" class="btn btn-secondary disabled">SpruceID (coming soon)</button>
-      </div>
-    </div>
-  </div>
-</div>
 
   <div id="gc-trust-manager-app" v-cloak>
     <active-trust-manager inline-template>
       <div>
 
         <why-this-matters-modal
-          :show-modal="visibleModal === 'why-this-matters-modal'"
+          :show-modal="modalShow && modalName === 'why-this-matters-modal'"
           @modal-dismissed="hideModal()">
         </why-this-matters-modal>
 
-        <brightid-verify-modal
-          :service="serviceDict.brightid"
-          :show-validation="visibleModal === 'brightid-modal'"
-          :brightid-uuid="serviceDict.brightid.uuid"
-          :validation-step="(serviceDict.brightid._status === 'not_connected' || serviceDict.brightid._status === 'unknown' ?
-            'connect-brightid' : (serviceDict.brightid._status !== 'verified' ?
-              'verify-brightid' : 'disconnect'
-            )
-          )"
+        <!-- <state-modal
+          :show-modal="modalShow" :type="modalName"
           @modal-dismissed="hideModal()">
-        </brightid-verify-modal>
-
-        <idena-verify-modal
-          :service="serviceDict.idena"
-          :show-validation="visibleModal === 'idena-modal'"
-          :validation-step="(serviceDict.idena.is_verified ?
-            'verified' : (serviceDict.idena.is_connected ?
-              'connected' : 'connect'
-            )
-          )"
-          @modal-dismissed="hideModal()">
-        </idena-verify-modal>
-
-        <sms-verify-modal
-          :service="serviceDict.sms"
-          :show-validation="visibleModal === 'sms-modal'"
-          :validation-step="(!serviceDict.sms.is_verified ? 'intro' : 'disconnect')"
-          @modal-dismissed="hideModal()">
-        </sms-verify-modal>
-
-        <twitter-verify-modal
-          :service="serviceDict.twitter"
-          :show-validation="visibleModal === 'twitter-modal'"
-          :validation-step="(!serviceDict.twitter.is_verified ? 'send-tweet' : 'disconnect')"
-          @modal-dismissed="hideModal()">
-        </twitter-verify-modal>
-
-        <poap-verify-modal
-          :service="serviceDict.poap"
-          :show-validation="visibleModal === 'poap-modal'"
-          :validation-step="(!serviceDict.poap.is_verified ? 'validate-address' : 'disconnect')"
-          :service="serviceDict.poap"
-          @modal-dismissed="hideModal()">
-        </poap-verify-modal>
-
-        <ens-verify-modal
-          :service="serviceDict.ens"
-          :show-validation="visibleModal === 'ens-modal'"
-          :validation-step="(!serviceDict.ens.is_verified ? 0 : 'disconnect')"
-          @modal-dismissed="hideModal()">
-        </ens-verify-modal>
-
-        <duniter-verify-modal
-          :show-validation="visibleModal === 'duniter-modal'"
-          @modal-dismissed="hideModal()">
-        </duniter-verify-modal>
-
-        <poh-verify-modal
-          :service="serviceDict.poh"
-          :show-validation="visibleModal === 'poh-modal'"
-          :validation-step="(!serviceDict.poh.is_verified ? 'validate-address' : 'disconnect')"
-          @modal-dismissed="hideModal()">
-        </poh-verify-modal>
-
-        <google-verify-modal
-          :service="serviceDict.google"
-          :show-validation="visibleModal === 'google-modal'"
-          :validation-step="(!serviceDict.google.is_verified ? 'connect' : 'disconnect')"
-          @modal-dismissed="hideModal()">
-        </google-verify-modal>
-
-        <facebook-verify-modal
-          :service="serviceDict.facebook"
-          :show-validation="visibleModal === 'facebook-modal'"
-          :validation-step="(!serviceDict.facebook.is_verified ? 'connect' : 'disconnect')"
-          @modal-dismissed="hideModal()">
-        </facebook-verify-modal>
-
-        {% if is_staff %}
-        <div class="row">
-          <div class="col-6 d-none d-lg-block col-xl-7"></div>
-          <div class="text-left position-relative col-12 col-lg-6 col-xl-5" style="padding: 5px; min-height: 115px;">
-            <img class="p-2 position-absolute left-0" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
-            <div style="padding-left: 100px;">
-              <strong class="pb-2 d-block">STAFF ONLY</strong> Take your TrustBonus with you across the web with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
-            </div>
-            <div class="text-right pt-2">
-              <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="bottom-0 btn btn-primary">Try It!</a>
-            </div>
-          </div>
-        </div>
-        <hr>
-        {% endif %}
+        </state-modal> -->
 
         <div class="bg-violet-300 text-white spacer-p-4 spacer-mt-5">
           <div class="row">
@@ -138,7 +22,12 @@
               <h2>Increase Your Impact Up to 150%</h2>
               <span class="font-smaller-1 line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
               <div class="row spacer-mt-2 font-smaller-1 line-height-2">
-                <div class="col-12 spacer-mt-2">
+                {% if show_round_banner %}
+                  <div class="col-12 col-lg-6 spacer-mt-2">
+                    <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[roundStartDate]] - [[roundEndDate]]</a>
+                  </div>
+                {% endif %}
+                <div class="col-12 col-lg-6 spacer-mt-2">
                   <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2"></i> Why this matters</span>
                 </div>
               </div>
@@ -149,75 +38,113 @@
           </div>
         </div>
 
-        <div class="row spacer-mt-6 text-grey-500 font-smaller-1">
-          <div class="col-12 col-lg-8 spacer-pb-3">
-            <h3>Trust Verification</h3>
-           <span class="line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
+        <div class="row spacer-mt-4 spacer-mt-lg-6">
+          <div class="col-12 col-lg-4 col-xl-6 d-flex spacer-pb-3">
+            <img class="w-100 my-auto" src={% static "v2/images/passport-landing-2.png" %} />
           </div>
-          <div class="col-12 col-lg-4 mt-2 m-lg-auto">
-            <div class="spacer-mb-2">Verification Level</div>
-            <div class="progress rounded-0" style="height: 0.4rem;">
-              <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trust_bonus}%`}" :aria-valuenow="`${100/150 * trust_bonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div class="spacer-mt-2 font-weight-bold">You'll receive [[trust_bonus]]% of 150% Match</div>
-          </div>
-        </div>
-        <div class="row font-smaller-1" v-for="i in Math.ceil(services.length / 3)">
-          <div class="col-12 col-lg-4 spacer-mt-5" v-for="service in services.slice((i - 1) * 3, i * 3)">
-            <div class="card rounded-0 spacer-p-3" style="height: 100%; min-height:300px;">
-              <div class="row">
-                <div class="col-9">
-                  <span class="font-bigger-2 text-primary">[[service.name]]</span>
-                </div>
-                <div class="col-3 text-right">
-                  <img v-if="service.icon_path" width="41" height="40" :src="[[service.icon_path]]"/>
-                  <span v-else >
-                    <i :class="[[service.icon_class]]" v-bind:style="service.icon_style"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="row spacer-mb-3">
-                <div class="col-12">
-                  <span class="text-grey-300">[[service.match_percent]]% match</span>
-                </div>
-              </div>
-              <div class="row mb-lg-4 my-auto my-lg-0">
-                <div class="col">
-                  <span class="text-grey-400 line-height-4 line-clamp-3">[[service.desc]]</span>
-                </div>
-              </div>
-              <div class="row mt-auto">
-                <div class="col-6 m-auto text-success" :class="(service.is_verified || service.status ? 'd-flex' : 'd-none d-lg-flex')">
-                  <span v-if="service.is_verified">
-                    <i class="far fa-check-circle"></i> <i>Verified</i>
-                  </span>
-                  <span v-if="service.status" style="color: orange;">
-                    <i class="fal fa-exclamation-circle"></i> <i>[[service.status]]</i>
-                  </span>
-                </div>
-                <div class="text-right" :class="(service.is_verified || service.status ? 'col-6' : 'col-12 col-lg-6')">
-                  <button v-if="!service.is_verified" class="btn btn-primary w-100 w-md-auto px-md-3" @click="showModal(service.ref + '-modal')">Verify</button>
-                  <div v-else>
-                    <button v-if="!service.alt_is_verified_btn" :disabled="service.disable_disconnect" class="btn btn-outline-primary" @click="showModal(service.ref + '-modal')">Disconnect</button>
-                    <a v-else :class="'btn ' + service.alt_is_verified_btn.type" :href="service.alt_is_verified_btn.location" target="_blank">[[service.alt_is_verified_btn.text]]</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div class="row spacer-my-6">
-          <div class="col-auto">
-            <i class="far fa-life-ring text-primary" style="font-size: 46px"></i>
-          </div>
-          <div class="col">
-              <h3>Need help verifying identity?</h3>
-              <span>Please contact the services directly for any questions or support in getting your identity confirmed.</span>
+          <div class="col-12 col-lg-8 col-xl-6 spacer-pb-3">
+
+            <h1>Trust Bonus</h1>
+            <span class="line-height-2">
+              Trust Bonus has received an upgrade! It's now powered by Gitcoin Passport, a decentralized identity verification application. Trust Bonus scores are calculated based on the identification stamps you complete.
+              <br/>
+              <br/>
+              Note: If you already have a Trust Bonus score, saving a new one will override your existing score. Be sure to collect all your existing stamps in your new Passport before saving a new score!
+            </span>
+
+            <div>
+
+              <ul class="list-unstyled mt-4 pb-2">
+                <!-- <i class="fa-regular fa-circle-check"></i> -->
+                <li class="d-flex border-top border-bottom py-3">
+                  <div :class="`gc-border-circle ${step === 1 && !passportVerified? 'gc-border-default' : 'gc-border-success'}`">
+                    <span v-if="step === 1 && !passportVerified" class="m-auto">1</span>
+                    <i v-else :class="`fa fa-check m-auto ${step > 1 || passportVerified ? 'gc-text-success' : 'gc-text-default'}`"></i>
+                  </div>
+                  <div class="px-2">
+                    <div :class="`pb-1 ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      <strong>Create</strong>
+                    </div>
+                    <div :class="` ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your proof of personhood and complete stamps.
+                    </div>
+                    <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
+                      Connect Passport
+                    </b-button>
+                    <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-2 my-auto">
+                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="d-flex border-bottom py-3">
+                  <div :class="`gc-border-circle ${step < 2 && !passportVerified ? 'gc-border-disabled' : step === 2 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">
+                    <span v-if="step <= 2 && !passportVerified" :class="`m-auto ${step > 2 ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`">2</span>
+                    <i v-else :class="`fa fa-check m-auto ${step > 2 || passportVerified ? 'gc-text-success' : step < 2 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
+                  </div>
+                  <div class="px-2">
+                    <div :class="`pb-1 ${(step < 2 && !passportVerified) ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      <strong>Score</strong>
+                    </div>
+                    <div :class="`${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
+                      Return to present your stamps to Gitcoin and receive a Trust Bonus score.
+                    </div>
+                    <b-button v-if="step === 2 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerRefresh()">
+                      Score Passport
+                    </b-button>
+                    <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
+                      Refresh Passport
+                    </b-button>
+                    <div v-if="step === 2 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-2 my-auto">
+                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="d-flex border-bottom py-3">
+                  <div :class="`gc-border-circle ${step < 3 && !passportVerified ? 'gc-border-disabled' : step === 3 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">
+                    <span v-if="step <= 3 && !passportVerified" :class="`m-auto ${step > 3 ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">3</span>
+                    <i v-else :class="`fa fa-check m-auto ${step >= 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
+                  </div>
+                  <div class="px-2">
+                    <div :class="`pb-1 ${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      <strong>Save</strong>
+                    </div>
+                    <div :class="`${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      Save your Trust Bonus score so it is used to calculate your matching amounts.
+                    </div>
+                    <b-button v-if="step === 3 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerSave()">
+                      Save Passport
+                    </b-button>
+                    <div v-if="step === 3 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-2 my-auto">
+                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="spacer-mb-2 font-weight-semibold">Trust Bonus Score</div>
+                <div class="progress rounded-0" style="height: 0.4rem;">
+                  <div class="progress-bar bg-secondary disabled" role="progressbar" :style="{width: `${!passport ? 0 : 100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match</div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
-
     </active-trust-manager>
 
 
