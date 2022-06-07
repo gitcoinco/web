@@ -49,7 +49,7 @@ git pull origin "$BRANCH"
 
 # deploy hooks
 echo "- install req"
-{ pip3 install --upgrade pip >> /dev/null; } 2>&1
+{ pip3 install --upgrade pip==20.0.2 >> /dev/null; } 2>&1
 { pip3 install -r requirements/prod.txt >> /dev/null; } 2>&1
 
 echo "- cleaning up pyc files"
