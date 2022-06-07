@@ -16,16 +16,16 @@ services:
       - .:/code
 
     working_dir: /code/app
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "high_priority,default,marketing,celery"]
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"]
 
   worker_2:
     <<: *worker
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "default,marketing"]
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"]
 
   worker_3:
     <<: *worker
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "high_priority,default,celery"]
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]
 
   worker_4:
     <<: *worker
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "default,celery"]
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]

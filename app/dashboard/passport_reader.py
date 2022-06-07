@@ -45,6 +45,7 @@ def get_did(address, network="1"):
     return f"did:pkh:eip155:{network}:{address}"
 
 def get_stream_ids(did, ids=[CERAMIC_GITCOIN_PASSPORT_STREAM_ID]):
+    # delay import as this is only available in celery envs
     import dag_cbor
 
     # encode the input genesis with cborg (Concise Binary Object Representation)

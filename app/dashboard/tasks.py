@@ -495,6 +495,7 @@ def calculate_trust_bonus(user_id, did, address):
     :return: None
     """
 
+    # delay import as this is only available in celery envs
     import didkit
 
     try:
