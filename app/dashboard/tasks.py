@@ -14,7 +14,6 @@ from django.db import transaction
 from django.http import HttpRequest
 from django.utils import timezone
 
-import didkit
 from app.services import RedisService
 from app.utils import get_location_from_ip
 from celery import app, group
@@ -495,6 +494,9 @@ def calculate_trust_bonus(user_id, did, address):
     :param did: the did for the passport
     :return: None
     """
+
+    # delay import as this is only available in celery envs
+    import didkit
 
     try:
         # Verify that this DID is not associated to any other profile.

@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  worker_1: &worker
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: '100m'
+        max-file: '10'
+      driver: json-file
+
+    # image: gitcoin/web:034f6cde3c
+    image: gitcoin/web:817ff194e7
+
+    volumes:
+      - .:/code
+
+    working_dir: /code/app
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"]
+
+  worker_2:
+    <<: *worker
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"]
+
+  worker_3:
+    <<: *worker
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]
+
+  worker_4:
+    <<: *worker
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]
