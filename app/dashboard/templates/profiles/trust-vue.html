@@ -67,7 +67,7 @@
                       <strong>Create</strong>
                     </div>
                     <div :class="` ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
-                      Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your passport.
+                      Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your proof of personhood and complete stamps.
                     </div>
                     <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
                       Connect Passport
@@ -90,7 +90,7 @@
                       <strong>Score</strong>
                     </div>
                     <div :class="`${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
-                      Complete more stamps and return to score your passport.
+                      Return to present your stamps to Gitcoin and receive a Trust Bonus score.
                     </div>
                     <b-button v-if="step === 2 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerRefresh()">
                       Score Passport
@@ -112,11 +112,11 @@
                     <i v-else :class="`fa fa-check m-auto ${step >= 3 || passportVerified ? 'gc-text-success' : step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`"></i>
                   </div>
                   <div class="px-2">
-                    <div :class="`pb-1 ${step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">
+                    <div :class="`pb-1 ${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
                       <strong>Save</strong>
                     </div>
-                    <div :class="`${step < 3 ? 'gc-text-disabled' : 'gc-text-default'}`">
-                      Your passport score is saved to Gitcoin.co.
+                    <div :class="`${step < 3 && !passportVerified ? 'gc-text-disabled' : 'gc-text-default'}`">
+                      Save your Trust Bonus score so it is used to calculate your matching amounts.
                     </div>
                     <b-button v-if="step === 3 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerSave()">
                       Save Passport
