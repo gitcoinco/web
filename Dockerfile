@@ -43,7 +43,7 @@ RUN mkdir -p /usr/share/GeoIP/ && \
     mv GeoLite2-Country_20200128/*.mmdb /usr/share/GeoIP/
 
 # Upgrade package essentials.
-RUN pip3 install --upgrade pip==20.0.2 setuptools wheel dumb-init pipenv
+RUN pip3 install --upgrade pip==22.1.2 setuptools wheel dumb-init pipenv
 
 # Install pip packages
 COPY requirements/ /code/

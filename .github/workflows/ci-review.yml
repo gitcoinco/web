@@ -72,7 +72,7 @@ jobs:
         run: |
           echo "PYTHONPATH=/home/runner/work/web/web/app" >> $GITHUB_ENV
           cp app/app/ci.env app/app/.env
-          pip install pip==20.0.2 setuptools wheel --upgrade
+          pip install pip==22.1.2 setuptools wheel --upgrade
 
       - name: Fetch and Install GeoIP database files
         run: |
@@ -122,7 +122,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
@@ -176,7 +176,7 @@ jobs:
           cache-dependency-path: infra/review-env/package-lock.json
 
       # Install pulumi dependencies
-      # Select the new pulumi stack 
+      # Select the new pulumi stack
       - run: |
           npm install
           pulumi stack select -c gitcoin/review-env/review
@@ -196,7 +196,7 @@ jobs:
           work-dir: infra/review-env
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_CONFIG_PASSPHRASE: 
+          PULUMI_CONFIG_PASSPHRASE:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -212,7 +212,7 @@ jobs:
           cache-dependency-path: infra/review-pr/package-lock.json
 
       # Install pulumi dependencies
-      # Select the new pulumi stack 
+      # Select the new pulumi stack
       - run: |
           npm install
           pulumi stack select -c ${{ steps.compute.outputs.pulumi_stack }}
@@ -262,7 +262,7 @@ jobs:
 
       - name: Start migration task
         run: |
-          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi-env.outputs.vpcPrivateSubnetId1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupForTaskDefinition }}],assignPublicIp=ENABLED}" 
+          aws ecs run-task --launch-type FARGATE --task-definition ${{ steps.pulumi.outputs.taskDefinition }} --cluster ${{ steps.pulumi.outputs.clusterId }} --network-configuration "awsvpcConfiguration={subnets=[${{ steps.pulumi-env.outputs.vpcPrivateSubnetId1 }}],securityGroups=[${{ steps.pulumi.outputs.securityGroupForTaskDefinition }}],assignPublicIp=ENABLED}"
         env:
           # We need AWS_EC2_METADATA_DISABLED, because: https://github.com/actions/checkout/issues/440
           AWS_EC2_METADATA_DISABLED: true
@@ -306,4 +306,4 @@ jobs:
               - [https://${{ steps.compute.outputs.review_domain }}](https://${{ steps.compute.outputs.review_domain }}) \n\
               `
             })
-          
+
