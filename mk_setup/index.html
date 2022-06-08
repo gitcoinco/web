@@ -2493,7 +2493,7 @@ Check out the <a href="https://docs.docker.com/compose/reference/">Docker Compos
 <h2 id="create-django-admin">Create Django Admin</h2>
 <p>The <a href="#initial-test-data">initial test data</a> comes with a pre-configured
 superuser. You can also create a new one using the following command:</p>
-<pre><code class="shell">docker-compose exec web python3 app/manage.py createsuperuser
+<pre><code class="shell">docker-compose exec web python3.7 app/manage.py createsuperuser
 </code></pre>
 
 <p>Make sure that the services are already running. See <a href="#startup-server">Startup server</a> for an example.</p>
@@ -2529,7 +2529,7 @@ contract Token is ERC20 {
 
 <h2 id="optional-import-bounty-data-from-web3-to-your-database">Optional: Import bounty data from web3 to your database</h2>
 <p>This can be useful if you'd like data to test with shared data:</p>
-<pre><code class="shell">docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
+<pre><code class="shell">docker-compose exec web python3.7 app/manage.py sync_geth rinkeby -20 99999999999
 </code></pre>
 
 <p><strong>Note:</strong> using the <code>sync_geth</code> command can potentially break some of the <a href="#initial-test-data">Initial test data</a> fixtures.</p>
@@ -2552,7 +2552,7 @@ contract Token is ERC20 {
 
 <h4 id="create-superuser">Create superuser</h4>
 <p><code>Q: How can I access the django administration login?</code></p>
-<pre><code class="shell">make superuser # docker-compose exec web python3 app/manage.py createsuperuser
+<pre><code class="shell">make superuser # docker-compose exec web python3.7 app/manage.py createsuperuser
 open http://localhost:8000/_administration
 </code></pre>
 
@@ -2613,8 +2613,8 @@ update_stable                  Update the stable branch with master.
 
 <p>Copy and paste</p>
 <pre><code class="json">{
-    &quot;experimental&quot;: true 
-} 
+    &quot;experimental&quot;: true
+}
 </code></pre>
 
 <h4 id="on-chain-activities">On-chain activities</h4>
@@ -2632,7 +2632,7 @@ Alternatively, you can use the local <code>ganache-cli</code> test rpc network t
 <p>Add <code>import ipdb;ipdb.set_trace()</code> to the method you want to inspect, you then run: <code>make get_ipdb_shell</code> to drop into the active shell for inspection.</p>
 <h4 id="access-django-shell">Access Django Shell</h4>
 <p><code>Q: How can I access the Django shell, similar to: python manage.py shell ?</code></p>
-<p>Simply run: <code>make get_django_shell</code> or <code>docker-compose exec web python3 app/manage.py shell</code></p>
+<p>Simply run: <code>make get_django_shell</code> or <code>docker-compose exec web python3.7 app/manage.py shell</code></p>
 <h4 id="access-bash">Access BASH</h4>
 <p><code>Q: I want to inspect or manipulate the container via bash.  How can I access the root shell of the container?</code></p>
 <p>Run: <code>docker-compose exec web bash</code></p>
