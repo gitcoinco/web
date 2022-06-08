@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from pprint import pprint
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -26,6 +25,7 @@ from django.utils import timezone
 
 import requests
 from grants.models import Grant
+import json
 
 import time
 from web3 import Web3
@@ -36,6 +36,15 @@ class Command(BaseCommand):
     help = 'pulls data from https://twitter.com/austingriffith/status/1529825114597908484 and inserts into db'
 
     def handle(self, *args, **options):
+
+        class DecimalEncoder(json.JSONEncoder):
+            def default(self, obj):
+                # 👇️ if passed in object is instance of Decimal
+                # convert it to a string
+                if isinstance(obj, Decimal):
+                    return str(obj)
+                # 👇️ otherwise use the default behavior
+                return json.JSONEncoder.default(self, obj)
 
         def run_query(q, url):
             request = requests.post(url,
@@ -133,7 +142,7 @@ class Command(BaseCommand):
                 print("Grant ID: " + str(grantId) + " Voting Power: " + str(grantVotingPower[grantId]))
             try:
                 grant = Grant.objects.get(pk=grantId)
-                grant.metadata['cv'] = grantVotingPower[grantId]
+                grant.metadata['cv'] = json.dumps(grantVotingPower[grantId], cls=DecimalEncoder)
                 grant.save()
             except Exception as e:
                 print("Error:", e)
