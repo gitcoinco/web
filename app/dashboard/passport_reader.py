@@ -34,6 +34,9 @@ SCORER_SERVICE_WEIGHTS = [
     }, {
         'ref': f'{TRUSTED_IAM_ISSUER}#Facebook',
         'match_percent': 15,
+    }, {
+        'ref': f'{TRUSTED_IAM_ISSUER}#Brightid',
+        'match_percent': 50,
     }
 ]
 
