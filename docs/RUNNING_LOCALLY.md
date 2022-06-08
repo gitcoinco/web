@@ -4,7 +4,7 @@
 
 ```shell
 
-~/$ brew install libmaxminddb automake pkg-config libtool libffi gmp python3 openssl libvips libvips-dev libvips-tools
+~/$ brew install libmaxminddb automake pkg-config libtool libffi gmp python3.7 openssl libvips libvips-dev libvips-tools
 ~/$ git clone https://github.com/gitcoinco/web.git
 ~/$ cd web/app
 ~/web/app$ cp app/local.env app/.env

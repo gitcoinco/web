@@ -51,7 +51,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONIOENCODING=utf8
       - PYTHONPATH=/code/app
-      - PYTHONPATH=/usr/bin/python3
+      - PYTHONPATH=/usr/bin/python3.7
     env_file:
       - app/app/.env
     build:

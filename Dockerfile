@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Define packages to be installed
-ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3-dev libsecp256k1-dev libsodium-dev python3-pip"
+ARG PACKAGES="libpq-dev libxml2 libxslt1-dev libfreetype6 libjpeg-dev libmaxminddb-dev bash git tar gzip libmagic-dev build-essential python-dev libssl-dev python3.7-dev python3.7 libsecp256k1-dev libsodium-dev python3.7-distutils"
 ARG BUILD_DEPS="gcc g++ curl postgresql libxml2-dev libxslt-dev libfreetype6 libffi-dev libjpeg-dev autoconf automake libtool make dos2unix libvips libvips-dev"
 ARG CHROME_DEPS="fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libcairo2 libcups2 libcurl3-gnutls libdrm2 libexpat1 libgbm1 libglib2.0-0 libnspr4 libgtk-3-0 libpango-1.0-0 libx11-6 libxcb1 libxcomposite1 libxdamage1 libxext6 libxfixes3 libxkbcommon0 libxrandr2 libxshmfence1 xdg-utils"
 ARG CYPRESS_DEPS="libgtk2.0-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libxtst6 xauth xvfb"
@@ -18,6 +18,11 @@ RUN apt-get update
 RUN apt-get install -y $PACKAGES
 RUN apt-get update --fix-missing
 RUN apt-get install -y $BUILD_DEPS --fix-missing
+
+
+RUN curl https://bootstrap.pypa.io/get-pip.py > /tmp/get-pip.py
+RUN python3.7 /tmp/get-pip.py
+RUN rm /tmp/get-pip.py
 
 # Install google chrome for cypress testing
 WORKDIR /usr/src
