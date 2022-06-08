@@ -171,7 +171,7 @@ The [initial test data](#initial-test-data) comes with a pre-configured
 superuser. You can also create a new one using the following command:
 
 ```shell
-docker-compose exec web python3 app/manage.py createsuperuser
+docker-compose exec web python3.7 app/manage.py createsuperuser
 ```
 
 Make sure that the services are already running. See [Startup server](#startup-server) for an example.
@@ -213,7 +213,7 @@ contract Token is ERC20 {
 This can be useful if you'd like data to test with shared data:
 
 ```shell
-docker-compose exec web python3 app/manage.py sync_geth rinkeby -20 99999999999
+docker-compose exec web python3.7 app/manage.py sync_geth rinkeby -20 99999999999
 ```
 
 **Note:** using the `sync_geth` command can potentially break some of the [Initial test data](#initial-test-data) fixtures.
@@ -251,7 +251,7 @@ make fresh # docker-compose down -v; docker-compose up -d --build;
 `Q: How can I access the django administration login?`
 
 ```shell
-make superuser # docker-compose exec web python3 app/manage.py createsuperuser
+make superuser # docker-compose exec web python3.7 app/manage.py createsuperuser
 open http://localhost:8000/_administration
 ```
 
@@ -328,8 +328,8 @@ Copy and paste
 
 ```json
 {
-    "experimental": true 
-} 
+    "experimental": true
+}
 ```
 
 #### On-chain activities
@@ -361,7 +361,7 @@ Add `import ipdb;ipdb.set_trace()` to the method you want to inspect, you then r
 
 `Q: How can I access the Django shell, similar to: python manage.py shell ?`
 
-Simply run: `make get_django_shell` or `docker-compose exec web python3 app/manage.py shell`
+Simply run: `make get_django_shell` or `docker-compose exec web python3.7 app/manage.py shell`
 
 #### Access BASH
 

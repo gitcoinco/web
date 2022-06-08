@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.7
 """Define the Django main entry.
 
 Copyright (C) 2021 Gitcoin Core

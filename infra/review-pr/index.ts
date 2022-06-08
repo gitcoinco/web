@@ -194,7 +194,7 @@ const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
 export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.bucketRegionalDomainName}/`;
-// export const bucketWebURL = "https://gitcoin-review-10618-c00aa99.s3.us-west-2.amazonaws.com/"; 
+// export const bucketWebURL = "https://gitcoin-review-10618-c00aa99.s3.us-west-2.amazonaws.com/";
 
 //////////////////////////////////////////////////////////////
 // Load VPC for review environments
@@ -726,7 +726,7 @@ const service = new awsx.ecs.FargateService(`gitcoin-review-${environmentName}-a
                 memory: 1024,
                 environment: environment,
                 links: [],
-                command: ["python3", "manage.py", "celery"]
+                command: ["python3.7", "manage.py", "celery"]
             }
         },
     },
