@@ -1235,10 +1235,10 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           project_length: bounty.project_length,
           experience_level: bounty.experience_level,
           never_expires: bounty.never_expires,
-          reserved_for_user: {
+          reserved_for_user: bounty.bounty_reserved_for_user ? {
             text: bounty.bounty_reserved_for_user.handle,
             avatar_url: bounty.bounty_reserved_for_user.avatar_url
-          },
+          } : { text: '', avatar_url: ''},
           richDescriptionContent: bounty.custom_issue_description ? JSON.parse(bounty.custom_issue_description) : null,
           richDescriptionText: bounty.custom_issue_description ? bounty.custom_issue_description : ''
         },
