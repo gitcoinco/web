@@ -351,8 +351,10 @@ a.plain-link {
   display: inline-flex;
   justify-content: center;
 
-  width: 25px;
-  height: 25px;
+  min-width: 25px;
+  max-width: 25px;
+  min-height: 25px;
+  min-height: 25px;
 
   & > span {
     line-height: 1.7;
