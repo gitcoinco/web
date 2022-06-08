@@ -955,6 +955,10 @@ class Grant(SuperModel):
 
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
+        team_members = serializers.serialize('json', self.team_members.all(),
+                        fields=['handle', 'url', 'profile__lazy_avatar_url']
+                    )
+
         result = {
                 'id': self.id,
                 'active': self.active,
@@ -975,6 +979,7 @@ class Grant(SuperModel):
                     'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
+                'team_members': json.loads(team_members),
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
                 'clr_prediction_curve': self.clr_prediction_curve,
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
@@ -1022,9 +1027,6 @@ class Grant(SuperModel):
 
         if is_detail:
             clr_matches = CLRMatch.objects.filter(grant=self)
-            team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__lazy_avatar_url']
-                        )
 
             grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
 
@@ -1039,7 +1041,6 @@ class Grant(SuperModel):
             result['has_pending_claim'] = has_pending_claim
             result['has_claims_in_review'] = has_claims_in_review
             result['has_claim_history'] = has_claim_history
-            result['team_members'] = json.loads(team_members)
             result['grant_tags'] = json.loads(grant_tags)
 
         return result
