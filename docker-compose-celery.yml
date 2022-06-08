@@ -19,16 +19,17 @@ services:
       - ./app/app/google_analytics_private_key.pem:/code/app/app/google_analytics_private_key.pem
 
     working_dir: /code/app
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"]
+    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"]
 
-  worker_2:
-    <<: *worker
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"]
+  # worker_2:
+  #   <<: *worker
+  #   command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"]
 
-  worker_3:
-    <<: *worker
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]
+  # worker_3:
+  #   <<: *worker
+  #   command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]
 
-  worker_4:
-    <<: *worker
-    command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]
+  # worker_4:
+  #   <<: *worker
+  #   command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,celery"]
+
