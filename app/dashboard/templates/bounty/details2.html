@@ -202,14 +202,14 @@
               </div>
             </div>
 
-            <div v-if="bounty.contact_details && bounty.contact_details.length > 0" class="mt-3">
+            <div v-if="bounty.contact_details && bounty.contact_details.length > 0" class="row mt-3">
               <span class="bounty-info-heading">{% trans "Contacts" %}</span>
 
-              <div id="bounty-info-row" class="row font-body bounty-info">
-                <div class="col-12 col-sm-4 col-md-2 d-flex mt-1 text-nowrap" v-for="contact in bounty.contact_details">                
-                  <span v-if="contact.type=='Discord'"><i class="fab fa-discord mr-1"></i>[[contact.value]]</span>
-                  <span v-if="contact.type=='Email'"><i class="fal fa-envelope mr-1"></i>[[contact.value]]</span>
-                  <span v-if="contact.type=='Telegram'"><i class="fab fa-telegram-plane mr-1"></i>[[contact.value]]</span>
+              <div id="bounty-info-row" class="d-flex flex-wrap font-body bounty-info">
+                <div class="d-flex mt-1 text-nowrap" v-for="contact in bounty.contact_details">                
+                  <span v-if="contact.type=='Discord'" class="mr-2"><i class="fab fa-discord mr-1"></i>[[contact.value]]</span>
+                  <span v-if="contact.type=='Email'" class="mr-2"><i class="fal fa-envelope mr-1"></i>[[contact.value]]</span>
+                  <span v-if="contact.type=='Telegram'" class="mr-2"><i class="fab fa-telegram-plane mr-1"></i>[[contact.value]]</span>
                 </div>              
               </div>
             </div>
