@@ -19,17 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
+import json
+import time
+from decimal import *
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import requests
 from grants.models import Grant
-import json
-
-import time
 from web3 import Web3
-from decimal import *
+
 
 class Command(BaseCommand):
 

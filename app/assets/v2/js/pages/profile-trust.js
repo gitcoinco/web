@@ -106,7 +106,7 @@ Vue.component('active-trust-manager', {
         this.step = 3;
         // store passport into state after verifying content to avoid displaying the scoring until ready
         this.passport = this.rawPassport;
-        console.log('geri this.passport', this.passport);
+        console.log('this.passport', this.passport);
       });
     },
     async passportActionHandlerSave() {
