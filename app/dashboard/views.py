@@ -3087,7 +3087,7 @@ def verify_passport(request, handle):
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     sig_is_valid = address.lower() == signer.lower()
 
-    logger.error("TODO: Verify Passport - %s == %s", address, did)
+    logger.info("Verify Passport - %s == %s", address, did)
 
     # invalid sig error
     if not sig_is_valid:
