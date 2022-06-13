@@ -38,14 +38,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        class DecimalEncoder(json.JSONEncoder):
-            def default(self, obj):
-                # 👇️ if passed in object is instance of Decimal
-                # convert it to a string
-                if isinstance(obj, Decimal):
-                    return str(obj)
-                # 👇️ otherwise use the default behavior
-                return json.JSONEncoder.default(self, obj)
 
         def run_query(q, url):
             request = requests.post(url,
@@ -143,7 +135,7 @@ class Command(BaseCommand):
                 print("Grant ID: " + str(grantId) + " Voting Power: " + str(grantVotingPower[grantId]))
             try:
                 grant = Grant.objects.get(pk=grantId)
-                grant.metadata['cv'] = json.dumps(grantVotingPower[grantId], cls=DecimalEncoder)
+                grant.metadata['cv'] = round(grantVotingPower[grantId])
                 grant.save()
             except Exception as e:
                 print("Error:", e)
