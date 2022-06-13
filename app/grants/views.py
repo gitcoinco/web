@@ -3539,7 +3539,8 @@ class GrantSubmissionView(View):
                 response['message'] = 'error: invalid logo file'
                 return JsonResponse(response)
 
-        metdata = json.loads(request.POST.get('receipt', '{}'))
+        metadata = json.loads(request.POST.get('receipt', '{}'))
+        metadata['cv'] = 0
         team_members = request.POST.getlist('team_members[]')
         reference_url = request.POST.get('reference_url', '')
         github_project_url = request.POST.get('github_project_url', None)
@@ -3581,7 +3582,7 @@ class GrantSubmissionView(View):
             'network': network,
             'twitter_handle_1': twitter_handle_1,
             'twitter_handle_2': twitter_handle_2,
-            'metadata': metdata,
+            'metadata': metadata,
             'last_update': timezone.now(),
             'admin_profile': profile,
             'logo': logo,
