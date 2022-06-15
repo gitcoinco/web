@@ -190,52 +190,61 @@ Vue.component('active-trust-manager', {
       // enter loading
       this.loading = true;
 
-      // check for a passport and then its validity
-      if (passport) {
-        // check if the stamps are unique to this user...
-        const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
-          'did': this.did,
-          'stamp_hashes': passport.stamps.map((stamp) => {
-            return stamp.credential.credentialSubject.hash;
-          })
-        });
+      // reset errors
+      this.verificationError = undefined;
 
-        // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
-        await Promise.all(passport.stamps.map(async(stamp) => {
-          if (stamp && Object.keys(stamp).length > 0) {
-            // set the service against provider and issuer
-            const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
-            // validate the contents of the stamp collection
-            const expiryCheck = new Date(stamp.credential.expirationDate) > new Date();
-            const issuerCheck = stamp.credential.issuer === this.IAMIssuer;
-            const hashCheck = stampHashes.checks[stamp.credential.credentialSubject.hash] === true;
-            const providerCheck = stamp.provider === stamp.credential.credentialSubject.provider;
-            const ownerCheck = selectedAccount.toLowerCase() == stamp.credential.credentialSubject.id.replace('did:pkh:eip155:1:', '').toLowerCase();
+      try {
 
-            // check exists and has valid expiry / issuer / hash / owner...
-            if (this.serviceDict[serviceDictId] && stamp.credential && expiryCheck && issuerCheck && hashCheck && providerCheck && ownerCheck) {
-              // verify with DIDKits verifyCredential()
-              const verified = JSON.parse(await this.DIDKit.verifyCredential(
-                JSON.stringify(stamp.credential),
-                `{"proofPurpose":"${stamp.credential.proof.proofPurpose}"}`
-              ));
+        // check for a passport and then its validity
+        if (passport) {
+          // check if the stamps are unique to this user...
+          const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
+            'did': this.did,
+            'stamp_hashes': passport.stamps.map((stamp) => {
+              return stamp.credential.credentialSubject.hash;
+            })
+          });
 
-              // if no errors then this is a valid VerifiableCredential issued by the known issuer and is unique to our store
-              this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0;
+          // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
+          await Promise.all(passport.stamps.map(async(stamp) => {
+            if (stamp && Object.keys(stamp).length > 0) {
+              // set the service against provider and issuer
+              const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
+              // validate the contents of the stamp collection
+              const expiryCheck = new Date(stamp.credential.expirationDate) > new Date();
+              const issuerCheck = stamp.credential.issuer === this.IAMIssuer;
+              const hashCheck = stampHashes.checks[stamp.credential.credentialSubject.hash] === true;
+              const providerCheck = stamp.provider === stamp.credential.credentialSubject.provider;
+              const ownerCheck = selectedAccount.toLowerCase() == stamp.credential.credentialSubject.id.replace('did:pkh:eip155:1:', '').toLowerCase();
+
+              // check exists and has valid expiry / issuer / hash / owner...
+              if (this.serviceDict[serviceDictId] && stamp.credential && expiryCheck && issuerCheck && hashCheck && providerCheck && ownerCheck) {
+                // verify with DIDKits verifyCredential()
+                const verified = JSON.parse(await this.DIDKit.verifyCredential(
+                  JSON.stringify(stamp.credential),
+                  `{"proofPurpose":"${stamp.credential.proof.proofPurpose}"}`
+                ));
+
+                // if no errors then this is a valid VerifiableCredential issued by the known issuer and is unique to our store
+                this.serviceDict[serviceDictId].is_verified = verified.errors.length === 0;
+              }
+              // collect array of true/false to check validity of every issued stamp (if stamp isn't recognised then it should be ignored (always true))
+              return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
             }
-            // collect array of true/false to check validity of every issued stamp (if stamp isn't recognised then it should be ignored (always true))
-            return !this.serviceDict[serviceDictId] ? true : this.serviceDict[serviceDictId].is_verified;
-          }
-        }));
+          }));
 
-        // set the new trustBonus score
-        this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
-          return (service.is_verified ? service.match_percent : 0) + total;
-        }, 50));
+          // set the new trustBonus score
+          this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
+            return (service.is_verified ? service.match_percent : 0) + total;
+          }, 50));
+        }
+      } catch (error) {
+        console.error('Error checking passport: ', error);
+        this.verificationError = 'Oh, we had a technical error while scoring. Please give it another try.';
+        throw error;
+      } finally {
+        this.loading = false;
       }
-
-      // stop loading
-      this.loading = false;
     },
     async savePassport() {
       // enter loading
