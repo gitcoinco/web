@@ -492,13 +492,13 @@ def bsci_script(csv: str) -> tuple:
                                                         labels_by_evaluation)))
 
         # Assign final `is_sybil` markings according to a priorization criteria
-        df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score
+        df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score > EVAL_THRESHOLD
         df.loc[labels_by_evaluation, 'label'] = "Human Evaluation"
-
-        df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score
+        
+        df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score > HEURISTIC_THRESHOLD
         df.loc[labels_by_heuristic, 'label'] = "Heuristics"
-
-        df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score
+        
+        df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score > ML_THRESHOLD
         df.loc[labels_by_prediction, 'label'] = "ML Prediction"
 
         # Generate dict records
