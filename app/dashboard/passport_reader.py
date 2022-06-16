@@ -84,7 +84,7 @@ def get_stream_ids(did, ids=[CERAMIC_GITCOIN_PASSPORT_STREAM_ID]):
 
 def get_passport(did="", stream_ids=[]):
     # get streamIds if non are provided
-    stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [CERAMIC_PASSPORT_STREAM_ID])
+    stream_ids = stream_ids if len(stream_ids) > 0 else get_stream_ids(did, [CERAMIC_GITCOIN_PASSPORT_STREAM_ID])
 
     # attempt to pull content
     passport = get_stamps(get_passport_stream(stream_ids))
