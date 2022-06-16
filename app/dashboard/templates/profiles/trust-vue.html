@@ -69,13 +69,18 @@
                     <div :class="` ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
                       Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your proof of personhood and complete stamps.
                     </div>
-                    <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
-                      Connect Passport
-                    </b-button>
-                    <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
-                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
-                      <div class="d-inline ml-2 my-auto">
-                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                    <div class="d-flex flex-row">
+                      <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
+                        Connect Passport
+                      </b-button>
+                      <div v-if="pyVerificationError" class="ml-2 mt-3 py-2 border rounded button btn-lg">
+                        Validation failed
+                      </div>
+                      <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                        <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                        <div class="d-inline ml-2 my-auto">
+                          <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -99,7 +104,7 @@
                       <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
                         Refresh Passport
                       </b-button>
-                      <div v-if="trustBonusStatus !== 'saved'" class="ml-2 mt-3 py-2 border rounded button btn-lg">
+                      <div v-if="trustBonusStatus === 'pending_celery'" class="ml-2 mt-3 py-2 border rounded button btn-lg">
                         <div class="spinner-border spinner-border-sm"></div>
                         Validating Passport ...
                       </div>
