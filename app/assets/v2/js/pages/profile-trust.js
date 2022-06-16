@@ -28,7 +28,7 @@ Vue.component('active-trust-manager', {
       did: undefined,
       step: 1,
       passport: document.is_passport_connected ? {} : undefined,
-      passportVerified: document.is_passport_connected && document.trust_bonus_status.indexOf("Error:") === -1,
+      passportVerified: document.is_passport_connected && document.trust_bonus_status.indexOf('Error:') === -1,
       passportUrl: 'https://passport.gitcoin.co/',
       rawPassport: undefined,
       trustBonus: (document.trust_bonus * 100) || 50,
@@ -47,7 +47,7 @@ Vue.component('active-trust-manager', {
   },
   async mounted() {
     // check for initial error state
-    this.pyVerificationError = this.trustBonusStatus.indexOf("Error:") !== -1;
+    this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
 
     // await DIDKits bindings
     this.DIDKit = (await DIDKit);
@@ -144,7 +144,7 @@ Vue.component('active-trust-manager', {
 
         $.when(getTrustBonusRequest).then(response => {
           this.trustBonusStatus = response.passport_trust_bonus_status;
-          this.pyVerificationError = this.trustBonusStatus.indexOf("Error:") !== -1;
+          this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
 
           if (response.passport_trust_bonus_status === 'pending_celery') {
             _refreshTrustBonus();
