@@ -625,6 +625,6 @@ def calculate_trust_bonus(user_id, did, address):
         logger.error("Error calculating trust bonus score!", exc_info=True)
         profile = Profile.objects.get(user_id=user_id)
         profile.passport_trust_bonus = profile.passport_trust_bonus or 0.5
-        profile.passport_trust_bonus_status = f"Error: {e}"
+        profile.passport_trust_bonus_status = f"Error: {e}"[:255]
         profile.passport_trust_bonus_last_updated = timezone.now()
         profile.save()
