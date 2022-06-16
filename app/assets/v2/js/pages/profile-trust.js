@@ -28,7 +28,7 @@ Vue.component('active-trust-manager', {
       did: undefined,
       step: 1,
       passport: document.is_passport_connected ? {} : undefined,
-      passportVerified: document.is_passport_connected,
+      passportVerified: document.is_passport_connected && document.trust_bonus_status.indexOf("Error:") === -1,
       passportUrl: 'https://passport.gitcoin.co/',
       rawPassport: undefined,
       trustBonus: (document.trust_bonus * 100) || 50,
@@ -41,10 +41,14 @@ Vue.component('active-trust-manager', {
       roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
       modalShow: false,
-      modalName: false
+      modalName: false,
+      pyVerificationError: false
     };
   },
   async mounted() {
+    // check for initial error state
+    this.pyVerificationError = this.trustBonusStatus.indexOf("Error:") !== -1;
+
     // await DIDKits bindings
     this.DIDKit = (await DIDKit);
 
@@ -52,13 +56,17 @@ Vue.component('active-trust-manager', {
     this.visitGitcoinPassport = `</br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
 
     // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
-    document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassport(true));
+    document.addEventListener('dataWalletReady', () => ((!this.pyVerificationError && !this.passportVerified) || this.loading) && this.connectPassport(true));
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
+
     // start watching for trust bonus status updates, in case the calculation is still pending
     console.log('geri checking this.trustBonusStatus', this.trustBonusStatus);
     if (this.trustBonusStatus === 'pending_celery') {
       this.refreshTrustBonus();
+    } else if (this.pyVerificationError) {
+      // clear all state
+      this.reset(true);
     }
   },
   computed: {
@@ -136,6 +144,7 @@ Vue.component('active-trust-manager', {
 
         $.when(getTrustBonusRequest).then(response => {
           this.trustBonusStatus = response.passport_trust_bonus_status;
+          this.pyVerificationError = this.trustBonusStatus.indexOf("Error:") !== -1;
 
           if (response.passport_trust_bonus_status === 'pending_celery') {
             _refreshTrustBonus();
@@ -144,7 +153,12 @@ Vue.component('active-trust-manager', {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
           }
-
+          // check for error state
+          if (this.pyVerificationError) {
+            this.step = 1;
+            // clear all state
+            this.reset(true);
+          }
         }).catch((err) => {
           _refreshTrustBonus();
         });
@@ -200,6 +214,9 @@ Vue.component('active-trust-manager', {
 
       // if loaded then the user has a ceramicAccount
       if (streams && Object.keys(streams).length > 0) {
+        // reset py error
+        this.pyVerificationError = false;
+
         // get the selectedAccounts ceramic DID
         this.did = genesis.did;
 
@@ -332,7 +349,7 @@ Vue.component('active-trust-manager', {
             // notify success (temp)
             // _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
             this.saveSuccessMsg = 'Your Passport has been submitted.';
-            this.trustBonusStatus = 'refresh-pending';
+            this.trustBonusStatus = 'pending_celery';
             this.refreshTrustBonus();
           }
         }

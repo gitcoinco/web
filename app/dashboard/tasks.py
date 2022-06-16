@@ -503,32 +503,28 @@ def calculate_trust_bonus(user_id, did, address):
 
         # Duplicate DID
         if len(duplicates) > 0:
-            logger.error("The DID '%s' is already associate with another users profile (checked for user '%s')", did, user_id)
-            return
+            raise Exception(f"The DID '{did}' is already associate with another users profile.")
 
         # Pull streamIds from Ceramic Account associated with DID
         stream_ids = get_stream_ids(did)
 
         # No Ceramic Account found for user
         if not stream_ids:
-            logger.error("No Ceramic Account found for '%s'", did)
-            return
+            raise Exception(f"No Ceramic Account found for '{did}'")
 
         # check account against did
         is_owner = did.lower() == f"did:pkh:eip155:1:{address.lower()}"
 
         # Invalid owner
         if not is_owner:
-            logger.error("Bad owner when checking did '%s'", did)
-            return
+            raise Exception(f"Bad owner when checking did '{did}'")
 
         # Retrieve DIDs Passport from Ceramic
         passport = get_passport(stream_ids=stream_ids)
 
         # No Passport discovered
         if not passport:
-            logger.error("No Passport discovered for '%s'", did)
-            return
+            raise Exception(f"No Passport discovered for '{did}'")
 
         # Build a dict like
         #    {
@@ -623,5 +619,12 @@ def calculate_trust_bonus(user_id, did, address):
         profile.save()
 
     except Exception as e:
+        # Log the error
+        logger.error(e)
         # We expect this verification to throw
         logger.error("Error calculating trust bonus score!", exc_info=True)
+        profile = Profile.objects.get(user_id=user_id)
+        profile.passport_trust_bonus = profile.passport_trust_bonus or 0.5
+        profile.passport_trust_bonus_status = f"Error: {e}"
+        profile.passport_trust_bonus_last_updated = timezone.now()
+        profile.save()
