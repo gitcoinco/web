@@ -2895,7 +2895,9 @@ def get_profile_tab(request, profile, tab, prev_context):
             # gets passport_trust_bonus || trust_bonus
             context['trust_bonus'] = profile.final_trust_bonus
             # this score will be displayed on first load if the passport is connected
-            context['passport_trust_bonus']  = profile.passport_trust_bonus if profile.passport_trust_bonus is not None else 'null'
+            context['passport_trust_bonus'] = profile.passport_trust_bonus
+            context['passport_trust_bonus_status'] = profile.passport_trust_bonus_status
+            context['passport_trust_bonus_last_updated'] = profile.passport_trust_bonus_last_updated.isoformat() if profile.passport_trust_bonus_last_updated else None
 
             # dump the full passport into the context
             try:
@@ -3068,6 +3070,19 @@ def check_passport_stamps(request, handle):
 
     return JsonResponse({
         'checks': stamps
+    })
+
+
+@login_required
+@require_GET
+def get_passport_trust_bonus(request, handle):
+    user = request.user
+    profile = user.profile
+
+    return JsonResponse({
+        "passport_trust_bonus": profile.passport_trust_bonus,
+        "passport_trust_bonus_status": profile.passport_trust_bonus_status,
+        "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated
     })
 
 
