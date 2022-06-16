@@ -92,12 +92,18 @@
                     <div :class="`${(step < 2 && !passportVerified)? 'gc-text-disabled' : 'gc-text-default'}`">
                       Return to present your stamps to Gitcoin and receive a Trust Bonus score.
                     </div>
-                    <b-button v-if="step === 2 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerRefresh()">
-                      Score Passport
-                    </b-button>
-                    <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
-                      Refresh Passport
-                    </b-button>
+                    <div class="d-flex flex-row">
+                      <b-button v-if="step === 2 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerRefresh()">
+                        Score Passport
+                      </b-button>
+                      <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
+                        Refresh Passport
+                      </b-button>
+                      <div v-if="trustBonusStatus !== 'saved'" class="ml-2 mt-3 py-2 border rounded button btn-lg">
+                        <div class="spinner-border spinner-border-sm"></div>
+                        Validating Passport ...
+                      </div>
+                    </div>
                     <div v-if="step === 2 && verificationError" class="d-flex px-0 pt-3 my-auto">
                       <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
                       <div class="d-inline ml-2 my-auto">
@@ -125,6 +131,12 @@
                       <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
                       <div class="d-inline ml-2 my-auto">
                         <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
+                      </div>
+                    </div>
+                    <div v-if="saveSuccessMsg" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #059669"></i>
+                      <div class="d-inline ml-2 my-auto">
+                        <span style="color: #059669"><div class="font-smaller-2" v-html="saveSuccessMsg"></div></span>
                       </div>
                     </div>
                   </div>
