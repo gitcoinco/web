@@ -32,8 +32,11 @@ Vue.component('active-trust-manager', {
       passportUrl: 'https://passport.gitcoin.co/',
       rawPassport: undefined,
       trustBonus: (document.trust_bonus * 100) || 50,
+      trustBonusStatus: document.trust_bonus_status,
+      isTrustBonusRefreshInProggress: false,
       loading: false,
       verificationError: false,
+      saveSuccessMsg: document.trust_bonus_status === 'pending_celery' ? 'Your Passport has been submitted.' : false,
       roundStartDate: parseMonthDay(document.round_start_date),
       roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
@@ -52,6 +55,11 @@ Vue.component('active-trust-manager', {
     document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassport(true));
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
+    // start watching for trust bonus status updates, in case the calculation is still pending
+    console.log('geri checking this.trustBonusStatus', this.trustBonusStatus);
+    if (this.trustBonusStatus === 'pending_celery') {
+      this.refreshTrustBonus();
+    }
   },
   computed: {
     serviceDict: function() {
@@ -119,6 +127,38 @@ Vue.component('active-trust-manager', {
         await this.savePassport();
       }
     },
+    async refreshTrustBonus() {
+      // if we have sig, attempt to save the passports details into the backend
+      const url = `/api/v2/profile/${document.contxt.github_handle}/passport/trust_bonus`;
+
+      const _getTrustBonus = () => {
+        const getTrustBonusRequest = fetchData(url, 'GET');
+
+        $.when(getTrustBonusRequest).then(response => {
+          this.trustBonusStatus = response.passport_trust_bonus_status;
+
+          if (response.passport_trust_bonus_status === 'pending_celery') {
+            _refreshTrustBonus();
+          } else {
+            this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
+            this.isTrustBonusRefreshInProggress = false;
+            this.saveSuccessMsg = false;
+          }
+
+        }).catch((err) => {
+          _refreshTrustBonus();
+        });
+      };
+
+      const _refreshTrustBonus = () => {
+        setTimeout(_getTrustBonus, 5000);
+      };
+
+      if (!this.isTrustBonusRefreshInProggress) {
+        this.isTrustBonusRefreshInProggress = true;
+        _refreshTrustBonus();
+      }
+    },
     /*
      * The ignoreErrors attribute is intended to be used when calling this function automatically on page
      * load and not expecting this to trigger an error.
@@ -128,6 +168,7 @@ Vue.component('active-trust-manager', {
       this.loading = true;
       // clear error state
       this.verificationError = false;
+      this.saveSuccessMsg = false;
 
       // clear all state
       this.reset(true);
@@ -249,6 +290,7 @@ Vue.component('active-trust-manager', {
     async savePassport() {
       // enter loading
       this.loading = true;
+      this.saveSuccessMsg = false;
 
       // attempt to verify the passport
       try {
@@ -288,7 +330,10 @@ Vue.component('active-trust-manager', {
             // mark as verified
             this.passportVerified = true;
             // notify success (temp)
-            _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
+            // _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
+            this.saveSuccessMsg = 'Your Passport has been submitted.';
+            this.trustBonusStatus = 'refresh-pending';
+            this.refreshTrustBonus();
           }
         }
       } catch (err) {

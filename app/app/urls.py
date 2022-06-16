@@ -150,6 +150,11 @@ urlpatterns = [
         dashboard.views.verify_passport,
         name='verify_passport'
     ),
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/trust_bonus',
+        dashboard.views.get_passport_trust_bonus,
+        name='get_passport_trust_bonus'
+    ),
 
 
     # grants1.0 Verification Services
