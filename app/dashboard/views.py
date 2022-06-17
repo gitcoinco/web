@@ -3060,8 +3060,7 @@ def check_passport_stamps(request, handle):
     user = request.user
 
     # pull from post data
-    did = request.POST.get('did')
-    hashes = request.POST.getlist('stamp_hashes[]')
+    hashes = request.POST.getlist('stamp_hashes[]', [])
 
     # check if the stamp has been allocated to a different user
     for stamp_id in hashes:
