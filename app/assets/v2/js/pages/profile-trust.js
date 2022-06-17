@@ -28,7 +28,7 @@ Vue.component('active-trust-manager', {
       did: undefined,
       step: 1,
       passport: document.is_passport_connected ? {} : undefined,
-      passportVerified: document.is_passport_connected && document.trust_bonus_status.indexOf('Error:') === -1,
+      passportVerified: document.is_passport_connected && (document.trust_bonus_status ? document.trust_bonus_status.indexOf('Error:') === -1 : false),
       passportUrl: 'https://passport.gitcoin.co/',
       rawPassport: undefined,
       trustBonus: (document.trust_bonus * 100) || 50,
@@ -46,18 +46,19 @@ Vue.component('active-trust-manager', {
     };
   },
   async mounted() {
-    // check for initial error state
-    this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
-    DD_LOGS.logger.info(`Initial trustBonusStatus for '${document.contxt.github_handle}': '${this.trustBonusStatus}'`);
-
     // await DIDKits bindings
     this.DIDKit = (await DIDKit);
+
+    // check for initial error state
+    this.pyVerificationError = this.trustBonusStatus != null ? this.trustBonusStatus.indexOf('Error:') !== -1 : false;
+    DD_LOGS.logger.info(`Initial trustBonusStatus for '${document.contxt.github_handle}': '${this.trustBonusStatus}'`);
 
     // error message attachment
     this.visitGitcoinPassport = `</br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
 
     // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
     document.addEventListener('dataWalletReady', () => ((!this.pyVerificationError && !this.passportVerified) || this.loading) && this.connectPassport(true));
+
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
 
@@ -319,7 +320,7 @@ Vue.component('active-trust-manager', {
         DD_LOGS.logger.info(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Passport is empty or has no stamps.`);
         this.verificationError = `The Passport associated with this wallet is empty. ${this.visitGitcoinPassport}`;
         this.loading = false;
-        throw "Passport is empty!";
+        throw 'Passport is empty!';
       }
     },
     async savePassport() {
