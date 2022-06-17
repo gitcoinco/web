@@ -957,3 +957,6 @@ GTC_DIST_KEY = env('GTC_DIST_KEY', default='')
 # Generating a checksun is optional. When egenerating the static files for a container build
 # we do not want to add a checksum
 BUNDLE_USE_CHECKSUM = env('BUNDLE_USE_CHECKSUM', default=True)
+
+# Datadog token for UI logging
+DATADOG_TOKEN = env('DATADOG_TOKEN', default=None)
