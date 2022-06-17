@@ -1,3 +1,4 @@
+(function (){
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 // helper functions
@@ -1257,10 +1258,10 @@ this.copyToClipboard = str => {
   document.body.removeChild(el);
 };
 
-this.check_balance_and_alert_user_if_not_enough = function(
+this.check_balance_and_alert_user_if_not_enough = (
   tokenAddress,
   amount,
-  msg = 'You do not have enough tokens to perform this action.') {
+  msg = 'You do not have enough tokens to perform this action.') => {
 
   if (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000') {
     return;
@@ -1292,7 +1293,7 @@ this.check_balance_and_alert_user_if_not_enough = function(
  * fetches github issue details of the issue_url
  * @param {string} issue_url
  */
-this.fetchIssueDetailsFromGithub = issue_url => {
+this.fetchIssueDetailsFromGithub = (issue_url) => {
   return new Promise((resolve, reject) => {
     if (!issue_url || issue_url.length < 5 || issue_url.indexOf('github') == -1) {
       reject('error: issue_url needs to be a valid github URL');
@@ -1419,3 +1420,5 @@ this.breakpoint_sm = parseFloat(computedRootStyles.getPropertyValue('--breakpoin
 this.breakpoint_md = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-md'));
 this.breakpoint_lg = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-lg'));
 this.breakpoint_xl = parseFloat(computedRootStyles.getPropertyValue('--breakpoint-xl'));
+
+}).call(window);
