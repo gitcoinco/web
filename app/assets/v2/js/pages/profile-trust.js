@@ -268,7 +268,7 @@ Vue.component('active-trust-manager', {
         // check for a passport and then its validity
         if (passport) {
           // check if the stamps are unique to this user...
-          const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/sscheckk`, {
+          const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
             'did': this.did,
             'stamp_hashes': passport.stamps.map((stamp) => {
               return stamp.credential.credentialSubject.hash;
