@@ -48,6 +48,7 @@ Vue.component('active-trust-manager', {
   async mounted() {
     // check for initial error state
     this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
+    DD_LOGS.logger.info(`Initial trustBonusStatus for '${document.contxt.github_handle}': '${this.trustBonusStatus}'`);
 
     // await DIDKits bindings
     this.DIDKit = (await DIDKit);
@@ -106,6 +107,8 @@ Vue.component('active-trust-manager', {
       }
     },
     async passportActionHandlerConnect(forceRefresh) {
+      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action connect`);
+
       // We can call the same handler to step through each operation...
       // connect and read the passport...
       await this.connectPassport();
@@ -116,6 +119,7 @@ Vue.component('active-trust-manager', {
       }
     },
     async passportActionHandlerRefresh() {
+      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action refresh`);
       await this.verifyPassport().then(() => {
         // move to step 3 (saving)
         this.step = 3;
@@ -125,9 +129,11 @@ Vue.component('active-trust-manager', {
       });
     },
     async passportActionHandlerSave() {
+      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action save`);
       await this.savePassport();
     },
     async handleErrorClick(e) {
+      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action error click`);
       const clickedElId = e.target.id;
 
       if (clickedElId === 'save-passport') {
@@ -147,8 +153,11 @@ Vue.component('active-trust-manager', {
 
           if (response.passport_trust_bonus_status === 'pending_celery') {
             _refreshTrustBonus();
-          } else {
+          } else if (response.passport_trust_bonus_status === 'saved') {
             this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
+            this.isTrustBonusRefreshInProggress = false;
+            this.saveSuccessMsg = false;
+          } else {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
           }
@@ -158,7 +167,8 @@ Vue.component('active-trust-manager', {
             // clear all state
             this.reset(true);
           }
-        }).catch((err) => {
+        }).catch((error) => {
+          DD_LOGS.logger.error(`Error when refreshing trust bonus, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
           _refreshTrustBonus();
         });
       };
@@ -258,7 +268,7 @@ Vue.component('active-trust-manager', {
         // check for a passport and then its validity
         if (passport) {
           // check if the stamps are unique to this user...
-          const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
+          const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/sscheckk`, {
             'did': this.did,
             'stamp_hashes': passport.stamps.map((stamp) => {
               return stamp.credential.credentialSubject.hash;
