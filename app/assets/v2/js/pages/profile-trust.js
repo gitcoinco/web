@@ -61,7 +61,6 @@ Vue.component('active-trust-manager', {
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
 
     // start watching for trust bonus status updates, in case the calculation is still pending
-    console.log('geri checking this.trustBonusStatus', this.trustBonusStatus);
     if (this.trustBonusStatus === 'pending_celery') {
       this.refreshTrustBonus();
     } else if (this.pyVerificationError) {
@@ -206,6 +205,7 @@ Vue.component('active-trust-manager', {
         return;
       }
 
+      DD_LOGS.logger.info(`Connecting passport for ${selectedAccount}`);
       // read the genesis from the selectedAccount (pulls the associated stream index)
       const genesis = await this.reader.getGenesis(selectedAccount);
 
@@ -231,10 +231,12 @@ Vue.component('active-trust-manager', {
           this.rawPassport = passport;
         } else {
           // error if no passport found
+          DD_LOGS.logger.info(`There is no Passport associated with this wallet, did: ${this.did}`);
           this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
         }
       } else {
         // error if no ceramic account found
+        DD_LOGS.logger.info(`There is no Ceramic Account associated with this wallet, address: ${selectedAccount}`);
         this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
       }
 
@@ -298,6 +300,7 @@ Vue.component('active-trust-manager', {
         }
       } catch (error) {
         console.error('Error checking passport: ', error);
+        DD_LOGS.logger.error(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
         this.verificationError = 'Oh, we had a technical error while scoring. Please give it another try.';
         throw error;
       } finally {
@@ -353,7 +356,8 @@ Vue.component('active-trust-manager', {
             this.refreshTrustBonus();
           }
         }
-      } catch (err) {
+      } catch (error) {
+        DD_LOGS.logger.error(`Error submitting passport for trsut bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
         // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
         this.reset();
         // set error state

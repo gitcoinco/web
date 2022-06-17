@@ -4019,6 +4019,8 @@ def profile(request, handle, tab=None):
 
     context = {}
     context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
+    context['DATADOG_TOKEN'] = settings.DATADOG_TOKEN
+
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
@@ -4130,7 +4132,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-
+    
     follow_page_size = 10
     page_number = request.GET.get('page', 1)
     if tab == 'people':
