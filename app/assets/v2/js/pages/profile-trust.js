@@ -367,7 +367,7 @@ Vue.component('active-trust-manager', {
           }
         }
       } catch (error) {
-        DD_LOGS.logger.error(`Error submitting passport for trsut bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+        DD_LOGS.logger.error(`Error submitting passport for trust bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
         // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
         this.reset();
         // set error state
