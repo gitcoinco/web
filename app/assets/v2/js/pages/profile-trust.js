@@ -263,10 +263,9 @@ Vue.component('active-trust-manager', {
       // reset errors
       this.verificationError = undefined;
 
-      try {
-
-        // check for a passport and then its validity
-        if (passport) {
+      // check for a passport and then its validity
+      if (passport && passport.stamps) {
+        try {
           // check if the stamps are unique to this user...
           const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
             'did': this.did,
@@ -307,14 +306,20 @@ Vue.component('active-trust-manager', {
           this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
             return (service.is_verified ? service.match_percent : 0) + total;
           }, 50));
+       
+        } catch (error) {
+          console.error('Error checking passport: ', error);
+          DD_LOGS.logger.error(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+          this.verificationError = 'Oh, we had a technical error while scoring. Please give it another try.';
+          throw error;
+        } finally {
+          this.loading = false;
         }
-      } catch (error) {
-        console.error('Error checking passport: ', error);
-        DD_LOGS.logger.error(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
-        this.verificationError = 'Oh, we had a technical error while scoring. Please give it another try.';
-        throw error;
-      } finally {
+      } else {
+        DD_LOGS.logger.info(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Passport is empty or has no stamps.`);
+        this.verificationError = `The Passport associated with this wallet is empty. ${this.visitGitcoinPassport}`;
         this.loading = false;
+        throw "Passport is empty!";
       }
     },
     async savePassport() {
