@@ -606,7 +606,8 @@ def calculate_trust_bonus(user_id, did, address):
                         if stamp['is_verified']:
                             # The user only needs one verification for a certain provider in order to obtain the score for that provider
                             service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
-                            matched_services[service_key]['is_verified'] = True
+                            if service_key in matched_services:
+                                matched_services[service_key]['is_verified'] = True
 
         # Calculate the trust score based on the verified stamps
         trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))
