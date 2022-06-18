@@ -503,7 +503,7 @@ def calculate_trust_bonus(user_id, did, address):
 
         # Duplicate DID
         if len(duplicates) > 0:
-            raise Exception(f"The DID '{did}' is already associate with another users profile.")
+            raise Exception(f"The DID '{did}' is already associated with another users profile.")
 
         # Pull streamIds from Ceramic Account associated with DID
         stream_ids = get_stream_ids(did)
