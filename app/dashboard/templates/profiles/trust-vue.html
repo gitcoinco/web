@@ -76,14 +76,14 @@
                       <div v-if="pyVerificationError" class="ml-2 mt-3 py-2 border rounded button btn-lg">
                         Validation failed
                       </div>
-                      <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
-                        <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
-                        <div class="d-inline ml-2 my-auto">
-                          <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
-                        </div>
+                    </div>
+                    <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
+                      <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+                      <div class="d-inline ml-2 my-auto">
+                        <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
                       </div>
                     </div>
-                  </div>
+                </div>
                 </li>
                 <li class="d-flex border-bottom py-3">
                   <div :class="`gc-border-circle ${step < 2 && !passportVerified ? 'gc-border-disabled' : step === 2 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">

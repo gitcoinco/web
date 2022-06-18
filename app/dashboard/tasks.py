@@ -608,6 +608,8 @@ def calculate_trust_bonus(user_id, did, address):
                             service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
                             if service_key in matched_services:
                                 matched_services[service_key]['is_verified'] = True
+                            else:
+                                logger.warn("Ignoring service with key %s in trust bonus calculation for DID %s", service_key, did)
 
         # Calculate the trust score based on the verified stamps
         trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))

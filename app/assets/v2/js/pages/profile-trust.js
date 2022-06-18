@@ -68,6 +68,7 @@ Vue.component('active-trust-manager', {
     } else if (this.pyVerificationError) {
       // clear all state
       this.reset(true);
+      this.verificationError = this.trustBonusStatus;
     }
   },
   computed: {
@@ -160,6 +161,10 @@ Vue.component('active-trust-manager', {
           } else {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
+
+            if (this.pyVerificationError) {
+              this.verificationError = this.trustBonusStatus;
+            }
           }
           // check for error state
           if (this.pyVerificationError) {
@@ -187,6 +192,8 @@ Vue.component('active-trust-manager', {
      * load and not expecting this to trigger an error.
      */
     async connectPassport(ignoreErrors) {
+      DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle}`);
+
       // enter loading state
       this.loading = true;
       // clear error state
@@ -205,53 +212,63 @@ Vue.component('active-trust-manager', {
           // will setup wallet and emit walletReady event
           let ret1 = await initWallet();
 
+          DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no web3`);
+          this.loading = false;
           return;
         }
 
         // call onConnect directly after first load to force web3Modal to display every time its called
         const ret = await onConnect();
 
+        DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no selected account`);
         this.loading = false;
         return;
       }
 
-      DD_LOGS.logger.info(`Connecting passport for ${selectedAccount}`);
-      // read the genesis from the selectedAccount (pulls the associated stream index)
-      const genesis = await this.reader.getGenesis(selectedAccount);
+      DD_LOGS.logger.info(`Connecting passport for handle ${document.contxt.github_handle} and address ${selectedAccount}`);
 
-      // grab all the streams at once to reduce the required number of reqs
-      const streams = genesis && genesis.streams;
+      try {
+        // read the genesis from the selectedAccount (pulls the associated stream index)
+        const genesis = await this.reader.getGenesis(selectedAccount);
 
-      // if loaded then the user has a ceramicAccount
-      if (streams && Object.keys(streams).length > 0) {
-        // reset py error
-        this.pyVerificationError = false;
+        // grab all the streams at once to reduce the required number of reqs
+        const streams = genesis && genesis.streams;
 
-        // get the selectedAccounts ceramic DID
-        this.did = genesis.did;
+        // if loaded then the user has a ceramicAccount
+        if (streams && Object.keys(streams).length > 0) {
+          // reset py error
+          this.pyVerificationError = false;
 
-        // read passport from reader each refresh to ensure we catch any newly created streams/updated stamps
-        const passport = await this.reader.getPassport(selectedAccount, streams);
+          // get the selectedAccounts ceramic DID
+          this.did = genesis.did;
 
-        // if we find a passport verify it and create a trust_bonus score
-        if (passport) {
-          // move to step 2
-          this.step = 2;
-          // store the passport so that we can verify its content in step-2 (before saving to this.passport)
-          this.rawPassport = passport;
+          // read passport from reader each refresh to ensure we catch any newly created streams/updated stamps
+          const passport = await this.reader.getPassport(selectedAccount, streams);
+
+          // if we find a passport verify it and create a trust_bonus score
+          if (passport) {
+            // move to step 2
+            this.step = 2;
+            // store the passport so that we can verify its content in step-2 (before saving to this.passport)
+            this.rawPassport = passport;
+          } else {
+            // error if no passport found
+            DD_LOGS.logger.info(`There is no Passport associated with this wallet, did: ${this.did}`);
+            this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
+          }
         } else {
-          // error if no passport found
-          DD_LOGS.logger.info(`There is no Passport associated with this wallet, did: ${this.did}`);
-          this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
+          // error if no ceramic account found
+          DD_LOGS.logger.info(`There is no Ceramic Account associated with this wallet, address: ${selectedAccount}`);
+          this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
         }
-      } else {
-        // error if no ceramic account found
-        DD_LOGS.logger.info(`There is no Ceramic Account associated with this wallet, address: ${selectedAccount}`);
-        this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
+      } catch (error) {
+        DD_LOGS.logger.error(`Error when connecting passport, account: '${selectedAccount}'. Error: ${error}`);
+      } finally {
+        // done with loading state
+        this.loading = false;
       }
 
-      // done with loading state
-      this.loading = false;
+      DD_LOGS.logger.info(`DONE - Connecting passport for ${selectedAccount}`);
     },
     async verifyPassport() {
       // pull the raw passport...
@@ -263,19 +280,22 @@ Vue.component('active-trust-manager', {
       // reset errors
       this.verificationError = undefined;
 
+      // Filter the stamps, include only those with valid (not undefined) credentialSubject (credentialSubject has been undefined on rare occasions)
+      const stamps = (passport && passport.stamps) ? passport.stamps.filter((stamp) => stamp.credential && stamp.credential.credentialSubject) : undefined;
+
       // check for a passport and then its validity
-      if (passport && passport.stamps) {
+      if (passport && stamps) {
         try {
           // check if the stamps are unique to this user...
           const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
             'did': this.did,
-            'stamp_hashes': passport.stamps.map((stamp) => {
+            'stamp_hashes': stamps.map((stamp) => {
               return stamp.credential.credentialSubject.hash;
             })
           });
 
           // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
-          await Promise.all(passport.stamps.map(async(stamp) => {
+          await Promise.all(stamps.map(async(stamp) => {
             if (stamp && Object.keys(stamp).length > 0) {
               // set the service against provider and issuer
               const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
@@ -306,7 +326,7 @@ Vue.component('active-trust-manager', {
           this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
             return (service.is_verified ? service.match_percent : 0) + total;
           }, 50));
-       
+
         } catch (error) {
           console.error('Error checking passport: ', error);
           DD_LOGS.logger.error(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
