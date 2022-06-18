@@ -51,7 +51,7 @@ Vue.component('active-trust-manager', {
 
     // check for initial error state
     this.pyVerificationError = this.trustBonusStatus != null ? this.trustBonusStatus.indexOf('Error:') !== -1 : false;
-    DD_LOGS.logger.info(`Initial trustBonusStatus for '${document.contxt.github_handle}': '${this.trustBonusStatus}'`);
+    window.DD_LOGS && DD_LOGS.logger.info(`Initial trustBonusStatus for '${document.contxt.github_handle}': '${this.trustBonusStatus}'`);
 
     // error message attachment
     this.visitGitcoinPassport = `</br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
@@ -109,7 +109,7 @@ Vue.component('active-trust-manager', {
       }
     },
     async passportActionHandlerConnect(forceRefresh) {
-      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action connect`);
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action connect`);
 
       // We can call the same handler to step through each operation...
       // connect and read the passport...
@@ -121,7 +121,7 @@ Vue.component('active-trust-manager', {
       }
     },
     async passportActionHandlerRefresh() {
-      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action refresh`);
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action refresh`);
       await this.verifyPassport().then(() => {
         // move to step 3 (saving)
         this.step = 3;
@@ -130,11 +130,11 @@ Vue.component('active-trust-manager', {
       });
     },
     async passportActionHandlerSave() {
-      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action save`);
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action save`);
       await this.savePassport();
     },
     async handleErrorClick(e) {
-      DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action error click`);
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action error click`);
       const clickedElId = e.target.id;
 
       if (clickedElId === 'save-passport') {
@@ -173,7 +173,7 @@ Vue.component('active-trust-manager', {
             this.reset(true);
           }
         }).catch((error) => {
-          DD_LOGS.logger.error(`Error when refreshing trust bonus, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+          window.DD_LOGS && DD_LOGS.logger.error(`Error when refreshing trust bonus, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
           _refreshTrustBonus();
         });
       };
@@ -212,7 +212,7 @@ Vue.component('active-trust-manager', {
           // will setup wallet and emit walletReady event
           let ret1 = await initWallet();
 
-          DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no web3`);
+          window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no web3`);
           this.loading = false;
           return;
         }
@@ -220,12 +220,12 @@ Vue.component('active-trust-manager', {
         // call onConnect directly after first load to force web3Modal to display every time its called
         const ret = await onConnect();
 
-        DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no selected account`);
+        window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no selected account`);
         this.loading = false;
         return;
       }
 
-      DD_LOGS.logger.info(`Connecting passport for handle ${document.contxt.github_handle} and address ${selectedAccount}`);
+      window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for handle ${document.contxt.github_handle} and address ${selectedAccount}`);
 
       try {
         // read the genesis from the selectedAccount (pulls the associated stream index)
@@ -253,22 +253,22 @@ Vue.component('active-trust-manager', {
             this.rawPassport = passport;
           } else {
             // error if no passport found
-            DD_LOGS.logger.info(`There is no Passport associated with this wallet, did: ${this.did}`);
+            window.DD_LOGS && DD_LOGS.logger.info(`There is no Passport associated with this wallet, did: ${this.did}`);
             this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
           }
         } else {
           // error if no ceramic account found
-          DD_LOGS.logger.info(`There is no Ceramic Account associated with this wallet, address: ${selectedAccount}`);
+          window.DD_LOGS && DD_LOGS.logger.info(`There is no Ceramic Account associated with this wallet, address: ${selectedAccount}`);
           this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
         }
       } catch (error) {
-        DD_LOGS.logger.error(`Error when connecting passport, account: '${selectedAccount}'. Error: ${error}`);
+        window.DD_LOGS && DD_LOGS.logger.error(`Error when connecting passport, account: '${selectedAccount}'. Error: ${error}`);
       } finally {
         // done with loading state
         this.loading = false;
       }
 
-      DD_LOGS.logger.info(`DONE - Connecting passport for ${selectedAccount}`);
+      window.DD_LOGS && DD_LOGS.logger.info(`DONE - Connecting passport for ${selectedAccount}`);
     },
     async verifyPassport() {
       // pull the raw passport...
@@ -329,14 +329,14 @@ Vue.component('active-trust-manager', {
 
         } catch (error) {
           console.error('Error checking passport: ', error);
-          DD_LOGS.logger.error(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+          window.DD_LOGS && DD_LOGS.logger.error(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
           this.verificationError = 'Oh, we had a technical error while scoring. Please give it another try.';
           throw error;
         } finally {
           this.loading = false;
         }
       } else {
-        DD_LOGS.logger.info(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Passport is empty or has no stamps.`);
+        window.DD_LOGS && DD_LOGS.logger.info(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Passport is empty or has no stamps.`);
         this.verificationError = `The Passport associated with this wallet is empty. ${this.visitGitcoinPassport}`;
         this.loading = false;
         throw 'Passport is empty!';
@@ -392,7 +392,7 @@ Vue.component('active-trust-manager', {
           }
         }
       } catch (error) {
-        DD_LOGS.logger.error(`Error submitting passport for trust bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+        window.DD_LOGS && DD_LOGS.logger.error(`Error submitting passport for trust bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
         // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
         this.reset();
         // set error state

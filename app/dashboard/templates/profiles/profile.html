@@ -22,8 +22,8 @@
       <link rel="stylesheet" type="text/x-scss" href={% static "v2/scss/activity_stream.scss" %} />
     {% endbundle %}
   </head>
-  <!-- Datadog logging for the trust bonus tab-->
-  <script type="text/javascript" src="https://www.datadoghq-browser-agent.com/datadog-logs-v4.js"></script>
+  <!-- Datadog logging setup for the trust bonus tab-->
+  <script type="text/javascript" src="{% static "v2/js/lib/datadog-logs-v4.js" %}"></script>
   <script>
       window.DD_LOGS && DD_LOGS.init({
           clientToken: '{{DATADOG_TOKEN}}',
@@ -33,10 +33,11 @@
           service: `trust-bonus`,
       });
   </script>
-  <!-- END: Datadog logging for the trust bonus tab-->
+  <!-- END: Datadog logging setup for the trust bonus tab-->
   <body class="interior {{ active }} g-font-muli">
     <div class="content__main min-vh-100 d-md-flex flex-column">
       {% include 'shared/tag_manager_2.html' %}
+
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
       {% if not hidden %}
