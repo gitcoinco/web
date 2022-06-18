@@ -213,7 +213,6 @@ Vue.component('active-trust-manager', {
           let ret1 = await initWallet();
 
           DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no web3`);
-
           this.loading = false;
           return;
         }
@@ -281,7 +280,7 @@ Vue.component('active-trust-manager', {
       // reset errors
       this.verificationError = undefined;
 
-      // Filter the stamps, include only those with vals (not undefined) credentialSubject (credentialSubject has been undefined on rare occasions)
+      // Filter the stamps, include only those with valid (not undefined) credentialSubject (credentialSubject has been undefined on rare occasions)
       const stamps = (passport && passport.stamps) ? passport.stamps.filter((stamp) => stamp.credential && stamp.credential.credentialSubject) : undefined;
 
       // check for a passport and then its validity
