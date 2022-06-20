@@ -556,8 +556,14 @@ def calculate_trust_bonus(user_id, did, address):
                 # the subjectId must match the users DID
                 is_subject_valid = subject_id.lower() == did.lower()
 
+                stamp_expiration_date = stamp["credential"]["expirationDate"]
                 # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
-                is_stamp_expired = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
+                try:
+                    is_stamp_expired = datetime.strptime(stamp_expiration_date, "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
+                except:
+                    # In some cases the microseconds are missing in the timestamp (has been encountered in production)
+                    is_stamp_expired = datetime.strptime(stamp_expiration_date, "%Y-%m-%dT%H:%M:%SZ") < datetime.now()
+                    
 
                 # the stamp must be issued by the trusted IAM server
                 is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
