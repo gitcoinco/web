@@ -541,11 +541,27 @@ def calculate_trust_bonus(user_id, did, address):
             } for s in SCORER_SERVICE_WEIGHTS
         }
 
-        # Store the passport
-        db_passport, _ = Passport.objects.update_or_create(user_id=user_id, defaults={
-            "did": did,
-            "passport": passport
-        })
+        # We verify if the user has a paspsort or not
+        # If yes, and the passport has a different DID we delete it (this will also delete the linked stamps)
+        # else we update the existing passport
+        db_passport = None
+        try:
+            db_passport = Passport.objects.get(user_id=user_id)
+
+            if db_passport.did != did:
+                # The user is linking his passport to a new did (new ETH account)
+                db_passport.delete()
+                db_passport = None
+        except Passport.DoesNotExist:
+            pass
+
+        if not db_passport:
+            db_passport = Passport(user_id=user_id, did=did, passport=passport)
+            db_passport.save()
+        else:
+            db_passport.did = did
+            db_passport.passport = passport
+            db_passport.save()
 
         # Check the validity of each stamp in the passport
         for stamp in passport['stamps']:
