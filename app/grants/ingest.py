@@ -8,7 +8,6 @@ from django.conf import settings
 
 from datetime import datetime
 from dashboard.models import Activity, Profile
-from dashboard.utils import get_web3
 from economy.models import Token
 from economy.utils import convert_token_to_usdt
 from grants.models import (
@@ -222,98 +221,74 @@ def process_bulk_checkout_tx(w3, txid, profile, network, chain, do_write):
 
     return
 
-def handle_ingestion(profile, network, identifier, chain, do_write):
-    print(f"on task {profile.id}, {network}, {identifier}, {chain}, {do_write}")
+def handle_zksync_ingestion(profile, network, identifier, do_write):
+    # Get history of transfers from this user's zkSync address using the zkSync API: https://zksync.io/api/v0.1.html#account-history
+    user_address = identifier
+    base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
+    r = requests.get(
+        f"{base_url}/account/{user_address}/history/older_than")  # gets last 100 zkSync transactions
+    r.raise_for_status()
+    transactions = r.json()  # array of zkSync transactions
 
-    # Determine how to process the contributions
-    if len(identifier) == 42:
-        # An address was provided, so we'll use the zkSync API to fetch their transactions
-        ingestion_method = 'zksync_api'
-    elif len(identifier) == 66:
-        # A transaction hash was provided, so we look for BulkCheckout logs in the L1/L2 transaction
-        ingestion_method = 'bulk_checkout'
-    else:
-        raise Exception('Invalid identifier')
-
-    # Setup web3 and get user profile
-    w3 = get_web3(network, chain=chain)
-    if chain == 'polygon':
-        from web3.middleware import geth_poa_middleware
-        w3.middleware_stack.inject(geth_poa_middleware, layer=0)
-
-    # Handle ingestion
-    if ingestion_method == 'bulk_checkout':
-        # We were provided an L1 transaction hash, so process it
-        txid = identifier
-        process_bulk_checkout_tx(w3, txid, profile, network, chain, True)
-    elif ingestion_method == 'zksync_api':
-        # Get history of transfers from this user's zkSync address using the zkSync API: https://zksync.io/api/v0.1.html#account-history
-        user_address = identifier
-        base_url = 'https://rinkeby-api.zksync.io/api/v0.1' if network == 'rinkeby' else 'https://api.zksync.io/api/v0.1'
-        r = requests.get(
-            f"{base_url}/account/{user_address}/history/older_than")  # gets last 100 zkSync transactions
-        r.raise_for_status()
-        transactions = r.json()  # array of zkSync transactions
-
-        # Paginate if required. API returns last 100 transactions by default, so paginate if response length was 100
-        if len(transactions) == 100:
-            max_length = 500  # only paginate until a max of most recent 500 transactions or no transaction are left
+    # Paginate if required. API returns last 100 transactions by default, so paginate if response length was 100
+    if len(transactions) == 100:
+        max_length = 500  # only paginate until a max of most recent 500 transactions or no transaction are left
+        last_tx_id = transactions[-1]["tx_id"]
+        while len(transactions) < max_length:
+            r = requests.get(
+                f"{base_url}/account/{user_address}/history/older_than?tx_id={last_tx_id}")  # gets next 100 zkSync transactions
+            r.raise_for_status()
+            new_transactions = r.json()
+            if (len(new_transactions) == 0):
+                break
+            transactions.extend(new_transactions)  # append to array
             last_tx_id = transactions[-1]["tx_id"]
-            while len(transactions) < max_length:
-                r = requests.get(
-                    f"{base_url}/account/{user_address}/history/older_than?tx_id={last_tx_id}")  # gets next 100 zkSync transactions
-                r.raise_for_status()
-                new_transactions = r.json()
-                if (len(new_transactions) == 0):
-                    break
-                transactions.extend(new_transactions)  # append to array
-                last_tx_id = transactions[-1]["tx_id"]
 
-        for transaction in transactions:
-            # Skip if this is not a transfer (can be Deposit, ChangePubKey, etc.)
-            if transaction["tx"]["type"] != "Transfer":
-                continue
+    for transaction in transactions:
+        # Skip if this is not a transfer (can be Deposit, ChangePubKey, etc.)
+        if transaction["tx"]["type"] != "Transfer":
+            continue
 
-            # Extract contribution parameters from the JSON
-            symbol = transaction["tx"]["token"]
-            value = transaction["tx"]["amount"]
+        # Extract contribution parameters from the JSON
+        symbol = transaction["tx"]["token"]
+        value = transaction["tx"]["amount"]
 
-            try:
-                token = Token.objects.filter(
-                    network=network,
-                    symbol=transaction["tx"]["token"],
-                    approved=True
-                ).first().to_dict
-            except Exception as e:
-                logger.exception(e)
-                logger.warning(f"{value_adjusted}{symbol} => {to}, Unknown Token ")
-                logger.warning("Skipping transaction with unknown token\n")
-                continue
+        try:
+            token = Token.objects.filter(
+                network=network,
+                symbol=transaction["tx"]["token"],
+                approved=True
+            ).first().to_dict
+        except Exception as e:
+            logger.exception(e)
+            logger.warning(f"{value_adjusted}{symbol} => {to}, Unknown Token ")
+            logger.warning("Skipping transaction with unknown token\n")
+            continue
 
-            decimals = token["decimals"]
-            symbol = token["name"]
-            value_adjusted = int(value) / 10 ** int(decimals)
-            to = transaction["tx"]["to"]
+        decimals = token["decimals"]
+        symbol = token["name"]
+        value_adjusted = int(value) / 10 ** int(decimals)
+        to = transaction["tx"]["to"]
 
-            print(f"transfer from: {user_address} to: {to}")
+        print(f"transfer from: {user_address} to: {to}")
 
-            # Find the grant
-            try:
-                grant = Grant.objects.filter(admin_address__iexact=to).order_by(
-                    "-positive_round_contributor_count").first()
-                if not grant:
-                    logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
-                    logger.warning("Skipping unknown grant\n")
-                    continue
-                logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
-            except Exception as e:
-                logger.exception(e)
+        # Find the grant
+        try:
+            grant = Grant.objects.filter(admin_address__iexact=to).order_by(
+                "-positive_round_contributor_count").first()
+            if not grant:
                 logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
                 logger.warning("Skipping unknown grant\n")
                 continue
+            logger.info(f"{value_adjusted}{symbol}  => {to}, {grant} ")
+        except Exception as e:
+            logger.exception(e)
+            logger.warning(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
+            logger.warning("Skipping unknown grant\n")
+            continue
 
-            if do_write:
-                txid = transaction['hash']
-                created_on = dateutil.parser.parse(transaction['created_at'])
-                save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync',
-                            user_address)
+        if do_write:
+            txid = transaction['hash']
+            created_on = dateutil.parser.parse(transaction['created_at'])
+            save_data(profile, txid, network, created_on, symbol, value_adjusted, grant, 'eth_zksync',
+                        user_address)

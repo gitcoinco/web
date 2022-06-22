@@ -74,8 +74,9 @@ from grants.models import (
     GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, Subscription,
 )
 from grants.serializers import GrantSerializer
+from grants.ingest import process_bulk_checkout_tx
 from grants.tasks import (
-    ingest_contributions_task, process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email,
+    handle_zksync_ingestion_task, process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email,
     process_notion_db_write, update_grant_metadata,
 )
 from grants.utils import (
@@ -2969,15 +2970,40 @@ def ingest_contributions(request):
     except:
         return JsonResponse({'success': False, 'message': 'Signature could not be verified'})
 
+    def handle_ingestion(profile, network, identifier, do_write):
+        # Determine how to process the contributions
+        if len(identifier) == 42:
+            # An address was provided, so we'll use the zkSync API to fetch their transactions
+            ingestion_method = 'zksync_api'
+        elif len(identifier) == 66:
+            # A transaction hash was provided, so we look for BulkCheckout logs in the L1/L2 transaction
+            ingestion_method = 'bulk_checkout'
+        else:
+            raise Exception('Invalid identifier')
+
+        # Setup web3 and get user profile
+        w3 = get_web3(network, chain=chain)
+        if chain == 'polygon':
+            from web3.middleware import geth_poa_middleware
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+
+        # Handle ingestion
+        if ingestion_method == 'bulk_checkout':
+            # We were provided an L1 transaction hash
+            process_bulk_checkout_tx(w3, identifier, profile, network, chain, do_write)
+        elif ingestion_method == 'zksync_api':
+            # We were provided a zksync wallet address - async fetch transactions
+            handle_zksync_ingestion_task.delay(profile.id, network, identifier, do_write)
+
     try:
         if txHash != '':
-            ingest_contributions_task.delay(get_profile(profile).id, network, txHash, chain, True)
+            handle_ingestion(get_profile(profile), network, txHash, True)
             if chain == 'std':
                 ingestion_types.append('L1')
             elif chain == 'polygon':
                 ingestion_types.append('L2-polygon')
         if userAddress != '':
-            ingest_contributions_task.delay(get_profile(profile).id, network, userAddress, chain, True)
+            handle_ingestion(get_profile(profile), network, userAddress, True)
             ingestion_types.append('L2')
 
     except Exception as err:

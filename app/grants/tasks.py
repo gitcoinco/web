@@ -23,7 +23,7 @@ from perftools.models import StaticJsonEnv
 from townsquare.models import Comment
 from unidecode import unidecode
 
-from grants.ingest import handle_ingestion
+from grants.ingest import handle_zksync_ingestion
 
 logger = get_task_logger(__name__)
 
@@ -462,10 +462,9 @@ def sync_clr_match_payouts(network='mainnet', contract_address='0x0'):
 
 
 @app.shared_task(bind=True, max_retries=3)
-def ingest_contributions_task(self, profile_id, network, identifier, chain, do_write):
+def handle_zksync_ingestion_task(self, profile_id, network, identifier, do_write):
     try:
         profile = Profile.objects.get(pk=profile_id)
-        print(f"in task {profile.id}, {network}, {identifier}, {chain}, {do_write}")
-        handle_ingestion(profile, network, identifier, chain, do_write)
+        handle_zksync_ingestion(profile, network, identifier, do_write)
     except Exception as e:
         print(e)
