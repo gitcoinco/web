@@ -419,7 +419,7 @@ if ENV not in ['local', 'test', 'staging', 'preview', 'ci']:
         }
         LOGGING['loggers']['elasticapm.errors'] = {
             'level': 'ERROR',
-            'handlers': ['sentr`y', 'console'],
+            'handlers': ['sentry', 'console'],
             'propagate': False,
         }
         LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
