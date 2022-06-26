@@ -364,6 +364,10 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
 
 @app.shared_task(bind=True, max_retries=1)
 def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
     from app.utils import actually_sync_profile
     user = User.objects.filter(pk=user_pk).first() if user_pk else None
     actually_sync_profile(handle, user=user, hide_profile=hide_profile)
@@ -371,6 +375,10 @@ def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> Non
 
 @app.shared_task(bind=True, max_retries=1)
 def recalculate_earning(self, pk, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
     from dashboard.models import Earning
     earning = Earning.objects.get(pk=pk)
     src = earning.source
