@@ -546,6 +546,7 @@ CELERY_ROUTES = [
     ('dashboard.tasks.record_join', {'queue': 'analytics'}),
     ('townsquare.tasks.increment_offer_view_counts', {'queue': 'analytics'}),
     ('townsquare.tasks.increment_view_counts', {'queue': 'analytics'}),
+    ('townsquare.tasks.send_comment_email', {'queue': 'marketing'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
