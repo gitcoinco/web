@@ -45,7 +45,7 @@ def increment_offer_view_counts(self, pks, retry=False):
     :param pks:
     :return:
     """
-    with redis.lock("tasks:increment_offer_view_counts", timeout=LOCK_TIMEOUT):
+    if True:
         if len(pks) == 0:
             return
         # update DB directly
