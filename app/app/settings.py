@@ -419,7 +419,7 @@ if ENV not in ['local', 'test', 'staging', 'preview', 'ci']:
         }
         LOGGING['loggers']['elasticapm.errors'] = {
             'level': 'ERROR',
-            'handlers': ['sentry', 'console'],
+            'handlers': ['sentr`y', 'console'],
             'propagate': False,
         }
         LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
@@ -542,6 +542,10 @@ CELERY_ROUTES = [
     ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
     ('dashboard.tasks.increment_view_count', {'queue': 'analytics'}),
+    ('dashboard.tasks.record_visit', {'queue': 'analytics'}),
+    ('dashboard.tasks.record_join', {'queue': 'analytics'}),
+    ('townsquare.tasks.increment_offer_view_counts', {'queue': 'analytics'}),
+    ('townsquare.tasks.increment_view_counts', {'queue': 'analytics'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
