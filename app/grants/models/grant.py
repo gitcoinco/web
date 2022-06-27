@@ -1057,10 +1057,9 @@ class Grant(SuperModel):
             SearchVector('title', weight='A') + SearchVector('description', weight='B')
         )
 
-        # Gerald 25.06.2022: commenting the lines below, in order to get the processing queues empty - this is only intended as  temporary measure
-        # if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
-        #     from grants.tasks import update_grant_metadata
-        #     update_grant_metadata.delay(self.pk)
+        if self.modified_on < (timezone.now() - timezone.timedelta(minutes=15)):
+            from grants.tasks import update_grant_metadata
+            update_grant_metadata.delay(self.pk)
 
         from economy.models import get_time
         if update:
