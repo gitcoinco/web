@@ -17,6 +17,146 @@ const apiCall = (url, givenPayload) => {
   });
 };
 
+Vue.component('trust-bonus-passport', {
+  delimiters: [ '[[', ']]' ],
+  props: {
+    visible: {
+      type: Boolean,
+      required: false,
+      'default': false
+    },
+    isUnlinkPending: {
+      type: Boolean,
+      required: false,
+      'default': false
+    },
+    stampVerifications: {
+      type: Array,
+      required: false,
+      'default': () => []
+    },
+    did: {
+      type: String,
+      required: true,
+      'default': null
+    },
+    unlinkErrorMsg: {
+      type: String,
+      required: true,
+      'default': null
+    },
+    unlinkSuccessMsg: {
+      type: String,
+      required: true,
+      'default': null
+    }
+  },
+  model: {
+    prop: 'visible',
+    event: 'change'
+  },
+  
+  template: `<b-modal id="trust-bonus-passport" ref="passport-modal" v-model="modalShow" size="md" body-class="p-3" center hide-header>
+  <h4>Passport Details</h4>
+  <template v-if="address">
+    <span class="text-muted">Your Passport is currently connected with the following information:</span>
+    <br>
+    <span class="text-muted">Wallet: [[address]]</span>
+    <hr>
+    <template v-if="stampVerifications.length > 0">
+      <ul class="list-unstyled">
+        <li class="mb-3" v-for="stamp in stampVerifications">
+          <div class="text-muted" v-if="stamp.is_verified">
+            [[stamp.provider]]
+            <br>
+            [[stamp.match_percent * 100]]%
+          </div>
+          <div class="text-muted" v-else>
+          [[stamp.provider]]
+          <br>
+          <div class="d-flex flex-row justify-content-between">
+            <div>0%</div>
+            <div class="text-danger pl-3">[[stamp.errors[0] || "Not verified"]]</div>
+          </div>
+        </div>
+        </li>
+      </ul>
+    </template>
+    <template v-else>
+      <span class="text-muted">You don't appear to have any stamps in your passport!</span>
+    </template>
+  </template>
+  <template v-else>
+    <span class="text-muted">Your account is currently not linked to any passport</span>
+  </template>
+
+  <div v-if="unlinkErrorMsg" class="d-flex px-0 pt-3 my-auto">
+    <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+    <div class="d-inline ml-2 my-auto">
+      <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="unlinkErrorMsg"></div></span>
+    </div>
+  </div>
+  <div v-if="unlinkSuccessMsg" class="d-flex px-0 pt-3 my-auto">
+    <i class="fa-shield-virus fas mt-1 px-1" style="color: #059669"></i>
+    <div class="d-inline ml-2 my-auto">
+      <span style="color: #059669"><div class="font-smaller-2" v-html="unlinkSuccessMsg"></div></span>
+    </div>
+  </div>
+
+  <div v-if="isUnlinkPending" class="ml-2 mt-3 py-2">
+    <div class="spinner-border spinner-border-sm"></div>
+    Unlinking Passport ...
+  </div>
+
+  <template slot="modal-footer">
+    <b-button size="nd" variant="light" @click="close">
+      Close
+    </b-button>
+    <b-button v-if="address" size="md" variant="primary" @click="unlink">
+      Unlink
+    </b-button>
+  </template>
+</b-modal>
+`,
+
+  data() {
+    return {
+      // modalShow: this.visible
+    };
+  },
+
+  computed: {
+    modalShow: {
+      set(newValue) {
+        console.log('geri change:', newValue);
+        this.$emit('change', newValue);
+      },
+      get() {
+        return this.visible;
+      }
+    },
+    address: function() {
+      if (this.did) {
+        let parts = this.did.split(':');
+
+        return parts[parts.length - 1];
+      }
+      return null;
+    }
+  },
+
+  methods: {
+    close() {
+      this.$bvModal.hide('trust-bonus-passport');
+    },
+
+    unlink() {
+      this.$emit('unlink');
+    }
+  }
+});
+
+
 // Create the trust-bonus view
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
@@ -42,7 +182,14 @@ Vue.component('active-trust-manager', {
       services: document.services || [],
       modalShow: false,
       modalName: false,
-      pyVerificationError: false
+      pyVerificationError: false,
+      passportDetailsShow: false,
+      confirmUnlinkPassportShow: false,
+      stampVerifications: document.passport_trust_bonus_stamp_validation,
+      passportDid: document.passport_did,
+      unlinkSuccessMsg: false,
+      unlinkErrorMsg: false,
+      isUnlinkPending: false
     };
   },
   async mounted() {
@@ -88,7 +235,13 @@ Vue.component('active-trust-manager', {
       this.modalName = modalName;
     },
     hideModal() {
-      this.modalShow = this.modalName = false;
+      this.$bvModal.show('trust-bonus-passport');
+    },
+    showPassportDetails(e) {
+      this.unlinkSuccessMsg = false;
+      this.unlinkErrorMsg = false;
+      this.passportDetailsShow = true;
+      e.preventDefault();
     },
     reset(fullReset) {
       // reset the step
@@ -158,6 +311,8 @@ Vue.component('active-trust-manager', {
             this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
+            this.stampVerifications = response.passport_trust_bonus_stamp_validation;
+            this.passportDid = response.passport_did;
           } else {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
@@ -397,6 +552,59 @@ Vue.component('active-trust-manager', {
         this.reset();
         // set error state
         this.verificationError = 'There was an error; please try again later';
+      }
+
+      // stop loading
+      this.loading = false;
+    },
+    async showConfirmUnlinkPassport() {
+      this.confirmUnlinkPassportShow = true;
+    },
+    async confirmUnlinkPassport() {
+      this.confirmUnlinkPassportShow = false;
+      this.unlinkPassport();
+    },
+    async unlinkPassport() {
+      // enter loading
+      this.loading = true;
+      this.saveSuccessMsg = false;
+      this.unlinkSuccessMsg = false;
+      this.unlinkErrorMsg = false;
+      this.isUnlinkPending = true;
+
+      // attempt to verify the passport
+      try {
+        if (document.challenge) {
+          // clear error state
+          this.verificationError = undefined;
+
+          // if we have sig, attempt to save the passports details into the backend
+          const response = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/unlink`, {});
+          
+          this.isUnlinkPending = false;
+
+          // display error state if sig was bad
+          if (response.error) {
+            // Bad signature error
+            this.unlinkErrorMsg = response.error;
+          } else {
+            // mark as verified
+            this.passportVerified = true;
+            // notify success (temp)
+            this.unlinkSuccessMsg = 'Your Passport has been unlinked.';
+            this.trustBonusStatus = 'saved';
+            this.stampVerifications = [];
+            this.passportDid = null;
+            this.trustBonus = 50;
+          }
+        }
+      } catch (error) {
+        window.DD_LOGS && DD_LOGS.logger.error(`Error submitting passport for trust bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+        // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
+        this.reset();
+        // set error state
+        this.unlinkErrorMsg = 'There was an error; please try again later';
+        this.isUnlinkPending = false;
       }
 
       // stop loading

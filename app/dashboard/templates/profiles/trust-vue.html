@@ -3,8 +3,22 @@
 {% if not profile.is_org and is_my_profile %}
 
   <div id="gc-trust-manager-app" v-cloak>
+
     <active-trust-manager inline-template>
       <div>
+
+        <trust-bonus-passport v-model="passportDetailsShow" 
+          :stamp-verifications="stampVerifications" 
+          :is-unlink-pending="isUnlinkPending"
+          :did="passportDid"
+          :unlink-error-msg="unlinkErrorMsg"
+          :unlink-success-msg="unlinkSuccessMsg"
+          @unlink="() => showConfirmUnlinkPassport()">
+        </trust-bonus-passport>
+
+        <b-modal title="Unlink Passport" v-model="confirmUnlinkPassportShow" @ok="() => confirmUnlinkPassport()">
+          <p class="my-4">Are you sure you want to unlink this Passport?</p>
+        </b-modal>
 
         <why-this-matters-modal
           :show-modal="modalShow && modalName === 'why-this-matters-modal'"
@@ -44,7 +58,7 @@
           </div>
 
           <div class="col-12 col-lg-8 col-xl-6 spacer-pb-3">
-
+            [[passportDetailsShow]]
             <h1>Trust Bonus</h1>
             <span class="line-height-2">
               Trust Bonus has received an upgrade! It's now powered by Gitcoin Passport, a decentralized identity verification application. Trust Bonus scores are calculated based on the identification stamps you complete.
@@ -155,7 +169,7 @@
                 <div class="progress rounded-0" style="height: 0.4rem;">
                   <div class="progress-bar bg-secondary disabled" role="progressbar" :style="{width: `${!passport ? 0 : 100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match</div>
+                <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match. <a href="#" @click="showPassportDetails"><i class="fa fa-info-circle"></i></a></div>
               </div>
             </div>
 
