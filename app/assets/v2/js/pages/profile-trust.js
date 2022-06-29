@@ -41,12 +41,12 @@ Vue.component('trust-bonus-passport', {
       'default': null
     },
     unlinkErrorMsg: {
-      type: String,
+      type: [ String, Boolean ],
       required: true,
       'default': null
     },
     unlinkSuccessMsg: {
-      type: String,
+      type: [ String, Boolean ],
       required: true,
       'default': null
     }
@@ -63,7 +63,7 @@ Vue.component('trust-bonus-passport', {
     <br>
     <span class="text-muted">Wallet: [[address]]</span>
     <hr>
-    <template v-if="stampVerifications.length > 0">
+    <template v-if="stampVerifications && stampVerifications.length > 0">
       <ul class="list-unstyled">
         <li class="mb-3" v-for="stamp in stampVerifications">
           <div class="text-muted" v-if="stamp.is_verified">
