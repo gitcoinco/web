@@ -2915,6 +2915,11 @@ def get_profile_tab(request, profile, tab, prev_context):
 
             # use session challenge or generate a new one
             passport_challenge = request.session.get('passport_challenge', f"I am signing to confirm that I am saving my Passport score to Gitcoin Grants.\n\nnonce: {hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()}")
+
+            # make sure we are using a new style session challange
+            if not passport_challenge.startswith("I am signing to confirm"):
+                passport_challenge = f"I am signing to confirm that I am saving my Passport score to Gitcoin Grants.\n\nnonce: {hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()}"
+
             context['challenge'] = json.dumps(passport_challenge)
 
             # store into session
