@@ -318,7 +318,7 @@ def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
     :param bounty_pk:
     :return:
     """
-    with redis.lock("m2m_changed_interested:bounty", timeout=LOCK_TIMEOUT):
+    with redis.lock(f"m2m_changed_interested:bounty:{bounty_pk}", timeout=LOCK_TIMEOUT):
         bounty = Bounty.objects.get(pk=bounty_pk)
         from dashboard.notifications import maybe_market_to_github
         maybe_market_to_github(bounty, 'work_started',
