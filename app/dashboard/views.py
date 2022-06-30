@@ -2914,9 +2914,11 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['ceramic_url'] = CERAMIC_URL
 
             # use session challenge or generate a new one
-            context['challenge'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+            passport_challenge = request.session.get('passport_challenge', f"I am signing to confirm that I am saving my Passport score to Gitcoin Grants.\n\nnonce: {hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest()}")
+            context['challenge'] = json.dumps(passport_challenge)
+
             # store into session
-            request.session['passport_challenge'] = context['challenge']
+            request.session['passport_challenge'] = passport_challenge
         else:
             idena = {}
             idena['is_connected'] = profile.is_idena_connected

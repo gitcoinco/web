@@ -123,7 +123,7 @@
             document.services = {{ services|safe }};
             document.iam_issuer = "{{ iam_issuer }}";
             document.ceramic_url = "{{ ceramic_url }}";
-            document.challenge = "{{ challenge }}";
+            document.challenge = {{ challenge|safe }};
             document.round_start_date = {{ round_start_date }};
             document.round_end_date = {{ round_end_date }};
             document.is_passport_connected = {% if is_passport_connected %}{{ is_passport_connected }}{% else %}0{% endif %};
