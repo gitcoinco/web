@@ -69,15 +69,15 @@ from dashboard.utils import get_web3
 from economy.models import Token
 from eth_account.messages import defunct_hash_message
 from grants.clr_data_src import fetch_contributions
+from grants.ingest import process_bulk_checkout_tx
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantAPIKey, GrantBrandingRoutingPolicy, GrantCLR,
     GrantCollection, GrantHallOfFame, GrantPayout, GrantTag, GrantType, Subscription,
 )
 from grants.serializers import GrantSerializer
-from grants.ingest import process_bulk_checkout_tx
 from grants.tasks import (
-    handle_zksync_ingestion_task, process_bsci_sybil_csv, process_grant_creation_admin_email, process_grant_creation_email,
-    process_notion_db_write, update_grant_metadata,
+    handle_zksync_ingestion_task, process_bsci_sybil_csv, process_grant_creation_admin_email,
+    process_grant_creation_email, process_notion_db_write, update_grant_metadata,
 )
 from grants.utils import (
     emoji_codes, generate_collection_thumbnail, generate_img_thumbnail_helper, get_clr_rounds_metadata, get_user_code,
@@ -944,7 +944,7 @@ def grants_landing(request):
             'active': 'grants_landing',
             'network': network,
             'grant_bg': get_branding_info(request),
-            'show_main_round_banner': True,
+            'show_main_round_banner': False,
             'title': 'Grants',
             'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION,
             'card_desc': f'{live_now}',
