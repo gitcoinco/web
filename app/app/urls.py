@@ -151,6 +151,11 @@ urlpatterns = [
         name='verify_passport'
     ),
     url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/unlink',
+        dashboard.views.unlink_passport,
+        name='unlink_passport'
+    ),
+    url(
         r'^api/v2/profile/(?P<handle>.*)/passport/trust_bonus',
         dashboard.views.get_passport_trust_bonus,
         name='get_passport_trust_bonus'

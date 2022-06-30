@@ -5,7 +5,7 @@ name: Cleanup review environment
 on:
   pull_request:
     types: [ closed ]
-    branches: [ master ]
+    branches: [ master, stable ]
 
 jobs:
   cleanup:

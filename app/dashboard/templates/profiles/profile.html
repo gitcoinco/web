@@ -130,8 +130,10 @@
             document.trust_bonus = {% if passport_trust_bonus %}{{ passport_trust_bonus }}{% else %}0{% endif %};
             document.trust_bonus_status = {% if passport_trust_bonus_status %}"{{ passport_trust_bonus_status }}"{% else %}null{% endif %};
             document.trust_bonus_last_updated = {% if passport_trust_bonus_last_updated %}"{{ passport_trust_bonus_last_updated }}"{% else %}null{% endif %};
+            document.passport_trust_bonus_stamp_validation = {% if passport_trust_bonus_stamp_validation %}{{ passport_trust_bonus_stamp_validation|safe }}{% else %}null{% endif %};
             document.passport = {% if passport %}{{ passport|safe }}{% else %}null{% endif %};
-
+            document.passport_did = {% if passport_did %}{{ passport_did|safe }}{% else %}null{% endif %};
+            
           </script>
           {% bundle merge_js file profile-trust %}
             <script src="{% static "v2/js/parseMonthDay.js" %}"></script>

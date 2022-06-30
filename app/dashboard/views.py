@@ -2898,12 +2898,16 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['passport_trust_bonus'] = profile.passport_trust_bonus
             context['passport_trust_bonus_status'] = profile.passport_trust_bonus_status
             context['passport_trust_bonus_last_updated'] = profile.passport_trust_bonus_last_updated.isoformat() if profile.passport_trust_bonus_last_updated else None
+            context['passport_trust_bonus_stamp_validation'] = json.dumps(profile.passport_trust_bonus_stamp_validation) if profile.passport_trust_bonus_stamp_validation is not None else None
 
             # dump the full passport into the context
             try:
-                context['passport'] = json.dumps(Passport.objects.get(user=profile.user).passport)
+                db_passport = Passport.objects.get(user=profile.user)
+                context['passport'] = json.dumps(db_passport.passport)
+                context['passport_did'] = json.dumps(db_passport.did)
             except Passport.DoesNotExist:
                 context['passport'] = 'null'
+                context['passport_did'] = 'null'
 
             # pass services as JSON in the context
             context['services'] = json.dumps(SCORER_SERVICE_WEIGHTS)
@@ -3077,12 +3081,44 @@ def check_passport_stamps(request, handle):
 def get_passport_trust_bonus(request, handle):
     user = request.user
     profile = user.profile
+    did = None
+    try:
+        db_passport = Passport.objects.get(user_id=user.id)
+        did = db_passport.did
+    except Passport.DoesNotExist:
+        # This should not occur
+        raise
 
     return JsonResponse({
+        "passport_did": did,
         "passport_trust_bonus": profile.passport_trust_bonus,
         "passport_trust_bonus_status": profile.passport_trust_bonus_status,
-        "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated
+        "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
+        "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
     })
+
+
+@login_required
+@require_POST
+def unlink_passport(request, handle):
+    user = request.user
+    profile = user.profile
+
+    # Reset the passport information
+    profile.passport_trust_bonus = 0.5
+    profile.passport_trust_bonus_status = "saved"
+    profile.passport_trust_bonus_last_updated = timezone.now()
+    profile.passport_trust_bonus_stamp_validation = []
+    profile.save()
+
+    try:
+        db_passport = Passport.objects.get(user_id=user.id)
+        db_passport.delete()
+    except Passport.DoesNotExist:
+        pass
+
+    # return a 200 response to signal that unlinking was successful has been called
+    return JsonResponse({'ok': True})
 
 
 @login_required
