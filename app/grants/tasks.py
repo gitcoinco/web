@@ -14,6 +14,7 @@ from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
+from grants.ingest import handle_zksync_ingestion
 from grants.models import Grant, GrantCLR, GrantCollection, Subscription
 from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion, toggle_user_sybil
 from marketing.mails import (
@@ -22,8 +23,6 @@ from marketing.mails import (
 from perftools.models import StaticJsonEnv
 from townsquare.models import Comment
 from unidecode import unidecode
-
-from grants.ingest import handle_zksync_ingestion
 
 logger = get_task_logger(__name__)
 

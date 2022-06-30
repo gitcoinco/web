@@ -1,19 +1,15 @@
 import logging
-import dateutil.parser
-
-import pytz
-import requests
+from datetime import datetime
 
 from django.conf import settings
 
-from datetime import datetime
+import dateutil.parser
+import pytz
+import requests
 from dashboard.models import Activity, Profile
 from economy.models import Token
 from economy.utils import convert_token_to_usdt
-from grants.models import (
-    Grant, Subscription,
-)
-
+from grants.models import Grant, Subscription
 from web3 import Web3
 
 logger = logging.getLogger(__name__)
