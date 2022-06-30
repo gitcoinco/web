@@ -247,6 +247,10 @@ def profile_dict(self, pk, retry: bool = True) -> None:
     :param pk:
     :return:
     """
+
+    if settings.FLUSH_QUEUE:
+        return
+
     if isinstance(pk, list):
         pk = pk[0]
     with redis.lock("tasks:profile_dict:%s" % pk, timeout=LOCK_TIMEOUT):
@@ -360,6 +364,10 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
 
 @app.shared_task(bind=True, max_retries=1)
 def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
     from app.utils import actually_sync_profile
     user = User.objects.filter(pk=user_pk).first() if user_pk else None
     actually_sync_profile(handle, user=user, hide_profile=hide_profile)
@@ -367,6 +375,10 @@ def sync_profile(self, handle, user_pk, hide_profile, retry: bool = True) -> Non
 
 @app.shared_task(bind=True, max_retries=1)
 def recalculate_earning(self, pk, retry: bool = True) -> None:
+
+    if settings.FLUSH_QUEUE:
+        return
+
     from dashboard.models import Earning
     earning = Earning.objects.get(pk=pk)
     src = earning.source
@@ -388,6 +400,9 @@ def record_visit(self, user_pk, profile_pk, ip_address, visitorId, useragent, re
     :param utm: _get_utm_from_cookie(request)
     :return: None
     """
+
+    if settings.FLUSH_QUEUE:
+        return
 
     user = User.objects.filter(pk=user_pk).first() if user_pk else None
     profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
@@ -447,6 +462,9 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
     # error (becasue Activity.objects.create also performs delete operations in a
     # post_save signal)
     # To avoid the integrity error we execute this operation in a transaction
+    if settings.FLUSH_QUEUE:
+        return
+
     with transaction.atomic():
         profile = Profile.objects.filter(pk=profile_pk).first() if profile_pk else None
         if profile:
