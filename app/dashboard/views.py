@@ -103,6 +103,7 @@ from marketing.mails import (
     wall_post_email,
 )
 from marketing.models import Keyword
+from mautic_logging.models import MauticLog
 from oauth2_provider.decorators import protected_resource
 from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from perftools.models import JSONStore, StaticJsonEnv
@@ -7538,9 +7539,16 @@ def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
     if payload:
         body_unicode = payload.decode('utf-8')
         payload = json.loads(body_unicode)
-        response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload)).json()
+        http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params, data=json.dumps(payload))
     else:
-        response = getattr(requests, method.lower())(url=url, headers=headers, params=params).json()
+        http_response = getattr(requests, method.lower())(url=url, headers=headers, params=params)
+
+    response = http_response.json()
+
+
+    # Temporary logging of Mautic interaction in order to prepare for a move over from Mautic to Hubspot.
+    log = MauticLog(method=method, endpoint=endpoint, payload=payload, params=params, status_code=http_response.status_code)
+    log.save()
 
     return response
 
