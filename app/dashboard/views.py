@@ -7547,8 +7547,11 @@ def mautic_proxy_backend(method="GET", endpoint='', payload=None, params=None):
 
 
     # Temporary logging of Mautic interaction in order to prepare for a move over from Mautic to Hubspot.
-    log = MauticLog(method=method, endpoint=endpoint, payload=payload, params=params, status_code=http_response.status_code)
-    log.save()
+    try:
+        log = MauticLog(method=method, endpoint=endpoint, payload=payload, params=params, status_code=http_response.status_code)
+        log.save()
+    except Exception:
+        pass
 
     return response
 
