@@ -55,7 +55,7 @@ Vue.component('trust-bonus-passport', {
     prop: 'visible',
     event: 'change'
   },
-  
+
   template: `<b-modal id="trust-bonus-passport" ref="passport-modal" v-model="modalShow" size="md" body-class="p-3" center hide-header>
   <h4>Passport Details</h4>
   <template v-if="address">
@@ -514,7 +514,7 @@ Vue.component('active-trust-manager', {
           // attempt the signature
           try {
             // Construct a challenge string to sign (this must match the challenge_string in dashboard/views.py::verify_passport)
-            challengeString = `${document.challenge.statement} ${document.challenge.nonce}`
+            challengeString = `${document.challenge.statement} ${document.challenge.nonce}`;
             // get the signature for the document-wide provided challenge (set in dashboard/views.py::get_profile_tab::trust)
             signature = await web3.eth.personal.sign(challengeString, selectedAccount);
           } catch {
@@ -582,7 +582,7 @@ Vue.component('active-trust-manager', {
 
           // if we have sig, attempt to save the passports details into the backend
           const response = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/unlink`, {});
-          
+
           this.isUnlinkPending = false;
 
           // display error state if sig was bad
