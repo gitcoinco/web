@@ -513,8 +513,10 @@ Vue.component('active-trust-manager', {
 
           // attempt the signature
           try {
+            // Construct a challenge string to sign (this must match the challenge_string in dashboard/views.py::verify_passport)
+            challengeString = `${document.challenge.statement} ${document.challenge.nonce}`
             // get the signature for the document-wide provided challenge (set in dashboard/views.py::get_profile_tab::trust)
-            signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
+            signature = await web3.eth.personal.sign(challengeString, selectedAccount);
           } catch {
             // set error - * note that #save-passport does not have an event handler - it is caught by `this.handleErrorClick(e)` as the event bubbles
             this.verificationError = 'In order to verify your Passport, the wallet message requires a signature.</br><a id="save-passport" class="link cursor-pointer">Click here</a> to verify ownership of your wallet and submit to Gitcoin.';
