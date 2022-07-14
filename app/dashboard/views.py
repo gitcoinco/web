@@ -150,6 +150,11 @@ confirm_time_minutes_target = 4
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+# pass a challenge statement to authorize use of Passport
+passport_challenge = {
+    'statement': "I authorize Gitcoin.co to read and calculate a score based on the content of my Gitcoin Passport.\n\nnonce:",
+    'nonce': False
+}
 
 @protected_resource()
 def oauth_connect(request, *args, **kwargs):
@@ -2917,10 +2922,16 @@ def get_profile_tab(request, profile, tab, prev_context):
             # pass the ceramic_url to the frontend
             context['ceramic_url'] = CERAMIC_URL
 
+            # create a copy of the passport_challenge dict
+            challenge = passport_challenge.copy()
             # use session challenge or generate a new one
-            context['challenge'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+            challenge['nonce'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+
+            # pass challenge dict as JSON in the context
+            context['challenge'] = json.dumps(challenge)
+
             # store into session
-            request.session['passport_challenge'] = context['challenge']
+            request.session['passport_challenge'] = challenge['nonce']
         else:
             idena = {}
             idena['is_connected'] = profile.is_idena_connected
@@ -3131,9 +3142,10 @@ def verify_passport(request, handle):
     address = request.POST.get('eth_address')
     signature = request.POST.get('signature')
     did = request.POST.get('did')
-
+    # recreate challenge string
+    challenge_string = f"{passport_challenge['statement']} {request.session['passport_challenge']}"
     # check for valid sig
-    message_hash = defunct_hash_message(text=request.session['passport_challenge'])
+    message_hash = defunct_hash_message(text=challenge_string)
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     sig_is_valid = address.lower() == signer.lower()
 
@@ -4167,7 +4179,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-    
+
     follow_page_size = 10
     page_number = request.GET.get('page', 1)
     if tab == 'people':
