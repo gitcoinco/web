@@ -3,6 +3,9 @@ import json
 import math
 import os
 from datetime import datetime
+from functools import reduce
+from operator import add
+from pprint import pformat
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -15,12 +18,16 @@ from app.services import RedisService
 from app.utils import get_location_from_ip
 from celery import app, group
 from celery.utils.log import get_task_logger
-from dashboard.models import Activity, Bounty, Earning, ObjectView, Profile, TransactionHistory, UserAction
+from dashboard.models import (
+    Activity, Bounty, Earning, ObjectView, Passport, PassportStamp, Profile, TransactionHistory, UserAction,
+)
 from dashboard.utils import get_tx_status_and_details
 from economy.models import EncodeAnything
 from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
+
+from .passport_reader import SCORER_SERVICE_WEIGHTS, TRUSTED_IAM_ISSUER, get_passport, get_stream_ids
 
 logger = get_task_logger(__name__)
 
@@ -436,7 +443,7 @@ def record_join(self, profile_pk, retry: bool = True) -> None:
     """
 
     # There seems to be a race condition, this is task is sometimes
-    # executed in parallel for the same profile. And this leads to an integrity 
+    # executed in parallel for the same profile. And this leads to an integrity
     # error (becasue Activity.objects.create also performs delete operations in a
     # post_save signal)
     # To avoid the integrity error we execute this operation in a transaction
@@ -475,3 +482,146 @@ def save_tx_status_and_details(self, earning_pk, chain='std'):
             txid=txid,
             captured_at=timezone.now(),
         )
+
+
+@app.shared_task
+def calculate_trust_bonus(user_id, did, address):
+    """
+    :param self: Self
+    :param user_id: the user_id
+    :param did: the did for the passport
+    :return: None
+    """
+
+    # delay import as this is only available in celery envs
+    import didkit
+
+    try:
+        # Verify that this DID is not associated to any other profile.
+        # We want to avoid the same user creating multiple accounts and re-using the same did
+        duplicates = Passport.objects.exclude(user_id=user_id).filter(did=did)
+
+        # Duplicate DID
+        if len(duplicates) > 0:
+            logger.error("The DID '%s' is already associate with another users profile (checked for user '%s')", did, user_id)
+            return
+
+        # Pull streamIds from Ceramic Account associated with DID
+        stream_ids = get_stream_ids(did)
+
+        # No Ceramic Account found for user
+        if not stream_ids:
+            logger.error("No Ceramic Account found for '%s'", did)
+            return
+
+        # check account against did
+        is_owner = did.lower() == f"did:pkh:eip155:1:{address.lower()}"
+
+        # Invalid owner
+        if not is_owner:
+            logger.error("Bad owner when checking did '%s'", did)
+            return
+
+        # Retrieve DIDs Passport from Ceramic
+        passport = get_passport(stream_ids=stream_ids)
+
+        # No Passport discovered
+        if not passport:
+            logger.error("No Passport discovered for '%s'", did)
+            return
+
+        # Build a dict like
+        #    {
+        #       'TRUSTED_IAM_ISSUER#Poh': {
+        #         'match_percent': 0.50,
+        #         'is_verified': 0  # The user needs at least one verification of this type to get the match_percent
+        #     },
+        #     ...
+        # }
+        matched_services = {
+            s['ref']: {
+                'match_percent': s['match_percent'] / 100.0,
+                'is_verified': 0,
+            } for s in SCORER_SERVICE_WEIGHTS
+        }
+
+        # Store the passport
+        db_passport, _ = Passport.objects.update_or_create(user_id=user_id, defaults={
+            "did": did,
+            "passport": passport
+        })
+
+        # Check the validity of each stamp in the passport
+        for stamp in passport['stamps']:
+            if stamp and stamp['credential'] and stamp["provider"]:
+                # get the user credential ID, this will have the form: "did:ethr:0x...#POAP"
+                subject_id = stamp["credential"]["credentialSubject"]["id"]
+
+                # the subjectId must match the users DID
+                is_subject_valid = subject_id.lower() == did.lower()
+
+                # the stamp must not have expired before being registered (when expiry comes around, should we expire the stamp on the scorer side?)
+                is_stamp_expired = datetime.strptime(stamp["credential"]["expirationDate"], "%Y-%m-%dT%H:%M:%S.%fZ") < datetime.now()
+
+                # the stamp must be issued by the trusted IAM server
+                is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
+
+                # check that the provider matches the provider in the VC
+                is_for_provider = stamp["provider"] == stamp["credential"]["credentialSubject"]["provider"]
+
+                if not is_subject_valid:
+                    logger.error("Invalid stamp subject: %s != %s", subject_id, did)
+
+                if is_stamp_expired:
+                    logger.error("Expired stamp (%s): %s", subject_id, stamp["credential"]["expirationDate"])
+
+                if not is_issued_by_iam:
+                    logger.error("Stamp issuer missmatch: '%s' != '%s'", TRUSTED_IAM_ISSUER, stamp["credential"]["issuer"])
+
+                if not is_for_provider:
+                    logger.error("Stamp provider missmatch: '%s' != '%s' ", stamp["provider"], stamp["credential"]["credentialSubject"]["provider"])
+
+                if is_subject_valid and not is_stamp_expired and is_issued_by_iam and is_for_provider:
+                    # Get the stamp ID, and register it with our records
+                    # This will be used to ensure that this stamp is not linked to any other user profile
+                    stamp_id = stamp["credential"]["credentialSubject"]["hash"]
+
+                    # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
+                    duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
+                    stamp_id_is_valid = len(duplicate_stamp_ids) == 0
+
+                    if not stamp_id_is_valid:
+                        logger.error("Duplicate stamp id detected: %s", stamp_id)
+
+                    if stamp_id_is_valid:
+                        # Save the stamp id and associate it with the Passport entry
+                        stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id, defaults={
+                            "passport": db_passport
+                        })
+
+                        # Proceed with verifying the credential
+                        verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
+                        verification = json.loads(verification)
+
+                        # Check that the credential verified
+                        stamp['is_verified'] = (not verification["errors"])
+
+                        # Given a valid stamp - set is_verified and add stamp to returns
+                        if stamp['is_verified']:
+                            # The user only needs one verification for a certain provider in order to obtain the score for that provider
+                            service_key = f"{TRUSTED_IAM_ISSUER}#{stamp['provider']}"
+                            matched_services[service_key]['is_verified'] = True
+
+        # Calculate the trust score based on the verified stamps
+        trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))
+
+        # Save the new trust score into the users profile
+        profile = Profile.objects.get(user_id=user_id)
+        profile.passport_trust_bonus = trust_score
+        profile.passport_trust_bonus_status = "saved"
+        profile.passport_trust_bonus_last_updated = timezone.now()
+        profile.save()
+
+    except Exception as e:
+        # We expect this verification to throw
+        logger.error("Error calculating trust bonus score!", exc_info=True)

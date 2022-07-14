@@ -1,6 +1,7 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
+const eventWalletDisconnect = new Event('walletDisconnect', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
 if (!Object.hasOwnProperty.call(window, 'web3')) {
@@ -26,9 +27,6 @@ function initWallet() {
   const isProd = url.host == 'gitcoin.co' && url.protocol == 'https:';
   const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
   const providerOptions = {
-    authereum: {
-      'package': Authereum
-    },
     fortmatic: {
       'package': Fortmatic,
       options: {
@@ -115,9 +113,11 @@ async function fetchAccountData(provider) {
   // Load chain information over an HTTP API
   // const chainData = await EvmChains.getChain(chainId);
 
-  document.querySelector('.network-name').textContent = networkName;
-  document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
-  document.querySelector('.wallet-network').classList.add(networkName.split(' ').join('-'));
+  if (networkName) {
+    document.querySelector('.network-name').textContent = networkName;
+    document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
+    document.querySelector('.wallet-network').classList.add(networkName.split(' ').join('-'));
+  }
 
   document.querySelector('#wallet-btn').innerText = 'Change Wallet';
 
@@ -234,44 +234,43 @@ function displayProvider() {
   createImg(image);
 }
 
-async function setupPolygon(network = networkName) {
-  // Connect to Polygon network with MetaMask
-  let chainId = network === 'mainnet' ? '0x89' : '0x13881';
-  let rpcUrl = network === 'mainnet' ? 'https://polygon-rpc.com'
-    : 'https://rpc-mumbai.matic.today';
+async function switchChain(id) {
+  const web3 = new Web3(provider);
+  const providerName = window.Web3Modal.getInjectedProviderName();
+  const chainInfo = getDataChains(Number(id), 'chainId')[0];
+  const chainId = Web3.utils.numberToHex(chainInfo.chainId);
 
   try {
-    await ethereum.request({
+    await web3.currentProvider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }]
     });
   } catch (switchError) {
     // This error code indicates that the chain has not been added to MetaMask
     if (switchError.code === 4902) {
-      let networkText = network === 'rinkeby' || network === 'goerli' ||
-        network === 'ropsten' || network === 'kovan' ? 'testnet' : network;
 
       try {
-        await ethereum.request({
+        await web3.currentProvider.request({
           method: 'wallet_addEthereumChain',
           params: [{
             chainId,
-            rpcUrls: [rpcUrl],
-            chainName: `Polygon ${networkText.replace(/\b[a-z]/g, (x) => x.toUpperCase())}`,
-            nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 }
+            rpcUrls: chainInfo.rpc,
+            chainName: chainInfo.name,
+            nativeCurrency: chainInfo.nativeCurrency,
+            blockExplorerUrls: chainInfo.explorers && chainInfo.explorers.map(e => e.url)
           }]
         });
       } catch (addError) {
         if (addError.code === 4001) {
-          throw new Error('Please connect MetaMask to Polygon network.');
+          throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
         } else {
           console.error(addError);
         }
       }
     } else if (switchError.code === 4001) {
-      throw new Error('Please connect MetaMask to Polygon network.');
+      throw new Error(`Please connect ${providerName} to ${chainInfo.name} network.`);
     } else if (switchError.code === -32002) {
-      throw new Error('Please respond to a pending MetaMask request.');
+      throw new Error(`Please respond to a pending ${providerName} request.`);
     } else {
       console.error(switchError);
     }
@@ -333,6 +332,8 @@ async function onDisconnect() {
   document.querySelector('#wallet-btn').innerText = 'Connect Wallet';
   document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
   cleanUpWalletData();
+
+  document.dispatchEvent(eventWalletDisconnect);
 
   // Set the UI back to the initial state
   // document.querySelector("#prepare").style.display = "block";

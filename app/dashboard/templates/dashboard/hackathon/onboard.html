@@ -133,6 +133,16 @@
                       {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
                           <a class="btn btn-primary col-12"  href="{% url 'hackathon' hackathon.slug %}">See Prizes</a>
                       {% endif %}
+                      {% if hackathon.discord_server is not None %}
+                          <a
+                            type="button"
+                            class="btn btn-outline-primary col-12 mt-2"
+                            href="{{ hackathon.discord_server }}"
+                            target="_blank"
+                          >
+                            <i class="fab fa-discord mr-1"></i>Join Discord
+                          </a>
+                      {% endif %}        
                   {% endif %}
                   </div>
                 </div>

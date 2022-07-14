@@ -1,7 +1,7 @@
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.use(VueQuillEditor);
 
-const step1Errors = [ 'grant_tags', 'has_external_funding' ];
+const step1Errors = [ 'grant_tags', 'tag_eligibility_reason', 'has_external_funding' ];
 const step2Errors = [ 'title', 'description', 'reference_url', 'twitter_handle_1' ];
 const step3Errors = ['chainId'];
 const errorsByStep = [ step1Errors, step2Errors, step3Errors ];
@@ -147,6 +147,8 @@ Vue.mixin({
         vm.$set(vm.errors, 'rsk_payout_address', 'Please enter RSK address');
       } else if (vm.chainId == 'algorand' && !vm.form.algorand_payout_address) {
         vm.$set(vm.errors, 'algorand_payout_address', 'Please enter Algorand address');
+      } else if (vm.chainId == 'cosmos' && !vm.form.cosmos_payout_address) {
+        vm.$set(vm.errors, 'cosmos_payout_address', 'Please enter Cosmos address');
       }
 
       if (!vm.form.grant_type) {
@@ -154,6 +156,9 @@ Vue.mixin({
       }
       if (!vm.form.grant_tags.length > 0) {
         vm.$set(vm.errors, 'grant_tags', 'Please select one or more grant tag');
+      }
+      if (!vm.form.tag_eligibility_reason.length) {
+        vm.$set(vm.errors, 'tag_eligibility_reason', 'Please enter eligibility tag reasoning');
       }
       if (vm.richDescription.length < 10) {
         vm.$set(vm.errors, 'description', 'Please enter description for the grant');
@@ -214,8 +219,10 @@ Vue.mixin({
         'kusama_payout_address': form.kusama_payout_address,
         'rsk_payout_address': form.rsk_payout_address,
         'algorand_payout_address': form.algorand_payout_address,
+        'cosmos_payout_address': form.cosmos_payout_address,
         'grant_type': form.grant_type,
         'tags[]': form.grant_tags,
+        'tag_eligibility_reason': form.tag_eligibility_reason,
         'network': form.network,
         'region': form.region,
         'has_external_funding': form.has_external_funding
@@ -293,6 +300,7 @@ Vue.mixin({
       form.kusama_payout_address = '';
       form.rsk_payout_address = '';
       form.algorand_payout_address = '';
+      form.cosmos_payout_address = '';
     },
     onFileChange(e) {
       let vm = this;
@@ -391,12 +399,13 @@ const grant_chains = [
   { 'name': 'binance', 'label': 'Binance'},
   { 'name': 'polkadot', 'label': 'Polkadot'},
   { 'name': 'kusama', 'label': 'Kusama'},
-  { 'name': 'algorand', 'label': 'Algorand'}
+  { 'name': 'algorand', 'label': 'Algorand'},
+  { 'name': 'rsk', 'label': 'RSK'},
+  { 'name': 'cosmos', 'label': 'Cosmos'}
 ];
 
 if (document.contxt.is_staff) {
   const staff_chains = [
-    { 'name': 'rsk', 'label': 'RSK'}
   ];
 
   grant_chains.push(...staff_chains);
@@ -447,8 +456,10 @@ if (document.getElementById('gc-new-grant')) {
           kusama_payout_address: '',
           rsk_payout_address: '',
           algorand_payout_address: '',
+          cosmos_payout_address: '',
           grant_type: 'gr12',
           grant_tags: [],
+          tag_eligibility_reason: '',
           network: 'mainnet'
         },
         editorOptionPrio: {
@@ -554,7 +565,8 @@ if (document.getElementById('gc-new-grant')) {
         'eth_payout_address',
         'grant_type',
         'team_members',
-        'grant_tags'
+        'grant_tags',
+        'tag_eligibility_reason'
       ];
 
       for (const key of writeToRoot) {

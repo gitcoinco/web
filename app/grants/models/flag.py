@@ -4,6 +4,13 @@ from django.utils.translation import gettext_lazy as _
 from economy.models import SuperModel
 
 
+class FlagQuerySet(models.QuerySet):
+    def range(self, range):
+        """Filter results to only flags within range of Grants being queried"""
+        if not range:
+            return self
+        return self.filter(grant__id__in=range)
+
 class Flag(SuperModel):
 
     profile = models.ForeignKey(
@@ -25,6 +32,8 @@ class Flag(SuperModel):
         null=False,
         help_text=_('The associated Grant.'),
     )
+
+    objects = FlagQuerySet.as_manager()
 
     def post_flag(self):
         from dashboard.models import Activity, Profile

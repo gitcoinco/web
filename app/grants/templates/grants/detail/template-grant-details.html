@@ -215,6 +215,19 @@
                 <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.algorand_payout_address"><i class="far fa-copy"></i></copy-clipboard>
               </div>
             </template>
+
+            <!-- COSMOS -->
+            <template v-if="grant.tenants && grant.tenants.indexOf('COSMOS') > -1">
+              <div class="d-flex align-items-center">
+                <img class="mr-1 text-grey-400" src="{% static 'v2/images/chains/cosmos.svg' %}" alt="" width="16">
+                <a target="_blank" :href="`https://mintscan.io/cosmos/account/${grant.cosmos_payout_address}`">
+                  <span id="cosmos-address" class="wallet-address" v-b-tooltip.hover.bottom="grant.cosmos_payout_address">
+                    [[grant.cosmos_payout_address | truncateHash]]
+                  </span>
+                </a>
+                <copy-clipboard class="btn btn-sm text-highlight-dark-blue" :string="grant.cosmos_payout_address"><i class="far fa-copy"></i></copy-clipboard>
+              </div>
+            </template>
           </div>
 
           <!-- Twitter Verified-->
@@ -476,8 +489,8 @@
                   Read more on how to withdraw from L2 wallets.
                 </span>
               </b-card-text>
-              <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/kb/article/75-how-do-i-withdraw-my-funds-from-an-l2-layer-zksync-and-or-polygon-matic/" target="_blank">
-                Read L2 Withdrawal guide
+              <a class="btn btn-block btn-primary" rel="noopener noreferrer" href="https://support.gitcoin.co/gitcoin-grants/grantee-questions#withdrawing-funds" target="_blank">
+                Read L2 withdrawal guides
               </a>
             </template>
           {% endif %}
@@ -770,7 +783,7 @@
           <b-tooltip custom-class="grant-edit-tooltip" target="grant-details-edit-tags" triggers="hover" placement="bottomright">
             Editing tags requires approval as it might affect your matching round eligibility. <a href="https://support.gitcoin.co/kb/article/134-learn-more-about-matching-rounds/">Learn more</a>
             <br><br>
-            To edit your tags, please contact us at <a href="mailto:tags@gitcoin.co">tags@gitcoin.co</a>
+            To request new tags, please fill in this <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSeiaaPaYC2HkTvM_uXhlCeKSBVXX382rH4bEMDlyVynLCAeug/viewform">request form</a>
           </b-tooltip>
       </div>
 
@@ -967,6 +980,20 @@
             </div>
 
             <b-tooltip custom-class="grant-edit-tooltip" target="algorand_payout_address_wrapper" triggers="hover" placement="bottomright">
+              To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
+            </b-tooltip>
+          </template>
+
+          <template v-if="grant.tenants && grant.tenants.indexOf('COSMOS') > -1">
+            <label class="font-subheader font-weight-light letter-spacing" for="cosmos_payout_address">
+              Cosmos Recipient Wallet Address
+            </label>
+
+            <div id="cosmos_payout_address_wrapper">
+              <input id="cosmos_payout_address" v-model="grant.cosmos_payout_address" name="cosmos_payout_address" class="form__input form__input-lg" maxlength="50" placeholder="0x0" required disabled/>
+            </div>
+
+            <b-tooltip custom-class="grant-edit-tooltip" target="cosmos_payout_address_wrapper" triggers="hover" placement="bottomright">
               To edit your funding details, please contact us at <a href="mailto:support@gitcoin.co">support@gitcoin.co</a>
             </b-tooltip>
           </template>

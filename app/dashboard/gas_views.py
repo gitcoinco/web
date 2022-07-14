@@ -109,7 +109,7 @@ def gas_calculator(request):
 
     actions = [{
         'name': _('New Bounty'),
-        'target': '/new',
+        'target': 'bounty/new',
         'persona': 'funder',
         'product': 'bounties',
     }, {

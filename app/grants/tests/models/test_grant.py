@@ -151,6 +151,11 @@ class TestGrant:
 
         assert hasattr(grant, 'algorand_payout_address')
 
+    def test_grant_has_cosmos_payout_address(self):
+        grant = GrantFactory()
+
+        assert hasattr(grant, 'cosmos_payout_address')
+
     def test_grant_has_contract_owner_address(self):
         grant = GrantFactory()
 

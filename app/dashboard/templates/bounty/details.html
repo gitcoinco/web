@@ -49,7 +49,7 @@
             <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
             <br>
             <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
-            <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
+            <p id='submitsolicitation'>{% url 'new_bounty' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
           </div>
 
           <div class="col-12" id="bounty_details">
@@ -531,7 +531,7 @@
 
   <script src="/dynamic/js/tokens_dynamic.js"></script>
 
-  {% bundle merge_js file libs %}
+  {% bundle merge_js file bounty_details_libs %}
     <script src="index.min.js" base-dir="/node_modules/ipfs-api/dist/"></script>
     <script src="highlight.min.js" base-dir="/node_modules/@highlightjs/cdn-assets/"></script>
     <script src="markdown-it.min.js" base-dir="/node_modules/markdown-it/dist/"></script>

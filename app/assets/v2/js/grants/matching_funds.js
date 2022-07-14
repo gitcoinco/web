@@ -145,9 +145,10 @@ Vue.mixin({
 
       const chainId = Number(web3.eth.currentProvider.chainId);
 
-      if (chainId < 1 || chainId > 5) {
+      // At this moment claims can only be completed on mainnet
+      if (chainId !== 1) {
         waitingState(false);
-        _alert('Please connect to a valid Ethereum network', 'danger');
+        _alert('Please connect to Ethereum mainnet.', 'danger');
         return;
       }
 
@@ -237,34 +238,30 @@ Vue.mixin({
         }
       });
     },
-    stringifyClrs(clrs) {
-      let c = clrs.map(a => a.display_text);
-      let g = [];
-
-      c.every(elem => {
-        g.push(elem);
-        if (g.join(', ').length > 24) {
-          g.splice(-1);
-          g.push(`+${c.length - g.length} more`);
-          return false;
-        }
-        return true;
-      });
-
-      return g.slice(0, -1).join(', ') + ' ' + g.slice(-1);
-    },
     scrollToElement(element) {
       const container = this.$refs[element][this.tabSelected];
 
       container.scrollIntoView(true);
     },
     hasHistoricalMatches(grant) {
-      return grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length;
+      return grant.clr_matches.length &&
+      (
+        grant.clr_matches.filter(a => a.claim_tx).length ||
+        grant.clr_matches.filter(a => [ 8, 9 ].includes(a.round_number)).length
+      );
     },
     canClaimMatch(grant) {
-      return grant.clr_matches.length && grant.clr_matches.filter(
-        a => a.claim_tx === null &&
-        a.grant_payout).length;
+      return grant.clr_matches.length &&
+        grant.clr_matches.filter(a =>
+          a.claim_tx === null &&
+          a.grant_payout &&
+          [ 'ready', 'pending' ].includes(a.grant_payout.status)
+        ).length;
+    },
+    filterPendingClaims(matches) {
+      return this.filterMatchingPayout(matches).filter(
+        match => !match.claim_tx || match.claim_tx == ''
+      );
     },
     filterMatchingPayout(matches) {
       return matches.filter(match => match.grant_payout);

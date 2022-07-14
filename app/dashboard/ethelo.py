@@ -1,9 +1,9 @@
-from grants.models import Grant, GrantQuerySet
+from grants.models import Flag, FlagQuerySet, Grant, GrantQuerySet
 
 EXPORT_FILENAME = "grants_export_for_ethelo.json"
 
 
-def get_grants_from_database(start_grant_number: int, end_grant_number: int=None, inactive_grants_only: bool=True) -> dict:
+def get_grants_from_database(start_grant_number: int, end_grant_number: int=None, inactive_grants_only: bool=True, flagged_grants_only: bool=False) -> dict:
     """Query the grants database and return a JSONify-able dict that can be uploaded into ethelo.
 
     Args:
@@ -22,7 +22,12 @@ def get_grants_from_database(start_grant_number: int, end_grant_number: int=None
         end_grant_number = query.count()
 
     pk_list = list(range(start_grant_number, end_grant_number + 1))
-    query.filter(pk__in=pk_list)
+    
+    if flagged_grants_only:
+        flagQuery = FlagQuerySet(Flag)
+        pk_list = [f.grant.id for f in flagQuery.range(pk_list)]
+    
+    query = query.filter(pk__in=pk_list)
 
     grants = [
         _format_grant(grant)
@@ -55,9 +60,45 @@ def _format_grant(grant: Grant) -> dict:
             "Creator Handle": grant.admin_profile.handle,
             "Database Number": grant.pk,
             "Tags": tags,
+            "Flags": _format_flags(grant)
         },
     }
 
 
 def _get_status(grant: Grant) -> str:
     return "Approved" if grant.active else "Unapproved"
+
+def _format_flags(grant: Grant) -> list:
+    """Format all flags of a grant into a list for the Flags field
+
+    Args:
+        grant (Grant): Grant to have its flags formatted.
+
+    Returns:
+        list
+    """
+    flags = list(grant.flags.all().values("comments", "profile", "created_on", "processed", "comments_admin"))
+    return [
+        _format_flag(flag)
+        for flag in flags
+    ]
+
+def _format_flag(flag: Flag) -> dict:
+    """Format one flag 
+
+    Args:
+        flag (Flag): Flag to be formatted
+
+    Returns:
+        dict: JSONify-able grant dictionary.
+    """
+    flag_vals = []
+    for key in flag:
+        flag_vals.append(flag[key])
+    return {
+        "comment": flag_vals[0],
+        "created by": flag_vals[1],
+        "on": str(flag_vals[2]),
+        "processed": flag_vals[3],
+        "admin comments": flag_vals[4]
+    }

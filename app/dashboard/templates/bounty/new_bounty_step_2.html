@@ -1,0 +1,237 @@
+<div v-if="step === 2" class="create-wrapper">
+  <div class="row ml-0">
+    <div class="new-border-top col-12 col-md-9">
+      <p>Step 2 of 5</p>
+      <h4>Bounty Details</h4>
+
+      <!-- Bounty Information -->
+      <div class="pb-4">
+        <label class="mb-1 font-subheader font-weight-normal letter-spacing">Bounty information</label>
+        <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap pt-1">
+          <label
+            v-bind:class="'btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.bountyInformationSource === 'github')?'active':'')">
+            <input type="radio" name="bounty_information" value="github" v-model="form.bountyInformationSource">
+            <div class="p-1">
+              <p class="m-0 text-grey-500 font-subheader">Import from GitHub</p>
+              <p class="m-0 text-grey-400 mt-1">Import details from a GitHub issue</p>
+            </div>
+          </label>
+          <label
+            v-bind:class="'btn btn-radio text-left chain-btn mr-2 mb-2 py-2 px-2 bounty-information-label ' + ((form.bountyInformationSource === 'custom')?'active':'')">
+            <input type="radio" name="bounty_information" value="custom" v-model="form.bountyInformationSource">
+            <div class="p-1">
+              <p class="m-0 text-grey-500 font-subheader">Create Custom Bounty</p>
+              <p class="m-0 text-grey-400 mt-1">Create a new bounty from scratch</p>
+            </div>
+          </label>
+        </div>
+        <div class="text-danger" v-if="step2Errors.bountyInformationSource && !form.bountyInformationSource">
+          [[step2Errors.bountyInformationSource]]
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource === 'github'">
+    <div class="new-border-mid col-12 col-md-9 pb-4">
+      <div class="pl-0">
+        <!-- GitHub Issue Url -->
+        <label class="mb-1 font-subheader font-weight-normal letter-spacing">GitHub Issue Url</label>
+        <input class="form-control" id="new-bounty-issue-url" name='issueURL' v-model="form.issueUrl" type="url"
+          placeholder="https://github.com/org/repo/issues/n" @input="getIssueDetails(form.issueUrl)"
+          value="{% if issueURL %}{{ issueURL }}{% endif %}" required />
+      </div>
+      <div class="text-danger" v-if="step2Errors.issueDetails">
+        [[step2Errors.issueDetails]]
+      </div>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource === 'github' && form.issueDetails">
+    <div class="new-border-mid col-9 pb-4">
+      <!-- GitHub Issue Title -->
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Title</label>
+      <input class="form-control" id="new-bounty-title" name='title' v-model="form.title" :readonly="true" required />
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource === 'github' && form.issueDetails">
+    <div class="new-border-mid col-9 pb-4">
+      <!-- GitHub Issue Details -->
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Description</label>
+
+      <a class="btn btn-link" :href="form.issueUrl" target="_blank" rel="noopener noreferrer">
+        Edit on Github <i class="far fa-external-link"></i>
+      </a>
+
+      <a class="btn btn-link" @click="getIssueDetails(form.issueUrl)">
+        Resync with GitHub<i class="far fa-sync ml-1"></i>
+      </a>
+
+      <div class="issue_description mb-3" :inner-html.prop="form.issueDetails.description | markdownit"></div>
+    </div>
+  </div>
+
+  <div v-if="form.bountyInformationSource === 'custom'" class="row ml-0">
+    <!-- Custom Bounty Title -->
+    <div class="new-border-mid col-12 col-md-9 pb-4">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Title</label>
+      <input class="form-control" id="new-bounty-custom-title" name='title' v-model="form.title" :required="step2Submitted && !form.title" />
+      <div class="text-danger" v-if="step2Errors.title && !form.title">
+        [[step2Errors.title]]
+      </div>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="isHackathonBounty && form.bountyInformationSource !== null">
+    <div class="new-border-mid col-12 col-md-9 pb-4">
+      <!-- Github Org Url -->
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">GitHub Org URL</label>
+      <p class="text-muted mb-0">Enter your organization GitHub link. The logo and name of the org will be displayed on this bounty.</p>
+      <input class="form-control" id='new-bounty-organisation-url' name='organisationUrl' v-model="form.organisationUrl"
+        type="url" placeholder="https://github.com/org" :required="step2Submitted && !form.organisationUrl" @input="validateOrgUrl(form.organisationUrl)"/>
+      <div class="text-danger" v-if="step2Errors.organisationUrl">
+        [[step2Errors.organisationUrl]]
+      </div>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource === 'custom'">
+    <div class="new-border-mid col-12 col-md-9">
+      <!-- Custom Bounty Details Editor -->
+      <div class="pl-0 col-9">
+        <label class="mb-1 font-subheader font-weight-normal letter-spacing">Description</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource === 'custom'">
+    <!-- Custom Bounty Details Editor -->
+    <div class="new-border-mid col-12 col-md-9">
+      <quill-editor-ext id="new-bounty-custom-editor-ext" :options="editorOptionPrio" @change="updateCustomDescription($event)" :initial="form.richDescriptionContent"
+      :class="`editor ${step2Errors.description && !(form.richDescription && form.richDescription.length) ? 'invalid' : ''}`"
+      ></quill-editor-ext>
+      <div class="text-danger" v-if="step2Errors.description && !form.richDescription.trim()">
+        [[step2Errors.description]]
+      </div>
+    </div>
+
+    <div class="new-border-mid col-12 d-md-none pt-2">
+      <div class="bounty-creation-help p-3">
+        If your bounty is part of a hackathon, you can also put judging criteria, prizes, and partial payout policies
+        here!
+        </div>
+    </div>
+
+    <div class="d-none d-md-block col-md-3">
+      <div class="bounty-creation-help p-3">
+        If your bounty is part of a hackathon, you can also put judging criteria, prizes, and partial payout policies
+        here!
+      </div>
+    </div>
+
+    <div class="new-border-mid col-12 col-md-9 pb-4"></div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource !== null">
+    <div class="new-border-mid col-12 col-md-9">
+      <!-- Acceptance Criteria -->
+      <div class="pl-0 col-9">
+        <label class="mb-1 font-subheader font-weight-normal letter-spacing">Acceptance Criteria</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource !== null">
+    <div class="new-border-mid col-12 col-md-9">
+      <!-- Acceptance Criteria -->
+      <quill-editor-ext id="new-bounty-acceptace-criteria-editor-ext" :options="editorOptionPrio" @change="updateAcceptanceCriteria($event)" :initial="form.richAcceptanceCriteria"
+      :class="`editor`"
+      ></quill-editor-ext>
+    </div>
+
+    
+    <div class="new-border-mid col-12 d-md-none pt-2">
+      <div class="bounty-creation-help p-3">
+        Check out <a href="https://support.gitcoin.co/gitcoin-bounties/bounty-guidelines">great examples</a> of acceptance criteria from some of our past successful bounties!
+      </div>
+    </div>
+
+    <div class="d-none d-md-block col-md-3">
+      <div class="bounty-creation-help p-3">
+        Check out <a href="https://support.gitcoin.co/gitcoin-bounties/bounty-guidelines">great examples</a> of acceptance criteria from some of our past successful bounties!
+      </div>
+    </div>
+
+    <div class="new-border-mid col-12 col-md-9 pb-4"></div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource !== null">
+    <!-- Resources -->
+    <div class="new-border-mid col-12 col-md-9 pb-4">
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Resources</label>
+      <quill-editor-ext id="new-bounty-resources-editor-ext" :options="editorOptionPrio" @change="updateResources($event)" :initial="form.richResources"
+      :class="`editor`"
+      ></quill-editor-ext>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="form.bountyInformationSource !== null">
+    <div class="new-border-mid col-12 col-md-9 pb-4">
+      <!-- Contact Details -->
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Contact Details</label>
+      <p class="text-muted mb-0">How should the contributor get in touch with you / the team? Enter Discord handle /
+        Telegram / email address</p>
+
+      <div v-for="(details, index) in form.contactDetails"
+        v-bind:class="'form-row mt-1 new-bounty-contact-details-form-' + index">
+        <div class="col-12 col-sm-6">
+          <v-select class="new-bounty-contact-type" :required="'true'" :options="$root.contactDetailsType"
+            v-model="details.type" :clearable="false">
+            <template #search="{attributes, events}">
+              <input class="vs__search" :required="step2Submitted && !details.type" v-bind="attributes" v-on="events" />
+            </template>
+          </v-select>
+        </div>
+
+        <div class="col-12 col-sm-6">
+          <div class="input-group is-invalid">
+            <input name="contact-value" type="text" :placeholder="getContactDetailsPlaceholder(details.type)"
+              class="form-control new-bounty-contact-value" v-model="details.value">
+            <div class="input-group-append">
+              <button type="button"
+                v-bind:class="'new-bounty-btn-delete-contact btn btn-link text-danger ' + ($root.form.contactDetails.length > 1?'':'hidden')"
+                @click="removeContactDetails(index)"><i class="far fa-times"></i></button>
+              <button type="button"
+                v-bind:class="'new-bounty-btn-add-contact btn btn-link ' + ($root.form.contactDetails.length === index + 1?'':'invisible')"
+                @click="addContactDetails()"><i class="far fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row ml-0" v-if="!isHackathonBounty && form.bountyInformationSource !== null">
+    <div class="new-border-mid col-12 col-md-9 pb-4">
+      <!-- Show as Organisation -->
+      <label class="mb-1 font-subheader font-weight-normal letter-spacing">Show as Organisation</label>
+      <p class="text-muted mb-0">Enter an organization GitHub link to display its logo and name on this bounty</p>
+      <input class="form-control" id='new-bounty-organisation-url' name='organisationUrl' v-model="form.organisationUrl"
+        type="url" placeholder="https://github.com/org" :required="step2Submitted && !form.organisationUrl" />
+    </div>
+  </div>
+
+  <div class="row ml-0">
+    <div class="new-border-bottom col-12 col-md-9 pb-4"></div>
+  </div>
+
+  <div class="d-flex justify-content-center navigation">
+    <button type="button" @click="updateNav(-1)">
+      <i class="text-primary pr-2 fa fa-arrow-left"></i> Back
+    </button>
+    <button type="button" @click="updateNav(1)" :aria-disabled="!isStep2Valid" :disabled="!isStep2Valid">
+      Next <i class="text-primary pl-2 fa fa-arrow-right"></i>
+    </button>
+  </div>
+</div>

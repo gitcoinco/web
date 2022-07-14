@@ -209,33 +209,26 @@
         </div>
         <!-- Checkout -->
         <div class="text-center mt-3 mb-4 mx-auto">
-          <eth-checkout-button class="d-none d-md-block" :active-checkout="activeCheckout"
-            :on-polygon-update="onPolygonUpdate" :on-zk-sync-update="onZkSyncUpdate"
-            :standard-checkout="standardCheckout" :is-zk-sync-down="isZkSyncDown" :is-polygon-down="isPolygonDown"
-            :current-tokens="currentTokens" :donation-inputs="donationInputs" :max-cart-items="maxCartItems"
-            :grants-by-tenant="grantsByTenant" :grants-under-minimal-contribution="grantsUnderMinimalContribution"
-            :network="network" :multisig-grants="multisigGrants">
+          <eth-checkout-button
+            class="d-none d-md-block"
+            :active-checkout="activeCheckout"
+            :on-polygon-update="onPolygonUpdate"
+            :on-zk-sync-update="onZkSyncUpdate"
+            :standard-checkout="standardCheckout"
+            :is-zk-sync-down="isZkSyncDown"
+            :is-polygon-down="isPolygonDown"
+            :current-tokens="currentTokens"
+            :donation-inputs="donationInputs"
+            :donation-inputs-polygon="donationInputsPolygon"
+            :max-cart-items="maxCartItems"
+            :grants-by-tenant="grantsByTenant"
+            :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+            :network="network"
+            :multisig-grants="multisigGrants"
+          >
           </eth-checkout-button>
         </div>
-        <!-- Checkout recommendation -->
-        <div class="text-center mt-2" v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
-          <div class="font-smaller-3 bg-lightpurple p-3 rounded w-100">
-            <template v-if="!isNaN(checkoutRecommendation.savingsInPercent)">
-              💡 Save <span class="text-primary">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
-              on gas fees with [[ checkoutRecommendation.name ]]!
-            </template>
-          </div>
-        </div>
-        <!-- CLR matching -->
-        <!-- <div class="row justify-content-start align-items-center ml-1 mt-3">
-          <input v-model="include_for_clr" type="checkbox" id="include_for_clr" name="include_for_clr" class="mr-2" />
-          <label class="mb-0" for="include_for_clr">{% trans "Include this contribution to CLR matching" %}</label>
-        </div> -->
-        <!-- Hide wallet -->
-        <!-- <div class="row justify-content-start align-items-center ml-1 mt-3">
-          <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address" class="mr-2" />
-          <label class="mb-0" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
-        </div> -->
+
         </div>
       </div>
     </div>

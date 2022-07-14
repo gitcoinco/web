@@ -10,6 +10,12 @@
           [[ 'Grant' | pluralize(numGrants)]]
           <span v-if="params.keyword">- '[[params.keyword]]'</span>
         </template>
+
+        <copy-clipboard v-if="currentCLR && currentCLR.shareURL" class="ml-3 btn-sm btn-outline-black" :string="[[ currentCLR.shareURL ]]">
+          <i class="far fa-share-alt"></i>
+          Share Grant Round
+        </copy-clipboard>
+
       </span>
 
       <div class="col-12 col-lg-6 text-right pt-2">

@@ -58,7 +58,6 @@ def get_celo_txn_status(txnid):
     return None
 
 
-
 def sync_celo_payout(contribution):
     is_successfull_txn = False
 

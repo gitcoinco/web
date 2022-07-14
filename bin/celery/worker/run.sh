@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-cd /code/app; python3 manage.py celery
+cd /code/app; python3.7 manage.py celery

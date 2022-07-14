@@ -443,6 +443,13 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The algorand wallet address where subscription funds will be sent.'),
     )
+    cosmos_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The cosmos wallet address where subscription funds will be sent.'),
+    )
     # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
@@ -578,6 +585,7 @@ class Grant(SuperModel):
     )
     categories = models.ManyToManyField('GrantCategory', blank=True) # TODO: REMOVE
     tags = models.ManyToManyField('GrantTag', blank=True)
+    tag_eligibility_reason = models.TextField(default='', blank=True, help_text=_('Eligibility Tag Reasoning'))
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
@@ -683,6 +691,8 @@ class Grant(SuperModel):
             tenants.append('RSK')
         if self.algorand_payout_address and self.algorand_payout_address != '0x0':
             tenants.append('ALGORAND')
+        if self.cosmos_payout_address and self.cosmos_payout_address != '0x0':
+            tenants.append('COSMOS')
 
         return tenants
 
@@ -903,6 +913,7 @@ class Grant(SuperModel):
     def contract(self):
         """Return grants contract."""
         from dashboard.utils import get_web3
+
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
@@ -934,32 +945,29 @@ class Grant(SuperModel):
             'harmony_payout_address': self.harmony_payout_address,
             'rsk_payout_address': self.rsk_payout_address,
             'algorand_payout_address': self.algorand_payout_address,
+            'cosmos_payout_address': self.cosmos_payout_address,
             'is_on_team': is_grant_team_member(self, user.profile) if user and user.is_authenticated else False,
         }
 
-    def repr(self, user, build_absolute_uri):
-        team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__lazy_avatar_url']
-                        )
+    def repr(self, user, build_absolute_uri, is_detail = True):
+        from dashboard.utils import get_web3
+
         grant_type = None
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
 
-        grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
-
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
 
-        clr_matches = CLRMatch.objects.filter(grant=self)
+        team_members = serializers.serialize('json', self.team_members.all(),
+                        fields=['handle', 'url', 'profile__lazy_avatar_url']
+                    )
 
-        # has funds which have already been claimed
-        has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
+        web3 = get_web3(self.network)
+        if self.admin_address != '0x0':
+            code = web3.eth.getCode(self.admin_address)
+            is_contract_address = True if code != b'' else False
 
-        # has claims in pending / ready state
-        has_funds_to_be_claimed = clr_matches.filter(claim_tx__isnull=True).exists()
-        has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
-        has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
-
-        return {
+        result = {
                 'id': self.id,
                 'active': self.active,
                 'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
@@ -973,12 +981,14 @@ class Grant(SuperModel):
                 'weighted_risk_score': self.weighted_risk_score,
                 'is_clr_active': self.is_clr_active,
                 'clr_round_num': self.clr_round_num,
+                'is_contract_address': is_contract_address,
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,
                     'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
+                'team_members': json.loads(team_members),
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
                 'clr_prediction_curve': self.clr_prediction_curve,
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
@@ -1003,14 +1013,13 @@ class Grant(SuperModel):
                 'binance_payout_address': self.binance_payout_address,
                 'rsk_payout_address': self.rsk_payout_address,
                 'algorand_payout_address': self.algorand_payout_address,
+                'cosmos_payout_address': self.cosmos_payout_address,
                 'token_address': self.token_address,
                 'image_css': self.image_css,
                 'verified': self.twitter_verified,
                 'tenants': self.tenants,
-                'team_members': json.loads(team_members),
                 'metadata': self.metadata,
                 'grant_type': json.loads(grant_type) if grant_type else None,
-                'grant_tags': json.loads(grant_tags),
                 'twitter_handle_1': self.twitter_handle_1,
                 'twitter_handle_2': self.twitter_handle_2,
                 'reference_url': self.reference_url,
@@ -1022,11 +1031,28 @@ class Grant(SuperModel):
                 'has_external_funding': self.has_external_funding,
                 'active_round_names': active_round_names,
                 'is_idle': self.is_idle,
-                'is_hidden': self.hidden,
-                'has_pending_claim': has_pending_claim,
-                'has_claims_in_review': has_claims_in_review,
-                'has_claim_history': has_claim_history
+                'is_hidden': self.hidden
             }
+
+        if is_detail:
+            clr_matches = CLRMatch.objects.filter(grant=self)
+
+            grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
+
+            # has funds which have already been claimed
+            has_claim_history = clr_matches.exclude(claim_tx__isnull=True).exclude(claim_tx='').exists()
+
+            # has claims in pending / ready state
+            has_funds_to_be_claimed = clr_matches.filter(claim_tx__isnull=True).exists()
+            has_claims_in_review = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='pending').exists()
+            has_pending_claim = has_funds_to_be_claimed and clr_matches.filter(grant_payout__status='ready').exists()
+
+            result['has_pending_claim'] = has_pending_claim
+            result['has_claims_in_review'] = has_claims_in_review
+            result['has_claim_history'] = has_claim_history
+            result['grant_tags'] = json.loads(grant_tags)
+
+        return result
 
     def favorite(self, user):
         return Favorite.objects.filter(user=user, grant=self).exists()

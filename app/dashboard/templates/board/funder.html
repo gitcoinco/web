@@ -129,9 +129,9 @@
               <h4 class="h5 font-weight-semibold my-3">
                 You don't have any open issues right now!
               </h4>
-              <p class="text-black-70"><a title="Fund an issue" href="{% url 'new_funding' %}">Fund an Issue</a> or check out our <a href="{% url 'quickstart' %}">Funders Guide</a> to start getting contributors for your project! </p>
+              <p class="text-black-70"><a title="Fund an issue" href="{% url 'new_bounty' %}">Fund an Issue</a> or check out our <a href="{% url 'quickstart' %}">Funders Guide</a> to start getting contributors for your project! </p>
               <p class="text-black-70">Have any questions? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
-              <a href="{% url 'new_funding' %}" title="Fund an Issue" class="btn btn-primary">Fund an Issue</a>
+              <a href="{% url 'new_bounty' %}" title="Fund an Issue" class="btn btn-primary">Fund an Issue</a>
             </li>
           </ul>
           <loading-screen v-if="isLoading.open"></loading-screen>

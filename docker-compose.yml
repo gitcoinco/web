@@ -4,8 +4,8 @@ services:
   db:
     image: postgres:10.1-alpine
     restart: unless-stopped
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     deploy:
@@ -18,9 +18,9 @@ services:
 
   elasticsearch:
     image: launcher.gcr.io/google/elasticsearch5
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+    # ports:
+    #   - "9200:9200"
+    #   - "9300:9300"
     volumes:
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
 
@@ -30,11 +30,11 @@ services:
     volumes:
       - 'ipfsexport:/export'
       - 'ipfsdata:/data/ipfs'
-    ports:
-      - "4001:4001"
-      - "4002:4002"
-      - "5001:5001"
-      - "8080:8080"
+    # ports:
+    #   - "4001:4001"
+    #   - "4002:4002"
+    #   - "5001:5001"
+    #   - "8080:8080"
     deploy:
       replicas: 1
       resources:
@@ -51,7 +51,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONIOENCODING=utf8
       - PYTHONPATH=/code/app
-      - PYTHONPATH=/usr/bin/python3
+      - PYTHONPATH=/usr/bin/python3.7
     env_file:
       - app/app/.env
     build:
@@ -62,10 +62,10 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-      - "3030:3030"
-      - "8001:8001"
-      - "35729:35729"
-      - "9222:9222"
+      # - "3030:3030"
+      # - "8001:8001"
+      # - "35729:35729"
+      # - "9222:9222"
     depends_on:
       - db
     stdin_open: true
@@ -84,7 +84,7 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}" --defaultBalanceEther 1000000000'
+    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}" --defaultBalanceEther 1000000000 --networkId 1111111111'
     deploy:
       replicas: 1
       resources:
@@ -100,8 +100,8 @@ services:
       - app/app/.env
     volumes:
       - redis:/data
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
     deploy:
       replicas: 1
       resources:

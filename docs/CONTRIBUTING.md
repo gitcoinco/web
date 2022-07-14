@@ -389,7 +389,7 @@ All assets that will be used as static resources must be placed into their appro
 
 Q: `I've added the new assets to the appropriate directory, but can't seem to use them. How do I make Django recognize my newly added assets?`
 
-Run: `make collect-static` if using Docker or `cd app; python3 manage.py collectstatic -i other` for virtualenv/local setup.
+Run: `make collect-static` if using Docker or `cd app; python3.7 manage.py collectstatic -i other` for virtualenv/local setup.
 
 Additionally, you can check out the [Django Managing Static Files Documentation](https://docs.djangoproject.com/en/2.0/howto/static-files/)
 
