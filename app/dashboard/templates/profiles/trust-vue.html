@@ -7,8 +7,8 @@
     <active-trust-manager inline-template>
       <div>
 
-        <trust-bonus-passport v-model="passportDetailsShow" 
-          :stamp-verifications="stampVerifications" 
+        <trust-bonus-passport v-model="passportDetailsShow"
+          :stamp-verifications="stampVerifications"
           :is-unlink-pending="isUnlinkPending"
           :did="passportDid"
           :unlink-error-msg="unlinkErrorMsg"
@@ -68,6 +68,12 @@
           </div>
 
           <div class="col-12 col-lg-8 col-xl-6 spacer-pb-3">
+
+            <!-- Ceramic connection status -->
+            <span class="position-absolute" style="right: 18px; top: -18px;" :title="`${isCeramicConnected ? 'Ceramic is up!' : 'Ceramic is down :('}`">
+              <span class="mr-1 d-inline-block rounded-circle" :style="`width: 10px; height: 10px; ${isCeramicConnected ? 'background: green;' : 'background: red;'}`"></span>Ceramic Network
+            </span>
+
             <h1>Trust Bonus</h1>
             <span class="line-height-2">
               Trust Bonus has received an upgrade! It's now powered by Gitcoin Passport, a decentralized identity verification application. Trust Bonus scores are calculated based on the identification stamps you complete.

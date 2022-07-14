@@ -173,7 +173,9 @@ Vue.component('active-trust-manager', {
       rawPassport: undefined,
       trustBonus: (document.trust_bonus * 100) || 50,
       trustBonusStatus: document.trust_bonus_status,
-      isTrustBonusRefreshInProggress: false,
+      isTrustBonusRefreshInProgress: false,
+      isCeramicConnected: true,
+      healthCheckTimeout: 2000,
       loading: false,
       verificationError: false,
       saveSuccessMsg: document.trust_bonus_status === 'pending_celery' ? 'Your Passport has been submitted.' : false,
@@ -217,6 +219,8 @@ Vue.component('active-trust-manager', {
       this.reset(true);
       this.verificationError = this.trustBonusStatus;
     }
+    // start running the health-check
+    this.checkCeramicConnection();
   },
   computed: {
     serviceDict: function() {
@@ -260,6 +264,22 @@ Vue.component('active-trust-manager', {
           this.serviceDict[service.ref].is_verified = false;
         });
       }
+    },
+    async checkCeramicConnection() {
+      try {
+        // attempt to pull the passports schema
+        await fetch(`${document.ceramic_url}/api/v0/streams/kjzl6cwe1jw148h1e14jb5fkf55xmqhmyorp29r9cq356c7ou74ulowf8czjlzs`);
+        // if we get a response then the connection is good
+        this.isCeramicConnected = true;
+        // increase the timeout by 50% on each successful check (2s, 3s, 4.5s etc...)
+        this.healthCheckTimeout = this.healthCheckTimeout * 1.5;
+      } catch (e) {
+        // no connection
+        this.isCeramicConnected = false;
+        this.healthCheckTimeout = 2000;
+      }
+      // check again in x number of seconds
+      setTimeout(this.checkCeramicConnection, this.healthCheckTimeout);
     },
     async passportActionHandlerConnect(forceRefresh) {
       window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action connect`);
@@ -309,7 +329,7 @@ Vue.component('active-trust-manager', {
             _refreshTrustBonus();
           } else if (response.passport_trust_bonus_status === 'saved') {
             this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
-            this.isTrustBonusRefreshInProggress = false;
+            this.isTrustBonusRefreshInProgress = false;
             this.saveSuccessMsg = false;
             this.stampVerifications = response.passport_trust_bonus_stamp_validation;
             this.passportDid = response.passport_did;
@@ -337,8 +357,8 @@ Vue.component('active-trust-manager', {
         setTimeout(_getTrustBonus, 5000);
       };
 
-      if (!this.isTrustBonusRefreshInProggress) {
-        this.isTrustBonusRefreshInProggress = true;
+      if (!this.isTrustBonusRefreshInProgress) {
+        this.isTrustBonusRefreshInProgress = true;
         _refreshTrustBonus();
       }
     },
