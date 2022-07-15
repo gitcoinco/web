@@ -913,6 +913,7 @@ class Grant(SuperModel):
     def contract(self):
         """Return grants contract."""
         from dashboard.utils import get_web3
+
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
@@ -949,6 +950,8 @@ class Grant(SuperModel):
         }
 
     def repr(self, user, build_absolute_uri, is_detail = True):
+        from dashboard.utils import get_web3
+
         grant_type = None
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
@@ -958,6 +961,11 @@ class Grant(SuperModel):
         team_members = serializers.serialize('json', self.team_members.all(),
                         fields=['handle', 'url', 'profile__lazy_avatar_url']
                     )
+
+        web3 = get_web3(self.network)
+        if self.admin_address != '0x0':
+            code = web3.eth.getCode(self.admin_address)
+            is_contract_address = True if code != b'' else False
 
         result = {
                 'id': self.id,
@@ -973,6 +981,7 @@ class Grant(SuperModel):
                 'weighted_risk_score': self.weighted_risk_score,
                 'is_clr_active': self.is_clr_active,
                 'clr_round_num': self.clr_round_num,
+                'is_contract_address': is_contract_address,
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,

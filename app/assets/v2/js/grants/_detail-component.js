@@ -610,8 +610,6 @@ Vue.component('grant-details', {
   mounted: async function() {
     const vm = this;
 
-    vm.grant.is_contract_address = await vm.grantIsContract(this.grant.admin_address);
-
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
     vm.grant_salected_tags = vm.grant.grant_tags ? vm.grant.grant_tags.map(tag => tag.pk) : [];
