@@ -964,8 +964,11 @@ class Grant(SuperModel):
 
         web3 = get_web3(self.network)
         if self.admin_address != '0x0':
-            code = web3.eth.getCode(self.admin_address)
-            is_contract_address = True if code != b'' else False
+            try:
+                code = web3.eth.getCode(Web3.toChecksumAddress(self.admin_address))
+                is_contract_address = True if code != b'' else False
+            except:
+                is_contract_address = False
 
         result = {
                 'id': self.id,
