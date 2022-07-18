@@ -6110,8 +6110,8 @@ class Passport(SuperModel):
 class PassportStamp(SuperModel):
     user = models.ForeignKey(User, related_name='passport_stamps', on_delete=models.CASCADE, null=True, db_index=True)
     passport = models.ForeignKey(Passport, related_name='stamps', on_delete=models.CASCADE, null=True)
-    stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100)
-    stamp_provider = models.CharField(null=False, blank=False, default=False, max_length=256)
+    stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100, db_index=True)
+    stamp_provider = models.CharField(null=False, blank=False, default="", max_length=256, db_index=True)
     stamp_credential = JSONField(default=dict)
 
     def __str__(self):
