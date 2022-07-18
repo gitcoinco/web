@@ -612,7 +612,7 @@ def calculate_trust_bonus(user_id, did, address):
                         except:
                             # In some cases the microseconds are missing in the timestamp (has been encountered in production)
                             is_stamp_expired = datetime.strptime(stamp_expiration_date, "%Y-%m-%dT%H:%M:%SZ") < datetime.now()
-                            
+
 
                         # the stamp must be issued by the trusted IAM server
                         is_issued_by_iam = stamp["credential"]["issuer"] == TRUSTED_IAM_ISSUER
@@ -643,7 +643,9 @@ def calculate_trust_bonus(user_id, did, address):
                         if is_subject_valid and not is_stamp_expired and is_issued_by_iam and is_for_provider:
                             # Get the stamp ID, and register it with our records
                             # This will be used to ensure that this stamp is not linked to any other user profile
-                            stamp_id = stamp["credential"]["credentialSubject"]["hash"]
+                            stamp_credential = stamp["credential"]
+                            stamp_id = stamp_credential["credentialSubject"]["hash"]
+                            stamp_provider = stamp_credential["credentialSubject"]["provider"]
 
                             # if the hash exists in PassportStamps assigned to another user, then this user cannot use it
                             duplicate_stamp_ids = PassportStamp.objects.exclude(user_id=user_id).filter(stamp_id=stamp_id)
@@ -656,9 +658,15 @@ def calculate_trust_bonus(user_id, did, address):
 
                             if stamp_id_is_valid:
                                 # Save the stamp id and associate it with the Passport entry
-                                stamp_registry = PassportStamp.objects.update_or_create(user_id=user_id, stamp_id=stamp_id, defaults={
-                                    "passport": db_passport
-                                })
+                                stamp_registry = PassportStamp.objects.update_or_create(
+                                    user_id=user_id,
+                                    stamp_id=stamp_id,
+                                    stamp_provider=stamp_provider,
+                                    stamp_credential=stamp_credential,
+                                    defaults={
+                                        "passport": db_passport
+                                    }
+                                )
 
                                 # Proceed with verifying the credential
                                 verification = didkit.verifyCredential(json.dumps(stamp["credential"]), '{"proofPurpose":"assertionMethod"}')
@@ -674,7 +682,7 @@ def calculate_trust_bonus(user_id, did, address):
                                     stamp_validation['is_verified'] = True
                                     stamp_validation["match_percent"] = matched_services[service_key]["match_percent"]
             except Exception as e:
-                logger.error("Error verifying the stamp: %s. Error: %s", stamp, e, exc_info=True)                
+                logger.error("Error verifying the stamp: %s. Error: %s", stamp, e, exc_info=True)
 
         # Calculate the trust score based on the verified stamps
         trust_score = min(1.5, 0.5 + reduce(add, [match["match_percent"] * (1 if match["is_verified"] else 0) for _, match in matched_services.items()]))
