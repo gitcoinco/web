@@ -3086,6 +3086,12 @@ def get_passport_trust_bonus(request, handle):
         "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated
     })
 
+@require_GET
+def passport(request):
+    url = 'https://www.notion.so/gitcoin/Your-citizenship-pass-to-a-decentralized-society-541ce3929afc4f9cb1cdc4c44db12c68'
+    return redirect(url)
+    
+
 
 @login_required
 @require_POST
