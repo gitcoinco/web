@@ -661,10 +661,10 @@ def calculate_trust_bonus(user_id, did, address):
                                 stamp_registry = PassportStamp.objects.update_or_create(
                                     user_id=user_id,
                                     stamp_id=stamp_id,
-                                    stamp_provider=stamp_provider,
-                                    stamp_credential=stamp_credential,
                                     defaults={
-                                        "passport": db_passport
+                                        "passport": db_passport,
+                                        "stamp_credential": stamp_credential,
+                                        "stamp_provider": stamp_provider
                                     }
                                 )
 
