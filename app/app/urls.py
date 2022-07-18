@@ -77,6 +77,7 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
+    re_path(r'^passport/?', dashboard.views.passport, name='passport'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
