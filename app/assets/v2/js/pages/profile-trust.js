@@ -272,7 +272,7 @@ Vue.component('active-trust-manager', {
         // if we get a response then the connection is good
         this.isCeramicConnected = true;
         // increase the timeout by 50% on each successful check (2s, 3s, 4.5s etc...)
-        this.healthCheckTimeout = this.healthCheckTimeout * 1.5;
+        this.healthCheckTimeout = Math.min(60000, Math.max(0, this.healthCheckTimeout * 1.5)); // max ping of 60s
       } catch (e) {
         // no connection
         this.isCeramicConnected = false;
