@@ -26,6 +26,9 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
   <a href="">
     <img alt="GitHub" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
   </a>
+	<a href="https://www.gitpoap.io/gh/gitcoinco/web">
+		<img alt="GitPOAP Badge" src="https://public-api.gitpoap.io/v1/repo/gitcoinco/web/badge">
+	</a>
   <a href="">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/gitcoinco/web">
   <a/>
