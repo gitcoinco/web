@@ -16,29 +16,7 @@
           @modal-dismissed="hideModal()">
         </state-modal> -->
 
-        <div class="bg-violet-300 text-white spacer-p-4 spacer-mt-5">
-          <div class="row">
-            <div class="col-12 col-lg-9">
-              <h2>Increase Your Impact Up to 150%</h2>
-              <span class="font-smaller-1 line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
-              <div class="row spacer-mt-2 font-smaller-1 line-height-2">
-                {% if show_round_banner %}
-                  <div class="col-12 col-lg-6 spacer-mt-2">
-                    <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[roundStartDate]] - [[roundEndDate]]</a>
-                  </div>
-                {% endif %}
-                <div class="col-12 col-lg-6 spacer-mt-2">
-                  <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2"></i> Why this matters</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-lg-3 text-center text-lg-right">
-              <object class="spacer-mr-4 spacer-mt-3 spacer-mt-lg-0" type="image/svg+xml" data="{% static 'v2/images/trust/64x64.svg' %}" width="158" height="158"></object>
-            </div>
-          </div>
-        </div>
-
-        <div class="row spacer-mt-4 spacer-mt-lg-6">
+        <div class="row spacer-mt-4">
           <div class="col-12 col-lg-4 col-xl-6 d-flex spacer-pb-3">
             <img class="w-100 my-auto" src={% static "v2/images/passport-landing-2.png" %} />
           </div>
