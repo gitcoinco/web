@@ -3,7 +3,7 @@ name: Setup review environment
 on:
   # run it during pull request
   pull_request:
-    branches: [ master ]
+    branches: [ master, stable ]
 
 jobs:
   build-and-test:

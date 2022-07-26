@@ -47,22 +47,38 @@
             ]
     </script>
 
+    <div class="container d-flex" style="height: 100vh;width: 100vw;">
+      <div class="rhombus-spinner">
+        <div class="rhombus child-1"></div>
+        <div class="rhombus child-2"></div>
+        <div class="rhombus child-3"></div>
+        <div class="rhombus child-4"></div>
+        <div class="rhombus child-5"></div>
+        <div class="rhombus child-6"></div>
+        <div class="rhombus child-7"></div>
+        <div class="rhombus child-8"></div>
+        <div class="rhombus big"></div>
+      </div>
+    </div>
 
-    {% include 'shared/footer_scripts.html' with slim=1 onepager=1 %}
+    {% include 'shared/footer_scripts.html' with slim=1 onepager=1 clean=1 %}
+
     <script src="{% static "v2/js/grants/funding.js" %}"></script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/ajax-helper.js" %}"></script>
+    <script src="{% static "v2/js/cart-data.js" %}"></script>
 
     <script>
-    $(document).ready(function() {
-      grantsDetails.forEach(function(grant) {
-        CartData.addToCart(grant);
-      });
+      $(document).ready(function() {
+        grantsDetails.forEach(function(grant) {
+          CartData.addToCart(grant);
+        });
 
-      setTimeout(function(){
+        setTimeout(function(){
           document.location.href = "/grants/cart";
-      }, 1000);
-    });
+        }, 1000);
+      });
     </script>
   </body>
 </html>

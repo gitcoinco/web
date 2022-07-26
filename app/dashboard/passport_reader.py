@@ -1,12 +1,8 @@
 # libs for processing the deterministic stream location
-import hashlib
 import json
 
 # Making GET requests against the CERAMIC_URL to read streams
 import requests
-
-# Base36 is the expected encoding for a ceramic streamID
-from .base36 import base36
 
 # Location of a Ceramic node that we can read state from
 CERAMIC_URL = "https://ceramic.passport-iam.gitcoin.co"
@@ -48,25 +44,28 @@ def get_did(address, network="1"):
     return f"did:pkh:eip155:{network}:{address}"
 
 def get_stream_ids(did, ids=[CERAMIC_GITCOIN_PASSPORT_STREAM_ID]):
-    # delay import as this is only available in celery envs
-    import dag_cbor
-
-    # encode the input genesis with cborg (Concise Binary Object Representation)
-    input_bytes = dag_cbor.encode({"header":{"controllers":[did],"family":"IDX"}})
-    # hash the input_bytes and pad with STREAMID_CODEC and type (as bytes)
-    stream_id_digest = [206, 1, 0, 1, 113, 18, 32] + list(bytearray(hashlib.sha256(input_bytes).digest()))
-
-    # encode the bytes array with base36 to get the derministic streamId from the DIDs genesis
-    stream_id = base36(stream_id_digest)
-
     # return streams in a dict
     streams = {}
 
     try:
-        # get the stream content for the given did according to its genesis stream_id
-        stream_response = requests.get(f"{CERAMIC_URL}/api/v0/streams/{stream_id}")
+        # query and pin for the streamId
+        stream_response = requests.post(f"{CERAMIC_URL}/api/v0/streams", json={
+            "type": 0,
+            "genesis": {
+                "header": {
+                "family": "IDX",
+                "controllers": [did],
+                },
+            },
+            "opts": {
+                "pin": True,
+                "sync": True,
+                "anchor": False,
+            }
+        })
         # get the state and default to empty content
         state = stream_response.json().get('state', {"content": {}})
+
         # check for a next record else pull from content
         content = state['next']['content'] if state.get('next') else state['content']
 

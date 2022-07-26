@@ -77,6 +77,7 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
+    re_path(r'^passport/?', dashboard.views.passport, name='passport'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
@@ -149,6 +150,11 @@ urlpatterns = [
         r'^api/v2/profile/(?P<handle>.*)/passport/verify',
         dashboard.views.verify_passport,
         name='verify_passport'
+    ),
+    url(
+        r'^api/v2/profile/(?P<handle>.*)/passport/unlink',
+        dashboard.views.unlink_passport,
+        name='unlink_passport'
     ),
     url(
         r'^api/v2/profile/(?P<handle>.*)/passport/trust_bonus',

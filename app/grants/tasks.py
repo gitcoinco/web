@@ -14,6 +14,7 @@ from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
+from grants.ingest import handle_zksync_ingestion
 from grants.models import Grant, GrantCLR, GrantCollection, Subscription
 from grants.utils import bsci_script, get_clr_rounds_metadata, save_grant_to_notion, toggle_user_sybil
 from marketing.mails import (
@@ -457,3 +458,12 @@ def process_bsci_sybil_csv(self, file_name, csv):
 @app.shared_task
 def sync_clr_match_payouts(network='mainnet', contract_address='0x0'):
     call_command('sync_clr_match_payouts', f'-n {network}', f'-c {contract_address}')
+
+
+@app.shared_task(bind=True, max_retries=3)
+def handle_zksync_ingestion_task(self, profile_id, network, identifier, do_write):
+    try:
+        profile = Profile.objects.get(pk=profile_id)
+        handle_zksync_ingestion(profile, network, identifier, do_write)
+    except Exception as e:
+        print(e)

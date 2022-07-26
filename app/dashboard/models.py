@@ -3174,8 +3174,9 @@ class Profile(SuperModel):
 
     # score details of the passport_trust_bonus on the model
     passport_trust_bonus = models.DecimalField(default=None, null=True, blank=True, decimal_places=2, max_digits=5, help_text='Trust Bonus score based on Gitcoin Passport')
-    passport_trust_bonus_status = models.CharField(max_length=14, null=True, blank=True, help_text='Trust Bonus score update status')
+    passport_trust_bonus_status = models.CharField(max_length=255, null=True, blank=True, help_text='Trust Bonus score update status')
     passport_trust_bonus_last_updated = models.DateTimeField(null=True, blank=True, help_text='Trust Bonus score last updated datetime')
+    passport_trust_bonus_stamp_validation = JSONField(null=True, blank=True)
 
     def update_idena_status(self):
         self.idena_status = get_idena_status(self.idena_address)
@@ -6109,7 +6110,9 @@ class Passport(SuperModel):
 class PassportStamp(SuperModel):
     user = models.ForeignKey(User, related_name='passport_stamps', on_delete=models.CASCADE, null=True, db_index=True)
     passport = models.ForeignKey(Passport, related_name='stamps', on_delete=models.CASCADE, null=True)
-    stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100)
+    stamp_id = models.CharField(unique=True, null=False, blank=False, max_length=100, db_index=True)
+    stamp_provider = models.CharField(null=False, blank=False, default="", max_length=256, db_index=True)
+    stamp_credential = JSONField(default=dict)
 
     def __str__(self):
         return f'{self.stamp_id}'
