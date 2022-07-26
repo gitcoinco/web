@@ -6191,6 +6191,10 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.passport_trust_bonus_stamp_validation">passport_trust_bonus_stamp_validation</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.passport_trust_bonus_status">passport_trust_bonus_status</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -9950,7 +9954,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">PassportStamp(self, *args, **kwargs)
 </code></pre>
 
-<p>PassportStamp(id, created_on, modified_on, user, passport, stamp_id)
+<p>PassportStamp(id, created_on, modified_on, user, passport, stamp_id, stamp_provider, stamp_credential)
 <h3 id="dashboard.models.PassportStamp.get_next_by_created_on">_method</h3></p>
 <pre><code class="python">PassportStamp._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
 </code></pre>
@@ -9987,7 +9991,15 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.PassportStamp.stamp_credential">stamp_credential</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.PassportStamp.stamp_id">stamp_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.PassportStamp.stamp_provider">stamp_provider</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
