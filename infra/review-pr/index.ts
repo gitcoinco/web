@@ -504,6 +504,10 @@ let environment = [
     {
         name: "BUNDLE_USE_CHECKSUM",
         value: "false",
+    },
+    {
+        name: "MEDIA_URL",
+        value: bucketWebURL
     }
 
 ];
@@ -520,6 +524,26 @@ const task = new awsx.ecs.FargateTaskDefinition(`gitcoin-review-${environmentNam
             dependsOn: [],
             links: []
         },
+        celery: {
+            image: "gitcoin/web:0b8eae8cd2",
+            command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
+            memory: 4096,
+            cpu: 2000,
+            portMappings: [],
+            environment: environment,
+            dependsOn: [],
+            links: []
+        },
+        celeryHighPriority: {
+            image: "gitcoin/web:0b8eae8cd2",
+            command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+            memory: 4096,
+            cpu: 2000,
+            portMappings: [],
+            environment: environment,
+            dependsOn: [],
+            links: []
+        }
     },
 });
 
