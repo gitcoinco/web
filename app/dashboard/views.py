@@ -151,6 +151,11 @@ confirm_time_minutes_target = 4
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+# pass a challenge statement to authorize use of Passport
+passport_challenge = {
+    'statement': "I authorize Gitcoin.co to read and calculate a score based on the content of my Gitcoin Passport.\n\nnonce:",
+    'nonce': False
+}
 
 @protected_resource()
 def oauth_connect(request, *args, **kwargs):
@@ -2899,12 +2904,16 @@ def get_profile_tab(request, profile, tab, prev_context):
             context['passport_trust_bonus'] = profile.passport_trust_bonus
             context['passport_trust_bonus_status'] = profile.passport_trust_bonus_status
             context['passport_trust_bonus_last_updated'] = profile.passport_trust_bonus_last_updated.isoformat() if profile.passport_trust_bonus_last_updated else None
+            context['passport_trust_bonus_stamp_validation'] = json.dumps(profile.passport_trust_bonus_stamp_validation) if profile.passport_trust_bonus_stamp_validation is not None else None
 
             # dump the full passport into the context
             try:
-                context['passport'] = json.dumps(Passport.objects.get(user=profile.user).passport)
+                db_passport = Passport.objects.get(user=profile.user)
+                context['passport'] = json.dumps(db_passport.passport)
+                context['passport_did'] = json.dumps(db_passport.did)
             except Passport.DoesNotExist:
                 context['passport'] = 'null'
+                context['passport_did'] = 'null'
 
             # pass services as JSON in the context
             context['services'] = json.dumps(SCORER_SERVICE_WEIGHTS)
@@ -2914,10 +2923,16 @@ def get_profile_tab(request, profile, tab, prev_context):
             # pass the ceramic_url to the frontend
             context['ceramic_url'] = CERAMIC_URL
 
+            # create a copy of the passport_challenge dict
+            challenge = passport_challenge.copy()
             # use session challenge or generate a new one
-            context['challenge'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+            challenge['nonce'] = request.session.get('passport_challenge', hashlib.sha256(str(''.join(random.choice(string.ascii_letters) for i in range(32))).encode('utf')).hexdigest())
+
+            # pass challenge dict as JSON in the context
+            context['challenge'] = json.dumps(challenge)
+
             # store into session
-            request.session['passport_challenge'] = context['challenge']
+            request.session['passport_challenge'] = challenge['nonce']
         else:
             idena = {}
             idena['is_connected'] = profile.is_idena_connected
@@ -3061,8 +3076,7 @@ def check_passport_stamps(request, handle):
     user = request.user
 
     # pull from post data
-    did = request.POST.get('did')
-    hashes = request.POST.getlist('stamp_hashes[]')
+    hashes = request.POST.getlist('stamp_hashes[]', [])
 
     # check if the stamp has been allocated to a different user
     for stamp_id in hashes:
@@ -3079,12 +3093,50 @@ def check_passport_stamps(request, handle):
 def get_passport_trust_bonus(request, handle):
     user = request.user
     profile = user.profile
+    did = None
+    try:
+        db_passport = Passport.objects.get(user_id=user.id)
+        did = db_passport.did
+    except Passport.DoesNotExist:
+        # This should not occur
+        raise
 
     return JsonResponse({
+        "passport_did": did,
         "passport_trust_bonus": profile.passport_trust_bonus,
         "passport_trust_bonus_status": profile.passport_trust_bonus_status,
-        "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated
+        "passport_trust_bonus_last_updated": profile.passport_trust_bonus_last_updated,
+        "passport_trust_bonus_stamp_validation": profile.passport_trust_bonus_stamp_validation
     })
+
+@require_GET
+def passport(request):
+    url = 'https://gitcoin.notion.site/gitcoin/Your-digital-citizenship-pass-in-a-decentralized-society-541ce3929afc4f9cb1cdc4c44db12c68'
+    return redirect(url)
+    
+
+
+@login_required
+@require_POST
+def unlink_passport(request, handle):
+    user = request.user
+    profile = user.profile
+
+    # Reset the passport information
+    profile.passport_trust_bonus = 0.5
+    profile.passport_trust_bonus_status = "saved"
+    profile.passport_trust_bonus_last_updated = timezone.now()
+    profile.passport_trust_bonus_stamp_validation = []
+    profile.save()
+
+    try:
+        db_passport = Passport.objects.get(user_id=user.id)
+        db_passport.delete()
+    except Passport.DoesNotExist:
+        pass
+
+    # return a 200 response to signal that unlinking was successful has been called
+    return JsonResponse({'ok': True})
 
 
 @login_required
@@ -3097,9 +3149,10 @@ def verify_passport(request, handle):
     address = request.POST.get('eth_address')
     signature = request.POST.get('signature')
     did = request.POST.get('did')
-
+    # recreate challenge string
+    challenge_string = f"{passport_challenge['statement']} {request.session['passport_challenge']}"
     # check for valid sig
-    message_hash = defunct_hash_message(text=request.session['passport_challenge'])
+    message_hash = defunct_hash_message(text=challenge_string)
     signer = w3.eth.account.recoverHash(message_hash, signature=signature)
     sig_is_valid = address.lower() == signer.lower()
 
@@ -4020,6 +4073,8 @@ def profile(request, handle, tab=None):
 
     context = {}
     context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
+    context['DATADOG_TOKEN'] = settings.DATADOG_TOKEN
+
     # get this user
     try:
         if not handle and not request.user.is_authenticated:

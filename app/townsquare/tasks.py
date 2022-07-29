@@ -45,7 +45,7 @@ def increment_offer_view_counts(self, pks, retry=False):
     :param pks:
     :return:
     """
-    with redis.lock("tasks:increment_offer_view_counts", timeout=LOCK_TIMEOUT):
+    if True:
         if len(pks) == 0:
             return
         # update DB directly
@@ -64,7 +64,7 @@ def send_comment_email(self, pk, retry=False):
     :param pk:
     :return:
     """
-    with redis.lock("tasks:send_comment_email", timeout=LOCK_TIMEOUT):
+    with redis.lock(f"tasks:send_comment_email:{pk}", timeout=LOCK_TIMEOUT):
 
         from townsquare.models import Comment
         from marketing.mails import comment_email

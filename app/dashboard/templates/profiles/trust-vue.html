@@ -3,8 +3,32 @@
 {% if not profile.is_org and is_my_profile %}
 
   <div id="gc-trust-manager-app" v-cloak>
+
     <active-trust-manager inline-template>
       <div>
+
+        <trust-bonus-passport v-model="passportDetailsShow"
+          :stamp-verifications="stampVerifications"
+          :is-unlink-pending="isUnlinkPending"
+          :did="passportDid"
+          :unlink-error-msg="unlinkErrorMsg"
+          :unlink-success-msg="unlinkSuccessMsg"
+          @unlink="() => showConfirmUnlinkPassport()">
+        </trust-bonus-passport>
+
+        <b-modal v-model="confirmUnlinkPassportShow" @ok="() => confirmUnlinkPassport()" cancel-variant="light" hide-header>
+          <div class="d-flex">
+            <div class="pr-2">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 9.00001V11M12 15H12.01M20.6179 5.98434C20.4132 5.99472 20.2072 5.99997 20 5.99997C16.9265 5.99997 14.123 4.84453 11.9999 2.94434C9.87691 4.84446 7.07339 5.99985 4 5.99985C3.79277 5.99985 3.58678 5.9946 3.38213 5.98422C3.1327 6.94783 3 7.95842 3 9.00001C3 14.5915 6.82432 19.2898 12 20.622C17.1757 19.2898 21 14.5915 21 9.00001C21 7.95847 20.8673 6.94791 20.6179 5.98434Z" stroke="#664AEC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <h4>Unlink Passport</h4>
+              <p class="my-2 text-muted">Are you sure you want to unlink this Passport?</p>
+             </div>
+          </div>
+        </b-modal>
 
         <why-this-matters-modal
           :show-modal="modalShow && modalName === 'why-this-matters-modal'"
@@ -16,34 +40,17 @@
           @modal-dismissed="hideModal()">
         </state-modal> -->
 
-        <div class="bg-violet-300 text-white spacer-p-4 spacer-mt-5">
-          <div class="row">
-            <div class="col-12 col-lg-9">
-              <h2>Increase Your Impact Up to 150%</h2>
-              <span class="font-smaller-1 line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
-              <div class="row spacer-mt-2 font-smaller-1 line-height-2">
-                {% if show_round_banner %}
-                  <div class="col-12 col-lg-6 spacer-mt-2">
-                    <a><i class="far fa-calendar-alt spacer-pr-2"></i> Verify during [[roundStartDate]] - [[roundEndDate]]</a>
-                  </div>
-                {% endif %}
-                <div class="col-12 col-lg-6 spacer-mt-2">
-                  <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2"></i> Why this matters</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-lg-3 text-center text-lg-right">
-              <object class="spacer-mr-4 spacer-mt-3 spacer-mt-lg-0" type="image/svg+xml" data="{% static 'v2/images/trust/64x64.svg' %}" width="158" height="158"></object>
-            </div>
-          </div>
-        </div>
-
-        <div class="row spacer-mt-4 spacer-mt-lg-6">
+        <div class="row spacer-mt-4">
           <div class="col-12 col-lg-4 col-xl-6 d-flex spacer-pb-3">
             <img class="w-100 my-auto" src={% static "v2/images/passport-landing-2.png" %} />
           </div>
 
           <div class="col-12 col-lg-8 col-xl-6 spacer-pb-3">
+
+            <!-- Ceramic connection status -->
+            <span class="position-absolute" style="right: 18px; top: -18px;" :title="`${isCeramicConnected ? 'Ceramic is up!' : 'Ceramic is down :('}`">
+              <span class="mr-1 d-inline-block rounded-circle" :style="`width: 10px; height: 10px; ${isCeramicConnected ? 'background: green;' : 'background: red;'}`"></span>Ceramic Network
+            </span>
 
             <h1>Trust Bonus</h1>
             <span class="line-height-2">
@@ -69,16 +76,21 @@
                     <div :class="` ${step < 1 ? 'gc-text-disabled' : 'gc-text-default'}`">
                       Visit <a :href="passportUrl" target="_blank" rel="noopener noreferrer" class="link cursor-pointer">Gitcoin Passport</a> to create your proof of personhood and complete stamps.
                     </div>
-                    <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
-                      Connect Passport
-                    </b-button>
+                    <div class="d-flex flex-row">
+                      <b-button v-if="step === 1 && !passportVerified" variant="primary" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-primary" :disabled="loading" @click="() => passportActionHandlerConnect()">
+                        Connect Passport
+                      </b-button>
+                      <div v-if="pyVerificationError" class="ml-2 mt-3 py-2 border rounded button btn-lg">
+                        Validation failed
+                      </div>
+                    </div>
                     <div v-if="step === 1 && verificationError" class="d-flex px-0 pt-3 my-auto">
                       <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
                       <div class="d-inline ml-2 my-auto">
                         <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="verificationError"></div></span>
                       </div>
                     </div>
-                  </div>
+                </div>
                 </li>
                 <li class="d-flex border-bottom py-3">
                   <div :class="`gc-border-circle ${step < 2 && !passportVerified ? 'gc-border-disabled' : step === 2 && !passportVerified ? 'gc-border-default' : 'gc-border-success'}`">
@@ -99,7 +111,7 @@
                       <b-button v-if="passportVerified" variant="dark" style="max-height: 52px;" class="col-12 col-md-auto btn btn-lg px-5 mt-3 flex-shrink-0 btn-dark" :disabled="loading" @click="() => passportActionHandlerConnect()">
                         Refresh Passport
                       </b-button>
-                      <div v-if="trustBonusStatus !== 'saved'" class="ml-2 mt-3 py-2 border rounded button btn-lg">
+                      <div v-if="trustBonusStatus === 'pending_celery'" class="ml-2 mt-3 py-2 border rounded button btn-lg">
                         <div class="spinner-border spinner-border-sm"></div>
                         Validating Passport ...
                       </div>
@@ -150,8 +162,10 @@
                 <div class="progress rounded-0" style="height: 0.4rem;">
                   <div class="progress-bar bg-secondary disabled" role="progressbar" :style="{width: `${!passport ? 0 : 100/150 * trustBonus}%`}" :aria-valuenow="`${100/150 * trustBonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div :class="`spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match</div>
               </div>
+            </div>
+            <div class="row">
+              <div :class="`col-12 spacer-mt-2 font-weight-semibold ${!passport ? 'text-grey-300' : ''}`">You'll receive [[trustBonus]]% of 150% Match. <a href="#" @click="showPassportDetails"><i class="fa fa-info-circle"></i></a></div>
             </div>
 
           </div>

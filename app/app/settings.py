@@ -543,6 +543,11 @@ CELERY_ROUTES = [
     ('grants.tasks.batch_process_grant_contributions', {'queue': 'high_priority'}),
     ('kudos.tasks.mint_token_request', {'queue': 'high_priority'}),
     ('dashboard.tasks.increment_view_count', {'queue': 'analytics'}),
+    ('dashboard.tasks.record_visit', {'queue': 'analytics'}),
+    ('dashboard.tasks.record_join', {'queue': 'analytics'}),
+    ('townsquare.tasks.increment_offer_view_counts', {'queue': 'analytics'}),
+    ('townsquare.tasks.increment_view_counts', {'queue': 'analytics'}),
+    ('townsquare.tasks.send_comment_email', {'queue': 'marketing'}),
     ('marketing.tasks.*', {'queue': 'marketing'}),
     ('grants.tasks.*', {'queue': 'default'}),
     ('dashboard.tasks.*', {'queue': 'default'}),
@@ -958,3 +963,6 @@ GTC_DIST_KEY = env('GTC_DIST_KEY', default='')
 # Generating a checksun is optional. When egenerating the static files for a container build
 # we do not want to add a checksum
 BUNDLE_USE_CHECKSUM = env('BUNDLE_USE_CHECKSUM', default=True)
+
+# Datadog token for UI logging
+DATADOG_TOKEN = env('DATADOG_TOKEN', default=None)

@@ -17,6 +17,146 @@ const apiCall = (url, givenPayload) => {
   });
 };
 
+Vue.component('trust-bonus-passport', {
+  delimiters: [ '[[', ']]' ],
+  props: {
+    visible: {
+      type: Boolean,
+      required: false,
+      'default': false
+    },
+    isUnlinkPending: {
+      type: Boolean,
+      required: false,
+      'default': false
+    },
+    stampVerifications: {
+      type: Array,
+      required: false,
+      'default': () => []
+    },
+    did: {
+      type: String,
+      required: true,
+      'default': null
+    },
+    unlinkErrorMsg: {
+      type: [ String, Boolean ],
+      required: true,
+      'default': null
+    },
+    unlinkSuccessMsg: {
+      type: [ String, Boolean ],
+      required: true,
+      'default': null
+    }
+  },
+  model: {
+    prop: 'visible',
+    event: 'change'
+  },
+
+  template: `<b-modal id="trust-bonus-passport" ref="passport-modal" v-model="modalShow" size="md" body-class="p-3" center hide-header>
+  <h4>Passport Details</h4>
+  <template v-if="address">
+    <span class="text-muted">Your Passport is currently connected with the following information:</span>
+    <br>
+    <span class="text-muted">Wallet: [[address]]</span>
+    <hr>
+    <template v-if="stampVerifications && stampVerifications.length > 0">
+      <ul class="list-unstyled">
+        <li class="mb-3" v-for="stamp in stampVerifications">
+          <div class="text-muted" v-if="stamp.is_verified">
+            [[stamp.provider]]
+            <br>
+            [[stamp.match_percent * 100]]%
+          </div>
+          <div class="text-muted" v-else>
+          [[stamp.provider]]
+          <br>
+          <div class="d-flex flex-row justify-content-between">
+            <div>0%</div>
+            <div class="text-danger pl-3">[[stamp.errors[0] || "Not verified"]]</div>
+          </div>
+        </div>
+        </li>
+      </ul>
+    </template>
+    <template v-else>
+      <span class="text-muted">You don't appear to have any stamps in your passport!</span>
+    </template>
+  </template>
+  <template v-else>
+    <span class="text-muted">Your account is currently not linked to any passport</span>
+  </template>
+
+  <div v-if="unlinkErrorMsg" class="d-flex px-0 pt-3 my-auto">
+    <i class="fa-shield-virus fas mt-1 px-1" style="color: #d03e63"></i>
+    <div class="d-inline ml-2 my-auto">
+      <span style="color: #d03e63"><div class="font-smaller-2" @click="handleErrorClick" v-html="unlinkErrorMsg"></div></span>
+    </div>
+  </div>
+  <div v-if="unlinkSuccessMsg" class="d-flex px-0 pt-3 my-auto">
+    <i class="fa-shield-virus fas mt-1 px-1" style="color: #059669"></i>
+    <div class="d-inline ml-2 my-auto">
+      <span style="color: #059669"><div class="font-smaller-2" v-html="unlinkSuccessMsg"></div></span>
+    </div>
+  </div>
+
+  <div v-if="isUnlinkPending" class="ml-2 mt-3 py-2">
+    <div class="spinner-border spinner-border-sm"></div>
+    Unlinking Passport ...
+  </div>
+
+  <template slot="modal-footer">
+    <b-button size="nd" variant="light" @click="close">
+      Close
+    </b-button>
+    <b-button v-if="address" size="md" variant="primary" @click="unlink">
+      Unlink
+    </b-button>
+  </template>
+</b-modal>
+`,
+
+  data() {
+    return {
+      // modalShow: this.visible
+    };
+  },
+
+  computed: {
+    modalShow: {
+      set(newValue) {
+        console.log('geri change:', newValue);
+        this.$emit('change', newValue);
+      },
+      get() {
+        return this.visible;
+      }
+    },
+    address: function() {
+      if (this.did) {
+        let parts = this.did.split(':');
+
+        return parts[parts.length - 1];
+      }
+      return null;
+    }
+  },
+
+  methods: {
+    close() {
+      this.$bvModal.hide('trust-bonus-passport');
+    },
+
+    unlink() {
+      this.$emit('unlink');
+    }
+  }
+});
+
+
 // Create the trust-bonus view
 Vue.component('active-trust-manager', {
   delimiters: [ '[[', ']]' ],
@@ -28,12 +168,14 @@ Vue.component('active-trust-manager', {
       did: undefined,
       step: 1,
       passport: document.is_passport_connected ? {} : undefined,
-      passportVerified: document.is_passport_connected,
+      passportVerified: document.is_passport_connected && (document.trust_bonus_status ? document.trust_bonus_status.indexOf('Error:') === -1 : false),
       passportUrl: 'https://passport.gitcoin.co/',
       rawPassport: undefined,
       trustBonus: (document.trust_bonus * 100) || 50,
       trustBonusStatus: document.trust_bonus_status,
-      isTrustBonusRefreshInProggress: false,
+      isTrustBonusRefreshInProgress: false,
+      isCeramicConnected: true,
+      healthCheckTimeout: 2000,
       loading: false,
       verificationError: false,
       saveSuccessMsg: document.trust_bonus_status === 'pending_celery' ? 'Your Passport has been submitted.' : false,
@@ -41,25 +183,44 @@ Vue.component('active-trust-manager', {
       roundEndDate: parseMonthDay(document.round_end_date),
       services: document.services || [],
       modalShow: false,
-      modalName: false
+      modalName: false,
+      pyVerificationError: false,
+      passportDetailsShow: false,
+      confirmUnlinkPassportShow: false,
+      stampVerifications: document.passport_trust_bonus_stamp_validation,
+      passportDid: document.passport_did,
+      unlinkSuccessMsg: false,
+      unlinkErrorMsg: false,
+      isUnlinkPending: false
     };
   },
   async mounted() {
     // await DIDKits bindings
     this.DIDKit = (await DIDKit);
 
+    // check for initial error state
+    this.pyVerificationError = this.trustBonusStatus != null ? this.trustBonusStatus.indexOf('Error:') !== -1 : false;
+    window.DD_LOGS && DD_LOGS.logger.info(`Initial trustBonusStatus for '${document.contxt.github_handle}': '${this.trustBonusStatus}'`);
+
     // error message attachment
     this.visitGitcoinPassport = `</br>Visit <a target="_blank" rel="noopener noreferrer" href="${this.passportUrl}" class="link cursor-pointer">Gitcoin Passport</a> to create your Passport and get started.`;
 
     // on account change/connect etc... (get Passport state for wallet -- if verified, ensure that the passport connect button has been clicked first)
-    document.addEventListener('dataWalletReady', () => (!this.passportVerified || this.loading) && this.connectPassport(true));
+    document.addEventListener('dataWalletReady', () => ((!this.pyVerificationError && !this.passportVerified) || this.loading) && this.connectPassport(true));
+
     // on wallet disconnect (clear Passport state)
     document.addEventListener('walletDisconnect', () => (!this.passportVerified ? this.reset(true) : false));
+
     // start watching for trust bonus status updates, in case the calculation is still pending
-    console.log('geri checking this.trustBonusStatus', this.trustBonusStatus);
     if (this.trustBonusStatus === 'pending_celery') {
       this.refreshTrustBonus();
+    } else if (this.pyVerificationError) {
+      // clear all state
+      this.reset(true);
+      this.verificationError = this.trustBonusStatus;
     }
+    // start running the health-check
+    this.checkCeramicConnection();
   },
   computed: {
     serviceDict: function() {
@@ -78,7 +239,13 @@ Vue.component('active-trust-manager', {
       this.modalName = modalName;
     },
     hideModal() {
-      this.modalShow = this.modalName = false;
+      this.$bvModal.show('trust-bonus-passport');
+    },
+    showPassportDetails(e) {
+      this.unlinkSuccessMsg = false;
+      this.unlinkErrorMsg = false;
+      this.passportDetailsShow = true;
+      e.preventDefault();
     },
     reset(fullReset) {
       // reset the step
@@ -98,7 +265,25 @@ Vue.component('active-trust-manager', {
         });
       }
     },
+    async checkCeramicConnection() {
+      try {
+        // attempt to pull the passports schema
+        await fetch(`${document.ceramic_url}/api/v0/streams/kjzl6cwe1jw148h1e14jb5fkf55xmqhmyorp29r9cq356c7ou74ulowf8czjlzs`);
+        // if we get a response then the connection is good
+        this.isCeramicConnected = true;
+        // increase the timeout by 50% on each successful check (2s, 3s, 4.5s etc...)
+        this.healthCheckTimeout = Math.min(60000, Math.max(0, this.healthCheckTimeout * 1.5)); // max ping of 60s
+      } catch (e) {
+        // no connection
+        this.isCeramicConnected = false;
+        this.healthCheckTimeout = 2000;
+      }
+      // check again in x number of seconds
+      setTimeout(this.checkCeramicConnection, this.healthCheckTimeout);
+    },
     async passportActionHandlerConnect(forceRefresh) {
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action connect`);
+
       // We can call the same handler to step through each operation...
       // connect and read the passport...
       await this.connectPassport();
@@ -109,18 +294,20 @@ Vue.component('active-trust-manager', {
       }
     },
     async passportActionHandlerRefresh() {
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action refresh`);
       await this.verifyPassport().then(() => {
         // move to step 3 (saving)
         this.step = 3;
         // store passport into state after verifying content to avoid displaying the scoring until ready
         this.passport = this.rawPassport;
-        console.log('this.passport', this.passport);
       });
     },
     async passportActionHandlerSave() {
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action save`);
       await this.savePassport();
     },
     async handleErrorClick(e) {
+      window.DD_LOGS && DD_LOGS.logger.info(`handle '${document.contxt.github_handle}' - action error click`);
       const clickedElId = e.target.id;
 
       if (clickedElId === 'save-passport') {
@@ -136,16 +323,32 @@ Vue.component('active-trust-manager', {
 
         $.when(getTrustBonusRequest).then(response => {
           this.trustBonusStatus = response.passport_trust_bonus_status;
+          this.pyVerificationError = this.trustBonusStatus.indexOf('Error:') !== -1;
 
           if (response.passport_trust_bonus_status === 'pending_celery') {
             _refreshTrustBonus();
-          } else {
+          } else if (response.passport_trust_bonus_status === 'saved') {
             this.trustBonus = (parseFloat(response.passport_trust_bonus) * 100) || 50;
+            this.isTrustBonusRefreshInProgress = false;
+            this.saveSuccessMsg = false;
+            this.stampVerifications = response.passport_trust_bonus_stamp_validation;
+            this.passportDid = response.passport_did;
+          } else {
             this.isTrustBonusRefreshInProggress = false;
             this.saveSuccessMsg = false;
-          }
 
-        }).catch((err) => {
+            if (this.pyVerificationError) {
+              this.verificationError = this.trustBonusStatus;
+            }
+          }
+          // check for error state
+          if (this.pyVerificationError) {
+            this.step = 1;
+            // clear all state
+            this.reset(true);
+          }
+        }).catch((error) => {
+          window.DD_LOGS && DD_LOGS.logger.error(`Error when refreshing trust bonus, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
           _refreshTrustBonus();
         });
       };
@@ -154,8 +357,8 @@ Vue.component('active-trust-manager', {
         setTimeout(_getTrustBonus, 5000);
       };
 
-      if (!this.isTrustBonusRefreshInProggress) {
-        this.isTrustBonusRefreshInProggress = true;
+      if (!this.isTrustBonusRefreshInProgress) {
+        this.isTrustBonusRefreshInProgress = true;
         _refreshTrustBonus();
       }
     },
@@ -164,6 +367,8 @@ Vue.component('active-trust-manager', {
      * load and not expecting this to trigger an error.
      */
     async connectPassport(ignoreErrors) {
+      DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle}`);
+
       // enter loading state
       this.loading = true;
       // clear error state
@@ -182,47 +387,63 @@ Vue.component('active-trust-manager', {
           // will setup wallet and emit walletReady event
           let ret1 = await initWallet();
 
+          window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no web3`);
+          this.loading = false;
           return;
         }
 
         // call onConnect directly after first load to force web3Modal to display every time its called
         const ret = await onConnect();
 
+        window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for ${document.contxt.github_handle} - skip, no selected account`);
         this.loading = false;
         return;
       }
 
-      // read the genesis from the selectedAccount (pulls the associated stream index)
-      const genesis = await this.reader.getGenesis(selectedAccount);
+      window.DD_LOGS && DD_LOGS.logger.info(`Connecting passport for handle ${document.contxt.github_handle} and address ${selectedAccount}`);
 
-      // grab all the streams at once to reduce the required number of reqs
-      const streams = genesis && genesis.streams;
+      try {
+        // read the genesis from the selectedAccount (pulls the associated stream index)
+        const genesis = await this.reader.getGenesis(selectedAccount);
 
-      // if loaded then the user has a ceramicAccount
-      if (streams && Object.keys(streams).length > 0) {
-        // get the selectedAccounts ceramic DID
-        this.did = genesis.did;
+        // grab all the streams at once to reduce the required number of reqs
+        const streams = genesis && genesis.streams;
 
-        // read passport from reader each refresh to ensure we catch any newly created streams/updated stamps
-        const passport = await this.reader.getPassport(selectedAccount, streams);
+        // if loaded then the user has a ceramicAccount
+        if (streams && Object.keys(streams).length > 0) {
+          // reset py error
+          this.pyVerificationError = false;
 
-        // if we find a passport verify it and create a trust_bonus score
-        if (passport) {
-          // move to step 2
-          this.step = 2;
-          // store the passport so that we can verify its content in step-2 (before saving to this.passport)
-          this.rawPassport = passport;
+          // get the selectedAccounts ceramic DID
+          this.did = genesis.did;
+
+          // read passport from reader each refresh to ensure we catch any newly created streams/updated stamps
+          const passport = await this.reader.getPassport(selectedAccount, streams);
+
+          // if we find a passport verify it and create a trust_bonus score
+          if (passport) {
+            // move to step 2
+            this.step = 2;
+            // store the passport so that we can verify its content in step-2 (before saving to this.passport)
+            this.rawPassport = passport;
+          } else {
+            // error if no passport found
+            window.DD_LOGS && DD_LOGS.logger.info(`There is no Passport associated with this wallet, did: ${this.did}`);
+            this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
+          }
         } else {
-          // error if no passport found
-          this.verificationError = ignoreErrors ? false : `There is no Passport associated with this wallet. ${this.visitGitcoinPassport}`;
+          // error if no ceramic account found
+          window.DD_LOGS && DD_LOGS.logger.info(`There is no Ceramic Account associated with this wallet, address: ${selectedAccount}`);
+          this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
         }
-      } else {
-        // error if no ceramic account found
-        this.verificationError = ignoreErrors ? false : `There is no Ceramic Account associated with this wallet. ${this.visitGitcoinPassport}`;
+      } catch (error) {
+        window.DD_LOGS && DD_LOGS.logger.error(`Error when connecting passport, account: '${selectedAccount}'. Error: ${error}`);
+      } finally {
+        // done with loading state
+        this.loading = false;
       }
 
-      // done with loading state
-      this.loading = false;
+      window.DD_LOGS && DD_LOGS.logger.info(`DONE - Connecting passport for ${selectedAccount}`);
     },
     async verifyPassport() {
       // pull the raw passport...
@@ -234,20 +455,22 @@ Vue.component('active-trust-manager', {
       // reset errors
       this.verificationError = undefined;
 
-      try {
+      // Filter the stamps, include only those with valid (not undefined) credentialSubject (credentialSubject has been undefined on rare occasions)
+      const stamps = (passport && passport.stamps) ? passport.stamps.filter((stamp) => stamp.credential && stamp.credential.credentialSubject) : undefined;
 
-        // check for a passport and then its validity
-        if (passport) {
+      // check for a passport and then its validity
+      if (passport && stamps) {
+        try {
           // check if the stamps are unique to this user...
           const stampHashes = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/stamp/check`, {
             'did': this.did,
-            'stamp_hashes': passport.stamps.map((stamp) => {
+            'stamp_hashes': stamps.map((stamp) => {
               return stamp.credential.credentialSubject.hash;
             })
           });
 
           // perform checks on issuer, expiry, owner, VC validity and stamp_hash validity
-          await Promise.all(passport.stamps.map(async(stamp) => {
+          await Promise.all(stamps.map(async(stamp) => {
             if (stamp && Object.keys(stamp).length > 0) {
               // set the service against provider and issuer
               const serviceDictId = `${this.IAMIssuer}#${stamp.provider}`;
@@ -278,13 +501,20 @@ Vue.component('active-trust-manager', {
           this.trustBonus = Math.min(150, this.services.reduce((total, service) => {
             return (service.is_verified ? service.match_percent : 0) + total;
           }, 50));
+
+        } catch (error) {
+          console.error('Error checking passport: ', error);
+          window.DD_LOGS && DD_LOGS.logger.error(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+          this.verificationError = 'Oh, we had a technical error while scoring. Please give it another try.';
+          throw error;
+        } finally {
+          this.loading = false;
         }
-      } catch (error) {
-        console.error('Error checking passport: ', error);
-        this.verificationError = 'Oh, we had a technical error while scoring. Please give it another try.';
-        throw error;
-      } finally {
+      } else {
+        window.DD_LOGS && DD_LOGS.logger.info(`Error checking passport, handle: '${document.contxt.github_handle}' did: ${this.did}. Passport is empty or has no stamps.`);
+        this.verificationError = `The Passport associated with this wallet is empty. ${this.visitGitcoinPassport}`;
         this.loading = false;
+        throw 'Passport is empty!';
       }
     },
     async savePassport() {
@@ -303,8 +533,10 @@ Vue.component('active-trust-manager', {
 
           // attempt the signature
           try {
+            // Construct a challenge string to sign (this must match the challenge_string in dashboard/views.py::verify_passport)
+            challengeString = `${document.challenge.statement} ${document.challenge.nonce}`;
             // get the signature for the document-wide provided challenge (set in dashboard/views.py::get_profile_tab::trust)
-            signature = await web3.eth.personal.sign(document.challenge, selectedAccount);
+            signature = await web3.eth.personal.sign(challengeString, selectedAccount);
           } catch {
             // set error - * note that #save-passport does not have an event handler - it is caught by `this.handleErrorClick(e)` as the event bubbles
             this.verificationError = 'In order to verify your Passport, the wallet message requires a signature.</br><a id="save-passport" class="link cursor-pointer">Click here</a> to verify ownership of your wallet and submit to Gitcoin.';
@@ -332,15 +564,69 @@ Vue.component('active-trust-manager', {
             // notify success (temp)
             // _alert('Your Passport\'s Trust Bonus has been saved!', 'success', 6000);
             this.saveSuccessMsg = 'Your Passport has been submitted.';
-            this.trustBonusStatus = 'refresh-pending';
+            this.trustBonusStatus = 'pending_celery';
             this.refreshTrustBonus();
           }
         }
-      } catch (err) {
+      } catch (error) {
+        window.DD_LOGS && DD_LOGS.logger.error(`Error submitting passport for trust bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
         // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
         this.reset();
         // set error state
         this.verificationError = 'There was an error; please try again later';
+      }
+
+      // stop loading
+      this.loading = false;
+    },
+    async showConfirmUnlinkPassport() {
+      this.confirmUnlinkPassportShow = true;
+    },
+    async confirmUnlinkPassport() {
+      this.confirmUnlinkPassportShow = false;
+      this.unlinkPassport();
+    },
+    async unlinkPassport() {
+      // enter loading
+      this.loading = true;
+      this.saveSuccessMsg = false;
+      this.unlinkSuccessMsg = false;
+      this.unlinkErrorMsg = false;
+      this.isUnlinkPending = true;
+
+      // attempt to verify the passport
+      try {
+        if (document.challenge) {
+          // clear error state
+          this.verificationError = undefined;
+
+          // if we have sig, attempt to save the passports details into the backend
+          const response = await apiCall(`/api/v2/profile/${document.contxt.github_handle}/passport/unlink`, {});
+
+          this.isUnlinkPending = false;
+
+          // display error state if sig was bad
+          if (response.error) {
+            // Bad signature error
+            this.unlinkErrorMsg = response.error;
+          } else {
+            // mark as verified
+            this.passportVerified = true;
+            // notify success (temp)
+            this.unlinkSuccessMsg = 'Your Passport has been unlinked.';
+            this.trustBonusStatus = 'saved';
+            this.stampVerifications = [];
+            this.passportDid = null;
+            this.trustBonus = 50;
+          }
+        }
+      } catch (error) {
+        window.DD_LOGS && DD_LOGS.logger.error(`Error submitting passport for trust bonus calculation, handle: '${document.contxt.github_handle}' did: ${this.did}. Error: ${error}`);
+        // clear state but not the stamps (if the problem was in passing the state to gitcoin then we want to know that here)
+        this.reset();
+        // set error state
+        this.unlinkErrorMsg = 'There was an error; please try again later';
+        this.isUnlinkPending = false;
       }
 
       // stop loading
