@@ -706,6 +706,15 @@ const service = new awsx.ecs.FargateService("app", {
                 environment: environment,
                 links: []
             },
+        },
+    },
+});
+
+const celery = new awsx.ecs.FargateService("celery", {
+    cluster,
+    desiredCount: 2,
+    taskDefinitionArgs: {
+        containers: {
             celery: {
                 image: "gitcoin/web:0b8eae8cd2",
                 command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
@@ -725,7 +734,7 @@ const service = new awsx.ecs.FargateService("app", {
                 environment: environment,
                 dependsOn: [],
                 links: []
-            }
+            },
         },
     },
 });
