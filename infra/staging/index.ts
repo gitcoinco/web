@@ -668,6 +668,10 @@ let environment = [
     {
         name: "BUNDLE_USE_CHECKSUM",
         value: "false",
+    },
+    {
+        name: "MEDIA_URL",
+        value: bucketWebURL
     }
 
 ];
@@ -702,6 +706,26 @@ const service = new awsx.ecs.FargateService("app", {
                 environment: environment,
                 links: []
             },
+            celery: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            },
+            celeryHighPriority: {
+                image: "gitcoin/web:0b8eae8cd2",
+                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                memory: 4096,
+                cpu: 2000,
+                portMappings: [],
+                environment: environment,
+                dependsOn: [],
+                links: []
+            }
         },
     },
 });
