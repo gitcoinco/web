@@ -377,10 +377,10 @@ let environment = [
         name: "DATABASE_URL",
         value: tempDatabase
     },
-    // {
-    //     name: "READ_REPLICA_1_DATABASE_URL",
-    //     value: rdsConnectionUrl
-    // },
+    {
+        name: "READ_REPLICA_1_DATABASE_URL",
+        value: tempDatabase
+    },
     // {
     //     name: "READ_REPLICA_2_DATABASE_URL",
     //     value: rdsConnectionUrl
