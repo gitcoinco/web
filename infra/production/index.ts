@@ -191,42 +191,42 @@ export const vpcPublicSubnet1 = vpcPublicSubnetIds.then((subnets) => {
 //////////////////////////////////////////////////////////////
 // Set up RDS instance
 //////////////////////////////////////////////////////////////
-// let dbSubnetGroup = new aws.rds.SubnetGroup("rds-subnet-group", {
-//     subnetIds: vpcPrivateSubnetIds
-// });
+let dbSubnetGroup = new aws.rds.SubnetGroup("rds-subnet-group", {
+    subnetIds: vpcPrivateSubnetIds
+});
 
-// const db_secgrp = new aws.ec2.SecurityGroup("db_secgrp", {
-//     description: "Security Group for DB",
-//     vpcId: vpc.id,
-//     ingress: [
-//         { protocol: "tcp", fromPort: 5432, toPort: 5432, cidrBlocks: ["0.0.0.0/0"] },
-//     ],
-//     egress: [{
-//         protocol: "-1",
-//         fromPort: 0,
-//         toPort: 0,
-//         cidrBlocks: ["0.0.0.0/0"],
-//     }],
-// });
+const db_secgrp = new aws.ec2.SecurityGroup("db_secgrp", {
+    description: "Security Group for DB",
+    vpcId: vpc.id,
+    ingress: [
+        { protocol: "tcp", fromPort: 5432, toPort: 5432, cidrBlocks: ["0.0.0.0/0"] },
+    ],
+    egress: [{
+        protocol: "-1",
+        fromPort: 0,
+        toPort: 0,
+        cidrBlocks: ["0.0.0.0/0"],
+    }],
+});
 
-// // TODO: enable delete protection for the DB
-// const postgresql = new aws.rds.Instance("gitcoin-database", {
-//     allocatedStorage: 200,
-//     engine: "postgres",
-//     // engineVersion: "5.7",
-//     instanceClass: "db.t3.medium",
-//     name: dbName,
-//     password: dbPassword,
-//     username: dbUsername,
-//     skipFinalSnapshot: true,
-//     dbSubnetGroupName: dbSubnetGroup.id,
-//     vpcSecurityGroupIds: [db_secgrp.id],
-// });
+// TODO: enable delete protection for the DB
+const postgresql = new aws.rds.Instance("gitcoin-database", {
+    allocatedStorage: 200,
+    engine: "postgres",
+    // engineVersion: "5.7",
+    instanceClass: "db.t3.medium",
+    name: dbName,
+    password: dbPassword,
+    username: dbUsername,
+    skipFinalSnapshot: true,
+    dbSubnetGroupName: dbSubnetGroup.id,
+    vpcSecurityGroupIds: [db_secgrp.id],
+});
 
-// export const rdsEndpoint = postgresql.endpoint;
-// export const rdsArn = postgresql.arn;
-// export const rdsConnectionUrl = pulumi.interpolate`psql://${dbUsername}:${dbPassword}@${rdsEndpoint}/${dbName}`
-// export const rdsId = postgresql.id
+export const rdsEndpoint = postgresql.endpoint;
+export const rdsArn = postgresql.arn;
+export const rdsConnectionUrl = pulumi.interpolate`psql://${dbUsername}:${dbPassword}@${rdsEndpoint}/${dbName}`
+export const rdsId = postgresql.id
 
 //////////////////////////////////////////////////////////////
 // Set up Redis
