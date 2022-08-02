@@ -190,7 +190,7 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DOCKER_GTC_WEB_IMAGE: ${{ needs.build-and-test.outputs.dockerTag }}
           DATADOG_KEY: ${{ secrets.DATADOG_KEY }}
-          ROUTE_53_ZONE: ${{ secrets.ROUTE53_ZONE_ID }}
+          ROUTE_53_ZONE: ${{ secrets.ROUTE_53_ZONE }}
           DOMAIN: ${{ secrets.DOMAIN }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           GITHUB_CLIENT_ID: ${{ secrets.GTC_GITHUB_CLIENT_ID }}
