@@ -38,13 +38,13 @@
 }
 
 // The homepage requires a bit of specific styling for the input and submit buttons to sit side by side
-.hubspot_form_wrap.homepage { width : 100%; }
-.hubspot_form_wrap.homepage .hs-form {
+.hubspot_form_wrap.simple, .hubspot_form_wrap .hbspt-form { width : 100%; }
+.hubspot_form_wrap.simple .hs-form {
   display: flex;
   flex-direction: row;
   padding: 16px 0;
 }
-.hubspot_form_wrap.homepage .hs-form .hs_email { margin-right: 5px; width: 100%; }
-.hubspot_form_wrap.homepage .hs-form input.hs-button { height: 37px; }
-.hubspot_form_wrap.homepage .hs-form .hs_email label, .hubspot_form_wrap.homepage .hs-form ul.hs-error-msgs
+.hubspot_form_wrap.simple .hs-form .hs_email { margin-right: 5px; width: 100%; }
+.hubspot_form_wrap.simple .hs-form input.hs-button { height: 37px; }
+.hubspot_form_wrap.simple .hs-form .hs_email label, .hubspot_form_wrap.simple .hs-form ul.hs-error-msgs
 { display: none !important; }
