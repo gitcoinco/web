@@ -671,7 +671,7 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: bucketWebURL
+        value: "s.gitcoin.co"
     }
 
 ];
