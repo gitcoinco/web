@@ -376,7 +376,7 @@ const www = new aws.route53.Record("www", {
 let environment = [
     {
         name: "ENV",
-        value: "prod"
+        value: "test"
     },
     // read me to understand this file:
     // https://github.com/gitcoinco/web/blob/master/docs/ENVIRONMENT_VARIABLES.md
