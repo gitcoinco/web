@@ -335,6 +335,27 @@ const httpsListener = target.createListener("web-listener", {
     certificateArn: certificateValidation.certificateArn
 }); 
 
+const staticBucket = new aws.lb.ListenerRule("static", {
+    listenerArn: httpsListener.urn,
+    priority: 100,
+    actions: [{
+        type: "redirect",
+        redirect: {
+            host: "s.gitcoin.co",
+            port: "443",
+            protocol: "HTTPS",
+            statusCode: "HTTP_301",
+        },
+    }],
+    conditions: [
+        {
+            pathPattern: {
+                values: ["/static/*"],
+            },
+        },
+    ],
+});
+
 // Create a DNS record for the load balancer
 const www = new aws.route53.Record("www", {
     zoneId: route53Zone,
