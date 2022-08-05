@@ -336,7 +336,7 @@ const httpsListener = target.createListener("web-listener", {
 }); 
 
 const staticBucket = new aws.lb.ListenerRule("static", {
-    listenerArn: httpsListener.urn,
+    listenerArn: httpsListener.listener.arn,
     priority: 100,
     actions: [{
         type: "redirect",
