@@ -196,6 +196,11 @@ jobs:
           GITHUB_CLIENT_ID: ${{ secrets.GTC_GITHUB_CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.GTC_GITHUB_CLIENT_SECRET }}
           TEMP_DATABASE: ${{ secrets.TEMP_DATABASE }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          READ_REPLICA_1_DATABASE_URL: ${{secrets.READ_REPLICA_1_DATABASE_URL}}
+          READ_REPLICA_2_DATABASE_URL: ${{secrets.READ_REPLICA_2_DATABASE_URL}}
+          READ_REPLICA_3_DATABASE_URL: ${{secrets.READ_REPLICA_3_DATABASE_URL}}
+          READ_REPLICA_4_DATABASE_URL: ${{secrets.READ_REPLICA_4_DATABASE_URL}}
 
       # The static files are already bundled and located in the folder /code/app/static in the container
       - name: Copy static files to bucket
