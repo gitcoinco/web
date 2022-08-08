@@ -1,16 +1,32 @@
-<img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="75" height="75" alt="Gitcoin logo">
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://gitcoin.co/">
+    <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" alt="Logo" width="80" height="80">
+  </a>
 
-# Gitcoin
+  <h3 align="center">Gitcoin (GTC)</h3>
 
-Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co)
+  <p align="center">
+    Gitcoin Grows Open Source.
+    <br />
+    <a href="https://gitcoin.co/"><strong>Explore more about Gitcoin »</strong></a>
+    <br />
+    <br />
+    <a href="https://gov.gitcoin.co/">Forum</a>
+    ·
+    <a href="https://docs.gitcoin.co">Docs</a>
+  </p>
+</p>
 
+<p align="center">
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60" alt="Open bounties widget">
 </a>
+</p>
 
 # web repo
 <p align="center">
-
   <a href="https://twitter.com/gitcoin">
    <img src="https://img.shields.io/twitter/follow/gitcoin?style=social" alt="Follow @gitcoin" />
   </a>
@@ -26,6 +42,9 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
   <a href="">
     <img alt="GitHub" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
   </a>
+	<a href="https://www.gitpoap.io/gh/gitcoinco/web">
+		<img alt="GitPOAP Badge" src="https://public-api.gitpoap.io/v1/repo/gitcoinco/web/badge">
+	</a>
   <a href="">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/gitcoinco/web">
   <a/>
@@ -35,21 +54,12 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
 
 </p>
 
-This is the website that is live at [gitcoin.co](https://gitcoin.co)
-```master``` branch - staging
-```stable``` branch - live on gitcoin.co
 
-## Documentation
-
-[https://docs.gitcoin.co](https://docs.gitcoin.co)
-
-## How to interact with this repo
 
 ### Table of Contents
 
 - [Gitcoin](#gitcoin)
 - [web repo](#web-repo)
-  - [Documentation](#documentation)
   - [How to interact with this repo](#how-to-interact-with-this-repo)
     - [Table of Contents](#table-of-contents)
     - [On Github](#on-github)
@@ -73,6 +83,7 @@ This is the website that is live at [gitcoin.co](https://gitcoin.co)
     - [Tips](#tips)
     - [Kudos](#kudos)
 - [Licenses](#licenses)
+  
 
 ### On Github
 

@@ -961,21 +961,6 @@ def warn_account_out_of_eth(account, balance, denomination):
         translation.activate(cur_language)
 
 
-def new_feedback(email, feedback):
-    to_email = 'product@gitcoin.co'
-    from_email = settings.SERVER_EMAIL
-    subject = "New Feedback"
-    body = f"New feedback from {email}: {feedback}"
-    send_mail(
-        from_email,
-        to_email,
-        subject,
-        body,
-        from_name="No Reply from Gitcoin.co",
-        categories=['admin', func_name()],
-    )
-
-
 def gdpr_reconsent(email):
     to_email = email
     from_email = settings.PERSONAL_CONTACT_EMAIL

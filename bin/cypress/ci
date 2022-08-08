@@ -10,20 +10,20 @@ source bin/cypress/vars.sh
 # build assets
 mkdir -p app/assets/{static,media}
 export STATICFILES_DIRS="${PWD}/app/assets/"
-python3 app/manage.py bundle
+python3.7 app/manage.py bundle
 yarn run build
 
-python3 app/manage.py collectstatic --noinput --disable-collectfast
+python3.7 app/manage.py collectstatic --noinput --disable-collectfast
 
 # set up database
-python3 app/manage.py migrate
-python3 app/manage.py loaddata "${PWD}/app/app/fixtures/users.json"
-python3 app/manage.py loaddata "${PWD}/app/app/fixtures/profiles.json"
-python3 app/manage.py loaddata "${PWD}/app/app/fixtures/economy.json"
-python3 app/manage.py loaddata "${PWD}/app/grants/fixtures/grant_types.json"
+python3.7 app/manage.py migrate
+python3.7 app/manage.py loaddata "${PWD}/app/app/fixtures/users.json"
+python3.7 app/manage.py loaddata "${PWD}/app/app/fixtures/profiles.json"
+python3.7 app/manage.py loaddata "${PWD}/app/app/fixtures/economy.json"
+python3.7 app/manage.py loaddata "${PWD}/app/grants/fixtures/grant_types.json"
 
 # run app server
-# python3 app/manage.py runserver 0.0.0.0:8000 &
+# python3.7 app/manage.py runserver 0.0.0.0:8000 &
 
 node_modules/.bin/cypress install
 # node_modules/.bin/wait-on http://0.0.0.0:8000

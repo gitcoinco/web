@@ -1,0 +1,226 @@
+{% load i18n static humanize %}
+
+{% if not profile.is_org and is_my_profile %}
+
+<!-- Passport Modal -->
+<div class="modal fade" id="passportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Generate your Proof of Personhood Passport</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img class="float-left p-2" src="/static/v2/images/passport-cover.png" style="max-width:200px;">
+        <div class="subbody">
+          <strong>What:</strong> PoPP aggregates the top personhood-identity providers in the web3 space into one transportable identity that proves your personhood.
+          <hr>
+          <strong>How:</strong> You can generate your Proof of Personhood Passport via the following methods.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="gen_passport" class="btn btn-primary">NFT</button>
+        <button type="button" class="btn btn-secondary disabled">3Box (coming soon)</button>
+        <button type="button" class="btn btn-secondary disabled">SpruceID (coming soon)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div id="gc-trust-manager-app" v-cloak>
+    <active-trust-manager inline-template>
+      <div>
+
+        <why-this-matters-modal
+          :show-modal="visibleModal === 'why-this-matters-modal'"
+          @modal-dismissed="hideModal()">
+        </why-this-matters-modal>
+
+        <brightid-verify-modal
+          :service="serviceDict.brightid"
+          :show-validation="visibleModal === 'brightid-modal'"
+          :brightid-uuid="serviceDict.brightid.uuid"
+          :validation-step="(serviceDict.brightid._status === 'not_connected' || serviceDict.brightid._status === 'unknown' ?
+            'connect-brightid' : (serviceDict.brightid._status !== 'verified' ?
+              'verify-brightid' : 'disconnect'
+            )
+          )"
+          @modal-dismissed="hideModal()">
+        </brightid-verify-modal>
+
+        <idena-verify-modal
+          :service="serviceDict.idena"
+          :show-validation="visibleModal === 'idena-modal'"
+          :validation-step="(serviceDict.idena.is_verified ?
+            'verified' : (serviceDict.idena.is_connected ?
+              'connected' : 'connect'
+            )
+          )"
+          @modal-dismissed="hideModal()">
+        </idena-verify-modal>
+
+        <sms-verify-modal
+          :service="serviceDict.sms"
+          :show-validation="visibleModal === 'sms-modal'"
+          :validation-step="(!serviceDict.sms.is_verified ? 'intro' : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </sms-verify-modal>
+
+        <twitter-verify-modal
+          :service="serviceDict.twitter"
+          :show-validation="visibleModal === 'twitter-modal'"
+          :validation-step="(!serviceDict.twitter.is_verified ? 'send-tweet' : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </twitter-verify-modal>
+
+        <poap-verify-modal
+          :service="serviceDict.poap"
+          :show-validation="visibleModal === 'poap-modal'"
+          :validation-step="(!serviceDict.poap.is_verified ? 'validate-address' : 'disconnect')"
+          :service="serviceDict.poap"
+          @modal-dismissed="hideModal()">
+        </poap-verify-modal>
+
+        <ens-verify-modal
+          :service="serviceDict.ens"
+          :show-validation="visibleModal === 'ens-modal'"
+          :validation-step="(!serviceDict.ens.is_verified ? 0 : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </ens-verify-modal>
+
+        <duniter-verify-modal
+          :show-validation="visibleModal === 'duniter-modal'"
+          @modal-dismissed="hideModal()">
+        </duniter-verify-modal>
+
+        <poh-verify-modal
+          :service="serviceDict.poh"
+          :show-validation="visibleModal === 'poh-modal'"
+          :validation-step="(!serviceDict.poh.is_verified ? 'validate-address' : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </poh-verify-modal>
+
+        <google-verify-modal
+          :service="serviceDict.google"
+          :show-validation="visibleModal === 'google-modal'"
+          :validation-step="(!serviceDict.google.is_verified ? 'connect' : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </google-verify-modal>
+
+        <facebook-verify-modal
+          :service="serviceDict.facebook"
+          :show-validation="visibleModal === 'facebook-modal'"
+          :validation-step="(!serviceDict.facebook.is_verified ? 'connect' : 'disconnect')"
+          @modal-dismissed="hideModal()">
+        </facebook-verify-modal>
+
+        {% if is_staff %}
+        <div class="row">
+          <div class="col-6 d-none d-lg-block col-xl-7"></div>
+          <div class="text-left position-relative col-12 col-lg-6 col-xl-5" style="padding: 5px; min-height: 115px;">
+            <img class="p-2 position-absolute left-0" src="/static/v2/images/passport-cover.png" style="max-width:100px; margin-top: -10px;">
+            <div style="padding-left: 100px;">
+              <strong class="pb-2 d-block">STAFF ONLY</strong> Take your TrustBonus with you across the web with <a href="https://proofofpersonhood.com/">your Proof of Personhood Passport</a>.
+            </div>
+            <div class="text-right pt-2">
+              <a data-toggle="modal" data-target="#passportModal" href="#" role="button" class="bottom-0 btn btn-primary">Try It!</a>
+            </div>
+          </div>
+        </div>
+        <hr>
+        {% endif %}
+
+        <div class="bg-violet-300 text-white spacer-p-4 spacer-mt-5">
+          <div class="row">
+            <div class="col-12 col-lg-9">
+              <h2>Increase Your Impact Up to 150%</h2>
+              <span class="font-smaller-1 line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
+              <div class="row spacer-mt-2 font-smaller-1 line-height-2">
+                <div class="col-12 spacer-mt-2">
+                  <span @click="showModal('why-this-matters-modal')" class="cursor-pointer hover-underline"><i class="fas fa-play-circle spacer-pr-2"></i> Why this matters</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-3 text-center text-lg-right">
+              <object class="spacer-mr-4 spacer-mt-3 spacer-mt-lg-0" type="image/svg+xml" data="{% static 'v2/images/trust/64x64.svg' %}" width="158" height="158"></object>
+            </div>
+          </div>
+        </div>
+
+        <div class="row spacer-mt-6 text-grey-500 font-smaller-1">
+          <div class="col-12 col-lg-8 spacer-pb-3">
+            <h3>Trust Verification</h3>
+           <span class="line-height-2">On Gitcoin verified users have 100% (or more) of their donation amount count towards the match fund algorithm. Unverified users begin with 50%. To ensure sybil resistance and protect Quadratic Funding, please verify your account below.</span>
+          </div>
+          <div class="col-12 col-lg-4 mt-2 m-lg-auto">
+            <div class="spacer-mb-2">Verification Level</div>
+            <div class="progress rounded-0" style="height: 0.4rem;">
+              <div class="progress-bar bg-secondary" role="progressbar" :style="{width: `${100/150 * trust_bonus}%`}" :aria-valuenow="`${100/150 * trust_bonus}%`" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="spacer-mt-2 font-weight-bold">You'll receive [[trust_bonus]]% of 150% Match</div>
+          </div>
+        </div>
+        <div class="row font-smaller-1" v-for="i in Math.ceil(services.length / 3)">
+          <div class="col-12 col-lg-4 spacer-mt-5" v-for="service in services.slice((i - 1) * 3, i * 3)">
+            <div class="card rounded-0 spacer-p-3" style="height: 100%; min-height:300px;">
+              <div class="row">
+                <div class="col-9">
+                  <span class="font-bigger-2 text-primary">[[service.name]]</span>
+                </div>
+                <div class="col-3 text-right">
+                  <img v-if="service.icon_path" width="41" height="40" :src="[[service.icon_path]]"/>
+                  <span v-else >
+                    <i :class="[[service.icon_class]]" v-bind:style="service.icon_style"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="row spacer-mb-3">
+                <div class="col-12">
+                  <span class="text-grey-300">[[service.match_percent]]% match</span>
+                </div>
+              </div>
+              <div class="row mb-lg-4 my-auto my-lg-0">
+                <div class="col">
+                  <span class="text-grey-400 line-height-4 line-clamp-3">[[service.desc]]</span>
+                </div>
+              </div>
+              <div class="row mt-auto">
+                <div class="col-6 m-auto text-success" :class="(service.is_verified || service.status ? 'd-flex' : 'd-none d-lg-flex')">
+                  <span v-if="service.is_verified">
+                    <i class="far fa-check-circle"></i> <i>Verified</i>
+                  </span>
+                  <span v-if="service.status" style="color: orange;">
+                    <i class="fal fa-exclamation-circle"></i> <i>[[service.status]]</i>
+                  </span>
+                </div>
+                <div class="text-right" :class="(service.is_verified || service.status ? 'col-6' : 'col-12 col-lg-6')">
+                  <button v-if="!service.is_verified" class="btn btn-primary w-100 w-md-auto px-md-3" @click="showModal(service.ref + '-modal')">Verify</button>
+                  <div v-else>
+                    <button v-if="!service.alt_is_verified_btn" :disabled="service.disable_disconnect" class="btn btn-outline-primary" @click="showModal(service.ref + '-modal')">Disconnect</button>
+                    <a v-else :class="'btn ' + service.alt_is_verified_btn.type" :href="service.alt_is_verified_btn.location" target="_blank">[[service.alt_is_verified_btn.text]]</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row spacer-my-6">
+          <div class="col-auto">
+            <i class="far fa-life-ring text-primary" style="font-size: 46px"></i>
+          </div>
+          <div class="col">
+              <h3>Need help verifying identity?</h3>
+              <span>Please contact the services directly for any questions or support in getting your identity confirmed.</span>
+          </div>
+        </div>
+      </div>
+
+    </active-trust-manager>
+
+
+  </div>
+
+{% endif %}

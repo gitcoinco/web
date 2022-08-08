@@ -96,7 +96,7 @@ echo $(date) "Finished installation of docker" >> /var/log/gitcoin/init.log
 const web = new aws.ec2.Instance("Web", {
     ami: ubuntu.then(ubuntu => ubuntu.id),
     associatePublicIpAddress: true,
-    instanceType: "t3.micro",
+    instanceType: "t3.medium",
     subnetId: vpcPublicSubnetId1.then(),
 
     vpcSecurityGroupIds: [secgrp.id],

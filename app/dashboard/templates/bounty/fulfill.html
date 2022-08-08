@@ -66,10 +66,12 @@
                           {% trans "Back to Bounty" %}
                         </a>
                       </p>
-                      <label class="form__label mb-0" for="issueURL">{% trans "Issue URL" %}</label>
-                      <input required name='issueURL' id="issueURL" class="form__input border-0 font-subheader px-lg-0"
-                        type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}"
-                      />
+                      {% if bounty.bounty_source != 'custom' %}
+                        <label class="form__label mb-0" for="issueURL">{% trans "Issue URL" %}</label>
+                        <input required name='issueURL' id="issueURL" class="form__input border-0 font-subheader px-lg-0"
+                          type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}"
+                        />
+                      {% endif %}
                     </div>
 
                     <div class="mt-2 github-username">

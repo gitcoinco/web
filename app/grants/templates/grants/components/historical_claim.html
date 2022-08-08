@@ -18,15 +18,22 @@
     </b-col>
     <b-col v-else-if="match.status == 'claimed' || match.claim_tx != 'NA'" lg="4" sm="12" class="mt-2 mt-lg-0">
       <p class="text-highlight-green font-weight-bold claimed_text">
-        <i class="far fa-check mr-2"></i>Claimed
+        <i class="far fa-check mr-2"></i>Completed
       </p>
       <span class="font-body text-grey-500">[[ match.claim_date ]]</span>
     </b-col>
     <b-col v-else-if="match.grant_payout.status === 'funding_withdrawn'" lg="4" sm="12" class="pt-2 pt-lg-0">
-      <p class="text-grey-400 font-weight-bold returned_text">
-        Returned to matching pool
+
+      <p v-if="match.round_number in ['8', '9']" class="text-highlight-green font-weight-bold claimed_text">
+        <i class="far fa-check mr-2"></i>Completed
       </p>
-      <span class="font-body text-grey-500">[[ match.funding_withdrawal_date ]]</span>
+
+      <template v-else>
+        <p class="text-grey-400 font-weight-bold returned_text">
+          Returned to matching pool
+        </p>
+        <span class="font-body text-grey-500">[[ match.funding_withdrawal_date ]]</span>
+      </template>
     </b-col>
     <b-col class="text-lg-right mt-2 mt-lg-0">
       <a v-if="match.claim_tx && match.claim_tx != 'NA' "

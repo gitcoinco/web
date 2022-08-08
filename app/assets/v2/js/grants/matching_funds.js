@@ -244,12 +244,24 @@ Vue.mixin({
       container.scrollIntoView(true);
     },
     hasHistoricalMatches(grant) {
-      return grant.clr_matches.length && grant.clr_matches.filter(a => a.claim_tx).length;
+      return grant.clr_matches.length &&
+      (
+        grant.clr_matches.filter(a => a.claim_tx).length ||
+        grant.clr_matches.filter(a => [ 8, 9 ].includes(a.round_number)).length
+      );
     },
     canClaimMatch(grant) {
-      return grant.clr_matches.length && grant.clr_matches.filter(
-        a => a.claim_tx === null &&
-        a.grant_payout).length;
+      return grant.clr_matches.length &&
+        grant.clr_matches.filter(a =>
+          a.claim_tx === null &&
+          a.grant_payout &&
+          [ 'ready', 'pending' ].includes(a.grant_payout.status)
+        ).length;
+    },
+    filterPendingClaims(matches) {
+      return this.filterMatchingPayout(matches).filter(
+        match => !match.claim_tx || match.claim_tx == ''
+      );
     },
     filterMatchingPayout(matches) {
       return matches.filter(match => match.grant_payout);

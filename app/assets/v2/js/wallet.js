@@ -1,6 +1,7 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const eventWalletReady = new Event('walletReady', {bubbles: true});
+const eventWalletDisconnect = new Event('walletDisconnect', {bubbles: true});
 const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
 if (!Object.hasOwnProperty.call(window, 'web3')) {
@@ -331,6 +332,8 @@ async function onDisconnect() {
   document.querySelector('#wallet-btn').innerText = 'Connect Wallet';
   document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
   cleanUpWalletData();
+
+  document.dispatchEvent(eventWalletDisconnect);
 
   // Set the UI back to the initial state
   // document.querySelector("#prepare").style.display = "block";

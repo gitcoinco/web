@@ -142,7 +142,7 @@
                 <!-- check if grant has a match that can be claimed -->
                 <div v-if="canClaimMatch(grant)">
                   <!-- map over matches that have an existing payout -->
-                  <div v-for="match in filterMatchingPayout(grant.clr_matches)" :key="match.pk">
+                  <div v-for="match in filterPendingClaims(grant.clr_matches)" :key="match.pk">
                     {% include './components/ready_claim.html' %}
                   </div>
                 </div>

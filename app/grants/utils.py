@@ -320,6 +320,9 @@ def save_grant_to_notion(grant):
     if NOTION_SYBIL_DB and NOTION_API_KEY:
         # fully qualified url
         fullUrl = BASE_URL.rstrip('/') + grant.url
+        grant_tags = []
+        for tag in grant.tags.all():
+            grant_tags.append(str(tag))
 
         # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
         return notion_write(NOTION_SYBIL_DB, {
@@ -347,6 +350,52 @@ def save_grant_to_notion(grant):
                     "plain_text": fullUrl,
                     "href": fullUrl
                 }]
+            },
+             "Requested Rounds": {
+                "id": "qBXH",
+                "type": "rich_text",
+                "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                            "content": ", ".join(grant_tags),
+                            "link": None
+                        },
+                        "annotations": {
+                            "bold": False,
+                            "italic": False,
+                            "strikethrough": False,
+                            "underline": False,
+                            "code": False,
+                            "color": "default"
+                        },
+                        "plain_text": ", ".join(grant_tags),
+                        "href": None
+                    }
+                ]
+            },
+            "Eligibility Tag Reasoning": {
+                "id": "Q]?]",
+                "type": "rich_text",
+                "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                            "content": grant.tag_eligibility_reason,
+                            "link": None
+                        },
+                        "annotations": {
+                            "bold": False,
+                            "italic": False,
+                            "strikethrough": False,
+                            "underline": False,
+                            "code": False,
+                            "color": "default"
+                        },
+                        "plain_text": grant.tag_eligibility_reason,
+                        "href": None
+                    }
+                ]
             }
         })
 
@@ -443,13 +492,13 @@ def bsci_script(csv: str) -> tuple:
                                                         labels_by_evaluation)))
 
         # Assign final `is_sybil` markings according to a priorization criteria
-        df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score
+        df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score > EVAL_THRESHOLD
         df.loc[labels_by_evaluation, 'label'] = "Human Evaluation"
-
-        df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score
+        
+        df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score > HEURISTIC_THRESHOLD
         df.loc[labels_by_heuristic, 'label'] = "Heuristics"
-
-        df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score
+        
+        df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score > ML_THRESHOLD
         df.loc[labels_by_prediction, 'label'] = "ML Prediction"
 
         # Generate dict records
@@ -465,3 +514,12 @@ def bsci_script(csv: str) -> tuple:
 
 def isNaN(string):
     return string != string
+
+def is_valid_eip_1271_signature(web3, address, hash, signature) -> bool:
+    from grants.abi.eip_1271_abi import EIP_1271_ABI
+    try:
+        eip_1271_contract = web3.eth.contract(address=address, abi=EIP_1271_ABI)
+        retval = eip_1271_contract.functions.isValidSignature(hash, signature).call()
+        return web3.toInt(retval) == 0x1626ba7e
+    except Exception as e:
+        return False
