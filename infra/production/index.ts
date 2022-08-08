@@ -670,11 +670,11 @@ let environment = [
     },
     {
         name: "STATIC_HOST",
-        value: "https://s.gitcoin.co/"
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
         name: "AWS_S3_CUSTOM_DOMAIN",
-        value: "https://s.gitcoin.co/"
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
         name: "STATIC_URL",
