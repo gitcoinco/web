@@ -376,7 +376,7 @@ const www = new aws.route53.Record("www", {
 let environment = [
     {
         name: "ENV",
-        value: "test"
+        value: "prod"
     },
     // read me to understand this file:
     // https://github.com/gitcoinco/web/blob/master/docs/ENVIRONMENT_VARIABLES.md
@@ -406,19 +406,19 @@ let environment = [
     },
     {
         name: "READ_REPLICA_1_DATABASE_URL",
-        value: databaseURL
+        value: readReplica1
     },
     {
         name: "READ_REPLICA_2_DATABASE_URL",
-        value: databaseURL
+        value: readReplica2
     },
     {
         name: "READ_REPLICA_3_DATABASE_URL",
-        value: databaseURL
+        value: readReplica3
     },
     {
         name: "READ_REPLICA_4_DATABASE_URL",
-        value: databaseURL
+        value: readReplica4
     },
     {
         name: "DEBUG",
@@ -670,11 +670,11 @@ let environment = [
     },
     {
         name: "STATIC_HOST",
-        value: s3Distribution.domainName
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
         name: "AWS_S3_CUSTOM_DOMAIN",
-        value: s3Distribution.domainName
+        value: "https://d31ygswzsyecnt.cloudfront.net/"
     },
     {
         name: "STATIC_URL",
@@ -697,7 +697,7 @@ let environment = [
     },
     {
         name: "MEDIA_URL",
-        value: s3Distribution.domainName
+        value: bucketWebURL
     }
 
 ];
