@@ -208,7 +208,7 @@ jobs:
           cp -Rf /code/app/static/* /static_files_to_deploy/
           EOT
 
-          docker run -v $(pwd)/static_files_to_deploy:/code/app/static -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
+          docker run -v $(pwd)/static_files_to_deploy:/static_files_to_deploy -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
           
           echo "Syncing to bucket: ${{ steps.pulumi.outputs.bucketName }}"
           echo "Source folder: $(pwd)/static_files_to_deploy"
