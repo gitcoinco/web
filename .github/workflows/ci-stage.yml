@@ -206,7 +206,7 @@ jobs:
           cat <<EOT >> docker_bin/static_files.sh
           #!/bin/bash
           python3.7 manage.py bundle
-          python3.7 manage.py collectstatic --disable-collectfast
+          python3.7 manage.py collectstatic --disable-collectfast --noinput
           EOT
 
           docker run -v $(pwd)/static_files_to_deploy:/static_files_to_deploy -v $(pwd)/docker_bin:/code/app/bin -e DATABASE_URL=${{ steps.pulumi.outputs.rdsConnectionUrl }} ${{ needs.build-and-test.outputs.dockerTag }} sh /code/app/bin/static_files.sh
