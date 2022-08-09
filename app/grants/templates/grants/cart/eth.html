@@ -208,12 +208,23 @@
         </div>
         <!-- Checkout -->
         <div class="text-center mt-3 mb-4 mx-auto">
-          <eth-checkout-button class="d-none d-md-block" :active-checkout="activeCheckout"
-            :on-polygon-update="onPolygonUpdate" :on-zk-sync-update="onZkSyncUpdate"
-            :standard-checkout="standardCheckout" :is-zk-sync-down="isZkSyncDown" :is-polygon-down="isPolygonDown"
-            :current-tokens="currentTokens" :donation-inputs="donationInputs" :max-cart-items="maxCartItems"
-            :grants-by-tenant="grantsByTenant" :grants-under-minimal-contribution="grantsUnderMinimalContribution"
-            :network="network" :multisig-grants="multisigGrants" :tab-selected="tabSelected">
+          <eth-checkout-button
+            class="d-none d-md-block"
+            :active-checkout="activeCheckout"
+            :on-polygon-update="onPolygonUpdate"
+            :on-zk-sync-update="onZkSyncUpdate"
+            :standard-checkout="standardCheckout"
+            :is-zk-sync-down="isZkSyncDown"
+            :is-polygon-down="isPolygonDown"
+            :current-tokens="currentTokens"
+            :donation-inputs="donationInputs"
+            :donation-inputs-polygon="donationInputsPolygon"
+            :max-cart-items="maxCartItems"
+            :grants-by-tenant="grantsByTenant"
+            :grants-under-minimal-contribution="grantsUnderMinimalContribution"
+            :network="network"
+            :multisig-grants="multisigGrants"
+            :tab-selected="tabSelected">
           </eth-checkout-button>
         </div>
 

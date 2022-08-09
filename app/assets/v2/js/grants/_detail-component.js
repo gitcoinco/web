@@ -405,7 +405,7 @@ Vue.mixin({
   computed: {
     teamFormatted: {
       get() {
-        return this.grant.team_members.map((user)=> {
+        return this.grant.team_members ? this.grant.team_members.map((user)=> {
           if (!user?.fields) {
             return user;
           }
@@ -415,11 +415,11 @@ Vue.mixin({
           newTeam['avatar_url'] = `/dynamic/avatar/${user.fields.handle}`;
           newTeam['text'] = user.fields.handle;
           return newTeam;
-        });
+        }) : [];
 
       },
       set(value) {
-        this.grant.team_members = value.map((user) => {
+        this.grant.team_members = value ? value.map((user) => {
 
           return {
             fields: {
@@ -428,7 +428,7 @@ Vue.mixin({
             model: 'dashboard.profile',
             pk: user.id
           };
-        });
+        }) : [];
       }
     },
     grantTagsFormatted: {
@@ -589,7 +589,7 @@ Vue.component('grant-details', {
         { 'name': 'kusama', 'label': 'Kusama'},
         { 'name': 'algorand', 'label': 'Algorand'}
       ],
-      grant_tags: document.grant_tags,
+      grant_tags: document.grant_tags ?? [],
       grant_salected_tags: [],
       externalFundingOptions: [
         {'key': 'yes', 'value': 'Yes, this project has raised external funding.'},
@@ -610,11 +610,9 @@ Vue.component('grant-details', {
   mounted: async function() {
     const vm = this;
 
-    vm.grant.is_contract_address = await vm.grantIsContract(this.grant.admin_address);
-
     vm.grant_twitter_handle_1 = vm.grant.twitter_handle_1;
     vm.grant.description_rich_edited = vm.grant.description_rich;
-    vm.grant_salected_tags = vm.grant.grant_tags.map(tag => tag.pk);
+    vm.grant_salected_tags = vm.grant.grant_tags ? vm.grant.grant_tags.map(tag => tag.pk) : [];
     vm.chainId = vm.grant.tenants.length > 0 ? vm.grant.tenants[0].toLowerCase() : '';
 
     if (vm.grant.description_rich_edited) {

@@ -40,7 +40,7 @@ Vue.component('eth-checkout-button', {
   delimiters: [ '[[', ']]' ],
   template: '#eth-checkout-template',
   props: [
-    'maxCartItems', 'network', 'isZkSyncDown', 'isPolygonDown', 'onPolygonUpdate', 'onZkSyncUpdate', 'donationInputs',
+    'maxCartItems', 'network', 'isZkSyncDown', 'isPolygonDown', 'onPolygonUpdate', 'onZkSyncUpdate', 'donationInputs', 'donationInputsPolygon',
     'currentTokens', 'grantsByTenant', 'grantsUnderMinimalContribution', 'activeCheckout', 'standardCheckout', 'multisigGrants',
     'tabSelected'
   ]
@@ -1037,6 +1037,10 @@ Vue.component('grants-cart', {
         await onConnect();
       }
 
+      if (this.nativeCurrency == 'MATIC') {
+        this.networkId = this.networkId == '80001' ? '4' : '1';
+      }
+
       let networkName = getDataChains(this.networkId, 'chainId')[0] && getDataChains(this.networkId, 'chainId')[0].network;
 
       // User's wallet must be connected to Ethereum mainnet or rinkeby
@@ -1727,6 +1731,12 @@ Vue.component('grants-cart', {
   async mounted() {
     // Show loading dialog
     this.isLoading = true;
+
+    // Check if shared/global wallet functions are loaded from shared.js
+    if (!window.indicateMetamaskPopup) {
+      // rerender component to pickup load of global fncts
+      vm.$forceUpdate();
+    }
 
     // Load list of all tokens
     const tokensResponse = await fetch('/api/v1/tokens');

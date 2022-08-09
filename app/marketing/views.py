@@ -46,7 +46,6 @@ from git.utils import get_github_primary_email
 from grants.models import Grant
 from marketing.common.utils import delete_email_subscription, get_or_save_email_subscriber, validate_slack_integration
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
-from marketing.mails import new_feedback
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.tasks import send_earnings_csv
 from retail.emails import render_new_bounty
@@ -66,9 +65,6 @@ def get_settings_navs(request):
     }, {
         'body': _('Matching'),
         'href': reverse('matching_settings')
-    }, {
-        'body': _('Feedback'),
-        'href': reverse('feedback_settings')
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
@@ -254,34 +250,6 @@ def matching_settings(request):
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/matching.html', context)
-
-
-def feedback_settings(request):
-    # setup
-    __, es, __, __ = settings_helper_get_auth(request)
-    if not es:
-        login_redirect = redirect('/login/github/?next=' + request.get_full_path())
-        return login_redirect
-
-    msg = ''
-    if request.POST and request.POST.get('submit'):
-        comments = request.POST.get('comments', '')[:255]
-        has_comment_changed = comments != es.metadata.get('comments', '')
-        if has_comment_changed:
-            new_feedback(es.email, comments)
-        es.metadata['comments'] = comments
-        es = record_form_submission(request, es, 'feedback')
-        es.save()
-        msg = _('We\'ve received your feedback.')
-
-    context = {
-        'nav': 'home',
-        'active': '/settings/feedback',
-        'title': _('Feedback'),
-        'navs': get_settings_navs(request),
-        'msg': msg,
-    }
-    return TemplateResponse(request, 'settings/feedback.html', context)
 
 
 def set_mautic_dnc(profile, es, form):

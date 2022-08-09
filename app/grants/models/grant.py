@@ -585,6 +585,7 @@ class Grant(SuperModel):
     )
     categories = models.ManyToManyField('GrantCategory', blank=True) # TODO: REMOVE
     tags = models.ManyToManyField('GrantTag', blank=True)
+    tag_eligibility_reason = models.TextField(default='', blank=True, help_text=_('Eligibility Tag Reasoning'))
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
@@ -912,6 +913,7 @@ class Grant(SuperModel):
     def contract(self):
         """Return grants contract."""
         from dashboard.utils import get_web3
+
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
@@ -948,11 +950,26 @@ class Grant(SuperModel):
         }
 
     def repr(self, user, build_absolute_uri, is_detail = True):
+        from dashboard.utils import get_web3
+
         grant_type = None
         if self.grant_type:
             grant_type = serializers.serialize('json', [self.grant_type], fields=['name', 'label'])
 
         active_round_names = list(self.in_active_clrs.values_list('display_text', flat=True))
+
+        team_members = serializers.serialize('json', self.team_members.all(),
+                        fields=['handle', 'url', 'profile__lazy_avatar_url']
+                    )
+
+        web3 = get_web3(self.network)
+        is_contract_address = False
+        if self.admin_address != '0x0':
+            try:
+                code = web3.eth.getCode(web3.eth.toChecksumAddress(self.admin_address))
+                is_contract_address = True if code != b'' else False
+            except:
+                is_contract_address = False
 
         result = {
                 'id': self.id,
@@ -968,12 +985,14 @@ class Grant(SuperModel):
                 'weighted_risk_score': self.weighted_risk_score,
                 'is_clr_active': self.is_clr_active,
                 'clr_round_num': self.clr_round_num,
+                'is_contract_address': is_contract_address,
                 'admin_profile': {
                     'url': self.admin_profile.url,
                     'handle': self.admin_profile.handle,
                     'avatar_url': self.admin_profile.lazy_avatar_url
                 },
                 'favorite': self.favorite(user) if user.is_authenticated else False,
+                'team_members': json.loads(team_members),
                 'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
                 'clr_prediction_curve': self.clr_prediction_curve,
                 'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
@@ -1021,9 +1040,6 @@ class Grant(SuperModel):
 
         if is_detail:
             clr_matches = CLRMatch.objects.filter(grant=self)
-            team_members = serializers.serialize('json', self.team_members.all(),
-                            fields=['handle', 'url', 'profile__lazy_avatar_url']
-                        )
 
             grant_tags = serializers.serialize('json', self.tags.all(),fields=['id', 'name', 'is_eligibility_tag'])
 
@@ -1038,7 +1054,6 @@ class Grant(SuperModel):
             result['has_pending_claim'] = has_pending_claim
             result['has_claims_in_review'] = has_claims_in_review
             result['has_claim_history'] = has_claim_history
-            result['team_members'] = json.loads(team_members)
             result['grant_tags'] = json.loads(grant_tags)
 
         return result

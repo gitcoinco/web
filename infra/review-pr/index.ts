@@ -59,6 +59,22 @@ const test_attach = new aws.iam.PolicyAttachment(`gitcoin-review-${environmentNa
 
 const staticAssetsBucket = new aws.s3.Bucket(`gitcoin-review-${environmentName}`, {
     acl: "public-read",
+
+    corsRules: [{
+        allowedHeaders: [
+            "Authorization"
+        ],
+        allowedMethods: [
+            "GET",
+            "HEAD"
+        ],
+        allowedOrigins: [
+            "*"
+        ],
+        exposeHeaders: [
+            "Access-Control-Allow-Origin"
+        ]
+    }],
     website: {
         indexDocument: "index.html",
     },
@@ -91,9 +107,94 @@ const staticAssetsBucketPolicy = new aws.s3.BucketPolicy(`gitcoin-review-${envir
     policy: staticAssetsBucketPolicyDocument.apply(staticAssetsBucketPolicyDocument => staticAssetsBucketPolicyDocument.json),
 });
 
+const s3OriginId = "myS3Origin";
+const s3Distribution = new aws.cloudfront.Distribution("s3Distribution", {
+    origins: [{
+        domainName: staticAssetsBucket.bucketRegionalDomainName,
+        originId: s3OriginId,
+    }],
+    enabled: true,
+    isIpv6Enabled: true,
+    defaultRootObject: "index.html",
+    defaultCacheBehavior: {
+        allowedMethods: [
+            "DELETE",
+            "GET",
+            "HEAD",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT",
+        ],
+        cachedMethods: [
+            "GET",
+            "HEAD",
+        ],
+        targetOriginId: s3OriginId,
+        forwardedValues: {
+            queryString: false,
+            cookies: {
+                forward: "none",
+            },
+        },
+        viewerProtocolPolicy: "allow-all",
+        minTtl: 0,
+        defaultTtl: 3600,
+        maxTtl: 86400,
+    },
+    orderedCacheBehaviors: [
+        {
+            pathPattern: "/static/*",
+            allowedMethods: [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+            ],
+            cachedMethods: [
+                "GET",
+                "HEAD",
+                "OPTIONS",
+            ],
+            targetOriginId: s3OriginId,
+            forwardedValues: {
+                queryString: false,
+                headers: ["Origin"],
+                cookies: {
+                    forward: "none",
+                },
+            },
+            minTtl: 0,
+            defaultTtl: 86400,
+            maxTtl: 31536000,
+            compress: true,
+            viewerProtocolPolicy: "redirect-to-https",
+        },
+    ],
+    priceClass: "PriceClass_200",
+    restrictions: {
+        geoRestriction: {
+            restrictionType: "none",
+        },
+    },
+    tags: {
+        Environment: "staging",
+    },
+    viewerCertificate: {
+        cloudfrontDefaultCertificate: true,
+    },
+});
+
+// export const bucketName = staticAssetsBucket.id;
+// export const bucketArn = staticAssetsBucket.arn;
+// export const bucketWebURL1 = staticAssetsBucket.website;
+// export const bucketWebURL1Domain = staticAssetsBucket.websiteDomain;
+// export const bucketWebURL1Endpoint = staticAssetsBucket.websiteEndpoint;
+// export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.websiteEndpoint}/`;
+
 export const bucketName = staticAssetsBucket.id;
 export const bucketArn = staticAssetsBucket.arn;
-export const bucketWebURL = pulumi.interpolate`http://${staticAssetsBucket.websiteEndpoint}/`;
+export const bucketWebURL = pulumi.interpolate`https://${staticAssetsBucket.bucketRegionalDomainName}/`;
+// export const bucketWebURL = "https://gitcoin-review-10618-c00aa99.s3.us-west-2.amazonaws.com/";
 
 //////////////////////////////////////////////////////////////
 // Load VPC for review environments
@@ -185,15 +286,79 @@ export const redisPrimaryNode = redis.cacheNodes[0];
 export const redisConnectionUrl = pulumi.interpolate`rediscache://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0?client_class=django_redis.client.DefaultClient`
 export const redisCacheOpsConnectionUrl = pulumi.interpolate`redis://${redisPrimaryNode.address}:${redisPrimaryNode.port}/0`
 
-// //////////////////////////////////////////////////////////////
-// // Set up ALB and ECS cluster
-// //////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+// Generate an SSL certificate
+//////////////////////////////////////////////////////////////
+const certificate = new aws.acm.Certificate(`gitcoin-review-${environmentName}`, {
+    domainName: domain,
+    tags: {
+        Environment: "staging",
+    },
+    validationMethod: "DNS",
+});
 
+const certificateValidationDomain = new aws.route53.Record(`gitcoin-review-${environmentName}`, {
+    name: certificate.domainValidationOptions[0].resourceRecordName,
+    zoneId: route53ZoneID,
+    type: certificate.domainValidationOptions[0].resourceRecordType,
+    records: [certificate.domainValidationOptions[0].resourceRecordValue],
+    ttl: 600,
+});
+
+const certificateValidation = new aws.acm.CertificateValidation(`gitcoin-review-${environmentName}`, {
+    certificateArn: certificate.arn,
+    validationRecordFqdns: [certificateValidationDomain.fqdn],
+});
+
+
+//////////////////////////////////////////////////////////////
+// Set up ALB and ECS cluster
+//////////////////////////////////////////////////////////////
 const cluster = new awsx.ecs.Cluster(`gitcoin-review-${environmentName}`, { vpc });
 // export const clusterInstance = cluster;
 export const clusterId = cluster.id;
-const listener = new awsx.lb.ApplicationListener(`gitcoin-review-${environmentName}`, { port: 80, vpc: cluster.vpc });
 
+// Creates an ALB associated with our custom VPC.
+const alb = new awsx.lb.ApplicationLoadBalancer(
+    `gitcoin-review-${environmentName}`, { vpc }
+);
+
+// Listen to HTTP traffic on port 80 and redirect to 443
+const httpListener = alb.createListener(`gitcoin-review-${environmentName}`, {
+    port: 80,
+    protocol: "HTTP",
+    defaultAction: {
+        type: "redirect",
+        redirect: {
+            protocol: "HTTPS",
+            port: "443",
+            statusCode: "HTTP_301",
+        },
+    },
+});
+
+// Target group with the port of the Docker image
+const target = alb.createTargetGroup(
+    `gitcoin-review-${environmentName}`, { vpc, port: 80 }
+);
+
+// Listen to traffic on port 443 & route it through the target group
+const httpsListener = target.createListener(`gitcoin-review-${environmentName}`, {
+    port: 443,
+    certificateArn: certificateValidation.certificateArn
+});
+
+// Create a DNS record for the load balancer
+const www = new aws.route53.Record("www", {
+    zoneId: route53ZoneID,
+    name: domain,
+    type: "A",
+    aliases: [{
+        name: httpsListener.endpoint.hostname,
+        zoneId: httpsListener.loadBalancer.loadBalancer.zoneId,
+        evaluateTargetHealth: true,
+    }]
+});
 
 let environment = [
     {
@@ -481,10 +646,9 @@ let environment = [
         name: "AWS_DEFAULT_REGION",
         value: "us-west-2"          // TODO: configure this
     },
-
     {
         name: "AWS_STORAGE_BUCKET_NAME",
-        value: bucketWebURL
+        value: bucketName
     },
     {
         name: "STATIC_HOST",
@@ -496,7 +660,7 @@ let environment = [
     },
     // This is used for prod: STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     // STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='django.contrib.staticfiles.storage.StaticFilesStorage')
-    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage 
+    // Going with this for the time being:  django.contrib.staticfiles.storage.StaticFilesStorage
     {
         name: "STATICFILES_STORAGE",
         value: "django.contrib.staticfiles.storage.StaticFilesStorage"
@@ -570,33 +734,32 @@ export const securityGroupForTaskDefinition = secgrp.id;
 
 const service = new awsx.ecs.FargateService(`gitcoin-review-${environmentName}-app`, {
     cluster,
-    desiredCount: 1,
+    desiredCount: 2,
     assignPublicIp: false,
     taskDefinitionArgs: {
         containers: {
             web: {
                 image: dockerGtcWebImage,
-                memory: 512,
-                portMappings: [listener],
+                memory: 1024,
+                portMappings: [httpsListener],
                 environment: environment,
                 links: []
             },
+            worker: {
+                image: dockerGtcWebImage,
+                memory: 1024,
+                environment: environment,
+                links: [],
+                command: ["python3.7", "manage.py", "celery"]
+            }
         },
     },
 });
 
 // Export the URL so we can easily access it.
-export const frontendURL = pulumi.interpolate`http://${listener.endpoint.hostname}/`;
-export const frontend = listener.endpoint
+export const frontendURL = pulumi.interpolate`http://${httpsListener.endpoint.hostname}/`;
+export const frontend = httpsListener.endpoint
 
-
-const www = new aws.route53.Record("www", {
-    zoneId: route53ZoneID,
-    name: domain,
-    type: "CNAME",
-    ttl: 300,
-    records: [listener.endpoint.hostname],
-});
 
 // Build and export the command to use the docker image of this specific deployment from an EC2 instance within the subnet
 export const dockerConnectCmd = pulumi.interpolate`docker run -it \
