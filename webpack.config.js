@@ -20,7 +20,7 @@ module.exports = (_, argv) => {
     devtool: false, // (argv.mode === 'development' ? 'eval-cheap-source-map' : false)
     output: {
       filename: '[name].js',
-      path: path.resolve(__dirname, 'app/assets/v2/bundled/js'),
+      path: path.resolve(__dirname, 'app/assets/v2/bundles/js'),
       library: {
         type: 'global'
       },
