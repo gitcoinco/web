@@ -321,7 +321,7 @@ def save_grant_to_notion(grant):
         # fully qualified url
         fullUrl = BASE_URL.rstrip('/') + grant.url
         grant_tags = []
-        for tag in grant.tags.all():
+        for tag in grant.tags_requested.all():
             grant_tags.append(str(tag))
 
         # write to NOTION_SYBIL_DB following the defined schema (returns dict of new object)
@@ -494,10 +494,10 @@ def bsci_script(csv: str) -> tuple:
         # Assign final `is_sybil` markings according to a priorization criteria
         df.loc[labels_by_evaluation, 'is_sybil'] = df[labels_by_evaluation].evaluation_score > EVAL_THRESHOLD
         df.loc[labels_by_evaluation, 'label'] = "Human Evaluation"
-        
+
         df.loc[labels_by_heuristic, 'is_sybil'] = df[labels_by_heuristic].heuristic_score > HEURISTIC_THRESHOLD
         df.loc[labels_by_heuristic, 'label'] = "Heuristics"
-        
+
         df.loc[labels_by_prediction, 'is_sybil'] = df[labels_by_prediction].prediction_score > ML_THRESHOLD
         df.loc[labels_by_prediction, 'label'] = "ML Prediction"
 

@@ -3347,7 +3347,7 @@ class GrantSubmissionView(View):
         for tag_id in tag_ids:
             try:
                 tag = GrantTag.objects.get(pk=tag_id)
-                grant.tags.add(tag)
+                grant.tags_requested.add(tag)
             except Exception as e:
                 pass
 
