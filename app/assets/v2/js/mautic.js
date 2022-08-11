@@ -2,12 +2,11 @@
 // if (document.contxt.github_handle && document.contxt.env === 'prod') {
 //   mtcId
 // }
-document.addEventListener('mauticPageEventDelivered', function(e) {
+document.addEventListener("mauticPageEventDelivered", function (e) {
   if (document.contxt.github_handle && mtcId && !document.contxt.mautic_id) {
     //   mtcId
     saveMauticId(mtcId);
   }
-
 });
 
 // `api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`
@@ -31,17 +30,17 @@ document.addEventListener('mauticPageEventDelivered', function(e) {
 // }
 
 const saveMauticId = (mauticId) => {
-  const url = '/api/v1/mautic_profile_save/';
-  const postData = fetchData(url, 'POST', { 'mtcId': mauticId });
+  const url = "/api/v1/mautic_profile_save/";
+  const postData = fetchData(url, "POST", { mtcId: mauticId });
 
-  $.when(postData).then((response) => {
-
-    document.contxt.mautic_id = mauticId;
-  }).catch((err) => {
-    console.log(err);
-    _alert('Unable to save your profile. Please login again', 'danger');
-  });
-
+  $.when(postData)
+    .then((response) => {
+      document.contxt.mautic_id = mauticId;
+    })
+    .catch((err) => {
+      console.log(err);
+      _alert("Unable to save your profile. Please login again", "danger");
+    });
 };
 
 class MauticEvent {
@@ -55,25 +54,24 @@ class MauticEvent {
    * bounty-hunter, bounty-funder, hackathon-hunter, hackathon-funder, grants-creator, grants-contributor,grants-pledger,kernel-student, kernel-mentor
    */
 
-
   static dataMock(data) {
     let obj = {
-      'email': data.email,
-      'customObjects': {
-        'data': [
+      email: data.email,
+      customObjects: {
+        data: [
           {
-            'alias': 'products',
-            'data': [
+            alias: "products",
+            data: [
               {
-                'name': 'product',
-                'attributes': {
-                  'product': data.product
-                }
-              }
-            ]
-          }
-        ]
-      }
+                name: "product",
+                attributes: {
+                  product: data.product,
+                },
+              },
+            ],
+          },
+        ],
+      },
     };
 
     if (data.persona) {
@@ -81,38 +79,46 @@ class MauticEvent {
     }
 
     return obj;
-
   }
 
   static send(data) {
-    if (typeof mtcId === 'undefined') {
+    // Tmp - to be removed
+    let mtcId = 0;
+
+    if (typeof mtcId === "undefined") {
       return;
     }
     let contactApi = `/api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`;
     // let dataMock = this.dataMock(data)
 
     fetch(contactApi, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
-    }).then(function(response) {
-      return response.json();
+      body: JSON.stringify(data),
     })
-      .then(function(result) {
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (result) {
         console.log(result);
       })
-      .catch(function(error) {
-        console.log('Request failed', error);
+      .catch(function (error) {
+        console.log("Request failed", error);
       });
-
   }
 
   static product(data) {
     // MauticEvent.product({'product':'bounties', 'persona': 'bounty-hunter'})
-    this.send(this.dataMock({ 'email': document.contxt.email, 'product': data.product, 'persona': data.persona }));
+    this.send(
+      this.dataMock({
+        email: document.contxt.email,
+        product: data.product,
+        persona: data.persona,
+      })
+    );
   }
 
   static createEvent(...obj) {
@@ -147,25 +153,24 @@ class MauticEvent {
       })
     */
     let baseObj = {
-      'email': document.contxt.email,
-      'customObjects': {}
+      email: document.contxt.email,
+      customObjects: {},
     };
 
-    baseObj.customObjects['data'] = obj;
+    baseObj.customObjects["data"] = obj;
     this.send(baseObj);
   }
 
   static updateUser(userData) {
     // { 'tags': ['mytag','yourtag']}
     let baseObj = {
-      'email': document.contxt.email
+      email: document.contxt.email,
     };
-    let merged = {...baseObj, ...userData};
+    let merged = { ...baseObj, ...userData };
 
     this.send(merged);
   }
 }
-
 
 // MauticEvent.create('hackathon', 'hackathon', {'hackathon-slug':'hackathon-event'})
 // MauticEvent.create('products', 'product', {'product':'bounties', 'persona': 'bounty-hunter'})
@@ -175,18 +180,19 @@ class MauticEvent {
 
 this.MauticSDKLoaded;
 
-if (typeof MauticSDKLoaded == 'undefined') {
+if (typeof MauticSDKLoaded == "undefined") {
   MauticSDKLoaded = true;
-  this.MauticDomain = 'https://engage.gitcoin.co';
+  this.MauticDomain = "https://engage.gitcoin.co";
   this.MauticLang = {
-    'submittingMessage': 'Please wait...'
+    submittingMessage: "Please wait...",
   };
-  const head = document.getElementsByTagName('head')[0];
-  const script = document.createElement('script');
+  const head = document.getElementsByTagName("head")[0];
+  const script = document.createElement("script");
 
-  script.type = 'text/javascript';
-  script.src = 'https://engage.gitcoin.co/mautic/media/js/mautic-form.js?vfd3c9acf';
-  script.onload = function() {
+  script.type = "text/javascript";
+  script.src =
+    "https://engage.gitcoin.co/mautic/media/js/mautic-form.js?vfd3c9acf";
+  script.onload = function () {
     MauticSDK.onLoad();
   };
   head.appendChild(script);
