@@ -483,6 +483,7 @@ if (document.getElementById('gc-new-grant')) {
       },
       grantTagOptions() {
         const all_tags = this.grant_tags.sort((a, b) => b.is_eligibility_tag - a.is_eligibility_tag);
+        const sorted_tags = this.grant_tags.sort((a, b) => a.id - b.id);
         const first_discovery = (tag) => tag.is_eligibility_tag === 0;
 
         all_tags.unshift({
@@ -490,12 +491,13 @@ if (document.getElementById('gc-new-grant')) {
           name: 'eligibility tags'.toUpperCase(),
           is_eligibility_tag: 'label'
         });
-        
+
         all_tags.splice(all_tags.findIndex(first_discovery), 0, {
-          id: all_tags.length + 1,
+          id: sorted_tags[sorted_tags.length-1].id + 1,
           name: 'discovery tags'.toUpperCase(),
           is_eligibility_tag: 'label'
         });
+
         return all_tags;
       },
       queryParams() {
