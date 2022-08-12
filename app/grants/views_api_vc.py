@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define the Grant views.
+"""Define the Grant views for API used by the passport IAM
 
 Copyright (C) 2021 Gitcoin Core
 
