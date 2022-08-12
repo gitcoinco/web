@@ -33,6 +33,7 @@ from grants.views import (
     leaderboard, manage_ethereum_cart_data, matching_funds, profile, remove_grant_from_collection, save_collection,
     toggle_grant_favorite, upload_sybil_csv, verify_grant,
 )
+from grants.views_api_vc import contributor_statistics
 
 app_name = 'grants/'
 urlpatterns = [
@@ -126,4 +127,6 @@ urlpatterns = [
     path('v1/api/upload_sybil_csv', upload_sybil_csv, name='upload_sybil_csv'),
     path('v1/api/ingest_merkle_claim_to_clr_match', ingest_merkle_claim_to_clr_match, name='ingest_merkle_claim_to_clr_match'),
 
+    # VC verification API (when issuing a VC)
+    path('v1/api/vc/contributor_statistics', contributor_statistics, name='contributor_statistics'),
 ]
