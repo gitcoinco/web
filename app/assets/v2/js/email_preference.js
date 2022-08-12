@@ -2,33 +2,34 @@ class EmailPreferenceEvent {
 
   static send(data) {
 
-    let loggingApi = `api/v1/email_preference_log/`;
+    let loggingApi = '/api/v1/email_preference_log/';
 
     fetch(loggingApi, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     })
-      .then(function (response) {
+      .then(function(response) {
         return response.json();
       })
-      .then(function (result) {
+      .then(function(result) {
         console.log(result);
       })
-      .catch(function (error) {
-        console.log("Request failed", error);
+      .catch(function(error) {
+        console.log('Request failed', error);
       });
   }
 
   static createEvent(...obj) {
     let baseObj = {
       email: document.contxt.email,
-      customObjects: {},
+      customObjects: {}
     };
-    baseObj.customObjects["data"] = obj;
+
+    baseObj.customObjects['data'] = obj;
     this.send(baseObj);
   }
 }

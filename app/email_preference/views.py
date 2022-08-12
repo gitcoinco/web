@@ -1,10 +1,12 @@
 from django.http import HttpResponse, JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import EmailPreferenceLog
 
 
+@csrf_exempt
 @require_POST
 def email_preference_log(request):
 
