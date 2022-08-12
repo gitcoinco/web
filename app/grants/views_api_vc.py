@@ -144,7 +144,6 @@ def grantee_statistics(request):
         hidden=False,
         active=True,
         is_clr_eligible=True,
-        link_to_new_grant=None,
     ).count()
 
     # Get the total amount of contrinutors for ane users grants that where not squelched and are not the owner himself
@@ -184,10 +183,20 @@ def grantee_statistics(request):
         total_contribution_amount if total_contribution_amount is not None else 0
     )
 
+    # [IAM] As an IAM server, I want to issue stamps for grant owners whose project have tagged matching-eligibel in an eco-system and/or cause round
+    num_grants_in_eco_and_cause_rounds = Grant.objects.filter(
+        admin_profile__handle=handle,
+        hidden=False,
+        active=True,
+        is_clr_eligible=True,
+        clr_calculations__grantclr__type__in=["ecosystem", "cause"],
+    ).count()
+
     return JsonResponse(
         {
             "num_owned_grants": num_owned_grants,
             "num_grant_contributors": num_grant_contributors,
+            "num_grants_in_eco_and_cause_rounds": num_grants_in_eco_and_cause_rounds,
             "total_contribution_amount": total_contribution_amount,
         }
     )
