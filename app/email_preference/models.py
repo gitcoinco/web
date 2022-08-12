@@ -9,8 +9,6 @@ class EmailPreferenceLog(SuperModel):
     destination = models.CharField(max_length=255, default='hubspot')
     event_data = JSONField(null=True, default=dict, blank=True)
     response_data = JSONField(null=True, default=dict, blank=True)
-    # created_on = models.DateTimeField(null=False, default=get_time, db_index=True)
-    # modified_on = models.DateTimeField(null=False, default=get_time)
     processed_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
