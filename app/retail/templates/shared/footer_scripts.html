@@ -86,6 +86,7 @@
 {% bundle merge_js file main %}
   <script src="{% static "v2/js/carousel-extensions.js" %}"></script>
   <script src="{% static "v2/js/mautic.js" %}"></script>
+  <script src="{% static "v2/js/email_preference.js" %}"></script>
   <script src="{% static "v2/js/ajax-helper.js" %}"></script>
   <script src="{% static "v2/js/cart-data.js" %}"></script>
   <script src="{% static "v2/js/cart-nav.js" %}"></script>
@@ -104,7 +105,7 @@
 
 <script>
     // Tmp - to be removed
-    MauticEvent.createEvent({
+    EmailPreferenceEvent.createEvent({
             'alias': 'products',
             'data': [
               {
