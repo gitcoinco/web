@@ -24,7 +24,7 @@ from django.db.models import Sum
 from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 
-from grants.models import Contribution
+from grants.models import Contribution, Grant
 from perftools.models import StaticJsonEnv
 from townsquare.models import SquelchProfile
 
@@ -73,8 +73,8 @@ def contributor_statistics(request):
             status=400,
         )
 
-    # Get number of grantsthe user contributed to
-    grants_count = (
+    # Get number of grants the user contributed to
+    num_grants_contribute_to = (
         Contribution.objects.filter(profile_for_clr__handle=handle, success=True)
         .order_by("grant_id")
         .distinct("grant_id")
@@ -82,7 +82,7 @@ def contributor_statistics(request):
     )
 
     # Get the number of grants the user contributed to
-    rounds_count = (
+    num_rounds_contribute_to = (
         Contribution.objects.filter(
             success=True,
             subscription__contributor_profile__handle=handle,
@@ -97,13 +97,15 @@ def contributor_statistics(request):
     total_contribution_amount = Contribution.objects.filter(
         profile_for_clr__handle=handle, success=True
     ).aggregate(Sum("amount_per_period_usdt"))["amount_per_period_usdt__sum"]
-    total_contribution_amount = total_contribution_amount if total_contribution_amount is not None else 0
+    total_contribution_amount = (
+        total_contribution_amount if total_contribution_amount is not None else 0
+    )
 
-    # GR14 contibutor (and not squelched by FDD)
+    # GR14 contributor (and not squelched by FDD)
     profile_squelch = SquelchProfile.objects.filter(
         profile__handle=handle, active=True
     ).values_list("profile_id", flat=True)
-    
+
     num_gr14_contributions = (
         Contribution.objects.filter(
             success=True,
@@ -118,9 +120,74 @@ def contributor_statistics(request):
 
     return JsonResponse(
         {
-            "grants_count": grants_count,
-            "rounds_count": rounds_count,
+            "num_grants_contribute_to": num_grants_contribute_to,
+            "num_rounds_contribute_to": num_rounds_contribute_to,
             "total_contribution_amount": total_contribution_amount,
             "is_gr14_contributor": num_gr14_contributions > 0,
+        }
+    )
+
+
+@ami_api_token_required
+def grantee_statistics(request):
+    handle = request.GET.get("handle")
+
+    if not handle:
+        return JsonResponse(
+            {"error": "Bad request, 'handle' parameter is missing or invalid"},
+            status=400,
+        )
+
+    # Get number of owned grants
+    num_owned_grants = Grant.objects.filter(
+        admin_profile__handle=handle,
+        hidden=False,
+        active=True,
+        is_clr_eligible=True,
+        link_to_new_grant=None,
+    ).count()
+
+    # Get the total amount of contrinutors for ane users grants that where not squelched and are not the owner himself
+    all_squelched = SquelchProfile.objects.filter(active=True).values_list(
+        "profile_id", flat=True
+    )
+    num_grant_contributors = (
+        Contribution.objects.filter(
+            success=True,
+            subscription__network="mainnet",
+            subscription__grant__hidden=False,
+            subscription__grant__active=True,
+            subscription__grant__is_clr_eligible=True,
+            subscription__grant__admin_profile__handle=handle,
+        )
+        .exclude(subscription__contributor_profile_id__in=all_squelched)
+        .exclude(subscription__contributor_profile__handle=handle)
+        .order_by("subscription__contributor_profile_id")
+        .distinct("subscription__contributor_profile_id")
+        .count()
+    )
+
+    # Get the total amount of contributions received by the owned grants (excluding the contributions made by the owner)
+    total_contribution_amount = (
+        Contribution.objects.filter(
+            success=True,
+            subscription__network="mainnet",
+            subscription__grant__hidden=False,
+            subscription__grant__active=True,
+            subscription__grant__is_clr_eligible=True,
+            subscription__grant__admin_profile__handle=handle,
+        )
+        .exclude(subscription__contributor_profile__handle=handle)
+        .aggregate(Sum("amount_per_period_usdt"))["amount_per_period_usdt__sum"]
+    )
+    total_contribution_amount = (
+        total_contribution_amount if total_contribution_amount is not None else 0
+    )
+
+    return JsonResponse(
+        {
+            "num_owned_grants": num_owned_grants,
+            "num_grant_contributors": num_grant_contributors,
+            "total_contribution_amount": total_contribution_amount,
         }
     )
