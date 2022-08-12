@@ -79,6 +79,18 @@ def contributor_statistics(request):
         .count()
     )
 
+    rounds_count = (
+        Contribution.objects.filter(
+            success=True,
+            subscription__contributor_profile__handle=handle,
+            subscription__network="mainnet",
+            subscription__grant__clr_calculations__latest=True,
+        )
+        .order_by("subscription__grant__clr_calculations__grantclr__round_num")
+        .distinct("subscription__grant__clr_calculations__grantclr__round_num")
+        .count()
+    )
+
     total_contribution_amount = Contribution.objects.filter(
         profile_for_clr__handle=handle, success=True
     ).aggregate(Sum("amount_per_period_usdt"))["amount_per_period_usdt__sum"]
@@ -86,6 +98,7 @@ def contributor_statistics(request):
     return JsonResponse(
         {
             "grants_count": grants_count,
+            "rounds_count": rounds_count,
             "total_contribution_amount": total_contribution_amount,
         }
     )
