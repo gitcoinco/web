@@ -26,6 +26,7 @@ from django.utils.translation import gettext_lazy as _
 
 from grants.models import Contribution
 from perftools.models import StaticJsonEnv
+from townsquare.models import SquelchProfile
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +73,7 @@ def contributor_statistics(request):
             status=400,
         )
 
+    # Get number of grantsthe user contributed to
     grants_count = (
         Contribution.objects.filter(profile_for_clr__handle=handle, success=True)
         .order_by("grant_id")
@@ -79,6 +81,7 @@ def contributor_statistics(request):
         .count()
     )
 
+    # Get the number of grants the user contributed to
     rounds_count = (
         Contribution.objects.filter(
             success=True,
@@ -94,11 +97,30 @@ def contributor_statistics(request):
     total_contribution_amount = Contribution.objects.filter(
         profile_for_clr__handle=handle, success=True
     ).aggregate(Sum("amount_per_period_usdt"))["amount_per_period_usdt__sum"]
+    total_contribution_amount = total_contribution_amount if total_contribution_amount is not None else 0
+
+    # GR14 contibutor (and not squelched by FDD)
+    profile_squelch = SquelchProfile.objects.filter(
+        profile__handle=handle, active=True
+    ).values_list("profile_id", flat=True)
+    
+    num_gr14_contributions = (
+        Contribution.objects.filter(
+            success=True,
+            subscription__contributor_profile__handle=handle,
+            subscription__network="mainnet",
+            subscription__grant__clr_calculations__latest=True,
+            subscription__grant__clr_calculations__grantclr__round_num=14,
+        )
+        .exclude(subscription__contributor_profile_id__in=profile_squelch)
+        .count()
+    )
 
     return JsonResponse(
         {
             "grants_count": grants_count,
             "rounds_count": rounds_count,
             "total_contribution_amount": total_contribution_amount,
+            "is_gr14_contributor": num_gr14_contributions > 0,
         }
     )
