@@ -584,7 +584,8 @@ class Grant(SuperModel):
         db_index=True,
     )
     categories = models.ManyToManyField('GrantCategory', blank=True) # TODO: REMOVE
-    tags = models.ManyToManyField('GrantTag', blank=True)
+    tags = models.ManyToManyField('GrantTag', blank=True, related_name='tags')
+    tags_requested = models.ManyToManyField('GrantTag', blank=True, related_name='tags_requested')
     tag_eligibility_reason = models.TextField(default='', blank=True, help_text=_('Eligibility Tag Reasoning'))
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)

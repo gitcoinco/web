@@ -51,7 +51,7 @@ class FlagAdmin(admin.ModelAdmin):
     ordering = ['-id']
     raw_id_fields = ['profile', 'grant']
     readonly_fields = ['grant_link']
-    
+
     def grant_link(self, obj):
         return format_html("<a href='/grants/{id}/{slug}' target=\"_blank\">Grant Details</a>", id=obj.grant.id, slug=obj.grant.slug)
 
@@ -105,9 +105,10 @@ class GrantAdmin(GeneralAdmin):
         'title', 'is_grant_idle',
         'active', 'visible', 'is_clr_eligible',
         'migrated_to', 'region',
-        'grant_type', 'tags', 'tag_eligibility_reason','description', 'description_rich', 'github_project_url', 'reference_url', 'admin_address',
-        'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed', 'defer_clr_to',
-        'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
+        'grant_type', 'tags_requested', 'tags', 'tag_eligibility_reason',
+        'description', 'description_rich', 'github_project_url', 'reference_url',
+        'admin_address', 'amount_received', 'amount_received_in_round', 'monthly_amount_subscribed',
+        'defer_clr_to', 'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
