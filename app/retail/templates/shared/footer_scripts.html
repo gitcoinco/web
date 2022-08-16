@@ -103,25 +103,6 @@
   <script src="{% static "cookielaw/js/cl.js" %}"></script>
 {% endbundle %}
 
-<script>
-    // Tmp - to be removed
-    EmailPreferenceEvent.createEvent({
-            'alias': 'products',
-            'data': [
-              {
-                'name': 'product',
-                'attributes': {
-                  'product': 'grants',
-                  'persona': 'grants-creator',
-                  'action': 'create'
-                }
-              }
-            ]
-          });
-</script>
-
-
-
 {% if not onepager %}
   {% bundle merge_js file navbar %}
     <script src="{% static "v2/js/navbar.js" %}"></script>
