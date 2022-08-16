@@ -133,6 +133,7 @@ Vue.mixin({
         response = await fetchData(url, 'POST', data, headers);
 
         if (response.status == 200) {
+          // preference log placeholder
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [

@@ -655,6 +655,7 @@ function contributeWithAlgorandExtensionCallback(
       .then((response) => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          // preference log placeholder
           MauticEvent.createEvent({
             alias: 'products',
             data: [

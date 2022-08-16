@@ -1,7 +1,8 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+import json
 
 from .models import EmailPreferenceLog
 
@@ -16,17 +17,13 @@ def email_preference_log(request):
             status=401
         )
 
-    user_id = 77
-    destination = 'hubspot'
-    event_data = {'hello': 'hello'}
-    response_data = {'hallo': 'hallo'}
+    event_data = request.body.decode('utf-8')
+    payload = json.loads(event_data)
 
     try:
-        log =  EmailPreferenceLog(
-            user_id=user_id,
-            destination=destination,
-            event_data=event_data,
-            response_data=response_data
+        log = EmailPreferenceLog(
+            destination='hubspot',
+            event_data=payload
         )
         log.save()
         return JsonResponse(

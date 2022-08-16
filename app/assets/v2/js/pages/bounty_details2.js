@@ -90,6 +90,7 @@ Vue.mixin({
 
         }
 
+        // preference log placeholder
         MauticEvent.createEvent(bountyEvent);
         window.history.pushState({}, document.title, window.location.pathname);
 
@@ -810,6 +811,7 @@ Vue.mixin({
 
           }
 
+          // preference log placeholder
           MauticEvent.createEvent(stopEvent);
 
           _alert(text, 'success');
@@ -915,7 +917,7 @@ Vue.mixin({
         case 'CKB': {
           const ADDRESS_REGEX = new RegExp('^(ckb){1}[0-9a-zA-Z]{43,92}$');
           const isNervosValid = ADDRESS_REGEX.test(vm.bounty.bounty_owner_address);
-    
+
           if (!isNervosValid && !vm.bounty.bounty_owner_address.toLowerCase().startsWith('0x')) {
             hasError = true;
           }
@@ -1140,6 +1142,7 @@ var show_interest_modal = function() {
             modals.bootstrapModal('hide');
           });
 
+          // preference log placeholder
           MauticEvent.createEvent({
             'alias': 'hackathon',
             'data': [
@@ -1186,6 +1189,7 @@ var show_interest_modal = function() {
         }).then(success => {
           if (success) {
             appBounty.fetchBounty();
+            // preference log placeholder
             MauticEvent.createEvent({
               'alias': 'products',
               'data': [

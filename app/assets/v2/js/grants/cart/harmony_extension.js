@@ -65,6 +65,7 @@ const contributeWithHarmonyExtension = async(grant, vm) => {
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          // preference log placeholder
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [

@@ -723,6 +723,7 @@ Vue.component('grants-cart', {
         if (response.success_contributions && response.success_contributions.length) {
           if (grant.grant_id === response.success_contributions[0].grant_id) {
             // grant.error= response.invalid_contributions[0].message;
+            // preference log placeholder
             MauticEvent.createEvent({
               'alias': 'products',
               'data': [
@@ -1413,6 +1414,7 @@ Vue.component('grants-cart', {
         const res = await fetch(url, saveSubscriptionParams);
         const json = await res.json();
 
+        // preference log placeholder
         MauticEvent.createEvent({
           'alias': 'products',
           'data': [

@@ -37,6 +37,7 @@ window.onload = function() {
         cancelBounty(data);
       }
 
+      // preference log placeholder
       MauticEvent.createEvent({
         'alias': 'products',
         'data': [
