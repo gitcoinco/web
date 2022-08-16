@@ -1141,7 +1141,6 @@ var show_interest_modal = function() {
             submitProject(logo, data);
             modals.bootstrapModal('hide');
           });
-          // TODO: test if problem
           EmailPreferenceEvent.createEvent({
             'alias': 'hackathon',
             'data': [
