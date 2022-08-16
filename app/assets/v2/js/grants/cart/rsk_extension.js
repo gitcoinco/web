@@ -114,7 +114,19 @@ const contributeWithRskExtension = async(grant, vm) => {
 
       fetchData(apiUrlBounty, 'POST', JSON.stringify(payload)).then(response => {
         if (200 <= response.status && response.status <= 204) {
-          // preference log placeholder
+          EmailPreferenceEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-contributor',
+                  'action': 'contribute'
+                }
+              }
+            ]
+          });
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [

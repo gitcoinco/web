@@ -90,7 +90,7 @@ Vue.mixin({
 
         }
 
-        // preference log placeholder
+        EmailPreferenceEvent.createEvent(bountyEvent);
         MauticEvent.createEvent(bountyEvent);
         window.history.pushState({}, document.title, window.location.pathname);
 
@@ -811,7 +811,7 @@ Vue.mixin({
 
           }
 
-          // preference log placeholder
+          EmailPreferenceEvent.createEvent(stopEvent);
           MauticEvent.createEvent(stopEvent);
 
           _alert(text, 'success');
@@ -1141,8 +1141,32 @@ var show_interest_modal = function() {
             submitProject(logo, data);
             modals.bootstrapModal('hide');
           });
-
-          // preference log placeholder
+          // TODO: test if problem
+          EmailPreferenceEvent.createEvent({
+            'alias': 'hackathon',
+            'data': [
+              {
+                'name': 'interest',
+                'attributes': {
+                  'hackathon-slug': document.result.event.slug,
+                  'hackathon-action': 'interest'
+                }
+              }
+            ]
+          },
+          {
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'hackathon',
+                  'persona': 'hackathon-hunter',
+                  'action': 'interest'
+                }
+              }
+            ]
+          });
           MauticEvent.createEvent({
             'alias': 'hackathon',
             'data': [
@@ -1189,7 +1213,19 @@ var show_interest_modal = function() {
         }).then(success => {
           if (success) {
             appBounty.fetchBounty();
-            // preference log placeholder
+            EmailPreferenceEvent.createEvent({
+              'alias': 'products',
+              'data': [
+                {
+                  'name': 'product',
+                  'attributes': {
+                    'product': 'bounties',
+                    'persona': 'bounty-hunter',
+                    'action': 'interest'
+                  }
+                }
+              ]
+            });
             MauticEvent.createEvent({
               'alias': 'products',
               'data': [

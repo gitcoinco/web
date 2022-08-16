@@ -482,7 +482,30 @@
       const sendMtcEvent = (slug, cb) => {
         console.log(slug)
 
-        // preference log placeholder
+        EmailPreferenceEvent.createEvent({
+          "alias": "hackathon",
+          "data": [
+            {
+              "name": "registration",
+              "attributes": {
+                "hackathon-slug": slug,
+                "hackathon-action": 'register',
+              }
+            }
+          ]
+        }, {
+          "alias": "products",
+          "data": [
+            {
+              "name": "product",
+              "attributes": {
+                "product": "hackathon",
+                'persona': 'hackathon-hunter',
+                'action': 'register'
+              }
+            }
+          ]
+        })
         MauticEvent.createEvent({
           "alias": "hackathon",
           "data": [
