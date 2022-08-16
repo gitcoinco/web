@@ -706,3 +706,102 @@ def calculate_trust_bonus(user_id, did, address):
         profile.passport_trust_bonus_last_updated = timezone.now()
         profile.passport_trust_bonus_stamp_validation = []
         profile.save()
+
+
+@app.shared_task
+def calculate_trust_bonus_gr15():
+    """
+    :return: None
+    """
+
+    # delay import as this is only available in celery envs
+    import pandas as pd
+    import datar.all as r
+    from datar.core.factory import func_factory
+
+    try:
+        @func_factory("agg", "x")
+        def my_paste(x):
+            return ", ".join(x)
+
+        @func_factory("agg", "x")
+        def my_len(x):
+            return len(x)
+
+
+        @func_factory("agg", "x")
+        def my_head(x, n=1):
+            return x[0:n]
+
+        def compute_trust_scores(gc, stamp_fields, grouping_fields, grouping_fields_1):
+            pca_dat = gc >> r.select(~r.f[grouping_fields_1])
+
+            method_combos = (
+                gc
+                >> r.select(~r.f[grouping_fields])
+                >> r.pivot_longer(cols=[stamp_fields], names_to="Authentication", values_to="Value")
+                >> r.filter(r.f.Value)
+                >> r.group_by(r.f.user_id)
+                >> r.summarise(Combo=my_paste(r.f.Authentication), Num=my_len(r.f.Authentication))
+                >> r.group_by(r.f.Combo)
+                >> r.summarise(Count=r.n(), Num=my_head(r.f.Num))
+                >> r.arrange(r.desc(r.f.Count))
+                >> r.group_by(r.f.Num)
+                >> r.mutate(
+                    Prop=r.f.Count / r.sum(r.f.Count),
+                    Weight=1 - r.f.Prop,
+                    Score=r.f.Weight * (1 / pca_dat.shape[1]) + (r.f.Num / pca_dat.shape[1]),
+                )
+                >> r.arrange(r.desc(r.f.Num), r.desc(r.f.Count))
+            )
+
+            method4_prelim = (
+                gc
+                >> r.select(~r.f[grouping_fields])
+                >> r.pivot_longer(cols=[stamp_fields], names_to="Authentication", values_to="Value")
+                >> r.filter(r.f.Value)
+                >> r.group_by(r.f.user_id)
+                >> r.summarise(Combo=my_paste(r.f.Authentication))
+                >> r.left_join(method_combos)
+            )
+
+            method4 = gc >> r.select(r.f.user_id) >> r.left_join(method4_prelim)
+
+            method4["Score"].fillna(0, inplace=True)
+            method4 = method4[method4["Combo"].notnull()]
+
+            return method4
+
+
+        stamps = list(PassportStamp.objects.all().values("user_id", "stamp_provider"))
+        df = pd.DataFrame(stamps)
+        df["stamp_provider"] = df.stamp_provider.str.lower()
+
+        providers = [p for p in df.stamp_provider.unique() if p]
+
+        for p in providers:
+            df[p] = 0
+            df.loc[df["stamp_provider"] == p, p] = 1
+
+        prepared_df = df.groupby(['user_id']).max()
+        prepared_df.reset_index(inplace=True)
+
+        grouping_fields_1 = [
+            r.f["user_id"],  
+        ]
+
+        grouping_fields = []
+        stamp_fields = [r.f[p] for p in providers]
+
+        scores = compute_trust_scores(prepared_df, stamp_fields, grouping_fields, grouping_fields_1)
+        print(scores)
+
+        for _index, row in scores.iterrows():
+            print(row["user_id"], "==>", row["Score"])
+
+
+    except Exception as e:
+        # Log the error
+        logger.error(e)
+        # We expect this verification to throw
+        logger.error("Error calculating trust bonus score!", exc_info=True)
