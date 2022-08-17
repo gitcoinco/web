@@ -12,4 +12,4 @@ class EmailPreferenceLog(SuperModel):
     processed_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return f"[{self.user_id}] {self.processed_at}"
+        return f"[{self.user_id}] {self.event_data}"
