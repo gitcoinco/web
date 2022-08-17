@@ -31,3 +31,5 @@ class TestEmailPreference:
         }
         email_preference = EmailPreferenceLog.objects.first()
         assert email_preference.event_data == {'test': 'test'}
+        assert email_preference.destination == 'hubspot'
+        assert not email_preference.processed_at

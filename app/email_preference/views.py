@@ -18,14 +18,13 @@ def email_preference_log(request):
         )
 
     event_data = request.body.decode('utf-8')
-    payload = event_data
     if event_data:
-        payload = json.loads(event_data)
+        event_data = json.loads(event_data)
 
     try:
         log = EmailPreferenceLog(
             destination='hubspot',
-            event_data=payload
+            event_data=event_data
         )
         log.save()
         return JsonResponse(
