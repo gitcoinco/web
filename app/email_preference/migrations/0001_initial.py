@@ -17,12 +17,12 @@ class Migration(migrations.Migration):
             name='EmailPreferenceLog',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
-                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
                 ('user_id', models.PositiveIntegerField(blank=True, null=True)),
                 ('destination', models.CharField(default='hubspot', max_length=255)),
                 ('event_data', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict, null=True)),
                 ('response_data', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict, null=True)),
+                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
+                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
                 ('processed_on', models.DateTimeField(blank=True, null=True)),
             ],
             options={
