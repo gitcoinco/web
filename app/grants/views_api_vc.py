@@ -123,7 +123,7 @@ def contributor_statistics(request):
             "num_grants_contribute_to": num_grants_contribute_to,
             "num_rounds_contribute_to": num_rounds_contribute_to,
             "total_contribution_amount": total_contribution_amount,
-            "is_gr14_contributor": num_gr14_contributions > 0,
+            "num_gr14_contributions": num_gr14_contributions,
         }
     )
 
