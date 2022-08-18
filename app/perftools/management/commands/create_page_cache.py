@@ -329,6 +329,7 @@ def create_results_cache():
             print(f"- executing {keyword}")
             data = build_stat_results(keyword)
             print("- creating")
+            del data['hackathons']
             items.append(JSONStore(
                 view=view,
                 key=keyword,
