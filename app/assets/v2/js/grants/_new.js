@@ -257,6 +257,19 @@ Vue.mixin({
         data: getFormData(data),
         headers: headers,
         success: response => {
+          EmailPreferenceEvent.createEvent({
+            'alias': 'products',
+            'data': [
+              {
+                'name': 'product',
+                'attributes': {
+                  'product': 'grants',
+                  'persona': 'grants-creator',
+                  'action': 'create'
+                }
+              }
+            ]
+          });
           MauticEvent.createEvent({
             'alias': 'products',
             'data': [
@@ -490,7 +503,7 @@ if (document.getElementById('gc-new-grant')) {
           name: 'eligibility tags'.toUpperCase(),
           is_eligibility_tag: 'label'
         });
-        
+
         all_tags.splice(all_tags.findIndex(first_discovery), 0, {
           id: all_tags.length + 1,
           name: 'discovery tags'.toUpperCase(),
