@@ -738,13 +738,13 @@ const service = new awsx.ecs.FargateService("app", {
 
 const celery = new awsx.ecs.FargateService("celery", {
     cluster,
-    desiredCount: 2,
+    desiredCount: 1,
     subnets: vpc.privateSubnetIds,
     taskDefinitionArgs: {
         containers: {
             celery: {
                 image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport, celery"],
+                command: ["celery", "-A", "taskapp", "-n", "worker1", "worker", "-Q", "gitcoin_passport, celery"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
@@ -754,7 +754,7 @@ const celery = new awsx.ecs.FargateService("celery", {
             },
             celeryHighPriority: {
                 image: "gitcoin/web:0b8eae8cd2",
-                command: ["celery", "-A", "taskapp", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
+                command: ["celery", "-A", "taskapp", "-n", "worker2", "worker", "-Q", "gitcoin_passport,high_priority,celery"],
                 memory: 4096,
                 cpu: 2000,
                 portMappings: [],
