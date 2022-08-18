@@ -23,6 +23,7 @@ from dashboard.models import (
 )
 from dashboard.utils import get_tx_status_and_details
 from economy.models import EncodeAnything
+from grants.models import GR15TrustScore
 from marketing.mails import func_name, grant_update_email, send_mail
 from proxy.views import proxy_view
 from retail.emails import render_share_bounty
@@ -799,6 +800,11 @@ def calculate_trust_bonus_gr15():
         for _index, row in scores.iterrows():
             print(row["user_id"], "==>", row["Score"])
 
+        # Write the results to the DB
+        GR15TrustScore.objects.all().delete()
+
+        gr15_trust_scores = [GR15TrustScore(user_id=row["user_id"], score=row["Score"]) for _index, row in scores.iterrows()]
+        GR15TrustScore.objects.bulk_create(gr15_trust_scores)
 
     except Exception as e:
         # Log the error
