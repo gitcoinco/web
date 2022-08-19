@@ -21,7 +21,7 @@ requests_oauthlib
 Pillow==8.3.2
 premailer
 populus
-psycopg2-binary==2.7.5
+psycopg2-binary==2.8
 PyJWT==1.5.3
 PyPdf2
 python-twitter==3.2
