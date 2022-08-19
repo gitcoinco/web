@@ -21,7 +21,6 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Passport, PassportStamp
-
 from dashboard.passport_reader import TRUSTED_IAM_ISSUER
 
 
