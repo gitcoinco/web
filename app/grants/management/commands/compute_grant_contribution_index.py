@@ -28,20 +28,13 @@ class Command(BaseCommand):
                     "subscription__grant__clr_calculations__grantclr__end_date"
                 ),
             )
-            .order_by(
-                "subscription__contributor_profile__id",
-                "subscription__grant__clr_calculations__grantclr__round_num",
-                "subscription__grant__id",
-            )
-            .distinct(
-                "subscription__contributor_profile__id",
-                "subscription__grant__clr_calculations__grantclr__round_num",
-                "subscription__grant__id",
-            )
+            .order_by("id")
+            .distinct("id")
             .values_list(
-                "subscription__contributor_profile__id",
+                "id",
                 "subscription__grant__clr_calculations__grantclr__round_num",
                 "subscription__grant__id",
+                "amount_per_period_usdt"
             )
         )
 
@@ -51,6 +44,7 @@ class Command(BaseCommand):
                 profile_id=contribInfo[0],
                 round_num=contribInfo[1],
                 grant_id=contribInfo[2],
+                amount=contribInfo[3]
             )
             for contribInfo in contributions
         ]
