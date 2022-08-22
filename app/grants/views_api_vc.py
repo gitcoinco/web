@@ -90,24 +90,15 @@ def contributor_statistics(request):
         .count()
     )
 
-    # Get the total number of contributions
-    contribution_list = list(
-        Contribution.objects.filter(
-            profile_for_clr__handle=handle,
-            success=True,
-            subscription__network="mainnet",
-            subscription__grant__clr_calculations__latest=True,
-        )
-        .order_by(
-            "id",
-        )
-        .distinct(
-            "id",
-        )
-        .values_list("id", "amount_per_period_usdt")
-    )
+    # Get the total contribution amount
+    total_contribution_amount = GrantContributionIndex.objects.filter(
+        profile__handle=handle
+    ).aggregate(total_contribution_amount=Sum("amount"))["total_contribution_amount"]
 
-    total_contribution_amount = sum([i[1] for i in contribution_list])
+    total_contribution_amount
+
+    if total_contribution_amount is None:
+        total_contribution_amount = 0
 
     # GR14 contributor (and not squelched by FDD)
     start = datetime.now()

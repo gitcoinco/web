@@ -31,7 +31,7 @@ class Command(BaseCommand):
             .order_by("id")
             .distinct("id")
             .values_list(
-                "id",
+                "profile_for_clr_id",
                 "subscription__grant__clr_calculations__grantclr__round_num",
                 "subscription__grant__id",
                 "amount_per_period_usdt"
