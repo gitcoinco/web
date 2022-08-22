@@ -2,7 +2,7 @@
 // if (document.contxt.github_handle && document.contxt.env === 'prod') {
 //   mtcId
 // }
-document.addEventListener("mauticPageEventDelivered", function (e) {
+document.addEventListener('mauticPageEventDelivered', function(e) {
   if (document.contxt.github_handle && mtcId && !document.contxt.mautic_id) {
     //   mtcId
     saveMauticId(mtcId);
@@ -30,8 +30,8 @@ document.addEventListener("mauticPageEventDelivered", function (e) {
 // }
 
 const saveMauticId = (mauticId) => {
-  const url = "/api/v1/mautic_profile_save/";
-  const postData = fetchData(url, "POST", { mtcId: mauticId });
+  const url = '/api/v1/mautic_profile_save/';
+  const postData = fetchData(url, 'POST', { mtcId: mauticId });
 
   $.when(postData)
     .then((response) => {
@@ -39,7 +39,7 @@ const saveMauticId = (mauticId) => {
     })
     .catch((err) => {
       console.log(err);
-      _alert("Unable to save your profile. Please login again", "danger");
+      _alert('Unable to save your profile. Please login again', 'danger');
     });
 };
 
@@ -60,18 +60,18 @@ class MauticEvent {
       customObjects: {
         data: [
           {
-            alias: "products",
+            alias: 'products',
             data: [
               {
-                name: "product",
+                name: 'product',
                 attributes: {
-                  product: data.product,
-                },
-              },
-            ],
-          },
-        ],
-      },
+                  product: data.product
+                }
+              }
+            ]
+          }
+        ]
+      }
     };
 
     if (data.persona) {
@@ -85,28 +85,28 @@ class MauticEvent {
     // Tmp - to be removed
     let mtcId = 0;
 
-    if (typeof mtcId === "undefined") {
+    if (typeof mtcId === 'undefined') {
       return;
     }
     let contactApi = `/api/v1/mautic/contacts/${mtcId}/edit?includeCustomObjects=true`;
     // let dataMock = this.dataMock(data)
 
     fetch(contactApi, {
-      method: "PATCH",
+      method: 'PATCH',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     })
-      .then(function (response) {
+      .then(function(response) {
         return response.json();
       })
-      .then(function (result) {
+      .then(function(result) {
         console.log(result);
       })
-      .catch(function (error) {
-        console.log("Request failed", error);
+      .catch(function(error) {
+        console.log('Request failed', error);
       });
   }
 
@@ -116,7 +116,7 @@ class MauticEvent {
       this.dataMock({
         email: document.contxt.email,
         product: data.product,
-        persona: data.persona,
+        persona: data.persona
       })
     );
   }
@@ -154,17 +154,17 @@ class MauticEvent {
     */
     let baseObj = {
       email: document.contxt.email,
-      customObjects: {},
+      customObjects: {}
     };
 
-    baseObj.customObjects["data"] = obj;
+    baseObj.customObjects['data'] = obj;
     this.send(baseObj);
   }
 
   static updateUser(userData) {
     // { 'tags': ['mytag','yourtag']}
     let baseObj = {
-      email: document.contxt.email,
+      email: document.contxt.email
     };
     let merged = { ...baseObj, ...userData };
 
@@ -180,19 +180,19 @@ class MauticEvent {
 
 this.MauticSDKLoaded;
 
-if (typeof MauticSDKLoaded == "undefined") {
+if (typeof MauticSDKLoaded == 'undefined') {
   MauticSDKLoaded = true;
-  this.MauticDomain = "https://engage.gitcoin.co";
+  this.MauticDomain = 'https://engage.gitcoin.co';
   this.MauticLang = {
-    submittingMessage: "Please wait...",
+    submittingMessage: 'Please wait...'
   };
-  const head = document.getElementsByTagName("head")[0];
-  const script = document.createElement("script");
+  const head = document.getElementsByTagName('head')[0];
+  const script = document.createElement('script');
 
-  script.type = "text/javascript";
+  script.type = 'text/javascript';
   script.src =
-    "https://engage.gitcoin.co/mautic/media/js/mautic-form.js?vfd3c9acf";
-  script.onload = function () {
+    'https://engage.gitcoin.co/mautic/media/js/mautic-form.js?vfd3c9acf';
+  script.onload = function() {
     MauticSDK.onLoad();
   };
   head.appendChild(script);
