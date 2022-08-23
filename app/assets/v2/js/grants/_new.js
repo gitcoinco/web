@@ -483,7 +483,7 @@ if (document.getElementById('gc-new-grant')) {
       },
       grantTagOptions() {
         const sorted_tags = this.grant_tags.sort((a, b) => a.id - b.id);
-        const next_id = sorted_tags[sorted_tags.length-1].id + 1;
+        const next_id = sorted_tags[sorted_tags.length - 1].id + 1;
         const all_tags = this.grant_tags.sort((a, b) => b.is_eligibility_tag - a.is_eligibility_tag);
         const first_discovery = (tag) => tag.is_eligibility_tag === 0;
 
