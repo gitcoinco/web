@@ -3,7 +3,7 @@ name: Build & deploy to staging
 on:
   # run it during push to branch
   push:
-    branches: [ infra_as_code_staging ]
+    branches: [ master ]
 
 jobs:
   build-and-test:
