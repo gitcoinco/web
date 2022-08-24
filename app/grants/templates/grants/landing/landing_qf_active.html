@@ -17,6 +17,16 @@
         <a class="btn btn-lg btn-primary d-block d-sm-inline" href="{% url 'grants:grants_explorer' %}">{% trans 'View All Grants' %}</a>
         <a class="btn btn-lg btn-outline-primary ml-sm-3 d-block d-sm-inline mt-2 mt-sm-0" href="/grants/new">{% trans 'Create a Grant' %}</a>
       </div>
+      <p class="font-subheader mt-4 mb-2">
+        <a target="_blank" href="https://gitcoin.notion.site/gitcoin/Gitcoin-Grantee-Onboarding-Document-bbfe106a32534fb5a011f09c121257c3">
+          {% trans "Grantee Onboarding Support" %}
+        </a>
+      </p>
+      <p class="font-subheader mt-0">
+        <a target="_blank" href="https://gitcoin.notion.site/GR15-Gitcoin-Grant-Eligibility-Briefs-7949392eb2684ea6ae9072cad7fff277">
+          {% trans "Grant Eligibility Criteria" %}
+        </a>
+      </p>
     </div>
     <div class="col-md order-md-last order-first">
       {% if show_main_round_banner %}
